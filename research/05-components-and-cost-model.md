@@ -904,7 +904,7 @@ Two corrections to §10, both about **minimum packet, not price**:
 
 §10.6 recorded "the L10's own numbers were not fetched" and carried the vendor page's L15
 figures. The **nRF54L15 / nRF54L10 / nRF54L05 preliminary datasheet v0.10** (`4503_018 v0.10`,
-906 pp, Table 86 and §11.1.2) covers all three parts in one document, and its numbers are
+906 pp, Table 86 and §11.1.2 — verbatim extracts in [`research/fetched/E-nrf54l-datasheet-currents.md`](fetched/E-nrf54l-datasheet-currents.md); **nordicsemi.com returns HTTP 403 to automated fetch, so the canonical URL could not be re-verified**) covers all three parts in one document, and its numbers are
 **better than the marketing page's**:
 
 | Symbol | Description | Typ. |
