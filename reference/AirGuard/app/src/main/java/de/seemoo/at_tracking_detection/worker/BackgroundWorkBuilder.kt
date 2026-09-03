@@ -1,0 +1,93 @@
+package de.seemoo.at_tracking_detection.worker
+
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import de.seemoo.at_tracking_detection.detection.ScanBluetoothWorker
+import de.seemoo.at_tracking_detection.detection.TrackingDetectorWorker
+import de.seemoo.at_tracking_detection.notifications.worker.FalseAlarmWorker
+import de.seemoo.at_tracking_detection.notifications.worker.IgnoreDeviceWorker
+import de.seemoo.at_tracking_detection.statistics.SendStatisticsWorker
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class BackgroundWorkBuilder @Inject constructor() {
+
+    fun buildScanWorker(): PeriodicWorkRequest = PeriodicWorkRequestBuilder<ScanBluetoothWorker>(
+        WorkerConstants.MIN_MINUTES_TO_NEXT_BT_SCAN,
+        TimeUnit.MINUTES
+    ).addTag(WorkerConstants.PERIODIC_SCAN_WORKER)
+        .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.SECONDS)
+        .build()
+
+    fun buildImmediateScanWorker(): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<ScanBluetoothWorker>().addTag(WorkerConstants.SCAN_IMMEDIATELY)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .build()
+
+    fun buildSendStatisticsWorker(): PeriodicWorkRequest =
+        PeriodicWorkRequestBuilder<SendStatisticsWorker>(
+            WorkerConstants.MIN_HOURS_TO_NEXT_SEND_STATISTICS, TimeUnit.HOURS
+        ).addTag(WorkerConstants.PERIODIC_SEND_STATISTICS_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.HOURS)
+            .setConstraints(buildConstraints())
+            .build()
+
+    /*Send statistics now*/
+    fun buildSendStatisticsWorkerDebug(): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<SendStatisticsWorker>().addTag(WorkerConstants.ONETIME_SEND_STATISTICS_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.HOURS)
+            .setConstraints(buildConstraints())
+            .build()
+
+    fun buildTrackingDetectorWorker(): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<TrackingDetectorWorker>().addTag(WorkerConstants.TRACKING_DETECTION_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .build()
+
+    fun buildIgnoreDeviceWorker(deviceAddress: String, notificationId: Int, notificationTag: String?): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<IgnoreDeviceWorker>().addTag(WorkerConstants.IGNORE_DEVICE_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .setInputData(
+                Data.Builder().putString("deviceAddress", deviceAddress)
+                    .putInt("notificationId", notificationId)
+                    .putString("notificationTag", notificationTag)
+                    .build()
+            )
+            .build()
+
+    fun buildFalseAlarmWorker(notificationId: Int, notificationTag: String?): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<FalseAlarmWorker>().addTag(WorkerConstants.FALSE_ALARM_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .setInputData(Data.Builder().putInt("notificationId", notificationId)
+                .putString("notificationTag", notificationTag)
+                .build())
+            .build()
+
+    fun buildDeviceCleanupWorker(): PeriodicWorkRequest =
+        PeriodicWorkRequestBuilder<DeviceCleanupWorker>(
+            WorkerConstants.DEVICE_CLEANUP_INTERVAL_HOURS,
+            TimeUnit.HOURS
+        ).addTag(WorkerConstants.DEVICE_CLEANUP_WORKER)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .build()
+
+    fun buildDeviceCleanupWorkerNow(): OneTimeWorkRequest =
+        OneTimeWorkRequestBuilder<DeviceCleanupWorker>()
+            .addTag(WorkerConstants.DEVICE_CLEANUP_WORKER_NOW)
+            .setBackoffCriteria(BackoffPolicy.LINEAR, WorkerConstants.KIND_DELAY, TimeUnit.MINUTES)
+            .build()
+
+    private fun buildConstraints(): Constraints =
+        Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+}

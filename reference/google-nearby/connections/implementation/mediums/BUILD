@@ -1,0 +1,297 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
+load("@rules_cc//cc:cc_test.bzl", "cc_test")
+
+licenses(["notice"])
+
+cc_library(
+    name = "mediums",
+    srcs = [
+        "awdl.cc",
+        "awdl_bwu_handler.cc",
+        "awdl_endpoint_channel.cc",
+        "ble.cc",
+        "ble_endpoint_channel.cc",
+        "ble_l2cap_endpoint_channel.cc",
+        "bluetooth_bwu_handler.cc",
+        "bluetooth_classic.cc",
+        "bluetooth_endpoint_channel.cc",
+        "bluetooth_radio.cc",
+        "mediums.cc",
+        "wifi_direct.cc",
+        "wifi_direct_bwu_handler.cc",
+        "wifi_direct_endpoint_channel.cc",
+        "wifi_hotspot.cc",
+        "wifi_hotspot_bwu_handler.cc",
+        "wifi_hotspot_endpoint_channel.cc",
+        "wifi_lan.cc",
+        "wifi_lan_bwu_handler.cc",
+        "wifi_lan_endpoint_channel.cc",
+    ],
+    hdrs = [
+        "awdl.h",
+        "awdl_bwu_handler.h",
+        "awdl_endpoint_channel.h",
+        "ble.h",
+        "ble_endpoint_channel.h",
+        "ble_l2cap_endpoint_channel.h",
+        "bluetooth_bwu_handler.h",
+        "bluetooth_classic.h",
+        "bluetooth_endpoint_channel.h",
+        "bluetooth_radio.h",
+        "mediums.h",
+        "wifi.h",
+        "wifi_direct.h",
+        "wifi_direct_bwu_handler.h",
+        "wifi_direct_endpoint_channel.h",
+        "wifi_hotspot.h",
+        "wifi_hotspot_bwu_handler.h",
+        "wifi_hotspot_endpoint_channel.h",
+        "wifi_lan.h",
+        "wifi_lan_bwu_handler.h",
+        "wifi_lan_endpoint_channel.h",
+    ],
+    local_defines = select({
+        "//:webrtc_enabled": [],
+        "//conditions:default": ["NO_WEBRTC"],
+    }),
+    visibility = [
+        "//connections/implementation:__subpackages__",
+    ],
+    deps = [
+        ":utils",
+        ":webrtc",
+        ":webrtc_peer_id",
+        ":webrtc_socket",
+        "//connections:core_types",
+        "//connections/implementation:bwu_handler",
+        "//connections/implementation:client_proxy",
+        "//connections/implementation:endpoint_channel",
+        "//connections/implementation:offline_frames",
+        "//connections/implementation:service_id_constants",
+        "//connections/implementation:types",
+        "//connections/implementation/flags:connections_flags",
+        "//connections/implementation/mediums/ble",
+        "//connections/implementation/mediums/ble:ble_advertisement_header",
+        "//connections/implementation/mediums/ble:ble_socket",
+        "//connections/implementation/mediums/ble:bloom_filter",
+        "//connections/implementation/proto:offline_wire_formats_cc_proto",
+        "//internal/base:masker",
+        "//internal/flags:nearby_flags",
+        "//internal/platform:base",
+        "//internal/platform:cancellation_flag",
+        "//internal/platform:comm",
+        "//internal/platform:logging",
+        "//internal/platform:mac_address",
+        "//internal/platform:types",
+        "//internal/platform:uuid",
+        "//internal/platform/flags:platform_flags",
+        "//internal/platform/implementation:comm",
+        "//internal/platform/implementation:platform",
+        "//internal/platform/implementation:wifi_utils",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/base:nullability",
+        "@com_google_absl//absl/container:btree",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/functional:any_invocable",
+        "@com_google_absl//absl/functional:bind_front",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/time",
+        "@com_google_absl//absl/types:optional",
+    ] + select({
+        "//:webrtc_enabled": [
+            "//connections/implementation/mediums/webrtc:webrtc_impl",
+        ],
+        "//conditions:default": [],
+    }),
+)
+
+cc_library(
+    name = "webrtc_peer_id",
+    srcs = ["webrtc_peer_id.cc"],
+    hdrs = ["webrtc_peer_id.h"],
+    visibility = [
+        "//connections/implementation:__pkg__",
+        "//connections/implementation/mediums:__pkg__",
+        "//connections/implementation/mediums/webrtc:__pkg__",
+    ],
+    deps = [
+        ":utils",
+        "//internal/platform:base",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library(
+    name = "lost_entity_tracker",
+    hdrs = ["lost_entity_tracker.h"],
+    visibility = [
+        "//connections/implementation/mediums/ble:__pkg__",
+    ],
+    deps = [
+        "//internal/platform:types",
+        "@com_google_absl//absl/container:flat_hash_set",
+    ],
+)
+
+cc_library(
+    name = "utils",
+    srcs = ["utils.cc"],
+    hdrs = ["utils.h"],
+    visibility = [
+        "//connections/implementation:__pkg__",
+        "//connections/implementation/mediums/advertisements:__pkg__",
+        "//connections/implementation/mediums/ble:__subpackages__",
+        "//internal/platform/implementation/windows:__pkg__",
+    ],
+    deps = [
+        "//internal/platform:base",
+        "//internal/platform:types",
+    ],
+)
+
+cc_library(
+    name = "webrtc_socket",
+    hdrs = ["webrtc_socket.h"],
+    visibility = ["//connections/implementation:__subpackages__"],
+    deps = [
+        "//internal/platform:base",
+        "@com_google_absl//absl/strings:string_view",
+    ],
+)
+
+cc_library(
+    name = "webrtc",
+    hdrs = ["webrtc.h"],
+    visibility = ["//connections/implementation:__subpackages__"],
+    deps = [
+        ":webrtc_peer_id",
+        ":webrtc_socket",
+        "//connections/implementation:bwu_handler",
+        "//connections/implementation/proto:offline_wire_formats_cc_proto",
+        "//internal/platform:base",
+        "//internal/platform:cancellation_flag",
+        "@com_google_absl//absl/functional:any_invocable",
+    ],
+)
+
+cc_test(
+    name = "core_internal_mediums_test",
+    size = "small",
+    srcs = [
+        "awdl_test.cc",
+        "ble_test.cc",
+        "bluetooth_classic_test.cc",
+        "bluetooth_radio_test.cc",
+        "lost_entity_tracker_test.cc",
+        "wifi_direct_test.cc",
+        "wifi_hotspot_test.cc",
+        "wifi_lan_test.cc",
+        "wifi_test.cc",
+    ],
+    shard_count = 16,
+    deps = [
+        ":lost_entity_tracker",
+        ":mediums",
+        "//connections:core_types",
+        "//connections/implementation:types",
+        "//connections/implementation/flags:connections_flags",
+        "//connections/implementation/mediums/ble",
+        "//connections/implementation/mediums/ble:ble_socket",
+        "//internal/flags:nearby_flags",
+        "//internal/platform:base",
+        "//internal/platform:cancellation_flag",
+        "//internal/platform:comm",
+        "//internal/platform:logging",
+        "//internal/platform:mac_address",
+        "//internal/platform:test_util",
+        "//internal/platform:types",
+        "//internal/platform/implementation:comm",
+        "//internal/platform/implementation:types",
+        "//internal/platform/implementation/g3",  # build_cleaner: keep
+        "@com_github_protobuf_matchers//protobuf-matchers",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "bwu_handler_test",
+    size = "small",
+    srcs = [
+        "awdl_bwu_handler_test.cc",
+        "bluetooth_bwu_handler_test.cc",
+        "wifi_direct_bwu_handler_test.cc",
+        "wifi_hotspot_bwu_handler_test.cc",
+        "wifi_lan_bwu_handler_test.cc",
+    ],
+    deps = [
+        ":mediums",
+        "//connections/implementation:bwu_handler",
+        "//connections/implementation:client_proxy",
+        "//connections/implementation:endpoint_channel",
+        "//connections/implementation:offline_frames",
+        "//connections/implementation:service_id_constants",
+        "//connections/implementation/flags:connections_flags",
+        "//internal/flags:nearby_flags",
+        "//internal/platform:base",
+        "//internal/platform:cancellation_flag",
+        "//internal/platform:comm",
+        "//internal/platform:logging",
+        "//internal/platform:mock_platform",
+        "//internal/platform:test_util",
+        "//internal/platform:types",
+        "//internal/platform/flags:platform_flags",
+        "//internal/platform/implementation:comm",
+        "//internal/platform/implementation:platform",
+        "//internal/platform/implementation/g3",  # build_cleaner: keep
+        "@com_github_protobuf_matchers//protobuf-matchers",
+        "@com_google_absl//absl/strings:string_view",
+        "@com_google_absl//absl/time",
+        "@com_google_googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "core_internal_mediums_webrtc_test",
+    size = "small",
+    srcs = [
+        "webrtc_peer_id_test.cc",
+    ],
+    shard_count = 16,
+    tags = [
+        "notsan",  # NOTE(b/139734036): known data race in usrsctplib.
+        "requires-net:external",
+    ],
+    deps = [
+        ":webrtc_peer_id",
+        ":webrtc_socket",
+        "//internal/platform:base",
+        "//internal/platform:cancellation_flag",
+        "//internal/platform:comm",
+        "//internal/platform:test_util",
+        "//internal/platform:types",
+        "//internal/platform/implementation/g3",  # build_cleaner: keep
+        "//internal/test",
+        "@com_github_protobuf_matchers//protobuf-matchers",
+        "@com_google_absl//absl/strings:string_view",
+        "@com_google_googletest//:gtest_main",
+    ],
+)

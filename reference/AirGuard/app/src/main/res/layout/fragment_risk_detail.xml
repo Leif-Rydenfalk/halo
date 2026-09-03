@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.dashboard.RiskDetailFragment">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="de.seemoo.at_tracking_detection.ui.dashboard.RiskDetailViewModel" />
+        <import type="android.view.View" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:paddingVertical="16dp"
+            android:orientation="vertical">
+
+            <include
+                layout="@layout/include_tracker_location_cards"
+                app:viewModel="@{viewModel}" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <include
+                    android:id="@+id/card_devices_found"
+                    layout="@layout/include_number_card"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:visibility="visible"
+                    app:cardBackgroundColorRes="@{viewModel.riskColor}"
+                    app:cardName="@{@string/all_devices_found}"
+                    app:cardNumber="@{viewModel.totalNumberOfDevicesFound}"
+                    app:layout_constraintDimensionRatio="3:2"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.48" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/dates_detected"
+                style="@style/Widget.Material3.CardView.Filled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:visibility="@{viewModel.numberOfTrackersFound == 0 ? View.GONE : View.VISIBLE}"
+                app:riskColorRes="@{viewModel.riskColor}"
+                tools:cardBackgroundColor="@color/risk_high">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dates_detected"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="?attr/colorOnSurface" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@{viewModel.receivedNotificationDatesString}"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?attr/colorOnSurface"
+                        tools:text="20.01.2022 10:15\n12.12.2021 09:31\n11.12.2021 09:00" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <include
+                layout="@layout/include_scan_times"
+                android:layout_marginTop="22dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{viewModel.lastScans.length() == 0 ? View.GONE : View.VISIBLE}"
+                app:viewModel="@{viewModel}" />
+
+        </LinearLayout>
+    </ScrollView>
+</layout>

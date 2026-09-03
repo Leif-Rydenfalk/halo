@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/jacobrosenthal/Dropbox/Desktop/untitled folder 5/chippd/nrf52-kicad/nrf51x22_qfax_dcdc.sch</source>
+    <date>Wednesday, March 16, 2016 'PMt' 11:51:44 PM</date>
+    <tool>Eeschema 4.0.0-stable</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>nrf51x22_qfax_dcdc.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="L3">
+      <value>15nH</value>
+      <footprint>dcdc:INDC1005X04L</footprint>
+      <fields>
+        <field name="Description">High frequency chip inductor ±10%</field>
+        <field name="Manufacturer Part">MLK1005S15NJT000</field>
+        <field name="Manufacturer">TDK</field>
+        <field name="Distributor 1">445-1469-1-ND</field>
+      </fields>
+      <libsource lib="device" part="L_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566C9933</tstamp>
+    </comp>
+    <comp ref="L2">
+      <value>10uH</value>
+      <footprint>dcdc:INDC1608X06L</footprint>
+      <fields>
+        <field name="Description">Chip inductor IDC min = 50 mA ±20%</field>
+        <field name="Manufacturer Part">MLZ1608N100LT000</field>
+        <field name="Manufacturer">TDK</field>
+        <field name="Distributor 1">445-6755-1-ND</field>
+      </fields>
+      <libsource lib="device" part="L_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566C9E5B</tstamp>
+    </comp>
+    <comp ref="L1">
+      <value>3.9nH</value>
+      <footprint>dcdc:INDC1005X04L</footprint>
+      <fields>
+        <field name="Description">High frequency chip inductor ±5%</field>
+      </fields>
+      <libsource lib="device" part="L_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CC2F0</tstamp>
+    </comp>
+    <comp ref="C3">
+      <value>.8pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±5%</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CC3D8</tstamp>
+    </comp>
+    <comp ref="C9">
+      <value>4.7uF</value>
+      <footprint>dcdc:CAPC1608X06L</footprint>
+      <fields>
+        <field name="Description">Capacitor X5R ±10%</field>
+        <field name="Manufacturer Part">GRM188R61C475KE11D</field>
+        <field name="Manufacturer">Murata Electronics North America</field>
+        <field name="Distributor 1">490-10730-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CC56A</tstamp>
+    </comp>
+    <comp ref="C5">
+      <value>100nF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor X7R ±10%</field>
+        <field name="Manufacturer Part">CC0402KRX7R6BB104</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distrubutor 1">311-1345-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CC608</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>12pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±2%</field>
+        <field name="Manufacturer Part">GRM1555C1H120GA01D</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distributor 1">490-6197-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CD1BB</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>12pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±2%</field>
+        <field name="Manufacturer Part">GRM1555C1H120GA01D</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distributor 1">490-6197-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>566CD21B</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>nrf51822-qfax</value>
+      <footprint>nrf:nrf51-qfax-1ep-vias</footprint>
+      <fields>
+        <field name="Manufacturer Part">NRF51822-QFAC-T</field>
+        <field name="Manufacturer">Nordic Semiconductor ASA</field>
+      </fields>
+      <libsource lib="nrf51822" part="nrf52832-qfax"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>567DBE79</tstamp>
+    </comp>
+    <comp ref="X1">
+      <value>Crystal-4</value>
+      <footprint>dcdc:BT-XTAL_2016</footprint>
+      <fields>
+        <field name="Description">32Mhz 8pF ±40ppm</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="nrf51822" part="Crystal-4"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56D1F3A1</tstamp>
+    </comp>
+    <comp ref="C12">
+      <value>12pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±2%</field>
+        <field name="Manufacturer Part">GRM1555C1H120GA01D</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distributor 1">490-6197-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56D1F8D7</tstamp>
+    </comp>
+    <comp ref="C11">
+      <value>12pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±2%</field>
+        <field name="Manufacturer Part">GRM1555C1H120GA01D</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distributor 1">490-6197-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56D1F931</tstamp>
+    </comp>
+    <comp ref="X2">
+      <value>32.768kHz</value>
+      <footprint>dcdc:XTAL_3215</footprint>
+      <fields>
+        <field name="Description">32.768kHz 9pF ±20ppm</field>
+        <field name="Manufacturer Part">ABS07-32.768KHZ-9-T</field>
+        <field name="Manufacturer">Abracon LLC</field>
+        <field name="Distributor 1">535-9544-1-ND</field>
+      </fields>
+      <libsource lib="device" part="Crystal_Small"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56D1F980</tstamp>
+    </comp>
+    <comp ref="C4">
+      <value>100nF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor X7R ±10%</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56E9F1F9</tstamp>
+    </comp>
+    <comp ref="C6">
+      <value>NC</value>
+      <fields>
+        <field name="Description">.</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56E9F54A</tstamp>
+    </comp>
+    <comp ref="C7">
+      <value>100pF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor NP0 ±5%</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56E9F826</tstamp>
+    </comp>
+    <comp ref="C10">
+      <value>1.0uF</value>
+      <footprint>dcdc:CAPC1608X06L</footprint>
+      <fields>
+        <field name="Description">Capacitor X7R ±10%</field>
+        <field name="Manufacturer Part">.</field>
+        <field name="Manufacturer">.</field>
+        <field name="Distributor 1">.</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56EA0454</tstamp>
+    </comp>
+    <comp ref="C8">
+      <value>100nF</value>
+      <footprint>dcdc:CAPC1005X04L</footprint>
+      <fields>
+        <field name="Description">Capacitor X7R ±10%</field>
+        <field name="Manufacturer Part">CC0402KRX7R6BB104</field>
+        <field name="Manufacturer">Yageo</field>
+        <field name="Distrubutor 1">311-1345-1-ND</field>
+      </fields>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>56EA1ADB</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="device" part="C">
+      <description>Unpolarized capacitor</description>
+      <footprints>
+        <fp>C?</fp>
+        <fp>C_????_*</fp>
+        <fp>C_????</fp>
+        <fp>SMD*_c</fp>
+        <fp>Capacitor*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="nrf51822" part="Crystal-4">
+      <footprints>
+        <fp>Crystal_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">X</field>
+        <field name="Value">Crystal-4</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="4" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="Crystal_Small">
+      <description>Two pin crystal</description>
+      <footprints>
+        <fp>Crystal_</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Y</field>
+        <field name="Value">Crystal_Small</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="L_Small">
+      <description>Inductor</description>
+      <footprints>
+        <fp>CP*</fp>
+        <fp>SM*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">L</field>
+        <field name="Value">L_Small</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="nrf51822" part="nrf52832-qfax">
+      <footprints>
+        <fp>QFN48</fp>
+        <fp>WLCSP</fp>
+        <fp>BGA</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">nrf52832-qfax</field>
+      </fields>
+      <pins>
+        <pin num="1" name="DEC1" type="power_in"/>
+        <pin num="2" name="P0.00/XL1" type="BiDi"/>
+        <pin num="3" name="P0.01/XL2" type="BiDi"/>
+        <pin num="4" name="P0.02/AIN0" type="BiDi"/>
+        <pin num="5" name="P0.03/AIN1" type="BiDi"/>
+        <pin num="6" name="P0.04/AIN2" type="BiDi"/>
+        <pin num="7" name="P0.05/AIN3" type="BiDi"/>
+        <pin num="8" name="P0.06" type="BiDi"/>
+        <pin num="9" name="P0.07" type="BiDi"/>
+        <pin num="10" name="P0.08" type="BiDi"/>
+        <pin num="11" name="P0.09" type="BiDi"/>
+        <pin num="12" name="P0.10" type="BiDi"/>
+        <pin num="13" name="VDD" type="power_in"/>
+        <pin num="14" name="P0.11" type="BiDi"/>
+        <pin num="15" name="P0.12" type="BiDi"/>
+        <pin num="16" name="P0.13" type="BiDi"/>
+        <pin num="17" name="P0.14" type="BiDi"/>
+        <pin num="18" name="P0.15" type="BiDi"/>
+        <pin num="19" name="P0.16" type="BiDi"/>
+        <pin num="20" name="P0.17" type="BiDi"/>
+        <pin num="21" name="P0.18" type="BiDi"/>
+        <pin num="22" name="P0.19" type="BiDi"/>
+        <pin num="23" name="P0.20" type="BiDi"/>
+        <pin num="24" name="P0.21/RESET" type="BiDi"/>
+        <pin num="25" name="SWDCLK" type="input"/>
+        <pin num="26" name="SWDIO" type="input"/>
+        <pin num="27" name="P0.22" type="BiDi"/>
+        <pin num="28" name="P0.23" type="BiDi"/>
+        <pin num="29" name="P0.24" type="BiDi"/>
+        <pin num="30" name="ANT" type="BiDi"/>
+        <pin num="31" name="VSS" type="power_in"/>
+        <pin num="32" name="DEC2" type="power_in"/>
+        <pin num="33" name="DEC3" type="power_in"/>
+        <pin num="34" name="XC1" type="input"/>
+        <pin num="35" name="XC2" type="output"/>
+        <pin num="36" name="VDD" type="power_in"/>
+        <pin num="37" name="P0.25" type="BiDi"/>
+        <pin num="38" name="P0.26" type="BiDi"/>
+        <pin num="39" name="P0.27" type="BiDi"/>
+        <pin num="40" name="P0.28/AIN4" type="BiDi"/>
+        <pin num="41" name="P0.29/AIN5" type="BiDi"/>
+        <pin num="42" name="P0.30/AIN6" type="BiDi"/>
+        <pin num="43" name="P0.31/AIN7" type="BiDi"/>
+        <pin num="44" name="NC" type="power_in"/>
+        <pin num="45" name="VSS" type="power_in"/>
+        <pin num="46" name="DEC4" type="power_in"/>
+        <pin num="47" name="DCC" type="power_in"/>
+        <pin num="48" name="VDD" type="power_in"/>
+        <pin num="49" name="THERMAL" type="power_in"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="device">
+      <uri>/Library/Application Support/kicad/library/device.lib</uri>
+    </library>
+    <library logical="nrf51822">
+      <uri>/Users/jacobrosenthal/Dropbox/Desktop/untitled folder 5/chippd/nrf52-kicad/nrf51822.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(L2-Pad1)">
+      <node ref="L3" pin="2"/>
+      <node ref="L2" pin="1"/>
+    </net>
+    <net code="2" name="Net-(L2-Pad2)">
+      <node ref="U1" pin="47"/>
+      <node ref="L2" pin="2"/>
+    </net>
+    <net code="3" name="GND">
+      <node ref="C1" pin="2"/>
+      <node ref="U1" pin="45"/>
+      <node ref="U1" pin="31"/>
+      <node ref="X1" pin="4"/>
+      <node ref="X1" pin="2"/>
+      <node ref="U1" pin="49"/>
+      <node ref="C2" pin="2"/>
+      <node ref="C5" pin="1"/>
+      <node ref="C9" pin="1"/>
+      <node ref="C3" pin="2"/>
+      <node ref="C6" pin="1"/>
+      <node ref="C4" pin="1"/>
+      <node ref="C11" pin="1"/>
+      <node ref="C12" pin="1"/>
+      <node ref="C8" pin="1"/>
+      <node ref="C10" pin="1"/>
+      <node ref="C7" pin="1"/>
+    </net>
+    <net code="4" name="Net-(C12-Pad2)">
+      <node ref="X2" pin="1"/>
+      <node ref="U1" pin="3"/>
+      <node ref="C12" pin="2"/>
+    </net>
+    <net code="5" name="Net-(C4-Pad2)">
+      <node ref="C4" pin="2"/>
+      <node ref="U1" pin="1"/>
+    </net>
+    <net code="6" name="Net-(C6-Pad2)">
+      <node ref="C6" pin="2"/>
+      <node ref="U1" pin="32"/>
+    </net>
+    <net code="7" name="Net-(C7-Pad2)">
+      <node ref="C7" pin="2"/>
+      <node ref="U1" pin="33"/>
+    </net>
+    <net code="8" name="/RF">
+      <node ref="L1" pin="2"/>
+    </net>
+    <net code="9" name="/VDD_nRF">
+      <node ref="C9" pin="2"/>
+      <node ref="C5" pin="2"/>
+      <node ref="U1" pin="36"/>
+      <node ref="U1" pin="48"/>
+      <node ref="C8" pin="2"/>
+      <node ref="U1" pin="13"/>
+    </net>
+    <net code="10" name="Net-(C11-Pad2)">
+      <node ref="X2" pin="2"/>
+      <node ref="C11" pin="2"/>
+      <node ref="U1" pin="2"/>
+    </net>
+    <net code="11" name="Net-(C10-Pad2)">
+      <node ref="L3" pin="1"/>
+      <node ref="U1" pin="46"/>
+      <node ref="C10" pin="2"/>
+    </net>
+    <net code="12" name="Net-(U1-Pad4)">
+      <node ref="U1" pin="4"/>
+    </net>
+    <net code="13" name="Net-(U1-Pad5)">
+      <node ref="U1" pin="5"/>
+    </net>
+    <net code="14" name="Net-(U1-Pad6)">
+      <node ref="U1" pin="6"/>
+    </net>
+    <net code="15" name="Net-(U1-Pad7)">
+      <node ref="U1" pin="7"/>
+    </net>
+    <net code="16" name="Net-(U1-Pad8)">
+      <node ref="U1" pin="8"/>
+    </net>
+    <net code="17" name="Net-(U1-Pad9)">
+      <node ref="U1" pin="9"/>
+    </net>
+    <net code="18" name="Net-(U1-Pad10)">
+      <node ref="U1" pin="10"/>
+    </net>
+    <net code="19" name="Net-(U1-Pad20)">
+      <node ref="U1" pin="20"/>
+    </net>
+    <net code="20" name="Net-(U1-Pad40)">
+      <node ref="U1" pin="40"/>
+    </net>
+    <net code="21" name="Net-(U1-Pad11)">
+      <node ref="U1" pin="11"/>
+    </net>
+    <net code="22" name="Net-(C3-Pad1)">
+      <node ref="U1" pin="30"/>
+      <node ref="C3" pin="1"/>
+      <node ref="L1" pin="1"/>
+    </net>
+    <net code="23" name="Net-(U1-Pad16)">
+      <node ref="U1" pin="16"/>
+    </net>
+    <net code="24" name="Net-(U1-Pad26)">
+      <node ref="U1" pin="26"/>
+    </net>
+    <net code="25" name="Net-(U1-Pad17)">
+      <node ref="U1" pin="17"/>
+    </net>
+    <net code="26" name="Net-(U1-Pad27)">
+      <node ref="U1" pin="27"/>
+    </net>
+    <net code="27" name="Net-(U1-Pad37)">
+      <node ref="U1" pin="37"/>
+    </net>
+    <net code="28" name="Net-(U1-Pad18)">
+      <node ref="U1" pin="18"/>
+    </net>
+    <net code="29" name="Net-(U1-Pad28)">
+      <node ref="U1" pin="28"/>
+    </net>
+    <net code="30" name="Net-(U1-Pad38)">
+      <node ref="U1" pin="38"/>
+    </net>
+    <net code="31" name="Net-(U1-Pad19)">
+      <node ref="U1" pin="19"/>
+    </net>
+    <net code="32" name="Net-(U1-Pad29)">
+      <node ref="U1" pin="29"/>
+    </net>
+    <net code="33" name="Net-(U1-Pad39)">
+      <node ref="U1" pin="39"/>
+    </net>
+    <net code="34" name="Net-(C1-Pad1)">
+      <node ref="X1" pin="1"/>
+      <node ref="U1" pin="34"/>
+      <node ref="C1" pin="1"/>
+    </net>
+    <net code="35" name="Net-(C2-Pad1)">
+      <node ref="U1" pin="35"/>
+      <node ref="C2" pin="1"/>
+      <node ref="X1" pin="3"/>
+    </net>
+    <net code="36" name="Net-(U1-Pad21)">
+      <node ref="U1" pin="21"/>
+    </net>
+    <net code="37" name="Net-(U1-Pad41)">
+      <node ref="U1" pin="41"/>
+    </net>
+    <net code="38" name="Net-(U1-Pad12)">
+      <node ref="U1" pin="12"/>
+    </net>
+    <net code="39" name="Net-(U1-Pad22)">
+      <node ref="U1" pin="22"/>
+    </net>
+    <net code="40" name="Net-(U1-Pad42)">
+      <node ref="U1" pin="42"/>
+    </net>
+    <net code="41" name="Net-(U1-Pad23)">
+      <node ref="U1" pin="23"/>
+    </net>
+    <net code="42" name="Net-(U1-Pad43)">
+      <node ref="U1" pin="43"/>
+    </net>
+    <net code="43" name="Net-(U1-Pad14)">
+      <node ref="U1" pin="14"/>
+    </net>
+    <net code="44" name="Net-(U1-Pad24)">
+      <node ref="U1" pin="24"/>
+    </net>
+    <net code="45" name="NC">
+      <node ref="U1" pin="44"/>
+    </net>
+    <net code="46" name="Net-(U1-Pad15)">
+      <node ref="U1" pin="15"/>
+    </net>
+    <net code="47" name="Net-(U1-Pad25)">
+      <node ref="U1" pin="25"/>
+    </net>
+  </nets>
+</export>
