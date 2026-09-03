@@ -24,7 +24,10 @@ haystack; OpenHaystack is the needle-finder). Rename is one `gh repo rename`.
 
 ```
 README.md            this page
+GOAL.md              what it is for — puck, embeddable block, local relative positioning (Leif's words)
 research/            the dossiers — one per lane, every claim sourced with URL + date
+  08-local-positioning-uwb-ble.md        peer-to-peer ranging: UWB TWR, BLE RSSI/AoA, open RTLS projects
+  09-embeddable-block-and-modules.md     how to ship it as a KiCad sheet + castellated module
   01-airtag-hardware.md                  teardowns, chips, PCB, firmware, debug ports
   02-findmy-protocol-and-openhaystack.md the BLE payload, key rotation, every OSS project
   03-open-hardware-tag-designs.md        existing open PCBs (KiCad/Eagle/EasyEDA) ranked
