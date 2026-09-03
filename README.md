@@ -17,8 +17,10 @@ reproduce each function and what they cost, and the legal / certification /
 child-safety / anti-stalking constraints — then designs an open board from it.
 
 **Name.** "AirTag" and "Find My" are Apple trademarks, so the project is not
-called that. *halo*: a tag for the haystack (the Find My network is the
-haystack; OpenHaystack is the needle-finder). Rename is one `gh repo rename`.
+called that. *halo* — Leif, 2026-09-03: "a halo is always visible and you can
+find it easily, which is what the project does." The project was briefly called
+`haytag` (a tag for the haystack, after OpenHaystack); it was renamed on
+2026-09-03 and GitHub redirects the old URL.
 
 ## What is where
 

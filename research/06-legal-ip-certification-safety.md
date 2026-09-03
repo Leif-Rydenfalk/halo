@@ -98,8 +98,10 @@ with honest commercial practices"* ([WTR, using a third-party mark without infri
 
 - `airtag`, `air-tag`, `AirTagClone`, `OpenAirTag` etc. are *takeoffs/abbreviations of an Apple mark used
   as part of a product name* — squarely inside the prohibition quoted in §1.2.
-- `halo` derives from **OpenHaystack** (TU Darmstadt, §3.3), which is itself a pun on *needle in a
-  haystack*. It contains no Apple mark, no phonetic equivalent of one, and no Apple-owned graphic.
+- `halo` is an ordinary English word chosen for what the product does — a halo is always visible, so
+  the thing wearing it is easy to find. It contains no Apple mark, no phonetic equivalent of one, and
+  no Apple-owned graphic. (The project's first name, `haytag`, derived from **OpenHaystack** (TU
+  Darmstadt, §3.3), itself a pun on *needle in a haystack*; that name cleared the same test.)
 - The precedent set by the upstream ecosystem is the same: `OpenHaystack`, `macless-haystack`,
   `findmy.py` — none of them uses `AirTag` in the project name, and OpenHaystack's README carries an
   explicit disclaimer: *"OpenHaystack is not affiliated with or endorsed by Apple Inc."*
