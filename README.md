@@ -24,6 +24,9 @@ haystack; OpenHaystack is the needle-finder). Rename is one `gh repo rename`.
 
 ```
 README.md            this page
+DECISIONS.md         every design question resolved by evidence, and what each option beat
+MISSION.md           the definition of done: the eleven-artifact factory release pack
+TOOLCHAIN.md         the tools we have, the open-source sim stack, the lanes building it
 GOAL.md              what it is for — puck, embeddable block, local relative positioning (Leif's words)
 research/            the dossiers — one per lane, every claim sourced with URL + date
   08-local-positioning-uwb-ble.md        peer-to-peer ranging: UWB TWR, BLE RSSI/AoA, open RTLS projects
