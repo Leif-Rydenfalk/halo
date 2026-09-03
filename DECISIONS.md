@@ -168,3 +168,55 @@ resonance from a boost rail, with the enclosure cavity tuned as a Helmholtz
 resonator, simulated in ce-spice for drive current and measured on a real board
 against a calibrated meter before the design is released. If the measurement
 fails, the fallback is a micro-speaker and the cost model absorbs it.
+
+## D12 — the SoC is nRF54L-class with Channel Sounding; UWB is a reserved footprint (2026-09-03)
+### This supersedes the nRF52840 pick in D10
+
+**The measurement that decided it.** Lane H found a published study of Bluetooth
+Channel Sounding on eight coin-cell-powered nRF54L15 devices: **6–10 cm mean
+absolute error and 16–20 cm at the 90th percentile** over half a metre to five
+and a half metres, line of sight. That is the same accuracy band as ultra-wideband
+two-way ranging, from a radio that is already on the tag.
+
+**The sourcing fact that closed it.** There is no ultra-wideband transceiver you
+can buy a hundred of at LCSC today: the DW3110 shows 30 in stock, the DW3220
+shows 9, and the DW1000, DW3210, DW3120, the DWM3000 module and the matching
+antenna all show zero. NXP's parts are not in the catalogue at all. A design that
+cannot be built is not a design.
+
+**And the price runs the right way.** nRF54L05 is **$2.20** and nRF54L10 **$2.59**
+at a hundred units, against **$2.81** for the nRF52832 and **$3.69** for the
+nRF52833. Channel Sounding therefore costs **minus 61 cents per tag**, while
+adding ultra-wideband costs **plus $8.86** — transceiver, antenna, crystal,
+matching and bulk.
+
+**Decision.** The v1 SoC is **nRF54L10**, falling back to the L05 if the firmware
+fits its smaller memory and up to the L15 if it does not. Local relative
+positioning is done with **Channel Sounding**, specified at 6–20 cm line of sight
+and sub-metre in a real room, on a 30 second update, with the accelerometer's
+orientation vector attached to every range. A **DW3110 footprint is reserved** on
+the board as an unpopulated stuffing option for a high-precision variant.
+
+**What it beat, and what this costs us.**
+- It beat ultra-wideband in the base design, on stock, price and licence. The
+  licence point matters for an open project: the Qorvo driver everyone vendors
+  is under a licence with a *"Qorvo silicon only"* field-of-use clause and an
+  anti-reverse-engineering clause. It is redistributable but **it is not open
+  source and it is incompatible with the GPL**, so it cannot sit inside an
+  AGPL firmware.
+- It beat the nRF52840 of D10, and the honest cost is **a firmware port**. Every
+  existing Find My implementation targets nRF52 silicon. Moving to the nRF54L
+  family means porting rather than flashing something that already works, and
+  the bring-up plan must budget for it. That is accepted because the alternative
+  is shipping a tag that cannot do the one thing Leif needs it for.
+
+**Two design consequences recorded now.** Use clock-offset-compensated
+single-sided two-way ranging, never time-difference-of-arrival, because that
+needs wired clock-synchronised anchors and GOAL.md rules out infrastructure.
+And **tags report raw ranges with quality metadata, never solved positions** —
+no tag can see the whole graph, and the solver belongs in the digital twin.
+
+**Known gap, carried openly:** Channel Sounding accuracy degrades badly when
+channels collide, 25 cm becoming 331 cm without deterministic scheduling, and a
+single-antenna device can lose metres to orientation. The firmware must schedule
+ranging deterministically, and that is now a requirement, not an optimisation.

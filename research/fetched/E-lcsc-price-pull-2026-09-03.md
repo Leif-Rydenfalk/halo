@@ -55,6 +55,8 @@ Prices are USD, LCSC list price at the stated quantity ladder. `stock` is LCSC s
 | [C3285031](https://www.lcsc.com/product-detail/C3285031.html) | AH316M245001-T | Taiyo Yuden | 1206 | 1513 | 1: 0.7599, 10: 0.6303, 30: 0.5655, 100: 0.5007, 500: 0.4618, 1000: 0.4423 |
 | [C114062](https://www.lcsc.com/product-detail/C114062.html) | 2450BM15A0002E | Johanson Dielectrics | SMD-6P,2x1.3mm | 167 | 1: 0.9775, 10: 0.8062, 30: 0.7213, 100: 0.6381, 500: 0.5108, 1000: 0.4847 |
 | [C1525](https://www.lcsc.com/product-detail/C1525.html) | CL05B104KO5NNNC | Samsung Electro-Mechanics | 0402 | 6842900 | 100: 0.0051, 1000: 0.0039, 3000: 0.0033, 10000: 0.0029, 50000: 0.0027, 100000: 0.0026 |
+| [C49215609](https://www.lcsc.com/product-detail/C49215609.html) | TCC0805X5R107M6R3FT | CCTC | 0805 | 11262 | 1: 0.5771, 10: 0.4673, 30: 0.4132, 100: 0.3574, 500: 0.3263, 1000: 0.3082 |
+| [C6882730](https://www.lcsc.com/product-detail/C6882730.html) | CL21A107MQYNNWE | Samsung Electro-Mechanics | 0805 | 11620 | 1: 0.746, 10: 0.5968, 30: 0.5214, 100: 0.4476, 500: 0.4033, 1000: 0.3804 |
 
 ## Raw JSON
 
@@ -1040,6 +1042,46 @@ Prices are USD, LCSC list price at the stated quantity ladder. `stock` is LCSC s
    "100000": 0.0026
   },
   "url": "https://www.lcsc.com/product-detail/C1525.html"
+ },
+ "C49215609": {
+  "lcsc": "C49215609",
+  "mpn": "TCC0805X5R107M6R3FT",
+  "mfr": "CCTC",
+  "pkg": "0805",
+  "stock": 11262,
+  "min": 3000,
+  "moq": 1,
+  "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/7c7c1f8fb8282eab2492065cbbfa1665.pdf?productCode=C49215609",
+  "desc": "100uF X5R ±20% 6.3V 0805 Ceramic Capacitors RoHS",
+  "prices": {
+   "1": 0.5771,
+   "10": 0.4673,
+   "30": 0.4132,
+   "100": 0.3574,
+   "500": 0.3263,
+   "1000": 0.3082
+  },
+  "url": "https://www.lcsc.com/product-detail/C49215609.html"
+ },
+ "C6882730": {
+  "lcsc": "C6882730",
+  "mpn": "CL21A107MQYNNWE",
+  "mfr": "Samsung Electro-Mechanics",
+  "pkg": "0805",
+  "stock": 11620,
+  "min": 2000,
+  "moq": 1,
+  "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f0d4d6d0dde40935292fdf5841dcbb76.pdf?productCode=C6882730",
+  "desc": "100uF ±20% 6.3V Ceramic Capacitor X5R 0805",
+  "prices": {
+   "1": 0.746,
+   "10": 0.5968,
+   "30": 0.5214,
+   "100": 0.4476,
+   "500": 0.4033,
+   "1000": 0.3804
+  },
+  "url": "https://www.lcsc.com/product-detail/C6882730.html"
  }
 }
 ```

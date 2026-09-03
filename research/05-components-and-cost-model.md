@@ -27,24 +27,30 @@ Machine-readable version of every candidate table: [`spec/bom-candidates.json`](
 
 ## 1. The substitution map — what Apple used, what we can buy
 
-The AirTag chip list is settled by three independent teardowns that agree:
+The AirTag chip list comes from lane A's dossier, [`research/01-airtag-hardware.md`](01-airtag-hardware.md),
+which read the part markings off full-resolution board photographs, corroborated by three
+independent teardowns that agree:
 [iFixit](https://www.ifixit.com/News/50145/airtag-teardown-part-one-yeah-this-tracks),
 [Adam Catley](https://adamcatley.com/AirTag.html) and
 [TechInsights](https://www.techinsights.com/blog/apple-airtag-teardown) (all fetched 2026-09-03;
-copies in `research/fetched/`).
+copies in `research/fetched/`). Where lane A and a teardown disagree, lane A's marking wins.
+
+`*` = no price break published beyond 100 pieces at pull time (LCSC $4.1407 @100; JLCPCB listed $4.0966 @100 for the same code).
 
 | # | AirTag function | Apple's exact part | Sourceable equivalent (the pick) | LCSC/JLC | @100 | @1k | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1 | BLE SoC + NFC-A tag | **Nordic nRF52832** (WLCSP50) | **NRF52832-QFAA-R** (QFN48 6x6) | [C77540](https://www.lcsc.com/product-detail/C77540.html) | $2.8144 | $2.6440 | **exact silicon**, different package |
+| 1 | BLE SoC + NFC-A tag | **Nordic nRF52832-CIAA** (WLCSP) — lane A read the marking | **NRF52840-QIAA-R** (aQFN73 7x7) — parity target per D10 | [C190794](https://www.lcsc.com/product-detail/C190794.html) | $4.1407 | $4.1407* | **upgrade**, see note |
+| 1b | (gen-1 exact silicon, for reference) | nRF52832-CIAA | NRF52832-QFAA-R (QFN48 6x6) | [C77540](https://www.lcsc.com/product-detail/C77540.html) | $2.8144 | $2.6440 | exact die, different package |
 | 2 | UWB transceiver | **Apple U1** SiP (AirTag 2: **U2**) | **Qorvo DW3110TR13** | [DK 24717583](https://www.digikey.com/en/products/detail/qorvo/DW3110TR13/24717583) / [C3040882](https://www.lcsc.com/product-detail/C3040882.html) | $7.83 | $6.91 | functional stand-in only — see §4 |
-| 3 | NFC front end | **none** — the nRF52832's own NFC-A peripheral, read-only MIFARE Plus Type 4 | same: on-chip NFC-A + PCB coil | — | $0 | $0 | **exact** |
+| 3 | NFC front end | **NO CHIP** — the Nordic SoC's own NFC-A peripheral drives the coil from **P0.09 / P0.10** (lane A) | same: on-chip NFC-A + PCB coil + 2 tuning caps | — | **$0** (+2 x $0.0029) | **$0** | **exact — this BOM line does not exist** |
 | 4 | Accelerometer | **Bosch BMA280** | **ST LIS2DW12TR** | [C189624](https://www.lcsc.com/product-detail/C189624.html) | $0.8031 | $0.7408 | substitute (BMA280 unbuyable, see §3.4) |
 | 5 | Speaker driver | **Maxim MAX98357AEWL** class-D | **MAX98357AEWL+T** | [C2682619](https://www.lcsc.com/product-detail/C2682619.html) | $0.3171 | $0.2534 | **exact part, in stock** |
 | 6 | Speaker sense op-amp | **TI TLV9001IDPWR** | **TLV9001IDBVR** (SOT-23-5) | [C398363](https://www.lcsc.com/product-detail/C398363.html) | $0.0682 | $0.0604 | **same die**, different package |
 | 7 | Transducer | **custom voice coil** glued to the shell, driving it as a diaphragm | **Huaneng MLT-8530** magnetic transducer, or KLJ-8530-3627 at 86 dB | [C94599](https://www.lcsc.com/product-detail/C94599.html) | $0.1423 | $0.1137 | substitute — no one sells Apple's coil |
-| 8 | External NOR flash | **GigaDevice GD25LE32D** 32 Mbit | **omit** (or Winbond W25Q32JW) | [C2456252](https://www.lcsc.com/product-detail/C2456252.html) | $1.1588 | $1.0654 | **drop it** — see §3.7 |
+| 8 | External NOR flash | **GigaDevice GD25LE32 / GD25LQ32** 32 Mbit SPI NOR (lane A) | **omit** (or GD25LQ32EEIGR) | [C2939873](https://jlcpcb.com/partdetail/GigaDeviceSemiconductor-GD25LQ32EEIGR/C2939873) | $0.7301 | $0.4105 | **drop it** — see §3.7 |
 | 9 | Buck converter | **TI TPS62746** 300 mA | **none — run direct from the cell** | — | $0 | $0 | see §3.8 |
-| 10 | OVP load switch | **ON Semi FPF2487** | not reproduced (no U1 rail to protect) | — | $0 | $0 | dropped with the U1 |
+| 10 | OVP load switch | **onsemi FPF2487** | **not in the LCSC/JLCPCB catalogue at all** — searched 2026-09-03, zero hits | — | no price | no price | dropped with the U1 |
+| 10b | Bulk energy store | **five 100 uF capacitors** (lane A) | TCC0805X5R107M6R3FT x5 | [C49215609](https://www.lcsc.com/product-detail/C49215609.html) | 5 x $0.3574 | 5 x $0.3082 | equivalent — see §3.10 |
 | 11 | Crystals | 32 MHz + 32.768 kHz | NX2016SA-32MHZ + X321532768KGD2SI | [C843260](https://www.lcsc.com/product-detail/C843260.html) / [C620155](https://www.lcsc.com/product-detail/C620155.html) | $0.2922 / $0.1888 | $0.2333 / $0.1347 | equivalent |
 | 12 | Antennas (BLE/NFC/UWB) | three LDS antennas on one moulded plastic frame, soldered to the PCB edge | PCB trace antennas on a 4-layer board, chip antenna optional | [C89334](https://www.lcsc.com/product-detail/C89334.html) | $0 / $0.6321 | $0 / $0.5390 | substitute — LDS needs tooling |
 | 13 | Battery | CR2032, ~0.66 Wh, user-replaceable | Panasonic CR2032 + SMD holder | [C7498149](https://www.lcsc.com/product-detail/C7498149.html) | $0.39 + $0.1611 | $0.39 + $0.1350 | **exact** |
@@ -73,6 +79,13 @@ Legend: **lib** = JLCPCB library type (basic = no feeder fee, ext = $3.07/order 
 Stock is LCSC stock at the moment of the pull unless the row says JLC.
 
 ### 3.1 BLE SoC — bare silicon
+
+**Parity target is nRF52840-class, not nRF52832 (DECISIONS.md D10).** Apple's gen-1 die is an
+**nRF52832-CIAA**; the second-generation AirTag moved up, and DULT behaviour plus a Google Find
+Hub beacon plus the Find My stack together need the headroom. So the roll-up costs
+**nRF52840-QIAA-R**, and the nRF52832 row stays in the table as the gen-1 reference and as the
+cheaper option for a build that only ever speaks Find My.
+
 
 | Part | Pkg | Flash/RAM | NFC-A | TX @0 dBm | Sleep | LCSC/JLC | Stock | @1 | @100 | @1k | form |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -105,20 +118,31 @@ Zephyr-supported BLE part, which covers nRF52832/833/840, nRF54L15 and EFR32BG22
 **ESP32** images. CC2340, TLSR825x, PHY6222 and DA14531 have **no published Find-My firmware** —
 picking one buys a cheaper BOM and a firmware project.
 
-**Pick: nRF52832.** It is the only candidate that is simultaneously (a) Apple's own choice,
-(b) NFC-A-capable so the tap-to-see-owner flow needs no extra chip, (c) supported by existing
-Find-My firmware, and (d) in five-figure stock at LCSC. CC2340R5 is $1.68/unit cheaper at 1k and
-is the part to revisit if the firmware effort is ever funded; it has no NFC, so it would add
-~$0.33 of NT3H2111 back.
+**Pick: nRF52840-QIAA-R** (D10). It is the only candidate that is simultaneously (a) the
+parity target, (b) NFC-A-capable so the tap-to-see-owner flow needs no extra chip at all,
+(c) supported by existing Find-My firmware through the Zephyr port, (d) big enough (1 MB flash)
+to delete the external NOR, and (e) in 51 240-piece LCSC stock. Its costs are the 7x7 aQFN73
+footprint — large on a 30 mm board — and a price ladder that stops at 100 pieces.
+
+**Second choice: nRF52832-QFAA-R**, the gen-1 exact die, $1.50/unit cheaper at 1k in a smaller
+QFN48. Take it if the build only ever needs Find My and not the DULT + Find Hub headroom D10 is
+protecting. **Third: CC2340R5**, $3.20/unit cheaper than nRF52840 at 1k with real stock — but no
+NFC (add ~$0.33 of NT3H2111) and no published Find-My firmware, so it buys a firmware project.
 
 ### 3.2 Pre-certified BLE modules (the haytag-core default form)
 
 | Module | SoC | Size | Certs | JLC/LCSC | Stock | @1 | @100 | form |
 |---|---|---|---|---|---|---|---|---|
-| **E73-2G4M08S1C** | nRF52832 | 18 x 13 mm | **NOT VERIFIED — see below** | [C356849](https://jlcpcb.com/partdetail/ChengduEbyteElectronic-E73_2G4M08S1C/C356849) | 2 093 | $8.1607 | $5.9347 | module |
+| **E73-2G4M08S1C** | **nRF52840** | 18 x 13 mm | **NOT VERIFIED — see below** | [C356849](https://jlcpcb.com/partdetail/ChengduEbyteElectronic-E73_2G4M08S1C/C356849) | 2 093 | $8.1607 | $5.9347 | module |
 | MDBT50Q-P1MV2 | nRF52840 | 10.5 x 15.5 x 2.05 mm | FCC, IC, CE, **Telec (MIC) = Giteki**, KC, SRRC, NCC, RCM, WPC | [C5119772](https://jlcpcb.com/partdetail/RAYTAC-MDBT50Q_P1MV2/C5119772) | **0** | $7.8962 | — | module |
 | DA14531MOD-00F01002 | DA14531 | LCC-16 14.5 x 12.5 mm | — | [C5360767](https://www.lcsc.com/product-detail/C5360767.html) | 557 | $5.7513 | $4.1610 | module |
+| E73-2G4M04S1B | nRF52832 | 28.7 x 17.5 mm | not verified | [C411306](https://jlcpcb.com/partdetail/ChengduEbyteElectronic-E73_2G4M04S1B/C411306) | 180 | $5.4107 | $4.9386 | module |
 | ESP32-C3-MINI-1-H4 | ESP32-C3 | 16.6 x 13.2 mm | — | [C2934569](https://www.lcsc.com/product-detail/C2934569.html) | 1 047 | $3.3573 | $2.6748 | module |
+
+**Which SoC is in the Ebyte module?** Confirmed by reading the JLCPCB part page HTML on
+2026-09-03: **E73-2G4M08S1C contains an nRF52840** (the "08" is its +8 dBm TX, which nRF52832
+cannot reach), and **E73-2G4M04S1B contains an nRF52832**. So the module already on the
+shortlist happens to hit D10's nRF52840 parity target.
 
 **Giteki flag (per lane F).** Raytac's [MDBT50Q-1MV2 page](https://www.raytac.com/product/ins.php?index_id=24)
 (fetched 2026-09-03) lists *"FCC, IC, CE, Telec (MIC), KC, SRRC, NCC, RCM, WPC"* — Telec/MIC **is**
@@ -128,8 +152,10 @@ heading but **rendered no certification content**, so its FCC/CE status is unver
 Giteki status is **unknown — flag it**. Raytac's own MDBT42Q (nRF52832) page could not be located
 by index sweep; **its cert list was not fetched.**
 
-**The module-vs-bare-SoC economics.** A module costs **+$3.12/unit at 100** and **+$2.90/unit at
-1k** over the bare nRF52832 + crystals + matching + antenna it replaces (see §5). Against that it
+**The module-vs-bare-SoC economics.** The E73 module costs **+$1.31/unit at 100** and
+**+$1.40/unit at 1k** over the bare nRF52840 + two crystals + matching + antenna it replaces
+(see §5) — a much narrower gap than at nRF52832 parity, because the aQFN73 nRF52840 is itself
+$4.10. Against that it
 removes the intentional-radiator test campaign: under 47 CFR 15.212 single modular approval the
 module vendor holds the grant and the host inherits it. **No test-lab quote was fetched for this
 lane**, so the crossover is stated as a break-even rather than a dollar figure: at a $3/unit
@@ -139,11 +165,20 @@ units the bare SoC starts to win, *if* someone will own the test campaign. For a
 where every downstream builder would otherwise have to certify their own board, the module is
 the right default — which is what D1 already decided.
 
-### 3.3 NFC
+### 3.3 NFC — the BOM line that does not exist
+
+Lane A read the board: **there is no NFC front-end IC in an AirTag.** The Nordic SoC's own NFC-A
+peripheral drives the coil directly from **P0.09 and P0.10**. The entire NFC cost is therefore
+**one PCB coil (copper, $0) and two tuning capacitors (2 x $0.0029 at 1k = $0.006)**. That is the
+single largest structural saving available to any clone, and it is free because we already chose
+an NFC-A-capable Nordic part.
+
+The discrete NFC ICs below are priced only as the **fallback if a non-NFC SoC is ever chosen**
+(CC2340R5, EFR32BG22, DA14531 all lack NFC-A). None of them appears in the haytag BOM.
 
 | Part | Pkg | Interface | LCSC | Stock | @1 | @100 | @1k |
 |---|---|---|---|---|---|---|---|
-| **on-chip NFC-A (nRF52832)** | — | read-only Type 4 tag | — | — | **$0** | **$0** | **$0** |
+| **on-chip NFC-A (nRF52832/40) — what Apple does** | — | read-only MIFARE Plus Type 4 | — | — | **$0** | **$0** | **$0** |
 | NT3H2111W0FHKH | XQFN-8 1.6x1.6 | NTAG I2C plus | [C710403](https://www.lcsc.com/product-detail/C710403.html) | 53 047 | $0.6281 | $0.3838 | $0.3280 |
 | NT2H1311F0DTLH (NTAG213) | HXSON-4 1.5x2 | passive NDEF | [C2654853](https://www.lcsc.com/product-detail/C2654853.html) | 103 | $1.1371 | $0.6927 | $0.6116 |
 | NT3H2111W0FT1X | SO-8 | NTAG I2C plus | [C2654859](https://www.lcsc.com/product-detail/C2654859.html) | 17 | $1.9567 | $1.2740 | $1.1499 |
@@ -153,8 +188,9 @@ NTAG213/216 **in wafer/die form** (NT2H1311G0DUDZ etc.) appears in the JLCPCB ca
 placeholder prices at zero stock — **no real die price was obtained**. Die is a
 sticker-inlay format anyway; a puck wants the packaged part or the SoC's own radio.
 
-The coil is PCB copper: a 3–5 turn spiral on the outer layers tuned with 2 caps. Free in parts,
-costly in board area — the reason the AirTag put it on a separate LDS frame.
+The coil is PCB copper: a 3–5 turn spiral on the outer layers, tuned with two capacitors on
+P0.09/P0.10. Free in parts, costly in board area — the reason the AirTag put its coil on a
+separate LDS frame rather than on the PCB.
 
 ### 3.4 Accelerometer
 
@@ -176,10 +212,15 @@ lowest-power part on the list and is worth a second look if 160 nA ever matters 
 
 The AirTag makes sound by gluing a **copper voice coil to the plastic shell** and driving it
 against a magnet nested in the donut PCB — the shell *is* the diaphragm (iFixit, Catley).
-There is no purchasable equivalent, and **no absolute dB figure for the AirTag has been
-published** — Apple only says AirTag 2 is *"50% louder"*
-([apple.com/airtag](https://www.apple.com/airtag/), 2026-09-03). Do not quote "~60 dB": we
-could not source it. iFixit's own comparison is the useful data point: *"the piezoelectric
+There is no purchasable equivalent. **Apple publishes no dB figure** — only that AirTag 2 is
+*"50% louder"* ([apple.com/airtag](https://www.apple.com/airtag/), 2026-09-03). Lane G found the
+one real measurement: iFixit measured AirTag 1 at **about 78–80 dB** at roughly one
+iPhone-Mini-length, and lane G's own acoustics work
+([`research/fetched/G-acoustics-cells-and-holders.md`](fetched/G-acoustics-cells-and-holders.md))
+is the authority on this, not this lane. The useful read-across for costing is that an 80 dB
+magnetic transducer is in the right class and an 86 dB one is above it — but buzzer datasheet dB
+is quoted at 10 cm, which is not iFixit's distance, so **do not compare the two numbers
+directly.** iFixit's own comparison is the useful data point: *"the piezoelectric
 speakers in competing products like the Tile Mate and SmartTag made just as much, if not more,
 noise"* — so an off-the-shelf transducer costs timbre, not loudness.
 
@@ -222,27 +263,64 @@ the embeddable-block variant (lane I) can trade $0.44–0.63 for keep-out area o
 
 ### 3.7 Flash — the part to delete
 
-Apple carried a 32 Mbit GD25LE32D because the U1 needs firmware, the sound assets need storage
-and there are ARM64 instructions in that image the nRF52832 cannot even execute (Catley).
-haytag needs none of that: OpenHaystack-class firmware plus the key set fits comfortably in the
-nRF52832's 512 kB. **Deleting the flash saves $1.06–1.45 and 8 solder joints.** If it is ever
-needed: GD25LE32ESIGR [C7281238](https://www.lcsc.com/product-detail/C7281238.html) ($1.4539@100,
-37 in stock) or Winbond W25Q32JWSSIQ TR [C2456252](https://www.lcsc.com/product-detail/C2456252.html)
-($1.1588@100, 11 903 in stock).
+Lane A read the marking as **GigaDevice GD25LE32 or GD25LQ32, 32 Mbit SPI NOR**. Apple carried it
+because the U1 needs firmware, the sound assets need storage, and there are ARM64 instructions in
+that image the nRF52832 cannot even execute (Catley). haytag needs none of that: OpenHaystack-class
+firmware plus the key set fits inside the **nRF52840's 1 MB**. **Deleting the flash saves
+$0.41–1.45 and 8 solder joints.**
+
+If it is ever needed, in ascending price at 1k:
+
+| Part | Pkg | LCSC/JLC | Stock | @100 | @1k |
+|---|---|---|---|---|---|
+| GD25LQ32EEIGR | USON-8-EP 2x3 | [C2939873](https://jlcpcb.com/partdetail/GigaDeviceSemiconductor-GD25LQ32EEIGR/C2939873) | 3 001 | $0.7301 | **$0.4105** |
+| GD25LQ32DSIG | SOIC-8 | [C6626515](https://jlcpcb.com/partdetail/GigaDeviceSemiconductor-GD25LQ32DSIG/C6626515) | 0 | $0.5922 (200) | $0.5630 |
+| GD25LQ32ESIGR | SOIC-8 | [C2928890](https://jlcpcb.com/partdetail/GigaDeviceSemiconductor-GD25LQ32ESIGR/C2928890) | 425 | $0.8972 | $0.6020 |
+| W25Q32JWSSIQ TR | SOIC-8 | [C2456252](https://www.lcsc.com/product-detail/C2456252.html) | 11 903 | $1.1588 | $1.0654 |
+| GD25LE32ESIGR | SOIC-8 | [C7281238](https://www.lcsc.com/product-detail/C7281238.html) | 37 | $1.4539 | no break |
+
+**GD25LQ32EEIGR is the pick if flash comes back** — same family as Apple's, USON-8 2x3 mm, 3 001
+in stock, $0.41 at 1k.
 
 ### 3.8 Power
 
-Apple used a **TPS62746 buck** and an **FPF2487 OVP switch** because the U1 and the 1.8 V flash
-needed rails a coin cell cannot hold. haytag-core has neither, and the nRF52832's supply range is
-**1.7–3.6 V** — the whole useful life of a CR2032, and Catley measured the AirTag itself powering
-up from 2 V. So **haytag-core runs straight off the cell: no regulator, $0, and no quiescent
-current to pay for.**
+Apple used a **TPS62746 buck** and an **onsemi FPF2487 OVP load switch** (both confirmed by lane
+A off the board photos) because the U1 and the 1.8 V flash
+needed rails a coin cell cannot hold. haytag-core has neither, and the Nordic supply range —
+**1.7–3.6 V** on nRF52832, **1.7–5.5 V** on nRF52840 — covers the whole useful life of a CR2032;
+Catley measured the AirTag itself powering up from 2 V. So **haytag-core runs straight off the
+cell: no regulator, $0, and no quiescent current to pay for.** What it does need instead is the
+bulk capacitance of §3.10.
 
 haytag-uwb does need help: DW3110 draws 14–23 mA in bursts and the DW3000 datasheet's own DC
 table qualifies single-frame TX/RX **"with 47uF capacitor"**. Budget a 47 µF bulk cap and, if the
 UWB rail is switched, TPS7A0233PDBVR [C2887324](https://www.lcsc.com/product-detail/C2887324.html)
 ($0.3587@100 / $0.3341@1k, 5 649 in stock). The Apple buck TPS62746YFPR
 [C2072479](https://www.lcsc.com/product-detail/C2072479.html) is $0.7387@100 but **LCSC stock 0**.
+
+**FPF2487 is not in the LCSC or JLCPCB catalogue at all** — a keyword search of the JLCPCB parts
+API on 2026-09-03 returned zero results. **No price could be fetched for it.** It does not matter:
+its job was to protect the U1's rail, and haytag-core has no U1.
+
+### 3.10 Bulk capacitance — the line Apple needs and so do we
+
+Lane A counted **five 100 uF capacitors** on the AirTag board. That is not decoration: a CR2032
+has 10-15 ohm of internal resistance fresh and far more when aged, so every milliamp of pulse
+current turns into millivolts of droop. Apple's ~500 uF is what lets a coin cell drive a voice
+coil and a UWB transmitter without browning out the SoC.
+
+| Part | Pkg | LCSC | Stock | @100 | @1k | 5x @1k |
+|---|---|---|---|---|---|---|
+| **TCC0805X5R107M6R3FT** | 0805 100 uF 6.3 V | [C49215609](https://www.lcsc.com/product-detail/C49215609.html) | 11 262 | $0.3574 | $0.3082 | **$1.54** |
+| CGA0805X5R107M6R3MT | 0805 100 uF 6.3 V | [C23692977](https://jlcpcb.com/partdetail/HRE-CGA0805X5R107M6R3MT/C23692977) | 2 057 | $0.2823 | $0.2077 | $1.04 |
+| CL21A107MQYNNWE | 0805 100 uF 6.3 V (Samsung) | [C6882730](https://www.lcsc.com/product-detail/C6882730.html) | 11 620 | $0.4476 | $0.3804 | $1.90 |
+| CA45-B-6.3V-100uF-M | tantalum 3528 | [C140373](https://jlcpcb.com/partdetail/CEC-CA45_B_6_3V_100uF_M/C140373) | 4 218 | $0.1589 (150) | $0.1349 (500) | $0.67 |
+
+**This is the second-largest line in the BOM after the SoC** — $1.54/unit at 1k for five ceramics.
+Sensitivity: switching to the HRE part saves **$0.50/unit** (but stock is only 2 057); dropping to
+two 100 uF in haytag-core, which drives an 80 mA magnetic transducer rather than a voice coil and
+a UWB burst, saves **$0.92/unit** and is defensible — but it is no longer parity. The roll-up
+below keeps all five.
 
 ### 3.9 Battery and contacts
 
@@ -301,7 +379,8 @@ involvement at all. Prices and power (all fetched 2026-09-03, full quotes in
 **DW3110 power** (datasheet Table 5, 3.0 V): deep sleep **260 nA**, sleep **850 nA**,
 IDLE ch5 **18 mA**, single-frame **TX ch5 14 mA / RX ch5 16 mA**, peak continuous TX 23–29 mA.
 
-**What that does to a CR2032.** Baseline BLE-only draw, using nRF52832's 1.9 µA System-ON-with-RTC,
+**What that does to a CR2032.** Baseline BLE-only draw, using the nRF52832 datasheet's 1.9 µA
+System-ON-with-RTC (the nRF52840 is in the same class; its own figure was not fetched),
 ~1 µA for the accelerometer in low-power mode, 0.5 µA of leakage, and ~13 µC per 3-channel
 advertising event:
 
@@ -330,47 +409,64 @@ its own single-frame numbers *"with 47uF capacitor"*. The 47 µF bulk cap is not
 
 ## 5. The BOMs
 
+Parity notes: SoC is **nRF52840-class per D10**; **there is no NFC line item** (on-chip NFC-A,
+coil in copper, two tuning caps counted among the 0402s); **no external flash** (1 MB on-chip);
+**no buck and no OVP switch** (no U1 rail to make); **five 100 uF bulk capacitors** kept, as on
+Apple's board.
+
 ### 5.1 haytag-core, module form (the shipping default)
 
 | Ref | Part | LCSC/JLC | Qty | @100 ea | @100 ext |
 |---|---|---|---|---|---|
-| M1 | E73-2G4M08S1C (nRF52832 module, incl. antenna + crystals) | C356849 | 1 | $5.9347 | $5.9347 |
+| M1 | E73-2G4M08S1C (**nRF52840** module, incl. antenna + both crystals) | C356849 | 1 | $5.9347 | $5.9347 |
 | U2 | LIS2DW12TR accelerometer | C189624 | 1 | $0.8031 | $0.8031 |
 | U3 | MAX98357AEWL+T class-D driver | C2682619 | 1 | $0.3171 | $0.3171 |
-| LS1 | MLT-8530 magnetic transducer | C94599 | 1 | $0.1423 | $0.1423 |
-| BT1 | BS-CR2032-8 holder | C7498149 | 1 | $0.1611 | $0.1611 |
-| — | 14 x 0402 passives (C1525 proxy) | C1525 | 14 | $0.0039 | $0.0546 |
+| LS1 | MLT-8530 magnetic transducer | C94599 | 1 | $0.1643 | $0.1643 |
+| BT1 | BS-CR2032-8 holder | C7498149 | 1 | $0.1839 | $0.1839 |
+| C1–C5 | 100 uF 6.3 V 0805 bulk (Apple parity) | C49215609 | 5 | $0.3574 | $1.7870 |
+| — | 16 x 0402 (decoupling, 2 x NFC tuning, RC) | C1525 | 16 | $0.0039 | $0.0624 |
+| — | NFC coil (PCB copper) | — | 1 | $0 | $0 |
 | BAT1 | Panasonic CR2032 (qty-1 price, upper bound) | — | 1 | $0.39 | $0.39 |
-| | **BOM subtotal @100** | | | | **$7.85** |
+| | **BOM subtotal @100** | | | | **$9.64** |
+| | **BOM subtotal @1 000** | | | | **$9.16** |
 
 ### 5.2 haytag-core, bare-SoC form
 
 | Ref | Part | LCSC | Qty | @100 ea | @100 ext |
 |---|---|---|---|---|---|
-| U1 | NRF52832-QFAA-R | C77540 | 1 | $2.8144 | $2.8144 |
+| U1 | NRF52840-QIAA-R (aQFN73 7x7) | C190794 | 1 | $4.1407 | $4.1407 |
 | Y1 | NX2016SA 32 MHz | C843260 | 1 | $0.2922 | $0.2922 |
 | Y2 | X321532768KGD2SI 32.768 kHz | C620155 | 1 | $0.1888 | $0.1888 |
 | U2 | LIS2DW12TR | C189624 | 1 | $0.8031 | $0.8031 |
 | U3 | MAX98357AEWL+T | C2682619 | 1 | $0.3171 | $0.3171 |
-| LS1 | MLT-8530 | C94599 | 1 | $0.1423 | $0.1423 |
-| BT1 | BS-CR2032-8 | C7498149 | 1 | $0.1611 | $0.1611 |
-| — | 22 x 0402 (decoupling, pi-match, NFC tuning) | C1525 | 22 | $0.0039 | $0.0858 |
+| LS1 | MLT-8530 | C94599 | 1 | $0.1643 | $0.1643 |
+| BT1 | BS-CR2032-8 | C7498149 | 1 | $0.1839 | $0.1839 |
+| C1–C5 | 100 uF 6.3 V 0805 bulk | C49215609 | 5 | $0.3574 | $1.7870 |
+| — | 26 x 0402/0603 (decoupling, DC/DC L+C, pi-match, 2 x NFC tuning) | C1525 | 26 | $0.0039 | $0.1014 |
 | ANT1 | PCB trace antenna | — | 1 | $0 | $0 |
 | BAT1 | CR2032 (upper bound) | — | 1 | $0.39 | $0.39 |
-| | **BOM subtotal @100** | | | | **$5.24** |
+| | **BOM subtotal @100** | | | | **$8.37** |
+| | **BOM subtotal @1 000** | | | | **$7.76** |
 
-### 5.3 haytag-uwb (bare SoC + DW3110)
+> **The nRF52840 has no published price break past 100 pcs** on either LCSC or JLCPCB
+> ($4.0966 flat from 100 upward at pull time). The 1 000 and 10 000 rows therefore carry the
+> 100-piece price for the SoC — an upper bound of roughly +$0.60/unit versus what a reel quote
+> would give. Dropping to nRF52832 (which *does* have a 1k break at $2.6440) would save
+> **$1.50/unit at 1k**, at the cost of D10 parity.
+
+### 5.3 haytag-uwb (nRF52840 + DW3110)
 
 Everything in 5.2, plus:
 
-| Ref | Part | Source | @100 ea |
-|---|---|---|---|
-| U4 | DW3110TR13 | Digi-Key | $7.83 |
-| Y3 | 38.4 MHz crystal (placeholder) | C409422 | $0.1128 |
-| ANT2 | ACS5200HFAUWB UWB chip antenna | C224424 (JLC, **stock 0**) | $0.7788 |
-| U5 | TPS7A0233PDBVR UWB rail LDO | C2887324 | $0.3587 |
-| — | +12 passives incl. 47 µF bulk | C1525 proxy | $0.0396 |
-| | **BOM subtotal @100** | | **$14.36** |
+| Ref | Part | Source | @100 ea | @1k ea |
+|---|---|---|---|---|
+| U4 | DW3110TR13 | Digi-Key | $7.83 | $6.91 |
+| Y3 | 38.4 MHz crystal (placeholder) | C409422 | $0.1278 | $0.0941 |
+| ANT2 | ACS5200HFAUWB UWB chip antenna | C224424 (JLC, **stock 0**) | $0.7788 | $0.6312 |
+| U5 | TPS7A0233PDBVR UWB rail LDO | C2887324 | $0.3587 | $0.3341 |
+| — | +12 passives | C1525 proxy | $0.0396 | $0.0348 |
+| | **BOM subtotal @100** | | **$17.49** | |
+| | **BOM subtotal @1 000** | | | **$15.76** |
 
 ---
 
@@ -388,29 +484,36 @@ browser client; PCBWay's page returns *"Please click on Calculate to show price"
 **Assembly model.** JLCPCB Economic PCBA published fees
 ([help article](https://jlcpcb.com/help/article/pcb-assembly-price), 2026-09-03): setup **$8.18**,
 stencil **$1.53**, **$0.0016 per joint**, **$3.07 per Extended part** feeder fee, **$0.48/board**
-minimum (avoided by panelising). Joint counts: core-module 95, core-bare 130, uwb 220.
+minimum (avoided by panelising). Joint counts: core-module 99, core-bare 166 (aQFN73 alone is 73),
+uwb 253.
 
-**Enclosure and labour are estimates, not fetched prices** — see §7.
+**Enclosure and labour**: tooling now uses lane G's sourced China figure (two single-cavity
+tools at ~$2 000 each = $4 000, amortised at 10 000 units = $0.40/unit); piece price and labour
+remain estimates — see §7.
 
 | Variant | Qty | BOM | PCB | Assembly | Enclosure | Tooling amort. | Labour | **Total/unit** |
 |---|---|---|---|---|---|---|---|---|
-| **haytag-core (module)** | 10 | $9.64 | $6.211 | $2.965 | $1.20 | $0 | $0.30 | **$20.32** |
-| | 100 | $7.85 | $0.692 | $0.433 | $1.20 | $0 | $0.30 | **$10.47** |
-| | 1 000 | $7.61 | $0.140 | $0.180 | $0.90 | $0 | $0.15 | **$8.98** |
-| | 10 000 | $7.58 | $0.085 | $0.155 | $0.30 | $0.80 | $0.08 | **$9.00** |
-| **haytag-core (bare SoC)** | 10 | $6.51 | $6.211 | $3.328 | $1.20 | $0 | $0.30 | **$17.55** |
-| | 100 | $5.24 | $0.692 | $0.520 | $1.20 | $0 | $0.30 | **$7.95** |
-| | 1 000 | $4.71 | $0.140 | $0.239 | $0.90 | $0 | $0.15 | **$6.14** |
-| | 10 000 | $4.64 | $0.085 | $0.211 | $0.30 | $0.80 | $0.08 | **$6.12** |
-| **haytag-uwb** | 10 | $17.17 | $6.211 | $4.700 | $1.20 | $0 | $0.30 | **$29.58** |
-| | 100 | $14.36 | $0.692 | $0.787 | $1.20 | $0 | $0.30 | **$17.34** |
-| | 1 000 | $12.71 | $0.140 | $0.395 | $0.90 | $0 | $0.15 | **$14.30** |
-| | 10 000 | $11.56 | $0.085 | $0.356 | $0.30 | $0.80 | $0.08 | **$13.18** |
+| **haytag-core (E73 nRF52840 module)** | 10 | $11.99 | $6.211 | $3.278 | $1.20 | $0 | $0.30 | **$22.98** |
+| | 100 | $9.64 | $0.692 | $0.470 | $1.20 | $0 | $0.30 | **$12.30** |
+| | 1 000 | $9.16 | $0.140 | $0.190 | $0.90 | $0 | $0.15 | **$10.53** |
+| | 10 000 | $9.12 | $0.085 | $0.162 | $0.30 | $0.40 | $0.08 | **$10.15** |
+| **haytag-core (bare nRF52840)** | 10 | $10.59 | $6.211 | $3.693 | $1.20 | $0 | $0.30 | **$21.99** |
+| | 100 | $8.37 | $0.692 | $0.608 | $1.20 | $0 | $0.30 | **$11.17** |
+| | 1 000 | $7.76 | $0.140 | $0.300 | $0.90 | $0 | $0.15 | **$9.25** |
+| | 10 000 | $7.69 | $0.085 | $0.269 | $0.30 | $0.40 | $0.08 | **$8.82** |
+| **haytag-uwb (nRF52840 + DW3110)** | 10 | $21.25 | $6.211 | $5.060 | $1.20 | $0 | $0.30 | **$34.02** |
+| | 100 | $17.49 | $0.692 | $0.870 | $1.20 | $0 | $0.30 | **$20.55** |
+| | 1 000 | $15.76 | $0.140 | $0.451 | $0.90 | $0 | $0.15 | **$17.40** |
+| | 10 000 | $14.61 | $0.085 | $0.409 | $0.30 | $0.40 | $0.08 | **$15.88** |
+
+For reference, the same model run at **nRF52832 parity** (gen-1 exact silicon, before D10) and
+without the five bulk capacitors gave $8.98 / $6.14 / $14.30 per unit at 1 000 for the three
+variants. **D10 plus Apple parity on bulk capacitance costs about $1.55–3.10 per unit.**
 
 Caveats that inflate every 10 000-unit row:
 
-1. **Most LCSC ladders stop at 1 000–6 000.** The 10 000 column reuses the deepest published
-   break, so it is an **upper bound**; real 10 k pricing needs a quote.
+1. **Most LCSC ladders stop at 1 000–6 000, and the nRF52840's stops at 100.** The deeper columns
+   reuse the deepest published break, so they are **upper bounds**; real 10 k pricing needs a quote.
 2. **The CR2032 is carried at its qty-1 price of $0.39** at every quantity because volume breaks
    were not fetched. At a realistic bulk price of ~$0.12 the 10 k rows drop by ~$0.27.
 3. **JLCPCB's fee schedule is a prototype-house schedule.** Nobody builds 10 000 units there;
@@ -423,33 +526,38 @@ Caveats that inflate every 10 000-unit row:
 | AirTag, 1-pack retail | **$29.00** ([apple.com](https://www.apple.com/shop/buy-airtag/airtag), 2026-09-03) |
 | AirTag, 4-pack retail | **$24.75** ($99.00 / 4, same source) |
 | AirTag estimated manufacturing cost | **~$10** ([TechInsights](https://www.techinsights.com/blog/apple-airtag-teardown): *"estimated manufacturing cost of USD 10 (not including software costs and R&D)"*) |
-| haytag-core, module, 1 000 | **$8.98** |
-| haytag-core, bare SoC, 1 000 | **$6.14** |
-| haytag-uwb, 1 000 | **$14.30** |
+| haytag-core, module, 1 000 | **$10.53** (10 000: **$10.15**) |
+| haytag-core, bare nRF52840, 1 000 | **$9.25** (10 000: **$8.82**) |
+| haytag-uwb, 1 000 | **$17.40** (10 000: **$15.88**) |
 
-So: **haytag-core at 1 000 units lands at 21–31 % of AirTag's retail price and roughly at or
-below Apple's own estimated build cost** — while dropping the U1, the 32 Mbit flash, the buck
-converter and the LDS antenna frame. Even at 100 units the module build ($10.47) undercuts the
-4-pack price per tag. The one place Apple is unbeatable is the enclosure: their moulding and
-LDS tooling is amortised over tens of millions of units, and it is the enclosure, not the
-silicon, that keeps the 10 000-unit row from falling below $6.
+So: **haytag-core at 1 000 units lands at 32–36 % of AirTag's retail price**, and at roughly
+Apple's own estimated build cost — which is a striking result, because Apple builds tens of
+millions and we are costing a thousand. It is possible only because the clone deletes four of
+Apple's most expensive lines: the **U1** (unbuyable), the **32 Mbit flash** ($0.41–1.45), the
+**buck + OVP switch**, and the **LDS antenna frame**, and because the **NFC front end never
+existed**. Even at 100 units the bare-SoC build ($11.17) beats the 4-pack price per tag less
+comfortably than the pre-D10 numbers did — the nRF52840 and the five bulk capacitors are what
+moved it.
 
-haytag-uwb never competes on price with an AirTag and is not meant to: at $14.30 it buys
+haytag-uwb never competes on price with an AirTag and is not meant to: at $17.40 it buys
 peer-to-peer ranging that an AirTag cannot do at all, because Apple's UWB only talks to Apple.
 
 ---
-
 ## 7. Enclosure and final assembly — where the numbers are weakest
 
 **This section contains the least-sourced figures in the document. Treat them as estimates.**
 
-- **Injection moulding.** Xometry's guide
+- **Injection moulding.** Two sources, one Western and one Chinese. Xometry's guide
   ([xometry.com](https://www.xometry.com/resources/injection-molding/injection-molding-cost/),
-  2026-09-03) gives tooling *"up to $10,000"* for mid-level orders of 1 000–2 000 small parts and
-  *"$10,000 or less to $100,000"* overall, material at **0.90–2.30 USD/lb**, and notes cycle time
-  is *"about 60% of final part cost"*. It publishes **no per-part price**. The roll-up assumes a
-  **$8 000 two-cavity tool for the shell pair** and a **$0.30 piece price** — both derived, both
-  unverified.
+  2026-09-03) gives tooling *"up to $10,000"* for mid-level orders of 1 000–2 000 small parts,
+  material at **0.90–2.30 USD/lb**, and notes cycle time is *"about 60% of final part cost"*,
+  but publishes **no per-part price**. Lane G's dossier
+  ([`research/fetched/G-moulding-cost-and-battery-door.md`](fetched/G-moulding-cost-and-battery-door.md))
+  found the number that actually applies here: Haizol quotes *"single-cavity prototype molds at
+  verified Chinese factories cost $1,000-3,000"* and *"$1,000 to $15,000+ by steel grade and
+  cavity count"*. **The roll-up therefore amortises $4 000 (two single-cavity Chinese tools at
+  ~$2 000 each) over 10 000 units = $0.40/unit**, and keeps a **$0.30 piece price** as an
+  unverified estimate. Lane G also rules two-shot tooling out below ~100 000 units/yr.
 - **Steel back plate.** The AirTag's stainless back is a stamped part. **No quote obtained.**
 - **3D-printed alternative** for the 10 / 100 rows: **no price fetched** — JLC3DP's quote page
   renders `Total Price: --` without an uploaded model. The $1.20/unit used is an estimate for a
@@ -467,24 +575,38 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 
 ## 8. What this lane recommends
 
-1. **haytag-core ships on the E73-2G4M08S1C module** — but only after its FCC/CE/Giteki
-   certificates are obtained from Ebyte. If they do not exist, switch to a **Raytac MDBT42Q/
-   MDBT50Q**, which demonstrably holds *"FCC, IC, CE, Telec (MIC), KC, SRRC, NCC, RCM, WPC"*,
-   and accept roughly $1.50–2/unit more and a Digi-Key/Mouser supply line instead of JLCPCB.
-2. **Publish the bare-SoC BOM alongside it.** It is $2.90/unit cheaper at 1 k and it is the
-   version that goes into someone else's board — but it hands them the radio certification.
-3. **Keep Apple's part where Apple's part is cheap and available**: nRF52832, MAX98357A, TLV9001,
-   CR2032. Substitute only where forced: BMA280 → LIS2DW12, voice coil → MLT-8530, LDS antenna →
-   PCB trace.
-4. **Delete the external flash and the buck converter.** They existed for the U1 and the 1.8 V
-   rail; neither survives into haytag-core. That is $1.80–2.20/unit and 16 joints gone.
-5. **haytag-uwb uses DW3110TR13 with a 47 µF bulk cap**, ranging **no faster than once a minute**
-   on a CR2032, and buys the UWB antenna from Digi-Key/Mouser because JLCPCB's ACS5200HFAUWB
-   stock is zero. If lane H shows Bluetooth Channel Sounding on **nRF54L15** reaches useful
-   accuracy, the whole DW3110 line item — $6.91 of silicon plus antenna, crystal, LDO and 12
-   passives, about **$8.20/unit at 1 k** — disappears, and haytag-uwb collapses back into
-   haytag-core with a different SoC. That is the single biggest cost lever in this document.
-6. **Do not quote a dB figure for the AirTag speaker.** None is published.
+1. **haytag-core ships on the E73-2G4M08S1C module** — which, confirmed from the JLCPCB part page
+   on 2026-09-03, carries an **nRF52840** and therefore already meets D10's parity target. Ship it
+   only after its FCC/CE/Giteki certificates are obtained from Ebyte; the vendor's own page
+   renders no certification content. If they do not exist, switch to a **Raytac MDBT50Q**, which
+   demonstrably holds *"FCC, IC, CE, Telec (MIC), KC, SRRC, NCC, RCM, WPC"* — Telec/MIC being the
+   Japanese Giteki mark — and accept ~$1.96/unit more and a Digi-Key/Mouser supply line.
+2. **Publish the bare-nRF52840 BOM alongside it.** It is $1.28/unit cheaper at 1 k and it is the
+   version that goes into someone else's board — but it hands them the radio certification. At
+   nRF52840 parity the module premium is small enough that the module should be the default for
+   almost everyone.
+3. **Keep Apple's part where Apple's part is cheap and available**: MAX98357A (exact part, $0.25
+   at 1 k), TLV9001, CR2032, 100 uF bulk ceramics. Substitute only where forced: nRF52832-CIAA →
+   nRF52840-QIAA (D10), BMA280 → LIS2DW12 (Apple's part is unbuyable), voice coil → MLT-8530,
+   LDS antenna frame → PCB trace.
+4. **There is no NFC BOM line.** Apple drives the coil from the SoC's own NFC-A on P0.09/P0.10;
+   so do we. Budget a PCB coil and two tuning capacitors, and nothing else.
+5. **Delete the external flash, the buck converter and the OVP switch.** They existed for the U1
+   and the 1.8 V flash rail; none survives into haytag-core. That is roughly $1.15–2.20/unit and
+   ~16 joints gone. FPF2487 is not even in the LCSC/JLCPCB catalogue.
+6. **Keep the five 100 uF bulk capacitors.** At $1.54/unit at 1 k they are the second-largest BOM
+   line, and they are the reason a coin cell can drive a transducer or a UWB burst at all. If cost
+   pressure forces a cut, two are defensible in haytag-core (saving $0.92) — but that is a
+   deliberate departure from parity, not an oversight.
+7. **haytag-uwb uses DW3110TR13**, ranging **no faster than once a minute** on a CR2032, and buys
+   the UWB antenna from Digi-Key/Mouser because JLCPCB's ACS5200HFAUWB stock is zero. If lane H
+   shows Bluetooth Channel Sounding on **nRF54L15** reaches useful accuracy, the whole DW3110 line
+   item — $6.91 of silicon plus antenna, crystal, LDO and 12 passives, about **$8.00/unit at
+   1 k** — disappears, and haytag-uwb collapses back into haytag-core with a different SoC. That
+   is the single biggest cost lever in this document.
+8. **Do not quote a dB figure for the AirTag speaker from Apple** — none is published. Use lane
+   G's iFixit measurement (~78–80 dB) and its acoustics dossier, and note that transducer
+   datasheet dB is specified at 10 cm, a different distance.
 
 ## 9. Open items this lane could not close
 
@@ -493,10 +615,13 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 | CR2032 cell price at 100/1k/10k | Digi-Key filter page exposed only the qty-1 price; product URLs 404'd | re-pull, or quote a cell vendor |
 | PCB quote for the actual 30 mm round 4-layer board | JLCPCB/PCBWay quote engines need the browser client and a board file | run it once the board exists |
 | ENIG surface-finish adder | not a published JLCPCB line item | same quote |
-| Injection-mould tooling and piece price | Xometry publishes no per-part price | one RFQ to a Shenzhen moulder |
+| Injection-mould **piece** price | tooling is now sourced (lane G / Haizol) but no per-part price is | one RFQ to a Shenzhen moulder |
 | FCC/CE/Giteki test-lab cost | no lab price fetched; needed to price the module-vs-bare-SoC crossover | lane F |
 | Ebyte E73 certification status | Ebyte's page renders no certification content | ask Ebyte for the cert PDFs |
 | Raytac MDBT42Q (nRF52832) certification list and price | page not found by index sweep; LCSC stock 0 | Raytac / Digi-Key |
 | 38.4 MHz crystal spec match for DW3000 | picked on price class only | lane H with the DW3000 app notes |
 | NTAG die/wafer pricing | JLCPCB shows placeholders on zero stock | only matters if an inlay format is wanted |
 | Ranging energy per two-way exchange | derived from datasheet currents, not measured | lane H on the bench |
+| nRF52840 price beyond 100 pcs | no break published on LCSC or JLCPCB at pull time | reel quote from Nordic/Arrow/Digi-Key |
+| onsemi FPF2487 price | not in the LCSC/JLCPCB catalogue at all | only matters if the U1 rail is ever reproduced |
+| Whether five 100 uF is the right number for haytag-core | Apple sized it for a voice coil + U1, not an 80 mA transducer | bench measurement of cell droop |

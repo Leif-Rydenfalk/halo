@@ -17,8 +17,8 @@ manufacturable cheaply. It ships in two variants (DECISIONS.md D1):
 
 | | haytag-core | haytag-uwb |
 |---|---|---|
-| radios | 2.4 GHz BLE | 2.4 GHz BLE + UWB |
-| purpose | the open product: find your things through Apple's Find My network | peer-to-peer ranging between the owner's own devices, for a digital twin |
+| radios | 2.4 GHz BLE, Channel Sounding | same, plus an ultra-wideband transceiver in the reserved footprint |
+| purpose | the open product: find your things through Apple's Find My network, **and** range to other haytags at 6–20 cm line of sight | a high-precision stuffing option, if Channel Sounding proves insufficient in a real room |
 | certification | pre-certified module, modular approval, RED self-declaration | owner-operated, not a sold consumer product |
 | status | the shipping default | second board revision |
 
@@ -43,7 +43,7 @@ from. The part that implements each is section 3.
 | F7 | motion detection | wake and change advertising behaviour on movement | SETTLED lane A: AirTag samples every 10 s at rest and 0.5 s once moving; DULT additionally requires ±10° accuracy |
 | F8 | NFC tap | phone tap reads the tag and opens the owner page | SETTLED lane A: the Nordic SoC's own NFC-A peripheral emulates a read-only Type-4 tag holding the owner URL; only the coil and two tuning capacitors are external |
 | F9 | precision finding | AirTag does this with Apple's U1 | **known gap** — not reproducible without MFi (DECISIONS.md D1, D5) |
-| F10 | peer ranging | haytag-uwb ranges to other haytags for local relative position | PENDING lane H (technology, accuracy, battery) |
+| F10 | peer ranging | range to other haytags with Bluetooth Channel Sounding, 6–20 cm line of sight, 30 s update, deterministically scheduled, reporting raw ranges with quality metadata and an orientation vector | SETTLED lane H; DECISIONS.md D12 |
 | F11 | battery life | about a year on a CR2032 | model PASSES in ce-spice: fresh-cell droop 68 mV under a transmit pulse against a 400 mV limit, five scenarios fresh to end of life, all asserts held |
 | F12 | battery replacement | user-replaceable CR2032 behind a compliant door | SETTLED lane F: tool or two independent simultaneous movements (16 CFR 1263) |
 
@@ -63,7 +63,7 @@ marked PENDING lane E are awaiting its sourced pick.
 
 | function | AirTag part (identified) | haytag part | note |
 |---|---|---|---|
-| CPU, Bluetooth radio **and NFC tag in one** | Nordic **nRF52832-CIAA**, WLCSP-50, marking `N52832 CIAAE0 2102JK` | **nRF52840-class** (D10 parity target, D8 memory budget) | the NFC tag is the SoC's own peripheral on pins P0.09/P0.10 — **no separate NFC chip exists in an AirTag**, which deletes a line most clone BOMs carry |
+| CPU, Bluetooth radio **and NFC tag in one** | Nordic **nRF52832-CIAA**, WLCSP-50, marking `N52832 CIAAE0 2102JK` | **nRF54L10**, falling back to L05 or up to L15 on memory (D12) — the family keeps the NFC-A tag peripheral and adds Channel Sounding | the NFC tag is the SoC's own peripheral on pins P0.09/P0.10 — **no separate NFC chip exists in an AirTag**, which deletes a line most clone BOMs carry |
 | UWB ranging | Apple **U1**, die `TMKA75`, TSMC 16 nm, in a USI system-in-package with its own processor running "Rose" firmware side-loaded by the Nordic part | **not reproducible** — never sold. haytag-uwb uses a sourceable transceiver for peer ranging only (D1) | the only true hard wall in the whole design |
 | firmware and key storage | GigaDevice **GD25LE32/LQ32**, 32 Mbit SPI NOR, WLCSP-10, 1.8 V | PENDING lane E — generic SPI NOR | holds both the Nordic firmware and the U1's firmware, unencrypted |
 | motion detection | Bosch **BMA280** | PENDING lane E | sampled every 10 s at rest, 0.5 s once moving |
