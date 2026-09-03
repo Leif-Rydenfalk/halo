@@ -1,0 +1,15 @@
+{
+  "$triad": 1,
+  "kind": "part",
+  "record": {
+    "slug": "halo-shell-top-fdm",
+    "title": "halo-shell-top-fdm",
+    "verdict": "CANNOT DETERMINE",
+    "why": "created by `bin/triad new part` — nothing measured yet",
+    "sector": null,
+    "subsector": null,
+    "lifecycle": "unknown",
+    "origin": null,
+    "origin_why": null
+  }
+}
