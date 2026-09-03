@@ -1084,3 +1084,68 @@ and I will not invent it.**
 | Holyiot 24005 specs, certs, price | vendor site did not answer (connection closed) | retry or email |
 | nRF54L10 sleep current with 192 KB retained **and** GRTC + LFXO | Nordic publishes 128 KB (2.0 µA) and 256 KB (3.1 µA) but not 192 KB | lane H, on the bench |
 | Minew ME54BS11 certification date | *"Planned"* with no schedule given | ask Minew |
+
+## 11.7 The correction §10 missed: D11a deletes the class-D driver too
+
+§10.2 replaced the transducer with lane G's bare Murata 7BB-20-3 bender but wrote *"MAX98357A
+driver … carries over from §5."* **It does not.** D11a's own words are that the bender is
+*"driven anti-phase from two SoC pins so no boost converter and no inductor are needed"*, and
+SPEC.md §3 repeats it. Two SoC pins means **no amplifier IC at all** — the MAX98357A is a BOM
+line, a footprint and a feeder fee that D11a already deleted and §10 kept paying for.
+
+**What comes off the board.** MAX98357AEWL+T, re-pulled 2026-09-03 from
+[C2682619](https://www.lcsc.com/product-detail/C2682619.html): BGA-9 1.3 × 1.3 mm, stock 6 468,
+**minimum packet 2 500**, ladder **$0.4933 / $0.4048 / $0.3655 / $0.3180 / $0.2655 / $0.2541** at
+1 / 10 / 30 / 100 / 500 / 1 000. JLCPCB lists it as an **Extended part**
+([the parts API on `MAX98357AEWL`](https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList),
+`componentLibraryType: expand`, $0.2515 @1 000), so it also carries a **$3.07 feeder fee per
+order** — which at ten units costs more than the parts do.
+
+So the deletion is three things, not one: **the part**, **9 joints** (BGA-9), and **one
+Extended-part feeder fee**. Re-running §10.3's model with joints 140 → **131** bare and
+109 → **100** module, and extended parts 8 → **7** bare and 7 → **6** module:
+
+| Variant | Qty | BOM | PCB | Assembly | Encl. | Tool. | Lab. | **Total/unit** | was (§10.3) | Δ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| **halo-core v1, bare nRF54L10** | 10 | $8.21 | $6.211 | $3.330 | $1.20 | $0 | $0.30 | **$19.25** | $19.97 | **−$0.72** |
+| | 100 | $6.57 | $0.692 | $0.522 | $1.20 | $0 | $0.30 | **$9.28** | $9.65 | **−$0.37** |
+| | 1 000 | $5.74 | $0.140 | $0.241 | $0.90 | $0 | $0.15 | **$7.17** | $7.43 | **−$0.26** |
+| | 10 000 | $5.67 | $0.085 | $0.213 | $0.30 | $0.40 | $0.08 | **$6.75** | $7.01 | **−$0.26** |
+| *fallback, bare nRF54L05* | 10 / 100 / 1k / 10k | | | | | | | *$18.76 / $8.86 / $6.79 / $6.36* | | −$0.72 / −$0.37 / −$0.26 / −$0.26 |
+| *step-up, bare nRF54L15* | 10 / 100 / 1k / 10k | | | | | | | *$19.40 / $9.38 / $7.26 / $6.84* | | same |
+| **halo-core, certified module (AN54LQ-15 price)** | 10 | $9.24 | $6.211 | $2.973 | $1.20 | $0 | $0.30 | **$19.92** | $20.64 | **−$0.72** |
+| | 100 | $8.22 | $0.692 | $0.441 | $1.20 | $0 | $0.30 | **$10.85** | $11.22 | **−$0.37** |
+| | 1 000 | $7.72 | $0.140 | $0.188 | $0.90 | $0 | $0.15 | **$9.10** | $9.37 | **−$0.27** |
+| | 10 000 | $7.70 | $0.085 | $0.163 | $0.30 | $0.40 | $0.08 | **$8.73** | $8.99 | **−$0.26** |
+
+**Delta against the nRF52840 baseline of §6, restated on the corrected numbers.** These are the
+figures to quote from now on; §10.3's are one BOM line too generous to the nRF52840.
+
+| Variant | Qty | nRF52840 (§6) | nRF54L10 corrected (§11.7) | **Δ** |
+|---|---|---|---|---|
+| bare SoC | 10 | $21.99 | **$19.25** | **−$2.74** |
+| | 100 | $11.17 | **$9.28** | **−$1.89** |
+| | **1 000** | **$9.25** | **$7.17** | **−$2.08** |
+| | 10 000 | $8.82 | **$6.75** | **−$2.07** |
+| pre-certified module | 10 | $22.98 | **$19.92** | **−$3.06** |
+| | 100 | $12.30 | **$10.85** | **−$1.45** |
+| | **1 000** | **$10.53** | **$9.10** | **−$1.43** |
+| | 10 000 | $10.15 | **$8.73** | **−$1.42** |
+| **halo-uwb, deleted by D12** | 1 000 | **$17.40** | — | **−$10.23** vs bare v1 |
+
+Stacking §10.3's separately-argued value-engineering line (five 100 µF bulk capacitors down to
+two, which lane G must justify against measured cell droop) gives bare-nRF54L10 totals of
+**$17.85 / $8.21 / $6.25 / $5.83** — derived by substitution, not re-modelled.
+
+**Does deleting the amplifier cost loudness? On the arithmetic, no.** The MAX98357A is a
+bridge-tied class-D output, so it swings ±V<sub>bat</sub> across the load — about **6 V
+peak-to-peak** from a 3 V cell. Two SoC pins driven anti-phase swing **the same 6 V
+peak-to-peak**. What the amplifier would have bought is current, and a bender is a capacitive
+load: at 20–30 nF and 4 kHz, `I = 2πfCV` gives **1.5–2.3 mA peak**, which nRF54L GPIO in
+high-drive mode can source. So the amplifier was buying nothing that a piezo needs — it was the
+right part for Apple's 8 Ω voice coil and the wrong part for a bender. **That is derived
+arithmetic from the datasheet capacitance class, not a measurement**; the acoustic verdict is
+lane G's and must come off a calibrated meter, per D11a.
+
+The **TLV9001** sense op-amp of §1 row 6 was already absent from §5.2's BOM and stays absent:
+its job was to sense a voice coil Apple could sabotage-detect, and there is no coil.

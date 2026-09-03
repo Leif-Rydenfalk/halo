@@ -1527,7 +1527,37 @@
      "library_type": "extended",
      "note": "TLV9001 SOT-23-5, 104k in stock, $0.049 at 6k."
     }
-   ]
+   ],
+   "DELETED_FROM_V1_BOM": true,
+   "deleted_because": "D11a drives the bare Murata 7BB-20-3 bender ANTI-PHASE FROM TWO SoC PINS - 'so no boost converter and no inductor are needed'. Two SoC pins means no amplifier IC either. Section 10 of research/05 wrongly carried the MAX98357A forward; section 11.7 removes it. The deletion is three things: the part, 9 joints (BGA-9), and one JLCPCB Extended-part feeder fee of $3.07 per order.",
+   "cost_removed_per_unit": {
+    "10": 0.72,
+    "100": 0.37,
+    "1000": 0.26,
+    "10000": 0.26,
+    "note": "total per-unit saving including the joints and the feeder fee, not just the part price"
+   },
+   "max98357a_repull_2026_09_03": {
+    "lcsc": "C2682619",
+    "mpn": "MAX98357AEWL+T",
+    "package": "BGA-9 (1.3x1.3)",
+    "stock": 6468,
+    "minimum_packet": 2500,
+    "library_type": "extended",
+    "price_points": {
+     "1": 0.4933,
+     "10": 0.4048,
+     "30": 0.3655,
+     "100": 0.318,
+     "500": 0.2655,
+     "1000": 0.2541
+    },
+    "jlc_price_1000": 0.2515,
+    "currency": "USD",
+    "date": "2026-09-03",
+    "source": "https://www.lcsc.com/product-detail/C2682619.html"
+   },
+   "loudness_note": "Deleting the amplifier costs no drive VOLTAGE: a bridge-tied class-D output swings +/-Vbat = ~6 Vpp from a 3 V cell, and two pins driven anti-phase swing the same 6 Vpp. What it bought was CURRENT, and a bender is capacitive: I = 2*pi*f*C*V at 20-30 nF and 4 kHz is 1.5-2.3 mA peak, within nRF54L GPIO high-drive. DERIVED ARITHMETIC, not a measurement - the acoustic verdict is lane G's, off a calibrated meter, per D11a."
   },
   "sounder_transducer": {
    "settled_by": "lane G: a bare Murata 7BB-20-3 piezo bender bonded to the shell, not a housed buzzer and not a micro-speaker",
@@ -1765,7 +1795,8 @@
      "date": "2026-09-03",
      "note": "NO PRICE FETCHED. A wound coil is a custom part with tooling; nobody sells one on LCSC. Costing it honestly needs a coil-winder quote, which this lane did not obtain."
     }
-   ]
+   ],
+   "drive": "bare bender driven anti-phase from two SoC pins (D11a). No amplifier IC, no boost converter, no inductor. TLV9001 sense op-amp also absent: its job was sensing a voice coil."
   },
   "flash": {
    "airtag_part": "GigaDevice GD25LE32 or GD25LQ32, 32 Mbit SPI NOR (lane A read the marking; iFixit says GD25LE32D)",
@@ -2398,5 +2429,70 @@
    ]
   }
  },
- "verified": "2026-09-03 (second pass: every nRF54L price re-pulled live; module pad style resolved from vendor drawings)"
+ "verified": "2026-09-03 (second pass: every nRF54L price re-pulled live; module pad style resolved from vendor drawings)",
+ "rollup_v1_corrected": {
+  "method": "research/05 section 11.7. Same model as section 10.3 with the MAX98357A removed: joints 140->131 bare, 109->100 module; extended parts 8->7 bare, 7->6 module.",
+  "supersedes": "section 10.3 totals, which were one BOM line too generous to the nRF52840 baseline",
+  "bare_nrf54l10": {
+   "10": 19.25,
+   "100": 9.28,
+   "1000": 7.17,
+   "10000": 6.75
+  },
+  "bare_nrf54l05": {
+   "10": 18.76,
+   "100": 8.86,
+   "1000": 6.79,
+   "10000": 6.36
+  },
+  "bare_nrf54l15": {
+   "10": 19.4,
+   "100": 9.38,
+   "1000": 7.26,
+   "10000": 6.84
+  },
+  "certified_module_an54lq15_price": {
+   "10": 19.92,
+   "100": 10.85,
+   "1000": 9.1,
+   "10000": 8.73
+  },
+  "nrf52840_baseline_section6": {
+   "bare": {
+    "10": 21.99,
+    "100": 11.17,
+    "1000": 9.25,
+    "10000": 8.82
+   },
+   "module": {
+    "10": 22.98,
+    "100": 12.3,
+    "1000": 10.53,
+    "10000": 10.15
+   },
+   "halo_uwb_1000": 17.4
+  },
+  "delta_vs_nrf52840": {
+   "bare": {
+    "10": -2.74,
+    "100": -1.89,
+    "1000": -2.08,
+    "10000": -2.07
+   },
+   "module": {
+    "10": -3.06,
+    "100": -1.45,
+    "1000": -1.43,
+    "10000": -1.42
+   },
+   "vs_halo_uwb_at_1000": -10.23
+  },
+  "two_bulk_caps_variant_derived": {
+   "10": 17.85,
+   "100": 8.21,
+   "1000": 6.25,
+   "10000": 5.83,
+   "note": "lane G must justify 5 -> 2 bulk capacitors against measured cell droop; derived by substitution, not re-modelled"
+  }
+ }
 }
