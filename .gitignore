@@ -1,0 +1,8 @@
+# out/ is COMMITTED — generated output is data (ce-workshop rule 4)
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+*.tmp
+# Leif's verbatim words — personal, project-local record (leifsays convention)
+/trash/
