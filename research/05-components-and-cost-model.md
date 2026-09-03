@@ -1,10 +1,16 @@
 # 05 — Components and cost model
 
-> **SUPERSEDED IN PART BY §10.** Decision **D12** (2026-09-03) drops the DW3110 chain and makes
-> **nRF54L10** the v1 SoC, superseding D10's nRF52840. Sections 1–9 below remain the record of
-> the AirTag substitution map and the nRF52/UWB costing that D12 was decided against; **§10 is
-> the current cost model.** Lane G has since settled the sounder as a bare **Murata 7BB-20-3**
-> piezo bender bonded to the shell, and lane A confirmed **LIS2DW12TR** as the accelerometer.
+> **SUPERSEDED IN PART BY §10–§11.** Decision **D12** (2026-09-03) drops the DW3110 chain and
+> makes **nRF54L10** the v1 SoC, superseding D10's nRF52840. Sections 1–9 below remain the record
+> of the AirTag substitution map and the nRF52/UWB costing that D12 was decided against — kept
+> deliberately visible, because they are the option the nRF54L baseline beat and the delta in
+> §10.3 is only meaningful against them. **§10 is the current cost model. §11 is its
+> verification**: every §10 price re-pulled live, plus the answer to lane I's module question and
+> seven corrections to §10 (see the table in §11.5). Lane G has since settled the sounder as a
+> bare **Murata 7BB-20-3** piezo bender bonded to the shell, and lane A confirmed **LIS2DW12TR**
+> as the accelerometer.
+>
+> **Read in this order if you only want the current answer: §10.1 → §10.3 → §11.1 → §11.3.**
 
 **Lane E. All prices pulled 2026-09-03.** Every number below carries a link and a date.
 Where a price could not be fetched it says so; nothing here is invented.
@@ -859,3 +865,222 @@ switch costs a footprint, not a port.
 | Minew nRF54L module specs and certs | vendor page fetch failed; JLCPCB shows placeholder prices on zero stock |
 | Certification campaign cost | no lab quote fetched — lane F |
 | nRF54L10 sleep / TX current | vendor page gives L15 figures only (4.8 mA TX @0 dBm, 3.4 mA RX, 0.7–2.9 uA sleep); the L10's own numbers were not fetched |
+
+---
+
+# 11. Second pass — every §10 price re-verified, and lane I's module question actually closed (2026-09-03, later)
+
+§10 was written and then the session died before it could be checked or before
+`research/sources.tsv` could be appended. This section is the check. **Every price in §10.1 was
+re-pulled from the live endpoints and is confirmed**; two numbers drifted, three facts in §10.4
+were wrong or incomplete, and the pad-style question §10.6 left open is now **settled from the
+vendors' own drawings** — with an answer that changes what lane I should do.
+
+## 11.1 Re-verification of §10.1 — the nRF54L ladders hold
+
+Re-pulled 2026-09-03 by GET on `lcsc.com/product-detail/<code>.html` (reading `productPriceList`,
+`stockNumber`, `minPacketNumber` out of the `__NEXT_DATA__` blob) and by POST on
+`jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList`.
+
+| Part | LCSC | LCSC ladder (1 / 10 / 30 / 100 / 500 / 1 000) | LCSC stock | **min packet** | JLC @1k | JLC stock | vs §10 |
+|---|---|---|---|---|---|---|---|
+| **NRF54L10-QFAA-R7** | [C44800139](https://www.lcsc.com/product-detail/C44800139.html) | 3.7943 / 3.2583 / 2.9404 / **2.6175** / 2.4684 / **2.4012** | **669** | **1 000** | $2.3768 | 1 003 | **identical** |
+| NRF54L05-QFAA-R | [C45022042](https://www.lcsc.com/product-detail/C45022042.html) | 3.2315 / 2.7615 / 2.4834 / **2.2020** / 2.0719 / **2.0134** | **1 775** | **3 000** | $2.0086 | 1 775 | **identical** |
+| NRF54L15-QFAA-R | [C42458750](https://www.lcsc.com/product-detail/C42458750.html) | 3.9896 / 3.4106 / 3.0658 / **2.7178** / 2.5584 / **2.4852** | **0** | **3 000** | $2.4791 | 0 | **identical** |
+| NRF54L10-QFAA-R (non-R7) | [C45022043](https://www.lcsc.com/product-detail/C45022043.html) | 3.7030 / 3.6151 / 3.5582 / **3.4996** (ladder ends at 100) | 0 | 3 000 | $3.4882 @104 | 0 | drifted +$0.012 @1, +$0.011 @100 |
+
+Two corrections to §10, both about **minimum packet, not price**:
+
+- §10 recorded the nRF54L10-R7's 1 000-piece minimum packet. It did **not** record that
+  **the L05 and the L15 both have a 3 000-piece minimum packet.** So the "L05 saves $0.39/unit"
+  line in §10.1 comes with a **$6 040 minimum buy-in**; at a 100- or 1 000-unit build the L05 is
+  cheaper per part and more expensive in cash. **At 1 000 units the L10-R7 is the only nRF54L
+  whose minimum packet you actually consume.** That reverses §10.1's "the L05 has the deepest
+  stock and the lowest price" framing for every build below 3 000 units.
+- The non-R7 L10 reel is still zero-stock and still $1.10/unit more expensive at 100 than the R7.
+  Nothing to do; the R7 is the part.
+
+## 11.2 nRF54L currents — §10.6's open item, closed from the datasheet
+
+§10.6 recorded "the L10's own numbers were not fetched" and carried the vendor page's L15
+figures. The **nRF54L15 / nRF54L10 / nRF54L05 preliminary datasheet v0.10** (`4503_018 v0.10`,
+906 pp, Table 86 and §11.1.2) covers all three parts in one document, and its numbers are
+**better than the marketing page's**:
+
+| Symbol | Description | Typ. |
+|---|---|---|
+| `IOFF0` | System OFF, wake on pin, 0 KB RAM retained | **0.6 µA** |
+| `IOFF1` | System OFF, wake on pin + GRTC, LFXO, 0 KB RAM retained | **0.8 µA** |
+| `ION_IDLE0` | System ON, wake on pin, 0 KB RAM retained | 0.7 µA |
+| `ION_IDLE2` | System ON, wake on pin, **96 KB** RAM retained (**= L05's full RAM**) | **1.5 µA** |
+| `ION_IDLE4` | System ON, wake on pin, **192 KB** RAM retained (**= L10's full RAM**) | **2.4 µA** |
+| `ION_IDLE5` | System ON, wake on pin, **256 KB** RAM retained (**= L15's full RAM**) | 3.0 µA |
+| `ION_IDLE6` / `7` / `8` | System ON + GRTC + LFXO, 64 / 128 / 256 KB retained | 1.5 / 2.0 / **3.1 µA** |
+| `ITX,0dBM` | TX only run current, P<sub>RF</sub> = 0 dBm | **3.7 mA** |
+| `ITX,MaxdBm,QFN` | TX only, maximum power setting, QFN package | 9.1 mA |
+| `IRX,1M` | RX only, 1 Mbps Bluetooth LE | **2.1 mA** |
+| `IAPPCPU0` | CPU running CoreMark at 128 MHz from NVM, cache on | 2.6 mA |
+
+Three things fall out of that table that no other lane has recorded:
+
+1. **TX at 0 dBm is 3.7 mA, not 4.8 mA.** The 4.8 mA on Nordic's product page is a
+   whole-device figure; the datasheet's radio-only figure is 3.7 mA and RX is 2.1 mA. Both are
+   **below the nRF52832's 5.3 mA / nRF52840-class numbers used in §4's battery table**, so every
+   CR2032 life figure in §4 is a floor, not a ceiling, on nRF54L.
+2. **The L05 sleeps 0.9 µA lower than the L10** (1.5 vs 2.4 µA with full RAM retained) purely
+   because there is less RAM to hold. On a tag whose average current is single-digit microamps
+   that is a **~15–20 % battery-life difference** — a bigger lever than the $0.39 of silicon.
+   Whether the firmware fits 0.5 MB / 96 KB is therefore a *battery* question as well as a cost one.
+3. **There is no published 192 KB + GRTC + LFXO row.** The advertising sleep state halo actually
+   uses on an L10 is bracketed by `ION_IDLE7` (2.0 µA) and `ION_IDLE8` (3.1 µA) and is
+   **not stated by Nordic**. Do not quote a single number for it; lane H should measure it.
+
+## 11.3 Lane I's question, properly closed: certified **or** castellated — not both
+
+§10.4 answered "yes, Raytac ships a certified nRF54L module" and left pad style unconfirmed. The
+pad style is the whole point of lane I's request, so it was resolved by rendering the vendors'
+own mechanical drawings out of the PDFs and reading them. **The answer is no: as of 2026-09-03 no
+module is simultaneously pre-certified and castellated on nRF54L silicon.**
+
+### The castellation verdict, with the evidence
+
+**Raytac AN54LQ — NOT castellated. It is a bottom-terminated LGA-style module.**
+The spec PDF's §2.1 bottom view ([`raytac.com/download/index.php?index_id=81`](https://www.raytac.com/download/index.php?index_id=81),
+p. 6) draws **43 small rectangular pads set in from the module outline with a visible gap**, and
+§2.2's *"Recommended layout of solder pad"* (p. 7) draws every land **entirely inside the
+9.5 × 13.7 mm outline**. Compare Raytac's own MDBT42Q datasheet in the same document format
+([the 64-page PDF lane I already read](https://www.raytac.com/upload/download_files/38a8a4a0aff945d8484507d60058109b.pdf),
+pp. 6 and 8): its bottom-view pads are **long rectangles running to the module edge**, and its
+recommended lands **protrude outward past the outline** — the toe fillet a half-hole castellation
+needs. Two drawings, one vendor, one format, opposite geometry. **The AN54LQ cannot be
+hand-soldered or optically inspected the way the MDBT42Q can.**
+
+Also, §10.4 said 42 pads. **It is 43**: the pin table's last row is `(42) (43) GND`, and the
+drawing labels 43 top-left and 42 top-right. NFC1 = pad 15 (P1.02), NFC2 = pad 16 (P1.03),
+SWDIO = 36, SWDCLK = 37 — those four were right.
+
+**Minew ME54BS11 — castellated, and the vendor says so in words.**
+The ME54BS11-nRF54L10 datasheet's §5 mechanical drawing shows **half-round notches along both
+long edges** and carries the note, verbatim:
+
+> *"Note: The recommended pad size is 1.4*0.8mm, with the pad extending outward by 0.5mm."*
+
+A land that extends outward past the body is a castellation, stated by the manufacturer rather
+than inferred from a picture. Its §6 schematic labels the module's J1 pins **6 = P1.03/NFC2** and
+**7 = P1.02/NFC1**, so the NFC pins are exposed *and* documented — though the §4 pin-definition
+table lumps them in as *"2~9 P1.11-P1.14 P1.03 P1.02 P1.06 P1.05 — General-purpose IO"*, the same
+under-documentation lane I found on Minew's MS88SF2. The bigger sibling **ME54BS01** shows the
+same castellated profile and names NFC1/NFC2 on its schematic's pins 10/11.
+
+**What Minew does not have is certification.** The ME54BS01-nRF54L10 datasheet's CERTIFICATION
+page (p. 3) carries **the Bluetooth logo and nothing else** — no FCC, no CE, no MIC — and the
+store's spec table reads `Certification: /` on the nRF54L10, nRF54L05 and ME54BS11 parts and
+`BQB` on the nRF54L15 ME54BS01. The product page's own words are
+*"Planned Certifications: BQB, FCC, CE, IC, TELEC, KC, RCM…"*. **Planned is not held**, and a
+module with no grant confers no modular approval on a host — which is the entire reason lane I
+wanted a module.
+
+### The full nRF54L module survey, second pass
+
+Vendors checked: Raytac, Fanstel, Insight SiP, Ezurio, Minew, Holyiot, Ebyte **and u-blox**
+(missing from §10.4 entirely). Two vendors §10.4 reported as having nothing turned out to have
+something.
+
+| Vendor | nRF54L part | Size (mm) | Pads | Pad style | NFC pins out? | Certifications **held** | Price **fetched** | Stock |
+|---|---|---|---|---|---|---|---|---|
+| **Raytac** | **AN54LQ-15 / -10 / -05**, and -P / -U antenna variants | **13.7 × 9.5 × 1.8** — smallest that fits a 30 mm puck comfortably | **43** | **LGA — pads inset, lands inside outline** | **YES, documented**: pad 15 = P1.02/NFC1, pad 16 = P1.03/NFC2 | **FCC ID SH6AN54LQ, IC, CE/RED, Telec(MIC)/Giteki, KC, SRRC, NCC, RCM, WPC; BT6** | AN54LQ-15 **$5.0505@1 → $4.7861@100 and @1k** ([C49419243](https://jlcpcb.com/partdetail/RAYTAC-AN54LQ_15/C49419243)); AN54LQ-U15 $4.2945@1k; AN54LQ-P05 $3.9489@1k. **-10 and -05 are placeholder rows ($0.0395/$0.0203) — no price** | **0** everywhere |
+| **Minew** | **ME54BS11** (L10/L05), **ME54BS01** (L15/L10/L05), ME54BS12 (L15) | BS11 **15.8 × 12 × 2.0** (fits); BS01 23.2 × 17.4 × 2.0 (29.0 mm diagonal — **does not fit** a 30 mm board) | BS11 **18**; BS01 ~28 | **CASTELLATED — vendor note: lands "extending outward by 0.5mm"** | **YES**: BS11 J1 pins 6/7 = NFC2/NFC1; BS01 pins 10/11. Named on the schematic, **not** in the pin table | **NONE — "Planned Certifications: BQB, FCC, CE, IC, TELEC, KC, RCM…"**; datasheet cert page shows only the Bluetooth logo | **ME54BS11 $4.20 @1**, **ME54BS01-nRF54L10 $4.00 @1** (Minew store, direct); ME54BS01-1Y10TI **$11.7932@1 → $4.4713@1 000** ([C50088408](https://jlcpcb.com/partdetail/Minewsemi-ME54BS01_1Y10TI/C50088408)); ME54BS03-3Y15TI $5.1592@1k | **0** in the JLC catalogue; store sells singles |
+| **u-blox** | **NORA-B201/206 (L15), B211/216 (L10), B221/226 (L05)**, B261/266/276 (u-connectXpress) | **10.4 × 11.2 × 1.9** (antenna pin) / **10.4 × 14.3 × 1.9** (PCB antenna) | not published | **not published** | **NFC listed as a hardware interface** ("1 × NFC"); **pin numbers not published** | **NONE YET — the product summary's footnote reads "1 = Certifications are pending"** over a list of RED/UKCA/FCC/ISED/MIC/KCC/NCC/ACMA/NZ. Doc is stamped **"Early Product Information"** | **NORA-B216-00B $8.2661@1** (stock 10), **NORA-B206-00B $10.0945@10** (**stock 100**), NORA-B201-00B $6.2446@1k, NORA-B266-00B $6.7557@1k | **B206: 100. B216: 10.** The only nRF54L modules with any stock anywhere |
+| **Insight SiP** | ISP2454 (L15 only) | 8.0 × 8.0 × 1.0 — smallest of all | LGA 0.65 mm pitch | **LGA, not castellated** | not stated on the overview page | generic wording only: *"full certified … FCC, CE, Telec, etc."*, no per-model list | $20.4454@1 → $7.7518@1k ([C44975104](https://jlcpcb.com/partdetail/InsightSiP-ISP2454_LX_RS/C44975104)) | 0 |
+| **Holyiot** | **HOLYIOT-24005-nRF54L15** — **§10.4 said "not found"; it exists** | not fetched | not fetched | not fetched | not fetched | not fetched | **placeholder rows only** (codes `C9900176029` and `C9900261373`, returned by the JLCPCB parts API on the keyword `HOLYIOT`) — **no price** | 0 |
+| **Ezurio (Laird)** | none found | — | — | — | — | — | — | — |
+| **Fanstel** | none found | — | — | — | — | — | — | — |
+| **Ebyte** | none found (E73 family is nRF52832/840) | — | — | — | — | — | — | — |
+
+### What that means for lane I
+
+Lane I asked for two properties in one part. **They are not available in one part today.**
+
+| | pre-certified | castellated | fits 30 mm | NFC pins documented | buyable now |
+|---|---|---|---|---|---|
+| **Raytac AN54LQ-P10** | **YES, 9 regimes** | no (LGA) | **yes, 13.7 × 9.5** | **yes** | no (stock 0, Raytac-direct) |
+| **Minew ME54BS11** | **no** (planned) | **YES** | **yes, 15.8 × 12** | yes (schematic) | **yes, $4.20 singles** |
+| **u-blox NORA-B216** | **no** (pending) | unknown | yes, 10.4 × 14.3 | interface only | **yes, 10 pcs** |
+| **bare NRF54L10-QFAA-R7** | no | n/a (QFN48) | yes, 6 × 6 | n/a (P1.02/P1.03) | **yes, 669 + 1 003** |
+
+**The two requirements are not equally load-bearing, and this is the point lane I should take
+away.** Under 47 CFR 15.212 the grant travels with the module regardless of how it is
+terminated — **castellation is a manufacturability and inspectability preference, not a
+certification requirement.** So the honest ordering is:
+
+1. **If the certification inheritance is what matters** (and for an open design it is: it is the
+   thing that saves a campaign per *downstream builder*, not per tag), the pick is
+   **Raytac AN54LQ-P10** and lane I should accept LGA — which means paste-and-reflow assembly,
+   X-ray or electrical test rather than visual inspection of the joints, and no hand rework.
+   That is a real cost to a hobbyist builder and it should be stated in the block's README.
+2. **If hand-solderability is what matters** (bring-up boards, a hackable block, the version
+   someone tacks onto a breadboard), the pick is **Minew ME54BS11** at $4.20 — and the host
+   builder owns the whole radio campaign, exactly as with bare silicon. In that case the module
+   buys layout convenience only, and the **bare NRF54L10-QFAA-R7 at $2.40 is strictly better
+   value**, because it costs $1.80 less and hands over the same certification obligation.
+3. **u-blox NORA-B2 is the one to re-check in a quarter.** It is the only nRF54L module line
+   with stock at a catalogue distributor today, it is 10.4 × 11.2 mm, it names Channel Sounding
+   and NFC explicitly, and its certifications are *pending* rather than absent. When they land it
+   becomes a direct competitor to the AN54LQ. Two caveats, both stated verbatim from the sources:
+   the product summary is **"Early Product Information"** with **"Certifications are pending"**,
+   and the u-blox product page renders **"This product is not longer available"** *(sic)* against
+   **all nine variants** while JLCPCB shows 100 pieces of NORA-B206 in stock. Those two
+   statements cannot both be the current commercial status; **CANNOT DETERMINE — ask u-blox.**
+
+## 11.4 The module premium, re-priced against what was actually fetched
+
+Same method as §10.5. Bare radio subtotal = SoC + 32 MHz + 32.768 kHz crystals ($0.3680 at 1 000)
++ ~$0.023 of matching 0402s, PCB trace antenna at $0.
+
+| Route @1 000 | radio subtotal | premium over bare L10 | certified? | derived total/unit |
+|---|---|---|---|---|
+| **bare NRF54L10-QFAA-R7** | **$2.79** | — | no | **$7.43** (§10.3) |
+| bare NRF54L05-QFAA-R | $2.40 | −$0.39 | no | $7.05 (§10.3) — but a **3 000-piece minimum packet** |
+| **Raytac AN54LQ-15** (upper bound for the -10) | **$4.79** | **+$2.00** | **YES, 9 regimes** | **$9.37** (§10.3) |
+| Raytac AN54LQ-P05 (nRF54L05, PCB antenna) | $3.95 | +$1.16 | **YES** | ≈ **$8.53** *(derived: $9.37 − $0.84)* |
+| Minew ME54BS01-1Y10TI (nRF54L10) | $4.47 | +$1.68 | no | ≈ **$9.05** *(derived: $9.37 − $0.32)* |
+| u-blox NORA-B201-00B (nRF54L15, antenna pin) | $6.24 | +$3.45 | pending | ≈ **$10.82** *(derived)* |
+
+The `≈` rows are **derived by substituting one line into §10.3's module roll-up**, not
+independently re-modelled; the joint count and every other line is unchanged. They are labelled
+derived for that reason.
+
+**The break-even is unchanged in shape and cheaper in fact.** §10.5 put the module premium at
+$1.94/unit against the AN54LQ-15 price. Against the **AN54LQ-P05** — a *certified* module on the
+*fallback* SoC, with a PCB antenna, at $3.9489 — the premium over bare nRF54L10 is **$1.16/unit**:
+**$116 at 100 units, $1 160 at 1 000, $11 600 at 10 000.** No nine-regime certification campaign
+costs under $1 160, so **the certified module wins outright at 1 000 units and below**, and the
+crossover moves out past 10 000. **Still no test-lab price was fetched; lane F owns that number
+and I will not invent it.**
+
+## 11.5 What §11 corrects in §10
+
+| §10 said | §11 found |
+|---|---|
+| AN54LQ has **42 pads** | **43** — pin table's last row is `(42) (43) GND` |
+| AN54LQ pad style *"castellation likely but not proven"* | **not castellated** — LGA; lands drawn wholly inside the outline, unlike Raytac's own MDBT42Q |
+| Holyiot: **not found** | **HOLYIOT-24005-nRF54L15 exists** (JLC catalogue, placeholder price, zero stock) |
+| u-blox: **not surveyed at all** | **NORA-B2 series is nRF54L15/L10/L05**, Channel Sounding + NFC, 10.4 × 11.2 mm, and the only nRF54L modules with stock — certifications **pending** |
+| *"nothing is in stock anywhere"* | true of Raytac/Minew/Insight SiP; **false** for u-blox — NORA-B206 shows 100 pcs, NORA-B216 10 pcs |
+| L05 is *"the deepest stock and the lowest price"* | its **minimum packet is 3 000**, so below 3 000 units the L10-R7 (min 1 000) is the only one you can buy without overbuying |
+| nRF54L10 currents *"not fetched"* | fetched: TX@0 dBm **3.7 mA**, RX **2.1 mA**, System OFF+GRTC **0.8 µA**, System ON 192 KB retained **2.4 µA** |
+| §10.1 prices | **all re-pulled, all identical**; only the dead non-R7 reel drifted a cent |
+
+## 11.6 Still open after two passes
+
+| Item | Why | Who |
+|---|---|---|
+| AN54LQ-**10** / -P10 unit price | placeholder rows at JLCPCB; Digi-Key returns **403** and Mouser **"Access Denied"/captcha** to automated fetch; Raytac quotes direct | one email to Raytac |
+| AN54LQ stock, MOQ, lead time | zero at every catalogue distributor | same email |
+| u-blox NORA-B2 commercial status | product summary says certifications pending; the web page says all nine variants *"not longer available"*; JLCPCB shows 100 in stock. Irreconcilable from outside | ask u-blox |
+| u-blox NORA-B2 pad style and NFC pin numbers | **no data sheet is published** — only a 2-page product summary marked *"Early Product Information"* | ask u-blox, or wait for the data sheet |
+| Murata **7BB-20-3** price | still not in the LCSC/JLCPCB catalogue (re-searched: only 7BB-20-6C / -6L0 / -6CL0, all zero stock); Digi-Key 403, Mouser captcha | Murata or a rep quote |
+| Certification campaign cost | no lab quote fetched — the one number that decides §11.4's crossover | lane F |
+| Holyiot 24005 specs, certs, price | vendor site did not answer (connection closed) | retry or email |
+| nRF54L10 sleep current with 192 KB retained **and** GRTC + LFXO | Nordic publishes 128 KB (2.0 µA) and 256 KB (3.1 µA) but not 192 KB | lane H, on the bench |
+| Minew ME54BS11 certification date | *"Planned"* with no schedule given | ask Minew |
