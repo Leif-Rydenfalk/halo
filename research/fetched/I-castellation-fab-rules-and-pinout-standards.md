@@ -27,7 +27,7 @@ No separate surcharge is quoted on that page for castellated holes.
   < 0.4 mm or spacing < 0.3 mm requires non-standard review.
 - No published surcharge line item; PCBWay directs you to a quote.
 
-**Design rule this implies for a haytag-core module:** a 1.27 mm pitch castellation with 0.6 mm plated
+**Design rule this implies for a halo-core module:** a 1.27 mm pitch castellation with 0.6 mm plated
 half-holes clears both houses with margin (0.6 ≥ 0.5 JLCPCB / ≥ 0.4 PCBWay; gap 0.67 mm ≥ 0.5/0.3), and
 1.27 mm is what the two most-copied modules in the world already use.
 
@@ -51,8 +51,8 @@ half-holes clears both houses with margin (0.6 ≥ 0.5 JLCPCB / ≥ 0.4 PCBWay; 
   status LED; *carrier boards* carry power regulation, UI, connectors and application peripherals.
 - Design files and footprints live in the SparkFun Eagle Libraries repo (`SparkFun-MicroMod`);
   licensed **CC BY-SA 4.0**.
-- Verdict for haytag: the right *split of responsibility*, the wrong *connector* — an M.2 socket is
-  taller and more expensive than the whole haytag BOM target and cannot be reflowed flat under a coin
+- Verdict for halo: the right *split of responsibility*, the wrong *connector* — an M.2 socket is
+  taller and more expensive than the whole halo BOM target and cannot be reflowed flat under a coin
   cell.
 
 ## RAK WisBlock
@@ -77,5 +77,5 @@ there is no published interface spec document analogous to MicroMod's.
 - Exact pad diameter / spacing / alignment-hole dimensions are not on the product page —
   **not verified here**; take them from Tag-Connect's published footprint drawing before laying out.
 
-→ For haytag this is the right answer to "how do you program a 15 × 20 mm module inside someone's
+→ For halo this is the right answer to "how do you program a 15 × 20 mm module inside someone's
 product": no connector on the host board at all, six pads plus two alignment holes, cost ≈ 0.

@@ -36,7 +36,7 @@ No secure element is listed. Crypto is software: "Wolfssl加解密库" (wolfSSL 
   Flash through pre-burning in the factory production line."
 - "every time the Token is re-paired, the Apple server will send the updated Token."
 
-## Reading for haytag
+## Reading for halo
 
 The certified path costs: MFi membership + a PPID + per-unit Tokens burned at the factory +
 lab test fees. The hardware itself is unremarkable — a mid-range BLE SoC with ~120 KB free

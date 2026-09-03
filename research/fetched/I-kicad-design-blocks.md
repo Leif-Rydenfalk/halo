@@ -26,7 +26,7 @@ registered in a **global** or **project** design block library table, exactly li
 Properties carried: Name, Keywords, Description, **Default Fields** (key/value pairs applied as
 hierarchical sheet fields when placed as a sheet).
 
-**KiCad 9 limitation that decides haytag's architecture: no copper.** The 9.0 manual describes only
+**KiCad 9 limitation that decides halo's architecture: no copper.** The 9.0 manual describes only
 schematic fragments. The layout half has to be redone by hand in every host board.
 
 ## KiCad 10.0 — schematic **and** a PCB layout fragment
@@ -80,9 +80,9 @@ The library link is a group field: `<library>:<block>`, e.g. `analog_filters:sal
 > **Because libraries and design blocks are plain filesystem directories, they can be managed with
 > ordinary file manager tools, version control systems, or shared over a network filesystem.**
 
-## Consequence for haytag
-A `haytag.kicad_blocks/haytag-core.kicad_block/` directory containing `haytag-core.kicad_sch` +
-`haytag-core.kicad_pcb` + `haytag-core.json` is a **git-versionable, cross-project, schematic+copper**
+## Consequence for halo
+A `halo.kicad_blocks/halo-core.kicad_block/` directory containing `halo-core.kicad_sch` +
+`halo-core.kicad_pcb` + `halo-core.json` is a **git-versionable, cross-project, schematic+copper**
 artefact — the exact "drop the RF section into your own board in any outline" object GOAL.md asks for,
 using nothing but stock KiCad 10. It is the only mechanism found in this lane that carries the routed
 antenna and matching network, not just the netlist.

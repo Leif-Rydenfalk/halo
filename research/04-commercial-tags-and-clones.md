@@ -1,6 +1,6 @@
 # Lane D — Commercial Find My tags and the clone flood: what is inside, what it costs, how it gets on the network
 
-Research lane D for `haytag`. Every claim below carries a source link and the date I fetched
+Research lane D for `halo`. Every claim below carries a source link and the date I fetched
 it. Where I could not verify something I say **unverified** and leave it unverified — there
 are no invented prices and no invented part numbers in this file.
 
@@ -12,7 +12,7 @@ All fetch dates: **2026-09-03** unless stated otherwise. Full source list: `rese
 
 ## 1. The one thing that decides everything: there are three doors onto the Find My network
 
-This is the finding that should shape haytag, so it goes first.
+This is the finding that should shape halo, so it goes first.
 
 **Door 1 — Apple's Token.** A certified accessory does not carry a key it made up. Apple
 assigns it. From Goodix's public FMNA design note
@@ -135,7 +135,7 @@ cell or small LiPo, one tact switch, on a single ~25 mm two-layer board.**
   it for us — two red callouts reading **"RF Chip"** (one ~4×4 mm QFN) and **"PCB Antenna"**
   (a short meander, silkscreened "UGREEN FM21-CM816 V1.0"). That is the entire radio.
 - **eufy SmartTrack Link** (FCC **2AOKB-T87B0**, Anker, grant 2022-05-25): black-soldermask
-  ~25 mm board, silkscreen "TTB2H-MAX-V07", UL "E358074 94V-0", and — worth noting for haytag —
+  ~25 mm board, silkscreen "TTB2H-MAX-V07", UL "E358074 94V-0", and — worth noting for halo —
   **silkscreened debug pads CLK / DIO / TX / RX / GND / 3V3 left visible on a shipping
   certified product.**
 - **Motorola moto tag** (FCC **IHDT6AB3**, model XT2445-1, Sporton report EP441117A
@@ -349,7 +349,7 @@ strongest thing I can offer here, and it is what the number should be treated as
 **About $1 in parts for a Door-2 beacon, and about $3.5–$5 for a certified-class tag.** Both
 numbers are corroborated by products you can buy today at those prices.
 
-**Which means: haytag cannot win on unit cost. That race is over and China won it.** An
+**Which means: halo cannot win on unit cost. That race is over and China won it.** An
 ST17H66 board with four components on it is at the physical floor — you cannot design your way
 below a chip, a crystal, two capacitors and a coin cell.
 
@@ -369,7 +369,7 @@ the three specific things Apple spends that money on:
    DW3xxx-class part and a second antenna, and it removes the only feature Apple genuinely has
    that the crowd network does not provide.
 
-Beyond that, the honest list of what an open haytag can offer that no product in this table
+Beyond that, the honest list of what an open halo can offer that no product in this table
 does:
 
 - **Your own keys, your own backend, no Apple ID or Google account required for the tag
@@ -383,7 +383,7 @@ does:
 
 And the cost of the door you cannot open for free: **$99/year MFi plus per-unit royalties
 under NDA plus accredited-lab fees**, in exchange for one thing — appearing in the stock
-Find My app. That is the whole trade, stated plainly, and it is the decision haytag has to
+Find My app. That is the whole trade, stated plainly, and it is the decision halo has to
 make before it picks a SoC.
 
 ---

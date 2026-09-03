@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 findmy_scan.py — passive BLE scanner for Apple Find My / "offline finding" (OF)
-advertisements, written for haytag lane J.
+advertisements, written for halo lane J.
 
 WHAT IT LOOKS FOR
 -----------------

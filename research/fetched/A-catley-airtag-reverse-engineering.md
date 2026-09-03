@@ -5,7 +5,7 @@
 - **Raw fetched from:** https://raw.githubusercontent.com/adamcatley/adamcatley.github.io/master/docs/AirTag.md
 - **Date fetched:** 2026-09-03
 - **Author:** Adam Catley (@adamcatley)
-- **Note:** Archived here verbatim for durability. Copyright remains with Adam Catley; retained under fair use as a research reference for the haytag project. Do not redistribute as our own work.
+- **Note:** Archived here verbatim for durability. Copyright remains with Adam Catley; retained under fair use as a research reference for the halo project. Do not redistribute as our own work.
 
 ---
 

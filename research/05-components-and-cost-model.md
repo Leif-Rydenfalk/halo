@@ -69,7 +69,7 @@ found: *"Uses off the shelf components, apart from Apple's U1 chip for UWB."*
 
 ## 2. The two variants (per DECISIONS.md D1)
 
-| | **haytag-core** | **haytag-uwb** |
+| | **halo-core** | **halo-uwb** |
 |---|---|---|
 | radios | BLE only | BLE + Qorvo DW3110 |
 | purpose | the open product anyone can build, sell or embed | Leif's sensor fleet ranging peer-to-peer into Twinton |
@@ -135,7 +135,7 @@ QFN48. Take it if the build only ever needs Find My and not the DULT + Find Hub 
 protecting. **Third: CC2340R5**, $3.20/unit cheaper than nRF52840 at 1k with real stock — but no
 NFC (add ~$0.33 of NT3H2111) and no published Find-My firmware, so it buys a firmware project.
 
-### 3.2 Pre-certified BLE modules (the haytag-core default form)
+### 3.2 Pre-certified BLE modules (the halo-core default form)
 
 | Module | SoC | Size | Certs | JLC/LCSC | Stock | @1 | @100 | form |
 |---|---|---|---|---|---|---|---|---|
@@ -180,7 +180,7 @@ single largest structural saving available to any clone, and it is free because 
 an NFC-A-capable Nordic part.
 
 The discrete NFC ICs below are priced only as the **fallback if a non-NFC SoC is ever chosen**
-(CC2340R5, EFR32BG22, DA14531 all lack NFC-A). None of them appears in the haytag BOM.
+(CC2340R5, EFR32BG22, DA14531 all lack NFC-A). None of them appears in the halo BOM.
 
 | Part | Pkg | Interface | LCSC | Stock | @1 | @100 | @1k |
 |---|---|---|---|---|---|---|---|
@@ -271,7 +271,7 @@ the embeddable-block variant (lane I) can trade $0.44–0.63 for keep-out area o
 
 Lane A read the marking as **GigaDevice GD25LE32 or GD25LQ32, 32 Mbit SPI NOR**. Apple carried it
 because the U1 needs firmware, the sound assets need storage, and there are ARM64 instructions in
-that image the nRF52832 cannot even execute (Catley). haytag needs none of that: OpenHaystack-class
+that image the nRF52832 cannot even execute (Catley). halo needs none of that: OpenHaystack-class
 firmware plus the key set fits inside the **nRF52840's 1 MB**. **Deleting the flash saves
 $0.41–1.45 and 8 solder joints.**
 
@@ -292,13 +292,13 @@ in stock, $0.41 at 1k.
 
 Apple used a **TPS62746 buck** and an **onsemi FPF2487 OVP load switch** (both confirmed by lane
 A off the board photos) because the U1 and the 1.8 V flash
-needed rails a coin cell cannot hold. haytag-core has neither, and the Nordic supply range —
+needed rails a coin cell cannot hold. halo-core has neither, and the Nordic supply range —
 **1.7–3.6 V** on nRF52832, **1.7–5.5 V** on nRF52840 — covers the whole useful life of a CR2032;
-Catley measured the AirTag itself powering up from 2 V. So **haytag-core runs straight off the
+Catley measured the AirTag itself powering up from 2 V. So **halo-core runs straight off the
 cell: no regulator, $0, and no quiescent current to pay for.** What it does need instead is the
 bulk capacitance of §3.10.
 
-haytag-uwb does need help: DW3110 draws 14–23 mA in bursts and the DW3000 datasheet's own DC
+halo-uwb does need help: DW3110 draws 14–23 mA in bursts and the DW3000 datasheet's own DC
 table qualifies single-frame TX/RX **"with 47uF capacitor"**. Budget a 47 µF bulk cap and, if the
 UWB rail is switched, TPS7A0233PDBVR [C2887324](https://www.lcsc.com/product-detail/C2887324.html)
 ($0.3587@100 / $0.3341@1k, 5 649 in stock). The Apple buck TPS62746YFPR
@@ -306,7 +306,7 @@ UWB rail is switched, TPS7A0233PDBVR [C2887324](https://www.lcsc.com/product-det
 
 **FPF2487 is not in the LCSC or JLCPCB catalogue at all** — a keyword search of the JLCPCB parts
 API on 2026-09-03 returned zero results. **No price could be fetched for it.** It does not matter:
-its job was to protect the U1's rail, and haytag-core has no U1.
+its job was to protect the U1's rail, and halo-core has no U1.
 
 ### 3.10 Bulk capacitance — the line Apple needs and so do we
 
@@ -324,7 +324,7 @@ coil and a UWB transmitter without browning out the SoC.
 
 **This is the second-largest line in the BOM after the SoC** — $1.54/unit at 1k for five ceramics.
 Sensitivity: switching to the HRE part saves **$0.50/unit** (but stock is only 2 057); dropping to
-two 100 uF in haytag-core, which drives an 80 mA magnetic transducer rather than a voice coil and
+two 100 uF in halo-core, which drives an 80 mA magnetic transducer rather than a voice coil and
 a UWB burst, saves **$0.92/unit** and is defensible — but it is no longer parity. The roll-up
 below keeps all five.
 
@@ -370,7 +370,7 @@ this project.
   ([iFixit via 9to5Mac](https://9to5mac.com/2026/02/05/ifixit-tears-down-new-airtag-finds-50-louder-speaker-still-100-easy-to-disable/)),
   so even a licensed DW3110 accessory is chasing a moving target.
 
-**What DW3000 does give haytag-uwb for free:** two-way ranging between haytags, with no Apple
+**What DW3000 does give halo-uwb for free:** two-way ranging between halos, with no Apple
 involvement at all. Prices and power (all fetched 2026-09-03, full quotes in
 [`E-uwb-and-datasheet-specs.md`](fetched/E-uwb-and-datasheet-specs.md)):
 
@@ -420,7 +420,7 @@ coil in copper, two tuning caps counted among the 0402s); **no external flash** 
 **no buck and no OVP switch** (no U1 rail to make); **five 100 uF bulk capacitors** kept, as on
 Apple's board.
 
-### 5.1 haytag-core, module form (the shipping default)
+### 5.1 halo-core, module form (the shipping default)
 
 | Ref | Part | LCSC/JLC | Qty | @100 ea | @100 ext |
 |---|---|---|---|---|---|
@@ -436,7 +436,7 @@ Apple's board.
 | | **BOM subtotal @100** | | | | **$9.64** |
 | | **BOM subtotal @1 000** | | | | **$9.16** |
 
-### 5.2 haytag-core, bare-SoC form
+### 5.2 halo-core, bare-SoC form
 
 | Ref | Part | LCSC | Qty | @100 ea | @100 ext |
 |---|---|---|---|---|---|
@@ -460,7 +460,7 @@ Apple's board.
 > would give. Dropping to nRF52832 (which *does* have a 1k break at $2.6440) would save
 > **$1.50/unit at 1k**, at the cost of D10 parity.
 
-### 5.3 haytag-uwb (nRF52840 + DW3110)
+### 5.3 halo-uwb (nRF52840 + DW3110)
 
 Everything in 5.2, plus:
 
@@ -499,15 +499,15 @@ remain estimates — see §7.
 
 | Variant | Qty | BOM | PCB | Assembly | Enclosure | Tooling amort. | Labour | **Total/unit** |
 |---|---|---|---|---|---|---|---|---|
-| **haytag-core (E73 nRF52840 module)** | 10 | $11.99 | $6.211 | $3.278 | $1.20 | $0 | $0.30 | **$22.98** |
+| **halo-core (E73 nRF52840 module)** | 10 | $11.99 | $6.211 | $3.278 | $1.20 | $0 | $0.30 | **$22.98** |
 | | 100 | $9.64 | $0.692 | $0.470 | $1.20 | $0 | $0.30 | **$12.30** |
 | | 1 000 | $9.16 | $0.140 | $0.190 | $0.90 | $0 | $0.15 | **$10.53** |
 | | 10 000 | $9.12 | $0.085 | $0.162 | $0.30 | $0.40 | $0.08 | **$10.15** |
-| **haytag-core (bare nRF52840)** | 10 | $10.59 | $6.211 | $3.693 | $1.20 | $0 | $0.30 | **$21.99** |
+| **halo-core (bare nRF52840)** | 10 | $10.59 | $6.211 | $3.693 | $1.20 | $0 | $0.30 | **$21.99** |
 | | 100 | $8.37 | $0.692 | $0.608 | $1.20 | $0 | $0.30 | **$11.17** |
 | | 1 000 | $7.76 | $0.140 | $0.300 | $0.90 | $0 | $0.15 | **$9.25** |
 | | 10 000 | $7.69 | $0.085 | $0.269 | $0.30 | $0.40 | $0.08 | **$8.82** |
-| **haytag-uwb (nRF52840 + DW3110)** | 10 | $21.25 | $6.211 | $5.060 | $1.20 | $0 | $0.30 | **$34.02** |
+| **halo-uwb (nRF52840 + DW3110)** | 10 | $21.25 | $6.211 | $5.060 | $1.20 | $0 | $0.30 | **$34.02** |
 | | 100 | $17.49 | $0.692 | $0.870 | $1.20 | $0 | $0.30 | **$20.55** |
 | | 1 000 | $15.76 | $0.140 | $0.451 | $0.90 | $0 | $0.15 | **$17.40** |
 | | 10 000 | $14.61 | $0.085 | $0.409 | $0.30 | $0.40 | $0.08 | **$15.88** |
@@ -532,11 +532,11 @@ Caveats that inflate every 10 000-unit row:
 | AirTag, 1-pack retail | **$29.00** ([apple.com](https://www.apple.com/shop/buy-airtag/airtag), 2026-09-03) |
 | AirTag, 4-pack retail | **$24.75** ($99.00 / 4, same source) |
 | AirTag estimated manufacturing cost | **~$10** ([TechInsights](https://www.techinsights.com/blog/apple-airtag-teardown): *"estimated manufacturing cost of USD 10 (not including software costs and R&D)"*) |
-| haytag-core, module, 1 000 | **$10.53** (10 000: **$10.15**) |
-| haytag-core, bare nRF52840, 1 000 | **$9.25** (10 000: **$8.82**) |
-| haytag-uwb, 1 000 | **$17.40** (10 000: **$15.88**) |
+| halo-core, module, 1 000 | **$10.53** (10 000: **$10.15**) |
+| halo-core, bare nRF52840, 1 000 | **$9.25** (10 000: **$8.82**) |
+| halo-uwb, 1 000 | **$17.40** (10 000: **$15.88**) |
 
-So: **haytag-core at 1 000 units lands at 32–36 % of AirTag's retail price**, and at roughly
+So: **halo-core at 1 000 units lands at 32–36 % of AirTag's retail price**, and at roughly
 Apple's own estimated build cost — which is a striking result, because Apple builds tens of
 millions and we are costing a thousand. It is possible only because the clone deletes four of
 Apple's most expensive lines: the **U1** (unbuyable), the **32 Mbit flash** ($0.41–1.45), the
@@ -545,7 +545,7 @@ existed**. Even at 100 units the bare-SoC build ($11.17) beats the 4-pack price 
 comfortably than the pre-D10 numbers did — the nRF52840 and the five bulk capacitors are what
 moved it.
 
-haytag-uwb never competes on price with an AirTag and is not meant to: at $17.40 it buys
+halo-uwb never competes on price with an AirTag and is not meant to: at $17.40 it buys
 peer-to-peer ranging that an AirTag cannot do at all, because Apple's UWB only talks to Apple.
 
 ---
@@ -581,7 +581,7 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 
 ## 8. What this lane recommends
 
-1. **haytag-core ships on the E73-2G4M08S1C module** — which, confirmed from the JLCPCB part page
+1. **halo-core ships on the E73-2G4M08S1C module** — which, confirmed from the JLCPCB part page
    on 2026-09-03, carries an **nRF52840** and therefore already meets D10's parity target. Ship it
    only after its FCC/CE/Giteki certificates are obtained from Ebyte; the vendor's own page
    renders no certification content. If they do not exist, switch to a **Raytac MDBT50Q**, which
@@ -598,17 +598,17 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 4. **There is no NFC BOM line.** Apple drives the coil from the SoC's own NFC-A on P0.09/P0.10;
    so do we. Budget a PCB coil and two tuning capacitors, and nothing else.
 5. **Delete the external flash, the buck converter and the OVP switch.** They existed for the U1
-   and the 1.8 V flash rail; none survives into haytag-core. That is roughly $1.15–2.20/unit and
+   and the 1.8 V flash rail; none survives into halo-core. That is roughly $1.15–2.20/unit and
    ~16 joints gone. FPF2487 is not even in the LCSC/JLCPCB catalogue.
 6. **Keep the five 100 uF bulk capacitors.** At $1.54/unit at 1 k they are the second-largest BOM
    line, and they are the reason a coin cell can drive a transducer or a UWB burst at all. If cost
-   pressure forces a cut, two are defensible in haytag-core (saving $0.92) — but that is a
+   pressure forces a cut, two are defensible in halo-core (saving $0.92) — but that is a
    deliberate departure from parity, not an oversight.
-7. **haytag-uwb uses DW3110TR13**, ranging **no faster than once a minute** on a CR2032, and buys
+7. **halo-uwb uses DW3110TR13**, ranging **no faster than once a minute** on a CR2032, and buys
    the UWB antenna from Digi-Key/Mouser because JLCPCB's ACS5200HFAUWB stock is zero. If lane H
    shows Bluetooth Channel Sounding on **nRF54L15** reaches useful accuracy, the whole DW3110 line
    item — $6.91 of silicon plus antenna, crystal, LDO and 12 passives, about **$8.00/unit at
-   1 k** — disappears, and haytag-uwb collapses back into haytag-core with a different SoC. That
+   1 k** — disappears, and halo-uwb collapses back into halo-core with a different SoC. That
    is the single biggest cost lever in this document.
 8. **Do not quote a dB figure for the AirTag speaker from Apple** — none is published. Use lane
    G's iFixit measurement (~78–80 dB) and its acoustics dossier, and note that transducer
@@ -630,12 +630,12 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 | Ranging energy per two-way exchange | derived from datasheet currents, not measured | lane H on the bench |
 | nRF52840 price beyond 100 pcs | no break published on LCSC or JLCPCB at pull time | reel quote from Nordic/Arrow/Digi-Key |
 | onsemi FPF2487 price | not in the LCSC/JLCPCB catalogue at all | only matters if the U1 rail is ever reproduced |
-| Whether five 100 uF is the right number for haytag-core | Apple sized it for a voice coil + U1, not an 80 mA transducer | bench measurement of cell droop |
+| Whether five 100 uF is the right number for halo-core | Apple sized it for a voice coil + U1, not an 80 mA transducer | bench measurement of cell droop |
 
 
 ---
 
-# 10. Post-D12 re-run — haytag-core on nRF54L (2026-09-03)
+# 10. Post-D12 re-run — halo-core on nRF54L (2026-09-03)
 
 Three things changed after §1–9 were written:
 
@@ -705,7 +705,7 @@ lane G's Chinese single-cavity figure. CR2032 at its qty-1 $0.39 upper bound thr
 
 | Variant | Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** |
 |---|---|---|---|---|---|---|---|---|
-| **haytag-core v1, bare nRF54L10** | 10 | $8.61 | $6.211 | $3.651 | $1.20 | $0 | $0.30 | **$19.97** |
+| **halo-core v1, bare nRF54L10** | 10 | $8.61 | $6.211 | $3.651 | $1.20 | $0 | $0.30 | **$19.97** |
 | | 100 | $6.89 | $0.692 | $0.567 | $1.20 | $0 | $0.30 | **$9.65** |
 | | 1 000 | $5.99 | $0.140 | $0.258 | $0.90 | $0 | $0.15 | **$7.43** |
 | | 10 000 | $5.92 | $0.085 | $0.227 | $0.30 | $0.40 | $0.08 | **$7.01** |
@@ -717,7 +717,7 @@ lane G's Chinese single-cavity figure. CR2032 at its qty-1 $0.39 upper bound thr
 | | 100 | $6.99 | $0.692 | $0.567 | $1.20 | $0 | $0.30 | *$9.75* |
 | | 1 000 | $6.07 | $0.140 | $0.258 | $0.90 | $0 | $0.15 | *$7.52* |
 | | 10 000 | $6.00 | $0.085 | $0.227 | $0.30 | $0.40 | $0.08 | *$7.10* |
-| **haytag-core, Raytac AN54LQ module** | 10 | $9.64 | $6.211 | $3.294 | $1.20 | $0 | $0.30 | **$20.64** |
+| **halo-core, Raytac AN54LQ module** | 10 | $9.64 | $6.211 | $3.294 | $1.20 | $0 | $0.30 | **$20.64** |
 | | 100 | $8.54 | $0.692 | $0.486 | $1.20 | $0 | $0.30 | **$11.22** |
 | | 1 000 | $7.97 | $0.140 | $0.206 | $0.90 | $0 | $0.15 | **$9.37** |
 | | 10 000 | $7.95 | $0.085 | $0.178 | $0.30 | $0.40 | $0.08 | **$8.99** |
@@ -737,7 +737,7 @@ choice inside the family is a firmware-fit decision, not a cost decision.
 | | 100 | $12.30 | $11.22 | **−$1.08** |
 | | 1 000 | $10.53 | $9.37 | **−$1.16** |
 | | 10 000 | $10.15 | $8.99 | **−$1.16** |
-| haytag-uwb (deleted by D12) | 1 000 | $17.40 | — | **−$9.97 vs bare v1** |
+| halo-uwb (deleted by D12) | 1 000 | $17.40 | — | **−$9.97 vs bare v1** |
 
 At 1 000 units the BOM alone falls **$7.76 → $5.99 (−$1.77)**, of which **−$1.74 is the SoC**
 ($4.1407 → $2.4012) and −$0.03 the sounder. The rest of the per-unit delta is assembly: the
@@ -745,7 +745,7 @@ QFN48 has 26 fewer joints than the aQFN73. **D12 was correct on price as well as
 Channel Sounding is not a feature you pay for, it is a feature that arrives with a cheaper part.**
 
 **Value-engineering line, stated separately so it does not contaminate the comparison.** The five
-100 uF bulk capacitors are Apple parity, sized for a voice coil and a U1. haytag v1 has neither —
+100 uF bulk capacitors are Apple parity, sized for a voice coil and a U1. halo v1 has neither —
 a piezo bender is a capacitive load and the UWB burst is gone. Dropping to **two 100 uF** gives
 bare-nRF54L10 totals of **$18.57 / $8.58 / $6.51 / $6.09** — a further **−$0.92/unit**. That is a
 real decision for lane G to make against measured cell droop, not a free saving.
@@ -757,9 +757,9 @@ real decision for lane G to make against measured cell droop, not a free saving.
 | AirTag 1-pack retail | $29.00 |
 | AirTag 4-pack retail | $24.75 |
 | AirTag estimated manufacturing cost (TechInsights) | ~$10 |
-| **haytag-core v1, bare nRF54L10, 1 000** | **$7.43** (26 % of retail) |
-| **haytag-core v1, module, 1 000** | **$9.37** (32 % of retail) |
-| haytag-core v1, bare, 10 000 | $7.01 |
+| **halo-core v1, bare nRF54L10, 1 000** | **$7.43** (26 % of retail) |
+| **halo-core v1, module, 1 000** | **$9.37** (32 % of retail) |
+| halo-core v1, bare, 10 000 | $7.01 |
 
 The v1 build now sits **below Apple's own estimated build cost at a thousand units**, and it does
 local relative positioning, which an AirTag cannot do for anyone but Apple.

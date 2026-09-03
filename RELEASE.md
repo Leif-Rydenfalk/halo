@@ -1,6 +1,6 @@
-# RELEASE — haytag release dossier
+# RELEASE — halo release dossier
 
-*The one page that says what haytag is, what is proven, what is not, and where every artifact is.
+*The one page that says what halo is, what is proven, what is not, and where every artifact is.
 Started 2026-09-03 by research lane A at Leif's request ("start creating release docs and stuff
 like for the microduck but for our airtag project"). Modelled on `ce-designs/microduck`'s
 RELEASE/STATUS/BOM set.*
@@ -15,7 +15,7 @@ soft pass.
 
 ---
 
-## 1. What haytag is
+## 1. What halo is
 
 An open-source, cheaper-to-manufacture copy of the Apple AirTag's internals, designed as an
 **embeddable circuit block** rather than only a puck, so it can be dropped into any board in any
@@ -44,7 +44,7 @@ Eleven artifacts define done (`MISSION.md`). Their state today:
 | 8 | **Mechanical** — enclosure, speaker, battery door | running (G) | — |
 | 9 | **Schematic → simulated → laid out → verified** | not started | — |
 | 10 | **Factory release pack** — Gerbers, BOM, CPL, DFM, quote | not started | — |
-| 11 | **`part:haytag-core` on the triad shelf** | not started | — |
+| 11 | **`part:halo-core` on the triad shelf** | not started | — |
 
 **Honest summary: this is a research release, not a hardware release.** Rungs 1–4 are done and
 evidenced. Nothing has been laid out, simulated, fabricated or measured. No board exists.
@@ -55,7 +55,7 @@ evidenced. Nothing has been laid out, simulated, fabricated or measured. No boar
 
 From [`DECISIONS.md`](DECISIONS.md):
 
-- **D1** two variants — `haytag-core` (BLE-only) and `haytag-uwb` (peer ranging)
+- **D1** two variants — `halo-core` (BLE-only) and `halo-uwb` (peer ranging)
 - **D2** no Bluetooth word mark
 - **D3** press-and-twist battery door (Reese's Law child safety)
 - **D4** licence split: CERN-OHL-S (hardware) / AGPL / Apache / CC-BY-SA
@@ -72,7 +72,7 @@ commercial/IP walls rather than engineering failures:
    SiP) and is never sold. A third-party UWB chip gives **peer-to-peer** ranging — which is what
    Leif actually needs — but not Apple's Precision Finding UI. Lane H settles the substitute.
 2. **Appearing in the stock Find My app.** That needs a per-unit Apple **Token** pre-burned at an
-   MFi factory. D5 rules out MFi, so haytag rides the **unregistered** OpenHaystack path: findable
+   MFi factory. D5 rules out MFi, so halo rides the **unregistered** OpenHaystack path: findable
    by the network, not listed in Apple's own app. Lane D calls this "Door 2".
 
 ---
@@ -81,7 +81,7 @@ commercial/IP walls rather than engineering failures:
 
 | document | what it answers |
 |---|---|
-| [`GOAL.md`](GOAL.md) | why haytag exists, in Leif's words |
+| [`GOAL.md`](GOAL.md) | why halo exists, in Leif's words |
 | [`MISSION.md`](MISSION.md) | the eleven artifacts that define done |
 | [`SPEC.md`](SPEC.md) | the product specification |
 | [`STATUS.md`](STATUS.md) | live lane-by-lane state |

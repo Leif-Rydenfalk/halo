@@ -54,7 +54,7 @@ Source: <https://documentation.espressif.com/esp32-wroom-32_datasheet_en.pdf>
 - Espressif also ship "Source files of recommended PCB land patterns to measure dimensions not covered
   in Figure 10.1" — i.e. the module footprint is published as CAD, not only as a drawing.
 
-## Why this matters for haytag
+## Why this matters for halo
 This is the canonical worked example of the thing GOAL.md asks for: a vendor publishes
 (a) the module, (b) its land pattern as source CAD, and (c) a prose rule for the host board's copper
 that is short enough to put in a README. The rule that survives translation to any outline is:

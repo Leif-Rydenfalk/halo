@@ -1,4 +1,4 @@
-# Contributing to haytag
+# Contributing to halo
 
 ## The hard rules
 
@@ -12,7 +12,7 @@ These are not preferences. A pull request that breaks one is closed.
    open an issue, not a pull request.
 2. **No MFi-derived material.** If you have read Apple's Find My Network
    Accessory specification under its non-disclosure agreement, do not
-   contribute to the firmware. haytag is clean-room from the PoPETs 2021 paper
+   contribute to the firmware. halo is clean-room from the PoPETs 2021 paper
    and public reverse-engineering (decision D5).
 3. **Every number carries its source.** A dimension, a price, a current, a
    dB figure: give the URL and the date you read it, or mark it measured and

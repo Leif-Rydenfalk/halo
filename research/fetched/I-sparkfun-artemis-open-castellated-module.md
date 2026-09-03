@@ -23,7 +23,7 @@ README, verbatim:
 > manufacturing tools. We *do not* recommend that you order PCBs and attempt to hand stencil or hand place
 > these components.
 
-That is exactly the haytag split: a **4-layer, machine-assembled module** so that every **host board can
+That is exactly the halo split: a **4-layer, machine-assembled module** so that every **host board can
 be a cheap 2-layer board a hobbyist routes by hand**.
 
 ## What is published

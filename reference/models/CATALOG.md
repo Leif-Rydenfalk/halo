@@ -21,8 +21,8 @@ are stored here** (CC0 / CC-BY / CC-BY-SA / MIT / GPL). Everything else is linke
 | `ruuvitag-enclosure/README.md` | ditto | Ruuvi Innovations | CC BY-SA 4.0 | text | Licence statement. | — |
 
 Attribution required for every file above. CC BY-SA files (Ruuvi) additionally require that
-derivatives be released under CC BY-SA 4.0 — **do not merge Ruuvi geometry into a haytag part
-unless haytag's mechanical files are themselves CC BY-SA**, or the share-alike propagates.
+derivatives be released under CC BY-SA 4.0 — **do not merge Ruuvi geometry into a halo part
+unless halo's mechanical files are themselves CC BY-SA**, or the share-alike propagates.
 
 ## Deliberately NOT stored — linked only
 
@@ -42,5 +42,5 @@ unless haytag's mechanical files are themselves CC BY-SA**, or the share-alike p
 **No public model of the AirTag *internals* was found.** Every AirTag CAD file located in this
 survey is an outer-envelope model intended for designing holders. There is no published
 reconstruction of the PCB, the LDS antenna carrier, the magnet or the voice coil. That gap is a
-measurement task for haytag, not a search failure — see
+measurement task for halo, not a search failure — see
 `research/07-mechanical-enclosure-and-3d-models.md`, "What is not published".

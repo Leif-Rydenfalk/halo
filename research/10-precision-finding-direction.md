@@ -25,12 +25,12 @@ solved in open source?" splits into two completely different questions with two 
 - **Direction from an iPhone to a non-Apple tag → NOT open, and not solvable by reverse engineering.**
   It is gated by Apple's *Nearby Interaction accessory protocol*, which is licensed to UWB chipset
   vendors, not published for us to implement. This is a business wall, not a physics wall.
-- **Direction between two of our own devices (haytag ↔ haytag — which is Leif's actual use case) →
+- **Direction between two of our own devices (halo ↔ halo — which is Leif's actual use case) →
   SOLVED, and open source.** ETH Zürich's PBL published open hardware, firmware and a dataset for
   dual-antenna UWB PDoA on the Qorvo DW3220, peer-reviewed in *IEEE TIM* (2023), reporting
   **2.4° average angular accuracy** and centimetre distance. It is GPL-3.0 and still being updated.
 
-**So for haytag: the "compass" is a solved problem in the direction that matters to you, and an
+**So for halo: the "compass" is a solved problem in the direction that matters to you, and an
 unobtainable one in the direction that only benefits Apple.**
 
 ---
@@ -185,10 +185,10 @@ waveform.
 > phase differential of arrival, and the point-to-point distance, an error correction model is
 > discussed to compensate for **reflections, multipaths, and front-back ambiguity**."
 
-| property | value | note for haytag |
+| property | value | note for halo |
 |---|---|---|
 | Peer-reviewed | *IEEE Trans. Instrumentation & Measurement*, [doi:10.1109/TIM.2023.3282289](https://doi.org/10.1109/TIM.2023.3282289); preprint [arXiv:2312.13672](https://doi.org/10.48550/arXiv.2312.13672) | not a hobby claim — measured and reviewed |
-| Licence | **GPL-3.0** | compatible with haytag's D4 split, but GPL is stickier than CERN-OHL-S; check before copying layout |
+| Licence | **GPL-3.0** | compatible with halo's D4 split, but GPL is stickier than CERN-OHL-S; check before copying layout |
 | Boards released | `T_module` **22 × 28 mm** (cost/size optimised) and `UWB_AoA_module` **30 × 45 mm** (performance/R&D) | 22 × 28 mm nearly fits a 32 mm puck |
 | Format | **Altium** (`.PcbDoc`, `.PrjPcb`) — **not KiCad** | a real porting cost for us; lane I should know |
 | Silicon | **Qorvo DW3220** — PDoA is an *integrated feature* of the part | two RX antenna ports on-chip |
@@ -209,7 +209,7 @@ I found **no** open-source implementation of the Nearby Interaction accessory pr
 not expect one to be lawful or durable if it existed. A GitHub search for `nearby interaction
 accessory` returns nothing relevant **[primary]**. The path Apple offers is: use an NI-enabled
 chipset (NXP SR150 / Qorvo NI parts), sign the vendor's agreement, get the accessory-side stack from
-the vendor. That is incompatible with haytag's **D5 (clean-room, no MFi enrolment)**.
+the vendor. That is incompatible with halo's **D5 (clean-room, no MFi enrolment)**.
 
 ### 4.3 The honest caveats on the open answer
 
@@ -218,33 +218,33 @@ the vendor. That is incompatible with haytag's **D5 (clean-room, no MFi enrolmen
   Do not quote 2.4° as an unconditional spec.
 - **PDoA needs two antennas ~23 mm apart at 6.5 GHz.** In a 32 mm puck whose centre is occupied by a
   magnet and a CR2032, that is tight but not impossible; on an *embeddable block* (GOAL.md §2) the
-  host board can place them. **This is a real mechanical constraint on the `haytag-uwb` variant.**
+  host board can place them. **This is a real mechanical constraint on the `halo-uwb` variant.**
 - **Power.** UWB ranging is expensive next to a 2.3 µA BLE sleep. The AirTag only powers its U1 during
-  an active Precision Finding session (Catley's power traces show ~25 mA spikes). Any haytag doing
+  an active Precision Finding session (Catley's power traces show ~25 mA spikes). Any halo doing
   peer ranging must duty-cycle hard. Lane H owns the budget.
-- **Both ends need the hardware.** Tag-to-tag direction means *every* haytag that must be pointed at
+- **Both ends need the hardware.** Tag-to-tag direction means *every* halo that must be pointed at
   needs the dual-antenna front end, not just the "phone" end.
 
 ---
 
-## 5. What this means for haytag
+## 5. What this means for halo
 
 | capability | status | why |
 |---|---|---|
-| Distance from an iPhone to a haytag (UWB) | **needs an NI-enabled chipset + vendor agreement** → out of scope under D5 | Apple gates the accessory protocol |
-| **Direction arrow on an iPhone pointing at a haytag** | **NOT ACHIEVABLE** as open hardware. Known gap, written down per GOAL.md | same wall |
-| **Distance between two haytags** | **Solved** — standard 802.15.4z two-way ranging, single antenna each end, many open drivers | this is what the AirTag's own radio does |
-| **Direction between two haytags** (Leif's actual need: where is sensor B relative to sensor A) | **SOLVED in open source** — DW3220 + PDoA, ETH-PBL hardware/firmware/dataset, 2.4° | needs 2 antennas on the *measuring* node |
+| Distance from an iPhone to a halo (UWB) | **needs an NI-enabled chipset + vendor agreement** → out of scope under D5 | Apple gates the accessory protocol |
+| **Direction arrow on an iPhone pointing at a halo** | **NOT ACHIEVABLE** as open hardware. Known gap, written down per GOAL.md | same wall |
+| **Distance between two halos** | **Solved** — standard 802.15.4z two-way ranging, single antenna each end, many open drivers | this is what the AirTag's own radio does |
+| **Direction between two halos** (Leif's actual need: where is sensor B relative to sensor A) | **SOLVED in open source** — DW3220 + PDoA, ETH-PBL hardware/firmware/dataset, 2.4° | needs 2 antennas on the *measuring* node |
 | Room-scale relative position for Twinton | **Achievable** — and arguably better than Apple's, because you control both ends and can use several anchors rather than one handheld array | trilateration from 3+ ranging peers needs **no AoA at all** |
 
 **The strategic point worth stating plainly:** Leif's stated goal in `GOAL.md` is *"to know their local
 position relative to other sensors."* For that, **you may not need direction-finding at all.** With
-three or more haytags that can range to each other (distance only, one antenna, cheap, low power), you
+three or more halos that can range to each other (distance only, one antenna, cheap, low power), you
 get full 3-D relative position by trilateration — which is *more* accurate and *more* robust than a
 single handheld device estimating one bearing. AoA is what you need when only *one* device is doing the
 measuring, i.e. Apple's phone-hunting-a-lost-key use case. **In a sensor mesh, the mesh is the array.**
 So the recommendation is: build ranging first (easy, solved, cheap), and treat PDoA/AoA as an optional
-`haytag-uwb-aoa` variant for the single-anchor case. Lane H should evaluate this trade explicitly.
+`halo-uwb-aoa` variant for the single-anchor case. Lane H should evaluate this trade explicitly.
 
 ---
 
@@ -255,8 +255,8 @@ So the recommendation is: build ranging first (easy, solved, cheap), and treat P
 | Exact iPhone UWB antenna count and geometry | an iPhone FCC UWB test report antenna table, or a U1 module X-ray | A / H |
 | Whether any Qorvo/NXP part gives NI interop **without** an NDA'd vendor stack | direct vendor enquiry; the terms are not public | E / F |
 | Whether DW3220's PDoA is usable at the AirTag's 32 mm diameter with a coin cell in the middle | an RF sim (ce-rf / openEMS) of two antennas at ~23 mm on a 26 mm annulus | I / T3 |
-| Power cost per ranging fix on DW3220 at haytag duty cycles | bench measurement, or the ETH paper's energy section | H |
-| Whether the GPL-3.0 on ETH's boards infects a derived haytag layout | read the repo's LICENSE against CERN-OHL-S (D4) | F |
+| Power cost per ranging fix on DW3220 at halo duty cycles | bench measurement, or the ETH paper's energy section | H |
+| Whether the GPL-3.0 on ETH's boards infects a derived halo layout | read the repo's LICENSE against CERN-OHL-S (D4) | F |
 | Whether Apple's `Rose` opcodes reveal a usable tag-side ranging protocol | deeper RE of a dumped AirTag firmware — legally fraught, and D5 says clean-room | (not recommended) |
 
 Nothing above is guessed. Where a number is not in a source it says CANNOT DETERMINE and names what

@@ -3,7 +3,7 @@
 - **Source URL:** https://limitedresults.com/results/nrf52-debug-resurrection-approtect-bypass
 - **Author:** LimitedResults — Published 2020-06-10
 - **Date fetched:** 2026-09-03 (via curl; claude.ai WebFetch safety-verifier could not clear the domain, curl reached it fine)
-- **Why it matters for haytag:** this is the underlying silicon vulnerability that every AirTag firmware dump relies on. The AirTag's nRF52832 has APPROTECT enabled; this glitch defeats it.
+- **Why it matters for halo:** this is the underlying silicon vulnerability that every AirTag firmware dump relies on. The AirTag's nRF52832 has APPROTECT enabled; this glitch defeats it.
 
 ---
 

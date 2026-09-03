@@ -1,4 +1,4 @@
-# 09 — The embeddable block: how to ship haytag as a circuit other people can drop in
+# 09 — The embeddable block: how to ship halo as a circuit other people can drop in
 
 Lane I. Written 2026-09-03. Every claim below carries its source and the date it was read.
 Where a number could not be verified this session it says so; nothing here is estimated.
@@ -12,10 +12,10 @@ castellated/solder-down module variant for people who do not want to do RF layou
 ## 0. The one-paragraph answer
 
 Ship **three artefacts, in this order**: (1) a **KiCad 10 design block**
-`haytag.kicad_blocks/haytag-core.kicad_block/` carrying *both* `haytag-core.kicad_sch` and
-`haytag-core.kicad_pcb` — KiCad 10 added layout fragments to design blocks, so for the first time the
+`halo.kicad_blocks/halo-core.kicad_block/` carrying *both* `halo-core.kicad_sch` and
+`halo-core.kicad_pcb` — KiCad 10 added layout fragments to design blocks, so for the first time the
 routed antenna and matching network travel with the schematic across projects, as plain directories in
-git; (2) a **15 × 20 mm castellated `haytag-core` module** whose v1 is a *carrier* for a pre-certified
+git; (2) a **15 × 20 mm castellated `halo-core` module** whose v1 is a *carrier* for a pre-certified
 Raytac MDBT42Q (nRF52832, FCC ID SH6MDBT42Q), so that the radio approval and the RF layout are both
 inherited rather than earned; (3) the **round 32 mm puck as the first host board**, which is directly
 expressible in `ce-pcb` today (`cepcb.circle_outline`). Nobody in the surveyed open-hardware field ships
@@ -56,7 +56,7 @@ Full extracts, including the pin tables and every keep-out sentence:
 ### 1.2 What the table decides
 
 - **Only three modules document NFC1/NFC2 as exposed pins**: MDBT42Q (pads 22/23), ISP1807 (pins 2/4),
-  BL654 ("differential antenna pins exposed"). Since haytag needs an NFC-A tag on the host board
+  BL654 ("differential antenna pins exposed"). Since halo needs an NFC-A tag on the host board
   (AirTag has one; DULT wants one), **that is the whole shortlist.**
 - **ISP1807 is the smallest but is 0.65 mm-pitch LGA, not castellated** — *"The module uses an LGA format
   with a double row of pads on a 0.65 mm pitch"*. That is a stencil-and-reflow-only part on a host board
@@ -82,7 +82,7 @@ here.** The consequence for the pin list is in §6.3: the same 24 pads must be a
 
 ## 2. Castellated-module precedents from open hardware
 
-### 2.1 SparkFun Artemis — the closest thing to what haytag should be
+### 2.1 SparkFun Artemis — the closest thing to what halo should be
 Verbatim from the repo README
 (<https://raw.githubusercontent.com/sparkfun/SparkFun_Artemis/master/README.md>, read 2026-09-03):
 
@@ -94,7 +94,7 @@ Verbatim from the repo README
 > manufacturing tools. We *do not* recommend that you order PCBs and attempt to hand stencil or hand
 > place these components.
 
-That is the exact division haytag needs: **a 4-layer machine-assembled module so that every host board
+That is the exact division halo needs: **a 4-layer machine-assembled module so that every host board
 can be a cheap 2-layer board.** Published: Eagle `.brd`/`.sch`, a **STEP and STL of the module** for the
 host's 3D view, the chip-antenna datasheet, the Apollo3 pad map — all **CC BY-SA 4.0**. Host rules, from
 the integration guide: *"A good ground connection is essential. Routing under the module is allowed.
@@ -120,7 +120,7 @@ KiCad format**. Three things to steal:
 > we've used here, is to show the keepout zones on the `dwgs.user` layer, and the user must then manually
 > remove the copper on the PCB layout itself.**
 
-That last one is a live constraint for haytag: **a footprint cannot enforce the antenna keep-out.**
+That last one is a live constraint for halo: **a footprint cannot enforce the antenna keep-out.**
 It has to be drawn on `dwgs.user`, stated in the README, and — see §5 — turned into a check.
 Full extract: `research/fetched/I-rp2040-pico-as-a-solder-down-module.md`.
 
@@ -257,12 +257,12 @@ copy from. The gap GOAL.md points at is real.
 | **Insight SiP** | a dimensioned rectangle: *"no metal, no traces and no components on any application PCB layer except mechanical LGA pads"*, **18.0 mm min × 4.0 mm** to the board edge |
 | **Raspberry Pi** | Pico W cut-out **14 mm × 9 mm**; *"placed on the edge of a board and not enclosed in metal to avoid creating a Faraday cage. Adding ground to the sides of the antenna improves the performance slightly."* |
 
-**The single rule haytag should publish** (it is the intersection of all five, and it survives any host
+**The single rule halo should publish** (it is the intersection of all five, and it survives any host
 outline): *the module's antenna end must sit on the host board's outline; a rectangle 16 mm wide × 6 mm
 deep measured from that edge must be free of copper, traces and components on **every** layer; the host
 must pour ground and stitch vias on the other three sides of the module; and the enclosure must give the
 antenna ≥ 15 mm of clear space in all directions.* (16 × 6 mm is sized to cover the 15.2 × 5.7 mm that
-TI AN043 needs for a small IFA and the 5.94 mm-deep antenna area of ESP32-WROOM-32; it is a haytag
+TI AN043 needs for a small IFA and the 5.94 mm-deep antenna area of ESP32-WROOM-32; it is a halo
 choice, not a vendor number.)
 
 ### 4.3 Chip vs PCB vs module antenna — the trade table
@@ -284,7 +284,7 @@ K1/K2 = 2.34/2.75 (square), 2.25/3.55 (octagonal), 2.33/3.82 (hexagonal); and th
 a function of the chip's Ctun (ST25TA: 2.58 µH @ 50 pF, 4.70 µH @ 27.5 pF). Tuning must then be
 **measured** — network analyser, or an ISO standard loop plus an oscilloscope (AN2866 §5).
 
-Consequence: **haytag-core exposes NFC1/NFC2 and ships a parametric coil generator plus a stated target
+Consequence: **halo-core exposes NFC1/NFC2 and ships a parametric coil generator plus a stated target
 inductance and the measurement procedure — it does not ship a fixed coil.** Lane C already found the
 tooling: `nideri/nfc_antenna_generator` (parametric spiral for KiCad) and RuuviTag's working NFC-A coil
 under CC BY-SA 4.0. **The nRF52840/nRF52832 target inductance is not verified in this lane** — Nordic's
@@ -304,7 +304,7 @@ attached antenna or a "unique" antenna coupler**, (v) stand-alone testing, (vi) 
 FCC ID label or electronic display**, (vii) instructions to the integrator, (viii) an RF-exposure
 statement.
 
-Two clauses decide haytag's architecture:
+Two clauses decide halo's architecture:
 
 - **(a)(1)(iv)** — "All single or split modular transmitters are **approved with an antenna**. … The
   antenna must either be **permanently attached** or employ a 'unique' antenna coupler." A module whose
@@ -316,12 +316,12 @@ Two clauses decide haytag's architecture:
   datasheet §9.10.1: *"The final end product must be labeled in a visible area with the following:
   'Contain FCC ID: SH6MDBT42Q'."*
 
-So the honest statement to put in haytag's README is: **the radio approval is inherited; the host still
+So the honest statement to put in halo's README is: **the radio approval is inherited; the host still
 owns the label, the Part 15B unintentional-radiator compliance of its own board, and the RF-exposure
 statement in its final configuration.** Nothing here removes CE/RED, DULT or battery-shipping duties —
 lane F owns those.
 
-**What self-certifying a bare-SoC haytag-core would require**: a shield can over the radio (i), its own
+**What self-certifying a bare-SoC halo-core would require**: a shield can over the radio (i), its own
 regulation (iii), a permanently attached antenna (iv), an FCC ID, and a stand-alone test campaign (v).
 **No verified dollar figure for that campaign was obtained this session** — do not quote one. What *is*
 verified is that SparkFun did it once and the resulting module retails at **$9.95** with FCC/IC/CE ID
@@ -331,13 +331,13 @@ verified is that SparkFun did it once and the resulting module retails at **$9.9
 
 ## 6. Recommendation — three artefacts
 
-### 6.1 Artefact 1 — `haytag-core` as a KiCad 10 design block *(do this first, it costs nothing)*
+### 6.1 Artefact 1 — `halo-core` as a KiCad 10 design block *(do this first, it costs nothing)*
 ```
-hardware/haytag.kicad_blocks/
-  haytag-core.kicad_block/
-    haytag-core.kicad_sch     # the whole tag: radio, accel, sounder drive, battery, NFC ports
-    haytag-core.kicad_pcb     # the layout fragment: placement + routing + the antenna keep-out on dwgs.user
-    haytag-core.json          # description, keywords, default fields
+hardware/halo.kicad_blocks/
+  halo-core.kicad_block/
+    halo-core.kicad_sch     # the whole tag: radio, accel, sounder drive, battery, NFC ports
+    halo-core.kicad_pcb     # the layout fragment: placement + routing + the antenna keep-out on dwgs.user
+    halo-core.json          # description, keywords, default fields
 ```
 - Registered in the **project** design block library table in the repo, so a `git clone` + one library
   table entry is the whole install; and in a user's **global** table if they want it everywhere.
@@ -345,19 +345,19 @@ hardware/haytag.kicad_blocks/
 - Placed with **`Place as sheet` + `Place as group`**: the sheet gives the host a black box with named
   ports; the group is what makes **`Apply Design Block Layout`** legal in the PCB editor, which is how
   the routed RF section arrives in a stranger's board without being redrawn.
-- Ship a second, hierarchical-sheet copy (`hardware/sheets/haytag-core.kicad_sch`) for anyone on KiCad 9
+- Ship a second, hierarchical-sheet copy (`hardware/sheets/halo-core.kicad_sch`) for anyone on KiCad 9
   or earlier, and say plainly in the README that it carries **no copper**.
 - Licence CERN-OHL per GOAL.md; note that the two nearest precedents (SparkFun, Ruuvi) both chose
   CC BY-SA 4.0 — lane F owns the final call.
 
-### 6.2 Artefact 2 — the `haytag-core` castellated module, 15 × 20 mm
+### 6.2 Artefact 2 — the `halo-core` castellated module, 15 × 20 mm
 
 **Construction, v1: a carrier for a Raytac MDBT42Q.** Argued, not assumed:
 
 | criterion | MDBT42Q (v1) | bare nRF52832 + etched IFA (v2 candidate) |
 |---|---|---|
 | NFC1/NFC2 documented as exposed pins | **yes**, pads 22/23 | yes (they are SoC pins) |
-| RF layout risk to haytag | **none** | the whole thing |
+| RF layout risk to halo | **none** | the whole thing |
 | FCC/IC/CE/MIC/KC/SRRC/NCC | **inherited**, ID SH6MDBT42Q, label wording in the datasheet | must be earned; needs shield, regulation, campaign |
 | host board keep-out burden | *"No Ground Pad … in EACH LAYER"* under a **chip** antenna, and place at the edge | full IFA keep-out + laminate-thickness matching (AN043) |
 | verified unit price | **$4.95 @1** (Digi-Key marketplace, +$25 shipping); MS88SF3-class volume floor **$0.900 @1000** | bare **nRF52832-QFAA-R $2.644 @1000** (LCSC C77540, 29 868 in stock) — lane E's price pull, `research/fetched/E-lcsc-price-pull-2026-09-03.md` |
@@ -372,10 +372,10 @@ therefore roughly **$1.8/unit** more than the bare chip — before the crystal, 
 shield can and the antenna the bare chip still needs, and before any certification. At the other end,
 Minew's **MS88SF3 at $0.900 @1000** is *cheaper than the bare nRF52840 it contains*, which is a
 distributor-inventory artefact rather than a durable price, and it was out of stock. **Conclusion: at
-haytag's volumes there is no cost case for a bare-SoC module at all.** The bare-SoC route only becomes
+halo's volumes there is no cost case for a bare-SoC module at all.** The bare-SoC route only becomes
 interesting if the block must shrink below ~10 × 15 mm, which is a mechanical argument, not a cost one.
 
-**Verdict: use the pre-certified module for v1.** The two things haytag is actually trying to sell —
+**Verdict: use the pre-certified module for v1.** The two things halo is actually trying to sell —
 "anyone can drop this in" and "it undercuts $29" — are both better served by inheriting a $4.95
 certified radio than by spending the project's first six months on an antenna and a test lab. Revisit a
 bare-SoC v2 only when (a) volume is real and (b) MS88SF3-class pricing ($0.900 @1000) is in stock, at
@@ -450,7 +450,7 @@ What ce-pcb already supports, read from the code:
 - **Arbitrary outlines including the 32 mm circle** — `cepcb.circle_outline(diameter, center, segments)`
   and `Board(name, w, h, outline=…, layers=…)` (`ce-pcb/cepcb/board.py:39, :79–111`). The puck is a
   one-liner; so is any customer's odd shape.
-- **Placement by footprint id** — `Board.place(ref, fpid, at, rot, side)` (`:148`). So `part:haytag-core`
+- **Placement by footprint id** — `Board.place(ref, fpid, at, rot, side)` (`:148`). So `part:halo-core`
   needs a `cad/pcb_land.kicad_mod` on the shelf (`ce-parts/SCHEMA.md` v2.4 b), which `board sync` then
   reads for pads (`ce-pcb/docs/boards.md` §4).
 - **Copper pours on an explicit polygon** — `Board.pour(net, layer, outline=…)` (`:401`). This is how the
@@ -464,7 +464,7 @@ Two gaps, both **P11 "improve the core"** items rather than reasons to work arou
    2026-09-03). KiCad itself has rule areas; `Board.pour()` can only *avoid* a region, and nothing checks
    that the host actually did. **Proposal: `Board.keepout(polygon, layers, why)`** that writes a KiCad
    rule area *and* a `dwgs.user` outline, plus a `board check` rule that FAILs when a placed
-   `part:haytag-core` has copper inside its declared antenna rectangle. That check is the thing that
+   `part:halo-core` has copper inside its declared antenna rectangle. That check is the thing that
    makes the keep-out real instead of a sentence in a README — and it is exactly the defect Raspberry Pi
    describe and then have to fix by hand.
 2. **No hierarchical sheets and no design blocks.** `cepcb.schematic.Schematic` is documented as
@@ -473,7 +473,7 @@ Two gaps, both **P11 "improve the core"** items rather than reasons to work arou
    `grep -rl "kicad_blocks\|design_block" ce-pcb/cepcb ce-pcb/bin` → **nothing**.
    **Proposal: `cepcb.blocks` — read a `.kicad_blocks/<name>.kicad_block/` directory, place its
    `.kicad_sch` as a subsheet and apply its `.kicad_pcb` fragment to the matching footprint group**,
-   so a haytag design block is usable from a ce-pcb `board.py` and not only from the KiCad GUI.
+   so a halo design block is usable from a ce-pcb `board.py` and not only from the KiCad GUI.
 
 ### 6.5 The three checks that make the block real
 A block whose keep-out is only prose will be violated. Each of these is a PASS/FAIL/CANNOT DETERMINE
@@ -482,7 +482,7 @@ check, in the ce-workshop sense:
    rectangle on any layer, and the rectangle's outer edge coincident with the host `Edge.Cuts`.
    CANNOT DETERMINE if the host board declares no antenna rectangle.
 2. **module escape routability** — every one of the 16 signal pads reaches a host net on ≤ 2 layers at
-   ≥ 0.2 mm/0.2 mm; this is the promise Artemis makes and haytag must keep.
+   ≥ 0.2 mm/0.2 mm; this is the promise Artemis makes and halo must keep.
 3. **NFC coil inductance** — the generated coil's computed inductance (AN2866 §4.1/4.2) is inside the
    band the SoC needs, and the ledger carries a **measured** resonance, not a computed one. Until the
    nRF52 target inductance is verified (§7), this check reports CANNOT DETERMINE by name, never a pass.

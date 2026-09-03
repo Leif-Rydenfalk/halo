@@ -48,6 +48,6 @@ that exist:
    A module is castellated, pre-certified (FCC/CE/BLE), and needs no RF layout from the host
    board — which is exactly the "anyone can drop it into their own outline" property GOAL.md
    asks for, at the cost of a few dollars and a few millimetres.
-Implication for haytag: ship BOTH — a bare-chip nRF5x sheet with a documented antenna keep-out
-for people who can do RF, and a castellated haytag-core module (or a blessed E73/MDBT42Q
+Implication for halo: ship BOTH — a bare-chip nRF5x sheet with a documented antenna keep-out
+for people who can do RF, and a castellated halo-core module (or a blessed E73/MDBT42Q
 variant) for everyone else. No existing project does this, so it is genuine new ground.

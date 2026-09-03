@@ -30,7 +30,7 @@
 
 ## Milestone: the firmware advertises correctly, in emulation, with no hardware
 
-`ce-fwsim` built a haytag firmware, injected a rolling key, and ran it on an
+`ce-fwsim` built a halo firmware, injected a rolling key, and ran it on an
 emulated nRF52840 in Renode. It configured the radio and transmitted on all
 three advertising channels. The advertisement was then verified field by field
 against SPEC F1 and every field matches: the 28-byte key, the air address
@@ -43,7 +43,7 @@ penultimate position. Ledger row written in `evidence/ledger.jsonl`.
 D1 two variants · D2 no
 Bluetooth word mark · D3 press-and-twist battery door (Reese's Law) · D4 licence
 split CERN-OHL-S / AGPL / Apache / CC-BY-SA · D5 clean-room, no MFi enrolment ·
-D6 haytag competes on openness, not on unit price · D7 dual network from
+D6 halo competes on openness, not on unit price · D7 dual network from
 revision A · D8 DULT is in the BOM · D9 redraw the copper, never copy it ·
 D10 parity target is AirTag 2 · D11a a bare piezo bender bonded to the shell ·
 D12 nRF54L Channel Sounding instead of UWB, superseding D10 · D13 bayonet door

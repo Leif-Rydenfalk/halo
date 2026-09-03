@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""haytag doc browser — renders this repo's markdown, TSV and images in a browser.
+"""halo doc browser — renders this repo's markdown, TSV and images in a browser.
 
 Usage:  python3 tools/docs_server.py [port] [repo-root]
         default port 8891, default root = the repo this file lives in.
@@ -8,7 +8,7 @@ Routes: /                     -> the AirTag hardware dossier
         /d/<rel path>         -> render a .md (marked.js) or .tsv (as a table)
         /gallery              -> images/airtag contact sheet
         /raw/<rel path>       -> the file itself (images, downloads)
-        /api/health           -> {"app":"haytag-doc-browser",...}  (launchpad probe)
+        /api/health           -> {"app":"halo-doc-browser",...}  (launchpad probe)
 Any other path 404s on purpose — that is the launchpad's negative control.
 """
 import os, sys, html, mimetypes, json, subprocess
@@ -18,10 +18,10 @@ from urllib.parse import unquote
 ROOT = os.path.abspath(sys.argv[2] if len(sys.argv) > 2 else
                        os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 8891
-MARKER = "haytag-doc-browser"
+MARKER = "halo-doc-browser"
 
 SHELL = """<!doctype html><html><head><meta charset=utf-8>
-<title>%(title)s — haytag docs</title>
+<title>%(title)s — halo docs</title>
 <meta name=viewport content="width=device-width,initial-scale=1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
 <style>
@@ -53,7 +53,7 @@ blockquote{margin:1em 0;padding:2px 16px;border-left:3px solid var(--acc);color:
 .gal figure{margin:0} .gal figcaption{font-size:11.5px;color:var(--mut);margin-top:5px;word-break:break-all}
 .bar{font-size:12px;color:var(--mut);margin-bottom:22px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 </style></head><body>
-<aside><h1>haytag</h1><div class=sub>%(marker)s · <a href="https://github.com/Leif-Rydenfalk/haytag" target=_blank>GitHub &#8599;</a></div>%(nav)s</aside>
+<aside><h1>halo</h1><div class=sub>%(marker)s · <a href="https://github.com/Leif-Rydenfalk/halo" target=_blank>GitHub &#8599;</a></div>%(nav)s</aside>
 <main><div class=bar>%(path)s</div><div id=doc></div></main>
 <script>
 const raw = %(payload)s;
@@ -162,5 +162,5 @@ class H(BaseHTTPRequestHandler):
         return self._send(404, "not found", "text/plain")
 
 if __name__ == "__main__":
-    print("haytag docs on http://127.0.0.1:%d/  root=%s" % (PORT, ROOT), flush=True)
+    print("halo docs on http://127.0.0.1:%d/  root=%s" % (PORT, ROOT), flush=True)
     ThreadingHTTPServer(("127.0.0.1", PORT), H).serve_forever()

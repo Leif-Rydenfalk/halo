@@ -1,7 +1,7 @@
 # REFERENCE-TEARDOWN — the AirTag as the copy target
 
-*Written 2026-09-03 by research lane A. This is the **reference BOM**: not what haytag buys, but
-what haytag is copying. Every other BOM in this repo (`docs/BOM.md`, `spec/bom-candidates.json`,
+*Written 2026-09-03 by research lane A. This is the **reference BOM**: not what halo buys, but
+what halo is copying. Every other BOM in this repo (`docs/BOM.md`, `spec/bom-candidates.json`,
 lane E's substitution map) must map back to a row in §2 here.*
 
 **Full evidence and sources:** `research/01-airtag-hardware.md`. Archived primary pages:
@@ -44,11 +44,11 @@ CR2032. Only the U1 is unobtainable. Everything else on this page is buyable tod
 
 ### 2.1 Active silicon
 
-| # | function | Apple's part | package / marking | verdict | note for haytag |
+| # | function | Apple's part | package / marking | verdict | note for halo |
 |---|---|---|---|---|---|
 | U1 | MCU + BLE 5 + **NFC tag peripheral** | Nordic **nRF52832-CIAA** | WLCSP-50, 90 nm; marking `N52832 CIAAE0 2102JK` (B) | **1:1** | The single most important copy decision: one chip is CPU **and** BLE **and** NFC. Stocked at LCSC. nRF52833/52840 are drop-in-ish upgrades |
 | U2 | UWB transceiver (Precision Finding) | **Apple U1**, die `TMKA75`, TSMC 16 nm, in a **USI** SiP (20.58 mm², embedded xtal + Sony RF switch) | shield can (B) | **GAP** | Never sold to anyone. Not a sourcing problem — a *does-not-exist-for-us* problem. Lane H/E pick a third-party UWB (DW3xxx class) for **peer-to-peer** ranging; Apple-side Precision Finding stays a **known gap** |
-| U3 | firmware storage (nRF firmware **+** U1 "Rose" firmware), **unencrypted** | GigaDevice **GD25LE32D** / **GD25LQ32C** 32 Mbit SPI NOR | WLCSP-10, 1.8 V | **1:1** | 4 MB is generous because it also holds U1 firmware. Without UWB, haytag needs far less |
+| U3 | firmware storage (nRF firmware **+** U1 "Rose" firmware), **unencrypted** | GigaDevice **GD25LE32D** / **GD25LQ32C** 32 Mbit SPI NOR | WLCSP-10, 1.8 V | **1:1** | 4 MB is generous because it also holds U1 firmware. Without UWB, halo needs far less |
 | U4 | 3-axis accelerometer (motion wake, anti-stalk trigger) | Bosch **BMA280** | metal-lid LGA (B) | **1:1 / SUB** | BMA280 is aging; any low-power 3-axis accel serves. DULT needs it (docs/ANTI-STALKING.md) |
 | U5 | audio amplifier → voice coil | Maxim **MAX98357A** | WLCSP (B) | **1:1 / SUB** | Class-D I²S amp. A cheaper amp or direct PWM drive is viable |
 | U6 | main DC-DC buck (3 V → 1.8 V) | TI **TPS62746** 300 mA | marking `98C0051 / TPS746` (B) | **1:1 / SUB** | |
@@ -79,7 +79,7 @@ plastic with a via at each end.
 
 **Copy note:** LDS is the single most expensive process choice in the AirTag and the least
 reproducible in open hardware. Replacing one LDS carrier with printed-on-PCB antennas is the
-biggest cost lever haytag has, and it is a *manufacturing* substitution, not a functional one.
+biggest cost lever halo has, and it is a *manufacturing* substitution, not a functional one.
 
 ### 2.4 The "speaker" — the cleverest part, and optional
 
@@ -93,10 +93,10 @@ Measured **78–80 dB**; costs **~8 mA** while sounding (>3000× sleep). Drillin
 through the shell changed loudness by ±1 dB — the whole dome radiates.
 
 **Copy note:** iFixit found the piezos in Tile/SmartTag *"made just as much, if not more, noise."*
-So the housing-as-diaphragm is an acoustic-quality choice, not a loudness one. haytag should copy
+So the housing-as-diaphragm is an acoustic-quality choice, not a loudness one. halo should copy
 the *function* (a loud, hard-to-silence sounder — DULT requires it) and is free to use a coin
 speaker or magnetic buzzer. **Known anti-stalk defect to NOT copy:** the AirTag runs identically
-with the coil disconnected, so the speaker can be silently disabled. haytag should detect an open
+with the coil disconnected, so the speaker can be silently disabled. halo should detect an open
 coil (Catley's own suggested fix) — see `docs/ANTI-STALKING.md`.
 
 ### 2.5 Mechanical and connector-less interfaces
@@ -159,7 +159,7 @@ The full version with interfaces is §4 of `research/01-airtag-hardware.md`. Con
 - **There is no secure boot** — modified firmware boots. This is how stacksmashing changed the
   Lost-Mode NFC URL in May 2021.
 
-**Why this does not block haytag:** we write our own firmware on our own nRF. This section is
+**Why this does not block halo:** we write our own firmware on our own nRF. This section is
 evidence that the platform is fully open to us, and a warning about what *our* threat model should
 be (an attacker can glitch our tags too — see `docs/ANTI-STALKING.md`).
 

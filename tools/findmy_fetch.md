@@ -16,7 +16,7 @@ Find My is two halves that fail independently, and the whole point of this file
 is that you can test them separately:
 
 ```
-  haytag  --BLE advert-->  a stranger's iPhone  --HTTPS-->  Apple
+  halo  --BLE advert-->  a stranger's iPhone  --HTTPS-->  Apple
                                                               |
   you  <--HTTPS--  gateway.icloud.com  <---------------------- +
        (authenticated as SOME Apple ID, asking by SHA256(pubkey))
@@ -56,7 +56,7 @@ So the transmit half needs one of these, none of which is present:
 | host | firmware | note |
 |---|---|---|
 | ESP32 / ESP32-C3 / ESP32-S3 dev board | `seemoo-lab/openhaystack/Firmware/ESP32` (AGPL) or `dchristl/macless-haystack` ESP32 build | cheapest; ~$5; the advert is hard-coded at build time in upstream, rolling keys need the macless-haystack build |
-| nRF52832 / nRF52840 dongle or dev kit | `pix/heystack-nrf5x` (rolling keys, `MAX_KEYS` up to 500) or `acalatrava/openhaystack-firmware` (MIT) | **the right one for haytag** — same SoC family as the target (SPEC D10) |
+| nRF52832 / nRF52840 dongle or dev kit | `pix/heystack-nrf5x` (rolling keys, `MAX_KEYS` up to 500) or `acalatrava/openhaystack-firmware` (MIT) | **the right one for halo** — same SoC family as the target (SPEC D10) |
 | BBC micro:bit | `openhaystack/Firmware/Microbit_v1` | easiest to flash (drag-and-drop UF2) |
 | a Linux box with a USB BLE dongle | `biemster/FindMy/HCI.py` | needs root and a dongle whose address can be changed; several 2024 reports of `bdaddr` failing per-chipset |
 
@@ -128,7 +128,7 @@ BLE addr would be : D8:E6:64:65:60:9F
 advert payload    : 1E FF 4C 00 12 19 00 81FE813673B67347D96E668BB8731F7FC2D32ED1F48B 00 00
 ```
 
-That payload line is what a haytag must put on air for that key, and it is
+That payload line is what a halo must put on air for that key, and it is
 byte-for-byte the shape SPEC F1 specifies. `findmy_scan.py` will show you the
 `81FE81...F48B` half; the `D8:E6:64:65:60:9F` half lives in the advertising
 address and **is not visible from macOS** (§1).
@@ -176,7 +176,7 @@ acc.to_json("account.json")      # reuse this; do not log in every run
 | **The account does not have to own the tag.** Any Apple ID can query any key hash — Apple's fetch endpoint indexes reports by `SHA256(advertisement key)` and performs no ownership check. This is the design property the whole DIY ecosystem rests on. | `macless-haystack` README + HN 42666734 (2025-01-11): *"The process of requesting locations for a certain tag is not tied to any Apple Account … you can just use a burner account."* |
 | Authentication breaks on Apple's side periodically and comes back on its own. | `FindMy.py#225` (2026-02-10) — malmeloo: *"Just recently they broke authentication for a few days (#225) and then it randomly started working again."* |
 
-**Practical consequence for haytag:** budget for an aged Apple ID with a card
+**Practical consequence for halo:** budget for an aged Apple ID with a card
 on file, created and warmed well before it is needed. A cold burner made the
 day of a demo is a documented failure mode.
 
@@ -195,7 +195,7 @@ for r in reports:
     print(r.timestamp, r.latitude, r.longitude, r.horizontal_accuracy, r.status)
 ```
 
-For a *rolling*-key haytag, do not fetch keys one at a time. Use
+For a *rolling*-key halo, do not fetch keys one at a time. Use
 `FixedRollingKeyPairAccessory` (FindMy.py ≥0.10.0, added by
 `fischer-martin` in PR #243, "add support for devices with a list of
 pre-generated keys") and hand it the whole pre-generated key list. It
@@ -276,7 +276,7 @@ complaints (`FindMy.py#222`, 2026-01-28).
 * **You need an Apple ID.** There is no unauthenticated read path. The account
   need not own the tag, and it need not be Leif's.
 * **You need Apple's `ani_libs.bin`.** Local anisette downloads Apple's own
-  binary and runs it. That is a redistribution question for anything haytag
+  binary and runs it. That is a redistribution question for anything halo
   ships; for a test rig it is fine.
 * **You cannot make an iPhone report your tag.** Everything above measures; none
   of it forces. If no iPhone walks past, there is no report and no client-side

@@ -1,13 +1,13 @@
-# 08 — Local positioning for haytag: UWB ranging, BLE Channel Sounding, and the open-source landscape
+# 08 — Local positioning for halo: UWB ranging, BLE Channel Sounding, and the open-source landscape
 
 Research lane H. Written 2026-09-03. Every claim below carries a link and a fetch date;
 where a number is my own arithmetic on cited inputs it is labelled **[derived]**; where I
 could not confirm something it is labelled **unverified**.
 
 **Scope note.** This lane started as "which UWB chip talks to an iPhone". Decision **D1**
-(DECISIONS.md) changed the question: haytag ships as two variants from one design —
-`haytag-core` (BLE only, the open product) and `haytag-uwb` (BLE plus a ranging radio, for
-Leif's own sensor fleet). For `haytag-uwb` the ranging is **haytag-to-haytag**, so parts are
+(DECISIONS.md) changed the question: halo ships as two variants from one design —
+`halo-core` (BLE only, the open product) and `halo-uwb` (BLE plus a ranging radio, for
+Leif's own sensor fleet). For `halo-uwb` the ranging is **halo-to-halo**, so parts are
 chosen on ranging accuracy, current draw and CR2032 feasibility. iPhone interoperability is
 reported separately in §7 as a known gap, not as a selection criterion.
 
@@ -44,14 +44,14 @@ not a ceiling. It sits inside the same band as UWB two-way ranging (§4: 7.7–1
 1. **Line of sight, static, tripod-mounted, low-multipath, ≤5.5 m.** The same paper's setup
    section: two tripods, 0.5–5.5 m, devices at 140/156 cm height.
 2. **Channel collisions destroy it.** Without deterministic channel assignment, peak error
-   goes 25 cm → 331 cm. In a fleet of haytags all ranging at once this is *the* failure mode,
+   goes 25 cm → 331 cm. In a fleet of halos all ranging at once this is *the* failure mode,
    and the paper's contribution is precisely the scheduler that avoids it.
 3. **Orientation is a first-order error term and is barely studied.** The first published
    study of it (Sep 2026) reports that "device orientation has a substantial effect on CS
    ranging accuracy" and cites prior work showing "single-antenna configurations can produce
    errors of several meters depending on how the device is oriented"; an IMU-fed Random Forest
    recovered 74.6 % of the MAE. Bapat & Nagaraj, arXiv:2609.00650, <https://arxiv.org/abs/2609.00650>
-   (fetched 2026-09-03). A haytag is a coin-cell puck that will sit at an arbitrary angle.
+   (fetched 2026-09-03). A halo is a coin-cell puck that will sit at an arbitrary angle.
 4. **Hobbyist reproduction is much worse than the lab.** A published nRF54L15 evaluation
    reports "overall jitter in any method was 60–120 cm, even when the mean distance was
    right", that "phase slope tended to over-estimate distance by 20–30 %", and that "the hopes
@@ -74,7 +74,7 @@ centimeter-level accuracy" with early implementations at "+/- 20 cm".
 multipath and arbitrary orientation is *useful* — it is a factor of 5–20 better than BLE RSSI
 (§10) and good enough to say which desk, which rack, which shelf. It is **not** the sub-10 cm
 guarantee that UWB TWR gives in the same room. Given that it costs **zero extra silicon**
-(§13), CS is the right primary bet for `haytag-uwb` v1, with UWB kept as a documented option
+(§13), CS is the right primary bet for `halo-uwb` v1, with UWB kept as a documented option
 on the same footprint. Full recommendation in §14.
 
 ---
@@ -106,7 +106,7 @@ raw results in `research/fetched/H-lcsc-jlcpcb-prices.md`. Cross-checked against
 product page for DW3110 (<https://www.lcsc.com/product-detail/C3040882.html>, fetched
 2026-09-03: "27 units in stock", 1+ $10.2268 / 10+ $8.8141 / 30+ $7.9534 / 100+ $7.2316).
 
-| Part | LCSC code | Package | Stock (2026-09-03) | @1 | @100 | @1000 | Verdict for haytag |
+| Part | LCSC code | Package | Stock (2026-09-03) | @1 | @100 | @1000 | Verdict for halo |
 |---|---|---|---|---|---|---|---|
 | Qorvo DW3110TR13 | C3040882 | WLCSP52 3.1×3.5 mm | **30** | $10.16 | $7.18 | — | Cheapest DW3000; stock too thin for a 100-unit run |
 | Qorvo DW3120TR13 | C22384935 | WLCSP52 | **0** | — | — | — | Not sourceable |
@@ -120,7 +120,7 @@ product page for DW3110 (<https://www.lcsc.com/product-detail/C3040882.html>, fe
 **Sourcing conclusion: there is no UWB transceiver you can buy 100 of at LCSC today.** The
 only line with any stock is 30× DW3110 and 9× DW3220. That is a hard constraint against
 "anything in the block must be sourceable at LCSC/JLCPCB" (GOAL.md). It does not kill
-`haytag-uwb` — it is a private fleet variant, and DW3110 is orderable from Qorvo's store,
+`halo-uwb` — it is a private fleet variant, and DW3110 is orderable from Qorvo's store,
 RFMW, Digi-Key and Mouser — but it means UWB cannot be the *default* stuffing option.
 
 ### 2.2 NXP Trimension SR040 / SR150
@@ -199,11 +199,11 @@ From the DW3000 User Manual §11 and Appendix 12 (excerpts file as above):
 > "Two-way ranging (ToF) is good for proximity detection and separation alarms, especially
 > when both parties in the exchange are mobile nodes." — DW3000 UM §11.
 
-That sentence is the haytag case exactly: **both parties are mobile nodes, so TWR, not TDoA.**
+That sentence is the halo case exactly: **both parties are mobile nodes, so TWR, not TDoA.**
 TDoA is the low-power scheme but it buys its power saving by putting wired, clock-synchronised
 anchors on the ceiling — which is precisely the infrastructure GOAL.md says to avoid.
 
-**Clock-offset-compensated SS-TWR is the right scheme for a haytag fleet**: 2 messages per
+**Clock-offset-compensated SS-TWR is the right scheme for a halo fleet**: 2 messages per
 pairwise range, no synchronisation infrastructure, accuracy equal to DS-TWR when reply times
 are short. Independent confirmation: "With CC-SS-TWR, Dotlic et al. shows that it is possible
 to compensate for clock offsets with only two exchanged messages. In experimental tests with
@@ -234,7 +234,7 @@ UWB die or a battery-voltage term in the antenna-delay calibration.
 real UWB systems deliver, not the 10 cm datasheet number and not 1 cm. Second, **vertical
 accuracy collapses** whenever the anchors are roughly coplanar — WakeLoc's 3D error is
 83.5 cm against a 2D error of 7.7 cm, "This error could be improved by changing the
-z-placement of the anchors". A haytag fleet scattered on desks and shelves will be close to
+z-placement of the anchors". A halo fleet scattered on desks and shelves will be close to
 coplanar. **Plan for good x/y and poor z, in both UWB and CS.** For a digital twin this is
 usually acceptable — floor and room are known from other context — but it must be stated in
 the data model rather than discovered later.
@@ -291,7 +291,7 @@ battery-powered operation for up to 25 days … at a localization interval of 40
 wake-up-radio-gated. **Reading: the UWB ranging is not what costs the energy; the always-on
 parts of the system are.**
 
-**Conclusion for the block.** A CR2032 UWB haytag ranging a handful of neighbours once a
+**Conclusion for the block.** A CR2032 UWB halo ranging a handful of neighbours once a
 minute is feasible on paper with a multi-year budget, but only with (i) a scheduled TDMA-style
 protocol so no node idle-listens, (ii) a bulk capacitor sized for the TX pulse, and (iii) a
 32.768 kHz crystal for cheap drift-bounded wake-ups. Continuous or on-demand ranging with an
@@ -351,7 +351,7 @@ reason the original brief was wrong.
   9to5Google, 2026-02-15,
   <https://9to5google.com/2026/02/15/android-find-hub-trackers-uwb/> (fetched 2026-09-03).
 
-**So:** a DW3110 haytag could do UWB ranging with an iPhone *through a haytag-specific iOS app
+**So:** a DW3110 halo could do UWB ranging with an iPhone *through a halo-specific iOS app
 using NearbyInteraction*, subject to MFi enrolment. It could **not** light up Precision Finding
 in Apple's own Find My app. For an open-source project, the MFi requirement is a licensing
 wall regardless. Record as a gap; do not design for it.
@@ -370,7 +370,7 @@ wall regardless. Record as a gap; do not design for it.
 | br101 **libdeca** | <https://github.com/br101/libdeca> | **LGPL-3.0** | DW3000 TWR on Zephyr / ESP-IDF / nRF-SDK 17.1 | — | active, 2026-07-14 |
 | **Makerfabs-ESP32-UWB-DW3000** | <https://github.com/Makerfabs/Makerfabs-ESP32-UWB-DW3000> | **none stated** | ESP32 + DW3000 board, schematic PDF in repo | — | active, 2026-07-01 |
 | **Makerfabs-ESP32-UWB** (DW1000) | <https://github.com/Makerfabs/Makerfabs-ESP32-UWB> | none stated | ESP32 + DW1000 | — | active |
-| Makerfabs **nRF52840-UWB-DW3000** | <https://github.com/Makerfabs/nRF52840-UWB-DW3000> | none stated | **nRF52840 + DW3000** — closest existing analogue to haytag-uwb | — | active, 2026-08-29 |
+| Makerfabs **nRF52840-UWB-DW3000** | <https://github.com/Makerfabs/nRF52840-UWB-DW3000> | none stated | **nRF52840 + DW3000** — closest existing analogue to halo-uwb | — | active, 2026-08-29 |
 | **Fhilb/DW3000_Arduino** | <https://github.com/Fhilb/DW3000_Arduino> | see repo | DW3000 Arduino lib, alternative to Makerfabs' | — | — |
 | **jremington/UWB-Indoor-Localization_Arduino** | <https://github.com/jremington/UWB-Indoor-Localization_Arduino> | none stated | ESP32_UWB tags + anchors, 2D/3D solver | — | active |
 | **vacabun/uwb-twr-rtls** | <https://github.com/vacabun/uwb-twr-rtls> | none stated | Zephyr RTLS, DW1000 **and** DW3000 | — | 2024-01-17 |
@@ -392,7 +392,7 @@ wall regardless. Record as a gap; do not design for it.
 `uwb hardware kicad`, `uwb anchor tag pcb open hardware` (2026-09-03) return nothing with
 stars, a licence and design sources. The two 2026 repos `KaviNDU0021/PCB-UWB-DW3000-TAG_PCB`
 and `KaviNDU0021/PCB-UWB-DW3000_Anchor-Indoor-Positioning` exist at ★0 with no licence. **The
-haytag UWB block would be the first open, licensed KiCad DW3000 tag block I can find.** The
+halo UWB block would be the first open, licensed KiCad DW3000 tag block I can find.** The
 usable open references are the Makerfabs board schematic PDFs and the Qorvo DWS3000 shield
 schematic PDF vendored in br101/foldedtoad.
 
@@ -412,17 +412,17 @@ text saved at `research/fetched/H-qorvo-driver-license.txt`, from
 
 Clause 3 is a **field-of-use restriction**, which fails OSD §6 ("No Discrimination Against
 Fields of Endeavor"), so the driver is redistributable-but-not-open-source. Practical
-consequences for haytag firmware (research/06 owns the final call):
+consequences for halo firmware (research/06 owns the final call):
 
 - It **can** be shipped in the repo (redistribution in source form is expressly permitted with
   the notice retained), the way br101 and Zephyr do.
-- It is **GPL-incompatible** — a GPL/AGPL haytag firmware cannot link it and be distributed.
+- It is **GPL-incompatible** — a GPL/AGPL halo firmware cannot link it and be distributed.
   `libdeca` sits on top of it under LGPL-3.0, which is coherent (LGPL for the wrapper,
   Qorvo licence for the vendored driver), but the *combined* binary still carries clause 3.
-- Permissive-licensed haytag firmware (Apache-2.0 / MIT) is compatible in practice, provided
+- Permissive-licensed halo firmware (Apache-2.0 / MIT) is compatible in practice, provided
   the Qorvo notice is preserved and the licence file is shipped.
 - Clause 5 forbids using the Qorvo name to endorse or naming derived products "Qorvo" — so
-  the block must not be called anything like "haytag-Qorvo".
+  the block must not be called anything like "halo-Qorvo".
 
 **By contrast, the Channel Sounding stack in nRF Connect SDK is Nordic-licensed but the
 `sdk-nrf` samples are open, and there is no equivalent "our silicon only" clause in the
@@ -533,8 +533,8 @@ in stock) and only shrink to L05 if it fits.**
   <https://devzone.nordicsemi.com/f/nordic-q-a/127111/ble-channel-sounding-with-nrf54l15-which-smartphones-are-actually-supported>
   (search extract 2026-09-03 — **secondary, not directly fetched; unverified**). Android's
   ranging module instead interoperates with iOS over UWB.
-- Consequence for haytag: **CS gives fleet-to-fleet ranging, not phone-to-tag ranging on
-  iPhone.** Since D1 scopes `haytag-uwb` to Leif's own fleet, this does not bite.
+- Consequence for halo: **CS gives fleet-to-fleet ranging, not phone-to-tag ranging on
+  iPhone.** Since D1 scopes `halo-uwb` to Leif's own fleet, this does not bite.
 
 ### 9.6 Open CS projects
 
@@ -575,7 +575,7 @@ bootstrap for grouping devices before CS ranging — arXiv:2605.17094 proposes e
 "Newly joining devices can be assigned based on coarse position cues (received signal
 strength, angle-of-arrival) collected at initial synchronization".
 
-**BLE 5.1 direction finding (AoA/AoD) is the wrong shape for haytag.** The tag side is cheap —
+**BLE 5.1 direction finding (AoA/AoD) is the wrong shape for halo.** The tag side is cheap —
 a plain BLE SoC transmitting a constant-tone extension — but the *anchor* side needs a
 multi-element switched antenna array plus an RTL (real-time locating) library. That is
 per-room infrastructure, which is exactly what GOAL.md rules out. Reference open
@@ -596,7 +596,7 @@ quoting one; unverified.**
 
 ## 11. A fleet that locates itself without infrastructure
 
-This is the part GOAL.md actually asks for: *N* haytags scattered in a building, no ceiling
+This is the part GOAL.md actually asks for: *N* halos scattered in a building, no ceiling
 anchors, each learning where it is relative to the others.
 
 ### 11.1 The geometry: how many ranges are needed
@@ -613,7 +613,7 @@ anchors, each learning where it is relative to the others.
   I did not fetch a citable primary source for this bound in this lane — treat as a known
   result to be cited properly in the firmware spec]**. Even then the solution floats: an
   anchor-free graph fixes shape but not global position, orientation or handedness. **You need
-  at least one externally-known reference** (one haytag whose position is surveyed, a
+  at least one externally-known reference** (one halo whose position is surveyed, a
   gravity vector from the accelerometer to fix "down", and ideally a compass or a second
   surveyed node to fix yaw).
 - **Practical schedule:** for N ≈ 10–30 devices in a building, ranging every pair every cycle
@@ -639,7 +639,7 @@ anchors, each learning where it is relative to the others.
 **Honest state of the art: there is no drop-in open-source library that takes a stream of
 pairwise ranges from N coin-cell devices and returns a stable relative map.** Every citation
 above is either a robotics-scale ROS package with odometry, an archived and unverified Python
-port, or future work. The haytag fleet solver will have to be written. It is not hard —
+port, or future work. The halo fleet solver will have to be written. It is not hard —
 classical MDS for an initial embedding, then a nonlinear least-squares / factor-graph refine
 (GTSAM or Ceres) with a robust kernel for NLOS outliers — but budget it as real work, and
 run it **off the tag**, in Twinton.
@@ -648,7 +648,7 @@ run it **off the tag**, in Twinton.
 
 **Raw ranges, not solved positions.** Reasons, all evidenced above:
 
-1. **Solving needs the whole graph.** No single haytag sees enough of the graph to solve it,
+1. **Solving needs the whole graph.** No single halo sees enough of the graph to solve it,
    and the graph changes as devices move. Centralising is what the PAwR architecture does:
    the Central Orchestrator "aggregates Initiator and Reflector reports into paired data
    points for downstream processing".
@@ -685,7 +685,7 @@ defeats the BLE-side privacy work. Hand this to docs/ANTI-STALKING.md.
 
 ## 13. Cost comparison
 
-Per-unit silicon delta over a BLE-only haytag, LCSC/JLCPCB pricing 2026-09-03
+Per-unit silicon delta over a BLE-only halo, LCSC/JLCPCB pricing 2026-09-03
 (`research/fetched/H-lcsc-jlcpcb-prices.md`). Passives, crystal and antenna estimated where
 noted **[derived]**.
 
@@ -693,7 +693,7 @@ noted **[derived]**.
 |---|---|---|---|---|---|---|
 | **BLE-only, nRF52832** (today's AirTag-clone baseline) | $2.81 | $2.64 | 32 MHz + 32.768 kHz xtals, chip antenna | — | none (rides Find My) | yes, 41 325 in stock |
 | **BLE-only, nRF52833** | $3.69 | $3.39 | same | +$0.88 | none | yes, 21 088 in stock |
-| **BLE + CS, nRF54L05** | **$2.20** | **$2.01** | same crystals, same single antenna | **−$0.61** | **none** (peer-to-peer; a PAwR gateway is optional and can itself be a haytag on mains) | yes, **1775 in stock** |
+| **BLE + CS, nRF54L05** | **$2.20** | **$2.01** | same crystals, same single antenna | **−$0.61** | **none** (peer-to-peer; a PAwR gateway is optional and can itself be a halo on mains) | yes, **1775 in stock** |
 | **BLE + CS, nRF54L10** | $2.59 | $2.38 | same | −$0.22 | none | yes, 1003 in stock |
 | **BLE + CS, nRF54L15** | $2.71 | $2.48 | same | −$0.10 | none | **stock 0** |
 | **BLE + UWB, nRF52832 + DW3110** | $2.81 + $7.18 = $9.99 | — | + Partron ACS5200HFAUWB $0.78, + 38.4 MHz TCXO/xtal ≈ $0.60 **[derived estimate]**, + balun/matching + 100 µF bulk ≈ $0.30 **[derived estimate]** | **+$8.86** | none for TWR; TDoA would need wired synced anchors | **no** — 30 pcs of DW3110, 0 pcs of the antenna |
@@ -707,13 +707,13 @@ Channel Sounding costs about −$0.6 per tag and is in stock.** At 1000 units th
 not close, because Qorvo does not publish a 1000-piece break at LCSC and stock is the binding
 constraint, not price.
 
-The AirTag retail comparison from GOAL.md: Apple sells AirTag at $29. A CS-capable haytag's
+The AirTag retail comparison from GOAL.md: Apple sells AirTag at $29. A CS-capable halo's
 radio silicon is $2.20 at 100 pcs. Even with a UWB die added the radio BOM is ~$11, so the
 $29 target is not the binding constraint in either configuration — **sourcing is**.
 
 ---
 
-## 14. Recommendation for the haytag block
+## 14. Recommendation for the halo block
 
 ### v1 — carry Channel Sounding, on an nRF54L-class SoC, and no second radio
 
@@ -750,7 +750,7 @@ $29 target is not the binding constraint in either configuration — **sourcing 
 
 7. **Reserve footprint and pin budget for a Qorvo DW3110 (WLCSP52, 3.1×3.5 mm) on SPI,** with
    a Partron ACS5200HFAUWB-class chip-antenna land and a keep-out, populated only on the
-   `haytag-uwb-hp` (high-precision) build. Cost +$8.86/unit at 100.
+   `halo-uwb-hp` (high-precision) build. Cost +$8.86/unit at 100.
    *Why DW3110 and not the others:* it is the only DW3000 sku with any LCSC stock, the
    cheapest ($7.18@100 vs $18.09 for DW3220), the smallest (WLCSP52 3.1×3.5 mm vs QFN40
    5×5 mm), and the one Qorvo MFi-certified for Nearby Interaction should that ever matter.
@@ -762,7 +762,7 @@ $29 target is not the binding constraint in either configuration — **sourcing 
    *Evidence:* §3, §4.
 9. **Firmware stack for the UWB option: `br101/zephyr-dw3000-decadriver` (ISC + vendored
    Qorvo driver) + `br101/libdeca` (LGPL-3.0) on Zephyr,** the same RTOS the CS path already
-   uses. Read the Qorvo licence's field-of-use clause before choosing the haytag firmware
+   uses. Read the Qorvo licence's field-of-use clause before choosing the halo firmware
    licence — it is not OSI-open and it is GPL-incompatible.
    *Evidence:* §8, §8.1, `research/fetched/H-qorvo-driver-license.txt`.
 10. **If the UWB option is built, add per-unit antenna-delay calibration and a bulk
@@ -775,7 +775,7 @@ $29 target is not the binding constraint in either configuration — **sourcing 
 - **NXP SR040/SR150** — not in the LCSC catalogue, no public pricing, vendor-licensed stack.
   Better silicon for a tag on paper (CR2032-optimised, on-chip FiRa MAC) but unsourceable and
   unopenable. §2.2.
-- **DWM3000 module** — $22.45 and stock 0; the whole point of the block is that haytag does
+- **DWM3000 module** — $22.45 and stock 0; the whole point of the block is that halo does
   the RF layout once so others do not have to. §2.1.
 - **UWB TDoA** — needs wired, clock-synchronised anchors. §3.
 - **BLE 5.1 AoA** — needs antenna-array locators per room. §10.
@@ -786,7 +786,7 @@ $29 target is not the binding constraint in either configuration — **sourcing 
 
 ### The one experiment that would change this recommendation
 
-Build two nRF54L10 haytag prototypes, place them 1–6 m apart in Leif's actual workspace (not a
+Build two nRF54L10 halo prototypes, place them 1–6 m apart in Leif's actual workspace (not a
 tripod in a corridor), rotate each through nine orientations, and measure P90 range error with
 and without the accelerometer covariate. If P90 stays under ~40 cm with arbitrary orientation
 and real furniture, CS alone settles it and the UWB footprint is never stuffed. If P90 blows

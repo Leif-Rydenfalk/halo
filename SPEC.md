@@ -1,4 +1,4 @@
-# SPEC — what haytag must be
+# SPEC — what halo must be
 
 *The specification the design is judged against. Every row is either SETTLED
 (with its source) or PENDING with the lane that will settle it. Nothing here is
@@ -11,14 +11,14 @@ Started 2026-09-03. Revision: draft 0.
 
 ## 1. Product definition
 
-haytag is a coin-cell Bluetooth tracker that reproduces the Apple AirTag
+halo is a coin-cell Bluetooth tracker that reproduces the Apple AirTag
 function for function from public information only, published openly, and
 manufacturable cheaply. It ships in two variants (DECISIONS.md D1):
 
-| | haytag-core | haytag-uwb |
+| | halo-core | halo-uwb |
 |---|---|---|
 | radios | 2.4 GHz BLE, Channel Sounding | same, plus an ultra-wideband transceiver in the reserved footprint |
-| purpose | the open product: find your things through Apple's Find My network, **and** range to other haytags at 6–20 cm line of sight | a high-precision stuffing option, if Channel Sounding proves insufficient in a real room |
+| purpose | the open product: find your things through Apple's Find My network, **and** range to other halos at 6–20 cm line of sight | a high-precision stuffing option, if Channel Sounding proves insufficient in a real room |
 | certification | pre-certified module, modular approval, RED self-declaration | owner-operated, not a sold consumer product |
 | status | the shipping default | second board revision |
 
@@ -28,7 +28,7 @@ castellated solder-down module, and the Ø 32 mm puck as the first host.
 
 ## 2. Functional requirements, against the real AirTag
 
-Each row: what the AirTag does, what haytag must do, and where the number comes
+Each row: what the AirTag does, what halo must do, and where the number comes
 from. The part that implements each is section 3.
 
 | # | function | requirement | state |
@@ -43,7 +43,7 @@ from. The part that implements each is section 3.
 | F7 | motion detection | wake and change advertising behaviour on movement | SETTLED lane A: AirTag samples every 10 s at rest and 0.5 s once moving; DULT additionally requires ±10° accuracy |
 | F8 | NFC tap | phone tap reads the tag and opens the owner page | SETTLED lane A: the Nordic SoC's own NFC-A peripheral emulates a read-only Type-4 tag holding the owner URL; only the coil and two tuning capacitors are external |
 | F9 | precision finding | AirTag does this with Apple's U1 | **known gap** — not reproducible without MFi (DECISIONS.md D1, D5) |
-| F10 | peer ranging | range to other haytags with Bluetooth Channel Sounding, 6–20 cm line of sight, 30 s update, deterministically scheduled, reporting raw ranges with quality metadata and an orientation vector | SETTLED lane H; DECISIONS.md D12 |
+| F10 | peer ranging | range to other halos with Bluetooth Channel Sounding, 6–20 cm line of sight, 30 s update, deterministically scheduled, reporting raw ranges with quality metadata and an orientation vector | SETTLED lane H; DECISIONS.md D12 |
 | F11 | battery life | about a year on a CR2032 | model PASSES in ce-spice: fresh-cell droop 68 mV under a transmit pulse against a 400 mV limit, five scenarios fresh to end of life, all asserts held |
 | F12 | battery replacement | user-replaceable CR2032 behind a compliant door | SETTLED lane F: tool or two independent simultaneous movements (16 CFR 1263) |
 
@@ -58,13 +58,13 @@ those three together, not over the first (DECISIONS.md D8).
 
 From lane A's function map (research/01-airtag-hardware.md §4), which read the
 part markings off Colin O'Flynn's full-resolution board photographs and Apple's
-own regulatory filing. The haytag column is lane E's substitution work; rows
+own regulatory filing. The halo column is lane E's substitution work; rows
 marked PENDING lane E are awaiting its sourced pick.
 
-| function | AirTag part (identified) | haytag part | note |
+| function | AirTag part (identified) | halo part | note |
 |---|---|---|---|
 | CPU, Bluetooth radio **and NFC tag in one** | Nordic **nRF52832-CIAA**, WLCSP-50, marking `N52832 CIAAE0 2102JK` | **nRF54L10**, falling back to L05 or up to L15 on memory (D12) — the family keeps the NFC-A tag peripheral and adds Channel Sounding | the NFC tag is the SoC's own peripheral on pins P0.09/P0.10 — **no separate NFC chip exists in an AirTag**, which deletes a line most clone BOMs carry |
-| UWB ranging | Apple **U1**, die `TMKA75`, TSMC 16 nm, in a USI system-in-package with its own processor running "Rose" firmware side-loaded by the Nordic part | **not reproducible** — never sold. haytag-uwb uses a sourceable transceiver for peer ranging only (D1) | the only true hard wall in the whole design |
+| UWB ranging | Apple **U1**, die `TMKA75`, TSMC 16 nm, in a USI system-in-package with its own processor running "Rose" firmware side-loaded by the Nordic part | **not reproducible** — never sold. halo-uwb uses a sourceable transceiver for peer ranging only (D1) | the only true hard wall in the whole design |
 | firmware and key storage | GigaDevice **GD25LE32/LQ32**, 32 Mbit SPI NOR, WLCSP-10, 1.8 V | PENDING lane E — generic SPI NOR | holds both the Nordic firmware and the U1's firmware, unencrypted |
 | motion detection | Bosch **BMA280** | PENDING lane E | sampled every 10 s at rest, 0.5 s once moving |
 | sound | Maxim **MAX98357A** class-D amplifier driving a copper voice coil glued to the shell, against a fixed central magnet, with a **TI TLV9001** op-amp in the analogue path | **bare Murata 7BB-20-3 piezo bender, Ø20.0 × 0.22 mm**, bonded to the shell and driven anti-phase from two SoC pins (D11) | about 8 mA while sounding, over three thousand times the sleep current |

@@ -98,7 +98,7 @@ RGB LED, 850 nm IR LED, NFC flex-antenna socket, 6 GPIO on an extension connecto
 ADC, USB pads. Gerbers + drill + schematic PDF + PCB layout published. **BSD licence.**
 Author "Mishka"; created ~7 years ago, rev6 ~6 years ago (i.e. ~2019 — dormant).
 The 25 mm 2-layer round nRF52 board with published gerbers is a very close geometric
-precedent for a 30-32 mm haytag puck.
+precedent for a 30-32 mm halo puck.
 
 ## Note on date discrepancies
 Lane C read last-activity from each repo's `commits/<branch>.atom` feed on 2026-09-03;

@@ -1,6 +1,6 @@
 # Licensing
 
-haytag is published under a split licence, chosen by research lane F and
+halo is published under a split licence, chosen by research lane F and
 recorded as decision D4 in DECISIONS.md. Each part of the repository carries
 the licence that fits what it is and what it derives from.
 
@@ -19,13 +19,13 @@ Two consequences worth stating plainly:
   port, FakeTag, FindMy.py) and the AGPL line (OpenHaystack itself,
   macless-haystack, find-you, send-my). Two projects, `heystack-nrf5x` and
   `biemster/FindMy`, **declare no licence at all** and are read-only reference.
-  If haytag firmware must be permissive, it derives from the MIT set only.
+  If halo firmware must be permissive, it derives from the MIT set only.
 - **Nothing here derives from Apple's MFi specification.** Decision D5: the
   design is clean-room from the PoPETs 2021 academic paper and public
   reverse-engineering. Anyone who has read the MFi Find My specification under
   its non-disclosure agreement must not contribute to the firmware.
 
-"AirTag" and "Find My" are trademarks of Apple Inc. haytag is not affiliated
+"AirTag" and "Find My" are trademarks of Apple Inc. halo is not affiliated
 with, endorsed by, or certified by Apple. It is described as compatible with
 Apple's Find My network, which is referential use; it does not carry, and may
 not carry, the licensed "Works with Apple Find My" badge.

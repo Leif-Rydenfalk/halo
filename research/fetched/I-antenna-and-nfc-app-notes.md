@@ -26,7 +26,7 @@ Lane I. Fetched 2026-09-03; PDFs downloaded with curl and converted with `pdftot
   is connected to the laptop the bandwidth is reduced to around **100 MHz**, which still is enough to
   cover the whole 2.4 GHz ISM band."*
   → A quarter-wave printed antenna's tuning is a property of **the whole board it lands on**, which is
-  exactly what changes when a haytag block moves into someone else's outline.
+  exactly what changes when a halo block moves into someone else's outline.
 
 ## TI AN058 / SWRA161B — "Antenna Selection Guide"
 <https://www.ti.com/lit/an/swra161b/swra161b.pdf> (44 pp, Richard Wallace)
@@ -77,7 +77,7 @@ efficiency and two-thirds of the bandwidth versus the 26 × 8 mm one.
   ground area, a 19 mm 50 Ω feed line, and a **6.5 × 6.5 mm "No Ground" antenna region**.
 - *"Line width should be designed to provide 50 Ω impedance matching characteristics."*
 
-→ Direct consequence for haytag: a chip antenna does **not** remove the host-board dependence, it only
+→ Direct consequence for halo: a chip antenna does **not** remove the host-board dependence, it only
 moves it into a π-network that must be re-tuned per host. A **module** with its own ground plane and
 shield is the only construction where the tuning travels with the part.
 
@@ -107,7 +107,7 @@ shield is the only construction where the tuning travels with the part.
 - §5 gives the two contactless tuning-measurement methods (network analyser; ISO standard loop antenna
   + oscilloscope) — i.e. the coil has to be **measured after layout**, per host shape.
 
-→ Direct consequence for haytag: the NFC coil is the one part of the tag that **cannot** live inside a
+→ Direct consequence for halo: the NFC coil is the one part of the tag that **cannot** live inside a
 15 × 20 mm module. Its inductance is set by turns and enclosed area, both of which are properties of the
 host outline. The block must expose NFC1/NFC2 and ship a **parametric coil generator + a target
 inductance**, not a fixed coil. (Nordic's nRF52 NFC-A tag needs ~2 µH-class coils in the same family;

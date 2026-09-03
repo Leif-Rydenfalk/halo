@@ -1,5 +1,5 @@
 {
-  "schema": "haytag/positioning-candidates/1",
+  "schema": "halo/positioning-candidates/1",
   "lane": "H",
   "generated": "2026-09-03",
   "currency": "USD",
@@ -10,7 +10,7 @@
     "evidence_file": "research/fetched/H-lcsc-jlcpcb-prices.md",
     "cross_check": "https://www.lcsc.com/product-detail/C3040882.html"
   },
-  "notes": "Every price/stock pair is a point-in-time observation. 'stock' is the LCSC stock at query time and is the binding constraint for haytag, not price. Fields marked unverified must not be used in a BOM justification without a primary source.",
+  "notes": "Every price/stock pair is a point-in-time observation. 'stock' is the LCSC stock at query time and is the binding constraint for halo, not price. Fields marked unverified must not be used in a BOM justification without a primary source.",
 
   "technologies": [
     {
@@ -44,11 +44,11 @@
           "source": "https://arxiv.org/abs/2605.17094 section IV-C-6"}
       },
       "tag_extra_silicon_usd_at_100": 0.0,
-      "infrastructure_required": "none for peer-to-peer; a PAwR gateway advertiser is optional for the connectionless scaling mode and can itself be a mains-powered haytag",
+      "infrastructure_required": "none for peer-to-peer; a PAwR gateway advertiser is optional for the connectionless scaling mode and can itself be a mains-powered halo",
       "scalability": {"devices_per_pawr_train": 14080, "conditions": "four-measurement workload, single antenna path, ~40 s minimum update cycle", "source": "https://arxiv.org/abs/2605.17094"},
       "phone_interop": {"android": "Android 16 RangingManager API; Google Pixel 10 first phone", "ios": "no public BLE CS API (unverified, secondary source)"},
       "maturity": "shipping silicon and official Nordic host+controller from nRF Connect SDK v3.0.1; first independent CR2032 measurements published 2026",
-      "verdict": "primary recommendation for haytag-uwb v1"
+      "verdict": "primary recommendation for halo-uwb v1"
     },
     {
       "id": "uwb-twr",
@@ -87,7 +87,7 @@
       "infrastructure_required": "none for peer-to-peer TWR; TDoA requires wired clock-synchronised anchors",
       "phone_interop": {"ios": "Nearby Interaction accessory sessions possible with an MFi-certified chipset and a custom iOS app; Precision Finding in the Find My app is AirTag-exclusive", "android": "UWB not part of the Find Hub network"},
       "maturity": "mature silicon, deprecated vendor SDKs, no open KiCad tag design found",
-      "verdict": "documented stuffing option on the same footprint (haytag-uwb-hp)"
+      "verdict": "documented stuffing option on the same footprint (halo-uwb-hp)"
     },
     {
       "id": "ble-aoa",
@@ -164,7 +164,7 @@
      "package": "VFQFN-48 6x6 mm", "memory": {"nvm_mb": 1, "ram_kb": 192},
      "lcsc": "C44800139", "stock": 1003, "price": {"1": 3.76, "10": 3.23, "30": 2.91, "100": 2.59, "500": 2.44, "1000": 2.38},
      "cs_support": "listed in platform_allow of the NCS CS RAS initiator sample",
-     "verdict": "RECOMMENDED for haytag v1 - CS-capable, in stock, cheaper than nRF52833"},
+     "verdict": "RECOMMENDED for halo v1 - CS-capable, in stock, cheaper than nRF52833"},
     {"part": "NRF54L15-QFAA-R", "mfr": "Nordic Semiconductor", "role": "ble-soc-with-channel-sounding",
      "package": "QFN-48 6x6 mm", "memory": {"nvm_mb": 1.5, "ram_kb": 256},
      "lcsc": "C42458750", "stock": 0, "price": {"1": 3.98, "10": 3.40, "30": 3.06, "100": 2.71, "500": 2.55, "1000": 2.48},
@@ -221,7 +221,7 @@
                        "accelerometer orientation vector attached to every range",
                        "raw ranges plus quality metadata reported upward; solve positions in Twinton",
                        "ranging identifiers rotate with the Find My advertising identifiers"]},
-    "option": {"technology": "uwb-twr", "part": "DW3110TR13", "build": "haytag-uwb-hp",
+    "option": {"technology": "uwb-twr", "part": "DW3110TR13", "build": "halo-uwb-hp",
       "scheme": "clock-offset-compensated SS-TWR",
       "firmware": ["https://github.com/br101/zephyr-dw3000-decadriver", "https://github.com/br101/libdeca"],
       "requirements": ["per-unit antenna-delay calibration", "bulk capacitor for the TX pulse", "regulated rail (5.35 cm/V range error)"],

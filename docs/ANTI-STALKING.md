@@ -1,4 +1,4 @@
-# haytag and unwanted tracking
+# halo and unwanted tracking
 
 **Status: DRAFT for review.** Written 2026-09-03 by research lane F. This is the project's public ethical
 position and the concrete feature list that follows from it. It is not legal advice.
@@ -30,7 +30,7 @@ public keys, one beacon every 30 seconds, **no speaker at all**. It tracked a ta
 > partner's devices), they need to take into account the threats of custom-made, potentially malicious
 > beacons."
 
-**A haytag board with no buzzer fitted and a stealth key schedule is that device.** We are not going to
+**A halo board with no buzzer fitted and a stealth key schedule is that device.** We are not going to
 pretend otherwise, and we are not going to ship it.
 
 ## 2. Our position
@@ -51,8 +51,8 @@ pretend otherwise, and we are not going to ship it.
 5. **We are honest about the limits.** A determined attacker with a soldering iron can defeat any of this
    — that is true of AirTag too; Adam Catley's teardown shows the AirTag voice coil *"can be disconnected
    without disassembly"* and the tag then *"operates as normal"*, silently
-   ([adamcatley.com/AirTag](https://adamcatley.com/AirTag.html)). Our claim is not that haytag cannot be
-   abused. It is that **haytag will not make abuse easy, will not document it, and will not ship it as a
+   ([adamcatley.com/AirTag](https://adamcatley.com/AirTag.html)). Our claim is not that halo cannot be
+   abused. It is that **halo will not make abuse easy, will not document it, and will not ship it as a
    default.**
 6. **Owner privacy and target safety are weighed equally.** This is the DULT threat model's own principle:
    *"Avoid privacy compromises for Tag Owner(s) when protecting against Unwanted Tracking. The privacy of
@@ -81,7 +81,7 @@ Status as of 2026-09-03 ([datatracker DULT documents](https://datatracker.ietf.o
 revision, and we will re-review when a successor revision or an RFC appears. Full text is archived in this
 repo at `research/fetched/F-dult-accessory-protocol-00.md`.
 
-## 4. What haytag will implement
+## 4. What halo will implement
 
 Each item cites the section of `draft-ietf-dult-accessory-protocol-00` it comes from.
 
@@ -94,8 +94,8 @@ Each item cites the section of `draft-ietf-dult-accessory-protocol-00` it comes 
 | **Printed serial number** on the shell/label, unique per product ID | *"The serial number MUST be unique for each product ID"*; *"SHALL be printed and be easily accessible on the accessory"* | 3.15.1 |
 | **A physical button** (or an NFC tag) for identifier retrieval | The identifier must be readable by a finder, gated by a deliberate physical action | 3.15.2–3.15.3 |
 
-The buzzer is **not** a DNP option, **not** a solder-jumper, and **not** a "premium variant" part. A haytag
-without it is not a haytag.
+The buzzer is **not** a DNP option, **not** a solder-jumper, and **not** a "premium variant" part. A halo
+without it is not a halo.
 
 ### 4.2 Firmware behaviour
 
@@ -119,7 +119,7 @@ without it is not a haytag.
 - An owner-information page showing **obfuscated** contact details only — DULT §3.16.1 requires at least
   one of: the **last four digits of the owner's phone number**, or an **email address with the first
   letter of the username and the domain visible**. Never the full contact.
-- DULT §3.16.2 sets a **25-day minimum** retention for owner registry data after disassociation. If haytag
+- DULT §3.16.2 sets a **25-day minimum** retention for owner registry data after disassociation. If halo
   ever operates such a registry it is a GDPR controller: publish a privacy notice, keep the retention at
   the DULT floor and no longer, and document the lawful basis. **Preferred design: no project-operated
   registry at all — a static instruction page plus the printed serial, with owner contact under the
@@ -127,7 +127,7 @@ without it is not a haytag.
 
 ### 4.4 Documentation duties
 
-- A prominent "If you think a haytag is following you" section in the README and on any product page:
+- A prominent "If you think a halo is following you" section in the README and on any product page:
   how to find it, how to make it beep, how to disable it (remove the CR2032), and where to get help.
 - Links to platform detection: [Apple's Detect unwanted trackers](https://support.apple.com/guide/personal-safety/detect-unwanted-trackers-ips139b15fd9/web),
   [Android's Find unknown trackers](https://support.google.com/android/answer/13658562), and
@@ -137,7 +137,7 @@ without it is not a haytag.
   buried in the repo.
 - The `CONTRIBUTING.md` rule from §2.4 above, stated as policy.
 
-## 5. What haytag will not do
+## 5. What halo will not do
 
 - No stealth firmware, no silent build target, no sound-suppression configuration option.
 - No key schedule faster than the DULT rotation intervals, and no "fresh key per advertisement" mode.

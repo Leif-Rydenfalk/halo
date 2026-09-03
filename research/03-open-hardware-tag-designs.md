@@ -25,7 +25,7 @@ My tags** (RuuviTag, rayBeacon, Squall, Sensirion SHTC3) and **excellent Find My
 with no hardware at all** (OpenHaystack, heystack-nrf5x, Everytag's firmware half, FakeTag,
 Macless Haystack).
 
-That gap is the opportunity. It also means haytag cannot be a fork — it is a synthesis:
+That gap is the opportunity. It also means halo cannot be a fork — it is a synthesis:
 RuuviTag's KiCad round-board + NFC coil + accelerometer, PinPoint's Find My intent and
 sounder, Everytag's firmware, rayBeacon's 25 mm two-layer round geometry, and a module/block
 split that **nobody in the field has published**.
@@ -49,7 +49,7 @@ each design as:
 | 2 | **RuuviTag** (Rev B1–B8) | [github](https://github.com/ruuvi/ruuvitag_hw) | Ruuvi Innovations Ltd / Lauri Jämsä | nRF52832 (bare chip) | CR2477, 1000 mAh | **45 mm round PCB**, 52 mm enclosure, 12.5 mm high | **KiCad** (v5-era: `.sch`, `.kicad_pcb`, `.pro`, `-cache.lib`) + schematic **PDF**; **no gerbers/BOM in-tree** | **CC BY-SA 4.0** (+ name restriction) | 2021-07-14 | Find My, UWB, speaker; too big at 45 mm | **monolith** — bare nRF52832 + its own antenna, one outline | **5** |
 | 3 | **Everytag** (firmware + `hardware/`) | [github](https://github.com/vasimv/Everytag) | vasimv | nRF52833 on the board; firmware covers nRF52805/810/832/833, nRF54L15 | **LIR2016 Li-ion** (rechargeable) | 50x20x2 mm thin, or 30x20 mm | **KiCad** sources + **full gerber set** + drill + P&P + Altium 3D models | **GPL-3.0** | **2026-04-22** (most active) | Speaker, NFC, accelerometer, round shape; rectangular Qi-charging beacon | **monolith** — but the Qi coil + BQ25121A charger sub-circuit is a genuinely reusable idea | **4** |
 | 4 | **rayBeacon** | [openhardware.io/view/742](https://www.openhardware.io/view/742/Raybeacon-nRF52-on-the-go-Development-Kit) | "Mishka" | nRF52833 / nRF52840 (bare chip) | CR2032 / CR2025 | **25 mm round, 2-layer** | Gerbers + drill + schematic PDF + PCB layout (native source not published) | **BSD** | ~2019 (rev6, "6 years ago") | Find My, UWB, speaker, accelerometer, on-board NFC coil (has a flex-antenna socket instead) | **monolith**, gerber-only | **3** |
-| 5 | **Squall** | [github](https://github.com/helena-project/squall) | Lab11 / helena-project (Univ. Michigan) | nRF51822 | coin cell clip; USB variant rechargeable | **1 inch (25.4 mm) round** | Not stated in README (unverified — `hardware/` dirs exist, e.g. `hardware/squall-breakout/rev_b`) | **No LICENSE file found** ⇒ all rights reserved | 2017-09-30 | Everything: Find My, UWB, speaker, NFC, accelerometer; nRF51 is obsolete | **monolith**, but explicitly designed as a *base* with shield daughterboards (Rain, BLEES) — the closest anyone got to the haytag "block" idea | **2** |
+| 5 | **Squall** | [github](https://github.com/helena-project/squall) | Lab11 / helena-project (Univ. Michigan) | nRF51822 | coin cell clip; USB variant rechargeable | **1 inch (25.4 mm) round** | Not stated in README (unverified — `hardware/` dirs exist, e.g. `hardware/squall-breakout/rev_b`) | **No LICENSE file found** ⇒ all rights reserved | 2017-09-30 | Everything: Find My, UWB, speaker, NFC, accelerometer; nRF51 is obsolete | **monolith**, but explicitly designed as a *base* with shield daughterboards (Rain, BLEES) — the closest anyone got to the halo "block" idea | **2** |
 | 6 | **Sensirion SHTC3 BLE beacon** | [github](https://github.com/Sensirion/shtc3_ble_beacon) | Sensirion AG | nRF52 (nRF5 SDK 17 `ble_app_beacon`) | CR2032 | not stated | schematics + PCB layout + **gerbers** + STEP housing + firmware | **BSD-3-Clause** | 2020-11-30 | Find My, UWB, speaker, NFC, accelerometer; it is a temp/RH beacon | **monolith** | **3** |
 | 7 | **Circuit-Digest DIY-AirTag** | [github](https://github.com/Circuit-Digest/DIY-AirTag) | Circuit Digest | **Raytac MDBT50Q-1MV2** (nRF52840) | CR2032 | not stated | `PCB/Airtag/` + **`Airtag Gerber.zip`** + PNG; native format unstated | **No LICENSE file (404)** ⇒ not safe to vendor | 2024-07-31 | Find My (it's a plain key-finder, not OpenHaystack), UWB, NFC; **does have** ADXL345 + active buzzer | **module** (MDBT50Q) | **2** |
 | 8 | **Puck.js / EspruinoBoard** | [github](https://github.com/espruino/EspruinoBoard) | Gordon Williams / Pur3 Ltd | nRF52832 via **Raytac MDBT42Q** | CR2032, ~1 yr | round puck (~36 mm) | Eagle libraries + board schematics + Fritzing parts + case files | Custom Pur3 licence ("apart from Eagle Libraries…") — **verify before vendoring** | 2025-03-12 | Find My, UWB, speaker, NFC, accelerometer (has magnetometer + IR) | **module** — and the repo ships an **Eagle part library for the MDBT42Q**, i.e. a reusable RF footprint | **3** |
@@ -73,7 +73,7 @@ each design as:
 [github.com/ruuvi/ruuvitag_hw](https://github.com/ruuvi/ruuvitag_hw), CC BY-SA 4.0,
 last commit 2021-07-14.
 
-It is the only open design that already solves three of haytag's five hard problems **in
+It is the only open design that already solves three of halo's five hard problems **in
 KiCad, in copper, under a licence we can use**: a round board, a working NFC-A tag antenna
 next to an nRF52832, and a routed accelerometer. Eight production revisions mean the
 mistakes are already out of it — the B8 changelog alone ("make all the vias smaller",
@@ -85,7 +85,7 @@ the Find My duty cycle to be recomputed; delete BME280/DPS310/TMP117 and the sec
 **add** a sounder (RuuviTag has none) and the driver for it; add Find My/OpenHaystack
 firmware (RuuviTag runs its own sensor firmware, though it is a documented OpenHaystack
 target); and add DULT anti-stalking behaviour. Licence consequence: CC BY-SA 4.0 is
-share-alike, so a derived haytag board must also be CC BY-SA 4.0 — that conflicts with
+share-alike, so a derived halo board must also be CC BY-SA 4.0 — that conflicts with
 GOAL.md's stated CERN-OHL preference. **Decide early whether to copy RuuviTag copper
 (inheriting BY-SA) or only to read it and redraw** (clean-room, keeps CERN-OHL free). The
 name restriction is explicit: no "Ruuvi" in a derived product's name.
@@ -94,7 +94,7 @@ name restriction is explicit: no "Ruuvi" in a derived product's name.
 [github.com/pinpoint-dev/tracker](https://github.com/pinpoint-dev/tracker), TAPR OHL,
 last commit 2024-07-09.
 
-The only project that already *is* what haytag is: a KiCad Find My tag with a buzzer, a
+The only project that already *is* what halo is: a KiCad Find My tag with a buzzer, a
 battery holder, an SWD connector and a push button, all ticked off in its own README
 checklist. TAPR OHL is a real reciprocal open-hardware licence and is compatible in spirit
 with CERN-OHL-S. Its E73 module choice is exactly the "module" answer to GOAL.md §2.
@@ -118,11 +118,11 @@ committed.
 
 But the board is a 50x20x2 mm rectangular Qi-charging beacon on a LIR2016: no speaker, no
 NFC, no accelerometer, not round. Take the **firmware wholesale** and the **Qi receive-coil +
-BQ25121A block** as an optional haytag variant (rechargeable haytag for sensors that live in
+BQ25121A block** as an optional halo variant (rechargeable halo for sensors that live in
 a fixture), and draw new copper for the puck. GPL-3.0 on the firmware is a licence decision
 for research/06 — and note that lane B's table rates **acalatrava/openhaystack-firmware
 (MIT, dormant since 2023-12-21)** as legally the best firmware base and **pix/heystack-nrf5x
-(no licence declared, last push 2024-11-02)** as the closest match to an nRF52 haytag. Lane B
+(no licence declared, last push 2024-11-02)** as the closest match to an nRF52 halo. Lane B
 is authoritative on that choice; lane C only observes that Everytag is the only one of the
 three that also ships a board.
 
@@ -143,7 +143,7 @@ reference**, and to sanity-check any claim that we need four layers.
 → [jacobrosenthal/nrf52-kicad](https://github.com/jacobrosenthal/nrf52-kicad) →
 [hlord2000/nordic-lib-kicad](https://github.com/hlord2000/nordic-lib-kicad).
 
-If haytag ships a **bare-chip** variant (cheapest BOM, best embeddability story), the matching
+If halo ships a **bare-chip** variant (cheapest BOM, best embeddability story), the matching
 network and antenna must come from Nordic's own reference layout, including the `_nfc` variant
 that already accounts for the NFC pins. Two caveats found in Nordic's own material: the
 **Eagle** files are conversions and Nordic states only the **Altium** reference layouts are
@@ -151,9 +151,9 @@ tested and verified (so a KiCad-of-an-Eagle-of-an-Altium chain is three conversi
 re-verify against the Altium PDF); and Nordic's Altium/Gerber/PDF reference packs live behind
 the product download pages, not in a repo. `hlord2000/nordic-lib-kicad` is the most useful
 single artefact here because it already packages Nordic parts as KiCad symbols + footprints
-**with reference-design blocks**, which is the shape haytag's own deliverable should take.
+**with reference-design blocks**, which is the shape halo's own deliverable should take.
 
-## What nobody has done — and what haytag must therefore invent
+## What nobody has done — and what halo must therefore invent
 
 **The embeddable block does not exist.** Every project surveyed is a board. The two available
 mechanisms are (a) KiCad 9's design blocks / hierarchical sheets — schematic reuse only, the
@@ -164,10 +164,10 @@ nrfmicro (E73) all do. Espruino ships an **Eagle part library for the MDBT42Q** 
 ships `E73-2G4M08S1C-52840.kicad_mod`; those footprints are the entire existing state of the
 art in "RF as a reusable part".
 
-So haytag's §2 deliverable should be **both**:
-- a `haytag-core` **KiCad hierarchical sheet + footprint set + documented antenna keep-out**
+So halo's §2 deliverable should be **both**:
+- a `halo-core` **KiCad hierarchical sheet + footprint set + documented antenna keep-out**
   for people who will do their own RF, built on the Nordic reference layout; and
-- a **castellated solder-down haytag-core module** (or a blessed E73/MDBT42Q configuration)
+- a **castellated solder-down halo-core module** (or a blessed E73/MDBT42Q configuration)
   for everyone else — pre-certified, no RF layout required, works in any host outline.
 
 That module path is also the only realistic way a third party's arbitrary-shaped sensor board
@@ -183,7 +183,7 @@ outline.
    being asleep" (Catley). Open substitutes: piezo (PinPoint, cents, quiet, needs a resonant
    cavity), active magnetic buzzer (Circuit-Digest), or amp + micro speaker as Apple does —
    the CDS-20144-L100 used in the DigiKey wallet-AirTag build is **$5.45 alone**, which by
-   itself would exceed a sane haytag BOM. This is the single hardest parity item and it is a
+   itself would exceed a sane halo BOM. This is the single hardest parity item and it is a
    mechanical/enclosure problem more than an electrical one.
 2. **Accelerometer.** Solved and cheap: RuuviTag routes a LIS2DH12 (and publishes it under
    CC BY-SA), Holyiot 21014 uses the same part, Circuit-Digest uses an ADXL345. Needed for
@@ -214,9 +214,9 @@ demos, not products. Detail in `research/fetched/C-uwb-and-embeddability.md`.
 
 ## Licence map (matters for what we can copy)
 
-| Licence | Projects | Consequence for haytag |
+| Licence | Projects | Consequence for halo |
 |---|---|---|
-| CC BY-SA 4.0 | RuuviTag, Bitcraze deck (CC-BY 4.0) | Copying copper makes haytag BY-SA, clashing with GOAL.md's CERN-OHL. Read-and-redraw to stay free. |
+| CC BY-SA 4.0 | RuuviTag, Bitcraze deck (CC-BY 4.0) | Copying copper makes halo BY-SA, clashing with GOAL.md's CERN-OHL. Read-and-redraw to stay free. |
 | TAPR OHL v1.0 | PinPoint | Reciprocal, CERN-OHL-S-compatible in spirit; safe to build on. |
 | BSD / BSD-3 | rayBeacon, Sensirion SHTC3 | Permissive; safest to copy from. |
 | MIT | makerdiary, Seeed XIAO, FakeTag | Permissive. |

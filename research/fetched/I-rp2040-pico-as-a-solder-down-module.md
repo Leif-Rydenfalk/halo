@@ -36,7 +36,7 @@ to show **Pico used as a module**:
 > should be placed on the edge of a board and not enclosed in metal to avoid creating a Faraday cage.
 > Adding ground to the sides of the antenna improves the performance slightly.**
 
-## The KiCad keep-out defect, verbatim — matters directly to haytag
+## The KiCad keep-out defect, verbatim — matters directly to halo
 > **KiCad currently doesn't have a keepout layer in its footprints. The recommended approach, and the one
 > we've used here, is to show the keepout zones on the `dwgs.user` layer, and the user must then manually
 > remove the copper on the PCB layout itself.**
@@ -51,7 +51,7 @@ Raspberry Pi's carrier footprint therefore carries three kinds of information be
    > Obviously, if you will be directly soldering Raspberry Pi Pico or Raspberry Pi Pico W to your board,
    > then the entire footprint will have to have a component keepout underneath.
 
-## Lessons haytag should take
+## Lessons halo should take
 - Publish **one footprint that supports both** solder-down castellation and 0.1″ headers, so the same
   part serves production and prototyping.
 - Call out the antenna cut-out as an explicit rectangle with numbers (`14 mm × 9 mm` here).

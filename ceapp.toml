@@ -1,13 +1,13 @@
-# haytag — the design repo's own launch contract (launchpad reads this)
+# halo — the design repo's own launch contract (launchpad reads this)
 [launch]
 contract = 1
 
 [launch.targets.docs]
-summary     = "haytag doc browser — renders the repo's research dossiers, tables and teardown images"
+summary     = "halo doc browser — renders the repo's research dossiers, tables and teardown images"
 supervision = "manual"
 cmd         = ["python3", "tools/docs_server.py", "8891"]
 cwd         = "."
-start_hint  = "python3 tools/docs_server.py 8891 in ~/dev/ce-workshop/ce-designs/haytag"
+start_hint  = "python3 tools/docs_server.py 8891 in ~/dev/ce-workshop/ce-designs/halo"
 node        = "local"
 
 [launch.targets.docs.bind]
@@ -24,6 +24,6 @@ safe_to_stop = true
 url           = "http://127.0.0.1:8891/api/health"
 expect_status = 200
 # marker only this app emits; measured live 2026-09-03
-expect_body   = "haytag-doc-browser"
+expect_body   = "halo-doc-browser"
 # negative control: measured live 2026-09-03, returns 404 (not a catch-all SPA)
 expect_404    = "http://127.0.0.1:8891/api/no-such-route-xyz"

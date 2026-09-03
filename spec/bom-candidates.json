@@ -1,5 +1,5 @@
 {
- "schema": "haytag/bom-candidates/1",
+ "schema": "halo/bom-candidates/1",
  "generated": "2026-09-03",
  "lane": "E",
  "notes": [
@@ -272,7 +272,7 @@
      "tx_mA_0dBm": 4.8,
      "rx_mA": 3.4,
      "sleep_uA": "0.7-2.9",
-     "note": "Has Bluetooth Channel Sounding — may remove the need for a second radio in haytag-uwb. JLCPCB stock 0 at pull.",
+     "note": "Has Bluetooth Channel Sounding — may remove the need for a second radio in halo-uwb. JLCPCB stock 0 at pull.",
      "spec_source": "https://www.nordicsemi.com/Products/nRF54L15"
     },
     {
@@ -758,7 +758,7 @@
   "uwb_transceiver": {
    "airtag_part": "Apple U1 SiP (AirTag 2: Apple U2) — not purchasable, no substitute is pin- or protocol-compatible with Apple Precision Finding without MFi",
    "recommended": "DW3110TR13",
-   "why": "The only UWB part with a public MFi Apple-U1-interoperability certification, and the same DW3000 core inside Qorvo's own DWM3001C. For haytag-uwb it is used tag-to-tag, so no Apple handshake is involved.",
+   "why": "The only UWB part with a public MFi Apple-U1-interoperability certification, and the same DW3000 core inside Qorvo's own DWM3001C. For halo-uwb it is used tag-to-tag, so no Apple handshake is involved.",
    "options": [
     {
      "part": "DW3110TR13",
@@ -1473,7 +1473,7 @@
   "flash": {
    "airtag_part": "GigaDevice GD25LE32 or GD25LQ32, 32 Mbit SPI NOR (lane A read the marking; iFixit says GD25LE32D)",
    "recommended": "omit",
-   "why": "Apple needed 32 Mbit for U1 firmware, audio assets and logs. A haytag whose firmware lives in the nRF52840's own 1 MB does not need an external flash at all; dropping it removes $0.41-1.45 and 8 joints.",
+   "why": "Apple needed 32 Mbit for U1 firmware, audio assets and logs. A halo whose firmware lives in the nRF52840's own 1 MB does not need an external flash at all; dropping it removes $0.41-1.45 and 8 joints.",
    "options": [
     {
      "part": "GD25LQ32EEIGR",
@@ -1581,7 +1581,7 @@
   "bulk_capacitance": {
    "airtag_part": "five 100 uF capacitors (lane A counted them off the board)",
    "recommended": "C49215609 x5",
-   "why": "A CR2032 has 10-15 ohm internal resistance fresh and much more when aged; ~500 uF of bulk is what lets a coin cell drive a voice coil or a UWB burst without browning out the SoC. Qorvo's own DW3000 DC table qualifies single-frame TX/RX 'with 47uF capacitor'. This is the second-largest line in the haytag BOM after the SoC.",
+   "why": "A CR2032 has 10-15 ohm internal resistance fresh and much more when aged; ~500 uF of bulk is what lets a coin cell drive a voice coil or a UWB burst without browning out the SoC. Qorvo's own DW3000 DC table qualifies single-frame TX/RX 'with 47uF capacitor'. This is the second-largest line in the halo BOM after the SoC.",
    "options": [
     {
      "part": "TCC0805X5R107M6R3FT",
@@ -1673,7 +1673,7 @@
   },
   "power": {
    "airtag_part": "TI TPS62746 300 mA buck + ON Semi FPF2487 OVP load switch (iFixit)",
-   "recommended": "direct-from-cell for haytag-core; TPS7A0233 LDO only for the UWB rail in haytag-uwb",
+   "recommended": "direct-from-cell for halo-core; TPS7A0233 LDO only for the UWB rail in halo-uwb",
    "why": "nRF52832 runs 1.7-3.6 V so a CR2032 feeds it directly with no regulator; Apple needed the buck because the U1 and the 1.8 V flash needed a rail the cell cannot hold under pulse load. DW3110 is 1.5-3.6 V but its 14-23 mA bursts need a bulk cap; the DW3000 datasheet itself specifies single-frame TX/RX 'with 47uF capacitor'.",
    "options": [
     {

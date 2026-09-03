@@ -18,7 +18,7 @@ Rules followed here: no number is invented; anything not traceable to a source i
    reproduction, so it is **not** stored in this repo; the numbers are transcribed in
    `research/fetched/G-apple-airtag-dimensional-drawing.md`.
 
-2. **A CC BY 4.0 DXF reproduces that drawing exactly**, which gives haytag a redistributable
+2. **A CC BY 4.0 DXF reproduces that drawing exactly**, which gives halo a redistributable
    geometric source. `reference/models/airtag-classicgod/airtag_dimensions.dxf` (ClassicGOD,
    Printables 629265) contains the half-section as splines and polylines whose ordinates land on
    Apple's callouts to the hundredth of a millimetre. Decoded, with the coordinate convention
@@ -102,7 +102,7 @@ ecosystem.
 ### 2.3 What is **not** published anywhere
 
 These came back empty from every teardown, blog, patent-adjacent article and Chinese report found.
-They are measurement tasks for haytag, not open questions:
+They are measurement tasks for halo, not open questions:
 
 * Magnet dimensions (diameter, thickness), grade and pull force. iFixit calls it "a hefty central
   speaker magnet" and shows it in an X-ray; no one has measured it.
@@ -196,7 +196,7 @@ sound quality — "Piezo speakers are tiny and cheap, and sound like it". A clon
 
 ### 4.2 The three options, with real datasheet numbers
 
-| Approach | Height cost | SPL you can expect | BOM | Verdict for haytag |
+| Approach | Height cost | SPL you can expect | BOM | Verdict for halo |
 |---|---|---|---|---|
 | **Shell-as-diaphragm moving coil** (Apple's) | **~1.5–2 mm** for magnet + coil, but zero extra diameter — the diaphragm is a part you were moulding anyway | 78–80 dB @ 13 cm (measured) | custom magnet, custom wound coil, precision coil-to-shell bonding, a Class-D amp (Maxim, per TechInsights) | Best acoustics, worst manufacturability. Needs a coil-winding and bonding operation nobody sells off the shelf |
 | **Bare piezo bender bonded to the shell** | **0.22–0.54 mm** | needs a cavity + vent to be loud; the housed equivalents below bracket it | Murata **7BB-20-3** Ø20.0 × **0.22 mm**, 3.6 kHz, 500 Ω; **7BB-20-6** Ø20.0 × **0.42 mm**, 6.3 kHz, 350 Ω; **7BB-12-9** Ø12.0 × **0.22 mm**, 9.0 kHz | **The obvious clone answer.** It is the thinnest option by an order of magnitude, it is a catalogue part, and it can be bonded to the same shell Apple bonds a coil to. Needs 20–30 V p-p drive from a boost/transformer to be loud, which costs a few components and some current |
@@ -318,7 +318,7 @@ evidence:
 * Counterexample from iFixit: Samsung's SmartTag has "the thickest adhesive barrier protecting its
   circuit board" and yet carries **no** IP rating at all — adhesive alone is not a rating.
 
-**Nobody has published the AirTag's gasket material, cross-section or groove.** For haytag this is
+**Nobody has published the AirTag's gasket material, cross-section or groove.** For halo this is
 a design decision, not something to copy: a compressed O-ring or moulded-in-place seal in the
 bayonet, plus a bonded or ultrasonically welded shell parting line, is the conventional route.
 
@@ -372,19 +372,19 @@ Full catalogue with licences, including everything deliberately *not* downloaded
 | "Compact-tag-" — coin-cell AirTag clone | [github.com/Krish-S25/Compact-tag-](https://github.com/Krish-S25/Compact-tag-) | repo | per-repo | "Compact coin cell powered AirTag-clone" — the nearest thing to an open clone enclosure found | Unassessed | No |
 
 **Licence note that bites**: the Ruuvi files are CC BY-**SA** 4.0. Merging Ruuvi geometry into a
-haytag part propagates share-alike onto haytag's mechanical files. Use them as reference, not as
-a starting body, unless haytag's mechanics are themselves CC BY-SA.
+halo part propagates share-alike onto halo's mechanical files. Use them as reference, not as
+a starting body, unless halo's mechanics are themselves CC BY-SA.
 
 ---
 
-## 8. Open items for haytag (measurement tasks, not questions)
+## 8. Open items for halo (measurement tasks, not questions)
 
 1. Caliper the magnet (Ø, t) and the voice coil (bobbin Ø, wire gauge, DCR) off a donor AirTag.
 2. Caliper the PCB outline and central aperture; count layers off a cross-section.
 3. Section the white shell to get wall thickness at apex, equator and lip.
 4. Measure the steel cover thickness and identify the alloy.
 5. Section the bayonet to see whether there is a discrete gasket or only adhesive.
-6. Build the first haytag shell to Ø31.87 × 7.98, bond a **Murata 7BB-20-3** (Ø20.0 × 0.22 mm)
+6. Build the first halo shell to Ø31.87 × 7.98, bond a **Murata 7BB-20-3** (Ø20.0 × 0.22 mm)
    inside it, and measure dB(A) at 10 cm against a reference AirTag. That single test decides the
    acoustic architecture.
 

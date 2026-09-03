@@ -30,7 +30,7 @@ Modelled 50 x 80 mm consumer-electronics part at 500 k/yr: overmould $0.74, inse
 > "At 500,000 parts per year with a $0.38 per-part advantage, the two-shot premium pays back in
 >  12 to 18 months." Below ~100 000 units/yr overmoulding wins on total cost.
 
-**Read-across for haytag**: a 2K tool for a 32 mm puck is a $45-95 k commitment that only repays
+**Read-across for halo**: a 2K tool for a 32 mm puck is a $45-95 k commitment that only repays
 above roughly 100-500 k units/year. A cheaper-to-manufacture clone should be a **single-material
 moulding** wherever it can be, with colour/texture done in one shot.
 
@@ -99,6 +99,6 @@ Observations that bear on it:
 * Samsung's SmartTag, by contrast, "has the thickest adhesive barrier protecting its circuit board"
   yet carries "no official ingress protection rating" (iFixit).
 
-**Nobody has published the AirTag's gasket material, cross-section or groove geometry.** For haytag
+**Nobody has published the AirTag's gasket material, cross-section or groove geometry.** For halo
 this is a design decision, not a thing to copy: a moulded-in-place or O-ring seal in the bayonet
 plus a bonded shell parting line is the conventional route to IP67 on a puck this size.

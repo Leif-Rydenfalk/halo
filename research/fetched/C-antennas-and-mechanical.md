@@ -14,7 +14,7 @@ than being asleep".
 Hackaday 2026-02-02 "Teardown Of An Apple AirTag 2 With Die Shots" (fetched 2026-09-03):
 AirTag 2 moves to an **nRF52840**, keeps a UWB module, a Bosch accelerometer and an SPI
 EEPROM; the speaker sits in a sandwiched ring surrounded by the UWB antenna, PCB beneath.
-=> LDS is not reproducible cheaply. A haytag must use a PCB-etched 2.4 GHz antenna (or a
+=> LDS is not reproducible cheaply. A halo must use a PCB-etched 2.4 GHz antenna (or a
 module with one) plus a PCB-spiral NFC coil.
 
 ## 2.4 GHz PCB antenna, open sources

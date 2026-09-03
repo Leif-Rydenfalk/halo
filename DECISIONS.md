@@ -18,8 +18,8 @@ MFi NDA — which is structurally incompatible with publishing the design.
 
 | variant | radios | who it is for | cert path |
 |---|---|---|---|
-| **haytag-core** | BLE only (nRF52-class, pre-certified module) | the open product anyone can build, sell or embed | modular approval, self-declared RED; the shipping default |
-| **haytag-uwb** | BLE + a sourceable UWB transceiver | Leif's own sensor fleet doing peer-to-peer ranging in his digital twin, and anyone doing the same on their own premises | not a sold consumer product; ranging is haytag-to-haytag, so no Apple handshake and no MFi is involved |
+| **halo-core** | BLE only (nRF52-class, pre-certified module) | the open product anyone can build, sell or embed | modular approval, self-declared RED; the shipping default |
+| **halo-uwb** | BLE + a sourceable UWB transceiver | Leif's own sensor fleet doing peer-to-peer ranging in his digital twin, and anyone doing the same on their own premises | not a sold consumer product; ranging is halo-to-halo, so no Apple handshake and no MFi is involved |
 
 **Why this resolves it rather than splitting the difference.** The two uses do
 not actually share a requirement. Apple's Precision Finding needs Apple's
@@ -37,7 +37,7 @@ sold consumer tag, not an owner-operated sensor mesh.
 
 **Open, for lane H to settle with numbers:** which UWB part, whether a CR2032
 can support the ranging duty cycle, and whether Bluetooth Channel Sounding on
-an nRF54L-class part reaches useful accuracy — in which case haytag-uwb may not
+an nRF54L-class part reaches useful accuracy — in which case halo-uwb may not
 need a second radio at all. That is a matter of fact and will be measured.
 
 ## D2 — the Bluetooth word mark (2026-09-03)
@@ -46,7 +46,7 @@ Lane F: Bluetooth SIG product qualification is **$12,000** under the schedule
 effective 1 March 2026. **Decision: do not use the Bluetooth word mark or logo
 anywhere in the product, packaging or documentation.** The radio is described
 functionally ("2.4 GHz, compatible with Apple's Find My network"). Anyone
-selling haytag commercially at volume can qualify on their own account.
+selling halo commercially at volume can qualify on their own account.
 Beat: paying $12k so an open design may print a logo it does not need.
 
 ## D3 — battery door (2026-09-03)
@@ -74,17 +74,17 @@ happen. **Decision: clean-room only** — the design is derived from the PoPETs
 2021 academic paper and public reverse-engineering, never from a leaked spec
 mirror. Any contributor who has read the MFi spec must not touch the firmware.
 
-## D6 — where haytag actually wins (2026-09-03)
+## D6 — where halo actually wins (2026-09-03)
 
 **The evidence.** Lane D priced the whole market bottom-up and top-down and
 they agree: a Find My beacon is **about $1 in parts** (the AliExpress tags are
 one Lenze ST17H66, a crystal and two capacitors, with *no antenna matching at
 all*), a certified-class tag is **$3.50–$5**, Chinese B2B finished tags sell at
 **$2.22–$2.52 at MOQ 100**, and Apple's own gen-1 manufacturing cost was about
-**$10** against $29 retail. Lane D's verdict, adopted here: *"haytag cannot win
+**$10** against $29 retail. Lane D's verdict, adopted here: *"halo cannot win
 on unit cost; that race is over."*
 
-**Decision: haytag competes on what is closed, not on price.** Being cheaper
+**Decision: halo competes on what is closed, not on price.** Being cheaper
 than Apple is easy and is still a stated goal — the target is the $3.50–$5
 certified-class band, roughly a sixth of Apple's retail — but it is not the
 reason to build it. The reasons are the five things no tag on the market gives
@@ -92,7 +92,7 @@ you:
 
 1. **Your own keys and your own backend.** Every commercial tag binds you to a
    vendor app and, for certified ones, to a per-unit Apple Token burned in at
-   the factory. haytag's keys are yours.
+   the factory. halo's keys are yours.
 2. **Simultaneous Apple and Google broadcasting.** Every "dual network" product
    on sale makes you pick one at pairing. Lane D found this works in practice,
    and lane B found Google's Find Hub specification is public with **no
@@ -135,7 +135,7 @@ core BOM, not the deluxe variant.
 
 Lane C found the best layout donor is **RuuviTag Rev B8**: KiCad sources, a
 round board, a working NFC-A antenna, a routed accelerometer, eight production
-revisions. It is **CC BY-SA 4.0**, so copying its copper would make haytag's
+revisions. It is **CC BY-SA 4.0**, so copying its copper would make halo's
 hardware share-alike under a documentation licence, colliding with the
 CERN-OHL-S choice in D4. **Decision: study RuuviTag and Nordic's reference
 layouts, then redraw every trace from the datasheets and application notes.**

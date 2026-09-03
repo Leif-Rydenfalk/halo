@@ -4,7 +4,7 @@
 
 > **This is research, not legal advice.** Nothing here is a legal opinion and no lawyer wrote it. It is a
 > literature review of primary sources (statutes, regulations, standards, patents, licence texts, vendor
-> terms) assembled so that the haytag design team can ask a qualified lawyer the *right* questions before
+> terms) assembled so that the halo design team can ask a qualified lawyer the *right* questions before
 > publishing or selling anything. Every factual claim below carries a link and a fetch date; where the
 > exact wording matters, a short quote is included. Where a source could not be verified, that is stated
 > explicitly rather than papered over.
@@ -18,7 +18,7 @@ Full-text copies of the most important primary documents are in `research/fetche
 
 1. **Naming**: `AirTag` and `Find My` are registered Apple trademarks. The project may say it is
    *compatible with* Apple's Find My network in a referential phrase; it may not use those marks, or
-   takeoffs of them, in its own name. That is why the repo is `haytag` (from *Haystack*), not `*airtag`.
+   takeoffs of them, in its own name. That is why the repo is `halo` (from *Haystack*), not `*airtag`.
    The **"Works with Apple Find My" badge is a licensed MFi badge** and is unavailable to an unlicensed
    project. See §1.
 2. **The spec is under NDA**: the Find My Network Accessory Interface Specification is distributed only
@@ -27,7 +27,7 @@ Full-text copies of the most important primary documents are in `research/fetche
    not on the MFi spec. See §3.
 3. **Anti-stalking is the ethical crux, not a nice-to-have**: an unregistered, speaker-less, rotating-key
    beacon is *precisely* the "Find You" stalking device that security researchers built to demonstrate the
-   hole in Apple's protections. The IETF DULT drafts define what a non-abusive accessory must do. haytag
+   hole in Apple's protections. The IETF DULT drafts define what a non-abusive accessory must do. halo
    must implement the DULT accessory behaviours even though it cannot be MFi-certified. See §4 and
    `docs/ANTI-STALKING.md`.
 4. **Radio certification is affordable only via a pre-certified module**: a Nordic nRF52-based module
@@ -81,7 +81,7 @@ certified through the MFi Program
 ([Apple Newsroom, 7 Apr 2021](https://www.apple.com/newsroom/2021/04/apples-find-my-network-now-offers-new-third-party-finding-experiences/), fetched 2026-09-03;
 badge guidelines document circulating publicly as *"Works with Apple Find My Identity Guidelines"*,
 [copy on Scribd](https://es.scribd.com/document/691416525/Works-with-Apple-Find-My-Identity-Guidelines-March), fetched 2026-09-03 — treat that copy as unverified).
-**haytag cannot use this badge.**
+**halo cannot use this badge.**
 
 ### 1.4 Nominative fair use — the doctrine that permits "compatible with"
 
@@ -94,11 +94,11 @@ analogue is the "honest practices" limitation on trade mark effects. In the EU t
 that use must be *"necessary to indicate the intended purpose of the product"* and *"made in accordance
 with honest commercial practices"* ([WTR, using a third-party mark without infringing](https://www.worldtrademarkreview.com/article/united-states-how-use-third-party-mark-without-infringing), fetched 2026-09-03).
 
-### 1.5 Why the repo is `haytag`
+### 1.5 Why the repo is `halo`
 
 - `airtag`, `air-tag`, `AirTagClone`, `OpenAirTag` etc. are *takeoffs/abbreviations of an Apple mark used
   as part of a product name* — squarely inside the prohibition quoted in §1.2.
-- `haytag` derives from **OpenHaystack** (TU Darmstadt, §3.3), which is itself a pun on *needle in a
+- `halo` derives from **OpenHaystack** (TU Darmstadt, §3.3), which is itself a pun on *needle in a
   haystack*. It contains no Apple mark, no phonetic equivalent of one, and no Apple-owned graphic.
 - The precedent set by the upstream ecosystem is the same: `OpenHaystack`, `macless-haystack`,
   `findmy.py` — none of them uses `AirTag` in the project name, and OpenHaystack's README carries an
@@ -106,9 +106,9 @@ with honest commercial practices"* ([WTR, using a third-party mark without infri
   ([seemoo-lab/openhaystack README](https://github.com/seemoo-lab/openhaystack), fetched via lane B).
 
 **Practical naming rules for this repo** (research recommendation, not legal advice):
-- Project name: `haytag`. Never `AirTag`-anything, never `iTag`, never an Apple logo.
-- Permitted descriptive line: *"haytag is an open-source Bluetooth LE tag compatible with Apple's Find My
-  network. haytag is not affiliated with, authorised, sponsored or endorsed by Apple Inc. Apple, AirTag
+- Project name: `halo`. Never `AirTag`-anything, never `iTag`, never an Apple logo.
+- Permitted descriptive line: *"halo is an open-source Bluetooth LE tag compatible with Apple's Find My
+  network. halo is not affiliated with, authorised, sponsored or endorsed by Apple Inc. Apple, AirTag
   and Find My are trademarks of Apple Inc."*
 - Do **not** use the "Works with Apple Find My" badge or any Apple artwork, and do not imply certification.
 - Do not register a domain containing `airtag` or `findmy`.
@@ -155,7 +155,7 @@ questions to put to counsel — not to a researcher.
   as diaphragm" in this research pass.** Searches surfaced generic voice-coil/diaphragm patents from other
   assignees and Apple audio patents not tied to a tracking tag. Treat "Apple has a patent on the
   shell-as-diaphragm speaker" as **UNVERIFIED**; it should be checked by a patent attorney in a proper FTO
-  search before haytag copies that construction. A conventional magnetic buzzer/piezo avoids the question
+  search before halo copies that construction. A conventional magnetic buzzer/piezo avoids the question
   entirely and is cheaper to source.
 - **Battery door**: the AirTag door is a quarter-turn twist-lock. The patents surfaced by search for
   quarter-turn tracking-device housings — [US 12,393,817 B1](https://patents.google.com/patent/US12393817B1/en),
@@ -169,7 +169,7 @@ questions to put to counsel — not to a researcher.
   [USD958677 S1 "Electronic device"](https://patents.google.com/patent/USD958677S1/en) — Apple Inc, filed
   2020-02-27, granted 2022-07-26, term to ~2037, claim: *"The ornamental design for an electronic device,
   as shown and described"* (fetched 2026-09-03). **Design rights are about appearance.** The clean
-  consequence for haytag: do not copy the AirTag's *look* — the polished-dome white shell, the exact disc
+  consequence for halo: do not copy the AirTag's *look* — the polished-dome white shell, the exact disc
   proportions, the stainless mirror back. Function may be reimplemented; appearance should be
   deliberately, visibly different. Apple also holds an EU/registered-design portfolio in most markets
   (not enumerated here).
@@ -186,7 +186,7 @@ and optional *"signaling hardware like lights, speakers and vibratory modules"*
 [MacRumors, 22 Oct 2020](https://www.macrumors.com/2020/10/22/apples-airtags-revealed-in-newly-published-patents/), fetched 2026-09-03).
 **Practical consequence**: UWB in an open tag is (a) unreachable anyway because the Find My UWB pairing
 handshake lives inside the NDA'd MFi spec, (b) an extra certification burden (§5.5), and (c) the densest
-patent thicket in the product. *Recommendation: haytag ships BLE-only.*
+patent thicket in the product. *Recommendation: halo ships BLE-only.*
 
 ### 2.4 Patents on the Find My protocol itself — and the anti-stalking side
 
@@ -223,7 +223,7 @@ patent thicket in the product. *Recommendation: haytag ships BLE-only.*
   ([EU reverse-engineering boundaries summary](https://vidstromlabs.com/blog/the-legal-boundaries-of-reverse-engineering-in-the-eu/), fetched 2026-09-03) —
   and (ii) *making, using, offering for sale or selling* a product, which is the conduct patents actually
   prohibit.
-- Consequence for haytag: **publishing KiCad + firmware + docs has a materially different risk profile
+- Consequence for halo: **publishing KiCad + firmware + docs has a materially different risk profile
   from selling assembled units.** A commercial vendor selling Find-My-compatible tags without an MFi
   licence is described in secondary commentary as operating *"in legal limbo"*
   ([discussion of macless-haystack commercial derivatives](https://www.blog.brightcoding.dev/2026/02/18/macless-haystack-build-diy-airtags-without-a-mac), fetched 2026-09-03) —
@@ -264,7 +264,7 @@ From the [MFi Program FAQs](https://mfi.apple.com/en/faqs.html) and
 
 **The structural bind for an open project**: enrolling in MFi to read the spec creates a confidentiality
 obligation that is *incompatible with publishing an implementation of that spec*. An open project must
-therefore stay **outside** MFi and work only from published research. Anyone on the haytag team who has
+therefore stay **outside** MFi and work only from published research. Anyone on the halo team who has
 ever signed an Apple NDA should stay away from the protocol implementation to avoid contamination
 (clean-room hygiene). Copies of the *Find My Network Accessory Specification – Developer Preview – Release
 R3* circulate on document-mirror sites; **do not use them** — they are Apple Confidential material and
@@ -435,22 +435,22 @@ Extracted from the draft text (section numbers as in the draft; full text in `re
   and Google trackers, processing all data locally
   ([AirGuard on F-Droid](https://f-droid.org/packages/de.seemoo.at_tracking_detection/);
   [AirGuard paper, arXiv:2202.11813](https://arxiv.org/pdf/2202.11813), both fetched 2026-09-03).
-  The same lab that built OpenHaystack built AirGuard. **That pairing is the model haytag should copy:
+  The same lab that built OpenHaystack built AirGuard. **That pairing is the model halo should copy:
   if you publish the tag, you owe the ecosystem the countermeasure.**
 
 ### 4.5 The position this project should publish
 
 Drafted as `docs/ANTI-STALKING.md` in this same pass. The short version:
 
-- haytag **implements the DULT separated-state sound and non-owner controls**, on real hardware, by
+- halo **implements the DULT separated-state sound and non-owner controls**, on real hardware, by
   default, and the firmware ships that way.
-- haytag **does not** implement, document, or accept patches for silent modes, sound suppression,
+- halo **does not** implement, document, or accept patches for silent modes, sound suppression,
   key-cycling beyond the DULT rotation schedule, or "stealth" build flags.
-- haytag **publishes** an owner-information/lost-mode page format and a printed serial number so a person
+- halo **publishes** an owner-information/lost-mode page format and a printed serial number so a person
   who finds a tag can act on it.
-- haytag **links to AirGuard** and to the platform detection features in its own README, and tells buyers
+- halo **links to AirGuard** and to the platform detection features in its own README, and tells buyers
   how to scan for unwanted trackers.
-- haytag states plainly that a board with the buzzer depopulated is a stalking device, and that the
+- halo states plainly that a board with the buzzer depopulated is a stalking device, and that the
   project will not help anyone build one.
 
 ---
@@ -467,7 +467,7 @@ a "unique" antenna coupler*, *(v) "tested in a stand-alone configuration"*, *(vi
 permanently affixed label or must be capable of electronically displaying its FCC identification number"*,
 *(vii) compliance with the rules that apply to a complete transmitter*, *(viii)* RF-exposure compliance.
 
-**Consequence**: if haytag uses a certified module (Fanstel, Raytac, Minew, Insight SiP etc. built on
+**Consequence**: if halo uses a certified module (Fanstel, Raytac, Minew, Insight SiP etc. built on
 nRF52) the intentional-radiator testing is already done and paid for by the module vendor. The host
 product must:
 - carry an exterior label such as *"Contains Transmitter Module FCC ID: XYZMODEL1"* or *"Contains FCC ID:
@@ -496,7 +496,7 @@ digital modulation (§15.247(b)(3)); power reduction required above 6 dBi antenn
 out-of-band *"at least 20 dB below"* the in-band level in any 100 kHz (§15.247(d)); PSD *"not be greater
 than 8 dBm in any 3 kHz band"* (§15.247(e)). §15.249 is the alternative low-field-strength route for
 2400–2483.5 MHz devices; **the certified nRF52 modules on the market are certified under §15.247**, so
-this is settled by the module choice and is not an independent decision for haytag.
+this is settled by the module choice and is not an independent decision for halo.
 *(Note: I did not obtain a primary-source side-by-side of §15.247 vs §15.249 limits in this pass —
 **partially verified**, §15.247 text quoted directly, §15.249 not fetched.)*
 
@@ -553,7 +553,7 @@ DoC.** A CE-marked product also needs a written **EU Declaration of Conformity**
   Also: *"A Product Qualification Fee will be required for the first product submission that includes a
   specific design. However, subsequent products you submit that include the same design will not be
   charged a fee."*
-  **Consequence for haytag**: Adopter membership is free, but a listed product costs **$12,000** at
+  **Consequence for halo**: Adopter membership is free, but a listed product costs **$12,000** at
   Adopter tier under the 2026 schedule. That is a real barrier for a hobby/open project. Two honest
   outcomes: (a) do not use the Bluetooth word mark or logo anywhere on the product, packaging or
   marketing, and describe it as "2.4 GHz BLE-compatible" from the module's qualified design; or (b) budget
@@ -616,7 +616,7 @@ Apple prints the battery-ingestion warning on the product/packaging. (The access
 real and documented:
 [Forbes, "Apple's AirTags Are Accessible, But Their Achilles Heel Is An Inaccessible Battery Door"](https://www.forbes.com/sites/stevenaquino/2024/04/16/apples-airtags-are-accessible-but-their-achilles-heel-is-an-inaccessible-battery-door/), fetched 2026-09-03.)
 
-**Implications for a 3D-printed or snap-fit haytag shell — the single biggest mechanical constraint:**
+**Implications for a 3D-printed or snap-fit halo shell — the single biggest mechanical constraint:**
 - A **friction snap-fit lid a fingernail can pop is a single hand movement and fails** the rule.
 - Compliant options: (a) a **screw** (tool required — simplest and most 3D-print-friendly), (b) a
   **press-and-twist bayonet** like the AirTag's (needs printable tolerances and a detent, harder in FDM,
@@ -644,7 +644,7 @@ What does apply:
 - **EN IEC 62115** (electric toys) is the standard containing the classic child-accessibility and
   fastener-retention requirements — e.g. a 20 N pull on the fastener for 10 s, which must remain attached
   ([QIMA guide to EN IEC 62115](https://blog.qima.com/lab-testing/guide-to-en-iec-62115-standard), fetched 2026-09-03).
-  **haytag is not a toy**, so EN 62115 does not apply directly — but it is the obvious yardstick to design
+  **halo is not a toy**, so EN 62115 does not apply directly — but it is the obvious yardstick to design
   to, and satisfying UL 4200A will comfortably clear it.
 - **EN IEC 60086-4** covers primary lithium cell safety, warning requirements and child-resistant packaging
   for the cells themselves.
@@ -660,7 +660,7 @@ What does apply:
   circuit boards) it is not required to have the statement on the waybill and the Lithium Battery Mark on
   the package."*
   ([UN 3091 button cells in equipment, air](https://wrap-tds.com/un-3091-lithium-metal-button-cells-contained-in-equipment-by-international-air-within-limits-below/), fetched 2026-09-03).
-- **Design consequence**: shipping a haytag **with the CR2032 already installed** (UN 3091, PI 970, button
+- **Design consequence**: shipping a halo **with the CR2032 already installed** (UN 3091, PI 970, button
   cell in equipment) is materially simpler than shipping loose cells (UN 3090). If a kit ships cells
   separately, the full UN 3090 marking/documentation regime applies. Also: cells must be UN 38.3 tested by
   their manufacturer — buy branded cells (Panasonic/Murata/Renata) and keep the test summaries.
@@ -702,7 +702,7 @@ form; register each unique product bearing the mark. *"Third-party closed compon
 control"* are allowed, but third-party components such as chips *"must have fully accessible and shareable
 datasheets"*. Certification lasts one year with annual renewal; each project gets a UID (two-letter
 country code + six digits), and the logo is required while the UID is optional-but-encouraged.
-**Consequence for haytag**: an nRF52 module with a public datasheet qualifies; a module whose datasheet is
+**Consequence for halo**: an nRF52 module with a public datasheet qualifies; a module whose datasheet is
 NDA-only would not. Choose the module accordingly.
 
 ### 7.2 The firmware licence problem — AGPL-3.0 upstream
@@ -715,16 +715,16 @@ NDA-only would not. Choose the module accordingly.
   but *"utilizing AGPLv3-licensed software in commercial services still entails an obligation to publish
   the source code"* ([GNU AGPL overview](https://en.wikipedia.org/wiki/GNU_Affero_General_Public_License), fetched 2026-09-03).
 
-**What this means concretely for a commercial haytag:**
+**What this means concretely for a commercial halo:**
 - Firmware **derived from** OpenHaystack/macless-haystack firmware inherits AGPL-3.0. Selling a tag with
   that firmware in it requires offering complete corresponding source to the purchaser — which for an open
   project is not a burden, it is the point.
 - A **server/relay component** derived from macless-haystack and offered as a hosted service to users
   triggers AGPL §13: you must offer source to the service's users.
-- The realistic trap is a downstream vendor who forks haytag firmware, sells tags with a hosted endpoint,
+- The realistic trap is a downstream vendor who forks halo firmware, sells tags with a hosted endpoint,
   and does not publish. AGPL is the licence that makes that a violation; MIT is the licence that makes it
   legal. **Pick deliberately.**
-- If haytag's own firmware is written clean (not derived from OpenHaystack code) the licence is a free
+- If halo's own firmware is written clean (not derived from OpenHaystack code) the licence is a free
   choice — but the ecosystem norm, and the enforcement value, both favour a copyleft licence.
 
 ### 7.3 Recommended licence split for this repo
@@ -761,12 +761,12 @@ A BLE tracker sold in the EU is a personal-data machine. The relevant points:
 - **Privacy by design is a legal duty**, GDPR Art. 25 — protections must be *"integrated into the technical
   design of a product — not bolted on afterward"*
   ([GDPR and IoT devices: obligations for connected product manufacturers](https://dev.to/custodiaadmin/gdpr-and-iot-devices-privacy-obligations-for-connected-product-manufacturers-4127), fetched 2026-09-03 — secondary source).
-- **Who is the controller?** This is the decisive question and it lands *well* for haytag. In the
+- **Who is the controller?** This is the decisive question and it lands *well* for halo. In the
   OpenHaystack architecture, key material is generated and held by the owner, location reports are
   end-to-end encrypted to the owner's key, and Apple stores only opaque ciphertext indexed by a key hash
   (PoPETs 2021, §3.3 above). **If the project ships no server and operates no service, it processes no
   personal data and is not a controller** — the tag owner is, for their own use, likely covered by the
-  household exemption (Art. 2(2)(c)) unless they track another person. If haytag ever runs a hosted
+  household exemption (Art. 2(2)(c)) unless they track another person. If halo ever runs a hosted
   endpoint, relay or registry (including a DULT owner-information page, §4.2), **that service is
   processing personal data and needs a lawful basis, a privacy notice, retention limits and a DPO
   assessment.** Note the DULT draft's own §3.16.2 retention floor of 25 days for owner registry data —
@@ -787,7 +787,7 @@ A BLE tracker sold in the EU is a personal-data machine. The relevant points:
   [15 CFR 742.15](https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-742/section-742.15), all fetched 2026-09-03).
 - Mass-market hardware with ancillary encryption typically classifies as **ECCN 5A992.c** and ships NLR /
   under License Exception ENC ([15 CFR 740.17](https://www.ecfr.gov/current/title-15/subtitle-B/chapter-VII/subchapter-C/part-740/section-740.17), fetched 2026-09-03).
-- **Conclusion: no meaningful export-control constraint on publishing haytag**, provided the project uses
+- **Conclusion: no meaningful export-control constraint on publishing halo**, provided the project uses
   only standard cryptography and publishes openly. The usual sanctions/denied-party rules would apply to
   *selling* hardware, as for any product.
 
@@ -797,7 +797,7 @@ A BLE tracker sold in the EU is a personal-data machine. The relevant points:
 
 | # | Constraint | Source | Design consequence |
 |---|---|---|---|
-| C1 | Project name must not contain, abbreviate or be a takeoff of `AirTag`, `Find My`, `iTag` or any Apple mark | [Apple 3rd-party trademark guidelines](https://www.apple.com/legal/intellectual-property/guidelinesfor3rdparties.html) | Repo/product stays **`haytag`**; no `airtag` in repo name, domain, package name, silkscreen or BLE device name |
+| C1 | Project name must not contain, abbreviate or be a takeoff of `AirTag`, `Find My`, `iTag` or any Apple mark | [Apple 3rd-party trademark guidelines](https://www.apple.com/legal/intellectual-property/guidelinesfor3rdparties.html) | Repo/product stays **`halo`**; no `airtag` in repo name, domain, package name, silkscreen or BLE device name |
 | C2 | Compatibility may only be stated in a referential phrase, with no Apple logo and no implication of endorsement | ibid.; nominative fair use ([INTA](https://www.inta.org/fact-sheets/fair-use-of-trademarks-intended-for-a-non-legal-audience/)) | README/packaging line: *"compatible with Apple's Find My network. Not affiliated with, sponsored or endorsed by Apple Inc."* Add `TRADEMARKS.md` |
 | C3 | "Works with Apple Find My" badge is MFi-licensed | [Apple Newsroom 2021](https://www.apple.com/newsroom/2021/04/apples-find-my-network-now-offers-new-third-party-finding-experiences/) | Never render or ship that badge; no Apple artwork anywhere |
 | C4 | The Find My accessory spec is Apple Confidential, NDA-gated | [MFi FAQs](https://mfi.apple.com/en/faqs.html) | **Clean-room only**: implement from PoPETs 2021 + OpenHaystack. Do not download, cite or copy leaked R3 spec mirrors. Contributors under Apple NDA must not touch protocol code |
@@ -809,7 +809,7 @@ A BLE tracker sold in the EU is a personal-data machine. The relevant points:
 | C10 | Non-owner controls `Sound_Start/Stop/Command_Response/Sound_Completed` REQUIRED, available only in separated state | ibid. §3.13.4, Table 18 | Implement the DULT GATT service `15190001-…` / characteristic `8E0C0001-…` in firmware; a stranger's phone can make the tag beep |
 | C11 | Serial number MUST be unique per product ID and SHALL be printed and easily accessible on the accessory | ibid. §3.15.1 | Silkscreen/label field on the shell and on the PCB; a per-unit serial in flash/UICR; a provisioning step in the build docs |
 | C12 | Identifier payload SHALL be readable via NFC tap or BLE; BLE path needs a physical mechanism (e.g. a button) and a 5-minute read window; paired-state payload SHALL be encrypted | ibid. §3.15.2–3.15.4 | Either an NFC antenna/NTAG on the board, **or** a user-pressable button + the BLE `Get_Identifier` path. Pick one and implement it fully |
-| C13 | Lost-mode/owner-information page with obfuscated owner contact (last 4 digits of phone, or first letter of email username + domain), retained ≥25 days after disassociation | ibid. §3.15.5, §3.16.1–3.16.2 | Define a `haytag.<domain>/found?...` URL format and a minimal owner-info page; reconcile the 25-day floor with GDPR minimisation |
+| C13 | Lost-mode/owner-information page with obfuscated owner contact (last 4 digits of phone, or first letter of email username + domain), retained ≥25 days after disassociation | ibid. §3.15.5, §3.16.1–3.16.2 | Define a `halo.<domain>/found?...` URL format and a minimal owner-info page; reconcile the 25-day floor with GDPR minimisation |
 | C14 | MAC/key rotation: 15 min near-owner, 24 h separated, and on every state transition; advertising ≤4 s (SHOULD ≤2 s) | ibid. §3.5.1, §3.10 | Firmware key schedule must follow DULT, **not** a stealth cycle. Never expose a "rotate faster / new key per beacon" build flag |
 | C15 | No RFC exists yet; DULT accessory protocol -00 is expired, threat model -05 is active | [datatracker DULT docs](https://datatracker.ietf.org/wg/dult/documents/) | Pin the implementation to `draft-ietf-dult-accessory-protocol-00` **by name and revision** in the firmware docs; add a re-check task for when a successor or RFC appears |
 | C16 | Radio: use a pre-certified nRF52 module to avoid intentional-radiator testing; keep vendor antenna/layout; label "Contains FCC ID: …" | [47 CFR §15.212](https://www.law.cornell.edu/cfr/text/47/15.212) | Module (Fanstel/Raytac/Minew) not bare nRF52 die. Reserve silkscreen for the FCC-ID text. Follow the module integration guide's keep-out exactly |

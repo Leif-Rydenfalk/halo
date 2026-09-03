@@ -1,6 +1,6 @@
-# haytag — an open-source, cheaper AirTag-compatible tracker PCB
+# halo — an open-source, cheaper AirTag-compatible tracker PCB
 
-*A ce-designs project (`design:haytag`) and a triad root. Started 2026-09-03.*
+*A ce-designs project (`design:halo`) and a triad root. Started 2026-09-03.*
 
 Leif, 2026-09-03, verbatim: *"its a clone of the apple airtag pcb but so we can
 open source it and manufacture it for cheaper. do a whole lot of research and
@@ -17,7 +17,7 @@ reproduce each function and what they cost, and the legal / certification /
 child-safety / anti-stalking constraints — then designs an open board from it.
 
 **Name.** "AirTag" and "Find My" are Apple trademarks, so the project is not
-called that. *haytag*: a tag for the haystack (the Find My network is the
+called that. *halo*: a tag for the haystack (the Find My network is the
 haystack; OpenHaystack is the needle-finder). Rename is one `gh repo rename`.
 
 ## What is where

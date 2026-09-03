@@ -35,8 +35,8 @@ important analytical step in this document.
 > 1. **The tag must roll its keys.** Finder iPhones de-duplicate reports from
 >    an unchanging identity. A static-key tag is reported once and then largely
 >    ignored — this is the dominant cause of the complaints, and it is Apple
->    behaviour that has probably been there all along. haytag's SPEC F2 already
->    requires 15-minute rotation, so haytag is on the right side of this.
+>    behaviour that has probably been there all along. halo's SPEC F2 already
+>    requires 15-minute rotation, so halo is on the right side of this.
 >    **Most OpenHaystack tags in the field are static-key, which is why the
 >    complaint population looks the way it does.**
 > 2. **The client must tolerate Apple's API misbehaving.** Empty 200s, spurious
@@ -45,12 +45,12 @@ important analytical step in this document.
 >    bug as "the network is dead". `tools/findmy_fetch.md` §2.4 lists all nine.
 
 **What this does NOT say.** It does not say report *density* is adequate for
-haytag's purposes. It is not, and never was — research/02 §10 already settled
+halo's purposes. It is not, and never was — research/02 §10 already settled
 that with the PoPETs numbers, and nothing here changes it. **Find My tells you
 which city block, half an hour ago, if a stranger walked past.** For Leif's
 sensor use (GOAL.md deliverable 3) that is close to useless and the answer
 remains peer-to-peer ranging (DECISIONS.md D1, lane H). The Find My half of
-haytag is for *finding lost things*, and for that it works.
+halo is for *finding lost things*, and for that it works.
 
 ---
 
@@ -146,10 +146,10 @@ asserted.
 **The one lever Apple does have** is the status and hint bytes: those are
 Apple-defined and a malformed value is a fingerprint. In 2024, @humpataa's
 recovery test explicitly noted his fake tags had *"status byte fully used, hint
-byte correctly set"*. **haytag firmware must set both correctly** — this is now
+byte correctly set"*. **halo firmware must set both correctly** — this is now
 a design requirement, not a detail. Note that several OpenHaystack forks abuse
 the status byte's low bits as a telemetry side channel (`dakhnod/FakeTag`,
-`positive-security/send-my`); **haytag must not do that on the Find My advert.**
+`positive-security/send-my`); **halo must not do that on the Find My advert.**
 
 ---
 
@@ -183,7 +183,7 @@ This is fatal for full key recovery on macOS and must be written into the
 toolchain: the Find My advert carries key bytes `p[0..5]` **in the advertising
 address**, so from macOS we can recover `p[6..27]` and the top two bits of
 `p[0]` — 22½ of 28 bytes — and never the rest. **Full-key verification of a
-haytag on air needs a Linux/BlueZ host or an nRF sniffer.** RSSI is also
+halo on air needs a Linux/BlueZ host or an nRF sniffer.** RSSI is also
 delivered as `127` (the "unavailable" sentinel) on some packets; treat 127 as
 absent, not as a strong signal.
 
@@ -236,13 +236,13 @@ procedure for the day hardware arrives is written up in
 The task asked for three; the evidence produced five. They have completely
 different consequences and conflating them is what produced the scare.
 
-| | mode | what it looks like | evidence it is real | consequence for haytag |
+| | mode | what it looks like | evidence it is real | consequence for halo |
 |---|---|---|---|---|
 | **(a)** | **Finder iPhone never generates a report** | tag advertising, zero reports ever | **Real, and it has a named mechanism**: duplicate-identity suppression (C6). Also real transiently in the iOS 17 outage (C11). | **Manageable by design.** Roll keys — SPEC F2 already does, at 15 min. Do not go below ~15 min (C6/`#197`). This is the one that would kill us if it were registration-based; the evidence says it is identity-repetition-based. |
 | **(b)** | **Apple's fetch endpoint refuses / returns nothing** | HTTP 200 + empty body, spurious 401 | **Real, ongoing since 2025-09-27, 6+ reporters** (C3) | **Not about us at all** — it hits Apple's own macOS app (C4). Retry, and never trust the status code. Costs us reliability engineering, not the product. |
 | **(c)** | **Apple ID auth / anisette breakage** | login fails, 2FA never arrives, "Account limit reached" | **Real and recurrent**: it is the single largest category of 2026 issues in every DIY repo | Costs us an aged Apple ID with a card on file, and a retry/relogin path. See `tools/findmy_fetch.md` §2.2. |
 | **(d)** | **Client decodes reports wrongly** | crash, or "0 reports" with a healthy fetch | **Real, at least 4 separate instances**: 88→89 bytes, `datePublished` removal, key-alignment drift, the v0.9.0 API migration (C13, C14, C15) | Ours to get right. Nine documented behaviours are listed in `tools/findmy_fetch.md` §2.4; a client that ignores them will report a false FAIL. |
-| **(e)** | **Tag is near its owner** | "reports stopped", Find My app fine | **By design**, seen on a genuine AirTag (C12) | Every haytag experiment must physically separate the tag from every Apple device on the account, for >30 min. |
+| **(e)** | **Tag is near its owner** | "reports stopped", Find My app fine | **By design**, seen on a genuine AirTag (C12) | Every halo experiment must physically separate the tag from every Apple device on the account, for >30 min. |
 
 **iOS version:** claimed to matter (@lovelyelfpop blamed his iPhone 8 on iOS
 16.7.11), but his own post immediately undercuts it — *"some of my friends use
@@ -297,7 +297,7 @@ Apple's goodwill, and three of these are worth doing anyway.
 
 ### Priority 1 — **Google Find Hub, concurrently, not as a fallback**
 
-DECISIONS.md D7 already commits haytag to broadcasting on both networks from
+DECISIONS.md D7 already commits halo to broadcasting on both networks from
 revision A, and lane B found **no open-source Find Hub tag firmware exists**.
 This is the strongest position in the whole project and it should be treated as
 a co-primary network, not a hedge.
@@ -323,7 +323,7 @@ does**, and it is the cheapest thing on this list.
 * **What it costs us:** an ESP32 (~€4) or a Raspberry Pi per building, running
   a passive scanner — `tools/findmy_scan.py` is already 90% of the software,
   and it works today. No Apple ID, no Google account, no cloud, no crowd.
-* **What it buys us:** every haytag in the building reports to Twinton with
+* **What it buys us:** every halo in the building reports to Twinton with
   seconds of latency instead of tens of minutes, with RSSI (which Find My never
   returns), and it works in a plant room where no stranger will ever walk.
 * **What it does not fix:** nothing outside the buildings you own.
@@ -338,7 +338,7 @@ does**, and it is the cheapest thing on this list.
   the DULT obligations that come with running a finding network. This is a
   company, not a feature.
 * **What it buys us:** independence.
-* **Verdict:** **not viable as a haytag deliverable.** The reason the Find My
+* **Verdict:** **not viable as a halo deliverable.** The reason the Find My
   hack is valuable is precisely that a billion phones already exist. Listing it
   for completeness; it should not be planned for.
 
@@ -360,7 +360,7 @@ Proposed, for whoever owns those files:
 2. **New firmware requirement:** the Find My advert's **status byte and hint
    byte must carry Apple-conformant values**; the status byte must not be used
    as a telemetry side channel (§3, and `biemster#40` @humpataa 2024-03-23).
-3. **New tooling requirement:** any haytag report client must tolerate the nine
+3. **New tooling requirement:** any halo report client must tolerate the nine
    documented Apple API behaviours in `tools/findmy_fetch.md` §2.4 — variable
    report length, missing `datePublished`, empty 200s, spurious 401s, a broken
    time window. A client that does not is a false-negative generator.

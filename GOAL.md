@@ -1,4 +1,4 @@
-# GOAL — what haytag is for
+# GOAL — what halo is for
 
 Leif, 2026-09-03, verbatim:
 
@@ -18,7 +18,7 @@ And, clarifying, same day, verbatim:
 ## What that means, in order
 
 1. **A perfect copy of the AirTag internals.** Function for function, what is
-   inside the AirTag is inside haytag: the BLE SoC role (nRF52832 in Apple's
+   inside the AirTag is inside halo: the BLE SoC role (nRF52832 in Apple's
    board), the Find My advertisement and key rotation, the NFC tag the phone
    taps, the accelerometer that wakes it, the speaker that drives the shell,
    the UWB ranging that Precision Finding uses (Apple's U1 is unobtainable, so
@@ -41,7 +41,7 @@ And, clarifying, same day, verbatim:
    His sensors need to know where they are *relative to each other* at room
    scale so the digital twin (Twinton) can place every sensor, device and
    asset. The AirTag already carries the radio for this (UWB); a faithful copy
-   with a sourceable UWB chip can range peer-to-peer between haytags as well
+   with a sourceable UWB chip can range peer-to-peer between halos as well
    as toward a phone. research/08 settles whether the UWB substitute can do
    that, how well, at what battery cost, and what BLE-only fallback exists.
 
@@ -53,6 +53,6 @@ And, clarifying, same day, verbatim:
   firmware (research/06 decides), Find My marks used only as research says.
 - Not a stalking tool: DULT behaviour is in the block, not an afterthought
   (docs/ANTI-STALKING.md).
-- Feeds ce-workshop: the block becomes `part:haytag-core` on the triad shelf so
+- Feeds ce-workshop: the block becomes `part:halo-core` on the triad shelf so
   every ce-designs machine (sensor boards, rigs, robots) can reference it and
   report its position into Twinton.

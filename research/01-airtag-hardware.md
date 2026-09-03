@@ -1,4 +1,4 @@
-# 01 — The Apple AirTag hardware: a function-for-function reference for haytag
+# 01 — The Apple AirTag hardware: a function-for-function reference for halo
 
 **Research lane A.** Topic: the Apple AirTag hardware itself — every public teardown,
 reverse-engineering result, chip identification and PCB detail, assembled into the master
@@ -283,7 +283,7 @@ file"*).
   NFC URL** to `stacksmashing.net` in May 2021 (the first public AirTag firmware mod) and let others
   run custom firmware.
 
-**For a clone:** since haytag would run *our own* nRF firmware, none of this is an obstacle — it is
+**For a clone:** since halo would run *our own* nRF firmware, none of this is an obstacle — it is
 simply proof the platform is fully open to us. We can (and should) either leave APPROTECT off during
 development or enable it knowing it is glitchable.
 
@@ -350,7 +350,7 @@ weight **11.8 g**, firmware **3.0.41**.
 | Speaker | coil+magnet, easy to remove | **redesigned, ~50% louder, nested deep inside the UWB antenna ring → harder to remove but still disableable with a soldering iron** | [iFixit via MacRumors](https://www.macrumors.com/2026/02/05/ifixit-shares-airtag-2-teardown/); 9to5Mac | [teardown] |
 | Construction | 3 sandwiched boards + LDS antenna carrier | *"individual layers of sandwiched rings"*; speaker → UWB antenna ring → PCB | [electronupdate](https://electronupdate.blogspot.com/2026/01/reverse-engineering-apple-airtag-2.html) | [secondary] |
 
-For haytag targeting the **well-documented gen-1**, AirTag 2 mainly signals: the platform choice
+For halo targeting the **well-documented gen-1**, AirTag 2 mainly signals: the platform choice
 (nRF52 + Apple UWB + CR2032 + coil speaker) is unchanged in principle; a clone built around nRF52 stays
 architecturally faithful to both generations.
 
@@ -395,7 +395,7 @@ architecturally faithful to both generations.
   an MFi factory — a commercial/contractual wall, not a hardware one (lane D, "Door 1"). The
   **unregistered OpenHaystack path** works with off-the-shelf hardware but does not show in the stock app.
 
-**Net:** haytag can be a near-exact internal copy of the AirTag minus UWB. Drop the U1 and its antenna,
+**Net:** halo can be a near-exact internal copy of the AirTag minus UWB. Drop the U1 and its antenna,
 keep the nRF52832 + flash + accel + speaker + power + BLE/NFC, and you have a manufacturable, cheaper
 Find-My-class tag that is faithful to the AirTag's internals in every reproducible respect.
 
