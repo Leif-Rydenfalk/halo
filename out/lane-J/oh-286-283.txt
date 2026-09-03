@@ -1,0 +1,37 @@
+############ openhaystack #286 ############
+TITLE: Does the iOS update have an impact on location reporting for custom tag devices?
+STATE: open
+CREATED: 2026-02-06T11:55:57Z
+USER: VoidMore
+COMMENTS: 1
+---BODY---
+For custom Tags, have the latest iOS versions affected the location reporting of such devices?
+My phone is an iPhone 17 with iOS 26.2.1.
+Currently, my device is broadcasting and has been right beside me, but it only updates its location sporadically—unless I go to a crowded area.
+Is my device not reporting? It should definitely receive broadcast packets at such a close range.
+--- COMMENTS ---
+[2026-04-13T08:40:48Z] @lovelyelfpop:
+Since September 27th 2025, the locations of custom tags have rarely updated. I found my iphone 8 (ios 16.7.11) no longer reports my tags' locations, even new tags with new keys. When I went to the office, my tags works again, there are a lot of iPhones in my office and maybe part of them can report tags' locations.
+
+Maybe Apple is planning to retire old iPhones.
+Or maybe there must be at least two iphones in the same place to report tags' locations now(just guess)?
+
+############ openhaystack #283 ############
+TITLE: Does this still work?
+STATE: open
+CREATED: 2025-11-06T14:25:46Z
+USER: hosam37r
+COMMENTS: 3
+---BODY---
+Was this effected by recent IOS updates? does it still work for you?
+--- COMMENTS ---
+[2025-12-08T03:58:45Z] @Maniraj47:
+the 2FA is not working.
+
+
+[2026-04-18T22:49:13Z] @yosun:
+does 2fa matter 
+
+[2026-06-02T07:49:03Z] @dennisdebel:
+With a combination of the latest compile, some manual flashing, I cant seem to get a OG ESP32 WROOM module to advertise, although the serial monitor says 'advertising started', the OpenHaystack app always returns 'no reports found' :(
+

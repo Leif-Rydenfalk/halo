@@ -1,0 +1,130 @@
+# findmy_scan.py — host macOS-26.6-arm64-arm-64bit-Mach-O  python 3.14.6
+# scanning 900s for Apple 0x004C manufacturer data ...
+
+===== SUMMARY =====
+advertisements seen              : 9714
+  with any manufacturer data     : 8513
+  with Apple company id 0x004C   : 4060
+counts by company id / apple type:
+  apple_type_0x03              21  unknown
+  apple_type_0x07             181  Proximity Pairing (AirPods etc)
+  apple_type_0x09             376  AirPlay target
+  apple_type_0x0b               2  Magic Switch
+  apple_type_0x0c             886  Handoff
+  apple_type_0x10            1847  Nearby Info
+  apple_type_0x12             471  Find My / offline finding
+  apple_type_0x16             276  Find My (0x16 variant)
+  cid_0x0006                 3444
+  cid_0x000d                    1
+  cid_0x0020                   23
+  cid_0x004c                 4060
+  cid_0x0059                   70
+  cid_0x0065                   74
+  cid_0x012d                   22
+  cid_0x0157                   19
+  cid_0x01a8                   13
+  cid_0x027d                    2
+  cid_0x038f                  389
+  cid_0x06a8                  147
+  cid_0x072f                   48
+  cid_0x079a                    6
+  cid_0x07e0                    2
+  cid_0x0dc0                    1
+  cid_0x1200                    1
+  cid_0x13fe                   39
+  cid_0x434e                    3
+  cid_0x4556                   29
+  cid_0x594a                   71
+  cid_0x60e9                    2
+  cid_0x8a28                    2
+  cid_0xb3dc                   22
+  cid_0xb922                    1
+  cid_0xc045                    5
+  cid_0xfb38                    1
+  cid_0xffff                   16
+
+distinct devices emitting Find My (0x12/0x16): 81
+peripheral uuid (macOS)                 pkts       rssi  keys  variant
+85F8918E-B119-E178-B137-1DCA6115C902     163  -74..-49      0  unrecognised (type 0x16 len 0x08)
+EFEE1D7C-5B19-EEAD-BEB6-6E81E251B7C3      67  -70..-50      0  unrecognised (type 0x16 len 0x08)
+7E3AE380-D95B-D23B-7D2B-073476AE883D      56  -88..-72      0  near-owner (short 0x02 payload)
+F203B92C-06B9-2388-9513-DC2C1E668F69      23  -73..-55      0  near-owner (short 0x02 payload)
+A9222968-3FB7-806A-4518-2E8FB86E38CC      21  -73..-57      0  near-owner (short 0x02 payload)
+C6D38468-E059-8F12-0664-C89BBEF652C3      20  -55..-44      0  near-owner (short 0x02 payload)
+DD66F90C-5933-0C68-4F84-065015EC5215      19  -63..127      0  near-owner (short 0x02 payload)
+6C8BB7CF-7D43-92E0-7CBD-58FA612F2A8F      19  -87..-69      0  near-owner (short 0x02 payload)
+66ABFF01-A488-BFD1-2CD9-2A5533C71120      18  -86..-68      0  near-owner (short 0x02 payload)
+6A803E07-7F15-E6C8-48DD-22531AD18FAD      18  -72..-49      0  near-owner (short 0x02 payload)
+50C965B9-9079-AC44-5A89-43098912A774      16  -86..-64      0  near-owner (short 0x02 payload)
+2CFB6737-D9E6-AD5C-3BFD-82D0561F2511      15  -84..127      0  near-owner (short 0x02 payload)
+1D27703F-7011-2055-8B70-3675E7583109      14  -86..-69      0  near-owner (short 0x02 payload)
+8B715645-A60F-408A-7E9F-C78F3EEBFEB5      13  -87..-77      0  near-owner (short 0x02 payload)
+8B169AFA-48F0-8B36-4740-C72A4374E5E7      13  -83..-64      0  near-owner (short 0x02 payload)
+7791CBBD-61D2-8182-8132-D4CDE10FFC2C      13  -84..-72      0  near-owner (short 0x02 payload)
+F2C0F16E-DE12-2BDA-7090-9BA44695C064      11  -99..-91      0  unrecognised (type 0x16 len 0x08)
+D00C9421-ED98-1C83-9986-0324C0741258      11  -84..-70      0  near-owner (short 0x02 payload)
+2E3529E2-B189-25B9-F5BC-1EBB38F3D12F      11  -90..-64      0  near-owner (short 0x02 payload)
+A49A4692-5DC1-5485-2E9D-ABD68B460159      11  -56..-51      0  near-owner (short 0x02 payload)
+05C8E991-D27C-3E53-CBEC-A9C7493A6FDF      10  -87..-70      0  near-owner (short 0x02 payload)
+E440F936-C468-2EB6-AD29-F50131BD53CB      10  -92..-79      0  near-owner (short 0x02 payload)
+A0436F91-6655-F0B8-B679-44352BA6EF99      10  -90..-69      0  unrecognised (type 0x16 len 0x08)
+C9541C31-C928-A71B-78B4-393702C96919      10  -84..-68      0  unrecognised (type 0x16 len 0x08)
+0C66846B-4A23-D968-6950-467915DAF3E4       8  -53..-42      0  near-owner (short 0x02 payload)
+F03D9377-6513-ED4A-1152-9A04A22431E6       7  -82..-70      0  near-owner (short 0x02 payload)
+BA2137A6-E59F-96EF-7E2B-B6ADD01C3D6E       6  -86..-77      0  near-owner (short 0x02 payload)
+2283779C-FFA4-08F0-41C7-440F76279C03       6  -88..-78      0  near-owner (short 0x02 payload)
+5FBADB49-DB62-E706-03DD-1BC8DA5480A0       6  -70..-59      0  near-owner (short 0x02 payload)
+60290B1D-6F12-E0C6-453A-5A77721D31A2       6  -84..-71      0  near-owner (short 0x02 payload)
+42EB146A-B7C3-5F57-6CB8-BD23DD8E7D9C       5  -97..-93      0  unrecognised (type 0x16 len 0x08)
+1A770D4C-6312-67BF-70C5-5BC687327E2A       5  -86..127      0  near-owner (short 0x02 payload)
+8C22AAD4-88F2-DDAB-E18E-664E19DA6065       5  -84..-73      0  near-owner (short 0x02 payload)
+7A347EA4-1F19-B3DE-B8F6-2EA09C510941       5  -88..-76      0  near-owner (short 0x02 payload)
+FA7A0646-34D7-41DE-EB8C-81B6E8A8E8B0       5  -81..-59      0  near-owner (short 0x02 payload)
+BDCEB56D-2900-2B37-7209-802BC7BB4993       4  -95..-89      0  near-owner (short 0x02 payload)
+474C7654-7277-C3C0-0FC9-D0576230C946       4  -84..-67      1  separated (full 0x19 payload)
+E834CF08-506A-1106-C631-1252D4C62FBD       4  -97..-94      0  near-owner (short 0x02 payload)
+A55D1029-7FF2-842C-1FBE-BE7CE65ADD22       4  -93..-90      0  near-owner (short 0x02 payload)
+A2FD4DD8-A3F4-B56D-4595-34233941AFBD       4  -65..-55      0  near-owner (short 0x02 payload)
+40626A5A-4A1F-72F4-036E-3FD102340FC1       4  -85..-70      0  near-owner (short 0x02 payload)
+657353C6-413D-DC88-0DF4-EE2B092784BB       4  -89..-81      0  near-owner (short 0x02 payload)
+B9017F27-64F6-1E49-647F-D16C05C79CD7       4  -79..-63      0  near-owner (short 0x02 payload)
+790298B3-1513-147D-1F78-1B701D234431       3  -99..-93      0  near-owner (short 0x02 payload)
+B4D1D059-3917-69BE-EE80-426A42F40586       3  -91..-90      0  near-owner (short 0x02 payload)
+A5E51A05-6CEE-FC1A-7124-C2CB340823F0       3  -92..-84      0  near-owner (short 0x02 payload)
+CA7C9D2C-66E8-9B01-94FF-E4F7D94072E4       3  -87..-86      0  near-owner (short 0x02 payload)
+25F0CECE-E305-DBD7-5FF7-3C9E2EFC01A6       3  -96..-87      0  unrecognised (type 0x16 len 0x08)
+1B932C79-6A06-AB5B-EFAC-51336AFDFA34       3  -88..-70      0  near-owner (short 0x02 payload)
+6446BECC-0171-7ABD-8B37-49712AD20267       3  -99..-92      0  unrecognised (type 0x16 len 0x08)
+05B0B0FF-9AD7-0BBF-FF10-2AB8B01BDB1E       3  -85..-81      0  near-owner (short 0x02 payload)
+33438044-0EB6-C143-4E40-C4C179D6E040       2  -98..-94      0  near-owner (short 0x02 payload)
+B783D217-4831-81D4-E3DC-328FA7DD2286       2  -96..-90      0  near-owner (short 0x02 payload)
+37B31B11-C3A9-48A5-766E-85F3CCB05C11       2  -92..-91      0  near-owner (short 0x02 payload)
+C4309143-7D51-A340-568A-C37DDD9F2A56       2  -63..-60      0  near-owner (short 0x02 payload)
+ADE86360-3364-6B2C-B916-08D3C7AC0EEE       2  -77..-69      0  near-owner (short 0x02 payload)
+E4C2C25C-319D-ED99-A621-EED7C9C07A5C       1  -91..-91      0  near-owner (short 0x02 payload)
+8982C4EF-29A3-B4DC-DB66-C28FD065C6E2       1  -94..-94      0  near-owner (short 0x02 payload)
+40390BF3-C08A-02D0-C733-8EC576B3CF96       1  -90..-90      0  near-owner (short 0x02 payload)
+DEABA463-77E3-C58B-3C03-D21BA88AAB12       1  -97..-97      0  near-owner (short 0x02 payload)
+662F31E6-9497-CB28-2E84-630A722A4553       1  -97..-97      0  near-owner (short 0x02 payload)
+A85E6E7B-183E-7939-1597-01475FA5406A       1  -98..-98      0  unrecognised (type 0x16 len 0x08)
+127EBEA5-CB28-6F02-9ED1-B0107738FEF2       1  -98..-98      0  near-owner (short 0x02 payload)
+15C7321C-110C-6015-AB10-08B56D97F9B2       1  -95..-95      0  unrecognised (type 0x16 len 0x08)
+881AB837-627F-3A62-3F03-4399C0CF01B7       1  -99..-99      0  near-owner (short 0x02 payload)
+973C57F7-D42C-4F7C-8162-3297A488E2D4       1  -99..-99      0  unrecognised (type 0x16 len 0x08)
+FA9E3006-9D47-C1A7-F428-E1D50B7186D7       1  -90..-90      0  near-owner (short 0x02 payload)
+42A0FBA1-EED1-51F6-A13C-92ABCC882808       1  -90..-90      0  near-owner (short 0x02 payload)
+13D94AB5-6D1C-34C3-993A-06349060FE73       1  -95..-95      0  near-owner (short 0x02 payload)
+9C57A92A-15FF-CA2A-9164-AACF633A4155       1  -96..-96      0  near-owner (short 0x02 payload)
+BF10DA91-2652-5929-751B-D953C3C41165       1  -96..-96      0  near-owner (short 0x02 payload)
+B46D902D-8AA9-6979-B282-5534DB8C745B       1  -91..-91      0  near-owner (short 0x02 payload)
+6F90BDA4-BE7D-53B7-F2EF-79BA80E5EC28       1  -95..-95      0  near-owner (short 0x02 payload)
+87CEF1D7-7BFB-F080-D66B-E0AEF1711BA1       1 -101..-101     0  near-owner (short 0x02 payload)
+27520B7A-8C58-BD66-13F2-9CF63C1C82BF       1  -90..-90      0  near-owner (short 0x02 payload)
+9C8FB562-E345-65E1-AD86-51AAE8952919       1  -97..-97      0  near-owner (short 0x02 payload)
+B567747F-A00F-59C7-3C3C-A3541C277609       1  -92..-92      0  near-owner (short 0x02 payload)
+0654A7D0-5B67-F00D-676D-415F31DCEDDE       1  -93..-93      0  near-owner (short 0x02 payload)
+8E10B478-DF02-EB8B-F736-FCD617B6F500       1  -93..-93      0  unrecognised (type 0x16 len 0x08)
+8CB97C1E-DF95-44F6-5363-17773E3266A9       1  -92..-92      0  near-owner (short 0x02 payload)
+8185CFD8-A3F3-508E-C10F-9D9D69254295       1  -92..-92      0  near-owner (short 0x02 payload)
+
+wrote out/lane-J/scan-900s.json

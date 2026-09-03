@@ -1,0 +1,684 @@
+{
+  "host": "macOS-26.6-arm64-arm-64bit-Mach-O",
+  "started_epoch": 1788429650.228874,
+  "duration_s": 20,
+  "total_advertisements": 234,
+  "advertisements_with_any_manufacturer_data": 192,
+  "apple_manufacturer_advertisements": 76,
+  "counts": {
+    "cid_0x0006": 91,
+    "cid_0x004c": 76,
+    "apple_type_0x10": 34,
+    "apple_type_0x12": 11,
+    "cid_0x038f": 11,
+    "apple_type_0x09": 8,
+    "apple_type_0x16": 7,
+    "cid_0xffff": 2,
+    "apple_type_0x07": 5,
+    "apple_type_0x0c": 9,
+    "cid_0x06a8": 6,
+    "cid_0x434e": 2,
+    "cid_0x594a": 3,
+    "apple_type_0x03": 1,
+    "apple_type_0x0b": 1,
+    "cid_0x012d": 1
+  },
+  "macos_note": "CoreBluetooth substitutes a random CBPeripheral UUID for the BLE address, so key bytes p[0..5] cannot be recovered on macOS.",
+  "devices": [
+    {
+      "address_or_uuid": "B738198E-13B5-521E-2BF6-6FEBD4BB7C3A",
+      "name": null,
+      "first_seen": 26.7,
+      "packets": 4,
+      "rssi_min": -65,
+      "rssi_max": 127,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 40.9,
+      "rssi_last": -65,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "8A60498C-4EBF-1A8D-4FEA-8954733391C3",
+      "name": null,
+      "first_seen": 26.7,
+      "packets": 6,
+      "rssi_min": -79,
+      "rssi_max": 127,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 40.0,
+      "rssi_last": -78,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "66ABFF01-A488-BFD1-2CD9-2A5533C71120",
+      "name": null,
+      "first_seen": 26.7,
+      "packets": 1,
+      "rssi_min": -77,
+      "rssi_max": -77,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0xa5",
+          "battery": "low",
+          "hint": "0x01"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 26.7,
+      "rssi_last": -77,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "2E3529E2-B189-25B9-F5BC-1EBB38F3D12F",
+      "name": null,
+      "first_seen": 28.0,
+      "packets": 1,
+      "rssi_min": -84,
+      "rssi_max": -84,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x01"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 28.0,
+      "rssi_last": -84,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "39ACBF85-C3B2-9D7D-6716-17F8756C6776",
+      "name": null,
+      "first_seen": 28.3,
+      "packets": 3,
+      "rssi_min": -52,
+      "rssi_max": -48,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 41.8,
+      "rssi_last": -48,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "BFA2D949-F1D5-8A54-A035-1A25932BDF7F",
+      "name": null,
+      "first_seen": 28.9,
+      "packets": 4,
+      "rssi_min": -81,
+      "rssi_max": -70,
+      "apple_types": {
+        "0x09": "AirPlay target"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 40.2,
+      "rssi_last": -70,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "D00C9421-ED98-1C83-9986-0324C0741258",
+      "name": null,
+      "first_seen": 29.5,
+      "packets": 1,
+      "rssi_min": -74,
+      "rssi_max": -74,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x03"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 29.5,
+      "rssi_last": -74,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "05C8E991-D27C-3E53-CBEC-A9C7493A6FDF",
+      "name": null,
+      "first_seen": 29.8,
+      "packets": 1,
+      "rssi_min": -80,
+      "rssi_max": -80,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x02"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 29.8,
+      "rssi_last": -80,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "CF156B21-22DF-F4CE-214A-3474A30430DE",
+      "name": null,
+      "first_seen": 30.4,
+      "packets": 1,
+      "rssi_min": -88,
+      "rssi_max": -88,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 30.4,
+      "rssi_last": -88,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "D3EEE549-FFD5-F2D3-2876-B7591D6AC3AC",
+      "name": null,
+      "first_seen": 30.4,
+      "packets": 2,
+      "rssi_min": -88,
+      "rssi_max": -86,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 40.6,
+      "rssi_last": -86,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "EFEE1D7C-5B19-EEAD-BEB6-6E81E251B7C3",
+      "name": null,
+      "first_seen": 30.7,
+      "packets": 6,
+      "rssi_min": -62,
+      "rssi_max": -57,
+      "apple_types": {
+        "0x16": "Find My (0x16 variant)"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 45.0,
+      "rssi_last": -62,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "228BFF09-C3E9-A1B8-C2D3-6B78E40EC9E8",
+      "name": null,
+      "first_seen": 31.0,
+      "packets": 3,
+      "rssi_min": -67,
+      "rssi_max": -63,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 41.5,
+      "rssi_last": -67,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "9C7B6B8D-9F0C-DF79-5DE0-912E84F99F4E",
+      "name": null,
+      "first_seen": 31.3,
+      "packets": 3,
+      "rssi_min": -88,
+      "rssi_max": -72,
+      "apple_types": {
+        "0x09": "AirPlay target"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 40.9,
+      "rssi_last": -72,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "AB68B03B-1ED5-D90E-351A-F096A5B00507",
+      "name": null,
+      "first_seen": 31.9,
+      "packets": 3,
+      "rssi_min": -60,
+      "rssi_max": -49,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 38.8,
+      "rssi_last": -49,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "C6D38468-E059-8F12-0664-C89BBEF652C3",
+      "name": null,
+      "first_seen": 31.9,
+      "packets": 1,
+      "rssi_min": -44,
+      "rssi_max": -44,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x00"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 31.9,
+      "rssi_last": -44,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "9DC222D9-64FB-657F-FC27-727FCC5537A9",
+      "name": null,
+      "first_seen": 32.2,
+      "packets": 5,
+      "rssi_min": -86,
+      "rssi_max": 127,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 46.0,
+      "rssi_last": -86,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "DBEEA0FC-4593-2AB8-561B-88954BB5CFF4",
+      "name": null,
+      "first_seen": 32.5,
+      "packets": 2,
+      "rssi_min": -89,
+      "rssi_max": -88,
+      "apple_types": {
+        "0x10": "Nearby Info",
+        "0x0b": "Magic Switch"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 37.2,
+      "rssi_last": -89,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "91492D31-4EA5-4B19-2C1F-EEE603EC9822",
+      "name": null,
+      "first_seen": 33.7,
+      "packets": 1,
+      "rssi_min": -90,
+      "rssi_max": -90,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 33.7,
+      "rssi_last": -90,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "5CAEE1DD-54DD-4F91-5E11-6D6EE91EBD29",
+      "name": null,
+      "first_seen": 33.7,
+      "packets": 5,
+      "rssi_min": -87,
+      "rssi_max": -74,
+      "apple_types": {
+        "0x07": "Proximity Pairing (AirPods etc)"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 44.5,
+      "rssi_last": -75,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "4A39C591-D17A-A717-B886-CA28648D638D",
+      "name": null,
+      "first_seen": 34.0,
+      "packets": 5,
+      "rssi_min": -89,
+      "rssi_max": 127,
+      "apple_types": {
+        "0x0c": "Handoff"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 45.7,
+      "rssi_last": -79,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "E6B4D507-6EF7-637D-F5CC-7B84EDAB200B",
+      "name": null,
+      "first_seen": 34.3,
+      "packets": 4,
+      "rssi_min": -91,
+      "rssi_max": -76,
+      "apple_types": {
+        "0x0c": "Handoff"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 39.0,
+      "rssi_last": -88,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "50C965B9-9079-AC44-5A89-43098912A774",
+      "name": null,
+      "first_seen": 34.6,
+      "packets": 1,
+      "rssi_min": -74,
+      "rssi_max": -74,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0xac",
+          "battery": "low",
+          "hint": "0x03"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 34.6,
+      "rssi_last": -74,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "42536E3F-0BE2-DB31-2A04-4397918571B9",
+      "name": null,
+      "first_seen": 34.6,
+      "packets": 1,
+      "rssi_min": -93,
+      "rssi_max": -93,
+      "apple_types": {
+        "0x16": "Find My (0x16 variant)"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 34.6,
+      "rssi_last": -93,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "6A803E07-7F15-E6C8-48DD-22531AD18FAD",
+      "name": null,
+      "first_seen": 35.5,
+      "packets": 1,
+      "rssi_min": -49,
+      "rssi_max": -49,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x00"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 35.5,
+      "rssi_last": -49,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "6C8BB7CF-7D43-92E0-7CBD-58FA612F2A8F",
+      "name": null,
+      "first_seen": 36.6,
+      "packets": 1,
+      "rssi_min": -85,
+      "rssi_max": -85,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x00"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 36.6,
+      "rssi_last": -85,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "C2BA83F1-031E-568A-EF26-33A13C86EFFC",
+      "name": null,
+      "first_seen": 36.6,
+      "packets": 1,
+      "rssi_min": -96,
+      "rssi_max": -96,
+      "apple_types": {
+        "0x03": "unknown 0x03"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 36.6,
+      "rssi_last": -96,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "9E88A2B2-D89E-3530-DD1C-C7453E0E3599",
+      "name": null,
+      "first_seen": 38.1,
+      "packets": 1,
+      "rssi_min": -94,
+      "rssi_max": -94,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 38.1,
+      "rssi_last": -94,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "329A9537-6489-D7B7-33B1-C1661470848A",
+      "name": null,
+      "first_seen": 39.0,
+      "packets": 2,
+      "rssi_min": -82,
+      "rssi_max": -82,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 42.1,
+      "rssi_last": -82,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "A55D1029-7FF2-842C-1FBE-BE7CE65ADD22",
+      "name": null,
+      "first_seen": 40.3,
+      "packets": 1,
+      "rssi_min": -87,
+      "rssi_max": -87,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x03"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 40.3,
+      "rssi_last": -87,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "9E51113C-2234-92E8-D932-1270E9B66C50",
+      "name": null,
+      "first_seen": 41.2,
+      "packets": 1,
+      "rssi_min": -95,
+      "rssi_max": -95,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 41.2,
+      "rssi_last": -95,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "8B169AFA-48F0-8B36-4740-C72A4374E5E7",
+      "name": null,
+      "first_seen": 41.2,
+      "packets": 1,
+      "rssi_min": -73,
+      "rssi_max": -73,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x02"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 41.2,
+      "rssi_last": -73,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "DF2E896C-EC3A-AC0D-A139-E0732A8E8E02",
+      "name": null,
+      "first_seen": 41.8,
+      "packets": 1,
+      "rssi_min": -86,
+      "rssi_max": -86,
+      "apple_types": {
+        "0x10": "Nearby Info"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 41.8,
+      "rssi_last": -86,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "2283779C-FFA4-08F0-41C7-440F76279C03",
+      "name": null,
+      "first_seen": 45.4,
+      "packets": 1,
+      "rssi_min": -80,
+      "rssi_max": -80,
+      "apple_types": {
+        "0x12": "Find My / offline finding"
+      },
+      "findmy_payloads": [
+        {
+          "apple_type": "0x12",
+          "declared_len": 2,
+          "actual_body_len": 2,
+          "variant": "near-owner (short 0x02 payload)",
+          "status_byte": "0x00",
+          "battery": "full",
+          "hint": "0x03"
+        }
+      ],
+      "distinct_keys": [],
+      "last_seen": 45.4,
+      "rssi_last": -80,
+      "n_distinct_keys": 0
+    },
+    {
+      "address_or_uuid": "5F07D1E1-8571-1149-1431-8787AB9425E8",
+      "name": null,
+      "first_seen": 45.6,
+      "packets": 1,
+      "rssi_min": -87,
+      "rssi_max": -87,
+      "apple_types": {
+        "0x09": "AirPlay target"
+      },
+      "findmy_payloads": [],
+      "distinct_keys": [],
+      "last_seen": 45.6,
+      "rssi_last": -87,
+      "n_distinct_keys": 0
+    }
+  ]
+}

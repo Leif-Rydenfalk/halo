@@ -1,0 +1,757 @@
+############ macless-haystack #219 ############
+TITLE: Apple's new fetch api often returns empty string now since one or two days ago, even http status code is '200'
+STATE: open  CREATED: 2025-09-28T02:20:38Z  CLOSED: null
+USER: lovelyelfpop
+---BODY---
+`https://gateway.icloud.com/findmyservice/v2/fetch`
+
+I can't get much location reports now, since half of my requests get empty responses
+  [2025-09-28T02:55:53Z] @lovelyelfpop: Linked https://github.com/biemster/FindMy/issues/88
+
+############ macless-haystack #213 ############
+TITLE: Why localhost no update location When not reload web
+STATE: open  CREATED: 2025-08-07T01:09:20Z  CLOSED: null
+USER: josephBoonrawd
+---BODY---
+My localhost web no update when I don't reload web
+How to fix?
+
+############ macless-haystack #229 ############
+TITLE: Error message: Account limit reached.
+STATE: open  CREATED: 2026-01-27T23:31:36Z  CLOSED: null
+USER: aarontrom
+---BODY---
+Hey folks, 
+
+my problem is that I can't register the device after login at Apple. Basically I'm at step which is about the [server setup](https://github.com/dchristl/macless-haystack?tab=readme-ov-file#server-setup)
+
+> 3. Start and set up your Macless Haystack endpoint in interactive mode:
+
+and exactly [here](https://github.com/dchristl/macless-haystack?tab=readme-ov-file#you-will-be-asked-for-your-apple-id-password-and-your-2fa-if-you-see-serving-at-port-6176-over-http-you-have-all-set-up-correctly) I can enter an Apple-ID, my password, get the 2FA code on my phone and type it in, but then Apple says either `"Error message: Account limit reached."` or I also did see: `"It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it."` 
+
+**I've tried several accounts with genuine iOS devices and credit card information and other information added, but Apple refuses to connect. So I wonder if this step also fails for others?**
+
+Here's the log: 
+
+```
+sudo docker run -it --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
+remote: Enumerating objects: 242, done.
+remote: Counting objects: 100% (50/50), done.
+remote: Compressing objects: 100% (6/6), done.
+remote: Total 242 (delta 44), reused 44 (delta 44), pack-reused 192 (from 2)
+Receiving objects: 100% (242/242), 50.66 KiB | 551.00 KiB/s, done.
+Resolving deltas: 100% (112/112), completed with 12 local objects.
+From https://github.com/dchristl/macless-haystack
+ * branch            main       -> FETCH_HEAD
+   a284a9b..f847f2e  main       -> origin/main
+2026-01-27 22:32:06,545 - INFO - Checking if Anisette http://anisette:6969 is reachable
+2026-01-27 22:32:06,622 - INFO - Searching for token at /app/endpoint/data/auth.json
+2026-01-27 22:32:06,624 - INFO - No auth-token found.
+2026-01-27 22:32:06,625 - INFO - Trying to register new device.
+2026-01-27 22:32:06,628 - INFO - Trying to login
+
+Apple ID: **MYAPPLEIDHERE**
+Password: 
+2026-01-27 22:32:37,260 - INFO - Authentication request initialization
+2026-01-27 22:32:38,685 - DEBUG - HTTP-Code: 200
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Response</key>
+    <dict>
+        <key>Status</key>
+        <dict>
+            <key>hsc</key>
+            <integer>200</integer>
+            <key>ed</key>
+            <string></string>
+            <key>ec</key>
+            <integer>0</integer>
+            <key>em</key>
+            <string></string>
+            <key>ptxid</key>
+            <string>6f375ce8-cb4c-452c-9bf5-41269825059c</string>
+            <key>rsh</key>
+            <false/>
+        </dict>
+        <key>i</key>
+        <integer>20334</integer>
+        <key>s</key>
+        <data>jnCm5wH3KQ+3SXgg2Y8J8g==</data>
+        <key>sp</key>
+        <string>s2k</string>
+        <key>ptxid</key>
+        <string>6f375ce8-cb4c-452c-9bf5-41269825059c</string>
+        <key>c</key>
+        <string>i-9b-15c7a4c6-fbd0-11f0-8277-174e5b293b4e:PRN</string>
+        <key>B</key>
+        <data>gT9CcpQvsFuTM7uL+D63jq4Gyxx1ZdLJ6DDcZ7WQ04utPG9eVKv9ndgqyeQxOkS8IqVaqBIqmI+wJnHRUaNjU0upV/n/45fJQUGoBxn/rP0gabrxIQ3O3ahtXZ/dQaPDye4AW1VmNff/7xLy1UewB5w2E09dx4+ZnlLkzXGDC/BCJP4d2BMp8/5ElZS4/GZ5lnNhLvl67svWbKlor6PrOQHdEJ708E4+3TwwPP3FUNACaQUF39DeWOISLodYWdYiHxEXZHdrytPxa7PnSxf9gyNXxS3P8BcekMyvCEgae7CD+4tx+yDoAR25pIg6ZYUQsNLodcOfoGGfoRJTP8edkQ==</data>
+    </dict>
+    <key>Header</key>
+    <dict>
+    </dict>
+</dict>
+</plist>
+
+2026-01-27 22:32:52,134 - INFO - Authentication request completion
+2026-01-27 22:32:53,413 - DEBUG - HTTP-Code: 200
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Response</key>
+    <dict>
+        <key>Status</key>
+        <dict>
+            <key>hsc</key>
+            <integer>200</integer>
+            <key>ed</key>
+            <string></string>
+            <key>ec</key>
+            <integer>0</integer>
+            <key>em</key>
+            <string></string>
+            <key>ptxid</key>
+            <string>fbe0758a-1437-471e-badc-dfc4d2cb2218</string>
+            <key>rsh</key>
+            <false/>
+        </dict>
+        <key>spd</key>
+        <data>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</data>
+        <key>M2</key>
+        <data>KRRZhHKxOUyvdFZtqJSNthpkUdxGwZQLx5ogoifoe9w=</data>
+        <key>ptxid</key>
+        <string>fbe0758a-1437-471e-badc-dfc4d2cb2218</string>
+        <key>np</key>
+        <data>YEGaRncVD2tLGKUtK6WeSJkqgGA4Kpv23ASFjjrHDM8=</data>
+    </dict>
+    <key>Header</key>
+    <dict>
+    </dict>
+</dict>
+</plist>
+
+2026-01-27 22:32:53,543 - INFO - Registering device after login
+2026-01-27 22:32:54,748 - DEBUG - HTTP-Code: 200
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>dsid</key>
+		<string>19010791595</string>
+
+		<key>delegates</key>
+		<dict>
+			<key>com.apple.mobileme</key>
+			<dict>
+				<key>status</key>
+				<integer>1</integer>
+
+				<key>status-message</key>
+				<string>Account limit reached.</string>
+
+			</dict>
+
+		</dict>
+
+		<key>status</key>
+		<integer>0</integer>
+
+	</dict>
+</plist>
+2026-01-27 22:32:54,768 - DEBUG - Answer from icloud login
+2026-01-27 22:32:54,774 - DEBUG - {'dsid': '19010791595', 'delegates': {'com.apple.mobileme': {'status': 1, 'status-message': 'Account limit reached.'}}, 'status': 0}
+2026-01-27 22:32:54,776 - ERROR - Invalid status: 1
+2026-01-27 22:32:54,777 - ERROR - Error message: Account limit reached.
+2026-01-27 22:32:54,779 - ERROR - Unable to proceed, program will be terminated.
+```
+
+Does anyone have an idea why this error happens and what else I could try?
+  [2026-02-16T03:57:53Z] @ryahconstantino: You need an account that has been logged into an Apple device before; iCloud must be active and with 5GB, not 1GB! Each device can activate up to 3 accounts at a time, then no more!
+
+The printscreen below show an inactive account, you can access here https://www.icloud.com/storage/
+
+<img width="948" height="548" alt="Image" src="https://github.com/user-attachments/assets/f4574a31-e053-4804-93a7-837e71eb8b16" />
+
+############ macless-haystack #238 ############
+TITLE: How to check is server working OK
+STATE: open  CREATED: 2026-04-14T20:12:08Z  CLOSED: null
+USER: mundeczek
+---BODY---
+I think I'm stuck.
+I installed Anisette and launched it.
+I installed the server using the command:
+```
+docker run -it --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/opt/containerd/macless-haystack/ --network h-network christld/macless-haystack
+```
+Interestingly, it didn't ask me for an SMS code, messages appearing on the terminal included ‘200 OK’ and ‘code=0’, so I think it’s fine.
+
+From macless haystack logs:
+```
+2026-04-14 19:38:51,974 - INFO - Certificate file /app/endpoint/data/certificate.pem not found, so not using SSL
+2026-04-14 19:38:51,974 - INFO - serving at :6176 over HTTP
+2026-04-14 19:38:51,974 - WARNING - Endpoint is not protected by authentication
+2026-04-14 19:41:54,356 - DEBUG - Getting with post: b'{"ids":["V1nOQKPxmMBxekSs3P0sSTxxK2BmgZHmyY0hUc7o6MY="],"days":7}'
+2026-04-14 19:41:54,356 - DEBUG - Querying for 7 days
+2026-04-14 19:41:54,748 - DEBUG - Return from fetch service:
+2026-04-14 19:41:54,748 - DEBUG - {"results":[],"statusCode":"200"}
+192.168.1.23 - - [14/Apr/2026 19:41:54] "POST / HTTP/1.1" 200 -
+```
+From Anisette logs:
+```
+app INFO  2026-04-14T19:50:12.280 anisette-v3-server v2.2.2
+
+Listening for requests on http://0.0.0.0:6969/
+
+                     app INFO  2026-04-14T19:50:41.707 [<<] anisette-v1 request
+
+                     app INFO  2026-04-14T19:50:41.707 [>>] 200 OK {"X-Apple-I-Client-Time":"2026-04-14T19:50:41Z","X-Apple-I-MD":"AAAABQAAABAq+UQpQ5GpozCxLrLEUyU\/AAAABA==","X-Apple-I-MD-LU":"78460E3509D195E4B2FACC415798761D635705DDDAD68C9BBB49FDBA2C8DCDB9","X-Apple-I-MD-M":"5nHtxCdNVyhJV7ei1RSc6y9So+qGg2J0c6jaLKtOy3LvnIV2E1lJNTReo2pP4KbrpA1z5G8TJRnC0KY9","X-Apple-I-MD-RINFO":"17106176","X-Apple-I-SRL-NO":"0","X-Apple-I-TimeZone":"UTC","X-Apple-Locale":"en_US","X-MMe-Client-Info":"<MacBookPro13,2> <macOS;13.1;22C65> <com.apple.AuthKit\/1 (com.apple.dt.Xcode\/3594.4.19)>","X-Mme-Device-Id":"098AF134-1F46-440E-8C48-A37370C14E56"}
+
+                     app INFO  2026-04-14T19:50:57.729 [<<] anisette-v1 request
+
+                     app INFO  2026-04-14T19:50:57.729 [>>] 200 OK {"X-Apple-I-Client-Time":"2026-04-14T19:50:57Z","X-Apple-I-MD":"AAAABQAAABAq+UQpQ5GpozCxLrLEUyU\/AAAABA==","X-Apple-I-MD-LU":"78460E3509D195E4B2FACC415798761D635705DDDAD68C9BBB49FDBA2C8DCDB9","X-Apple-I-MD-M":"5nHtxCdNVyhJV7ei1RSc6y9So+qGg2J0c6jaLKtOy3LvnIV2E1lJNTReo2pP4KbrpA1z5G8TJRnC0KY9","X-Apple-I-MD-RINFO":"17106176","X-Apple-I-SRL-NO":"0","X-Apple-I-TimeZone":"UTC","X-Apple-Locale":"en_US","X-MMe-Client-Info":"<MacBookPro13,2> <macOS;13.1;22C65> <com.apple.AuthKit\/1 (com.apple.dt.Xcode\/3594.4.19)>","X-Mme-Device-Id":"098AF134-1F46-440E-8C48-A37370C14E56"}
+```
+The location of the added tag still appears on the map as ‘Unknown’; refreshing the page doesn’t help.
+An iPhone connected to iCloud and Find My is lying next to it, as I’ve heard that was supposed to help.
+Scanning with nRF Connect finds a device (tag) with the AppleID <0x004C>
+How can I verify that the tag has been set up correctly and that the server is working?
+
+############ macless-haystack #221 ############
+TITLE: ICloud 2FA seems to have broken
+STATE: closed  CREATED: 2025-11-29T01:05:53Z  CLOSED: 2026-03-19T14:54:18Z
+USER: diminDDL
+---BODY---
+Trying to log in using the Docker method explained in the main readme, I get the following:
+```
+025-11-29 00:51:24,353 - INFO - 2FA required, requesting SMS code. (No other 2FA-code will work!)
+2025-11-29 00:51:25,264 - INFO - Using phone with id 1 for SMS2FA
+Enter SMS 2FA code (If you do not receive a code, wait 60s and press Enter. An attempt will be made to request the SMS in another way.): 
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 289, in sms_second_factor
+    code = request_code(headers)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 329, in request_code
+    req.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 405 Client Error:  for url: https://gsa.apple.com/auth/verify/phone/
+```
+I don't receive any 2FA, wait a minute and hit enter and get this error.
+Going to  the gsa link in a browser gives me a `Error code: 403 Forbidden` even though I am logged into iCould on this browser. 
+
+
+
+Trying to log into iCloud on a web browser wile logging the traffic showed that Apple right now seems to do a PUT request to `https://idmsa.apple.com/appleauth/auth/verify/phone`.
+It sends it:
+```{"phoneNumber":{"id":1},"mode":"sms"}```
+and then the verification code goes as a POST to `https://idmsa.apple.com/appleauth/auth/verify/phone/securitycode`
+with the following content:
+```{"phoneNumber":{"id":1,"nonFTEU":true},"securityCode":{"code":"123456"},"mode":"sms"}```
+
+  [2025-11-29T01:08:36Z] @diminDDL: Upon looking at the source code I suspect they simply updated the domain and changing it here to the new one would likely fix the issue:
+https://github.com/dchristl/macless-haystack/blob/b32a80537b9ca5f5e08705ce103637a4b52b3dfb/endpoint/register/pypush_gsa_icloud.py#L317-L331
+
+  [2025-12-12T01:45:05Z] @lpg2709: Hi diminDDL,
+
+I've had some authentication problems too, usually solved by:
+
+1. Logging in with my Apple ID on an Apple device, at least once.
+2. I once forgot to log out on a Mac, and the authentication was going to the Mac and not to 2FA. I logged out of all devices and started receiving the SMS again.
+
+I hope this helps you.
+  [2025-12-12T19:15:52Z] @diminDDL: Probably fixed with #222 will confirm once in a release, or when I'll have time to mess with the live branch.
+
+  [2026-02-03T07:19:35Z] @ddd999: I'm seeing a similar issue, when I use the "alternate method" to receive the SMS, I do get a code, but then I get this output after entering it:
+
+```
+2026-02-03 07:13:57,190 - INFO - Sending SMS via id 1
+Enter SMS 2FA code:621313
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 301, in sms_second_factor
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://gsa.apple.com/auth/verify/phone/securitycode
+
+```
+
+Edit: My Apple ID was logged in on an iPhone when I got the output above. When I signed out the ID on the iPhone, I received the SMS right away using the first method. I haven't flashed any tags yet to confirm but the server at least appears to be running.
+  [2026-03-19T14:54:18Z] @diminDDL: Tried it with the `latest-dev` tag and was able to log in, it wasn't able to issue an sms request on it's own so I manually navigated to https://www.icloud.com/ and initiated an sms code login, typed the code I got over sms into macless-haystack and it worked. 
+
+The `latest` tag however still tries to use the https://gsa.apple.com/auth/verify/phone/securitycode for some reason.
+
+############ macless-haystack #224 ############
+TITLE: An attempt will be made to request the SMS in another way is failing when correct OTP is entered
+STATE: open  CREATED: 2025-12-12T16:57:01Z  CLOSED: null
+USER: sijintv
+---BODY---
+An attempt will be made to request the SMS in another way.). Is sending SMS. when I type in 2FA
+
+```
+2025-12-12 16:50:19,564 - INFO - Sending SMS via id 1
+Enter SMS 2FA code:143546
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 301, in sms_second_factor
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://gsa.apple.com/auth/verify/phone/securitycode
+```
+  [2025-12-22T17:37:53Z] @PoleTransformer: Not able to recreate. Please start from scratch, delete all volume data for anisette-v3 and macless-haystack. Provide debug logs.
+  [2025-12-24T01:51:32Z] @Sudo-null7: I've got the same error,
+`
+2025-12-24 01:49:03,660 - INFO - Sending SMS via id 3
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 289, in sms_second_factor
+    code = request_code(headers,sms_id)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 331, in request_code
+    req.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://idmsa.apple.com/appleauth/auth/verify/phone
+`
+deleted all data and restarted but still got same issue
+
+how can I pull debug logs for you that won't contain sensitive infomation
+  [2025-12-24T05:59:49Z] @giovannitarter: I also had the same error, and can provide the full logs.
+```
+- INFO - Sending SMS via id 1
+Enter SMS 2FA code:784362
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 301, in sms_second_factor
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://gsa.apple.com/auth/verify/phone/securitycode
+```
+
+
+  [2025-12-24T14:30:04Z] @Sudo-null7: Mine doesn't send a SMS number, so it's not the same error 
+  [2025-12-24T16:49:59Z] @PoleTransformer: Lets try collecting some info from Apple's endpoint. Go to https://account.apple.com/sign-in, open developer options and go to network tab to monitor all requests, enter email and password, select `Can’t get to your devices?`, and then `Text code to ...`. In developer options find the request to https://idmsa.apple.com/appleauth/auth/verify/phone and comment the request and response from this endpoint.
+
+Request:
+```
+{"phoneNumber":{"id":2},"mode":"sms"}
+```
+Response:
+```
+{
+  "trustedPhoneNumbers" : [ {
+    "nonFTEU" : false,
+    "numberWithDialCode" : "redacted"
+    "obfuscatedNumber" : "redacted"
+    "pushMode" : "sms",
+    "lastTwoDigits" : "redacted"
+    "id" : 2
+  } ],
+  "phoneNumber" : {
+    "nonFTEU" : false,
+    "numberWithDialCode" : "redacted"
+    "obfuscatedNumber" : "redacted"
+    "pushMode" : "sms",
+    "lastTwoDigits" : "redacted"
+    "id" : 2
+  },
+  "securityCode" : {
+    "length" : 6,
+    "tooManyCodesSent" : false,
+    "tooManyCodesValidated" : false,
+    "securityCodeLocked" : false,
+    "securityCodeCooldown" : false
+  },
+  "mode" : "sms",
+  "type" : "verification",
+  "authenticationType" : "hsa2",
+  "autoVerified" : false,
+  "showAutoVerificationUI" : false,
+  "supportsCustodianRecovery" : false,
+  "hideSendSMSCodeOption" : false,
+  "supervisedChangePasswordFlow" : false,
+  "enableNonFTEU" : false,
+  "content" : {
+    "enterCodeDescription" : "Enter the verification code sent to your Apple devices.",
+    "sendCodeDescription" : "Apple can send another verification code to your other Apple devices.",
+    "resendCodeLink" : "Resend code to devices",
+    "canNotGetCodeLink" : "Can’t get to your devices?",
+    "canNotGetCodeTitle" : "Can’t get to your devices?"
+  },
+  "trustedPhoneNumber" : {
+    "nonFTEU" : true,
+    "numberWithDialCode" : "redacted"
+    "obfuscatedNumber" : "redacted"
+    "pushMode" : "sms",
+    "lastTwoDigits" : "redacted"
+    "id" : 2
+  },
+  "hsa2Account" : true,
+  "restrictedAccount" : false,
+  "supportsRecovery" : true,
+  "managedAccount" : true
+}
+``` 
+
+Verify that  "restrictedAccount" : false and none of the SecurityCode flags are triggered, such as "tooManyCodesSent" : true. Confirm that you are able to login via SMS 2FA to iCloud on browser. Leave out the recovery URLs as those contain your account email address.
+
+  [2025-12-26T05:40:20Z] @giovannitarter: Thanks!
+
+Here is the request:
+
+```
+{"phoneNumber":{"id":1},"mode":"sms"}
+```
+
+and here the response:
+```
+{
+  "trustedPhoneNumbers" : [ {
+    "numberWithDialCode" : "+39 ••• ••• ••48",
+    "nonFTEU" : true,
+    "lastTwoDigits" : "48",
+    "pushMode" : "sms",
+    "obfuscatedNumber" : "••• ••• ••48",
+    "id" : 1
+  } ],
+  "phoneNumber" : {
+    "numberWithDialCode" : "••• ••• ••• ••48",
+    "nonFTEU" : true,
+    "lastTwoDigits" : "48",
+    "pushMode" : "sms",
+    "obfuscatedNumber" : "••• ••• ••48",
+    "id" : 1
+  },
+  "securityCode" : {
+    "length" : 6,
+    "tooManyCodesSent" : false,
+    "tooManyCodesValidated" : false,
+    "securityCodeLocked" : false,
+    "securityCodeCooldown" : false
+  },
+  "mode" : "sms",
+  "type" : "verification",
+  "authenticationType" : "hsa2",
+  "recoveryUrl" : "https://iforgot.apple.com/phone/add?prs_account_nm=*********&autoSubmitAccount=true&appId=142",
+  "cantUsePhoneNumberUrl" : "https://iforgot.apple.com/iforgot/phone/add?context=cantuse&prs_account_nm=*****&autoSubmitAccount=true&appId=142",
+  "recoveryWebUrl" : "https://iforgot.apple.com/password/verify/appleid?prs_account_nm=******&autoSubmitAccount=true&appId=142",
+  "repairPhoneNumberUrl" : "https://gsa.apple.com/appleid/account/manage/repair/verify/phone",
+  "repairPhoneNumberWebUrl" : "https://appleid.apple.com/widget/account/repair?#!repair",
+  "aboutTwoFactorAuthenticationUrl" : "https://support.apple.com/kb/HT204921",
+  "autoVerified" : false,
+  "showAutoVerificationUI" : false,
+  "supportsCustodianRecovery" : false,
+  "hideSendSMSCodeOption" : false,
+  "supervisedChangePasswordFlow" : false,
+  "enableNonFTEU" : true,
+  "content" : {
+    "enterCodeDescription" : "Enter the verification code sent to your iPhone.",
+    "sendCodeDescription" : "Apple can send another verification code to your iPhone.",
+    "resendCodeLink" : "Resend code to iPhone",
+    "canNotGetCodeLink" : "Can’t get to your iPhone?",
+    "canNotGetCodeTitle" : "Can’t get to your iPhone?"
+  },
+  "trustedPhoneNumber" : {
+    "numberWithDialCode" : "+39 ••• ••• ••48",
+    "nonFTEU" : true,
+    "lastTwoDigits" : "48",
+    "pushMode" : "sms",
+    "obfuscatedNumber" : "••• ••• ••48",
+    "id" : 1
+  },
+  "hsa2Account" : true,
+  "restrictedAccount" : false,
+  "managedAccount" : false,
+  "supportsRecovery" : true
+}
+```
+
+Edit:
+I deleted the first comment because I found some more occurrences of my email address... It's not an account that I use but still...
+  [2025-12-29T06:32:44Z] @PoleTransformer: Thanks @giovannitarter. I don't see anything out of the ordinary. Can you test this PR? https://github.com/dchristl/macless-haystack/pull/226
+
+Its an update to the POST SMS URL to `https://idmsa.apple.com/appleauth/auth/verify/phone/securitycode`. For some reason I still can't recreate your issue. This might be something to due with phone number country codes? Anyways report your findings.
+  [2025-12-29T17:29:00Z] @Ninoverstraeten2003: I got in the same situation where I did not get a sms and needed to click enter. After that I got the same error. Using inspiration from PR: https://github.com/dchristl/macless-haystack/pull/226.
+
+I got around the issue by logging in iCloud by email and pass and pressing the 'can't get to your devices' and using sms as 2FA after which I used the code I received via sms in the container. 
+
+Maybe https://github.com/dchristl/macless-haystack/issues/46#issuecomment-2887680934 would fix it but I did not try that at the moment.
+
+
+  [2025-12-30T07:39:11Z] @giovannitarter: Hi @PoleTransformer, thanks!
+I tried with the new endpoint but 
+
+1) the sms is still not sent with the first method
+
+2) after 60s I type Enter 
+=> it immediately fails with error:
+
+```2025-12-30 07:25:12,357 - INFO - 2FA required, requesting SMS code. (No other 2FA-code will work!)
+2025-12-30 07:25:13,044 - INFO - Using phone with id 1 for SMS2FA
+Enter SMS 2FA code (If you do not receive a code, wait 60s and press Enter. An attempt will be made to request the SMS in another way.):
+2025-12-30 07:26:33,561 - DEBUG - {******}
+2025-12-30 07:26:33,561 - INFO - Sending SMS via id 1
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 289, in sms_second_factor
+    code = request_code(headers,sms_id)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 331, in request_code
+    req.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://idmsa.apple.com/appleauth/auth/verify/phone
+
+``` 
+
+  [2026-01-05T07:45:14Z] @mehrlich69: Hi! 
+
+The same problem as with Giovannitarter [(https://github.com/dchristl/macless-haystack/issues/224#issuecomment-3698544630)]
+Could you tell me whether Apple has destroyed the project or whether there will be a solution? Thank you very much for your work!
+
+```
+Traceback (most recent call last):
+  File "/app/endpoint/mh_endpoint.py", line 177, in <module>
+    apple_cryptography.registerDevice()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/app/endpoint/register/apple_cryptography.py", line 71, in registerDevice
+    getAuth(regenerate=True)
+    ~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/apple_cryptography.py", line 44, in getAuth
+    mobileme = icloud_login_mobileme(
+        username=mh_config.getUser(), password=mh_config.getPass())
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 45, in icloud_login_mobileme
+    g = gsa_authenticate(username, password)
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 126, in gsa_authenticate
+    sms_second_factor(spd["adsid"], spd["GsIdmsToken"])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/endpoint/register/pypush_gsa_icloud.py", line 301, in sms_second_factor
+    resp.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 401 Client Error:  for url: https://gsa.apple.com/auth/verify/phone/securitycode
+```
+  [2026-01-07T02:54:58Z] @PoleTransformer: The issue with https://github.com/dchristl/macless-haystack/issues/46#issuecomment-2887680934 requires a `--trusteddevice`. So you need to link a Apple device to the account. Likely works for me because I have 1 old iPad that I use. Can you try linking an Apple device to the account if possible, then trying SMS again?
+  [2026-01-09T17:29:56Z] @mehrlich69: Hello! 
+
+Thank you for your reply! I have now tried everything: different Apple IDs on different Apple devices. I have also tried findmy.py ( https://github.com/malmeloo/FindMy.py )on the Raspberry and Apple Macbook. I never receive a text message or code. The sad truth is probably that Apple has been blocking requests from Anisette servers since the end of 2025!?
+
+Best regards,
+
+Markus
+
+> Am 07.01.2026 um 03:55 schrieb PoleTransformer ***@***.***>:
+> 
+> 
+> PoleTransformer
+>  left a comment 
+> (dchristl/macless-haystack#224)
+>  <https://github.com/dchristl/macless-haystack/issues/224#issuecomment-3717125993>
+> The issue with #46 (comment) <https://github.com/dchristl/macless-haystack/issues/46#issuecomment-2887680934> requires a --trusteddevice. So you need to link a Apple device to the account. Likely works for me because I have 1 old iPad that I use. Can you try linking an Apple device to the account if possible, then trying SMS again?
+> 
+> —
+> Reply to this email directly, view it on GitHub <https://github.com/dchristl/macless-haystack/issues/224#issuecomment-3717125993>, or unsubscribe <https://github.com/notifications/unsubscribe-auth/ASFAYMBPZLH3J2TAYJBNNN34FRYRRAVCNFSM6AAAAACO33Z5L2VHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZTOMJXGEZDKOJZGM>.
+> You are receiving this because you commented.
+> 
+
+
+  [2026-01-09T19:29:51Z] @PoleTransformer: @mehrlich69 Please clone [Biemster FindMy](https://github.com/biemster/FindMy ) and run `python3 request_reports.py --regen --trusteddevice`. This will push a code to all Apple devices linked to the AID.
+
+Currently no problems for me receiving SMS. Make sure to completely start from scratch, purge all volumes in Anisette docker.
+  [2026-01-17T22:31:28Z] @joaomruas: > [@mehrlich69](https://github.com/mehrlich69) Please clone [Biemster FindMy](https://github.com/biemster/FindMy) and run `python3 request_reports.py --regen --trusteddevice`. This will push a code to all Apple devices linked to the AID.
+> 
+> Currently no problems for me receiving SMS. Make sure to completely start from scratch, purge all volumes in Anisette docker.
+
+This worked for me. Had the same problem.
+  [2026-01-21T10:10:20Z] @mehrlich69: > [@mehrlich69](https://github.com/mehrlich69) Please clone [Biemster FindMy](https://github.com/biemster/FindMy) and run `python3 request_reports.py --regen --trusteddevice`. This will push a code to all Apple devices linked to the AID.
+> 
+> Currently no problems for me receiving SMS. Make sure to completely start from scratch, purge all volumes in Anisette docker.
+
+Your solution worked for me too, thank you very much. But what Apple seems to have really blocked is the sending of data, not just the coordinates, e.g. https://github.com/positive-security/send-my. Or has anyone solved that?
+  [2026-02-09T07:05:02Z] @tinydream96: If you are struggling with setting this up or need to perform a clean start to fix the 401 error, I've created a helper script [Macless Haystack Installer](https://github.com/tinydream96/macless-haystack-installer) that might be useful.  
+
+It automates the deployment of macless-haystack and anisette-v3 and includes a "Clean Install" option. This feature automatically removes all related containers and volumes to ensure a completely fresh environment, which is often recommended to resolve these authentication issues. It also handles the interactive login process for you.
+
+You can try it out with this single command:
+
+curl -sSL https://raw.githubusercontent.com/tinydream96/macless-haystack-installer/main/install.sh | sudo bash
+
+Hope this makes the troubleshooting process easier!
+  [2026-02-09T07:06:29Z] @tinydream96: @mehrlich69 Regarding the issue where no data/coordinates are returned despite successful authentication:
+
+We've observed that this is often due to Apple strictly blocking Data Center/VPS IP addresses from accessing the Find My data endpoints. Even if the login works perfectly and you get a 200 OK status, the search endpoint may return an empty list if the request originates from a known cloud provider (like AWS, DigitalOcean, etc.).
+
+We have detailed this behavior and potential solutions (like using residential IPs) in our troubleshooting guide: 👉 [Troubleshooting: No Location Data (0 reports)](https://github.com/tinydream96/macless-haystack-installer/blob/main/troubleshooting_empty_reports_en.md)
+
+############ macless-haystack #239 ############
+TITLE: Report decoding inconsistency between app and apple_cryptography.py
+STATE: open  CREATED: 2026-05-30T03:10:04Z  CLOSED: null
+USER: adntaha
+---BODY---
+Hi,
+
+I'm trying to increase my understanding of this codebase, and while doing so, I stumbled upon the following inconsistency. In the following snippet, `i` in lowercase is for a signed int.
+
+https://github.com/dchristl/macless-haystack/blob/0bda271b8bd0cc37194dfba1845cd48954cba4cc/endpoint/register/apple_cryptography.py#L30-L32
+
+Meanwhile, in the web app, the same bytes get decoded as an Uint:
+
+https://github.com/dchristl/macless-haystack/blob/0bda271b8bd0cc37194dfba1845cd48954cba4cc/macless_haystack/lib/findMy/decrypt_reports.dart#L73-L76
+
+So, I don't get it. Are both of these approaches valid because lat/long don't ever get high enough, or is one of these going to lead to a bug?
+
+Thanks a lot!
+
+############ macless-haystack #232 ############
+TITLE: ERROR: Invalid status: 1 - A server problem is blocking Apple ID sign in
+STATE: open  CREATED: 2026-03-14T05:18:41Z  CLOSED: null
+USER: yashbarot132
+---BODY---
+Hi, I am encountering an authentication failure while attempting to log in to iCloud via the script. The process terminates immediately after receiving a status: 1 error from the Apple server.
+The script fails during the com.apple.mobileme delegate authentication. Even though the primary status is 0, the delegate status is 1, which triggers a termination. The logs suggest an "account score" issue, but this persists even with 2FA enabled.
+Run command in powershell:
+ docker rm -f anisette                        
+anisette           
+docker rm -f macless-haystack                
+macless-haystack                                                                
+ docker run -d --restart always --name anisette -p 6969:6969 --volume anisette-v3_data:/home/Alcoholic/.config/anisette-v3 --network mh-network dadoum/anisette-v3-server
+
+docker run -it --restart unless-stopped --name macless-haystack -p 6176:6176 --volume mh_data:/app/endpoint/data --network mh-network christld/macless-haystack
+
+After the run commands:
+ <key>M2</key>
+        <data>q8AIlCNdJACVhOPrkZ75ZqcwljPNe7kGhGhoQZLM1KU=</data>
+        <key>ptxid</key>
+        <string>f6fa632b-ebfb-47b2-b7e5-0b434701737c</string>
+        <key>np</key>
+        <data>zFXsau4Hnz0t2pJxvLbXMsehC6cTQXK1sghjdr7sXQM=</data>
+    </dict>
+    <key>Header</key>
+    <dict>
+    </dict>
+</dict>
+</plist>
+
+2026-03-14 05:04:31,430 - INFO - Registering device after login
+2026-03-14 05:04:32,006 - DEBUG - HTTP-Code: 200
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+        <dict>
+                <key>dsid</key>
+                <string>22743213345</string>
+
+                <key>delegates</key>
+                <dict>
+                        <key>com.apple.mobileme</key>
+                        <dict>
+                                <key>status</key>
+                                <integer>1</integer>
+
+                                <key>status-message</key>
+                                <string>A server problem is blocking Apple ID sign in. Try signing in later.</string>
+
+                        </dict>
+
+                </dict>
+
+                <key>status</key>
+                <integer>0</integer>
+
+        </dict>
+</plist>
+2026-03-14 05:04:32,007 - DEBUG - Answer from icloud login
+2026-03-14 05:04:32,007 - DEBUG - {'dsid': '22743213345', 'delegates': {'com.apple.mobileme': {'status': 1, 'status-message': 'A server problem is blocking Apple ID sign in. Try signing in later.'}}, 'status': 0}
+2026-03-14 05:04:32,008 - ERROR - Invalid status: 1
+2026-03-14 05:04:32,008 - ERROR - Error message: A server problem is blocking Apple ID sign in. Try signing in later.
+2026-03-14 05:04:32,008 - ERROR - It seems your account score is not high enough. Log in to https://appleid.apple.com/ and add your credit card (nothing will be charged) or additional data to increase it.
+2026-03-14 05:04:32,008 - ERROR - Unable to proceed, program will be terminated.
+
+<img width="1920" height="1200" alt="Image" src="https://github.com/user-attachments/assets/4885a2a2-ae8e-41d7-a181-ea9b74d23b12" />
+
