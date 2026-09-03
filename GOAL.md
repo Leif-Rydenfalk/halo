@@ -9,12 +9,26 @@ Leif, 2026-09-03, verbatim:
 > prohjects to have a cheap way of knowing the location of my sensors and
 > devices and assets.
 
-## The three deliverables this implies
+And, clarifying, same day, verbatim:
 
-1. **A cheaper open AirTag.** A complete puck — BLE tag that rides Apple's Find
-   My network (OpenHaystack-style keys first; the official accessory-program
-   path documented), sounder, NFC, accelerometer, CR2032, anti-stalking (DULT)
-   behaviour — with every design file open and a BOM that undercuts Apple's $29.
+> i mean it should be a perfect copy of the internal airtag stuff so a find my
+> puck which is cheap to produce and yo ucan take the pcb and integrate it
+> everywhere
+
+## What that means, in order
+
+1. **A perfect copy of the AirTag internals.** Function for function, what is
+   inside the AirTag is inside haytag: the BLE SoC role (nRF52832 in Apple's
+   board), the Find My advertisement and key rotation, the NFC tag the phone
+   taps, the accelerometer that wakes it, the speaker that drives the shell,
+   the UWB ranging that Precision Finding uses (Apple's U1 is unobtainable, so
+   the closest sourceable substitute — research/05 and /08 settle which), the
+   CR2032 and its contact scheme, the Ø ~32 × 8 mm envelope. Where a 1:1 part
+   is not buyable, the substitute is chosen for the same function and pinned
+   to a source; where a function cannot be reproduced at all (e.g. Apple-side
+   Precision Finding UI with a non-Apple UWB chip) that is written down as a
+   known gap, not glossed. Cheap to produce: BOM at 10 / 100 / 1 000 / 10 000
+   against Apple's $29, every part on LCSC/JLCPCB.
 
 2. **An embeddable block, not only a puck.** The tag is designed as a reusable
    *circuit block* that anyone can drop into their own board in any outline:
@@ -22,14 +36,14 @@ Leif, 2026-09-03, verbatim:
    a castellated/solder-down module variant for people who do not want to do
    RF layout. The round 32 mm puck is just the first host board for that block.
 
-3. **Local relative position between devices.** Find My tells you where a
-   thing is at city scale (someone's iPhone walked past it). Leif's sensors
-   need to know where they are *relative to each other* at room scale, cheaply,
-   so the digital twin (Twinton) can place every sensor, device and asset.
-   That is a peer-to-peer ranging problem: UWB two-way ranging (DW3000-class)
-   is the accurate route; BLE RSSI / AoA is the cheap route. The research must
-   settle which the block carries, at what cost, and how a fleet of haytags
-   self-locates without infrastructure.
+3. **Leif's own use: local relative position between his devices.** Find My
+   tells you where a thing is at city scale (someone's iPhone walked past it).
+   His sensors need to know where they are *relative to each other* at room
+   scale so the digital twin (Twinton) can place every sensor, device and
+   asset. The AirTag already carries the radio for this (UWB); a faithful copy
+   with a sourceable UWB chip can range peer-to-peer between haytags as well
+   as toward a phone. research/08 settles whether the UWB substitute can do
+   that, how well, at what battery cost, and what BLE-only fallback exists.
 
 ## Constraints that follow
 
