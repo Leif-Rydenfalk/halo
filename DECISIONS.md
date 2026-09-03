@@ -73,3 +73,60 @@ Confidential, so reading it and then publishing an implementation cannot both
 happen. **Decision: clean-room only** — the design is derived from the PoPETs
 2021 academic paper and public reverse-engineering, never from a leaked spec
 mirror. Any contributor who has read the MFi spec must not touch the firmware.
+
+## D6 — where haytag actually wins (2026-09-03)
+
+**The evidence.** Lane D priced the whole market bottom-up and top-down and
+they agree: a Find My beacon is **about $1 in parts** (the AliExpress tags are
+one Lenze ST17H66, a crystal and two capacitors, with *no antenna matching at
+all*), a certified-class tag is **$3.50–$5**, Chinese B2B finished tags sell at
+**$2.22–$2.52 at MOQ 100**, and Apple's own gen-1 manufacturing cost was about
+**$10** against $29 retail. Lane D's verdict, adopted here: *"haytag cannot win
+on unit cost; that race is over."*
+
+**Decision: haytag competes on what is closed, not on price.** Being cheaper
+than Apple is easy and is still a stated goal — the target is the $3.50–$5
+certified-class band, roughly a sixth of Apple's retail — but it is not the
+reason to build it. The reasons are the five things no tag on the market gives
+you:
+
+1. **Your own keys and your own backend.** Every commercial tag binds you to a
+   vendor app and, for certified ones, to a per-unit Apple Token burned in at
+   the factory. haytag's keys are yours.
+2. **Simultaneous Apple and Google broadcasting.** Every "dual network" product
+   on sale makes you pick one at pairing. Lane D found this works in practice,
+   and lane B found Google's Find Hub specification is public with **no
+   open-source tag firmware in existence** — an unoccupied position.
+3. **A documented debug header.** Certified tags from eufy and Motorola ship
+   with debug pads on the board but undocumented; ours is a header with a pinout.
+4. **A published bill of materials and design files** anyone can fork, in any
+   outline, as an embeddable block.
+5. **Peer-to-peer ranging between your own devices** (D1), which no consumer
+   tag offers at all.
+
+**What it beat.** Chasing the $1 board. It is reachable and it is pointless:
+it means one unmatched antenna, no sounder, no DULT compliance, and a product
+we said in docs/ANTI-STALKING.md we would not ship.
+
+## D7 — dual network from the first board revision (2026-09-03)
+
+Lane B: Google's Find Hub tag specification is public (service `0xFEAA`, frame
+type `0x40/0x41`, roughly 1024 s ephemeral-ID rotation, DULT mandatory) and no
+open-source implementation of a Find Hub tag exists. Lane D: no shipping
+product broadcasts both networks at once, though it is technically possible.
+**Decision: the firmware advertises on both networks concurrently**, and the
+hardware is specified with the flash, RAM and current budget to do so from
+revision A rather than being retrofitted. Beat: Apple-only first, Google later,
+which would have frozen the BOM around the smaller flash part.
+
+## D8 — DULT changes the BOM, and that is accepted (2026-09-03)
+
+Lane B: DULT compliance is not a firmware checkbox on top of the OpenHaystack
+advertisement. It needs a **connectable** advertisement set and a GATT service
+alongside the non-connectable Find My beacon, plus an accelerometer accurate to
+±10° and a sounder reaching **60 Phon at 25 cm**. That is flash, RAM, average
+current and two parts. Lane B also notes DULT's own size test makes compliance
+**required** for a 32 mm puck, not optional. **Decision: budget for it up
+front** — the SoC is chosen with headroom over the 116.7 KB flash / 21.5 KB RAM
+that a Find My stack alone needs, and the accelerometer and sounder are in the
+core BOM, not the deluxe variant.

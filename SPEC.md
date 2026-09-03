@@ -33,7 +33,8 @@ from. The part that implements each is section 3.
 
 | # | function | requirement | state |
 |---|---|---|---|
-| F1 | Find My advertising | advertise the Find My payload with rolling public keys so any nearby iPhone reports the tag | PENDING lane B (byte layout, rotation period) |
+| F1a | Google Find Hub advertising | advertise concurrently on Google's network: service `0xFEAA`, frame `0x40/0x41`, ~1024 s ephemeral-ID rotation | SETTLED lane B (public spec); DECISIONS.md D7 |
+| F1 | Find My advertising | non-connectable advertisement, 37 bytes on air: address = `p[0]\|0b11000000 ‖ p[1..5]`, then `1E FF 4C 00 12 19 <status> p[6..27] p[0]>>6 <hint>`, where p is the X coordinate of the rolling NIST P-224 public key | SETTLED lane B (PETS 2021 Table 2, cross-checked against OpenHaystack source) |
 | F2 | key rotation | rotate the advertised key on the DULT schedule; MAC address rotation likewise | SETTLED lane F: 15 min key, 24 h MAC |
 | F3 | sound maker | audible alert, **≥60 Phon (ISO 532-1:2017)**, mandatory, four non-owner sound opcodes | SETTLED lane F (DULT accessory protocol) |
 | F4 | separated-state behaviour | near-owner → separated after >30 min; random 8–24 h alert timeout with 6 h back-off | SETTLED lane F |
@@ -45,6 +46,13 @@ from. The part that implements each is section 3.
 | F10 | peer ranging | haytag-uwb ranges to other haytags for local relative position | PENDING lane H (technology, accuracy, battery) |
 | F11 | battery life | AirTag claims about a year on a CR2032 | PENDING lane A (Apple's claim) + ce-spice model |
 | F12 | battery replacement | user-replaceable CR2032 behind a compliant door | SETTLED lane F: tool or two independent simultaneous movements (16 CFR 1263) |
+
+## 2a. Budget floors (from lane B)
+
+A Find My stack alone measures **116.7 KB flash / 21.5 KB RAM** (Goodix FMNA
+figures, lane D). DULT adds a connectable advertisement set and a GATT service;
+Google Find Hub adds a second beacon. The SoC is chosen with headroom over
+those three together, not over the first (DECISIONS.md D8).
 
 ## 3. Component map — one row per function
 
