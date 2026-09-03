@@ -3,14 +3,19 @@
 > **SUPERSEDED IN PART BY §10–§11.** Decision **D12** (2026-09-03) drops the DW3110 chain and
 > makes **nRF54L10** the v1 SoC, superseding D10's nRF52840. Sections 1–9 below remain the record
 > of the AirTag substitution map and the nRF52/UWB costing that D12 was decided against — kept
-> deliberately visible, because they are the option the nRF54L baseline beat and the delta in
-> §10.3 is only meaningful against them. **§10 is the current cost model. §11 is its
-> verification**: every §10 price re-pulled live, plus the answer to lane I's module question and
-> seven corrections to §10 (§11.5), and the class-D amplifier D11a had already deleted (§11.6). Lane G has since settled the sounder as a
-> bare **Murata 7BB-20-3** piezo bender bonded to the shell, and lane A confirmed **LIS2DW12TR**
-> as the accelerometer.
+> deliberately visible, because they are the option the nRF54L baseline beat and every delta is
+> only meaningful against them.
 >
-> **Read in this order if you only want the current answer: §10.1 → §10.3 → §11.1 → §11.3.**
+> **The current cost model is §11.6**, which supersedes §10.3's totals by deleting the class-D
+> amplifier that D11a had already designed out. §10 is the first-pass nRF54L re-run; **§11 is its
+> verification** — every §10 price re-pulled live, lane I's module question closed from the
+> vendors' own drawings (§11.3), and seven corrections to §10 tabulated in §11.5.
+>
+> Lane G has since settled the sounder as a bare **Murata 7BB-20-3** piezo bender bonded to the
+> shell and driven anti-phase from two SoC pins, and lane A confirmed **LIS2DW12TR** as the
+> accelerometer.
+>
+> **If you want only the current answer, read §11.6 → §11.3 → §11.1 → §11.7.**
 
 **Lane E. All prices pulled 2026-09-03.** Every number below carries a link and a date.
 Where a price could not be fetched it says so; nothing here is invented.
