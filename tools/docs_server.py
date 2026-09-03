@@ -84,11 +84,23 @@ def gallery_files():
     return sorted(f for f in os.listdir(g)
                   if f.lower().endswith((".jpg", ".jpeg", ".png")))
 
+# The generated HTML pages live outside the markdown tree and are what Leif and
+# the factory actually read, so they get pinned to the top of the nav.
+PACK = [("out/release/INDEX.html", "Factory handoff pack"),
+        ("out/release/CONVERGENCE.html", "Convergence vs the real AirTag"),
+        ("out/release/README.md", "Pack readiness table")]
+
 def nav_html(cur):
     groups = tree()                      # <- walk once, not once per group
     order = {".": 0, "research": 1, "docs": 2, "spec": 3, "electronics": 4,
              "hardware": 5, "firmware": 6, "images/airtag": 7}
     out = []
+    have = [(rel, label) for rel, label in PACK if os.path.exists(os.path.join(ROOT, rel))]
+    if have:
+        out.append("<h2>release</h2>")
+        for rel, label in have:
+            href = ("/d/%s" % rel) if rel.endswith(".md") else ("/raw/%s" % rel)
+            out.append('<a href="%s">%s</a>' % (html.escape(href), html.escape(label)))
     for d in sorted(groups, key=lambda k: (order.get(k, 50), k)):
         out.append("<h2>%s</h2>" % html.escape(d if d != "." else "root"))
         for rel in groups[d]:
