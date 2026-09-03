@@ -67,7 +67,7 @@ marked PENDING lane E are awaiting its sourced pick.
 | UWB ranging | Apple **U1**, die `TMKA75`, TSMC 16 nm, in a USI system-in-package with its own processor running "Rose" firmware side-loaded by the Nordic part | **not reproducible** — never sold. haytag-uwb uses a sourceable transceiver for peer ranging only (D1) | the only true hard wall in the whole design |
 | firmware and key storage | GigaDevice **GD25LE32/LQ32**, 32 Mbit SPI NOR, WLCSP-10, 1.8 V | PENDING lane E — generic SPI NOR | holds both the Nordic firmware and the U1's firmware, unencrypted |
 | motion detection | Bosch **BMA280** | PENDING lane E | sampled every 10 s at rest, 0.5 s once moving |
-| sound | Maxim **MAX98357A** class-D amplifier driving a copper voice coil glued to the shell, against a fixed central magnet, with a **TI TLV9001** op-amp in the analogue path | PENDING lane E + D11 | about 8 mA while sounding, over three thousand times the sleep current |
+| sound | Maxim **MAX98357A** class-D amplifier driving a copper voice coil glued to the shell, against a fixed central magnet, with a **TI TLV9001** op-amp in the analogue path | **bare Murata 7BB-20-3 piezo bender, Ø20.0 × 0.22 mm**, bonded to the shell and driven anti-phase from two SoC pins (D11) | about 8 mA while sounding, over three thousand times the sleep current |
 | power | TI **TPS62746** buck to a 1.8 V rail, onsemi **FPF2487** load switch gating the UWB and flash, a small LDO, and **five 100 µF** bulk capacitors marked `J107S` | PENDING lane E | the bulk capacitance is what keeps the tag alive for seconds after the cell is pulled, which is how the five-removals reset works |
 | timing | 32 MHz crystal marked `T320/RBEV`, 32.768 kHz crystal marked `A048L` | PENDING lane E | |
 | antennas | three laser-direct-structured traces on the plastic carrier: Bluetooth inverted-F at **−3.2 dBi**, an NFC coil, a UWB patch at **−1.6 dBi at 6.5 GHz** | PENDING ce-rf | gains are from Apple's own filed test reports, not estimates |
@@ -80,16 +80,41 @@ the flash at the factory. Both walls are commercial, not technical.
 
 ## 4. Physical envelope
 
-PENDING lane G. Lane C's warning is already binding: on a 30 mm round board a
-20 mm cell leaves only about a 5 mm annulus for the antenna keep-out and the
-NFC coil together, which is why Apple moved to a laser-direct-structured
-three-antenna frame. Either the puck grows, or the antenna and coil share the
-annulus by design, or the cell moves off-centre. The ce-rf solver decides.
+From Apple's own dimensioned accessory drawing (lane G found it published free
+at developer.apple.com, outside the login-walled Accessory Design Guidelines)
+and from teardown measurements. Apple forbids redistributing that sheet, so the
+numbers are transcribed here and the redistributable geometry in
+`reference/models/` is a CC BY 4.0 drawing that reproduces every callout.
 
-Target from the public product: Ø ≈ 31.9 mm, 8.0 mm thick,
-11 g; the PCB diameter, stack budget and coil placement come from the teardown
-measurements lane G is collecting. The embedded block variant is not bound by
-this envelope; only the puck is.
+| feature | value | note |
+|---|---|---|
+| maximum outer diameter | **31.87 mm** | occurs at z = 4.34 mm, derived from the drawing's profile |
+| overall height | **7.98 mm** | |
+| stepped diameters | 28.94 / 27.90 / 27.84 / 25.55 / 23.11 mm | 0.05 mm chamfer |
+| speaker keep-out | **Ø25.75 mm**, "do not obstruct" | Apple's own callout |
+| antenna keep-out | **Ø37.31 mm**, no metal above or below | larger than the tag itself |
+| steel cover | approximately a spherical cap of radius 92 mm | not a battery terminal — all three contacts are on the carrier |
+| mass | 11 g first generation, 11.8 g second | otherwise dimensionally identical |
+| environment | IP67, −20 to +60 °C | |
+
+**The stack budget is the binding constraint.** A CR2032 is 3.2 mm and the
+disassembled internal module measures 3.3 mm, so 6.5 of the 7.98 mm are spent
+before the cover, the clearances and the shell wall. About 1.5 mm remains.
+
+Two consequences follow directly, and both are now design rules:
+
+- **No coin-cell holder fits.** The lowest-profile surface-mount retainer still
+  stands 2 mm above the board. Sprung fingers on the carrier, clamped by the
+  door, is the only scheme that fits — which is what Apple does.
+- **No housed buzzer fits.** The obvious catalogue part reaches exactly the
+  required loudness at three volts but is 3.5 mm tall.
+
+Lane C's warning still holds on the copper side: a 20 mm cell inside a 30 mm
+board leaves about a 5 mm annulus for the Bluetooth antenna keep-out and the
+NFC coil together. The electromagnetic solver decides whether they share it,
+the cell moves off-centre, or the puck grows.
+
+The embedded block variant is not bound by this envelope. Only the puck is.
 
 ## 5. Electrical requirements
 

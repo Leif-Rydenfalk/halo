@@ -220,3 +220,41 @@ no tag can see the whole graph, and the solver belongs in the digital twin.
 channels collide, 25 cm becoming 331 cm without deterministic scheduling, and a
 single-antenna device can lose metres to orientation. The firmware must schedule
 ranging deterministically, and that is now a requirement, not an optimisation.
+
+## D11a — the sounder is settled: a bare piezo bender bonded to the shell (2026-09-03)
+### Closes the open mechanism in D11
+
+Lane G measured the problem and found the part. The stack budget leaves about
+1.5 mm above the internal module, and the obvious catalogue buzzer — a TDK
+PS1240P02CT, which gives exactly **60 dB(A) at 10 cm at 3 V**, precisely the
+DULT requirement — is **3.5 mm tall** and does not fit. Apple's answer was a
+voice coil bonded to the shell, which is not a part anyone sells.
+
+**Decision: a bare Murata 7BB-20-3 piezo bender, Ø20.0 × 0.22 mm, bonded to the
+inside of the shell**, driven anti-phase from two SoC pins so no boost converter
+and no inductor are needed. This is Apple's trick — make the housing the
+radiating surface — done with a catalogue part a fifth of a millimetre thick.
+
+**What it beat.** A housed buzzer, on height. A micro-speaker, on cost, at about
+$5.45 against the rest of the board. Apple's voice coil, on availability.
+
+**What must still be measured, not assumed.** The only published AirTag loudness
+figure is iFixit's **78–80 dB at about 13 cm**; Apple's "50% louder" for the
+second generation carries no decibel figure or distance and must not be
+converted into one. Our own board is measured against a calibrated meter before
+release, and if the bonded bender misses 60 Phon at 25 cm the fallback is a
+micro-speaker and the cost model absorbs it. Note also iFixit's finding that
+piezo rivals were *"just as much, if not more, noise"* than the AirTag — Apple
+chose the coil for sound quality, not for volume, and we are not selling sound
+quality.
+
+## D13 — enclosure and tooling (2026-09-03)
+
+Lane G: **press-and-twist bayonet with three tabs at two, six and ten o'clock**
+is the battery door, because it is the only Reese's-Law-compliant scheme that
+costs **zero vertical height**. A screw costs 1.5 to 2.5 mm of the 1.5 mm we
+have and puts metal inside Apple's Ø37.31 mm antenna keep-out.
+
+**No two-shot moulding.** Tooling runs $45–95k and only repays above roughly
+100,000 to 500,000 units a year. Two single-material mouldings plus a stamped
+cover, with a first article off a $1,500–3,000 single-cavity aluminium tool.
