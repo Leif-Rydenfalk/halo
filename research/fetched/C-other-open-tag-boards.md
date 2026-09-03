@@ -99,3 +99,9 @@ ADC, USB pads. Gerbers + drill + schematic PDF + PCB layout published. **BSD lic
 Author "Mishka"; created ~7 years ago, rev6 ~6 years ago (i.e. ~2019 — dormant).
 The 25 mm 2-layer round nRF52 board with published gerbers is a very close geometric
 precedent for a 30-32 mm haytag puck.
+
+## Note on date discrepancies
+Lane C read last-activity from each repo's `commits/<branch>.atom` feed on 2026-09-03;
+lane B (research/02) used GitHub's last-push timestamp. These differ slightly, e.g.
+pix/heystack-nrf5x: lane C 2024-10-18 (atom), lane B 2024-11-02 (push). Both are "dormant
+since late 2024"; neither is wrong, they measure different events.

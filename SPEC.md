@@ -36,7 +36,7 @@ from. The part that implements each is section 3.
 | F1a | Google Find Hub advertising | advertise concurrently on Google's network: service `0xFEAA`, frame `0x40/0x41`, ~1024 s ephemeral-ID rotation | SETTLED lane B (public spec); DECISIONS.md D7 |
 | F1 | Find My advertising | non-connectable advertisement, 37 bytes on air: address = `p[0]\|0b11000000 ‖ p[1..5]`, then `1E FF 4C 00 12 19 <status> p[6..27] p[0]>>6 <hint>`, where p is the X coordinate of the rolling NIST P-224 public key | SETTLED lane B (PETS 2021 Table 2, cross-checked against OpenHaystack source) |
 | F2 | key rotation | rotate the advertised key on the DULT schedule; MAC address rotation likewise | SETTLED lane F: 15 min key, 24 h MAC |
-| F3 | sound maker | audible alert, **≥60 Phon (ISO 532-1:2017)**, mandatory, four non-owner sound opcodes | SETTLED lane F (DULT accessory protocol) |
+| F3 | sound maker | audible alert, **≥60 Phon at 25 cm (ISO 532-1:2017)**, mandatory, four non-owner sound opcodes | requirement SETTLED lane F; mechanism OPEN, see DECISIONS.md D11 |
 | F4 | separated-state behaviour | near-owner → separated after >30 min; random 8–24 h alert timeout with 6 h back-off | SETTLED lane F |
 | F5 | identifier retrieval | serial readable over NFC or BLE, behind a physical button, 5-minute window; printed unique serial on the housing | SETTLED lane F |
 | F6 | owner information page | obfuscated owner-info page, ≥25-day retention | SETTLED lane F |
@@ -62,7 +62,13 @@ PENDING lanes A and E. Structure fixed now so the dossiers drop straight in:
 
 ## 4. Physical envelope
 
-PENDING lane G. Target from the public product: Ø ≈ 31.9 mm, 8.0 mm thick,
+PENDING lane G. Lane C's warning is already binding: on a 30 mm round board a
+20 mm cell leaves only about a 5 mm annulus for the antenna keep-out and the
+NFC coil together, which is why Apple moved to a laser-direct-structured
+three-antenna frame. Either the puck grows, or the antenna and coil share the
+annulus by design, or the cell moves off-centre. The ce-rf solver decides.
+
+Target from the public product: Ø ≈ 31.9 mm, 8.0 mm thick,
 11 g; the PCB diameter, stack budget and coil placement come from the teardown
 measurements lane G is collecting. The embedded block variant is not bound by
 this envelope; only the puck is.

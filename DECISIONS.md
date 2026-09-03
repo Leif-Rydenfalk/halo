@@ -130,3 +130,41 @@ current and two parts. Lane B also notes DULT's own size test makes compliance
 front** — the SoC is chosen with headroom over the 116.7 KB flash / 21.5 KB RAM
 that a Find My stack alone needs, and the accelerometer and sounder are in the
 core BOM, not the deluxe variant.
+
+## D9 — redraw the copper, do not copy it (2026-09-03)
+
+Lane C found the best layout donor is **RuuviTag Rev B8**: KiCad sources, a
+round board, a working NFC-A antenna, a routed accelerometer, eight production
+revisions. It is **CC BY-SA 4.0**, so copying its copper would make haytag's
+hardware share-alike under a documentation licence, colliding with the
+CERN-OHL-S choice in D4. **Decision: study RuuviTag and Nordic's reference
+layouts, then redraw every trace from the datasheets and application notes.**
+The design files record which reference each block was informed by, so the
+lineage is honest without the licence entanglement.
+
+**Also refused as sources:** four projects lane C checked have **no licence
+file at all** — Circuit-Digest's DIY-AirTag, Squall, heystack-nrf5x and
+stacksmashing's airtag-hardware. No licence means all rights reserved. They are
+read-only reference; nothing from them is vendored or copied.
+
+## D10 — parity target is AirTag 2, not AirTag 1 (2026-09-03)
+
+Lane C surfaced a February 2026 teardown of the second-generation AirTag: Apple
+moved to an **nRF52840**, a UWB module, a Bosch accelerometer and an SPI
+EEPROM. **Decision: the SoC target is nRF52840-class**, which also happens to
+be what decision D8's flash and RAM budget demands once the Find My stack, DULT
+and the Google network beacon are all resident. Beat: an nRF52810 or nRF52832
+chosen for the older teardown, which would have been out of date on arrival and
+short of flash.
+
+## D11 — the sounder is the hard part (2026-09-03)
+
+Lane C: Apple's voice-coil-driving-the-shell is not buyable as a part, a real
+micro-speaker costs about $5.45 which is more than the rest of the board, and a
+piezo costs cents but is quiet. Yet DULT makes **60 Phon at 25 cm** mandatory
+(lane F). **Decision: the sounder is treated as an engineering problem with a
+measured answer, not a part-picking exercise** — a piezo bender driven at its
+resonance from a boost rail, with the enclosure cavity tuned as a Helmholtz
+resonator, simulated in ce-spice for drive current and measured on a real board
+against a calibrated meter before the design is released. If the measurement
+fails, the fallback is a micro-speaker and the cost model absorbs it.

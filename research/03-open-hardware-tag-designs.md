@@ -5,6 +5,14 @@ on that date, and last-commit dates were read from each repository's
 `commits/<branch>.atom` feed on that date. Anything I could not confirm is marked
 **unverified** rather than asserted.
 
+**Scope, and how this complements lane B.** `research/02-findmy-protocol-and-openhaystack.md`
+already carries a 23-row table of the Find My **software and firmware** projects with their
+licences and last-push dates. This document deliberately does not repeat it. Lane C's subject
+is the **boards**: which EDA source files actually exist in each repo, under which licence, in
+what shape, and how separable the RF section is. Where a project has both halves (Everytag,
+heystack-nrf5x, FakeTag) lane B is authoritative on the firmware half and this document only
+notes the hardware.
+
 ## The headline
 
 **There is no open-source AirTag.** After ~30 searches and ~40 page fetches, the field
@@ -53,7 +61,7 @@ each design as:
 | 14 | **Nordic nRF5 Eagle reference designs** | [github](https://github.com/NordicPlayground/nrf5-eagle-reference-design) | Nordic Semiconductor ASA | nRF52832 QFAA / QFAA-DCDC / **QFAA-NFC** | n/a | reference layout | **Eagle** + PDF printouts | "Copyright (c) 2016 Nordic Semiconductor ASA, All rights reserved" + BSD-style clauses — **verify** | 2022-03-22 | It's a reference layout, not a product | **monolith reference**; Nordic warns only the **Altium** layouts are tested/verified | **4** as the RF starting point |
 | 15 | **jacobrosenthal/nrf52-kicad** | [github](https://github.com/jacobrosenthal/nrf52-kicad) | jacobrosenthal | nRF52832 QFAA-DCDC | n/a | reference | **KiCad**, converted with altium2kicad and cleaned up | not stated (**unverified**) | not checked | reference only | **monolith** | **3** |
 | 16 | **hlord2000/nordic-lib-kicad** | [github](https://github.com/hlord2000/nordic-lib-kicad) | hlord2000 | all modern Nordic parts | n/a | library | **KiCad** symbols + footprints + "reference design blocks" | not stated (**unverified**) | not checked | library only | closest thing to a **block** source in the Nordic world | **4** as a library |
-| 17 | **Everytag firmware** (no HW) / **heystack-nrf5x** / **FakeTag** | [Everytag](https://github.com/vasimv/Everytag) · [heystack](https://github.com/pix/heystack-nrf5x) · [FakeTag](https://github.com/dakhnod/FakeTag) | vasimv / pix / dakhnod | nRF51/52/54 | CR2032 | n/a | firmware only | GPL-3.0 / **no licence file** / MIT | 2026-04-22 / 2024-10-18 / 2026-06-22 | no hardware | n/a | **firmware: 5** |
+| 17 | *Find My firmware projects (OpenHaystack, Macless-Haystack, heystack-nrf5x, acalatrava, FakeTag, Everytag fw, …)* | see `research/02-findmy-protocol-and-openhaystack.md` | — | nRF51/52/54, ESP32, and cheap non-Nordic silicon | — | — | **no hardware design files in any of them** | see lane B's table | see lane B's table | — | n/a | **lane B owns this** |
 | 18 | **stacksmashing/airtag-hardware** | [github](https://github.com/stacksmashing/airtag-hardware) | stacksmashing (PCB work: David Hulton) | — | — | — | merged **PCB layer images** of the real AirTag | **none stated** — reference only, do not vendor | 2021-08-08 | it's a teardown artefact | n/a | **3** as reference |
 | 19 | **Bitcraze Loco Positioning deck** *(UWB — lane H owns this)* | [schematic PDF](https://www.bitcraze.io/documentation/hardware/loco_deck/loco_deck_revd.pdf) | Bitcraze AB | STM32 + **DWM1000** | from host | Crazyflie deck | schematic states **KiCad 4.0.2**, published as PDF | **CC-BY 4.0** (on the schematic sheet) | rev D dated 2016-03-31 | it's a drone deck, ~10 cm accuracy | **module** (DWM1000) on a **deck** = physically separable | **3** *(defer to lane H)* |
 | 20 | **Makerfabs ESP32-UWB / ESP32-UWB-DW3000** *(UWB — lane H)* | [DW3000](https://github.com/Makerfabs/Makerfabs-ESP32-UWB-DW3000) · [DW1000](https://github.com/Makerfabs/Makerfabs-ESP32-UWB) | Makerfabs | ESP32 + DW1000/DW3000 | Li-po | dev board | vendor hardware repo | not verified; the DW3000 Arduino lib is by **NConcepts**, not Makerfabs | active | **ESP32 cannot run from a coin cell** (see below) | **monolith** | **2** *(defer to lane H)* |
@@ -112,7 +120,11 @@ But the board is a 50x20x2 mm rectangular Qi-charging beacon on a LIR2016: no sp
 NFC, no accelerometer, not round. Take the **firmware wholesale** and the **Qi receive-coil +
 BQ25121A block** as an optional haytag variant (rechargeable haytag for sensors that live in
 a fixture), and draw new copper for the puck. GPL-3.0 on the firmware is a licence decision
-for research/06.
+for research/06 — and note that lane B's table rates **acalatrava/openhaystack-firmware
+(MIT, dormant since 2023-12-21)** as legally the best firmware base and **pix/heystack-nrf5x
+(no licence declared, last push 2024-11-02)** as the closest match to an nRF52 haytag. Lane B
+is authoritative on that choice; lane C only observes that Everytag is the only one of the
+three that also ships a board.
 
 ### 4. rayBeacon — the geometry proof (score 3)
 [openhardware.io/view/742](https://www.openhardware.io/view/742/Raybeacon-nRF52-on-the-go-Development-Kit),
