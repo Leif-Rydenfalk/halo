@@ -1,0 +1,329 @@
+{
+  "$triad": 1,
+  "kind": "blueprint",
+  "record": {
+    "slug": "halo-puck",
+    "title": "halo puck — the vertical stack budget as space claims (lane M, mechanical)",
+    "authored": "2026-09-03",
+    "frame_convention": "origin ON THE AXIS OF REVOLUTION at the lowest point of the battery door's outer face — Apple's own drawing datum (research/fetched/G-airtag-profile-from-dxf.md); +z up toward the crown apex at z=7.98; +x through the 6 o'clock bayonet ledge, so the three ledges sit at 0/120/240 deg (= 6, 10 and 2 o'clock, DECISIONS.md D13); millimetres. halo is a CONCENTRIC product, so every box below is a Z-SLAB of the 7.98 mm stack budget and its dx=dy is the diameter of the WIDEST occupant of that slab; a cuboid claim cannot express a ring, and two concentric parts at the same height always share a bounding box, so the radial budget is carried in must_provide and purpose instead",
+    "validation_order": "leaves first, then up",
+    "boxes": [
+      {
+        "name": "door-skin",
+        "purpose": "the stamped 301 stainless battery door: 0.30 mm skin at the axis, outer face an R92 spherical cap that IS the z datum, Ø25.44 at z=0.88, Ø25.55 wall to z=1.89, three Ø27.84 bayonet tabs at z 1.89..2.19. The only user-openable part (SPEC F12)",
+        "box_mm": {
+          "origin": [
+            -13.92,
+            -13.92,
+            0.0
+          ],
+          "size": [
+            27.84,
+            27.84,
+            0.3
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "wall_t_mm==0.30",
+            "outer_d_mm<=27.84"
+          ],
+          "interfaces_to_siblings": [
+            {
+              "to": "door-dome-dead-air",
+              "via": "TBD",
+              "where": "the door's inner face is the cell's seat"
+            }
+          ],
+          "mass_budget_g": null,
+          "notes": "0.30 mm is halo's choice, not a measurement: lane G records the AirTag cover thickness as 'estimate, unverified' (research/07 §5.2 row 1). A donor sample settles it."
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "door-dome-dead-air",
+        "purpose": "dead air: the sagitta of the R92 dome under the cell's Ø19.6 contact circle. 19.6^2/(8*92) = 0.522 mm. This is the design's only reclaimable slack — emboss a flat pad in the door and 0.52 mm comes back",
+        "box_mm": {
+          "origin": [
+            -10.0,
+            -10.0,
+            0.3
+          ],
+          "size": [
+            20.0,
+            20.0,
+            0.522
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "reclaimable_mm==0.522"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "cr2032",
+        "purpose": "the CR2032 cell, Ø20.0 x 3.2 mm, positive face DOWN onto the door's inner dome, negative face UP to the sprung fingers. 40% of the whole height budget in one part",
+        "box_mm": {
+          "origin": [
+            -10.0,
+            -10.0,
+            0.822
+          ],
+          "size": [
+            20.0,
+            20.0,
+            3.2
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "diameter_mm==20.0",
+            "height_mm==3.2"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": "at the same height, radially outboard: the door's Ø25.55 wall (r 12.475..12.775), the carrier's Ø24.75 seal land with its O-ring, the three bayonet ledges (Ø25.90..27.90) and the shell skirt above z=2.29. A cuboid box cannot claim a ring, so they are named here rather than boxed"
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "battery-contacts",
+        "purpose": "three formed C5191 phosphor-bronze fingers, 0.15 mm stock, at their COMPRESSED height. Two positive on the can rim at r 9.5, one negative on the cell's negative face at r 6.0 (Catley: 2 positive + 1 negative, all on the carrier side). No coin-cell holder fits — the lowest-profile retainer is 2 mm (lane G)",
+        "box_mm": {
+          "origin": [
+            -11.5,
+            -11.5,
+            4.022
+          ],
+          "size": [
+            23.0,
+            23.0,
+            0.15
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "stock_t_mm==0.15",
+            "contact_force_N>=0.5"
+          ],
+          "interfaces_to_siblings": [
+            {
+              "to": "cr2032",
+              "via": "TBD",
+              "where": "the fingers clamp the cell down onto the door"
+            }
+          ],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "carrier-pcb-seat",
+        "purpose": "the LDS carrier's working section: the three insert-moulded finger roots, their tails up to pads on the board's underside, and the annular PCB seat at z=4.600. The carrier also owns the Ø23.11 seal land, the O-ring groove and the three bayonet ledges lower down, and carries the BLE/NFC/UWB LDS antenna traces on its Ø27.40 outer wall",
+        "box_mm": {
+          "origin": [
+            -13.7,
+            -13.7,
+            4.172
+          ],
+          "size": [
+            27.4,
+            27.4,
+            0.428
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "outer_d_mm<=27.40",
+            "metal_parts==0"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": "no metal in the part: the only conductors are the LDS traces (which ARE the antennas) and the insert-moulded fingers. No fastener, no shield, no stiffener anywhere inside Apple's Ø37.31 antenna keep-out"
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "pcb",
+        "purpose": "the 4-layer board, Ø26.0 x 0.60 mm, with three 26 deg notches at 0/120/240 deg (iFixit's 'three notches made for the clips that hold the tag together'). Apple's is 0.30 mm and 'likely to be damaged when removed'; 0.60 mm is far cheaper to fabricate and the height is available once Apple's voice-coil motor is deleted",
+        "box_mm": {
+          "origin": [
+            -13.0,
+            -13.0,
+            4.6
+          ],
+          "size": [
+            26.0,
+            26.0,
+            0.6
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "outer_d_mm==26.0",
+            "thickness_mm==0.60"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "pcb-top-components",
+        "purpose": "top-side component allowance: 0.40 mm inside Ø21.2 (under the bender), 1.60 mm outboard of it. Everything tall — the five 100 uF bulk caps, the crystals — goes on the BOTTOM face, into the 3.4 mm annulus outboard of the cell",
+        "box_mm": {
+          "origin": [
+            -13.0,
+            -13.0,
+            5.2
+          ],
+          "size": [
+            26.0,
+            26.0,
+            0.4
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "max_component_h_mm<=0.40"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "diaphragm-gap",
+        "purpose": "the moving gap. This IS Apple's Ø25.75 'DO NOT OBSTRUCT THIS AREA' callout expressed as a volume, and NOTHING may enter it — not the carrier, not the board, not a component. It is what lets the bender drive the crown",
+        "box_mm": {
+          "origin": [
+            -12.875,
+            -12.875,
+            5.6
+          ],
+          "size": [
+            25.75,
+            25.75,
+            0.68
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "d_mm==25.75",
+            "occupants==0"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "piezo-bender",
+        "purpose": "Murata 7BB-20-3 bare piezo bender, Ø20.0 x 0.22 mm, 3.6 kHz, 500 ohm (DECISIONS.md D11a), plus a 0.05 mm structural bond line to the shell's FLAT internal land. Driven anti-phase from two SoC pins — no boost, no inductor",
+        "box_mm": {
+          "origin": [
+            -10.0,
+            -10.0,
+            6.28
+          ],
+          "size": [
+            20.0,
+            20.0,
+            0.27
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "d_mm==20.0",
+            "thickness_mm==0.22"
+          ],
+          "interfaces_to_siblings": [
+            {
+              "to": "crown-wall",
+              "via": "TBD",
+              "where": "bonded full-face to the flat land; the bond is the acoustic coupling"
+            }
+          ],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      },
+      {
+        "name": "crown-wall",
+        "purpose": "the PC crown, which IS the diaphragm (Apple's trick, done with a catalogue part). 1.430 mm at the axis falling to 0.800 mm at the land edge Ø21.4, because the INSIDE is a flat land at z=6.550 while the outside keeps Apple's R92 cap. Flat because conforming a 7BB-20-3 to R91.2 strains its PZT to 0.138%, past the ~0.1% tensile limit of hard PZT",
+        "box_mm": {
+          "origin": [
+            -10.7,
+            -10.7,
+            6.55
+          ],
+          "size": [
+            21.4,
+            21.4,
+            1.43
+          ]
+        },
+        "constraints": {
+          "must_provide": [
+            "min_wall_mm>=0.80",
+            "land_d_mm>=21.2"
+          ],
+          "interfaces_to_siblings": [],
+          "mass_budget_g": null,
+          "notes": null
+        },
+        "state": "sketch",
+        "fill": {
+          "kind": null,
+          "ref": null
+        }
+      }
+    ]
+  }
+}

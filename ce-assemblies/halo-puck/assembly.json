@@ -1,0 +1,10 @@
+{
+  "$triad": 1,
+  "kind": "assembly",
+  "record": {
+    "slug": "halo-puck",
+    "title": "halo-puck",
+    "verdict": "CANNOT DETERMINE",
+    "why": "created by `bin/triad new assembly` — nothing measured yet"
+  }
+}
