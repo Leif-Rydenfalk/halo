@@ -258,3 +258,49 @@ have and puts metal inside Apple's Ø37.31 mm antenna keep-out.
 **No two-shot moulding.** Tooling runs $45–95k and only repays above roughly
 100,000 to 500,000 units a year. Two single-material mouldings plus a stamped
 cover, with a first article off a $1,500–3,000 single-cavity aluminium tool.
+
+## D14 — place the chip bare; no nRF54L module is both certified and castellated (2026-09-03)
+
+Lane I wanted a pre-certified castellated module, because under 47 CFR 15.212 a
+module carries its own radio grant and soldering it into any host outline does
+not disturb it — which is exactly what halo's embeddable-block goal needs. Lane E
+went to find one on the nRF54L silicon that decision D12 requires. **There is no
+such part today.** The evidence, from vendor drawings read directly:
+
+| module | silicon | pads | NFC pins | certification | stock |
+|---|---|---|---|---|---|
+| Raytac AN54LQ | nRF54L | **land-grid, not castellated** — its pads sit wholly inside the body, where the same vendor's older castellated part has lands protruding outward | yes, pads 15/16 | **certified**, nine regimes | — |
+| Minew ME54BS11 | nRF54L | **castellated**, vendor says "the pad extending outward by 0.5 mm" | yes, pins 6/7 | **none — "planned"** | — |
+| u-blox NORA-B2 | nRF54L15/L10/L05 | — | yes | **pending** | the only one with stock, 100 pieces |
+
+**Decision: place the nRF54L10 bare on the halo board.** The certified module
+route costs **+$1.16 per unit**, which is $1,160 at a thousand units and more
+than a certification campaign; and an *uncertified* module is strictly worse than
+bare silicon, since it costs more than the $2.40 chip and carries no grant.
+
+**The distinction that settled it, and worth remembering:** castellation is a
+*manufacturability* property, certification is a *legal* one, and the radio grant
+travels with the module regardless of how it is terminated. So the two things
+lane I bundled together are separable, and neither module offers both.
+
+**What it beat.** The Raytac AN54LQ, on cost and on the fact that a land-grid
+array cannot be hand-soldered into a hobbyist's board, which defeats the
+embeddable-block purpose the module was chosen for in the first place.
+
+**Revisit when:** any nRF54L module ships certified *and* castellated — the
+u-blox part is the one to watch, since its certifications are pending rather than
+absent. Until then the embeddable-block deliverable is served by the KiCad design
+block that carries the routed antenna, not by a bought module.
+
+## D15 — the cost target is met, and by more than expected (2026-09-03)
+
+Lane E's second pass, re-pulled live: **bare nRF54L10 is $7.17 per unit at a
+thousand**, against $9.25 for the nRF52840 build it replaces, $17.40 for the
+abandoned ultra-wideband variant, Apple's roughly **$10** manufacturing cost and
+their **$29** retail price. At ten thousand units it is $6.75.
+
+Two smaller findings inside that number are worth keeping: the nRF54L05 sleeps
+**0.9 µA lower** than the L10, which is a larger battery-life lever than its 39
+cent saving, but it ships in a **3,000-piece minimum packet**; and the datasheet
+transmit current is **3.7 mA at 0 dBm**, not the 4.8 mA the first pass assumed,
+which feeds straight into the coin-cell model.
