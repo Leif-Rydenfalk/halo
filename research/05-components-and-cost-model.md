@@ -6,7 +6,7 @@
 > deliberately visible, because they are the option the nRF54L baseline beat and the delta in
 > §10.3 is only meaningful against them. **§10 is the current cost model. §11 is its
 > verification**: every §10 price re-pulled live, plus the answer to lane I's module question and
-> seven corrections to §10 (see the table in §11.5). Lane G has since settled the sounder as a
+> seven corrections to §10 (§11.5), and the class-D amplifier D11a had already deleted (§11.6). Lane G has since settled the sounder as a
 > bare **Murata 7BB-20-3** piezo bender bonded to the shell, and lane A confirmed **LIS2DW12TR**
 > as the accelerometer.
 >
@@ -1071,21 +1071,7 @@ and I will not invent it.**
 | nRF54L10 currents *"not fetched"* | fetched: TX@0 dBm **3.7 mA**, RX **2.1 mA**, System OFF+GRTC **0.8 µA**, System ON 192 KB retained **2.4 µA** |
 | §10.1 prices | **all re-pulled, all identical**; only the dead non-R7 reel drifted a cent |
 
-## 11.6 Still open after two passes
-
-| Item | Why | Who |
-|---|---|---|
-| AN54LQ-**10** / -P10 unit price | placeholder rows at JLCPCB; Digi-Key returns **403** and Mouser **"Access Denied"/captcha** to automated fetch; Raytac quotes direct | one email to Raytac |
-| AN54LQ stock, MOQ, lead time | zero at every catalogue distributor | same email |
-| u-blox NORA-B2 commercial status | product summary says certifications pending; the web page says all nine variants *"not longer available"*; JLCPCB shows 100 in stock. Irreconcilable from outside | ask u-blox |
-| u-blox NORA-B2 pad style and NFC pin numbers | **no data sheet is published** — only a 2-page product summary marked *"Early Product Information"* | ask u-blox, or wait for the data sheet |
-| Murata **7BB-20-3** price | still not in the LCSC/JLCPCB catalogue (re-searched: only 7BB-20-6C / -6L0 / -6CL0, all zero stock); Digi-Key 403, Mouser captcha | Murata or a rep quote |
-| Certification campaign cost | no lab quote fetched — the one number that decides §11.4's crossover | lane F |
-| Holyiot 24005 specs, certs, price | vendor site did not answer (connection closed) | retry or email |
-| nRF54L10 sleep current with 192 KB retained **and** GRTC + LFXO | Nordic publishes 128 KB (2.0 µA) and 256 KB (3.1 µA) but not 192 KB | lane H, on the bench |
-| Minew ME54BS11 certification date | *"Planned"* with no schedule given | ask Minew |
-
-## 11.7 The correction §10 missed: D11a deletes the class-D driver too
+## 11.6 The correction §10 missed: D11a deletes the class-D driver too
 
 §10.2 replaced the transducer with lane G's bare Murata 7BB-20-3 bender but wrote *"MAX98357A
 driver … carries over from §5."* **It does not.** D11a's own words are that the bender is
@@ -1149,3 +1135,18 @@ lane G's and must come off a calibrated meter, per D11a.
 
 The **TLV9001** sense op-amp of §1 row 6 was already absent from §5.2's BOM and stays absent:
 its job was to sense a voice coil Apple could sabotage-detect, and there is no coil.
+
+## 11.7 Still open after two passes
+
+| Item | Why | Who |
+|---|---|---|
+| AN54LQ-**10** / -P10 unit price | placeholder rows at JLCPCB; Digi-Key returns **403** and Mouser **"Access Denied"/captcha** to automated fetch; Raytac quotes direct | one email to Raytac |
+| AN54LQ stock, MOQ, lead time | zero at every catalogue distributor | same email |
+| u-blox NORA-B2 commercial status | product summary says certifications pending; the web page says all nine variants *"not longer available"*; JLCPCB shows 100 in stock. Irreconcilable from outside | ask u-blox |
+| u-blox NORA-B2 pad style and NFC pin numbers | **no data sheet is published** — only a 2-page product summary marked *"Early Product Information"* | ask u-blox, or wait for the data sheet |
+| Murata **7BB-20-3** price | still not in the LCSC/JLCPCB catalogue (re-searched: only 7BB-20-6C / -6L0 / -6CL0, all zero stock); Digi-Key 403, Mouser captcha | Murata or a rep quote |
+| Certification campaign cost | no lab quote fetched — the one number that decides §11.4's crossover | lane F |
+| Holyiot 24005 specs, certs, price | vendor site did not answer (connection closed) | retry or email |
+| nRF54L10 sleep current with 192 KB retained **and** GRTC + LFXO | Nordic publishes 128 KB (2.0 µA) and 256 KB (3.1 µA) but not 192 KB | lane H, on the bench |
+| Minew ME54BS11 certification date | *"Planned"* with no schedule given | ask Minew |
+| Bender loudness at 25 cm with a two-pin anti-phase drive | §11.6 shows the drive voltage is unchanged and the current is within GPIO high-drive, but SPL from a shell-bonded bender is not calculable | lane G, calibrated meter, per D11a |
