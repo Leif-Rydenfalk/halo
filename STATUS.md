@@ -6,15 +6,16 @@
 
 | lane | topic | state |
 |---|---|---|
-| A | AirTag hardware teardown, chips, PCB, function map | running |
-| B | Find My protocol + OpenHaystack ecosystem | running |
-| C | open-source tag/beacon PCB designs, ranked | running |
-| D | commercial Find My tags and clones, what is inside | running |
-| E | components and cost model, 1:1 substitution map | running |
+| A | AirTag hardware teardown, chips, PCB, function map | **done** — 416-line dossier, exhaustive BOM read off the board, function map |
+| B | Find My protocol + OpenHaystack ecosystem | **done** — 927 lines, exact advertisement layout, 23-project table |
+| C | open-source tag/beacon PCB designs, ranked | **done** — 21 designs; no open-source AirTag exists |
+| D | commercial Find My tags and clones, what is inside | **done** — 26-row table, five FCC exhibits read, price floor |
+| E | components and cost model, 1:1 substitution map | **done** — live LCSC/JLC pricing; re-costing on nRF54L per D12 |
 | F | legal, IP, Find My program, DULT, FCC/CE, Reese's Law | **done** — 867-line dossier, 30-item constraint checklist, ANTI-STALKING.md |
-| G | mechanical, enclosure, speaker, open 3D models | running |
-| H | local positioning: UWB ranging, BLE channel sounding | running |
-| I | embeddable block, castellated module, antenna rules | running |
+| G | mechanical, enclosure, speaker, open 3D models | **done** — Apple's own dimensioned drawing, stack budget closes at 81% |
+| H | local positioning: UWB ranging, BLE channel sounding | **done** — Channel Sounding wins on accuracy, price and stock (D12) |
+| J | Find My viability in 2026, measured | **done** — PASS with conditions; live scan decoded 471 advertisements |
+| I | embeddable block, castellated module, antenna rules | **done** — KiCad 10 design blocks carry layout; 24-pad pinout proposed |
 
 ## Toolchain lanes (into ce-workshop siblings)
 
@@ -27,12 +28,26 @@
 | T5 | schematic-from-code → `.kicad_sch` + ERC + design block | running |
 | T6 | `ce-fab/` — LCSC parts DB, BOM cost, JLC export, panel, DFM, quote | running |
 
+## Milestone: the firmware advertises correctly, in emulation, with no hardware
+
+`ce-fwsim` built a haytag firmware, injected a rolling key, and ran it on an
+emulated nRF52840 in Renode. It configured the radio and transmitted on all
+three advertising channels. The advertisement was then verified field by field
+against SPEC F1 and every field matches: the 28-byte key, the air address
+derived as `p[0]|0xC0` followed by `p[1..5]` little-endian, the
+`1E FF 4C 00 12 19` header, the 22 payload key bytes, and `p[0] >> 6` in the
+penultimate position. Ledger row written in `evidence/ledger.jsonl`.
+
 ## Decisions taken
 
-D1 two variants (haytag-core BLE-only, haytag-uwb for peer ranging) · D2 no
+D1 two variants · D2 no
 Bluetooth word mark · D3 press-and-twist battery door (Reese's Law) · D4 licence
-split CERN-OHL-S / AGPL / Apache / CC-BY-SA · D5 clean-room, no MFi enrolment.
-See DECISIONS.md.
+split CERN-OHL-S / AGPL / Apache / CC-BY-SA · D5 clean-room, no MFi enrolment ·
+D6 haytag competes on openness, not on unit price · D7 dual network from
+revision A · D8 DULT is in the BOM · D9 redraw the copper, never copy it ·
+D10 parity target is AirTag 2 · D11a a bare piezo bender bonded to the shell ·
+D12 nRF54L Channel Sounding instead of UWB, superseding D10 · D13 bayonet door
+and single-shot tooling. See DECISIONS.md.
 
 ## Next after these
 
