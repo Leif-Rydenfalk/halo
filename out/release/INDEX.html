@@ -1,0 +1,145 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>halo — open AirTag-compatible tracker — Factory handoff pack</title><style>
+:root{--ink:#16181d;--dim:#5c6370;--line:#dfe3e8;--bg:#fff;--ready:#0a7d33;--partial:#a86500;--not:#a11}
+@media(prefers-color-scheme:dark){:root{--ink:#e8eaed;--dim:#9aa2ad;--line:#2c313a;--bg:#14161a;--ready:#4ec26f;--partial:#e0a233;--not:#f0736a}}
+*{box-sizing:border-box}
+body{margin:0;padding:2.5rem 1.5rem 6rem;background:var(--bg);color:var(--ink);
+ font:16px/1.65 -apple-system,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:64rem;margin:0 auto}
+h1{font-size:2rem;margin:0 0 .2rem;letter-spacing:-.02em}
+h2{font-size:1.25rem;margin:3rem 0 .75rem;padding-bottom:.4rem;border-bottom:1px solid var(--line)}
+h3{font-size:1rem;margin:1.75rem 0 .4rem}
+.sub{color:var(--dim);margin:0 0 1.5rem}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--dim);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+td.n{width:2.5rem;color:var(--dim);font-variant-numeric:tabular-nums}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;padding:.15rem .45rem;
+ border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.READY{color:var(--ready)} .PARTIAL{color:var(--partial)} .NOT{color:var(--not)}
+code,.mono{font:.85em ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim);word-break:break-all}
+blockquote{margin:1rem 0;padding:.8rem 1.1rem;border-left:3px solid var(--line);color:var(--ink);background:rgba(127,127,127,.06)}
+.zh{color:var(--dim);font-size:.9em}
+.meta{color:var(--dim);font-size:.82rem;margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line)}
+ul{padding-left:1.2rem} li{margin:.3rem 0}
+.owner{font-size:.75rem;font-weight:600;color:var(--dim);letter-spacing:.04em}
+</style><main>
+<h1>halo — open AirTag-compatible tracker</h1>
+<p class="sub">Factory handoff pack · generated 2026-09-03 · commit <span class="mono">39a9725</span></p>
+<p>halo is an open-source tracker that behaves like an Apple AirTag: it is found through Apple&#x27;s Find My network, it makes a sound, a phone can tap it, and it wakes on motion. Every design file is public. This pack states exactly what is finished, what is not, and what we need a factory to measure that a computer cannot.</p>
+<p class="zh">halo 是一个开源追踪器，功能对标 Apple AirTag：可通过 Apple Find My 网络定位、可发声、支持手机 NFC 触碰读取、运动唤醒。全部设计文件公开。本文件说明：哪些已完成、哪些未完成，以及哪些必须由工厂实测、计算机无法给出答案。</p>
+<blockquote>We have a Chinese guy working on this project and we will work together with all the resources and manufacturing and factories and research on this. We have a factory and 10 engineers to put on this. So just send the documents of what needs to be done. Give it this verbatim.</blockquote>
+<h2>1 · The release pack as it stands — 1 ready · 7 partial · 3 not started</h2>
+<p>Eleven artifacts define a finished product. Each row states what exists today, the evidence behind that verdict, and the command that produces it. Nothing is listed as ready on the strength of a plan.</p>
+<table><tr><th>#</th><th>Artifact</th><th>Status</th><th>Where it stands</th></tr>
+<tr><td class="n">6</td><td><b>Simulation evidence</b><br><span class="zh">仿真证据</span></td><td><span class="badge READY">READY</span></td><td>Four circuit simulations pass with sourced assertions, and the electromagnetic solver has been validated against a published reference antenna to within 0.66 percent, which is what makes its other answers trustworthy. One honest exception is stated in the risks below: the two round-board antenna geometries pass their own tests while resonating outside the Bluetooth band, and are being retuned.<br><span class="mono">evidence: ce-spice/out/{cr2032_pulse_load,speaker_hbridge,decoupling_ldo,nfc_tank}/verdict.json — all PASS; ce-rf/out/validation-patch-openems-tutorial/verdict.json — PASS, 0.66% from upstream</span><br><span class="mono">command: ce-spice/bin/spice run &lt;example&gt; ; ce-rf/bin/rf antenna &lt;spec.json&gt;</span></td></tr>
+<tr><td class="n">1</td><td><b>Gerbers, drill and netlist</b><br><span class="zh">Gerber、钻孔与网表</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>A Ø32 mm four-layer round board builds and exports through KiCad 10.0.6, and the autorouter now runs after a Java runtime was installed. The routed board still shows 7 design-rule violations and 1 unconnected net, so it is not clean yet. It is also a test outline, not the halo circuit.<br><span class="mono">evidence: ce-pcb/out/round32_4layer/round32_4layer-routed.drc.json — violations 7, unconnected 1 (before routing: violations 0, unconnected 12)</span><br><span class="mono">command: ce-pcb/bin/pcb --cli pcb drc --format json -o out.json &lt;board&gt;.kicad_pcb</span></td></tr>
+<tr><td class="n">2</td><td><b>Schematic, ERC-clean, plus a reusable design block</b><br><span class="zh">原理图（通过 ERC）及可复用设计块</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>A schematic generator exists and emits real KiCad files, and a halo_core sketch schematic is in progress. The KiCad 10 design block format was confirmed to carry a PCB layout fragment as well as a schematic, which is what makes the circuit droppable into any host board. Not yet ERC-clean end to end.<br><span class="mono">evidence: ce-pcb/bin/sch, ce-pcb/examples/halo_core_sketch/, ce-pcb/docs/schematic-from-code.md</span><br><span class="mono">command: kicad-cli sch erc --format json &lt;name&gt;.kicad_sch</span></td></tr>
+<tr><td class="n">3</td><td><b>Bill of materials with prices and alternates</b><br><span class="zh">物料清单（含价格与替代料）</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>A full component study exists with live prices pulled from LCSC and JLCPCB, and a roll-up at 10/100/1000/10000 units. It is being re-run now against the newer Nordic chip chosen in decision D12, which removes the ultra-wideband parts entirely.<br><span class="mono">evidence: research/05-components-and-cost-model.md, spec/bom-candidates.json</span><br><span class="mono">command: ce-fab/bin/fab bom cost &lt;bom.json&gt; --qty 10,100,1000,10000</span></td></tr>
+<tr><td class="n">7</td><td><b>Firmware, build instructions and a proven advertisement</b><br><span class="zh">固件、编译说明与已验证的广播包</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>A firmware was written, given a rolling key, and run on an emulated Nordic chip. Its Find My advertisement was verified field by field against the specification and every field matched. It has never driven a real radio, and the port to the newer chip is in progress.<br><span class="mono">evidence: ce-fwsim/out/*.uart.log; evidence/ledger.jsonl row 1 — PASS</span><br><span class="mono">command: ce-fwsim/bin/fwsim run &lt;elf&gt; --platform nrf52840 ; fwsim check-findmy &lt;uart.log&gt;</span></td></tr>
+<tr><td class="n">8</td><td><b>Mechanical files and assembly instructions</b><br><span class="zh">结构文件与装配说明</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>The envelope comes from Apple&#x27;s own published dimensioned drawing, and the enclosure is being modelled now: shell, carrier, bayonet battery door and sprung contacts. The stack budget is tight — a coin cell plus the internal module is 6.5 of 7.98 mm.<br><span class="mono">evidence: SPEC.md section 4; docs/MECHANICAL.md; research/07-mechanical-enclosure-and-3d-models.md</span><br><span class="mono">command: ce-cad/bin/cad ce-designs/halo/design.py</span></td></tr>
+<tr><td class="n">10</td><td><b>Compliance dossier</b><br><span class="zh">合规文件</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>The legal and certification research is complete: an 867-line dossier with a 30-item constraint checklist covering trademarks, patents, the radio certification route, the anti-stalking standard and coin-cell child-safety law. What is missing is the test campaign itself, which only a lab can do.<br><span class="mono">evidence: research/06-legal-ip-certification-safety.md; docs/ANTI-STALKING.md</span><br><span class="mono">command: —</span></td></tr>
+<tr><td class="n">11</td><td><b>Cost roll-up against Apple&#x27;s retail price</b><br><span class="zh">成本汇总（对比 Apple 零售价）</span></td><td><span class="badge PARTIAL">PARTIAL</span></td><td>At a thousand units the last full roll-up was $9.25 for a bare-chip build against Apple&#x27;s $29 retail and their roughly $10 build cost. The newer chip is expected to reduce this because it removes the ultra-wideband parts; that re-run is in flight.<br><span class="mono">evidence: research/05-components-and-cost-model.md</span><br><span class="mono">command: ce-fab/bin/fab quote &lt;board&gt; --qty N</span></td></tr>
+<tr><td class="n">4</td><td><b>Pick-and-place file in factory format</b><br><span class="zh">贴片坐标文件（工厂格式）</span></td><td><span class="badge NOT">NOT STARTED</span></td><td>The exporter is being written now in the factory tooling lane. Rotation and offset corrections are the part that must be right, and they are the part machines get wrong.<br><span class="mono">evidence: ce-fab/ — lane in flight</span><br><span class="mono">command: ce-fab/bin/fab jlc &lt;board&gt;.kicad_pcb --out out/jlc/</span></td></tr>
+<tr><td class="n">5</td><td><b>Panel drawing, stackup and materials</b><br><span class="zh">拼板图、叠层与材料</span></td><td><span class="badge NOT">NOT STARTED</span></td><td>Panelization for a round board needs mousebite tabs rather than v-cuts. The tool is being added now. The stackup is a four-layer 1.0 mm board; the exact material and impedance targets are open.<br><span class="mono">evidence: ce-fab/ — lane in flight</span><br><span class="mono">command: ce-fab/bin/fab panel &lt;board&gt;.kicad_pcb --mousebites</span></td></tr>
+<tr><td class="n">9</td><td><b>Production test plan</b><br><span class="zh">产线测试计划</span></td><td><span class="badge NOT">NOT STARTED</span></td><td>What every unit is measured for — current draw, advertisement seen, sound level, NFC read — with limits and fixtures. This is a natural first parcel for the factory&#x27;s own test engineers, since they know their line.<br><span class="mono">evidence: —</span><br><span class="mono">command: —</span></td></tr>
+</table>
+<h2>2 · The work breakdown — ten parcels for ten engineers</h2>
+<p>Each parcel is a deliverable, the test that accepts it, what it needs first, and what it unblocks. Parcels marked in flight already have an agent working on them here — coordinate rather than duplicate.</p>
+<h3>1 · Sounder: reach 60 Phon at 25 cm <span class="zh">发声器：25 cm 处达到 60 Phon</span> — <span class="owner">FACTORY — cannot be done here</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>A bonded piezo bender in a real shell that meets the legally mandated loudness, with the cavity tuned as a Helmholtz resonator.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>Measured against a calibrated meter at 25 cm, at three volts and at end-of-life cell voltage, reported in Phon per ISO 532-1:2017.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>A printed or moulded shell and a driven bender. Nothing else.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifacts 8 and 9, and the anti-stalking compliance claim.</td></tr>
+</table>
+<h3>2 · Six bench measurements on a real AirTag <span class="zh">对真机 AirTag 的六项台架测量</span> — <span class="owner">FACTORY — cannot be done here</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>Magnet dimensions and grade, NFC coil geometry, PCB outline, shell wall thickness, cover alloy, gasket cross-section.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>Each with a caliper reading and a photograph, to 0.1 mm.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>One AirTag, a caliper, an afternoon.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Closes the last open dimensions in the mechanical model.</td></tr>
+</table>
+<h3>3 · Injection-moulding reality check on the stack <span class="zh">结构堆叠的注塑可行性评估</span> — <span class="owner">FACTORY</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>A judgement on whether Ø31.87 by 7.98 mm closes in moulded plastic with our wall thicknesses, draft angles and tolerances.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>A written opinion plus a first-article tool quote.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Our STEP files, which land with the enclosure lane.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifact 8 and the tooling decision in D13.</td></tr>
+</table>
+<h3>4 · Battery door force test <span class="zh">电池仓门开启力测试</span> — <span class="owner">FACTORY</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>A press-and-twist bayonet door that a child cannot open and an adult can, as 16 CFR 1263 requires: a tool, or two independent and simultaneous hand movements.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>Opening torque and axial force measured on printed and moulded samples.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Parcel 3.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Coin-cell safety compliance, which is not optional.</td></tr>
+</table>
+<h3>5 · PCB process capability for a Ø32 mm four-layer board <span class="zh">Ø32 mm 四层板工艺能力确认</span> — <span class="owner">FACTORY</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>Confirmation of minimum trace and space, via drill and annular ring, edge clearance, and whether castellated edges are available at this diameter.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>A capability sheet we can encode as automated design-rule checks.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Nothing.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifacts 1, 4 and 5.</td></tr>
+</table>
+<h3>6 · Source the Nordic nRF54L10 in quantity <span class="zh">nRF54L10 批量供货确认</span> — <span class="owner">FACTORY + in flight here</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>Real availability and price at 1000 and 10000 units, plus whether any pre-certified module exists on this chip.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>A quotation with lead time.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Nothing.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifacts 3 and 11, and the certification strategy.</td></tr>
+</table>
+<h3>7 · Finish the antenna, then prototype it <span class="zh">天线定型与打样</span> — <span class="owner">SHARED — in flight</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>A 2.4 GHz antenna that fits the roughly 5 mm annulus around a 20 mm coin cell, alongside the NFC coil, with gain at or better than Apple&#x27;s -3.2 dBi.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>Simulated resonance inside 2.400 to 2.4835 GHz, then measured on a network analyser.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>In flight here; measurement needs a board.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifacts 1 and 6.</td></tr>
+</table>
+<h3>8 · Firmware on real silicon <span class="zh">固件在真实芯片上运行</span> — <span class="owner">SHARED — in flight</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>The firmware ported to the newer chip, advertising on both Apple&#x27;s and Google&#x27;s networks, with the anti-stalking behaviour and rolling keys.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>A phone sees the tag; a location report comes back; a scanner app flags it correctly when separated from its owner.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Development boards.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifacts 7 and 9.</td></tr>
+</table>
+<h3>9 · Production test fixture and plan <span class="zh">产线测试治具与计划</span> — <span class="owner">FACTORY</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>What is measured on every unit and how, with limits.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>A fixture that tests a unit in under thirty seconds.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Parcels 1, 7 and 8.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifact 9.</td></tr>
+</table>
+<h3>10 · Certification campaign <span class="zh">认证测试</span> — <span class="owner">FACTORY</span></h3>
+<table>
+<tr><th style="width:9rem">Deliverable</th><td>Radio certification for the target markets, by the module route if a pre-certified module is used, or a full campaign if the chip is placed bare.</td></tr>
+<tr><th style="width:9rem">Accepted when</th><td>Grants in hand.</td></tr>
+<tr><th style="width:9rem">Needs first</th><td>Parcel 6 decides which route.</td></tr>
+<tr><th style="width:9rem">Unblocks</th><td>Artifact 10 and shipping.</td></tr>
+</table>
+<h2>3 · What we need from you</h2>
+<p>These cannot be settled on a computer. They are the reason a real factory changes this project more than any amount of further research would.</p>
+<table><tr><th>Question</th><th>Why it matters</th></tr>
+<tr><td><b>Can you measure sound pressure against a calibrated meter?</b><br><span class="zh">能否用校准声级计测量声压？防跟踪标准要求 25 cm 处 60 Phon。</span></td><td>The anti-stalking standard mandates 60 Phon at 25 cm. We chose a bare piezo bender bonded to the shell because every housed buzzer is 3.5 mm tall and we have 1.5 mm. Whether that reaches the required loudness is a measurement, not a simulation, and it is the single largest open risk in the product.</td></tr>
+<tr><td><b>Does the Ø31.87 by 7.98 mm stack close in moulded plastic?</b><br><span class="zh">Ø31.87 × 7.98 mm 的堆叠在注塑件中是否可行？</span></td><td>A coin cell plus the internal module already consumes 6.5 mm of 7.98 mm. About 1.5 mm remains for the cover, clearances and shell wall.</td></tr>
+<tr><td><b>What opening force does your bayonet tooling achieve?</b><br><span class="zh">卡扣式电池门的开启力是多少？</span></td><td>United States law requires a coin-cell compartment to need a tool or two independent simultaneous movements. A snap fit fails outright.</td></tr>
+<tr><td><b>What is your process capability on a Ø32 mm four-layer board?</b><br><span class="zh">Ø32 mm 四层板的工艺能力参数？</span></td><td>We need minimum trace and space, via drill and annular ring, edge clearance, and whether castellated edges are possible at this size, so we can encode them as automated checks.</td></tr>
+<tr><td><b>Can you source the Nordic nRF54L10 at volume, and does a pre-certified module exist on it?</b><br><span class="zh">能否批量采购 nRF54L10？是否有基于该芯片的预认证模组？</span></td><td>This chip gives us centimetre-level ranging between our own devices for less money than the older part. If it cannot be sourced, that decision reverses.</td></tr>
+<tr><td><b>Do you have a network analyser for antenna measurement?</b><br><span class="zh">是否有矢量网络分析仪用于天线实测？</span></td><td>Our solver is validated to within 0.66 percent of a published reference, but a simulated antenna is not a measured one.</td></tr>
+</table>
+<h2>4 · Licence and compliance — read before tooling</h2>
+<table><tr><th>Rule</th><th>What it means for manufacturing</th></tr>
+<tr><td><b>No Apple trademarks anywhere</b><br><span class="zh">任何位置不得使用 Apple 商标。</span></td><td>Not on the product, the packaging, the documentation or the listing. Apple&#x27;s guidelines bar even a phonetic equivalent or abbreviation. We may say the product is compatible with Apple&#x27;s Find My network. We may not use the licensed &#x27;Works with Apple Find My&#x27; badge, which requires a programme we have deliberately not joined.</td></tr>
+<tr><td><b>No copied copper and no copied artwork</b><br><span class="zh">不得复制他人 PCB 布线或图形。</span></td><td>Every trace in this design is drawn from datasheets and application notes. One excellent open reference board was deliberately not copied because its licence would have infected ours. Do not substitute layout from another product.</td></tr>
+<tr><td><b>The anti-stalking behaviour is in the bill of materials, not an option</b><br><span class="zh">防跟踪功能属于必备物料，不可选配。</span></td><td>The sound maker, the accelerometer and the connectable advertisement are required by the industry standard that Apple and Google jointly authored. There is no silent build, no stealth firmware variant, and we will not produce one. A tag without a working sounder is a stalking device.</td></tr>
+<tr><td><b>The battery door must meet the coin-cell child-safety rule</b><br><span class="zh">电池仓门必须符合纽扣电池儿童安全法规。</span></td><td>Products made or imported after 19 March 2024 must need a tool or two independent simultaneous movements to open the compartment, with warnings on product, packaging and manual.</td></tr>
+<tr><td><b>No Apple confidential material</b><br><span class="zh">严禁使用 Apple 保密资料。</span></td><td>This design is clean-room, derived from a published academic paper and public reverse engineering. Anyone who has read Apple&#x27;s accessory specification under its non-disclosure agreement must not contribute to the firmware.</td></tr>
+<tr><td><b>Licences</b><br><span class="zh">授权条款：硬件 CERN-OHL-S-2.0，固件 AGPL-3.0+。</span></td><td>Hardware under CERN-OHL-S-2.0, firmware under AGPL-3.0-or-later, tools under Apache-2.0, documentation under CC-BY-SA-4.0. A factory manufacturing this must publish the sources of any hardware changes it makes.</td></tr>
+</table>
+<h2>5 · Open risks, stated plainly</h2><ul>
+<li><b>The antenna does not yet resonate in the Bluetooth band</b> — Two round-board geometries return a passing verdict while resonating at 4.0 and 5.8 GHz, because their assertions test only how deep the match is and how efficient the radiator is, never the frequency. Caught by the orchestrator on 2026-09-03, the assertion is being made mandatory and the geometry retuned. This is stated here rather than hidden because a passing test that checks the wrong thing is the most dangerous artifact in any release pack.</li>
+<li><b>The sounder is unproven and legally required</b> — See question one. If a bonded bender cannot reach 60 Phon at 25 cm, the fallback is a micro-speaker, which costs more than the rest of the board.</li>
+<li><b>Nothing has been built</b> — Every result in this pack comes from a simulator or an emulator. Eight claims are tracked in docs/VERIFICATION-DEBT.md with the measurement that would close each; four of them need hardware.</li>
+</ul>
+<p class="meta">Every row in this pack is generated from spec/release-pack.json by tools/gen_release_pack.py. Nothing here is hand-typed HTML. Regenerate with <code>python3 tools/gen_release_pack.py</code>. Audience: A partner factory and ten engineers. Plain English; the tables and drawings carry the load.</p>
+</main></html>
