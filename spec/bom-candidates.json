@@ -12,10 +12,101 @@
  "functions": {
   "ble_soc": {
    "airtag_part": "Nordic nRF52832-CIAA (WLCSP) — part marking read by lane A off full-resolution board photos; corroborated by iFixit / TechInsights / Catley",
-   "recommended": "C190794",
-   "parity_target": "nRF52840-class per DECISIONS.md D10 (AirTag gen 2 moved up; DULT + Google Find Hub beacon + Find My stack need the headroom)",
-   "why": "nRF52840 meets the D10 parity target, keeps the NFC-A peripheral that lets the tap-to-see-owner flow work with no NFC chip at all, has 1 MB flash so the external NOR can be deleted, and is in 51k LCSC stock. nRF52832 (C77540) remains the gen-1 exact die and the cheaper option at $2.6440/1k.",
+   "recommended": "C44800139",
+   "recommended_superseded": "C190794 (nRF52840, D10) - superseded by D12",
+   "parity_target": "nRF54L10 per DECISIONS.md D12; nRF54L05 fallback, nRF54L15 step-up. Supersedes D10's nRF52840-class target.",
+   "why_v1": "nRF54L10 carries Bluetooth Channel Sounding (lane H measured 6-10 cm mean error on coin-cell nRF54L15 hardware), keeps NFC-A so there is still no NFC BOM line, is $1.74/unit cheaper than nRF52840 at 1k, and is the only nRF54L variant with both stock (669 LCSC / 1003 JLCPCB) and enough memory. Cost of the move is a firmware port: every existing Find My implementation targets nRF52 silicon.",
+   "why_d10_pick_was": "nRF52840 meets the D10 parity target, keeps the NFC-A peripheral that lets the tap-to-see-owner flow work with no NFC chip at all, has 1 MB flash so the external NOR can be deleted, and is in 51k LCSC stock. nRF52832 (C77540) remains the gen-1 exact die and the cheaper option at $2.6440/1k.",
    "options": [
+    {
+     "part": "NRF54L10-QFAA-R7",
+     "mpn": "NRF54L10-QFAA-R7",
+     "manufacturer": "NORDIC",
+     "package": "VFQFN-48",
+     "lcsc": "C44800139",
+     "stock_at_pull": 669,
+     "price_points": {
+      "1": 3.7943,
+      "10": 3.2583,
+      "30": 2.9404,
+      "100": 2.6175,
+      "500": 2.4684,
+      "1000": 2.4012
+     },
+     "currency": "USD",
+     "source": "https://www.lcsc.com/product-detail/C44800139.html",
+     "date": "2026-09-03",
+     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf?productCode=C44800139",
+     "form": "bare_soc",
+     "library_type": "extended",
+     "flash_kb": 1024,
+     "ram_kb": 192,
+     "cpu": "128 MHz Cortex-M33",
+     "nfc_a": true,
+     "channel_sounding": true,
+     "role": "D12 v1 pick",
+     "min_packet": 1000,
+     "note": "Only the R7 reel is in stock. LCSC stock 669, JLCPCB 1003 at pull; minimum packet 1000."
+    },
+    {
+     "part": "NRF54L05-QFAA-R",
+     "mpn": "NRF54L05-QFAA-R",
+     "manufacturer": "NORDIC",
+     "package": "VFQFN-48",
+     "lcsc": "C45022042",
+     "stock_at_pull": 1775,
+     "price_points": {
+      "1": 3.2315,
+      "10": 2.7615,
+      "30": 2.4834,
+      "100": 2.202,
+      "500": 2.0719,
+      "1000": 2.0134
+     },
+     "currency": "USD",
+     "source": "https://www.lcsc.com/product-detail/C45022042.html",
+     "date": "2026-09-03",
+     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf?productCode=C45022042",
+     "form": "bare_soc",
+     "library_type": "extended",
+     "flash_kb": 512,
+     "ram_kb": 96,
+     "cpu": "128 MHz Cortex-M33",
+     "nfc_a": true,
+     "channel_sounding": true,
+     "role": "D12 fallback",
+     "note": "Deepest stock of the three (1775) and cheapest. Whether firmware fits 0.5 MB / 96 kB decides $0.39/unit."
+    },
+    {
+     "part": "NRF54L15-QFAA-R",
+     "mpn": "NRF54L15-QFAA-R",
+     "manufacturer": "NORDIC",
+     "package": "QFN-48(6x6)",
+     "lcsc": "C42458750",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 3.9896,
+      "10": 3.4106,
+      "30": 3.0658,
+      "100": 2.7178,
+      "500": 2.5584,
+      "1000": 2.4852
+     },
+     "currency": "USD",
+     "source": "https://www.lcsc.com/product-detail/C42458750.html",
+     "date": "2026-09-03",
+     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/5513bf11fedf7f44f4824b6229db0f68.pdf?productCode=C42458750",
+     "form": "bare_soc",
+     "library_type": "extended",
+     "flash_kb": 1536,
+     "ram_kb": 256,
+     "cpu": "128 MHz Cortex-M33",
+     "nfc_a": true,
+     "channel_sounding": true,
+     "role": "D12 step-up",
+     "note": "The part lane H measured Channel Sounding on - but ZERO stock at LCSC and JLCPCB at pull. A paper option today.",
+     "spec_source": "https://www.nordicsemi.com/Products/nRF54L15"
+    },
     {
      "part": "NRF52832-QFAA-R",
      "mpn": "NRF52832-QFAA-R",
@@ -382,6 +473,150 @@
      "date": "2026-09-03",
      "form": "bare_soc",
      "library_type": "extended"
+    }
+   ]
+  },
+  "ble_module_nrf54l": {
+   "question": "lane I asked: does any pre-certified castellated module built on an nRF54L part exist today, and does it expose the NFC antenna pins?",
+   "answer": "YES for Raytac. The AN54LQ family covers nRF54L05/L10/L15, is certified in nine regimes including Japanese Telec/Giteki, and its pin table documents NFC1 on pad 15 and NFC2 on pad 16. Pad STYLE (castellated vs LGA) could not be confirmed from the spec PDF text - the drawing is an image. Nothing is in stock anywhere.",
+   "recommended": "Raytac AN54LQ-P10 (nRF54L10, PCB antenna) once Raytac confirms stock, MOQ, lead time and pad style",
+   "options": [
+    {
+     "part": "Raytac AN54LQ-10 / AN54LQ-P10 / AN54LQ-U10",
+     "mpn": "AN54LQ-10",
+     "manufacturer": "Raytac",
+     "package": "13.7 x 9.5 x 1.8 mm, 42 pads",
+     "soc": "nRF54L10",
+     "flash_kb": 1024,
+     "ram_kb": 192,
+     "nfc_pins": "YES - pad 15 = P1.02/NFC1, pad 16 = P1.03/NFC2",
+     "swd_pins": "pad 36 SWDIO, pad 37 SWDCLK",
+     "pad_style": "UNCONFIRMED - 42 pads with a documented land pattern; castellation likely (Raytac MDBT42Q precedent) but not proven from the spec text",
+     "certs": [
+      "FCC (ID SH6AN54LQ)",
+      "IC",
+      "CE/RED",
+      "Telec (MIC) = Giteki",
+      "KC",
+      "SRRC",
+      "NCC",
+      "RCM",
+      "WPC"
+     ],
+     "bt_qualification": "BT6 certified; 'a recommended 3rd-party module by Nordic Semiconductor'",
+     "price_points": {},
+     "currency": "USD",
+     "stock_at_pull": 0,
+     "source": "https://www.raytac.com/product/ins.php?index_id=165",
+     "date": "2026-09-03",
+     "spec_source": "https://www.raytac.com/download/index.php?index_id=81",
+     "note": "NO PRICE FETCHED for the -10. Not listed at LCSC, JLCPCB or in the Digi-Key module filter; Mouser timed out."
+    },
+    {
+     "part": "Raytac AN54LQ-15 (price proxy for the -10)",
+     "mpn": "AN54LQ-15",
+     "manufacturer": "Raytac",
+     "package": "13.7 x 9.5 x 1.8 mm, 42 pads",
+     "lcsc": "C49419243",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 5.0505,
+      "10": 4.937,
+      "30": 4.8607,
+      "100": 4.7861,
+      "500": 4.7861,
+      "1000": 4.7861
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/RAYTAC-AN54LQ_15/C49419243",
+     "date": "2026-09-03",
+     "form": "module",
+     "library_type": "extended",
+     "soc": "nRF54L15",
+     "note": "Larger-memory sibling, so this is an UPPER BOUND on the AN54LQ-10 price. Zero stock."
+    },
+    {
+     "part": "Raytac AN54LQ-U15",
+     "mpn": "AN54LQ-U15",
+     "manufacturer": "Raytac",
+     "package": "u.FL antenna variant",
+     "lcsc": "C49419242",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 11.3275,
+      "200": 4.52,
+      "500": 4.3691,
+      "1000": 4.2945
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/RAYTAC-AN54LQ_U15/C49419242",
+     "date": "2026-09-03",
+     "form": "module",
+     "library_type": "extended"
+    },
+    {
+     "part": "Raytac AN54LQ-P05",
+     "mpn": "AN54LQ-P05",
+     "manufacturer": "Raytac",
+     "package": "PCB antenna, nRF54L05",
+     "lcsc": "C53023852",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 10.4158,
+      "200": 4.1566,
+      "500": 4.0171,
+      "1000": 3.9489
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/RAYTAC-AN54LQ_P05/C53023852",
+     "date": "2026-09-03",
+     "form": "module",
+     "library_type": "extended"
+    },
+    {
+     "part": "Insight SiP ISP2454",
+     "mpn": "ISP2454-LX-RS",
+     "manufacturer": "Insight SiP",
+     "package": "8.0 x 8.0 x 1.0 mm LGA (NOT castellated)",
+     "lcsc": "C44975104",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 20.4454,
+      "200": 8.159,
+      "500": 7.8865,
+      "1000": 7.7518
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/InsightSiP-ISP2454_LX_RS/C44975104",
+     "date": "2026-09-03",
+     "form": "module",
+     "library_type": "extended",
+     "soc": "nRF54L15",
+     "note": "Smallest nRF54L module found. LGA 0.65 mm pitch, so not hand-solderable and not castellated. Certifications stated only generically ('FCC, CE, Telec, etc.') on the overview page."
+    },
+    {
+     "part": "Minew ME54BS01 / ME54BS12 (nRF54L15)",
+     "mpn": "ME54BS12-nRF54L15",
+     "manufacturer": "Minewsemi",
+     "package": "12 x 15.8 mm",
+     "price_points": {},
+     "currency": "USD",
+     "stock_at_pull": 0,
+     "lcsc": "C53430462",
+     "source": "https://jlcpcb.com/partdetail/Minewsemi-ME54BS12_nRF54L15/C53430462",
+     "date": "2026-09-03",
+     "note": "Listed in the JLCPCB catalogue with PLACEHOLDER prices on zero stock. Vendor page fetch failed (socket closed) - specs, NFC pin exposure and certifications NOT VERIFIED."
+    },
+    {
+     "part": "Fanstel / Ezurio / Holyiot / Ebyte nRF54L modules",
+     "mpn": "n/a",
+     "manufacturer": "various",
+     "package": "n/a",
+     "price_points": {},
+     "currency": "USD",
+     "source": "https://www.fanstel.com/nordic-nrf54-modules",
+     "date": "2026-09-03",
+     "note": "NONE FOUND on 2026-09-03. Fanstel's nRF54 URL returns 404 and its catalogue parts (BT840F etc.) are nRF52840; Ezurio's BL654 is nRF52840; Holyiot returns zero hits in the LCSC/JLCPCB catalogue; Ebyte's E73 family is nRF52832/nRF52840."
     }
    ]
   },
@@ -998,10 +1233,83 @@
    ]
   },
   "sounder_transducer": {
+   "settled_by": "lane G: a bare Murata 7BB-20-3 piezo bender bonded to the shell, not a housed buzzer and not a micro-speaker",
    "airtag_part": "custom voice coil glued to the plastic shell, driven against a fixed magnet in the middle of the donut PCB — the shell is the diaphragm (Catley/iFixit). No purchasable equivalent.",
-   "recommended": "C94599",
-   "why": "A magnetic (not piezo) transducer keeps the AirTag's tonal character and is the loudest thing that fits an 8 mm puck off the shelf. iFixit notes the piezo tags (Tile, SmartTag) were as loud or louder, so nothing acoustic is lost by not copying the voice coil; what is lost is the AirTag's timbre.",
+   "recommended": "Murata 7BB-20-3 (bare piezo bender, lane G) - NOT in the LCSC/JLCPCB catalogue; priced from sibling 7BB-20-6C",
+   "recommended_superseded": "C94599 (MLT-8530 housed magnetic buzzer)",
+   "why_housed_was_picked": "A magnetic (not piezo) transducer keeps the AirTag's tonal character and is the loudest thing that fits an 8 mm puck off the shelf. iFixit notes the piezo tags (Tile, SmartTag) were as loud or louder, so nothing acoustic is lost by not copying the voice coil; what is lost is the AirTag's timbre.",
    "options": [
+    {
+     "part": "Murata 7BB-20-3 piezo bender (lane G's pick)",
+     "mpn": "7BB-20-3",
+     "manufacturer": "Murata",
+     "package": "20.0 mm brass disc, 0.22 mm thick, 3.6 kHz",
+     "price_points": {},
+     "currency": "USD",
+     "source": "https://www1.futureelectronics.com/doc/Murata/7BB-20-6-MUR.pdf",
+     "date": "2026-09-03",
+     "note": "NO PRICE FETCHED - zero hits in the LCSC and JLCPCB catalogues on 2026-09-03; Digi-Key and Mouser fetches failed. Use the 7BB-20-6C ladder below as a price class. Lane G records a 1800-piece MOQ for the 7BB-20-6 in Murata's catalogue."
+    },
+    {
+     "part": "7BB-20-6C (price proxy for 7BB-20-3)",
+     "mpn": "7BB-20-6C",
+     "manufacturer": "Murata",
+     "package": "20.0 mm brass disc, 0.42 mm, 6.3 kHz",
+     "lcsc": "C3812347",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 0.2079,
+      "50": 0.2079,
+      "60": 0.2079,
+      "1000": 0.0805,
+      "2500": 0.0776,
+      "5000": 0.0763
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/muRata-7BB_20_6C/C3812347",
+     "date": "2026-09-03",
+     "library_type": "extended",
+     "note": "Same disc diameter and family as lane G's pick. ZERO stock at LCSC and JLCPCB - a Digi-Key/Mouser/Murata-direct line."
+    },
+    {
+     "part": "7BB-27-4C",
+     "mpn": "7BB-27-4C",
+     "manufacturer": "Murata",
+     "package": "27.0 mm brass disc, 4.6 kHz",
+     "lcsc": "C3812329",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 0.3355,
+      "50": 0.3355,
+      "1000": 0.1298,
+      "2500": 0.1253,
+      "7500": 0.123
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/muRata-7BB_27_4C/C3812329",
+     "date": "2026-09-03",
+     "library_type": "extended",
+     "note": "Too big for a 32 mm puck; listed for the price curve."
+    },
+    {
+     "part": "7BB-15-6",
+     "mpn": "7BB-15-6",
+     "manufacturer": "Murata",
+     "package": "15.0 mm brass disc, 6.3 kHz",
+     "lcsc": "C3812440",
+     "stock_at_pull": 0,
+     "price_points": {
+      "1": 0.1334,
+      "50": 0.1334,
+      "1000": 0.0516,
+      "2500": 0.0499,
+      "5000": 0.0489
+     },
+     "currency": "USD",
+     "source": "https://jlcpcb.com/partdetail/muRata-7BB_15_6/C3812440",
+     "date": "2026-09-03",
+     "library_type": "extended"
+    },
     {
      "part": "MLT-8530",
      "mpn": "MLT-8530",

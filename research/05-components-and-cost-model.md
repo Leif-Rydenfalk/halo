@@ -1,5 +1,11 @@
 # 05 — Components and cost model
 
+> **SUPERSEDED IN PART BY §10.** Decision **D12** (2026-09-03) drops the DW3110 chain and makes
+> **nRF54L10** the v1 SoC, superseding D10's nRF52840. Sections 1–9 below remain the record of
+> the AirTag substitution map and the nRF52/UWB costing that D12 was decided against; **§10 is
+> the current cost model.** Lane G has since settled the sounder as a bare **Murata 7BB-20-3**
+> piezo bender bonded to the shell, and lane A confirmed **LIS2DW12TR** as the accelerometer.
+
 **Lane E. All prices pulled 2026-09-03.** Every number below carries a link and a date.
 Where a price could not be fetched it says so; nothing here is invented.
 
@@ -625,3 +631,231 @@ is 4–13 % of the module build at 1 000 units but is the dominant uncertainty a
 | nRF52840 price beyond 100 pcs | no break published on LCSC or JLCPCB at pull time | reel quote from Nordic/Arrow/Digi-Key |
 | onsemi FPF2487 price | not in the LCSC/JLCPCB catalogue at all | only matters if the U1 rail is ever reproduced |
 | Whether five 100 uF is the right number for haytag-core | Apple sized it for a voice coil + U1, not an 80 mA transducer | bench measurement of cell droop |
+
+
+---
+
+# 10. Post-D12 re-run — haytag-core on nRF54L (2026-09-03)
+
+Three things changed after §1–9 were written:
+
+- **D12**: Channel Sounding on coin-cell nRF54L15 measures 6–10 cm mean error, so the DW3110
+  chain is deleted and **nRF54L10 is the v1 SoC**, with **nRF54L05** as fallback and **nRF54L15**
+  as step-up. A DW3110 footprint stays on the board, unpopulated.
+- **Lane G**: the sounder is a bare **Murata 7BB-20-3** piezo bender bonded to the shell — not a
+  housed buzzer and not a micro-speaker.
+- **Lane A**: the accelerometer substitute is **LIS2DW12TR** (Bosch BMA280 unbuyable). Unchanged
+  from §3.4.
+
+Everything else — no NFC IC, no external flash, no buck, no OVP switch, five 100 uF bulk caps,
+MAX98357A driver, CR2032 + SMD holder, 4-layer 30 mm round board — carries over from §5.
+
+## 10.1 nRF54L silicon — live pull
+
+| Part | Pkg | Flash / RAM | LCSC/JLC | LCSC stock | JLC stock | @1 | @100 | @1k |
+|---|---|---|---|---|---|---|---|---|
+| **NRF54L10-QFAA-R7** (v1) | VFQFN-48 6x6 | 1.0 MB / 192 kB | [C44800139](https://www.lcsc.com/product-detail/C44800139.html) | **669** | 1 003 | $3.7943 | **$2.6175** | **$2.4012** |
+| NRF54L05-QFAA-R (fallback) | VFQFN-48 6x6 | 0.5 MB / 96 kB | [C45022042](https://www.lcsc.com/product-detail/C45022042.html) | **1 775** | 1 775 | $3.2315 | $2.2020 | $2.0134 |
+| NRF54L15-QFAA-R (step-up) | QFN-48 6x6 | 1.5 MB / 256 kB | [C42458750](https://www.lcsc.com/product-detail/C42458750.html) | **0** | 0 | $3.9896 | $2.7178 | $2.4852 |
+| NRF54L10-QFAA-R (non-R7 reel) | VFQFN-48 | 1.0 MB / 192 kB | [C45022043](https://jlcpcb.com/partdetail/NordicSemicon-NRF54L10_QFAAR/C45022043) | 0 | 0 | $3.6910 | $3.4882 | $3.4882 |
+
+Two sourcing notes that matter more than the cents. **Only the R7 reel of the nRF54L10 is in
+stock** (669 at LCSC / 1 003 at JLCPCB) and its minimum packet is 1 000 — so a 100-piece build
+buys a full reel or pays cut-tape. And **the nRF54L15, the part lane H actually measured Channel
+Sounding on, is at zero stock everywhere**: the step-up is a paper option today. The L05 has the
+deepest stock of the three (1 775) and the lowest price; whether the firmware fits its 0.5 MB /
+96 kB is the question that decides $0.39/unit.
+
+All three carry NFC-A, so **the "no NFC BOM line" result of §3.3 survives the SoC change intact.**
+
+## 10.2 Sounder — Murata 7BB-20-3 piezo bender (lane G)
+
+**The 7BB-20-3 itself is not in the LCSC or JLCPCB catalogue.** Searched 2026-09-03: zero hits.
+The nearest sourced siblings — same 20.0 mm brass disc, same family, different resonance and
+ceramic thickness — are:
+
+| Part | Res. freq | Disc | LCSC/JLC | Stock | @1 | @1k | @5k |
+|---|---|---|---|---|---|---|---|
+| **7BB-20-6C** (price proxy) | 6.3 kHz | 20.0 mm brass | [C3812347](https://jlcpcb.com/partdetail/muRata-7BB_20_6C/C3812347) | **0** | $0.2079 | **$0.0805** | $0.0763 |
+| 7BB-20-6L0 (pre-wired) | 6.3 kHz | 20.0 mm | [C3812354](https://jlcpcb.com/partdetail/muRata-7BB_20_6L0/C3812354) | 0 | $0.4778 | $0.1850 | $0.1752 |
+| 7BB-27-4C | 4.6 kHz | 27.0 mm | [C3812329](https://jlcpcb.com/partdetail/muRata-7BB_27_4C/C3812329) | 0 | $0.3355 | $0.1298 | $0.1230 |
+| 7BB-15-6 | 6.3 kHz | 15.0 mm | [C3812440](https://jlcpcb.com/partdetail/muRata-7BB_15_6/C3812440) | 0 | $0.1334 | $0.0516 | $0.0489 |
+
+The roll-up prices the sounder at the **7BB-20-6C ladder ($0.2079 @1, $0.0805 @1k)** and labels it
+a proxy. Every 7BB part is **zero stock at LCSC and JLCPCB**, so the disc is a Digi-Key / Mouser /
+Murata-direct line item, and lane G's catalogue note records a **1 800-piece minimum order for the
+7BB-20-6**. Neither a Digi-Key nor a Mouser price for the 7BB-20-3 could be fetched
+(wrong-part and timeout responses) — **so this line is a price class, not a quote.**
+
+Against the housed magnetic buzzer of §3.5 (MLT-8530, $0.1137 @1k) the bare bender saves
+**$0.03/unit** — the reason to choose it is height and the shell-as-diaphragm acoustics lane G
+owns, not money. It does change the drive problem: a bare bender is a ~20–30 nF capacitive load,
+not an 8 ohm coil, so the MAX98357A's bridge-tied class-D output is being used as a
+high-slew voltage source rather than a current source. That is lane G's call; the BOM line is
+unchanged either way.
+
+## 10.3 Roll-up — nRF54L10 v1, with L05 fallback and L15 step-up
+
+Same model as §6: PCB = $35.70 + $25 ENIG + panels x $0.706 (nine 30 mm rounds per 100 x 100 mm
+4-layer panel, [JLCPCB $70.60/m²](https://jlcpcb.com/news/discount-on-quality-4-layer-pcbs));
+assembly = $8.18 setup + $1.53 stencil + $3.07 x extended parts + $0.0016/joint
+([JLCPCB fee schedule](https://jlcpcb.com/help/article/pcb-assembly-price)); joints 140 bare
+(QFN48) / 109 module (42 pads); 8 and 7 extended parts. Tooling $4 000 over 10 000 units per
+lane G's Chinese single-cavity figure. CR2032 at its qty-1 $0.39 upper bound throughout.
+
+| Variant | Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** |
+|---|---|---|---|---|---|---|---|---|
+| **haytag-core v1, bare nRF54L10** | 10 | $8.61 | $6.211 | $3.651 | $1.20 | $0 | $0.30 | **$19.97** |
+| | 100 | $6.89 | $0.692 | $0.567 | $1.20 | $0 | $0.30 | **$9.65** |
+| | 1 000 | $5.99 | $0.140 | $0.258 | $0.90 | $0 | $0.15 | **$7.43** |
+| | 10 000 | $5.92 | $0.085 | $0.227 | $0.30 | $0.40 | $0.08 | **$7.01** |
+| *fallback, bare nRF54L05* | 10 | $8.11 | $6.211 | $3.651 | $1.20 | $0 | $0.30 | *$19.48* |
+| | 100 | $6.47 | $0.692 | $0.567 | $1.20 | $0 | $0.30 | *$9.23* |
+| | 1 000 | $5.60 | $0.140 | $0.258 | $0.90 | $0 | $0.15 | *$7.05* |
+| | 10 000 | $5.53 | $0.085 | $0.227 | $0.30 | $0.40 | $0.08 | *$6.62* |
+| *step-up, bare nRF54L15* | 10 | $8.76 | $6.211 | $3.651 | $1.20 | $0 | $0.30 | *$20.12* |
+| | 100 | $6.99 | $0.692 | $0.567 | $1.20 | $0 | $0.30 | *$9.75* |
+| | 1 000 | $6.07 | $0.140 | $0.258 | $0.90 | $0 | $0.15 | *$7.52* |
+| | 10 000 | $6.00 | $0.085 | $0.227 | $0.30 | $0.40 | $0.08 | *$7.10* |
+| **haytag-core, Raytac AN54LQ module** | 10 | $9.64 | $6.211 | $3.294 | $1.20 | $0 | $0.30 | **$20.64** |
+| | 100 | $8.54 | $0.692 | $0.486 | $1.20 | $0 | $0.30 | **$11.22** |
+| | 1 000 | $7.97 | $0.140 | $0.206 | $0.90 | $0 | $0.15 | **$9.37** |
+| | 10 000 | $7.95 | $0.085 | $0.178 | $0.30 | $0.40 | $0.08 | **$8.99** |
+
+**Spread across the whole nRF54L family is $0.47/unit at 1 000** (L05 $7.05 → L15 $7.52). The SoC
+choice inside the family is a firmware-fit decision, not a cost decision.
+
+### Delta against the nRF52840 numbers of §6
+
+| Variant | Qty | nRF52840 (§6) | nRF54L10 (§10) | **Delta** |
+|---|---|---|---|---|
+| bare SoC | 10 | $21.99 | $19.97 | **−$2.02** |
+| | 100 | $11.17 | $9.65 | **−$1.52** |
+| | 1 000 | $9.25 | $7.43 | **−$1.82** |
+| | 10 000 | $8.82 | $7.01 | **−$1.81** |
+| pre-certified module | 10 | $22.98 | $20.64 | **−$2.34** |
+| | 100 | $12.30 | $11.22 | **−$1.08** |
+| | 1 000 | $10.53 | $9.37 | **−$1.16** |
+| | 10 000 | $10.15 | $8.99 | **−$1.16** |
+| haytag-uwb (deleted by D12) | 1 000 | $17.40 | — | **−$9.97 vs bare v1** |
+
+At 1 000 units the BOM alone falls **$7.76 → $5.99 (−$1.77)**, of which **−$1.74 is the SoC**
+($4.1407 → $2.4012) and −$0.03 the sounder. The rest of the per-unit delta is assembly: the
+QFN48 has 26 fewer joints than the aQFN73. **D12 was correct on price as well as on accuracy —
+Channel Sounding is not a feature you pay for, it is a feature that arrives with a cheaper part.**
+
+**Value-engineering line, stated separately so it does not contaminate the comparison.** The five
+100 uF bulk capacitors are Apple parity, sized for a voice coil and a U1. haytag v1 has neither —
+a piezo bender is a capacitive load and the UWB burst is gone. Dropping to **two 100 uF** gives
+bare-nRF54L10 totals of **$18.57 / $8.58 / $6.51 / $6.09** — a further **−$0.92/unit**. That is a
+real decision for lane G to make against measured cell droop, not a free saving.
+
+### Against Apple, restated
+
+| | per unit |
+|---|---|
+| AirTag 1-pack retail | $29.00 |
+| AirTag 4-pack retail | $24.75 |
+| AirTag estimated manufacturing cost (TechInsights) | ~$10 |
+| **haytag-core v1, bare nRF54L10, 1 000** | **$7.43** (26 % of retail) |
+| **haytag-core v1, module, 1 000** | **$9.37** (32 % of retail) |
+| haytag-core v1, bare, 10 000 | $7.01 |
+
+The v1 build now sits **below Apple's own estimated build cost at a thousand units**, and it does
+local relative positioning, which an AirTag cannot do for anyone but Apple.
+
+## 10.4 Lane I's question, closed: pre-certified nRF54L modules exist
+
+**Yes. Raytac ships a full nRF54L module line, it is certified in nine regimes, and it brings out
+NFC1 and NFC2.** Lane I's fallback to an nRF52832 MDBT42Q is not necessary — the choice between
+"a certified module" and "the positioning feature" does not have to be made.
+
+| Vendor | nRF54L module? | Part(s) | Size (mm) | Pads | NFC1/NFC2 out? | Certifications | Price seen | Stock |
+|---|---|---|---|---|---|---|---|---|
+| **Raytac** | **YES** | **AN54LQ-10** (chip ant.), **AN54LQ-P10** (PCB ant.), **AN54LQ-U10** (u.FL); same in -05 and -15 | **13.7 x 9.5 x 1.8** | **42** | **YES — pad 15 = P1.02/NFC1, pad 16 = P1.03/NFC2**; SWDIO pad 36, SWDCLK pad 37 | **FCC (ID SH6AN54LQ), IC, CE/RED, Telec (MIC) = Giteki, KC, SRRC, NCC, RCM, WPC**; BT6 qualified; "a recommended 3rd-party module by Nordic Semiconductor" | **AN54LQ-10: no price fetched.** Siblings in the LCSC/JLC catalogue: AN54LQ-15 **$4.7861 @100 and @1k**; AN54LQ-U15 $4.2945 @1k; AN54LQ-P05 $3.9489 @1k | **0 everywhere** (LCSC, JLCPCB, Digi-Key filter returned no AN54LQ results; Mouser timed out) |
+| **Insight SiP** | **YES (L15 only)** | **ISP2454** | **8.0 x 8.0 x 1.0** — smallest found | LGA, **not castellated** | not stated on the overview page | "full certified by the Bluetooth SIG and by global regulatory bodies such as the FCC, CE, Telec, etc." (generic wording, per-model list not given) | ISP2454-LX-RS **$8.159 @200, $7.7518 @1k** | **0** |
+| **Minew (Minewsemi)** | **YES (L15 only)** | ME54BS01-nRF54L15, ME54BS12-nRF54L15 (12 x 15.8), ME54BS0A | 12 x 15.8 and n/s | not stated | not stated | not fetched — vendor page fetch failed (socket closed) | **placeholder prices only** ($0.0395/$0.0203 on zero stock — not real) | **0** |
+| **Ezurio (Laird)** | no nRF54L found | BL654 family is nRF52840 | 15 x 10 x 2.2 | castellated | yes (NFC1/NFC2 documented) | FCC, ISED, EU, UKCA, MIC, KC, AS-NZS, Taiwan, Brazil, BT SIG | JLC listing is a zero-stock placeholder | 0 |
+| **Fanstel** | **not found** | BT840F etc. are nRF52840 | 15.0 x 20.8 | 16 castellated + 43 LGA | not stated | FCC X8WBT840F, IC, TELEC, KCC, NCC, ANATEL | BT840F **$19.8856 @100** (JLC) | 0 |
+| **Holyiot** | **not found** | — | | | | | zero catalogue hits at LCSC/JLCPCB | — |
+| **Ebyte** | **not found** | E73 family is nRF52832/nRF52840 | | | | page renders no certification content | E73-2G4M08S1C $5.9347 @100 | 2 093 |
+
+Evidence for the Raytac claims: product pages
+[AN54LQ-P10](https://www.raytac.com/product/ins.php?index_id=163) and
+[AN54LQ-10](https://www.raytac.com/product/ins.php?index_id=165) (both fetched 2026-09-03), and
+the family specification **"[nRF54L15_10_05] AN54LQ-15_AN54LQ-10_AN54LQ-05 Spec (Ver.1.1)"**
+([raytac.com/download/index.php?index_id=81](https://www.raytac.com/download/index.php?index_id=81),
+8.2 MB PDF, fetched and text-extracted 2026-09-03), whose pin table reads:
+
+> `(15)  P1.02  Digital I/O  General-purpose I/O` / `NFC1  NFC input  NFC antenna connection`
+> `(16)  P1.03  Digital I/O  General-purpose I/O, Clock pin` / `NFC2  NFC input  NFC antenna connection`
+
+and whose labelling clause reads *"The final end product must be labeled in a visible area with
+the following: 'Contain FCC ID: SH6AN54LQ'."* The same PDF carries TELEC (Japan), NCC (Taiwan),
+CE/RCM, SRRC (China), KC (Korea) and WPC (India) certificate sections, and notes
+*"When NOT using NFC, please remove NFC1 / C19 / C20."*
+
+**Two caveats, both real.**
+
+1. **Pad style is unconfirmed.** The specification's pad geometry lives in a drawing that text
+   extraction cannot read, so I can confirm **42 pads with a documented recommended land pattern**
+   but **not** that they are half-hole castellations. Raytac's MDBT42Q in the same size class is
+   castellated (lane I verified pads 22/23 = NFC1/NFC2 there), which makes castellation likely but
+   not proven. **Someone should open the AN54LQ footprint drawing before lane I commits.**
+2. **Nothing is in stock.** Every nRF54L module from every vendor shows zero at LCSC, JLCPCB and
+   the Digi-Key filter. The bare **nRF54L10 silicon is in stock (669/1 003) and the modules are
+   not** — so a module-based v1 is a Raytac-direct purchase with a lead time, while a bare-SoC v1
+   can be built this week.
+
+## 10.5 Bare-SoC route priced against the certification difference
+
+| | bare nRF54L10 | AN54LQ module | premium |
+|---|---|---|---|
+| SoC / module | $2.4012 | $4.7861* | |
+| 32 MHz + 32.768 kHz crystals | $0.3680 | included | |
+| matching + antenna (PCB trace) | ~$0.023 in 0402s, $0 antenna | included | |
+| **radio subtotal @1 000** | **$2.79** | **$4.79** | **+$2.00/unit** |
+| radio subtotal @100 | $3.13 | $4.79 | +$1.66/unit |
+| radio subtotal @10 000 | $2.76 | $4.79 | +$2.03/unit |
+| joints | 140 | 109 (−31, ≈ −$0.05/unit) | |
+| **total/unit @1 000** | **$7.43** | **$9.37** | **+$1.94/unit** |
+
+`*` AN54LQ-15 catalogue price stands in for the AN54LQ-10, which is not listed anywhere I could
+reach. The -10 is the smaller-memory part in the same package, so **$4.7861 is an upper bound**
+and the true premium is probably lower.
+
+**What the premium buys.** Under single modular approval the module holder's grant covers the
+host, so the bare-SoC route must instead reproduce, at the builder's own cost: **FCC Part 15
+intentional radiator, ISED, CE/RED (EN 300 328 + EN 301 489 + EN 62479), MIC/Giteki, KC, SRRC,
+NCC, RCM and WPC** — nine regimes that Raytac has already paid for and that the AN54LQ spec
+documents individually.
+
+**I still have no fetched test-lab price**, and I will not invent one; lane F owns that number.
+What the data does support is the break-even shape:
+
+> The module pays for itself whenever the whole certification campaign costs more than
+> **$1.94 x units**. That is **$194 at 100 units, $1 940 at 1 000, and $19 400 at 10 000.**
+
+At 100 and 1 000 units the module is almost certainly cheaper all-in, because no plausible
+nine-regime campaign costs under $2 000. Somewhere in the tens of thousands the bare SoC wins —
+and only there. **For an open design, the argument is stronger still than the arithmetic**: every
+downstream builder who drops the block into their own outline inherits Raytac's grant instead of
+running their own campaign, so the $1.94 is paid once per tag and saves a campaign per *builder*.
+
+**Recommendation.** Ship the block in both forms, as D1 already said, but flip which is the
+default sourcing risk: **bare nRF54L10 is the only version buildable today** (silicon in stock,
+modules at zero), so bring-up runs on bare silicon, and the **AN54LQ-P10 module is the shipping
+form once Raytac confirms stock, lead time, MOQ and — critically — that the 42 pads are
+castellated.** Both use the same SoC, the same NFC-A coil drive and the same firmware, so the
+switch costs a footprint, not a port.
+
+## 10.6 What §10 could not close
+
+| Item | Why |
+|---|---|
+| AN54LQ-10 / AN54LQ-P10 unit price | not listed at LCSC, JLCPCB or the Digi-Key filter; Mouser timed out; Raytac quotes direct |
+| Whether AN54LQ pads are castellated or LGA | the pad drawing is an image in the spec PDF; text extraction gives 42 pads and a land pattern but not the style |
+| Murata 7BB-20-3 price | not in the LCSC/JLCPCB catalogue; 7BB-20-6C used as a labelled proxy; no Digi-Key or Mouser quote obtained |
+| Minew nRF54L module specs and certs | vendor page fetch failed; JLCPCB shows placeholder prices on zero stock |
+| Certification campaign cost | no lab quote fetched — lane F |
+| nRF54L10 sleep / TX current | vendor page gives L15 figures only (4.8 mA TX @0 dBm, 3.4 mA RX, 0.7–2.9 uA sleep); the L10's own numbers were not fetched |

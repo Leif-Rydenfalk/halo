@@ -527,3 +527,13 @@ J	https://github.com/malmeloo/FindMy.py/releases/tag/v0.9.0	FindMy.py v0.9.0 rel
 J	https://github.com/malmeloo/FindMy.py/releases/tag/v0.9.3	FindMy.py v0.9.3 release notes	2025-09-29	Ships the empty-200 retry workaround for #185.
 J	https://github.com/malmeloo/FindMy.py/releases/tag/v0.10.0	FindMy.py v0.10.0 release notes	2026-05-04	Adds FixedRollingKeyPairAccessory (PR #243) - pre-generated key lists, which is exactly haytag's shape.
 J	https://community.home-assistant.io/t/1013940	I made a working AirTag / FindMy tracker! - Home Assistant community	2026-06-14	Author 2026-06-22: 'mine is still working fine!'. Repo later taken down by its author.
+A	https://developer.apple.com/nearby-interaction/	Nearby Interaction with UWB — Apple Developer	2026-09-03	Accessory protocol is vendor-gated: "Contact your UWB chipset vendor"; chipset vendors implement "the Nearby Interaction specification". Archived A-apple-nearby-interaction
+A	https://developer.apple.com/documentation/nearbyinteraction	NearbyInteraction framework — Apple Developer Documentation	2026-09-03	NINearbyObject.direction/distance/horizontalAngle/verticalDirectionEstimate — direction computed BY the phone ABOUT the peer; read via Apple's doc JSON API
+A	https://github.com/ETH-PBL/UWB_DualAntenna_AoA	ETH-PBL UWB dual-antenna AoA (DW3220, GPL-3.0, Altium)	2026-09-03	Open HW+FW+dataset, 2.4 deg avg angular accuracy in 90 deg range, cm distance; T_module 22x28mm. Archived A-eth-pbl-uwb-dualantenna-aoa
+A	https://doi.org/10.1109/TIM.2023.3282289	Angle of arrival and centimeter distance estimation on a smart UWB sensor node — IEEE TIM 2023	2026-09-03	Margiani/Cortesi/Keller/Vogt/Polonelli/Magno; the peer-reviewed basis for the ETH AoA hardware
+A	https://doi.org/10.48550/arXiv.2312.13672	arXiv preprint 2312.13672 — UWB AoA on a smart sensor node	2026-09-03	Open-access preprint of the IEEE TIM paper
+A	https://github.com/br101/zephyr-dw3000-decadriver	Zephyr driver for Qorvo/Decawave DW3000	2026-09-03	77 stars; open DW3000 driver for Zephyr — the firmware path for a haytag UWB variant
+A	https://github.com/br101/libdeca	libdeca — UWB library for Decawave/Qorvo DW3000	2026-09-03	30 stars; open ranging library
+A	https://github.com/ProfFan/dw3000-ng	dw3000-ng — Rust DW3000 driver	2026-09-03	26 stars
+A	https://github.com/Makerfabs/Makerfabs-ESP32-UWB-DW3000	Makerfabs ESP32 UWB DW3000 boards	2026-09-03	165 stars; cheap off-the-shelf DW3000 dev hardware for bring-up
+A	https://www.ifixit.com/News/33257/inside-the-tech-in-apples-ultra-wideband-u1-chip	Inside the Tech in Apple's Ultra Wideband U1 Chip — iFixit	2026-09-03	"cutouts ... to house the necessary antennas" (plural), "UWB's multiple-antenna technology"; exact iPhone antenna count NOT stated
