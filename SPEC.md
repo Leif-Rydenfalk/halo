@@ -40,11 +40,11 @@ from. The part that implements each is section 3.
 | F4 | separated-state behaviour | near-owner → separated after >30 min; random 8–24 h alert timeout with 6 h back-off | SETTLED lane F |
 | F5 | identifier retrieval | serial readable over NFC or BLE, behind a physical button, 5-minute window; printed unique serial on the housing | SETTLED lane F |
 | F6 | owner information page | obfuscated owner-info page, ≥25-day retention | SETTLED lane F |
-| F7 | motion detection | wake and change advertising behaviour on movement | PENDING lane A (which accelerometer, what thresholds) |
-| F8 | NFC tap | phone tap reads the tag and opens the owner page | PENDING lane A / E (which NFC IC, coil geometry) |
+| F7 | motion detection | wake and change advertising behaviour on movement | SETTLED lane A: AirTag samples every 10 s at rest and 0.5 s once moving; DULT additionally requires ±10° accuracy |
+| F8 | NFC tap | phone tap reads the tag and opens the owner page | SETTLED lane A: the Nordic SoC's own NFC-A peripheral emulates a read-only Type-4 tag holding the owner URL; only the coil and two tuning capacitors are external |
 | F9 | precision finding | AirTag does this with Apple's U1 | **known gap** — not reproducible without MFi (DECISIONS.md D1, D5) |
 | F10 | peer ranging | haytag-uwb ranges to other haytags for local relative position | PENDING lane H (technology, accuracy, battery) |
-| F11 | battery life | AirTag claims about a year on a CR2032 | PENDING lane A (Apple's claim) + ce-spice model |
+| F11 | battery life | about a year on a CR2032 | model PASSES in ce-spice: fresh-cell droop 68 mV under a transmit pulse against a 400 mV limit, five scenarios fresh to end of life, all asserts held |
 | F12 | battery replacement | user-replaceable CR2032 behind a compliant door | SETTLED lane F: tool or two independent simultaneous movements (16 CFR 1263) |
 
 ## 2a. Budget floors (from lane B)
@@ -56,9 +56,27 @@ those three together, not over the first (DECISIONS.md D8).
 
 ## 3. Component map — one row per function
 
-PENDING lanes A and E. Structure fixed now so the dossiers drop straight in:
-`function | AirTag part (as identified, with who identified it) | haytag part
-| package | LCSC id | price at 1/100/1k/10k | datasheet | alternate | why`.
+From lane A's function map (research/01-airtag-hardware.md §4), which read the
+part markings off Colin O'Flynn's full-resolution board photographs and Apple's
+own regulatory filing. The haytag column is lane E's substitution work; rows
+marked PENDING lane E are awaiting its sourced pick.
+
+| function | AirTag part (identified) | haytag part | note |
+|---|---|---|---|
+| CPU, Bluetooth radio **and NFC tag in one** | Nordic **nRF52832-CIAA**, WLCSP-50, marking `N52832 CIAAE0 2102JK` | **nRF52840-class** (D10 parity target, D8 memory budget) | the NFC tag is the SoC's own peripheral on pins P0.09/P0.10 — **no separate NFC chip exists in an AirTag**, which deletes a line most clone BOMs carry |
+| UWB ranging | Apple **U1**, die `TMKA75`, TSMC 16 nm, in a USI system-in-package with its own processor running "Rose" firmware side-loaded by the Nordic part | **not reproducible** — never sold. haytag-uwb uses a sourceable transceiver for peer ranging only (D1) | the only true hard wall in the whole design |
+| firmware and key storage | GigaDevice **GD25LE32/LQ32**, 32 Mbit SPI NOR, WLCSP-10, 1.8 V | PENDING lane E — generic SPI NOR | holds both the Nordic firmware and the U1's firmware, unencrypted |
+| motion detection | Bosch **BMA280** | PENDING lane E | sampled every 10 s at rest, 0.5 s once moving |
+| sound | Maxim **MAX98357A** class-D amplifier driving a copper voice coil glued to the shell, against a fixed central magnet, with a **TI TLV9001** op-amp in the analogue path | PENDING lane E + D11 | about 8 mA while sounding, over three thousand times the sleep current |
+| power | TI **TPS62746** buck to a 1.8 V rail, onsemi **FPF2487** load switch gating the UWB and flash, a small LDO, and **five 100 µF** bulk capacitors marked `J107S` | PENDING lane E | the bulk capacitance is what keeps the tag alive for seconds after the cell is pulled, which is how the five-removals reset works |
+| timing | 32 MHz crystal marked `T320/RBEV`, 32.768 kHz crystal marked `A048L` | PENDING lane E | |
+| antennas | three laser-direct-structured traces on the plastic carrier: Bluetooth inverted-F at **−3.2 dBi**, an NFC coil, a UWB patch at **−1.6 dBi at 6.5 GHz** | PENDING ce-rf | gains are from Apple's own filed test reports, not estimates |
+| battery | CR2032 on three sprung contacts, two positive rails both sensed before boot | PENDING lane E | |
+
+**The bottom line of the map:** every function is reproducible from catalogue
+parts except precision finding, which needs Apple's chip, and appearing in
+Apple's own Find My application, which needs a per-unit token Apple burns into
+the flash at the factory. Both walls are commercial, not technical.
 
 ## 4. Physical envelope
 
