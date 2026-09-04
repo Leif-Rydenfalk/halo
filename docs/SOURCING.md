@@ -1,6 +1,6 @@
 # Sourcing — every placed part on halo_rev_a, with an order code that was read back
 
-*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `ef3431e`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
+*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `d8ca555`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
 
 ## The count
 
@@ -106,7 +106,7 @@ Lane T6 measured **212** of the main chip in stock. Single-sourcing is not a the
 | **U2** | [C189624](https://www.lcsc.com/product-detail/C189624.html) `LIS2DW12TR` | 14,150 | [C110926](https://www.lcsc.com/product-detail/C110926.html) `LIS2DH12TR` | 297 | 50 nA in the lowest-power mode, the deciding number for a coin cell. PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give 1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be tied to VDD, VDDIO or GND'), which the board ties to GND either way. The cost is 500 nA against 50 nA - a build second source, not a design equal. REJECTED as an alternate on evidence: Silan SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, 3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It would short VDDIO to the SDO net on this land pattern. |
 | **X1** | [C32346](https://www.lcsc.com/product-detail/C32346.html) `Q13FC13500004` | 657,565 | [C95361](https://www.lcsc.com/product-detail/C95361.html) `Q13FC13500049` | 134,310 | JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED AGAINST THE nRF54L's on-die CAPVALUE RANGE, because D-3 deleted the external load capacitors. The alternate is the same Epson FC-135 body at CL 6 pF if the internal caps cannot reach 12.5 pF. |
 | **X2** | [C843260](https://www.lcsc.com/product-detail/C843260.html) `NX2016SA-32MHZ-STD-CZS-5` | 12,840 | [C718072](https://www.lcsc.com/product-detail/C718072.html) `X201632MKB4SI` | 34,405 | CL 8 pF +/-10 ppm, which is what the schematic specified and what the vendor record confirms. The YXC alternate is the same 8 pF / +/-10 ppm at a third of the price with 60 k stock. |
-| **LS1** | — | — | — | — | Hand-assembled and bonded to the shell, so the machine never touches it and it carries no LCSC code by design. THE SPECIFIED MURATA PART IS END-OF-LIFE and is replaced by the PUI Audio AB2036B-2, which is a specification-for-specification match at 0.215 mm rather than 0.22. Full evidence in the sounder section of docs/SOURCING.md and in the `cost.sounder` block of this file. |
+| **LS1** | — | — | — | — | Hand-assembled and bonded to the shell, so the machine never touches it and it carries no LCSC code by design. THE MURATA PART D11a SPECIFIED IS END-OF-LIFE; D20 replaces it with the Same Sky CEB-2021 (Ø20 x 0.21 mm brass, 3.6 kHz, 21 nF, bare), whose numbers this lane re-read off Same Sky's own datasheet rather than restating. The PUI AB2036B-2 is recorded as a second source that D20's candidate list did not carry and that is 40% cheaper. Full evidence in the sounder section of docs/SOURCING.md and in the `cost.sounder` block of this file. |
 | **BT1** | — | — | — | — | The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER. No holder is fitted - lane M's design puts three stamped fingers on halo's own three-pad footprint. The order code was wrong AND the part it named must not be ordered. |
 
 ## The sounder
@@ -136,7 +136,7 @@ Lane T6 measured **212** of the main chip in stock. Single-sourcing is not a the
 | Weight | — | 0.4 g |
 | Ceramic layer | — | 0.1 mm +/-0.01 |
 | Brass plate | — | 0.11 mm (derived: 0.21 total - 0.10 ceramic) |
-| Ceramic / electrode Ø | — | 15.0 / None mm |
+| Ceramic / electrode Ø | — | 15.0 mm |
 | Resonant frequency | ~3.6 kHz | **3,100 / 3,600 / 4,100 Hz** (min/typ/max) |
 | Resonant impedance | — | ≤ 300 Ω |
 | Capacitance | — | **21,000 pF** (15,750 / 21,000 / 26,250 @ 100 Hz) |

@@ -185,11 +185,14 @@ CHOICES = [
       pick=None, pick_mpn=None, alt=None, alt_mpn=None,
       verdict="RESOLVED BY REPLACEMENT",
       why="Hand-assembled and bonded to the shell, so the machine never touches "
-          "it and it carries no LCSC code by design. THE SPECIFIED MURATA PART "
-          "IS END-OF-LIFE and is replaced by the PUI Audio AB2036B-2, which is "
-          "a specification-for-specification match at 0.215 mm rather than "
-          "0.22. Full evidence in the sounder section of docs/SOURCING.md and "
-          "in the `cost.sounder` block of this file.", off_bom=True),
+          "it and it carries no LCSC code by design. THE MURATA PART D11a "
+          "SPECIFIED IS END-OF-LIFE; D20 replaces it with the Same Sky "
+          "CEB-2021 (Ø20 x 0.21 mm brass, 3.6 kHz, 21 nF, bare), whose numbers "
+          "this lane re-read off Same Sky's own datasheet rather than "
+          "restating. The PUI AB2036B-2 is recorded as a second source that "
+          "D20's candidate list did not carry and that is 40% cheaper. Full "
+          "evidence in the sounder section of docs/SOURCING.md and in the "
+          "`cost.sounder` block of this file.", off_bom=True),
  dict(refs="BT1", value="CR2032", fp="halo:HALO_BATT_CONTACT_3PAD", function="the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder",
       pick=None, pick_mpn=None, alt=None, alt_mpn=None, verdict="NOT AN SMT LINE",
       why="The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 "
@@ -383,48 +386,77 @@ COST_MODEL = {
 # in NEITHER the LCSC nor the JLCPCB catalogue. Filled in by the sourcing pass;
 # a null price is a null price and is never replaced by a plausible one.
 SOUNDER = {
- "specified": "Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
- "verdict": "RESOLVED - BY REPLACEMENT. The specified part is end-of-life.",
+ "specified": "D11a: Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
+ "decision": "D20 supersedes D11a's PART CHOICE (not its acoustic reasoning) "
+             "and names Same Sky CEB-2021. This lane followed that decision "
+             "and re-verified it first-hand rather than restating it.",
+ "verdict": "RESOLVED - BY REPLACEMENT, per D20. The specified part is "
+            "end-of-life.",
  "resolved_to": {
-   "mpn": "AB2036B-2", "manufacturer": "PUI Audio (Same Sky)",
-   "diameter_mm": 20.0, "thickness_mm": 0.215, "thickness_tol": "+/-10%",
-   "ceramic_layer_mm": 0.1, "ceramic_layer_tol": "+/-0.015",
-   "brass_mm": 0.115, "brass_note": "derived: 0.215 total - 0.100 ceramic",
-   "ceramic_diameter_mm": 15.0, "electrode_diameter_mm": 13.5,
-   "f0_hz": 3600, "f0_tol_hz": 600, "resonant_impedance_ohm_max": 500,
-   "capacitance_pf": 20000, "capacitance_tol": "+/-30% @ 120 Hz",
-   "max_input_vpp": 30, "plate": "Brass",
-   "operating_c": "-20 to +70", "terminals": "bare, two pads, no wires, no housing",
-   "datasheet": "https://puiaudio.com/file/specs-AB2036B-2.pdf",
-   "datasheet_rev": "A, 2024-03-06, fetched 2026-09-04 (HTTP 200, 159,631 bytes)",
-   "dimensions_read": "off the datasheet's own dimensioned drawing, page 1, "
-                      "rendered at 200 dpi and read: 20 / 15 +/-0.3 / 13.5 "
-                      "+/-0.3 diameters, 0.215 +/-10% total, 0.1 +/-0.015 "
-                      "ceramic. The specification table is extractable text; "
-                      "the drawing is not, so it was read as a picture.",
-   "stock": {"Digi-Key": 390, "Mouser": 400},
-   "usd_per_unit": {"10": 0.3620, "100": 0.2840, "1000": 0.2200, "10000": 0.1860},
+   "mpn": "CEB-2021", "manufacturer": "Same Sky (formerly CUI Devices)",
+   "diameter_mm": 20.0, "diameter_tol": "+/-0.1",
+   "thickness_mm": 0.21, "thickness_tol": "+/-0.03",
+   "ceramic_layer_mm": 0.1, "ceramic_layer_tol": "+/-0.01",
+   "brass_mm": 0.11, "brass_note": "derived: 0.21 total - 0.10 ceramic",
+   "ceramic_diameter_mm": 15.0, "electrode_diameter_mm": None,
+   "f0_hz": 3600, "f0_min_hz": 3100, "f0_max_hz": 4100,
+   "resonant_impedance_ohm_max": 300,
+   "capacitance_pf": 21000, "capacitance_tol": "15,750 / 21,000 / 26,250 @ 100 Hz",
+   "max_input_vpp": 30, "plate": "brass", "weight_g": 0.4,
+   "operating_c": "-20 to +70", "storage_c": "-30 to +80",
+   "terminals": "bare disc, externally driven, no wires and no housing",
+   "datasheet": "https://www.sameskydevices.com/product/resource/ceb-2021.pdf",
+   "datasheet_rev": "1.01, 2024-09-11, fetched 2026-09-04 "
+                    "(HTTP 200, 238,947 bytes)",
+   "dimensions_read": "off Same Sky's own mechanical drawing, page 1, rendered "
+                      "at 150 dpi and read: n20 +/-0.1 brass, n15 +/-0.3 "
+                      "ceramic, 0.21 +/-0.03 total, 0.1 +/-0.01 ceramic. The "
+                      "specification table is extractable text; the drawing is "
+                      "not, so it was read as a picture.",
+   "stock": {"Digi-Key": 3756, "Mouser": 2202},
+   "usd_per_unit": {"10": 0.5960, "100": 0.4580, "1000": 0.3690, "10000": 0.3150},
    "price_source": "Mouser Electronics, ECIA member, authorized distributor, "
-                   "via oemstrade.com/search/AB2036B-2, read 2026-09-04. "
-                   "Ladder: 1 $0.48, 10 $0.362, 25 $0.326, 50 $0.303, "
-                   "100 $0.284, 300 $0.251, 500 $0.237, 1000 $0.220, "
-                   "5000 $0.186. The 10,000 figure is the 5000-and-up break, "
-                   "which is the deepest the ladder publishes.",
-   "corroboration": "Digi-Key (authorized, 390 in stock) quotes EUR 0.1595 at "
-                    "5000 and EUR 0.43 at 1 on the same part.",
+                   "via oemstrade.com/search/CEB-2021, read 2026-09-04. "
+                   "Ladder: 1 $0.80, 10 $0.596, 25 $0.536, 50 $0.496, "
+                   "100 $0.458, 250 $0.415, 500 $0.385, 1000 $0.369, "
+                   "4000 $0.315. The 10,000 figure is the 4000-and-up break.",
+   "corroboration": "Digi-Key (authorized, 3,756 in stock, part "
+                    "2223-CEB-2021-ND) quotes EUR 0.2556 at 8,000, which is "
+                    "the $0.299-at-8,000 D20 recorded.",
+   "watch_out": "CEB-2021-L100 is the SAME ELEMENT WITH LEAD WIRES ALREADY "
+                "ATTACHED and is a different order code, a different price and "
+                "a different height. Digi-Key holds 4,261 of it and 3,756 of "
+                "the bare part, so a buyer searching 'CEB-2021' will see the "
+                "leaded one first. Order CEB-2021, not CEB-2021-L100.",
  },
  "alternate": {
-   "mpn": "AB2036B", "manufacturer": "PUI Audio (Same Sky)",
-   "diameter_mm": 20.0, "thickness_mm": 0.23, "thickness_tol": "+/-0.03",
-   "ceramic_layer_mm": 0.1, "f0_hz": 3600, "f0_tol_hz": 500,
-   "capacitance_pf": 25000, "max_input_vpp": 30,
-   "datasheet": "https://puiaudio.com/file/specs-AB2036B.pdf",
-   "stock": {"Digi-Key": 200},
-   "why": "Same family, same 20 mm brass plate, 0.23 mm instead of 0.215, "
-          "25 nF instead of 20 nF. Its drawing publishes the dimensions as "
-          "extractable text (n20 +/-0.1, 0.23 +/-0.03, ceramic 0.1 +/-0.02), "
-          "which makes it the better reference for the bond-pad and "
-          "shell-cavity geometry even where the -2 is the part fitted.",
+   "mpn": "AB2036B-2", "manufacturer": "PUI Audio (Same Sky)",
+   "diameter_mm": 20.0, "thickness_mm": 0.215, "thickness_tol": "+/-10%",
+   "ceramic_layer_mm": 0.1, "f0_hz": 3600, "f0_tol_hz": 600,
+   "capacitance_pf": 20000, "max_input_vpp": 30,
+   "resonant_impedance_ohm_max": 500,
+   "datasheet": "https://puiaudio.com/file/specs-AB2036B-2.pdf",
+   "datasheet_rev": "A, 2024-03-06, fetched 2026-09-04 (HTTP 200, 159,631 bytes)",
+   "stock": {"Digi-Key": 390, "Mouser": 400},
+   "usd_per_unit": {"10": 0.3620, "100": 0.2840, "1000": 0.2200, "10000": 0.1860},
+   "why": "A SECOND SOURCE THIS LANE FOUND THAT D20's NINE CANDIDATES DID NOT "
+          "INCLUDE, and it is 40% cheaper at every break - $0.220 against "
+          "$0.369 at a thousand, $0.186 against $0.315 at ten thousand, which "
+          "is $0.149 a unit at a thousand. Ø20.0 mm brass, 0.215 mm +/-10%, "
+          "3,600 +/-600 Hz, 20 nF +/-30%, 30 Vp-p, bare two-pad, all read off "
+          "the vendor's own datasheet and its dimensioned drawing. D20 rejected "
+          "the PUI AB2036AF for having an alloy plate and a three-terminal "
+          "feedback electrode; the -2 is a different part - brass plate, two "
+          "terminals, externally driven - and was not among the nine.",
+   "why_not_the_pick": "D20's grounds for CEB-2021 hold and this lane did not "
+          "overturn them: 0.21 mm against 0.215 is 0.005 mm thinner into a "
+          "stack that has already spent 0.372 mm of D17's 0.542 mm of slack, "
+          "and authorized stock is 5,958 pieces against 790 - 7.5x deeper, on "
+          "a line with no third source. The AB2036B-2's ≤500 Ω resonant "
+          "impedance against the CEB-2021's ≤300 Ω also makes R9's 100 Ω a "
+          "20% divider at resonance rather than 33%, which is lane G's to "
+          "weigh. The cheaper part is recorded, priced and dated so whoever "
+          "owns D20 can decide; this lane does not reopen a landed decision.",
  },
  "why_not_the_specified_part": [
    "**The Murata 7BB-20-3 is end-of-life.** Four authorized channels agree, "
@@ -437,7 +469,8 @@ SOUNDER = {
    "returns ZERO rows from the JLCPCB assembly catalogue endpoint and from "
    "LCSC. Only 7BB-20-6C (C3812347), 7BB-20-6L0 (C3812354) and 7BB-20-6CL0 "
    "(C3812422) exist there, all at stockCount 0, and C3812347's LCSC page now "
-   "returns HTTP 404.",
+   "returns HTTP 404 - which is D20's point that JLCPCB's library retains "
+   "delisted parts, confirmed from the other end.",
    "**The quantity that exists is broker stock.** Win Source lists 23,886 and "
    "several unauthorized brokers list 3,000-36,000 pieces of a part Digi-Key "
    "says is no longer manufactured. Designing that in means single-sourcing a "
@@ -454,44 +487,57 @@ SOUNDER = {
    "neither confirms nor clears the series.",
  ],
  "why_this_replacement": [
-   "It is a **specification-for-specification match to what D11a asked for**, "
-   "not an approximation: 20.0 mm brass plate, **0.215 mm total against the "
-   "7BB-20-3's 0.22 mm**, 3,600 Hz +/-600, 20 nF +/-30%, <=500 ohm, 30 Vp-p, "
-   "-20 to +70 C. Every one of those numbers is read off the vendor's own "
-   "datasheet, and the thicknesses off its dimensioned drawing.",
-   "**It is bare.** Two pads, no wires, no housing - which is what an "
-   "anti-phase GPIO pair bonded to a shell needs, and what D17 requires: at "
-   "0.215 mm +10% = 0.237 mm worst case it uses a sixth of the ~1.5 mm above "
-   "the module, and nothing about it is over 3.5 mm.",
+   "**D20 chose it and this lane re-derived the numbers rather than repeating "
+   "them.** Every figure in the table above is read off Same Sky's own "
+   "datasheet rev 1.01 fetched on 2026-09-04, and the thicknesses off its "
+   "mechanical drawing rendered as an image, because the drawing is not "
+   "extractable text. D20's headline numbers - Ø20 x 0.21 mm, brass, 3.6 kHz "
+   "(3.1-4.1), 21 nF, <=300 ohm, 3,756 in stock - all hold.",
+   "**It is bare and it is externally driven.** Two terminals, no wires, no "
+   "housing, which is what D11a's anti-phase GPIO pair needs and what D17's "
+   "flat shell interior requires. At 0.21 +0.03 = 0.24 mm worst case it uses "
+   "a sixth of the ~1.5 mm above the module, and nothing about it approaches "
+   "the 3.5 mm the mechanical lane measured as the hard limit.",
    "**The drive D11a specified still works, on the vendor's numbers.** At "
-   "20 nF and 3,600 Hz, two pins swinging 6 V peak-to-peak draw "
-   "I = 2*pi*f*C*V = 2*pi*3600*20e-9*3 = **1.36 mA peak**, inside nRF54L "
-   "high-drive GPIO. R9's 100 ohms is 4.5% of the element's 2.21 kohm "
-   "reactance at f0 and 20% of its <=500 ohm resonant impedance - the "
-   "series resistor is correctly sized and stays on the bill of materials.",
-   "**It is stocked at two authorized distributors today** - Digi-Key 390, "
-   "Mouser 400 - so first articles can be built this week, and it is quoted "
-   "in production quantity rather than by RFQ.",
+   "21 nF typical and 3,600 Hz, two pins swinging 6 V peak-to-peak draw "
+   "I = 2*pi*f*C*V = 2*pi*3600*21e-9*3 = **1.43 mA peak**, inside nRF54L "
+   "high-drive GPIO. At the 26.25 nF maximum it is 1.78 mA, still inside. So "
+   "R9 stays on the bill of materials and D11a's no-amplifier conclusion "
+   "survives the part change.",
+   "**R9's value is worth re-checking against this part, though.** The "
+   "CEB-2021's resonant impedance is <=300 ohm, not the <=500 ohm of the "
+   "Murata class D11a assumed. R9's 100 ohms is 4.5% of the element's 2.1 "
+   "kohm reactance off resonance, but **at resonance it is up to a third of "
+   "the load** and takes a third of the drive voltage with it. That is a "
+   "loudness question for lane G's meter, not a sourcing one, but it is a "
+   "number that changed when the part did.",
  ],
  "cautions": [
-   "**Digi-Key's own description string for this part is wrong.** It reads "
-   "*BUZZER ELEMENT STD 6.3 KHZ 20MM*. The PUI datasheet says 3,600 Hz. Do "
-   "not let a buyer reject the part on the catalogue line.",
-   "**Do not substitute the CUI / Same Sky CEB-20D64 or CEB-20FD64** despite "
-   "their far deeper stock (6,486 and 6,023 at Digi-Key). They are 0.43 mm "
-   "thick, they arrive with lead wires already attached whose solder joints "
-   "stack on top of the height budget, and at 10-13 nF they present about "
-   "half the capacitive load the GPIO drive was sized around.",
+   "**Order `CEB-2021`, not `CEB-2021-L100`.** The L100 is the same element "
+   "with lead wires already attached: a different order code, roughly 45% "
+   "dearer, and solder joints that stack on top of a height budget with "
+   "0.17 mm of slack left. Digi-Key holds 4,261 of the leaded part and 3,756 "
+   "of the bare one, so a buyer searching the family name will meet the wrong "
+   "one first.",
+   "**Do not substitute the CEB-20D64 / CEB-20FD64** despite their far deeper "
+   "stock (6,486 and 6,023 at Digi-Key). They are 0.43 mm thick, they arrive "
+   "with lead wires, and at 10-13 nF they present half the capacitive load "
+   "the GPIO drive was sized around. D20's physical finding is why: at Ø20 mm "
+   "thin and high-frequency are mutually exclusive, and every 6.3-7.2 kHz "
+   "element across three manufacturers measures 0.42-0.43 mm.",
    "**Skip LCSC and JLCPCB for this line entirely.** Of the 129 parts in "
-   "JLCPCB's whole *Buzzer Plates* category, exactly one has stock (Dragonstate "
-   "HE-2739E-C, 81 pieces, no datasheet published, and 27 mm). All 22 of the "
-   "20 mm bare benders in that catalogue are at zero.",
-   "**The loudness is still unmeasured and D11a says so.** A 3,600 Hz free-air "
-   "element bonded to a stiff shell moves upward in loaded resonance; whether "
-   "that lands 60 Phon at 25 cm is lane G's calibrated meter to answer, not "
-   "this lane's, and nothing here converts a datasheet into a decibel.",
+   "JLCPCB's whole *Buzzer Plates* category, exactly one has stock "
+   "(Dragonstate HE-2739E-C, 81 pieces, no datasheet published, and 27 mm). "
+   "All 22 of the 20 mm bare benders in that catalogue are at zero. The "
+   "Chinese factory buys this line through Digi-Key, Mouser or Same Sky "
+   "direct, and it is a hand-assembly step either way.",
+   "**The loudness is still unmeasured and D11a, D20 and this lane all say "
+   "so.** A 3,600 Hz free-air element bonded to a stiff shell moves upward in "
+   "loaded resonance; whether that lands 60 Phon at 25 cm is lane G's "
+   "calibrated meter to answer. Nothing here converts a datasheet into a "
+   "decibel.",
  ],
- "usd_per_unit": {"10": 0.3620, "100": 0.2840, "1000": 0.2200, "10000": 0.1860},
+ "usd_per_unit": {"10": 0.5960, "100": 0.4580, "1000": 0.3690, "10000": 0.3150},
 }
 
 # Parts the product needs that the pick-and-place machine never touches.
