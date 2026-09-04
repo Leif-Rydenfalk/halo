@@ -193,6 +193,107 @@ CASES = [
 ]
 
 
+# ----------------------------------------------- BOM identity mutations ------
+# check_bom_identity's assertions are proved the same way: take the BOM, make one
+# line specifically wrong, require the named check to go red. The control here is
+# a HAND-BUILT CORRECT BOM, not the shipped one -- the shipped one already fails
+# 40 assertions, and a check proven only on a broken artifact is not proven.
+GOOD_BOM = """Comment,Designator,Footprint,LCSC Part #,Quantity,Value
+100pF,C1,C_0402_1005Metric,C1546,1,100pF
+20k,R1,R_0402_1005Metric,C25765,1,20k
+10uF,C2,C_0402_1005Metric,C15525,1,10uF
+100R,R2,R_0402_1005Metric,C25076,1,100R
+"""
+
+
+def b_unknown_code(t):
+    return t.replace("C1546", "C999999999"), "the LCSC code names a part not in the catalogue"
+
+
+def b_wrong_class(t):
+    return t.replace("100pF,C1,C_0402_1005Metric,C1546",
+                     "100pF,C1,C_0402_1005Metric,C2827888"), \
+        "a capacitor line is given C2827888, a 3.5 mm screw terminal block"
+
+
+def b_wrong_value(t):
+    return t.replace(",C1546,1,100pF", ",C1546,1,100nF"), \
+        "a 100 pF part is ordered on a line whose value says 100 nF"
+
+
+def b_wrong_package(t):
+    return t.replace("C1,C_0402_1005Metric", "C1,C_0201_0603Metric"), \
+        "an 0201 land pattern is given an 0402 part"
+
+
+def b_code_two_values(t):
+    return t + "1nF,C3,C_0402_1005Metric,C1546,1,1nF\n", \
+        "the same LCSC code is ordered for two different values"
+
+
+def b_no_part(t):
+    return t.replace(",C1546,1,100pF", ",,1,100pF"), \
+        "a fitted line names no LCSC code at all"
+
+
+BOM_CASES = [
+    ("part_resolves",      b_unknown_code,   "CANNOT DETERMINE"),
+    ("class_matches",      b_wrong_class,    "FAIL"),
+    ("value_matches",      b_wrong_value,    "FAIL"),
+    ("package_matches",    b_wrong_package,  "FAIL"),
+    ("one_code_one_value", b_code_two_values, "FAIL"),
+    ("line_has_a_part",    b_no_part,        "CANNOT DETERMINE"),
+]
+
+BOMCHECK = HALO / "tools" / "check_bom_identity.py"
+
+
+def run_bom(path):
+    out = pathlib.Path(tempfile.mkdtemp()) / "b.json"
+    subprocess.run([sys.executable, str(BOMCHECK), str(path), "--json", str(out), "--quiet"],
+                   capture_output=True, text=True)
+    try:
+        return json.loads(out.read_text())
+    except Exception:
+        return None
+
+
+def bom_verdicts(res, name):
+    """Every verdict this assertion produced across the BOM's lines."""
+    if not res:
+        return []
+    return [c["verdict"] for r in res["rows"] for c in r["checks"] if c["name"] == name]
+
+
+def prove_bom(results):
+    d = pathlib.Path(tempfile.mkdtemp(prefix="halo-bom-"))
+    good = d / "good.csv"
+    good.write_text(GOOD_BOM)
+    ctl = run_bom(good)
+    print("# prove_checks — BOM identity, 6 assertions on a hand-built correct BOM")
+    if ctl is None or ctl["verdict"] != "PASS":
+        bad = [(r["designator"], c["name"], c["verdict"], c["why"])
+               for r in (ctl or {}).get("rows", []) for c in r["checks"]
+               if c["verdict"] != "PASS"]
+        print(f"  CANNOT DETERMINE: the control BOM does not pass clean: {bad}")
+        results.append({"suite": "bom", "proved": False,
+                        "why": f"control BOM verdict is {(ctl or {}).get('verdict')}, not PASS"})
+        return 0, len(BOM_CASES)
+    proved = 0
+    for name, mutate, want in BOM_CASES:
+        text, what = mutate(GOOD_BOM)
+        f = d / f"{name}.csv"
+        f.write_text(text)
+        got = bom_verdicts(run_bom(f), name)
+        ok = want in got
+        proved += ok
+        results.append({"suite": "bom", "assertion": name, "mutation": what,
+                        "expected": want, "verdicts_seen": got, "proved": ok})
+        print(f"  {'FIRED' if ok else 'SILENT':<6}{name:<22} {what}"
+              + ("" if ok else f"   -> saw {got}, expected {want}"))
+    return proved, len(BOM_CASES) - proved
+
+
 # ------------------------------------------------------------------ harness --
 def rebuild_zip(fabset):
     """Rewrite the fab zip from what is on disk, so F10's control is honest.
@@ -317,12 +418,16 @@ def main():
     if not a.keep:
         shutil.rmtree(base, ignore_errors=True)
 
+    bp, bu = prove_bom(results)
+    proved += bp
+    unproven += bu
+
     out = {
         "$halo": 1,
         "tool": "tools/prove_checks.py",
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "target": "tools/check_fabset.py",
-        "assertions": len(CASES),
+        "assertions": len(CASES) + len(BOM_CASES),
         "proved_to_fire": proved,
         "unproven": unproven,
         "verdict": "PASS" if unproven == 0 else "FAIL",
@@ -331,7 +436,8 @@ def main():
     if a.json:
         pathlib.Path(a.json).parent.mkdir(parents=True, exist_ok=True)
         pathlib.Path(a.json).write_text(json.dumps(out, indent=1) + "\n")
-    print(f"{out['verdict']}: {proved} of {len(CASES)} assertions proved to fire")
+    print(f"{out['verdict']}: {proved} of {len(CASES) + len(BOM_CASES)} "
+          f"assertions proved to fire")
     return 0 if unproven == 0 else 1
 
 
