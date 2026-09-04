@@ -299,8 +299,8 @@
    "d": "Every result in this pack comes from a simulator or an emulator. Eight claims are tracked in docs/VERIFICATION-DEBT.md with the measurement that would close each; four of them need hardware."
   },
   {
-   "r": "The chosen sounder may not be buyable",
-   "d": "The bare Murata 7BB-20-3 piezo bender that decision D11a selected returns CANNOT DETERMINE at every quantity — it is in neither the parts snapshot nor the factory's live catalogue. The acoustic reasoning behind choosing a bare bender still holds, but the specific part must be re-sourced or consigned. This is a question for the factory, who buy in a market our catalogue does not see."
+   "r": "The sounder part is resolved (was: may not be buyable)",
+   "d": "Closed 2026-09-04. The Murata part D11a chose is obsolete with zero stock and delisted from LCSC. Replaced by Same Sky CEB-2021 at 0.21 mm, thinner than assumed so the stack is unaffected, 3,756 in stock, with two documented alternates. See DECISIONS.md D20. What remains open is not the part but its loudness, which only a measurement settles."
   },
   {
    "r": "Every gerber export had been failing silently",

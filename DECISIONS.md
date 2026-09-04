@@ -417,3 +417,53 @@ meaning UNREGISTERED rather than borrowing Google's `0x02`, which would be a
 false claim about who we are. `check-dult` therefore reports 16 rows passing and
 one CANNOT DETERMINE, and its overall verdict is deliberately exit 2 rather than
 a pass.
+
+## D20 — the sounder part is Same Sky CEB-2021; the Murata is obsolete (2026-09-04)
+### Supersedes the part choice in D11a; the acoustic reasoning in D11a stands unchanged
+
+**D11a's part cannot be bought.** The Murata 7BB-20-3 is dimensionally perfect —
+Ø20 mm brass, 0.22 mm, 3.6 kHz, 20 nF — and Digi-Key lists it **obsolete with
+zero stock**. It is not on LCSC at all. Four related Murata parts were **delisted
+from LCSC**, and JLCPCB's parts library still lists them at zero stock, which is
+a stale catalogue rather than availability. Sourcing lane verified nine candidates
+against manufacturer mechanical drawings rather than listing titles, on 2026-09-04.
+
+**The physical finding that constrains the choice.** At Ø20 mm, **thin and
+high-frequency are mutually exclusive**. Every 6.3 to 7.2 kHz element checked —
+across Murata, PUI and Same Sky — measures **0.42 to 0.43 mm**. Elements in our
+0.15 to 0.30 mm window all land at **3.6 to 4.2 kHz**. The stack decides the
+frequency, and the stack has already spent 0.372 mm of D17's 0.542 mm of slack
+on a part-height conflict, so thickness is the binding constraint.
+
+**Decision: Same Sky CEB-2021** — Ø20.0 × **0.21 mm**, brass, 3.6 kHz
+(3.1–4.1), 21 nF, ≤300 Ω, **3,756 in stock**, $0.62 at ten and **$0.299 at eight
+thousand**. It is chosen over the alternatives because at 0.21 mm it is
+**thinner than the 0.22 mm D11a assumed**, so it costs the stack nothing and
+carries no risk to a budget that is already tight.
+
+**Alternates, in order.** PUI **AB2040B** — 0.28 mm, 4.0 kHz, 25 nF, **14,125 in
+stock**, the deepest supply and slightly better placed for perceived loudness,
+but it spends 0.06 mm of stack. And **FUET FT-20T-4.0A1** (LCSC C48542877) at
+about **$0.05 per piece at ten thousand**, six to ten times cheaper than the
+Western parts — but LCSC holds only 75 pieces, so a production run means ordering
+direct from the manufacturer and the LCSC listing is sourcing proof, not a
+supply channel.
+
+**Two parts rejected for a reason worth recording:** PUI AB2036AF has an alloy
+rather than brass plate **and a feedback electrode**, making it a three-terminal
+self-drive element; and FUET FT-20T-4.2B1-C25 lists a second capacitance, which
+strongly implies the same. Our drive is two GPIO in anti-phase (D11a), so a
+three-terminal feedback element is the wrong topology and would need an approval
+drawing before anyone committed to it.
+
+**Frequency note for the loudness question.** Human hearing is most sensitive
+around 3 to 4 kHz, so a 3.6 kHz element is well placed for the phon measurement
+the anti-stalking standard demands, despite being the low end of what the
+thickness allows. That remains a measurement, not an argument — see the
+hardware-required section of the verification debt.
+
+**Sourcing caution recorded for every lane:** JLCPCB's parts search works
+unauthenticated and is the only usable free-text search over the LCSC catalogue,
+but its stock figures are JLC assembly stock and it **retains delisted parts**.
+Always re-verify a part number against LCSC's own detail endpoint before trusting
+it.
