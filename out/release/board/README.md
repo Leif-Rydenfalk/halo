@@ -377,11 +377,22 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
    vias, freerouting timed out three times). The power structures, the plane
    stitching, the NFC winding and the antenna copper are drawn, and the 49
    vias the drill files carry are real. **Point-to-point completion is not
-   done, and there is no autorouter on this machine to do it** — freerouting
-   is a Java program and this Mac has no Java runtime (`java -version`:
-   *"Unable to locate a Java Runtime"*, measured 2026-09-05; installing one
-   is lane T1's item). **Do not fabricate this revision.** The Gerbers in
-   this pack describe the board as it stands, honestly and exactly.
+   done.**
+
+   **CORRECTION, 2026-09-05:** an earlier version of this paragraph said
+   *"there is no autorouter on this machine to do it"*, citing `java
+   -version` failing and a `find` over `~/dev/ce-workshop` returning
+   nothing. Both outputs were real and both conclusions were wrong.
+   `/usr/bin/java` is Apple's stub; Homebrew's openjdk is keg-only and
+   answers **openjdk 26.0.2.1** at `/opt/homebrew/opt/openjdk/bin/java`;
+   and the jar is not workshop source, so it is not in the workshop tree —
+   it is at `~/.local/share/freerouting/freerouting-2.3.0.jar`, exactly
+   where `cepcb/route.py`'s own `JAR_CANDIDATES` says to look.
+   **`ce-pcb/bin/route --doctor` exits 0** and prints
+   `jar runs -> Freerouting v2.3.0 (build-date: 2026-08-07)`. The lesson is
+   in `docs/TOOLS-THAT-LIE.md`. **Do not fabricate this revision.** The
+   Gerbers in this pack describe the board as it stands, honestly and
+   exactly.
 
    **The three DRC violations are all `track_dangling` warnings — there are
    zero errors — and each one is a named track end, not a mystery:**
