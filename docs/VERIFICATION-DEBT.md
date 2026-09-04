@@ -364,6 +364,15 @@ measurement of a board we are not building.** Not because the solver is wrong â€
 because the model is missing the largest piece of passive copper within a
 millimetre of the radiator.
 
+**And the coil is not the only passive copper the model is missing.** The new
+`antenna-arm-shadow` keep-out found a second one on its first run: **BT1.2, the
+cell's negative contact land**, GND, on B.Cu at (23.046, 7.200) â€” directly under
+the arm. That land is where a CR2032's rim actually touches, so it is
+mechanical and neither this lane's nor the router's to move. It is excluded
+from the keep-out for that reason and recorded here instead, because it belongs
+to the same question: **`passive_copper: []` is missing at least two large
+grounded conductors within a millimetre of the radiator.**
+
 **What would settle it**, in order:
 
 1. Re-solve `halo-rev-a-2g4` with the real coil as `passive_copper`, on the
