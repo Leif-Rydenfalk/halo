@@ -780,3 +780,58 @@ laminate rather than lateral.
 anything on this board, and the electromagnetic re-solve is owed with the real
 passive copper present. Until then the antenna's numbers describe a board we are
 not building.
+
+## D27 — nine meander teeth, and the antenna model is missing more than the coil (2026-09-05)
+
+**The coil is off the arm.** The overlap D26a recorded is closed, and the way it
+closed is worth keeping because the obvious levers were all too small.
+
+The coil is trapped between the cell can at R10.00 — copper over steel is a
+shorted turn — and the arm's inner edge. At four meander teeth the arm needs
+0.9379 mm of depth, which puts that edge at R10.6621 and leaves the coil
+**0.6621 mm for the 0.782 mm it needs**. It had been taking the 0.4197 mm
+difference by lying under the arm. Every other lever measured too small: moving
+the arm outward buys 0.050 mm to the notch cap, narrowing it from 0.60 to
+0.40 mm buys 0.100, thinning the coil trace to 0.127 buys 0.120. Only cutting
+turns closes it, and that costs inductance the NFC tank cannot spare.
+
+**The free variable nobody had swept was the tooth count** — free because the
+bisection holds the conductor at exactly a quarter wavelength whatever the count:
+
+| teeth | arm inner radius | gap to coil |
+|---|---|---|
+| 4 | 10.6621 | **−0.1197 — overlapping** |
+| 6 | 10.9747 | +0.1929 |
+| 8 | 11.1386 | +0.3567 |
+| **9** | **11.1977** | **+0.4158 — shipped** |
+
+**Nine, not eight.** Eight measured **0.3096 mm** on the real drawn copper, which
+is 9.6 µm above the 0.30 mm floor — inside JLCPCB's own ±20 % track-width
+tolerance, and therefore **not a margin at all**. Nine measures **0.3627 mm**.
+Conductor drawn 24.49100 mm, error −0.00000.
+
+A check on the tooth slot fraction caught a defect before it shipped: at nine
+teeth with the old divisor, the two walls of one tooth would have fallen under
+the 0.127 mm process minimum and **the element would have shorted to itself**.
+
+**Stated honestly: this is not free RF.** A finer meander couples to itself more.
+That cost is real and unmeasured, exactly as the four-tooth version's was.
+
+**The keep-out now makes the geometry impossible rather than merely graded**, and
+it needed no net exception — because the element is on F.Cu alone. On the inner
+layers and the bottom it has no copper at all, so a keep-out there can forbid
+everything without forbidding the antenna. And those three layers are precisely
+where the 668 MHz comes from, since the coupling is vertical through 0.60 mm of
+laminate.
+
+**On its first run it found something else: the cell's negative contact land, on
+the bottom layer directly under the arm.** That is where a CR2032's rim touches,
+so it is mechanical and cannot move. It was excluded as a pad and recorded rather
+than left permanently red — because a rule that is always red is a rule people
+learn to skip, which is how the original blanket exemption survived.
+
+**The consequence for the electromagnetic model is the real finding:** the
+antenna case's empty passive-copper list is missing **at least two** large
+grounded conductors within a millimetre of the radiator — the coil *and* the
+battery contact. Any re-solve must carry both, or it will again describe a board
+we are not building.
