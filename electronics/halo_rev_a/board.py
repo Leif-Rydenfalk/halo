@@ -733,6 +733,145 @@ b.track("NFC2", [at_r(r, a) for r, a in _sp[_mid + GAP_PTS:]],
         width=fpg.NFC_W, layer="B.Cu")
 
 # ==========================================================================
+# 6c. VIAS — because a plane nobody stitched is not a plane
+# ==========================================================================
+# THIS IS WHY THE ROUTER COULD NOT FINISH. The Specctra export hands
+# freerouting every net including GND (39 pins) and VDD (24 pins), and
+# freerouting does not know those are poured planes - it sees 63 pin-to-pin
+# connections to route as traces, on a Ø26 mm disc, and thrashes. Three runs
+# timed out at 900, 3300 and 2400 seconds.
+#
+# They are not connections a router should make. A GND pad on F.Cu is already
+# joined to the F.Cu pour by the fill; what is missing is the copper tying
+# F.Cu's pour to In1's plane to B.Cu's pour. That is a via, and it is the
+# designer's job, not the router's. VDD is worse: the top-side pour is GND,
+# so every VDD pad on F.Cu is an island until a via reaches In2.
+#
+# So the planes are stitched HERE, before the DSN is written, and GND and VDD
+# come out of the routing problem entirely. It also kills the isolated_copper
+# violations, which were the same fact wearing a different name: an inner
+# plane with no via reaching it is copper connected to nothing.
+import pcbnew as _pcbnew                                          # noqa: E402
+
+VIA_D, VIA_DRILL = 0.45, 0.25
+
+
+def _obstacles():
+    """Everything a via must not land on.
+
+    PADS AND TRACKS. The first version knew only about pads, so the widened
+    search happily dropped vias on top of the antenna element and the NFC
+    winding: 32 clearance, 20 hole-clearance and 11 hole-to-hole violations
+    appeared the moment the search got good enough to find those spaces. An
+    obstacle model that omits a class of obstacle does not prevent
+    collisions, it just moves them somewhere the search likes better.
+    """
+    out = []
+    for ref, fp in b.refs.items():
+        for pad in fp.Pads():
+            pos = pad.GetPosition()
+            sz = pad.GetSize()
+            out.append((pos.x / 1e6, 26.0 - pos.y / 1e6,
+                        math.hypot(sz.x, sz.y) / 2e6))
+    for t in b._pcb.GetTracks():
+        if t.Type() != _pcbnew.PCB_TRACE_T:
+            continue
+        w = t.GetWidth() / 2e6
+        a = (t.GetStart().x / 1e6, 26.0 - t.GetStart().y / 1e6)
+        z = (t.GetEnd().x / 1e6, 26.0 - t.GetEnd().y / 1e6)
+        n = max(1, int(math.hypot(z[0] - a[0], z[1] - a[1]) / 0.25))
+        for k in range(n + 1):
+            f = k / float(n)
+            out.append((a[0] + (z[0] - a[0]) * f,
+                        a[1] + (z[1] - a[1]) * f, w))
+    return out
+
+
+def stitch(net, layers, want, pads_of_net=True, ring_r=None):
+    """Put vias on `net`, next to its pads and/or on a ring, where they fit.
+
+    Returns the list actually placed. A via that will not fit is NOT placed
+    and NOT silently dropped - the count is reported.
+    """
+    obs = _obstacles()
+    placed = []
+    cands = []          # (x, y, origin_pad_xy_or_None, layer)
+    if pads_of_net:
+        for ref, fp in b.refs.items():
+            for pad in fp.Pads():
+                if pad.GetNetname() != net:
+                    continue
+                px, py = pad.GetPosition().x / 1e6, 26.0 - pad.GetPosition().y / 1e6
+                # Several RINGS around each pad, not one. The first version
+                # tried a single ring at 0.62 mm and placed ZERO VDD vias -
+                # on a board this dense every one of those twelve points was
+                # already occupied, and a search that only looks in one place
+                # reports "does not fit" when it means "did not look".
+                lay = "B.Cu" if fp.IsFlipped() else "F.Cu"
+                for dist in (0.58, 0.72, 0.88, 1.05, 1.25):
+                    for k in range(24):
+                        a = math.radians(k * 15.0)
+                        cands.append((px + dist * math.cos(a),
+                                      py + dist * math.sin(a)),)
+                        cands[-1] = (cands[-1][0], cands[-1][1],
+                                     (px, py), lay)
+    if ring_r:
+        for rr in ring_r:
+            n = max(6, int(2 * math.pi * rr / 1.8))
+            for k in range(n):
+                a = 2 * math.pi * k / n
+                cands.append((CX + rr * math.cos(a), CY + rr * math.sin(a),
+                              None, None))
+    for x, y, origin, lay in cands:
+        if len(placed) >= want:
+            break
+        if math.hypot(x - CX, y - CY) > R - 0.9:
+            continue
+        # 0.30 mm, not 0.15. JLCPCB's via-hole-to-track is 0.20 mm and its
+        # hole-to-hole is 0.20 mm edge to edge; 0.30 covers both with margin
+        # for the fact that this model treats every obstacle as a disc.
+        clear = VIA_D / 2.0 + 0.30
+        if any(math.hypot(x - ox, y - oy) < (clear + orr)
+               for ox, oy, orr in obs):
+            continue
+        if any(math.hypot(x - vx, y - vy) < VIA_D + 0.45
+               for vx, vy in placed):
+            continue
+        # AND CHECK THE STUB'S PATH, not just where the via lands. The via
+        # position was tested and the 1.25 mm track running to it was not,
+        # so the longest stubs drove straight across U1 pad 33, C15, C17 and
+        # C5 - one short and four clearance violations, every one of them on
+        # the wire rather than the hole. A fanout is copper too.
+        if origin is not None:
+            ox0, oy0 = origin
+            steps = max(2, int(math.hypot(x - ox0, y - oy0) / 0.1))
+            hit = False
+            for k in range(1, steps):
+                f = k / float(steps)
+                sx, sy = ox0 + (x - ox0) * f, oy0 + (y - oy0) * f
+                if math.hypot(sx - ox0, sy - oy0) < 0.35:
+                    continue          # still inside its own pad
+                if any(math.hypot(sx - bx, sy - by) < (0.10 + 0.14 + br)
+                       for bx, by, br in obs):
+                    hit = True
+                    break
+            if hit:
+                continue
+        b.via(net, (x, y), drill=VIA_DRILL, size=VIA_D, layers=layers)
+        # AND A STUB FROM THE PAD TO IT. A via near a VDD pad is not
+        # connected to that pad: on F.Cu and B.Cu the surrounding pour is
+        # GND, so the only layer the via reaches is the In2 VDD plane and
+        # KiCad reports all 26 of them as DANGLING VIAS - which they were.
+        # The short track is the connection, and it is the designer's to
+        # draw because it is a fanout, not a route.
+        if origin is not None:
+            b.track(net, [origin, (x, y)], width=0.20, layer=lay)
+        placed.append((x, y))
+        obs.append((x, y, VIA_D / 2.0))
+    return placed
+
+
+# ==========================================================================
 # 7. THE PLANES
 # ==========================================================================
 # THE POURS ARE INSET FROM THE EDGE. Handed the board outline, KiCad fills
@@ -765,6 +904,13 @@ b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
 
 
 
+# -- stitch the planes now that both nets exist ---------------------------
+VIAS_VDD = stitch("VDD", ("F.Cu", "B.Cu"), want=26, pads_of_net=True,
+                  ring_r=(4.3, 6.1, 7.9))
+VIAS_GND = stitch("GND", ("F.Cu", "B.Cu"), want=40, pads_of_net=True,
+                  ring_r=(5.2, 7.0, 8.8))
+
+
 # SOLID PAD CONNECTIONS, not thermal spokes. KiCad's default is four spokes
 # per pad, and on a 0201 land 0.40 mm across there is no room for a spoke
 # wider than the zone's own minimum - which KiCad reports, correctly, as a
@@ -777,7 +923,6 @@ b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
 # nearly three times too thick for a stack that has 1.5 mm of headroom in
 # total. Found by reading ce-fab's DFM output, which prints the thickness it
 # measured - which is exactly what that line is for.
-import pcbnew as _pcbnew
 b._pcb.GetDesignSettings().SetBoardThickness(int(round(T_PCB * 1e6)))
 
 for _z in b._pcb.Zones():
@@ -1058,6 +1203,11 @@ def report():
                 paste += 1
             elif not pad.GetNetname():
                 real.append("%s.%s" % (fp.GetReference(), pad.GetNumber()))
+    print("\n--- plane stitching ---")
+    print("  VDD vias %d   GND vias %d   (a plane nobody stitched is not a "
+          "plane, and the router was being asked to route 63 pins that the "
+          "copper should already join)" % (len(VIAS_VDD), len(VIAS_GND)))
+
     print("\n--- schematic fields carried onto the board ---")
     print("  %d values and %d fields copied across %d parts"
           % (_valued, _fielded, len(_sch.parts)))
