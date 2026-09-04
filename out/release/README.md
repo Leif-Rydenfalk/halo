@@ -12,7 +12,7 @@ Generated 2026-09-04 from `spec/release-pack.json` by `tools/gen_release_pack.py
 | 6 | Simulation evidence | **READY** |
 | 7 | Firmware, build instructions and a proven advertisement | **READY** |
 | 8 | Mechanical files and assembly instructions | **READY** |
-| 9 | Production test plan | **NOT STARTED** |
+| 9 | Production test plan | **PARTIAL** |
 | 10 | Compliance dossier | **PARTIAL** |
 | 11 | Cost roll-up against Apple's retail price | **PARTIAL** |
 

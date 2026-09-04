@@ -85,10 +85,10 @@
    "n": 9,
    "name": "Production test plan",
    "name_zh": "产线测试计划",
-   "status": "NOT STARTED",
-   "reason": "What every unit is measured for — current draw, advertisement seen, sound level, NFC read — with limits and fixtures. This is a natural first parcel for the factory's own test engineers, since they know their line.",
-   "evidence": "—",
-   "command": "—"
+   "status": "PARTIAL",
+   "reason": "Written, and generated from data rather than typed: 31 tests across three stations, 99 limits, every one naming the datasheet section, standard, decision or in-repo measurement it came from. The generator refuses to write the plan unless every test carries the sentence 'this could report PASS while ___ is badly wrong' and the assert that closes it. It is PARTIAL and not READY for one honest reason: 15 of the 87 gate limits have no source yet and say so with the measurement that would settle each. The largest is the production acoustic limit, because DULT's 60 Phon is a loudness level under ISO 532-1 and a sound level meter does not measure phon; that number comes from a golden unit measured in qualification, which the factory can do and we cannot.",
+   "evidence": "docs/TEST-PLAN.md; out/release/TEST-PLAN.html; spec/test-plan.json - 31 tests, 22 on every unit, 19 PASS / 12 CANNOT DETERMINE, 21/99 limits unsourced and each naming its fix; cycle 4.4 min per unit, takt 2.6 min",
+   "command": "python3 tools/gen_test_plan.py ; python3 tools/gen_test_plan.py --selftest"
   },
   {
    "n": 10,
