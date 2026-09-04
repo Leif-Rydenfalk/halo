@@ -3,7 +3,7 @@
  "counts": {
   "PASS": 42,
   "FAIL": 4,
-  "CANNOT DETERMINE": 15
+  "CANNOT DETERMINE": 16
  },
  "allowances_mm": {
   "bottom_over_cell": 0.578,
@@ -21,7 +21,7 @@
   },
   {
    "ref": "AE2",
-   "package": "NetTie-2_SMD_Pad0.5mm",
+   "package": "HALO_NFC_TIE_2",
    "body_mm": null,
    "allow_mm": null,
    "verdict": "CANNOT DETERMINE",
@@ -314,6 +314,14 @@
    "allow_mm": null,
    "verdict": "PASS",
    "where": "no body: solder lands; the bender is on the shell"
+  },
+  {
+   "ref": "M1",
+   "package": "HALO_SERIAL_MARK_1X8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
   },
   {
    "ref": "R1",

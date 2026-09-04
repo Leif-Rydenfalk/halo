@@ -1,0 +1,608 @@
+{
+ "$halo": 1,
+ "tool": "tools/check_lcsc_netlist.py",
+ "generated": "2026-09-04T18:27:47+00:00",
+ "netlist": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.net",
+ "catalogue": "/Users/leifrydenfalk/dev/ce-workshop/ce-fab/data/jlcparts-slim.sqlite3",
+ "snapshot_note": "ce-fab data/jlcparts-slim.sqlite3, built 2026-09-03",
+ "comps": 61,
+ "placed": 61,
+ "distinct_codes": 23,
+ "verdict": "PASS",
+ "counts": {
+  "PASS": 50,
+  "FAIL": 0,
+  "CANNOT DETERMINE": 0
+ },
+ "rows": [
+  {
+   "rule": "no_code_says_why",
+   "refs": [
+    "AE1",
+    "AE2",
+    "C14",
+    "C15",
+    "C16",
+    "C17"
+   ],
+   "value": "2G4 PCB antenna",
+   "verdict": "PASS",
+   "why": "no code, and the line says why on its face: 2G4 PCB antenna"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C9",
+    "C10",
+    "C11",
+    "C12"
+   ],
+   "lcsc": "C15525",
+   "catalogue_mpn": "CL05A106MQ5NUNC",
+   "sheet_mpn": "CL05A106MQ5NUNC",
+   "verdict": "PASS",
+   "why": "C15525 is CL05A106MQ5NUNC; the sheet says CL05A106MQ5NUNC"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C9",
+    "C10",
+    "C11",
+    "C12"
+   ],
+   "lcsc": "C15525",
+   "catalogue_package": "0402",
+   "footprint": "Capacitor_SMD:C_0402_1005Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0402_1005Metric needs 0402; C15525 is 0402"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C24",
+    "C25"
+   ],
+   "lcsc": "C161371",
+   "catalogue_mpn": "GRM0335C1E102JA01D",
+   "sheet_mpn": "GRM0335C1E102JA01D",
+   "verdict": "PASS",
+   "why": "C161371 is GRM0335C1E102JA01D; the sheet says GRM0335C1E102JA01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C24",
+    "C25"
+   ],
+   "lcsc": "C161371",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C161371 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C7"
+   ],
+   "lcsc": "C161479",
+   "catalogue_mpn": "GRM033R71A222KA01D",
+   "sheet_mpn": "GRM033R71A222KA01D",
+   "verdict": "PASS",
+   "why": "C161479 is GRM033R71A222KA01D; the sheet says GRM033R71A222KA01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C7"
+   ],
+   "lcsc": "C161479",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C161479 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C23"
+   ],
+   "lcsc": "C1852416",
+   "catalogue_mpn": "GJM0335C1E3R9WB01D",
+   "sheet_mpn": "GJM0335C1E3R9WB01D",
+   "verdict": "PASS",
+   "why": "C1852416 is GJM0335C1E3R9WB01D; the sheet says GJM0335C1E3R9WB01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C23"
+   ],
+   "lcsc": "C1852416",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C1852416 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "U2"
+   ],
+   "lcsc": "C189624",
+   "catalogue_mpn": "LIS2DW12TR",
+   "sheet_mpn": "LIS2DW12TR",
+   "verdict": "PASS",
+   "why": "C189624 is LIS2DW12TR; the sheet says LIS2DW12TR"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "U2"
+   ],
+   "lcsc": "C189624",
+   "catalogue_package": "LGA-12",
+   "footprint": "Package_LGA:LGA-12_2x2mm_P0.5mm",
+   "verdict": "PASS",
+   "why": "land pattern Package_LGA:LGA-12_2x2mm_P0.5mm needs LGA-12; C189624 is LGA-12"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C20",
+    "C21"
+   ],
+   "lcsc": "C237424",
+   "catalogue_mpn": "GJM0335C1HR50WB01D",
+   "sheet_mpn": "GJM0335C1HR50WB01D",
+   "verdict": "PASS",
+   "why": "C237424 is GJM0335C1HR50WB01D; the sheet says GJM0335C1HR50WB01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C20",
+    "C21"
+   ],
+   "lcsc": "C237424",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C237424 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "R9"
+   ],
+   "lcsc": "C270366",
+   "catalogue_mpn": "0201WMF1000TEE",
+   "sheet_mpn": "0201WMF1000TEE",
+   "verdict": "PASS",
+   "why": "C270366 is 0201WMF1000TEE; the sheet says 0201WMF1000TEE"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "R9"
+   ],
+   "lcsc": "C270366",
+   "catalogue_package": "0201",
+   "footprint": "Resistor_SMD:R_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Resistor_SMD:R_0201_0603Metric needs 0201; C270366 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C5",
+    "C8"
+   ],
+   "lcsc": "C335106",
+   "catalogue_mpn": "GRM033R61A225KE47D",
+   "sheet_mpn": "GRM033R61A225KE47D",
+   "verdict": "PASS",
+   "why": "C335106 is GRM033R61A225KE47D; the sheet says GRM033R61A225KE47D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C5",
+    "C8"
+   ],
+   "lcsc": "C335106",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C335106 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C22"
+   ],
+   "lcsc": "C3904589",
+   "catalogue_mpn": "GJM0335C1HR30WB01D",
+   "sheet_mpn": "GJM0335C1HR30WB01D",
+   "verdict": "PASS",
+   "why": "C3904589 is GJM0335C1HR30WB01D; the sheet says GJM0335C1HR30WB01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C22"
+   ],
+   "lcsc": "C3904589",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C3904589 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "L3",
+    "L4"
+   ],
+   "lcsc": "C3911055",
+   "catalogue_mpn": "LQP03HQ3N5B02D",
+   "sheet_mpn": "LQP03HQ3N5B02D",
+   "verdict": "PASS",
+   "why": "C3911055 is LQP03HQ3N5B02D; the sheet says LQP03HQ3N5B02D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "L3",
+    "L4"
+   ],
+   "lcsc": "C3911055",
+   "catalogue_package": "0201",
+   "footprint": "Inductor_SMD:L_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Inductor_SMD:L_0201_0603Metric needs 0201; C3911055 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C18"
+   ],
+   "lcsc": "C435397",
+   "catalogue_mpn": "GJM0335C1E1R5WB01D",
+   "sheet_mpn": "GJM0335C1E1R5WB01D",
+   "verdict": "PASS",
+   "why": "C435397 is GJM0335C1E1R5WB01D; the sheet says GJM0335C1E1R5WB01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C18"
+   ],
+   "lcsc": "C435397",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C435397 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "U1"
+   ],
+   "lcsc": "C44800139",
+   "catalogue_mpn": "NRF54L10-QFAA-R7",
+   "sheet_mpn": "NRF54L10-QFAA-R7",
+   "verdict": "PASS",
+   "why": "C44800139 is NRF54L10-QFAA-R7; the sheet says NRF54L10-QFAA-R7"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "U1"
+   ],
+   "lcsc": "C44800139",
+   "catalogue_package": "VFQFN-48",
+   "footprint": "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
+   "verdict": "PASS",
+   "why": "land pattern Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm needs VFQFN-48; C44800139 is VFQFN-48"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R10"
+   ],
+   "lcsc": "C473048",
+   "catalogue_mpn": "0201WMF1002TEE",
+   "sheet_mpn": "0201WMF1002TEE",
+   "verdict": "PASS",
+   "why": "C473048 is 0201WMF1002TEE; the sheet says 0201WMF1002TEE"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R10"
+   ],
+   "lcsc": "C473048",
+   "catalogue_package": "0201",
+   "footprint": "Resistor_SMD:R_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Resistor_SMD:R_0201_0603Metric needs 0201; C473048 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "L10"
+   ],
+   "lcsc": "C473473",
+   "catalogue_mpn": "0201WMF0000TEE",
+   "sheet_mpn": "0201WMF0000TEE",
+   "verdict": "PASS",
+   "why": "C473473 is 0201WMF0000TEE; the sheet says 0201WMF0000TEE"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "L10"
+   ],
+   "lcsc": "C473473",
+   "catalogue_package": "0201",
+   "footprint": "Inductor_SMD:L_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Inductor_SMD:L_0201_0603Metric needs 0201; C473473 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+   ],
+   "lcsc": "C5142565",
+   "catalogue_mpn": "TCC0201X5R104K100ZT",
+   "sheet_mpn": "TCC0201X5R104K100ZT",
+   "verdict": "PASS",
+   "why": "C5142565 is TCC0201X5R104K100ZT; the sheet says TCC0201X5R104K100ZT"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+   ],
+   "lcsc": "C5142565",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C5142565 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C19"
+   ],
+   "lcsc": "C668326",
+   "catalogue_mpn": "GJM0335C1E2R0WB01D",
+   "sheet_mpn": "GJM0335C1E2R0WB01D",
+   "verdict": "PASS",
+   "why": "C668326 is GJM0335C1E2R0WB01D; the sheet says GJM0335C1E2R0WB01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C19"
+   ],
+   "lcsc": "C668326",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C668326 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "L2"
+   ],
+   "lcsc": "C7216765",
+   "catalogue_mpn": "LQP03HQ2N7B02D",
+   "sheet_mpn": "LQP03HQ2N7B02D",
+   "verdict": "PASS",
+   "why": "C7216765 is LQP03HQ2N7B02D; the sheet says LQP03HQ2N7B02D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "L2"
+   ],
+   "lcsc": "C7216765",
+   "catalogue_package": "0201",
+   "footprint": "Inductor_SMD:L_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Inductor_SMD:L_0201_0603Metric needs 0201; C7216765 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "L1"
+   ],
+   "lcsc": "C76799",
+   "catalogue_mpn": "MLZ1608M4R7WT000",
+   "sheet_mpn": "MLZ1608M4R7WT000",
+   "verdict": "PASS",
+   "why": "C76799 is MLZ1608M4R7WT000; the sheet says MLZ1608M4R7WT000"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "L1"
+   ],
+   "lcsc": "C76799",
+   "catalogue_package": "0603",
+   "footprint": "Inductor_SMD:L_0603_1608Metric",
+   "verdict": "PASS",
+   "why": "land pattern Inductor_SMD:L_0603_1608Metric needs 0603; C76799 is 0603"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C13"
+   ],
+   "lcsc": "C76922",
+   "catalogue_mpn": "GRM0335C1H101JA01D",
+   "sheet_mpn": "GRM0335C1H101JA01D",
+   "verdict": "PASS",
+   "why": "C76922 is GRM0335C1H101JA01D; the sheet says GRM0335C1H101JA01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C13"
+   ],
+   "lcsc": "C76922",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C76922 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "C6"
+   ],
+   "lcsc": "C76941",
+   "catalogue_mpn": "GRM033R71A103KA01D",
+   "sheet_mpn": "GRM033R71A103KA01D",
+   "verdict": "PASS",
+   "why": "C76941 is GRM033R71A103KA01D; the sheet says GRM033R71A103KA01D"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "C6"
+   ],
+   "lcsc": "C76941",
+   "catalogue_package": "0201",
+   "footprint": "Capacitor_SMD:C_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Capacitor_SMD:C_0201_0603Metric needs 0201; C76941 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "R1",
+    "R2"
+   ],
+   "lcsc": "C778408",
+   "catalogue_mpn": "0201WMF4704TEE",
+   "sheet_mpn": "0201WMF4704TEE",
+   "verdict": "PASS",
+   "why": "C778408 is 0201WMF4704TEE; the sheet says 0201WMF4704TEE"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "R1",
+    "R2"
+   ],
+   "lcsc": "C778408",
+   "catalogue_package": "0201",
+   "footprint": "Resistor_SMD:R_0201_0603Metric",
+   "verdict": "PASS",
+   "why": "land pattern Resistor_SMD:R_0201_0603Metric needs 0201; C778408 is 0201"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "X2"
+   ],
+   "lcsc": "C843260",
+   "catalogue_mpn": "NX2016SA-32MHZ-STD-CZS-5",
+   "sheet_mpn": "NX2016SA-32MHZ-STD-CZS-5",
+   "verdict": "PASS",
+   "why": "C843260 is NX2016SA-32MHZ-STD-CZS-5; the sheet says NX2016SA-32MHZ-STD-CZS-5"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "X2"
+   ],
+   "lcsc": "C843260",
+   "catalogue_package": "SMD2016-4P",
+   "footprint": "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
+   "verdict": "PASS",
+   "why": "land pattern Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm needs SMD2016; C843260 is SMD2016-4P"
+  },
+  {
+   "rule": "mpn_matches",
+   "refs": [
+    "X1"
+   ],
+   "lcsc": "C95361",
+   "catalogue_mpn": "Q13FC13500049",
+   "sheet_mpn": "Q13FC13500049",
+   "verdict": "PASS",
+   "why": "C95361 is Q13FC13500049; the sheet says Q13FC13500049"
+  },
+  {
+   "rule": "package_fits",
+   "refs": [
+    "X1"
+   ],
+   "lcsc": "C95361",
+   "catalogue_package": "SMD3215-2P",
+   "footprint": "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm",
+   "verdict": "PASS",
+   "why": "land pattern Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm needs SMD3215; C95361 is SMD3215-2P"
+  },
+  {
+   "rule": "no_code_says_why",
+   "refs": [
+    "BT1"
+   ],
+   "verdict": "PASS",
+   "why": "field is a stated reason, not a code: NO ORDER CODE - NOT AN SMT LINE"
+  },
+  {
+   "rule": "no_code_says_why",
+   "refs": [
+    "LS1"
+   ],
+   "verdict": "PASS",
+   "why": "field is a stated reason, not a code: NOT IN CATALOGUE"
+  },
+  {
+   "rule": "no_code_says_why",
+   "refs": [
+    "FID1",
+    "FID2",
+    "J1",
+    "J2",
+    "TP1",
+    "TP2",
+    "TP3",
+    "TP4",
+    "TP5",
+    "TP6",
+    "TP7",
+    "TP8",
+    "TP9",
+    "TP10",
+    "TP11"
+   ],
+   "verdict": "PASS",
+   "why": "field is a stated reason, not a code: n/a"
+  }
+ ],
+ "command": "python3 /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/tools/check_lcsc_netlist.py --net /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.net --json /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/verify/lcsc-netlist-check.json --quiet"
+}

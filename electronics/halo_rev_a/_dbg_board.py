@@ -383,7 +383,7 @@ PLACE = [
     # spiral's TANGENT puts them along the conductor. Rotated to the radius
     # instead they sit 0.5 mm off it on either side and the stubs that close
     # the winding have to jump the gap sideways.
-    ("AE2", "halo:HALO_NFC_TIE_2", NFC_TIE_R_PRE,
+    ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", NFC_TIE_R_PRE,
      NFC_TIE_DEG_PRE, NFC_TIE_DEG_PRE + 90.0, "bottom"),
     ("LS1", "halo:HALO_PIEZO_LEADS_2", 10.30, 118.0, 28.0, "top"),
 ]
@@ -784,7 +784,7 @@ _mid = len(_sp) // 2
 # conductor that has to be continuous, and a coil with a 5 mm hole in it is
 # not a coil. The tie's two pads sit 1.0 mm apart, so the gap is sized from
 # that and the stubs below actually close it.
-NFC_GAP_MM = 0.70   # the tie is 0.60 mm long end to end
+NFC_GAP_MM = 1.6
 _arc_per_seg = math.radians((NFC_A1 - NFC_A0) / NFC_SEGS) * fpg.NFC_R_OUT
 GAP_PTS = max(1, int(round(NFC_GAP_MM / (2.0 * _arc_per_seg))))
 NFC_TIE_R, NFC_TIE_DEG_ACTUAL = _sp[_mid]
@@ -843,33 +843,24 @@ def _crosses(a, b, c, d):
 
 
 # THE PAD NUMBERS ARE NOT INTERCHANGEABLE, AND ASSIGNING BY DISTANCE SHORTED
-# THE COIL. AE2 pad 1 is on NFC1 and pad 2 on NFC2 — the schematic says so and
+# THE COIL. AE2 pad 1 is on NFC1 and pad 2 on NFC2 - the schematic says so and
 # the net tie is the whole reason those are two nets. A "nearest pad" rule
-# therefore ran NFC2's stub onto NFC1's pad, and KiCad reported it exactly:
-# "Items shorting two nets (nets NFC1 and NFC2)", twice. What is free to
-# change is not which pad each half goes to, it is WHICH WAY ROUND THE TIE
-# SITS — so the part is turned, not the netlist.
-#
-# AND THE TURN IS SEARCHED, NOT DERIVED. The tie is placed at an angle on a
-# disc, rotated to the winding's tangent, and FLIPPED to the bottom face:
-# three sign conventions, and getting any one of them wrong puts the pad axis
-# across the gap instead of along it. `NFC_TIE_DEG_PRE + 90` looked right and
-# produced a pad axis at +50.9 deg against a gap running at +129.0 deg — the
-# mirror, exactly. So the orientation is swept in 2 deg steps and the one that
-# actually minimises pad-1-to-NFC1-end plus pad-2-to-NFC2-end is kept, read
-# back off the placed footprint each time. A measurement beats a convention.
-_fp_ae2 = b.refs["AE2"]
-_o0 = _fp_ae2.GetOrientationDegrees()
-_best_tie = None
-for _k in range(180):
-    _fp_ae2.SetOrientationDegrees(_o0 + _k * 2.0)
-    _pp = {1: _pad_xy("AE2", 1), 2: _pad_xy("AE2", 2)}
-    _cost = math.dist(_e1, _pp[1]) + math.dist(_e2, _pp[2])
-    if _best_tie is None or _cost < _best_tie[0]:
-        _best_tie = (_cost, _o0 + _k * 2.0, _pp)
-NFC_TIE_ROT = _best_tie[1] % 360.0
-_fp_ae2.SetOrientationDegrees(_best_tie[1])
-_tie_pads = _best_tie[2]
+# therefore ran NFC2's stub onto NFC1's pad: KiCad reported it exactly, "Items
+# shorting two nets (nets NFC1 and NFC2)", twice, and the coil's two halves
+# were joined at the wrong end. What is free to change is not which pad each
+# half goes to, it is WHICH WAY ROUND THE TIE SITS - so the part is turned,
+# not the netlist.
+def _tie_cost(pads):
+    return math.dist(_e1, pads[1]) + math.dist(_e2, pads[2])
+
+
+if _tie_cost(_tie_pads) > _tie_cost({1: _tie_pads[2], 2: _tie_pads[1]}):
+    _fp_ae2 = b.refs["AE2"]
+    _fp_ae2.SetOrientationDegrees(_fp_ae2.GetOrientationDegrees() + 180.0)
+    _tie_pads = {1: _pad_xy("AE2", 1), 2: _pad_xy("AE2", 2)}
+    NFC_TIE_TURNED = True
+else:
+    NFC_TIE_TURNED = False
 
 
 def _crosses(a, b_, c, d):
@@ -881,9 +872,12 @@ def _crosses(a, b_, c, d):
 
 
 if _crosses(_e1, _tie_pads[1], _e2, _tie_pads[2]):
-    raise SystemExit("the two tie stubs cross at every orientation - the net "
-                     "tie is not aligned with the winding's gap")
+    raise SystemExit("the two tie stubs cross even with the tie turned - the "
+                     "net tie is not aligned with the winding's gap")
 _assign = (("NFC1", _e1, 1), ("NFC2", _e2, 2))
+print("DBGTIE e1=%.3f,%.3f e2=%.3f,%.3f p1=%.3f,%.3f p2=%.3f,%.3f turned=%s"
+      % (_e1[0], _e1[1], _e2[0], _e2[1], _tie_pads[1][0], _tie_pads[1][1],
+         _tie_pads[2][0], _tie_pads[2][1], NFC_TIE_TURNED))
 for _net, _end, _padnum in _assign:
     _pxy = _tie_pads[_padnum]
     b.track(_net, [_end, _pxy], width=fpg.NFC_W, layer="B.Cu")
@@ -1772,72 +1766,6 @@ def repair_track_nets(pcb_path, snapshot):
             "want": want_counts, "got": got, "verdict": "PASS" if ok else "FAIL"}
 
 
-# ---------------------------------------------------------------------------
-# CONTROLLED IMPEDANCE — D21. The number the factory needs, or a refusal.
-# ---------------------------------------------------------------------------
-#: The 0.60 mm four-layer builds a house will actually commit to, with the
-#: L1->L2 prepreg each one presses. JLCPCB IS NOT HERE AND THAT IS THE POINT:
-#: its own impedance stackup page and the thickness dropdown in its own
-#: calculator offer 0.8/1.0/1.2/1.6/2.0 mm for four layers and nothing else,
-#: so impedance control CANNOT BE BOUGHT from JLCPCB at 0.60 mm. PCBWay
-#: publishes six builds and the height is set by the INNER LAYERS' RESIDUAL
-#: COPPER RATIO, not by the order - which is why this is a table and not a
-#: number. https://www.pcbway.com/multi-layer-laminated-structure.html
-STACK_CANDIDATES = [
-    ("PCBWay 0.60mm 4L #35  (70% inner residual, 3313 RC58%)", 0.0925, 4.45),
-    ("PCBWay 0.60mm 4L #36  (50% inner residual, 3313 RC58%)", 0.0855, 4.45),
-    ("PCBWay 0.60mm 4L #112 (30% inner residual, 2x1080 RC68%)", 0.1375, 4.21),
-]
-RF_W = 0.127            # the netclass width, and the RF trace width
-CU_T = 0.035            # 1 oz outer, plated
-
-
-def _z0_hammerstad(w, h, t, er):
-    """Hammerstad-Jensen microstrip, with Hammerstad's thickness correction.
-
-    A SECOND FORMULA ON PURPOSE. cepcb.stackup.microstrip_z0 is IPC-2141's
-    closed form and answers ADVISORY, +/-10 % class. Two independent closed
-    forms that agree to 1.7 ohm are worth more than one that passes, which is
-    the rule in docs/TOOLS-THAT-LIE.md item 5.
-    """
-    u = w / h
-    if t > 0:
-        coth = 1.0 / math.tanh(math.sqrt(6.517 * u))
-        dw = (t / math.pi) * math.log(1 + 4 * math.e / (t / h) / (coth ** 2))
-        u += dw / h
-    f = 6 + (2 * math.pi - 6) * math.exp(-((30.666 / u) ** 0.7528))
-    z0air = (376.73 / (2 * math.pi)) * math.log(f / u + math.sqrt(1 + (2 / u) ** 2))
-    a = (1 + math.log((u ** 4 + (u / 52) ** 2) / (u ** 4 + 0.432)) / 49
-         + math.log(1 + (u / 18.1) ** 3) / 18.7)
-    bb = 0.564 * ((er - 0.9) / (er + 3)) ** 0.053
-    ee = (er + 1) / 2 + (er - 1) / 2 * (1 + 10 / u) ** (-a * bb)
-    return z0air / math.sqrt(ee), ee
-
-
-def impedance_report():
-    """What the RF trace is, in ohms, on every stack a house will commit to."""
-    rows = []
-    for name, h, er in STACK_CANDIDATES:
-        z_hj, ee = _z0_hammerstad(RF_W, h, CU_T, er)
-        lo, hi = 0.02, 3.0
-        for _ in range(80):                       # w for exactly 50 ohm
-            mid = (lo + hi) / 2.0
-            if _z0_hammerstad(mid, h, CU_T, er)[0] > 50.0:
-                lo = mid
-            else:
-                hi = mid
-        rows.append({"stack": name, "h_mm": h, "er": er,
-                     "z0_ohm": round(z_hj, 2), "eps_eff": round(ee, 3),
-                     "w_for_50R_mm": round((lo + hi) / 2.0, 4)})
-    zs = [r["z0_ohm"] for r in rows]
-    gamma = max(abs((z - 50.0) / (z + 50.0)) for z in zs)
-    return {"rf_width_mm": RF_W, "copper_mm": CU_T, "rows": rows,
-            "z0_min": min(zs), "z0_max": max(zs),
-            "worst_gamma": round(gamma, 4),
-            "worst_return_loss_dB": round(-20 * math.log10(gamma), 2),
-            "worst_mismatch_loss_dB": round(-10 * math.log10(1 - gamma ** 2), 4)}
-
-
 def write_dsn_hints(pcb_path):
     """What the Specctra export cannot say, written beside it for `dsnfix`.
 
@@ -1940,27 +1868,6 @@ if __name__ == "__main__":
         "%s %.3f mm" % (n, d) for n, d in NFC_TIE_STUBS)
         + ("   -> PASS" if all(d < 2.0 for _, d in NFC_TIE_STUBS)
            else "   -> FAIL, the winding has a hole in it"))
-    _imp = impedance_report()
-    print("\n--- controlled impedance (D21) ---")
-    print("  RF trace %.3f mm, %.3f mm copper. JLCPCB DOES NOT SELL IMPEDANCE "
-          "CONTROL AT 0.60 mm 4-layer" % (_imp["rf_width_mm"], _imp["copper_mm"]))
-    print("  %-56s %7s %5s %9s %9s" % ("stack", "h_mm", "er", "Z0_ohm",
-                                       "w@50R"))
-    for _r in _imp["rows"]:
-        print("  %-56s %7.4f %5.2f %9.2f %9.4f"
-              % (_r["stack"], _r["h_mm"], _r["er"], _r["z0_ohm"],
-                 _r["w_for_50R_mm"]))
-    print("  Z0 across the builds a house will commit to: %.2f .. %.2f ohm"
-          % (_imp["z0_min"], _imp["z0_max"]))
-    print("  worst mismatch into 50 ohm: |G| %.4f, return loss %.2f dB, "
-          "mismatch loss %.4f dB" % (_imp["worst_gamma"],
-                                     _imp["worst_return_loss_dB"],
-                                     _imp["worst_mismatch_loss_dB"]))
-    print("  VERDICT: 50 ohm IS REACHABLE on this stack at 0.126-0.230 mm, "
-          "all above the 0.09 mm multilayer floor. The number to name in a "
-          "controlled-impedance order is PCBWay build #35 at 0.127 mm. "
-          "Uncontrolled, the trace is CANNOT DETERMINE inside %.0f-%.0f ohm."
-          % (_imp["z0_min"], _imp["z0_max"]))
     print("  NFC split radius for the DSN: %.4f mm   hints -> %s"
           % (NFC_SPLIT_R, os.path.basename(HINTS)))
     verify_rules(path)

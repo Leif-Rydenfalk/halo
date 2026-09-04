@@ -25,7 +25,8 @@ fit inside a Ø31.87 shell. Lane M's `design.py` fixes the PCB, and it has
 three 26° keying notches cut to R12.60 at 0/120/240° so it can only be
 assembled one way round.
 
-**61 parts. 38 nets. 44 placed for assembly.**
+**61 parts. 38 nets. 40 placed for assembly. Regenerated 2026-09-05 — see
+§3 for what was re-measured, and §5 for what is still not done.**
 
 ---
 
@@ -35,24 +36,27 @@ assembled one way round.
 
 | file | what it is |
 |---|---|
-| `halo_rev_a-gerber-jlc.zip` | **the board.** 13 files, named for JLCPCB's published table, layer check PASS, plus two Excellon drills and a drill map |
+| `halo_rev_a-gerber-jlc.zip` | **the board.** 13 files, named for JLCPCB's published table, layer check PASS, plus two Excellon drills (50 plated holes on the routed board) and a drill map |
 | `gerber/` | the same files unzipped, for inspection |
 | `gerber/halo_rev_a-F_Cu.gtl` … `-B_Cu.gbl` | the four copper layers |
 | `gerber/halo_rev_a-Edge_Cuts.gm1` | the Ø26.00 outline with its three keying notches |
-| `gerber/halo_rev_a-PTH.drl`, `-NPTH.drl` | drills, Excellon |
+| `gerber/halo_rev_a-PTH.drl`, `-NPTH.drl` | drills, Excellon — **50 plated hits, matching the board's 50 vias; NPTH legitimately empty, the board has no non-plated holes** |
 | `STACKUP.md` | the four layers, dielectrics, finish, and the impedance target with the reason it is not yet met |
 
-**These Gerbers were opened and checked, not trusted.** `F_Cu` carries 3265
-draw commands and `Edge_Cuts` 720. A gerber export that silently produces an
-empty file has bitten this project before.
+**These Gerbers were opened and checked, not trusted.** `F_Cu` carries 3700
+draw commands, `B_Cu` 2160, `In1` 1208, `In2` 2284, and `Edge_Cuts` 720. A
+gerber export that silently produces an empty file has bitten this project
+before — the 2026-09-04 pack shipped drill files with **zero holes** — so
+`tools/build_fabset.sh` now refuses to cut a pack its own read-back does not
+pass.
 
 ### Assembly
 
 | file | what it is |
 |---|---|
-| `halo_rev_a-BOM.csv` | 24 lines, JLCPCB format, with `LCSC Part #` |
-| `halo_rev_a-CPL.csv` | 44 rows, pick-and-place, rotations from KiCad's own transform |
-| `jlc.md` / `jlc.json` | the generator's own report, including every part it could not source |
+| `halo_rev_a-BOM.csv` | 23 lines, JLCPCB format, every line carrying a catalogue-verified `LCSC Part #` |
+| `halo_rev_a-CPL.csv` | 40 rows, pick-and-place, rotations verified row by row against `kicad-cli pcb export pos` |
+| `jlc.md` / `jlc.json` | the generator's own report, including its rotation cross-check — read §3 before quoting its FAIL |
 
 ### Evidence
 
@@ -75,44 +79,66 @@ at the top of each file.
 
 | check | command | result |
 |---|---|---|
-| Electrical rules | `sch erc --format json` | **PASS — 0 errors, 0 warnings** |
-| Design rules | `pcb drc --severity-all` | **10 violations** — 5 dangling track ends, 5 isolated copper zones. Both are consequences of an **unrouted** board; see §5. |
-| Manufacturability | `fab dfm` | **21 PASS, 2 FAIL, 5 CANNOT DETERMINE** |
-| Component height | `board.py height_check()` | **46 PASS, 5 FAIL** — see §5 |
-| Assembly files | `fab jlc` | 24 BOM lines, 44 CPL rows, gerber layer check PASS |
-| **The pack read back** | `tools/check_fabset.py` | **10 PASS, 1 FAIL** — see below |
+| Electrical rules | `kicad-cli sch erc` | **PASS — 0 errors, 0 warnings** (2026-09-05 02:07; `bin/sch` adds 13 footprint-link notes about its own library config, none an ERC finding) |
+| Design rules | `kicad-cli pcb drc --schematic-parity` | **9 violations, 80 unconnected** — 3 dangling track ends, 2 crossings, 2 NFC1/NFC2 shorts, 1 clearance, 1 hole clearance. See §5.1 |
+| Order codes vs schematic | `tools/check_lcsc_netlist.py` | **PASS — 23 of 23 distinct codes match the catalogue on MPN and package** |
+| BOM identity | `tools/check_bom_identity.py` | **PASS — 0 fail**, 23 lines, one code per value |
+| CPL vs KiCad | `tools/check_cpl_rotations.py` | **40/40 agree**, positions and rotations incl. the bottom-side flip |
+| Manufacturability | `fab dfm` (re-run 2026-09-05) | **20 PASS, 4 FAIL, 4 CANNOT DETERMINE** — §5.2 |
+| Component height | `board.py height_check()` | **58 PASS, 4 FAIL** — L1, U1, U2, X1 over the cell; see §5.3 |
+| Assembly files | `tools/build_fabset.sh` | 23 BOM lines, 40 CPL rows, gerber layer check PASS, gate exit 0 |
+| **The pack read back** | `tools/check_fabset.py` | **11 PASS, 0 FAIL** — see below |
 
 ### The pack, checked by reading it back
 
 Lane V1's `check_fabset.py` opens these files as a board house would, rather
-than trusting the exporter's exit code. On this pack:
+than trusting the exporter's exit code. On the 2026-09-05 pack:
 
 ```
 PASS  job_file_parses        9 files named
 PASS  layer_count            4 declared, 4 named, 4 on disk
-PASS  copper_has_geometry    B_Cu 5591 ops, F_Cu 3335, In1 825, In2 825
+PASS  copper_has_geometry    B_Cu 2160 ops, F_Cu 3700, In1 1208, In2 2284
 PASS  format_spec_present    11 Gerbers, all carry %FSLA..% and %MO..%
 PASS  apertures_defined      every D-code selected is defined
-FAIL  drill_has_hits         0 holes
-PASS  drill_covers_board     board declares 0 holes; drill files carry 0
+PASS  drill_has_hits         50 holes   <-- the 2026-09-04 defect, closed
+PASS  drill_covers_board     board declares 50 holes; drill files carry 50
 PASS  outline_has_extent     720 points, 25.6138 x 26.0000 mm
 PASS  outline_matches_spec   worst deviation 0.3862 mm against 26.0
 PASS  zip_matches_disk       13 members, every loose file byte-identical
 PASS  export_is_fresh        export is after the board was saved
 ```
 
-**The one failure is the unrouted board, not a broken export.** `drill_has_hits`
-says a four-layer board cannot exist without vias, and it is right — but
-`drill_covers_board` passes, because the board itself declares zero holes and
-the drill files faithfully contain zero. The export is correct; the board is
-incomplete. Those two rows together are worth more than either alone.
+**What the 2026-09-04 defect actually was.** The pack had been cut at 18:40
+from a board that was not routed yet — vias do not exist before routing, so
+KiCad faithfully exported zero holes, the exporter exited 0, and the index
+said READY. Nothing re-cut the pack after routing finished at 22:11, and the
+fabset checker that caught it had to be written by hand afterwards. The fix
+at source is `tools/build_fabset.sh`: it runs the export and the read-back
+in one step and refuses to exit 0 unless the pack provably describes the
+board. The exporter itself was never broken — the same flags on the routed
+board produce all 50 holes.
 
-**One check was run and does not apply**: `--round` measures radius variation,
-and this outline is *deliberately* not round — three 26° keying notches take it
-from R13.000 to R12.600. Measured on the source board: **360 points, radius
-12.6000 to 13.0000 mm**, exactly lane M's `design.py`. The notches are the
-whole reason the board can only be assembled one way round, so roundness is
-not asserted. `fabset-check.json` carries the machine-readable run.
+**One check is run and does not apply**: `--round` measures radius variation,
+and this outline is *deliberately* not round — three 26° keying notches take
+it from R13.000 to R12.600, which is exactly why the measured extent is
+25.6138 mm across and not 26.000. The notches are the whole reason the board
+can only be assembled one way round, so roundness is not asserted;
+`outline_matches_spec` (26.0 ±0.5 mm) still applies. `fabset-check.json`
+carries the machine-readable run.
+
+### The jlc.md cross-check FAIL, and why the CPL is right
+
+`jlc.md` prints **FAIL — 9 designators disagree**. Every one of the nine is a
+**bottom-side** part carrying a rotation-table correction (U1, U2, L1, X1,
+X2, C9–C12), and the disagreement is exactly `180 − 2·rot`: ce-fab's
+cross-check expects `kicad_rot + correction` while its own writer correctly
+applies `180 − rot` first, as the vendored JLC plugin transform documents
+(process.py:245-246 — "the bottom side inverts and lands 180 degrees out").
+Measured 2026-09-05: re-deriving all 40 rows from `kicad-cli pcb export pos`
+**with** the flip agrees 40/40 with the shipped CPL
+(`tools/check_cpl_rotations.py`, negative-tested by corrupting a rotation, a
+position and a layer before it was trusted). The defect is ce-fab's checker
+and is recorded for that lane; the CPL file is correct.
 
 ### The two DFM failures, and what to do about them
 
@@ -160,7 +186,9 @@ no amplifier at all. D11a's central claim holds.
 
 **R9 earns its BOM line.** With a low-loss 40 nF bender the peak pin current
 is **32.0 mA without R9 and 17.8 mA with it** — a 44 % cut, and the
-difference between exceeding a 25 mA ceiling and clearing it.
+difference between exceeding a 25 mA ceiling and clearing it. *Caveat,
+recorded 2026-09-05: the study models the Murata's 40 nF; D20's CEB-2021 is
+21 nF, which halves the charge per edge. Re-run before quoting.*
 
 ### NFC coil — **PASS**, and it corrected the schematic
 
@@ -198,54 +226,60 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
 
 ## 5. What is NOT done — read this before quoting
 
-1. **THE BOARD IS NOT ROUTED.** 91 unconnected items, 0 vias.
+1. **THE BOARD IS PART-ROUTED, NOT FINISHED.** 80 unconnected items, 50
+   vias, 9 DRC violations (3 dangling track ends, 2 crossings, 2
+   NFC1/NFC2 shorts, 1 clearance, 1 hole clearance — measured 2026-09-05
+   02:16, `electronics/halo_rev_a/out/drc.json`).
 
-   **Freerouting was run three times and timed out three times**: 900 s at 12
-   passes, 3300 s at 3 passes, 2400 s at 2 passes. The tool itself works —
-   lane T1 proved it on a Ø31.87 mm board and closed VERIFICATION-DEBT V1,
-   and the Java runtime it needs is now installed. **This board is simply
-   denser than it can handle**: a Ø26.00 mm disc, a 0.4 mm pitch QFN-48 whose
-   escape must pass through 0.20 mm gaps, and 0.127 mm rules. That is a
-   measured limit, not a step nobody tried.
-
-   The planes, the outline, the placement, the keep-outs, the test access and
-   the etched copper are all real; the point-to-point connections are not.
-   **Do not fabricate this revision.** The next move is either hand-routing
-   the escape and letting the router finish the rest, or relaxing the
-   placement to give it room.
-2. **THE ANTENNA HAS NOT PASSED.** 2.886 GHz measured on the first geometry;
-   the corrected 24.49 mm meander has not been re-simulated to completion.
-3. **FIVE PART CLASSES DO NOT FIT THE ENCLOSURE.** The height check grades
-   every placed part against lane M's stack: 46 PASS, **5 FAIL**. X1 by
-   0.322 mm, L1 by 0.322, U1 by 0.272, U2 by 0.122 and U3's replacement by
-   0.022, all against the 0.578 mm the cell leaves under the bottom face. A
-   QFN-48 is 0.85 mm tall.
+   This is no longer the unrouted board of 2026-09-04 (91 unconnected, 0
+   vias, freerouting timed out three times). The routing lane has since
+   drawn the power structures, the plane stitching and the antenna copper —
+   the 50 vias the drill files now carry are real — but point-to-point
+   completion and the nine violations above are still open, owned by lane
+   B1. **Do not fabricate this revision until that list is empty.** The
+   gerbers in this pack describe the board as it stands, honestly.
+2. **THE ANTENNA'S VERDICT IS THE ONE §4 STATES**, measured — nothing above
+   it is asserted. See §4 for the number and its case.
+3. **FOUR PART CLASSES DO NOT FIT THE ENCLOSURE.** The height check grades
+   every placed part against lane M's stack: 58 PASS, **4 FAIL**
+   (2026-09-05 board): L1 (0.9 mm body), U1 (0.85), U2 (0.7), X1 (0.9),
+   all against the 0.578 mm the cell leaves under the bottom face.
 
    **The fix is already written down and it is small.** DECISIONS.md D17
    (lane M) records *"0.542 mm of dead air under the cell that a flat pad
    embossed in the door could still recover"*. Recovering it makes the
-   bottom-face allowance 1.120 mm against a 0.95 mm worst case, so **every
-   part clears, and only 0.372 mm of the 0.542 is needed.** That is one
-   embossing feature in a stamped steel door, not a redesign — and it is the
-   single change that closes this item.
+   bottom-face allowance 1.120 mm against a 0.9 mm worst case, so **every
+   part clears**. That is one embossing feature in a stamped steel door,
+   not a redesign — and it is the single change that closes this item.
 4. **CONTROLLED IMPEDANCE IS NOT IMPLEMENTED.** See `STACKUP.md` §2.
 5. **THE DIELECTRIC HEIGHTS ARE NOT CONFIRMED.** No 0.60 mm 4-layer stackup
    table was retrieved from the fab. Ask for it first.
-6. **THE PIEZO BENDER IS UNSOURCED AT EVERY QUANTITY.** The Murata 7BB-20-3
-   is in neither LCSC nor the assembly catalogue; Digi-Key returns 403 and
-   Mouser a captcha. Its land pattern is deliberately generic so any Ø20 mm
-   two-terminal bender drops in without a respin. **Loudness — DULT's 60 Phon
-   at 25 cm — cannot be simulated and is unproven.**
+6. **THE PIEZO BENDER CHANGED PART, AND THE DRIVE SIM PREDATES THE CHANGE.**
+   D11a's Murata 7BB-20-3 is unbuyable (D20, 2026-09-04): the design sounder
+   is now the Same Sky CEB-2021 (Ø20 × 0.21 mm brass, 3.6 kHz, 21 nF), with
+   the PUI AB2036B-2 as second source. The schematic's LS1 line still names
+   the Murata and `sim/sounder_drive` still models 40 nF — both predate D20.
+   **The drive topology evidence (anti-phase, R9 damping) holds; the
+   capacitance number does not.** Re-run the sounder study on 21 nF before
+   quoting the 17.8 mA figure. Loudness — DULT's 60 Phon at 25 cm — cannot
+   be simulated and is unproven.
 7. **THE SoC's STOCK IS 212 PIECES.** `NRF54L10-QFAA-R7` (C44800139) had 669
    at LCSC on 2026-09-03 and the factory lane now reads 212, against a
    1000-piece minimum packet. **Builds of 1000 and above currently fail on
    availability.** That is a sourcing problem, not a design change.
-8. **1.1 nF C0G IN 0201 IS NOT CONFIRMED TO EXIST** for C24/C25. If only
-   1.0 nF is buyable the NFC tank lands 5.3 % high and needs a bench trim.
-9. **THE 32.768 kHz CRYSTAL'S PACKAGE IS ASSUMED.** C32346 was adopted on the
-   factory lane's find (Epson, basic part, 444,985 in stock, no feeder fee)
-   but its drawing has not been checked against the 3215 land pattern drawn
-   here. **Confirm before ordering.**
+8. **C24/C25 ARE 1.0 nF BY SUBSTITUTION, AND THE COIL HAS NOT BEEN RE-SOLVED
+   FOR IT.** S1 proved no 1.1 nF exists in 0201 in any dielectric, so the
+   sheet carries 1.0 nF C0G (C161371, catalogue-verified) and the copper's
+   NFC_TURNS moved to 2.106 to re-centre the tank — but that coil geometry
+   has NOT been re-solved by ce-rf, so its inductance is a target, not a
+   measurement, and the NFC resonance stays CANNOT DETERMINE until that run
+   exists. The two capacitors must remain matched to each other.
+9. **THE 32.768 kHz CRYSTAL IS C95361 (Q13FC13500049).** The sheet carried
+   S1's earlier find (C32346) only in the resolved file; the code now on the
+   sheet itself, C95361, matches the catalogue on MPN **and** package
+   (SMD3215-2P against the 3215 land pattern — `check_lcsc_netlist` and
+   `check_bom_identity` both verify it, 2026-09-05). What is still not done
+   is the vendor drawing check against the land pattern's pad geometry.
 10. **NO PANEL, NO IMPEDANCE COUPONS, NO PER-LAYER CURRENT ANALYSIS.**
 11. **THE DW3110 LAND PATTERN IS NOT DRAWN.** No document in this repository
     carries its pin assignment, and D9 forbids guessing 48 net names. J2

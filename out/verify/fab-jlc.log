@@ -1,3 +1,4 @@
+  jlc: 23 BOM lines, 40 CPL rows -> /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board  [PASS]
 # JLCPCB assembly files — halo_rev_a.kicad_pcb
 
 **FAIL** — 23 BOM lines, all with an LCSC number. Generated 2026-09-04T18:27:38Z.
@@ -77,3 +78,4 @@
 - [DNP] `C17` — marked do-not-place; left out of both files
 - [DNP] `C14` — marked do-not-place; left out of both files
 - [SKIPPED] `BT1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+

@@ -1,10 +1,10 @@
 {
  "schema": "halo/bom-resolved/1",
- "generated": "2026-09-04",
+ "generated": "2026-09-05",
  "lane": "S1",
  "board": "halo_rev_a",
- "placed_refs_in_release_bom": 42,
- "refs_covered": 42,
+ "placed_refs_in_release_bom": 38,
+ "refs_covered": 38,
  "refs_not_covered": [],
  "endpoints": {
   "lcsc": "GET https://www.lcsc.com/product-detail/<code>.html, __NEXT_DATA__ application/json blob",
@@ -31,13 +31,13 @@
    "part": {
     "lcsc": "C5142565",
     "expected_mpn": "TCC0201X5R104K100ZT",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C5142565.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "TCC0201X5R104K100ZT",
     "manufacturer": "CCTC",
     "package": "0201",
-    "stock": 5981500,
+    "stock": 5975250,
     "min_packet": 15000,
     "split": 50,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0432613d484f4f946fa8f7c93b61cf7a.pdf?productCode=C5142565",
@@ -71,7 +71,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 6133888,
+    "jlcpcb_stock": 6133533,
     "jlcpcb_price_usd": {
      "10": 0.0013,
      "100": 0.0013,
@@ -118,13 +118,13 @@
    "alternate": {
     "lcsc": "C190183",
     "expected_mpn": "CC0201KRX5R6BB104",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C190183.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CC0201KRX5R6BB104",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 3151600,
+    "stock": 3147300,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/5b3aae1e7925073bc9bd92db48d7aba2.pdf?productCode=C190183",
@@ -219,13 +219,13 @@
    "part": {
     "lcsc": "C335106",
     "expected_mpn": "GRM033R61A225KE47D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C335106.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM033R61A225KE47D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 59700,
+    "stock": 53500,
     "min_packet": 15000,
     "split": 50,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/a4d1e2744bd5d44ba57842651a3fd598.pdf?productCode=C335106",
@@ -263,7 +263,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 97335,
+    "jlcpcb_stock": 97292,
     "jlcpcb_price_usd": {
      "10": 0.0233,
      "100": 0.0233,
@@ -310,13 +310,13 @@
    "alternate": {
     "lcsc": "C318539",
     "expected_mpn": "CL03A225MP3CRNC",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C318539.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CL03A225MP3CRNC",
     "manufacturer": "Samsung Electro-Mechanics",
     "package": "0201",
-    "stock": 312460,
+    "stock": 310200,
     "min_packet": 10000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/e5e1a6cb60bd6713d2271da395963f60.pdf?productCode=C318539",
@@ -354,7 +354,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 352713,
+    "jlcpcb_stock": 352673,
     "jlcpcb_price_usd": {
      "10": 0.0212,
      "100": 0.0212,
@@ -414,13 +414,13 @@
    "part": {
     "lcsc": "C76941",
     "expected_mpn": "GRM033R71A103KA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C76941.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM033R71A103KA01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 242700,
+    "stock": 242200,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/58a7d404c3534585b4a0e91caba788f7.pdf?productCode=C76941",
@@ -458,7 +458,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 368597,
+    "jlcpcb_stock": 368486,
     "jlcpcb_price_usd": {
      "10": 0.0047,
      "100": 0.0047,
@@ -505,7 +505,7 @@
    "alternate": {
     "lcsc": "C285200",
     "expected_mpn": "0201X103K100NT",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C285200.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201X103K100NT",
@@ -605,7 +605,7 @@
    "part": {
     "lcsc": "C161479",
     "expected_mpn": "GRM033R71A222KA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C161479.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM033R71A222KA01D",
@@ -692,7 +692,7 @@
    "alternate": {
     "lcsc": "C2184294",
     "expected_mpn": "GCM033R71A222KA03D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C2184294.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GCM033R71A222KA03D",
@@ -799,13 +799,13 @@
    "part": {
     "lcsc": "C15525",
     "expected_mpn": "CL05A106MQ5NUNC",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C15525.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CL05A106MQ5NUNC",
     "manufacturer": "Samsung Electro-Mechanics",
     "package": "0402",
-    "stock": 5672100,
+    "stock": 5940100,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/65bc266350d348ca20afaa6e412e395a.pdf?productCode=C15525",
@@ -843,7 +843,7 @@
      ]
     ],
     "library_type": "basic",
-    "jlcpcb_stock": 9701120,
+    "jlcpcb_stock": 10027488,
     "jlcpcb_price_usd": {
      "10": 0.0256,
      "100": 0.0256,
@@ -890,13 +890,13 @@
    "alternate": {
     "lcsc": "C7472949",
     "expected_mpn": "HGC0402R5106M100NTEJ",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C7472949.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "HGC0402R5106M100NTEJ",
     "manufacturer": "Chinocera",
     "package": "0402",
-    "stock": 1999080,
+    "stock": 1992840,
     "min_packet": 10000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/3025399970486160f9625970e5fd5973.pdf?productCode=C7472949",
@@ -934,7 +934,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1999506,
+    "jlcpcb_stock": 1998962,
     "jlcpcb_price_usd": {
      "10": 0.0301,
      "100": 0.0301,
@@ -994,13 +994,13 @@
    "part": {
     "lcsc": "C76922",
     "expected_mpn": "GRM0335C1H101JA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C76922.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM0335C1H101JA01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 825900,
+    "stock": 825100,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/fbf10c963bae4a138de5637c5c931495.pdf?productCode=C76922",
@@ -1038,7 +1038,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 873542,
+    "jlcpcb_stock": 873522,
     "jlcpcb_price_usd": {
      "10": 0.0066,
      "100": 0.0066,
@@ -1085,13 +1085,13 @@
    "alternate": {
     "lcsc": "C272870",
     "expected_mpn": "CC0201JRNPO9BN101",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C272870.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CC0201JRNPO9BN101",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 1215200,
+    "stock": 1214700,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/4eca2bb4b507f1633db47e922d632b95.pdf?productCode=C272870",
@@ -1185,13 +1185,13 @@
    "part": {
     "lcsc": "C435397",
     "expected_mpn": "GJM0335C1E1R5WB01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C435397.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GJM0335C1E1R5WB01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 53420,
+    "stock": 53340,
     "min_packet": 15000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f7493dd88fc4c7f1a8836b203c0b89c6.pdf?productCode=C435397",
@@ -1229,7 +1229,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 57341,
+    "jlcpcb_stock": 57313,
     "jlcpcb_price_usd": {
      "10": 0.0337,
      "100": 0.0337,
@@ -1276,13 +1276,13 @@
    "alternate": {
     "lcsc": "C88913",
     "expected_mpn": "GRM0335C1H1R5WA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C88913.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM0335C1H1R5WA01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 86300,
+    "stock": 86350,
     "min_packet": 15000,
     "split": 50,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/bb7c7daf22f40d74dc9493dcdcae707d.pdf?productCode=C88913",
@@ -1320,7 +1320,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 86329,
+    "jlcpcb_stock": 86384,
     "jlcpcb_price_usd": {
      "10": 0.0212,
      "100": 0.0212,
@@ -1380,7 +1380,7 @@
    "part": {
     "lcsc": "C668326",
     "expected_mpn": "GJM0335C1E2R0WB01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C668326.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GJM0335C1E2R0WB01D",
@@ -1471,7 +1471,7 @@
    "alternate": {
     "lcsc": "C577359",
     "expected_mpn": "CQ0201BRNPO8BN2R0",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C577359.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CQ0201BRNPO8BN2R0",
@@ -1576,7 +1576,7 @@
    "part": {
     "lcsc": "C237424",
     "expected_mpn": "GJM0335C1HR50WB01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C237424.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GJM0335C1HR50WB01D",
@@ -1667,7 +1667,7 @@
    "alternate": {
     "lcsc": "C85922",
     "expected_mpn": "GRM0335C1HR50WA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C85922.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM0335C1HR50WA01D",
@@ -1771,7 +1771,7 @@
    "part": {
     "lcsc": "C3904589",
     "expected_mpn": "GJM0335C1HR30WB01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C3904589.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GJM0335C1HR30WB01D",
@@ -1862,7 +1862,7 @@
    "alternate": {
     "lcsc": "C723329",
     "expected_mpn": "0201CG0R3B500NT",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C723329.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201CG0R3B500NT",
@@ -1962,7 +1962,7 @@
    "part": {
     "lcsc": "C1852416",
     "expected_mpn": "GJM0335C1E3R9WB01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C1852416.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GJM0335C1E3R9WB01D",
@@ -2053,7 +2053,7 @@
    "alternate": {
     "lcsc": "C285100",
     "expected_mpn": "0201CG3R9C250NT",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C285100.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201CG3R9C250NT",
@@ -2155,13 +2155,13 @@
    "alternate": {
     "lcsc": "C161371",
     "expected_mpn": "GRM0335C1E102JA01D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C161371.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "GRM0335C1E102JA01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 139150,
+    "stock": 138500,
     "min_packet": 15000,
     "split": 50,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/7aaee6e6d98f42c891adef4509cd7519.pdf?productCode=C161371",
@@ -2199,7 +2199,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 150716,
+    "jlcpcb_stock": 150696,
     "jlcpcb_price_usd": {
      "10": 0.0156,
      "100": 0.0156,
@@ -2254,7 +2254,7 @@
    "qty": 4,
    "value": "DNP",
    "footprint": "0201",
-   "board_footprint": "C_0201_0603Metric",
+   "board_footprint": null,
    "function": "crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps)",
    "why": "Not a sourcing gap. These four pads are the four parts jlc.md counts as CANNOT DETERMINE, and the right answer is that they carry no order code because nothing is placed on them.",
    "verdict": "DNP",
@@ -2278,7 +2278,7 @@
    "part": {
     "lcsc": "C778408",
     "expected_mpn": "0201WMF4704TEE",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C778408.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201WMF4704TEE",
@@ -2365,7 +2365,7 @@
    "alternate": {
     "lcsc": "C423341",
     "expected_mpn": "0201WMJ0475TEE",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C423341.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201WMJ0475TEE",
@@ -2465,13 +2465,13 @@
    "part": {
     "lcsc": "C473048",
     "expected_mpn": "0201WMF1002TEE",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C473048.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201WMF1002TEE",
     "manufacturer": "UNI-ROYAL",
     "package": "0201",
-    "stock": 600,
+    "stock": 0,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C473048",
@@ -2501,7 +2501,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 640390,
+    "jlcpcb_stock": 640194,
     "jlcpcb_price_usd": {
      "10": 0.0012,
      "100": 0.0012,
@@ -2548,13 +2548,13 @@
    "alternate": {
     "lcsc": "C138117",
     "expected_mpn": "RC0201JR-0710KL",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C138117.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "RC0201JR-0710KL",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 627100,
+    "stock": 622600,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C138117",
@@ -2588,7 +2588,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 930146,
+    "jlcpcb_stock": 930106,
     "jlcpcb_price_usd": {
      "10": 0.0022,
      "100": 0.0022,
@@ -2648,13 +2648,13 @@
    "part": {
     "lcsc": "C270366",
     "expected_mpn": "0201WMF1000TEE",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C270366.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201WMF1000TEE",
     "manufacturer": "UNI-ROYAL",
     "package": "0201",
-    "stock": 713400,
+    "stock": 262500,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C270366",
@@ -2688,7 +2688,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 792721,
+    "jlcpcb_stock": 342721,
     "jlcpcb_price_usd": {
      "10": 0.002,
      "100": 0.002,
@@ -2735,13 +2735,13 @@
    "alternate": {
     "lcsc": "C77623",
     "expected_mpn": "RC0201FR-07100RL",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C77623.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "RC0201FR-07100RL",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 1815200,
+    "stock": 2063700,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C77623",
@@ -2775,7 +2775,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 2067381,
+    "jlcpcb_stock": 2324311,
     "jlcpcb_price_usd": {
      "10": 0.0032,
      "100": 0.0032,
@@ -2835,7 +2835,7 @@
    "part": {
     "lcsc": "C76799",
     "expected_mpn": "MLZ1608M4R7WT000",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C76799.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "MLZ1608M4R7WT000",
@@ -2879,7 +2879,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 19472,
+    "jlcpcb_stock": 19481,
     "jlcpcb_price_usd": {
      "10": 0.06,
      "100": 0.0502,
@@ -2926,13 +2926,13 @@
    "alternate": {
     "lcsc": "C394952",
     "expected_mpn": "CMH160808B4R7MT",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C394952.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "CMH160808B4R7MT",
     "manufacturer": "FH",
     "package": "0603",
-    "stock": 49800,
+    "stock": 49780,
     "min_packet": 4000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d286f068235a06893e31ac478b5041c4.pdf?productCode=C394952",
@@ -3030,7 +3030,7 @@
    "part": {
     "lcsc": "C7216765",
     "expected_mpn": "LQP03HQ2N7B02D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C7216765.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "LQP03HQ2N7B02D",
@@ -3074,7 +3074,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 14930,
+    "jlcpcb_stock": 14906,
     "jlcpcb_price_usd": {
      "10": 0.0502,
      "100": 0.0415,
@@ -3121,7 +3121,7 @@
    "alternate": {
     "lcsc": "C76752",
     "expected_mpn": "MLG0603P2N7CT000",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C76752.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "MLG0603P2N7CT000",
@@ -3226,7 +3226,7 @@
    "part": {
     "lcsc": "C3911055",
     "expected_mpn": "LQP03HQ3N5B02D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C3911055.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "LQP03HQ3N5B02D",
@@ -3270,7 +3270,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 8477,
+    "jlcpcb_stock": 8449,
     "jlcpcb_price_usd": {
      "10": 0.0431,
      "100": 0.0431,
@@ -3317,7 +3317,7 @@
    "alternate": {
     "lcsc": "C206424",
     "expected_mpn": "LQP03TN3N5B02D",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C206424.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "LQP03TN3N5B02D",
@@ -3421,13 +3421,13 @@
    "part": {
     "lcsc": "C473473",
     "expected_mpn": "0201WMF0000TEE",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C473473.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "0201WMF0000TEE",
     "manufacturer": "UNI-ROYAL",
     "package": "0201",
-    "stock": 4142500,
+    "stock": 4130500,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f42da6c80a0747bae77c2f98f4e46d1d.pdf?productCode=C473473",
@@ -3457,7 +3457,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 4472786,
+    "jlcpcb_stock": 4472650,
     "jlcpcb_price_usd": {
      "10": 0.0009,
      "100": 0.0009,
@@ -3504,13 +3504,13 @@
    "alternate": {
     "lcsc": "C106228",
     "expected_mpn": "RC0201JR-070RL",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C106228.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "RC0201JR-070RL",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 1019400,
+    "stock": 1015400,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C106228",
@@ -3544,7 +3544,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1201384,
+    "jlcpcb_stock": 1201312,
     "jlcpcb_price_usd": {
      "10": 0.0025,
      "100": 0.0025,
@@ -3604,7 +3604,7 @@
    "part": {
     "lcsc": "C44800139",
     "expected_mpn": "NRF54L10-QFAA-R7",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C44800139.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "NRF54L10-QFAA-R7",
@@ -3695,7 +3695,7 @@
    "alternate": {
     "lcsc": "C45022042",
     "expected_mpn": "NRF54L05-QFAA-R",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C45022042.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "NRF54L05-QFAA-R",
@@ -3799,7 +3799,7 @@
    "part": {
     "lcsc": "C189624",
     "expected_mpn": "LIS2DW12TR",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C189624.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "LIS2DW12TR",
@@ -3890,13 +3890,13 @@
    "alternate": {
     "lcsc": "C110926",
     "expected_mpn": "LIS2DH12TR",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C110926.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "LIS2DH12TR",
     "manufacturer": "ST",
     "package": "LGA-12(2x2)",
-    "stock": 297,
+    "stock": 317,
     "min_packet": 8000,
     "split": 1,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/80fd3cb5c04ce9b30e9bec7b53c4a455.pdf?productCode=C110926",
@@ -3934,7 +3934,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1162,
+    "jlcpcb_stock": 1178,
     "jlcpcb_price_usd": {
      "10": 0.8448,
      "100": 0.6499,
@@ -3994,20 +3994,20 @@
    "part": {
     "lcsc": "C32346",
     "expected_mpn": "Q13FC13500004",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C32346.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "Q13FC13500004",
     "manufacturer": "EPSON",
     "package": "SMD3215-2P",
-    "stock": 657565,
+    "stock": 656850,
     "min_packet": 3000,
     "split": 5,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d4d1bd2e87b2e72a8e8e7fe7d590f4c0.pdf?productCode=C32346",
     "category": "Crystals",
     "price_usd": {
      "10": 0.1731,
-     "100": 0.1364,
+     "100": 0.1365,
      "1000": 0.1026,
      "10000": 0.0812
     },
@@ -4018,7 +4018,7 @@
      ],
      [
       50,
-      0.1364
+      0.1365
      ],
      [
       150,
@@ -4038,7 +4038,7 @@
      ]
     ],
     "library_type": "basic",
-    "jlcpcb_stock": 777983,
+    "jlcpcb_stock": 777959,
     "jlcpcb_price_usd": {
      "10": 0.1714,
      "100": 0.1352,
@@ -4085,7 +4085,7 @@
    "alternate": {
     "lcsc": "C95361",
     "expected_mpn": "Q13FC13500049",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C95361.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "Q13FC13500049",
@@ -4129,7 +4129,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 135144,
+    "jlcpcb_stock": 134854,
     "jlcpcb_price_usd": {
      "10": 0.2017,
      "100": 0.1614,
@@ -4189,13 +4189,13 @@
    "part": {
     "lcsc": "C843260",
     "expected_mpn": "NX2016SA-32MHZ-STD-CZS-5",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C843260.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "NX2016SA-32MHZ-STD-CZS-5",
     "manufacturer": "NDK",
     "package": "SMD2016-4P",
-    "stock": 12840,
+    "stock": 12675,
     "min_packet": 3000,
     "split": 5,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/7d295f64f7c44230fecd37b1086251f1.pdf?productCode=C843260",
@@ -4233,7 +4233,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 13631,
+    "jlcpcb_stock": 13596,
     "jlcpcb_price_usd": {
      "10": 0.3518,
      "100": 0.2908,
@@ -4280,13 +4280,13 @@
    "alternate": {
     "lcsc": "C718072",
     "expected_mpn": "X201632MKB4SI",
-    "fetched": "2026-09-04",
+    "fetched": "2026-09-05",
     "lcsc_source": "https://www.lcsc.com/product-detail/C718072.html",
     "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
     "mpn": "X201632MKB4SI",
     "manufacturer": "YXC Crystal Oscillators",
     "package": "SMD2016-4P",
-    "stock": 34405,
+    "stock": 34400,
     "min_packet": 3000,
     "split": 5,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/03f32cc3dfdcdfc9fffa8449db791193.pdf?productCode=C718072",
@@ -4324,7 +4324,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 41666,
+    "jlcpcb_stock": 41675,
     "jlcpcb_price_usd": {
      "10": 0.1095,
      "100": 0.0866,
@@ -4671,56 +4671,15 @@
   }
  },
  "schematic_audit": {
-  "declaration_sites": 24,
+  "declaration_sites": 20,
   "distinct_order_codes": 15,
-  "match": 4,
-  "family_name_only": 1,
-  "wrong_part": 10,
+  "match": 15,
+  "family_name_only": 0,
+  "wrong_part": 0,
   "source_file": "electronics/halo_rev_a/schematic.py",
   "catalogue": "ce-fab data/jlcparts-slim.sqlite3",
-  "verdict": "FAIL",
+  "verdict": "PASS",
   "codes": [
-   {
-    "lcsc": "C1046",
-    "declared_mpn": [
-     "MLZ1608M4R7WT000"
-    ],
-    "catalogue_mpn": "SDFL2012S100KTF",
-    "catalogue_package": "0805",
-    "catalogue_description": "1.15Ω 10uH 15mA 24MHz 50@2MHz Multilayer inductor ±10% 0805 Inductors (SMD) ROHS",
-    "verdict": "WRONG PART"
-   },
-   {
-    "lcsc": "C1046539",
-    "declared_mpn": [
-     "LQP03HQ2N7B02D"
-    ],
-    "catalogue_mpn": null,
-    "catalogue_package": null,
-    "catalogue_description": null,
-    "verdict": "WRONG PART"
-   },
-   {
-    "lcsc": "C1523",
-    "declared_mpn": [
-     "CL03C101JB3NNNC"
-    ],
-    "catalogue_mpn": "0402B102K500NT",
-    "catalogue_package": "0402",
-    "catalogue_description": "1nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
-    "verdict": "WRONG PART"
-   },
-   {
-    "lcsc": "C1546",
-    "declared_mpn": [
-     "0201 C0G 1.1nF",
-     "CL03A104KA3NNNC"
-    ],
-    "catalogue_mpn": "0402CG101J500NT",
-    "catalogue_package": "0402",
-    "catalogue_description": "100pF 50V C0G ±5% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
-    "verdict": "WRONG PART"
-   },
    {
     "lcsc": "C15525",
     "declared_mpn": [
@@ -4732,15 +4691,14 @@
     "verdict": "MATCH"
    },
    {
-    "lcsc": "C1568",
+    "lcsc": "C161371",
     "declared_mpn": [
-     "GJM0335C1E1R5WB01",
-     "GJM0335C1ER50WB01"
+     "GRM0335C1E102JA01D"
     ],
-    "catalogue_mpn": "0402CG4R0C500NT",
-    "catalogue_package": "0402",
-    "catalogue_description": "4pF 50V C0G 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
-    "verdict": "WRONG PART"
+    "catalogue_mpn": "GRM0335C1E102JA01D",
+    "catalogue_package": "0201",
+    "catalogue_description": "1nF 25V C0G ±5% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
    },
    {
     "lcsc": "C189624",
@@ -4753,55 +4711,34 @@
     "verdict": "MATCH"
    },
    {
-    "lcsc": "C25076",
+    "lcsc": "C237424",
     "declared_mpn": [
-     "0201WMF1000TEE",
-     "0201WMJ0000TEE"
+     "GJM0335C1HR50WB01D"
     ],
-    "catalogue_mpn": "0402WGF1000TCE",
-    "catalogue_package": "0402",
-    "catalogue_description": "-55℃~+155℃ 100Ω 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
-    "verdict": "WRONG PART"
+    "catalogue_mpn": "GJM0335C1HR50WB01D",
+    "catalogue_package": "0201",
+    "catalogue_description": "0.5pF 50V C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
    },
    {
-    "lcsc": "C25744",
+    "lcsc": "C270366",
     "declared_mpn": [
-     "0201WMF1002TEE"
+     "0201WMF1000TEE"
     ],
-    "catalogue_mpn": "0402WGF1002TCE",
-    "catalogue_package": "0402",
-    "catalogue_description": "-55℃~+155℃ 10kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
-    "verdict": "WRONG PART"
+    "catalogue_mpn": "0201WMF1000TEE",
+    "catalogue_package": "0201",
+    "catalogue_description": "-55℃~+155℃ 100Ω 25V 50mW Thick Film Resistor ±1% ±200ppm/℃ 0201 Chip Resistor - Surface Mount ROHS",
+    "verdict": "MATCH"
    },
    {
-    "lcsc": "C25765",
+    "lcsc": "C335106",
     "declared_mpn": [
-     "0201WMF4704TEE"
+     "GRM033R61A225KE47D"
     ],
-    "catalogue_mpn": "0402WGF2002TCE",
-    "catalogue_package": "0402",
-    "catalogue_description": "-55℃~+155℃ 20kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
-    "verdict": "WRONG PART"
-   },
-   {
-    "lcsc": "C2827888",
-    "declared_mpn": [
-     "CL03A225MQ3CSNC"
-    ],
-    "catalogue_mpn": "DB2EK-3.5-8P-BK-S",
-    "catalogue_package": "P=3.5mm",
-    "catalogue_description": "-40℃~+105℃ 1 1.5 16~28 1x8P 3.5mm 320V 8 8A 8P Black Male Plug Screw Screw Connection (M2) Top Entry P=3.5mm Pluggable System Terminal Block ROHS",
-    "verdict": "WRONG PART"
-   },
-   {
-    "lcsc": "C32346",
-    "declared_mpn": [
-     "FC-135 32.768kHz"
-    ],
-    "catalogue_mpn": "Q13FC13500004",
-    "catalogue_package": "SMD3215-2P",
-    "catalogue_description": "-40℃~+85℃ 12.5pF 32.768kHz 70kΩ Crystal Oscillator ±20ppm SMD3215-2P Crystals ROHS",
-    "verdict": "FAMILY NAME, NOT AN ORDER-CODE CHECK"
+    "catalogue_mpn": "GRM033R61A225KE47D",
+    "catalogue_package": "0201",
+    "catalogue_description": "10V 2.2uF X5R ±10% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
    },
    {
     "lcsc": "C44800139",
@@ -4814,23 +4751,83 @@
     "verdict": "MATCH"
    },
    {
-    "lcsc": "C7498149",
+    "lcsc": "C473048",
     "declared_mpn": [
-     "CR2032"
+     "0201WMF1002TEE"
     ],
-    "catalogue_mpn": "BS-CR2032-8",
-    "catalogue_package": "SMD",
-    "catalogue_description": "",
-    "verdict": "WRONG PART"
+    "catalogue_mpn": "0201WMF1002TEE",
+    "catalogue_package": "0201",
+    "catalogue_description": "-55℃~+155℃ 10kΩ 25V 50mW Thick Film Resistor ±1% ±200ppm/℃ 0201 Chip Resistor - Surface Mount ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C473473",
+    "declared_mpn": [
+     "0201WMF0000TEE"
+    ],
+    "catalogue_mpn": "0201WMF0000TEE",
+    "catalogue_package": "0201",
+    "catalogue_description": "-55℃~+155℃ 0Ω 25V 50mW Thick Film Resistor ±1% 0201 Chip Resistor - Surface Mount ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C5142565",
+    "declared_mpn": [
+     "TCC0201X5R104K100ZT"
+    ],
+    "catalogue_mpn": "TCC0201X5R104K100ZT",
+    "catalogue_package": "0201",
+    "catalogue_description": "100nF 10V X5R ±10% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C76799",
+    "declared_mpn": [
+     "MLZ1608M4R7WT000"
+    ],
+    "catalogue_mpn": "MLZ1608M4R7WT000",
+    "catalogue_package": "0603",
+    "catalogue_description": "120mA 350mA 4.7uH 500mΩ Multilayer inductor ±20% 0603 Inductors (SMD) ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C76922",
+    "declared_mpn": [
+     "GRM0335C1H101JA01D"
+    ],
+    "catalogue_mpn": "GRM0335C1H101JA01D",
+    "catalogue_package": "0201",
+    "catalogue_description": "100pF 50V C0G ±5% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C778408",
+    "declared_mpn": [
+     "0201WMF4704TEE"
+    ],
+    "catalogue_mpn": "0201WMF4704TEE",
+    "catalogue_package": "0201",
+    "catalogue_description": "-55℃~+155℃ 25V 4.7MΩ 50mW Thick Film Resistor ±1% ±200ppm/℃ 0201 Chip Resistor - Surface Mount ROHS",
+    "verdict": "MATCH"
    },
    {
     "lcsc": "C843260",
     "declared_mpn": [
-     "NX2016SA-32MHZ"
+     "NX2016SA-32MHZ-STD-CZS-5"
     ],
     "catalogue_mpn": "NX2016SA-32MHZ-STD-CZS-5",
     "catalogue_package": "SMD2016-4P",
     "catalogue_description": "Crystal Oscillator SMD2016-4P Crystals ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C95361",
+    "declared_mpn": [
+     "Q13FC13500049"
+    ],
+    "catalogue_mpn": "Q13FC13500049",
+    "catalogue_package": "SMD3215-2P",
+    "catalogue_description": "-40℃~+85℃ 32.768kHz 6pF 70kΩ Crystal Oscillator ±20ppm SMD3215-2P Crystals ROHS",
     "verdict": "MATCH"
    }
   ]

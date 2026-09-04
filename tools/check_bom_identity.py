@@ -81,6 +81,8 @@ VAL_RE = re.compile(r"(?<![A-Za-z0-9.])(\d+(?:\.\d+)?)\s*"
                     r"([pnuµμmkKMG]?)\s*(F|H|Hz|HZ|Ω|R|ohm|OHM)\b")
 # an EIA / metric package token: 0201, 0402, 0603, 1005Metric, 0603Metric...
 PKG_RE = re.compile(r"(?<![0-9])(01005|0201|0402|0603|0805|1206|1210|1812|2010|2512)(?![0-9])")
+# crystals name a metric size instead: Crystal_SMD_2016-... / SMD2016-4P
+XTAL_RE = re.compile(r"(?<![0-9])(2016|2520|3215|3225|5032)(?!Metric)(?![0-9])")
 METRIC_RE = re.compile(r"(?<![0-9])(0402|0603|1005|1608|2012|3216)Metric")
 # KiCad footprints name the imperial code first: C_0201_0603Metric
 METRIC_TO_IMPERIAL = {"0402": "01005", "0603": "0201", "1005": "0402",
@@ -166,6 +168,9 @@ def imperial_of(footprint):
     m = METRIC_RE.search(footprint or "")
     if m:
         return METRIC_TO_IMPERIAL.get(m.group(1))
+    m = XTAL_RE.search(footprint or "")
+    if m:
+        return m.group(1)
     m = PKG_RE.search(footprint or "")
     return m.group(1) if m else None
 
@@ -237,8 +242,19 @@ def main():
             add("part_resolves", PASS, f"{code} = {mpn} ({pkg})")
 
             # ---- I2 class_matches -------------------------------------------
+            # A 0-ohm link is a resistor wherever the sheet puts it: an "L"
+            # ref fitted as a 0 R jumper is normal practice (board.py's L10),
+            # and refusing the class there would make the checker wrong, not
+            # the board. The VALUE check below still has to say 0.
+            zero_link = re.fullmatch(r"0\s*(Ω|R|ohm|ohms)?", (value or "").strip(),
+                                     re.I) is not None
             got_class = klass_of_description(desc)
-            if want_class is None:
+            if zero_link and want_class in ("inductor", "ferrite bead",
+                                            "resistor"):
+                add("class_matches", PASS,
+                    f"{prefix}* is fitted as a 0 Ω jumper: {code} is a "
+                    f"{got_class} of 0 Ω, which is the same link")
+            elif want_class is None:
                 add("class_matches", PASS,
                     f"{prefix}* is not a passive designator; identity is judged by MPN below")
             elif got_class is None:

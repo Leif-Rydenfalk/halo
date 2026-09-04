@@ -1,13 +1,13 @@
 {
  "$halo": 1,
  "tool": "tools/check_fabset.py",
- "generated": "2026-09-04T10:44:23+00:00",
+ "generated": "2026-09-04T18:27:42+00:00",
  "fabset": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
- "verdict": "FAIL",
+ "verdict": "PASS",
  "counts": {
-  "PASS": 10,
-  "FAIL": 1,
+  "PASS": 11,
+  "FAIL": 0,
   "CANNOT DETERMINE": 0
  },
  "rows": [
@@ -33,12 +33,12 @@
   },
   {
    "name": "copper_has_geometry",
-   "value": 825,
+   "value": 1208,
    "unit": "ops",
    "rule": {
     "gte": 1
    },
-   "why": "every copper layer carries metal: halo_rev_a-B_Cu.gbl=5591, halo_rev_a-F_Cu.gtl=3335, halo_rev_a-In1_Cu.g1=825, halo_rev_a-In2_Cu.g2=825",
+   "why": "every copper layer carries metal: halo_rev_a-B_Cu.gbl=2160, halo_rev_a-F_Cu.gtl=3700, halo_rev_a-In1_Cu.g1=1208, halo_rev_a-In2_Cu.g2=2284",
    "verdict": "PASS"
   },
   {
@@ -63,22 +63,22 @@
   },
   {
    "name": "drill_has_hits",
-   "value": 0,
+   "value": 50,
    "unit": "holes",
    "rule": {
     "gte": 1
    },
-   "why": "4-layer board: it cannot exist without vias. halo_rev_a-NPTH.drl=0, halo_rev_a-PTH.drl=0",
-   "verdict": "FAIL"
+   "why": "4-layer board: it cannot exist without vias. halo_rev_a-NPTH.drl=0, halo_rev_a-PTH.drl=50",
+   "verdict": "PASS"
   },
   {
    "name": "drill_covers_board",
-   "value": 0,
+   "value": 50,
    "unit": "holes",
    "rule": {
-    "gte": 0
+    "gte": 50
    },
-   "why": "source board has 0 via(s) + 0 thru-hole pad(s) + 0 NPTH pad(s) = 0 hole(s) that must be drilled; the drill file(s) carry 0",
+   "why": "source board has 50 via(s) + 0 thru-hole pad(s) + 0 NPTH pad(s) = 50 hole(s) that must be drilled; the drill file(s) carry 50",
    "verdict": "PASS"
   },
   {
@@ -114,14 +114,14 @@
   },
   {
    "name": "export_is_fresh",
-   "value": 92.0,
+   "value": 695.1,
    "unit": "s",
    "rule": {
     "gte": 0
    },
-   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T10:39:58+00:00 vs board saved 2026-09-04T10:38:26.023227+00:00: export is at or after the board",
+   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T18:27:34+00:00 vs board saved 2026-09-04T18:15:58.880561+00:00: export is at or after the board",
    "verdict": "PASS"
   }
  ],
- "command": "python3 tools/check_fabset.py out/release/board --board electronics/halo_rev_a/out/halo_rev_a.kicad_pcb --expect-layers 4 --expect-outline-mm 26.0 --outline-tol 0.5 --json out/release/board/fabset-check.json"
+ "command": "python3 /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/tools/check_fabset.py /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board --board /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb --expect-layers 4 --expect-outline-mm 26.0 --json /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/fabset-check.json"
 }

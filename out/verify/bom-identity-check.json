@@ -1,0 +1,1116 @@
+{
+ "$halo": 1,
+ "tool": "tools/check_bom_identity.py",
+ "generated": "2026-09-04T18:27:43+00:00",
+ "bom": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-BOM.csv",
+ "catalogue_snapshot": "2026-09-03",
+ "verdict": "PASS",
+ "lines": 23,
+ "assertion_counts": {
+  "PASS": 138,
+  "FAIL": 0,
+  "CANNOT DETERMINE": 0
+ },
+ "code_collisions": {},
+ "rows": [
+  {
+   "designator": "R6,R8,R7,R5,R10",
+   "lcsc": "C473048",
+   "value": "10k",
+   "footprint": "R_0201_0603Metric",
+   "prefix": "R",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C473048"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C473048 = 0201WMF1002TEE (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "R* wants a resistor; C473048 is a resistor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 10 k\u03a9; C473048 (0201WMF1002TEE) is 10 k\u03a9 \u2014 the same value",
+     "want": "10 k\u03a9",
+     "got": "10 k\u03a9",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint R_0201_0603Metric is 0201; C473048 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C473048 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "0201WMF1002TEE",
+   "package": "0201",
+   "description": "-55\u2103~+155\u2103 10k\u03a9 25V 50mW Thick Film Resistor \u00b11% \u00b1200ppm/\u2103 0201 Chip Resistor - Surface Mount ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "L10",
+   "lcsc": "C473473",
+   "value": "0R",
+   "footprint": "L_0201_0603Metric",
+   "prefix": "L",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C473473"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C473473 = 0201WMF0000TEE (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "L* is fitted as a 0 \u03a9 jumper: C473473 is a resistor of 0 \u03a9, which is the same link"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 0 \u03a9; C473473 (0201WMF0000TEE) is 0 \u03a9 \u2014 the same value",
+     "want": "0 \u03a9",
+     "got": "0 \u03a9",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint L_0201_0603Metric is 0201; C473473 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C473473 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "0201WMF0000TEE",
+   "package": "0201",
+   "description": "-55\u2103~+155\u2103 0\u03a9 25V 50mW Thick Film Resistor \u00b11% 0201 Chip Resistor - Surface Mount ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "R1,R2",
+   "lcsc": "C778408",
+   "value": "4.7M",
+   "footprint": "R_0201_0603Metric",
+   "prefix": "R",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C778408"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C778408 = 0201WMF4704TEE (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "R* wants a resistor; C778408 is a resistor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 4.7 M\u03a9; C778408 (0201WMF4704TEE) is 4.7 M\u03a9 \u2014 the same value",
+     "want": "4.7 M\u03a9",
+     "got": "4.7 M\u03a9",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint R_0201_0603Metric is 0201; C778408 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C778408 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "0201WMF4704TEE",
+   "package": "0201",
+   "description": "-55\u2103~+155\u2103 25V 4.7M\u03a9 50mW Thick Film Resistor \u00b11% \u00b1200ppm/\u2103 0201 Chip Resistor - Surface Mount ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C4,C1,C3,C2",
+   "lcsc": "C5142565",
+   "value": "100nF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C5142565"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C5142565 = TCC0201X5R104K100ZT (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C5142565 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 100 nF; C5142565 (TCC0201X5R104K100ZT) is 100 nF \u2014 the same value",
+     "want": "100 nF",
+     "got": "100 nF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C5142565 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C5142565 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "TCC0201X5R104K100ZT",
+   "package": "0201",
+   "description": "100nF 10V X5R \u00b110% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C20,C21",
+   "lcsc": "C237424",
+   "value": "0.5pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C237424"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C237424 = GJM0335C1HR50WB01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C237424 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 0.5 pF; C237424 (GJM0335C1HR50WB01D) is 0.5 pF \u2014 the same value",
+     "want": "0.5 pF",
+     "got": "0.5 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C237424 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C237424 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GJM0335C1HR50WB01D",
+   "package": "0201",
+   "description": "0.5pF 50V C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C18",
+   "lcsc": "C435397",
+   "value": "1.5pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C435397"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C435397 = GJM0335C1E1R5WB01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C435397 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 1.5 pF; C435397 (GJM0335C1E1R5WB01D) is 1.5 pF \u2014 the same value",
+     "want": "1.5 pF",
+     "got": "1.5 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C435397 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C435397 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GJM0335C1E1R5WB01D",
+   "package": "0201",
+   "description": "1.5pF 25V C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "L4,L3",
+   "lcsc": "C3911055",
+   "value": "3.5nH",
+   "footprint": "L_0201_0603Metric",
+   "prefix": "L",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C3911055"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C3911055 = LQP03HQ3N5B02D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "L* wants a inductor; C3911055 is a inductor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 3.5 nH; C3911055 (LQP03HQ3N5B02D) is 3.5 nH \u2014 the same value",
+     "want": "3.5 nH",
+     "got": "3.5 nH",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint L_0201_0603Metric is 0201; C3911055 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C3911055 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "LQP03HQ3N5B02D",
+   "package": "0201",
+   "description": "170m\u03a9 20@500MHz 3.5nH 500mA 7GHz Thick Film Inductor 0201 Inductors (SMD) ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C13",
+   "lcsc": "C76922",
+   "value": "100pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C76922"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C76922 = GRM0335C1H101JA01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C76922 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 100 pF; C76922 (GRM0335C1H101JA01D) is 100 pF \u2014 the same value",
+     "want": "100 pF",
+     "got": "100 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C76922 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C76922 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GRM0335C1H101JA01D",
+   "package": "0201",
+   "description": "100pF 50V C0G \u00b15% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C7",
+   "lcsc": "C161479",
+   "value": "2.2nF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C161479"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C161479 = GRM033R71A222KA01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C161479 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 2.2 nF; C161479 (GRM033R71A222KA01D) is 2.2 nF \u2014 the same value",
+     "want": "2.2 nF",
+     "got": "2.2 nF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C161479 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C161479 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GRM033R71A222KA01D",
+   "package": "0201",
+   "description": "10V 2.2nF X7R \u00b110% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C22",
+   "lcsc": "C3904589",
+   "value": "0.3pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C3904589"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C3904589 = GJM0335C1HR30WB01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C3904589 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 0.3 pF; C3904589 (GJM0335C1HR30WB01D) is 0.3 pF \u2014 the same value",
+     "want": "0.3 pF",
+     "got": "0.3 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C3904589 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C3904589 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GJM0335C1HR30WB01D",
+   "package": "0201",
+   "description": "0.3pF 50V C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C5,C8",
+   "lcsc": "C335106",
+   "value": "2.2uF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C335106"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C335106 = GRM033R61A225KE47D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C335106 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 2.2 uF; C335106 (GRM033R61A225KE47D) is 2.2 uF \u2014 the same value",
+     "want": "2.2 uF",
+     "got": "2.2 uF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C335106 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C335106 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GRM033R61A225KE47D",
+   "package": "0201",
+   "description": "10V 2.2uF X5R \u00b110% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "L2",
+   "lcsc": "C7216765",
+   "value": "2.7nH",
+   "footprint": "L_0201_0603Metric",
+   "prefix": "L",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C7216765"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C7216765 = LQP03HQ2N7B02D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "L* wants a inductor; C7216765 is a inductor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 2.7 nH; C7216765 (LQP03HQ2N7B02D) is 2.7 nH \u2014 the same value",
+     "want": "2.7 nH",
+     "got": "2.7 nH",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint L_0201_0603Metric is 0201; C7216765 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C7216765 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "LQP03HQ2N7B02D",
+   "package": "0201",
+   "description": "120m\u03a9 2.7nH 20@500MHz 600mA 9GHz Thick Film Inductor 0201 Inductors (SMD) ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C23",
+   "lcsc": "C1852416",
+   "value": "3.9pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C1852416"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C1852416 = GJM0335C1E3R9WB01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C1852416 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 3.9 pF; C1852416 (GJM0335C1E3R9WB01D) is 3.9 pF \u2014 the same value",
+     "want": "3.9 pF",
+     "got": "3.9 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C1852416 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C1852416 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GJM0335C1E3R9WB01D",
+   "package": "0201",
+   "description": "25V 3.9pF C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C25,C24",
+   "lcsc": "C161371",
+   "value": "1.0nF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C161371"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C161371 = GRM0335C1E102JA01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C161371 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 1 nF; C161371 (GRM0335C1E102JA01D) is 1 nF \u2014 the same value",
+     "want": "1 nF",
+     "got": "1 nF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C161371 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C161371 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GRM0335C1E102JA01D",
+   "package": "0201",
+   "description": "1nF 25V C0G \u00b15% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "R9",
+   "lcsc": "C270366",
+   "value": "100R",
+   "footprint": "R_0201_0603Metric",
+   "prefix": "R",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C270366"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C270366 = 0201WMF1000TEE (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "R* wants a resistor; C270366 is a resistor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 100 \u03a9; C270366 (0201WMF1000TEE) is 100 \u03a9 \u2014 the same value",
+     "want": "100 \u03a9",
+     "got": "100 \u03a9",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint R_0201_0603Metric is 0201; C270366 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C270366 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "0201WMF1000TEE",
+   "package": "0201",
+   "description": "-55\u2103~+155\u2103 100\u03a9 25V 50mW Thick Film Resistor \u00b11% \u00b1200ppm/\u2103 0201 Chip Resistor - Surface Mount ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C6",
+   "lcsc": "C76941",
+   "value": "10nF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C76941"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C76941 = GRM033R71A103KA01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C76941 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 10 nF; C76941 (GRM033R71A103KA01D) is 10 nF \u2014 the same value",
+     "want": "10 nF",
+     "got": "10 nF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C76941 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C76941 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GRM033R71A103KA01D",
+   "package": "0201",
+   "description": "10V 10nF X7R \u00b110% 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C19",
+   "lcsc": "C668326",
+   "value": "2.0pF",
+   "footprint": "C_0201_0603Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C668326"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C668326 = GJM0335C1E2R0WB01D (0201)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C668326 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 2 pF; C668326 (GJM0335C1E2R0WB01D) is 2 pF \u2014 the same value",
+     "want": "2 pF",
+     "got": "2 pF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0201_0603Metric is 0201; C668326 is 0201",
+     "want": "0201",
+     "got": "0201"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C668326 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "GJM0335C1E2R0WB01D",
+   "package": "0201",
+   "description": "25V 2pF C0G 0201 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "X1",
+   "lcsc": "C95361",
+   "value": "32.768kHz",
+   "footprint": "Crystal_SMD_3215-2Pin_3.2x1.5mm",
+   "prefix": "X",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C95361"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C95361 = Q13FC13500049 (SMD3215-2P)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "X* wants a crystal or oscillator; C95361 is a oscillator"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 32.768 kHz; C95361 (Q13FC13500049) is 32.768 kHz \u2014 the same value",
+     "want": "32.768 kHz",
+     "got": "32.768 kHz",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint Crystal_SMD_3215-2Pin_3.2x1.5mm is 3215; C95361 is 3215",
+     "want": "3215",
+     "got": "3215"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C95361 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "Q13FC13500049",
+   "package": "SMD3215-2P",
+   "description": "-40\u2103~+85\u2103 32.768kHz 6pF 70k\u03a9 Crystal Oscillator \u00b120ppm SMD3215-2P Crystals ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "C9,C12,C10,C11",
+   "lcsc": "C15525",
+   "value": "10uF",
+   "footprint": "C_0402_1005Metric",
+   "prefix": "C",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C15525"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C15525 = CL05A106MQ5NUNC (0402)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "C* wants a capacitor; C15525 is a capacitor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 10 uF; C15525 (CL05A106MQ5NUNC) is 10 uF \u2014 the same value",
+     "want": "10 uF",
+     "got": "10 uF",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint C_0402_1005Metric is 0402; C15525 is 0402",
+     "want": "0402",
+     "got": "0402"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C15525 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "CL05A106MQ5NUNC",
+   "package": "0402",
+   "description": "10uF 6.3V X5R \u00b120% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "U1",
+   "lcsc": "C44800139",
+   "value": "nRF54L10-QFAA-R7",
+   "footprint": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
+   "prefix": "U",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C44800139"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C44800139 = NRF54L10-QFAA-R7 (VFQFN-48)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "U* is not a passive designator; identity is judged by MPN below"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM value 'nRF54L10-QFAA-R7' vs catalogue MPN 'NRF54L10-QFAA-R7': the same part",
+     "want": "nRF54L10-QFAA-R7",
+     "got": "NRF54L10-QFAA-R7"
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "not a passive: package is judged by the footprint library"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C44800139 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "NRF54L10-QFAA-R7",
+   "package": "VFQFN-48",
+   "description": "VFQFN-48 Microcontrollers (MCU/MPU/SOC) ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "X2",
+   "lcsc": "C843260",
+   "value": "32MHz",
+   "footprint": "Crystal_SMD_2016-4Pin_2.0x1.6mm",
+   "prefix": "X",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C843260"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C843260 = NX2016SA-32MHZ-STD-CZS-5 (SMD2016-4P)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "X* wants a crystal or oscillator; C843260 is a oscillator"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 32 MHz; C843260 (NX2016SA-32MHZ-STD-CZS-5) is 32 MHz \u2014 the same value",
+     "want": "32 MHz",
+     "got": "32 MHz",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint Crystal_SMD_2016-4Pin_2.0x1.6mm is 2016; C843260 is 2016",
+     "want": "2016",
+     "got": "2016"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C843260 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "NX2016SA-32MHZ-STD-CZS-5",
+   "package": "SMD2016-4P",
+   "description": "Crystal Oscillator SMD2016-4P Crystals ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "L1",
+   "lcsc": "C76799",
+   "value": "4.7uH",
+   "footprint": "L_0603_1608Metric",
+   "prefix": "L",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C76799"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C76799 = MLZ1608M4R7WT000 (0603)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "L* wants a inductor; C76799 is a inductor"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM asks for 4.7 uH; C76799 (MLZ1608M4R7WT000) is 4.7 uH \u2014 the same value",
+     "want": "4.7 uH",
+     "got": "4.7 uH",
+     "error_pct": 0.0
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "footprint L_0603_1608Metric is 0603; C76799 is 0603",
+     "want": "0603",
+     "got": "0603"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C76799 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "MLZ1608M4R7WT000",
+   "package": "0603",
+   "description": "120mA 350mA 4.7uH 500m\u03a9 Multilayer inductor \u00b120% 0603 Inductors (SMD) ROHS",
+   "verdict": "PASS"
+  },
+  {
+   "designator": "U2",
+   "lcsc": "C189624",
+   "value": "LIS2DW12TR",
+   "footprint": "LGA-12_2x2mm_P0.5mm",
+   "prefix": "U",
+   "checks": [
+    {
+     "name": "line_has_a_part",
+     "verdict": "PASS",
+     "why": "names C189624"
+    },
+    {
+     "name": "part_resolves",
+     "verdict": "PASS",
+     "why": "C189624 = LIS2DW12TR (LGA-12)"
+    },
+    {
+     "name": "class_matches",
+     "verdict": "PASS",
+     "why": "U* is not a passive designator; identity is judged by MPN below"
+    },
+    {
+     "name": "value_matches",
+     "verdict": "PASS",
+     "why": "BOM value 'LIS2DW12TR' vs catalogue MPN 'LIS2DW12TR': the same part",
+     "want": "LIS2DW12TR",
+     "got": "LIS2DW12TR"
+    },
+    {
+     "name": "package_matches",
+     "verdict": "PASS",
+     "why": "not a passive: package is judged by the footprint library"
+    },
+    {
+     "name": "one_code_one_value",
+     "verdict": "PASS",
+     "why": "C189624 serves exactly one value on this BOM"
+    }
+   ],
+   "mpn": "LIS2DW12TR",
+   "package": "LGA-12",
+   "description": "-40\u2103~+85\u2103 1.62V~3.6V 16bit 50nA Accelerometer Motion event detection SPI\u3001I2C X,Y,Z \u00b116g LGA-12(2x2) Accelerometers ROHS",
+   "verdict": "PASS"
+  }
+ ],
+ "command": "python3 /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/tools/check_bom_identity.py /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-BOM.csv --json /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/verify/bom-identity-check.json --quiet"
+}
