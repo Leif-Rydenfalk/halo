@@ -52,9 +52,38 @@ def font(sz):
     return ImageFont.load_default()
 
 
+def resample(rows, n=1440, smooth=5):
+    """Put a sparse r(theta) list onto a uniform grid, interpolating ACROSS the rays
+    p_outline.py discarded, and report which arcs are interpolated so the picture can
+    say so. Then an angular median-of-`smooth` to take out single-pixel jpeg noise --
+    and the maximum displacement it caused is REPORTED, because a smoother that quietly
+    erased the notch at top centre would make the render look better and be wrong."""
+    grid = np.arange(n) * 360.0 / n
+    t = np.array([r[0] for r in rows], float)
+    v = np.array([r[1] for r in rows], float)
+    o = np.argsort(t); t, v = t[o], v[o]
+    # wrap for periodic interpolation
+    tt = np.concatenate([t - 360, t, t + 360])
+    vv = np.concatenate([v, v, v])
+    r = np.interp(grid, tt, vv)
+    # which grid angles are further than one source step from any real measurement
+    step = 360.0 / n
+    d = np.min(np.abs((grid[:, None] - tt[None, :] + 180) % 360 - 180), axis=1)
+    interpolated = d > 1.5 * step
+    if smooth > 1:
+        pad = np.concatenate([r[-smooth:], r, r[:smooth]])
+        sm = np.array([np.median(pad[i:i + 2 * smooth + 1]) for i in range(n)])
+        moved = float(np.max(np.abs(sm - r)))
+        say(f"  angular median smoother (+/-{smooth} bins): max displacement "
+            f"{moved:.4f} mm")
+        r = sm
+    return grid, r, interpolated
+
+
 def load_profile(board):
-    """Return (outer_xy_mm, inner_xy_mm) closed polygons, centred on the board
-    centroid, scaled so the mean outer radius matches the stated diameter/2."""
+    """Return closed polygons in mm, centred on the board centroid, scaled so the mean
+    outer radius matches the stated diameter/2. ONE scale parameter; the SHAPE comes
+    from the photograph."""
     src = os.path.join(BOARD_DIR, board["outline"]["profile_source"])
     with open(src) as f:
         o = json.load(f)
@@ -64,18 +93,23 @@ def load_profile(board):
     say(f"profile source  {os.path.relpath(src)}")
     say(f"normalised: mean outer r in source {om:.4f} mm -> target {tgt_r:.4f} mm, k={k:.6f}")
 
-    def poly(rows):
-        rows = sorted(rows)
-        return [(k * r * math.cos(math.radians(t)), -k * r * math.sin(math.radians(t)))
-                for t, r in rows]
+    say("outer profile:")
+    to, ro, io_ = resample(o["outer"]["r_theta_deg_mm"])
+    say(f"  {io_.sum()}/{len(io_)} angles are INTERPOLATED across discarded rays "
+        f"({io_.sum()*360/len(io_):.1f} deg of arc) -- drawn, and marked on the picture")
+    say("inner profile:")
+    ti, ri, ii_ = resample(o["inner"]["r_theta_deg_mm"])
+    say(f"  {ii_.sum()}/{len(ii_)} angles interpolated")
 
-    outer = poly(o["outer"]["r_theta_deg_mm"])
-    inner = poly(o["inner"]["r_theta_deg_mm"])
-    return outer, inner, o, k
+    def poly(t, r):
+        return [(k * rr * math.cos(math.radians(a)), -k * rr * math.sin(math.radians(a)))
+                for a, rr in zip(t, r)]
+
+    return poly(to, ro), poly(ti, ri), o, k, io_, ii_
 
 
 def draw(board, px_per_mm, margin_mm, with_caption):
-    outer, inner, prof, k = load_profile(board)
+    outer, inner, prof, k, interp_o, interp_i = load_profile(board)
     R = max(math.hypot(x, y) for x, y in outer)
     half = R + margin_mm
     W = H = int(round(2 * half * px_per_mm))
@@ -91,6 +125,13 @@ def draw(board, px_per_mm, margin_mm, with_caption):
     d.polygon([P(p) for p in outer], fill=MASK, outline=MASK_EDGE)
     d.polygon([P(p) for p in inner], fill=BG)
     d.line([P(p) for p in inner] + [P(inner[0])], fill=MASK_EDGE, width=2)
+
+    # R4: the arcs that were INTERPOLATED across discarded rays are drawn in the
+    # provisional colour. Where the picture is a guess, the picture says so.
+    n = len(outer)
+    for i in range(n):
+        if interp_o[i] and interp_o[(i + 1) % n]:
+            d.line([P(outer[i]), P(outer[(i + 1) % n])], fill=PROV + (255,), width=5)
 
     if with_caption:
         f1, f2 = font(26), font(19)
