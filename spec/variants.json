@@ -1,0 +1,66 @@
+{
+  "$halo": 1,
+  "note": "The halo family. Leif, 2026-09-05: 'so create many different versions including one which is a perfect recreation.' One design language, several boards. Each variant states what it is FOR, what it copies, what it changes, and what it cannot have.",
+  "variants": [
+    {
+      "id": "halo-replica", "name": "Replica", "name_zh": "复刻版",
+      "purpose": "A part-for-part recreation of the AirTag's internals, as close as anything buyable allows. The reference against which every other variant's divergence is measured.",
+      "soc": "nRF52832 — Apple's own choice",
+      "copies": ["the nRF52832 radio", "a 32 Mbit SPI NOR flash on a REGULATED 1.8 V rail as Apple does, via a buck and a load switch", "a 3-axis accelerometer", "a class-D audio amplifier driving a voice coil", "the TPS62746 buck, FPF2487 load switch and TLV9001 op-amp", "both crystals", "five 100 uF bulk capacitors for the five-removals reset", "0.3 mm annular board with a centre hole", "three sprung battery contacts, two positive rails sensed"],
+      "changes": ["the U1 ultra-wideband module cannot be bought at any price — the footprint and its feed exist, unpopulated", "Apple's laser-structured antenna carrier needs tooling we do not have; the replica uses a flex or an etched carrier and the difference is measured, not hidden", "any Apple part that is obsolete or unbuyable is substituted by closest function, each one named"],
+      "cannot": ["Precision Finding — no U1, and the accessory programme is incompatible with publishing", "appearing inside Apple's own Find My app — needs a per-unit token burned at the factory"],
+      "why": "Leif asked for it directly, and it is the honest baseline: it turns every divergence elsewhere from an assertion into a measured difference.",
+      "status": "TO BUILD"
+    },
+    {
+      "id": "halo-core", "name": "Core", "name_zh": "核心版",
+      "purpose": "The open product: cheapest to make, easiest to embed, and the one that ships. A functional equivalent rather than a copy.",
+      "soc": "nRF54L10",
+      "copies": ["every function of the AirTag except Precision Finding"],
+      "changes": ["no external flash — the firmware is 1.27 percent of the SoC's own memory", "no audio amplifier — a bare piezo bender driven anti-phase from two pins", "antennas etched in the board's own copper rather than on a plastic carrier", "0.6 mm solid board rather than 0.3 mm annular", "both Apple's and Google's networks advertising in one event", "peer ranging by Bluetooth Channel Sounding"],
+      "cannot": ["Precision Finding"],
+      "why": "About $6 a unit against Apple's $29 retail, an antenna 3.7 dB better than theirs, and a circuit that drops into any host board.",
+      "status": "REVISION A IN PROGRESS"
+    },
+    {
+      "id": "halo-block", "name": "Block", "name_zh": "模块版",
+      "purpose": "The circuit as a solder-down module anyone can put in their own product, in any outline.",
+      "soc": "nRF54L10",
+      "copies": ["the core's whole circuit"],
+      "changes": ["castellated edge, roughly 15 by 20 mm", "the host board provides the cell, the sounder and the outline", "ships as a KiCad design block carrying schematic AND routed layout, plus an integration sheet stating the antenna keep-out, because a block carries no design rules"],
+      "cannot": ["Precision Finding", "guaranteeing the host does not flood ground over the antenna — hence the integration sheet"],
+      "why": "GOAL.md deliverable 2, and the thing no open tracker has ever shipped.",
+      "status": "DESIGN BLOCK EXPORT PROVEN, BOARD NOT DRAWN"
+    },
+    {
+      "id": "halo-uwb", "name": "Ranger", "name_zh": "测距版",
+      "purpose": "Centimetre ranging where Channel Sounding is not enough, for the owner's own fleet.",
+      "soc": "nRF54L10 plus a DW3110-class ultra-wideband transceiver",
+      "copies": ["the core"],
+      "changes": ["the reserved ultra-wideband footprint is populated", "a second antenna", "about 8.86 dollars more per unit, and a shorter battery life at any useful ranging rate"],
+      "cannot": ["talking to an iPhone's Precision Finding — the handshake needs Apple's programme", "being cheap: no ultra-wideband part is buyable in quantity today"],
+      "why": "Leif's digital twin needs relative position between his own sensors; this is the accurate fallback if Channel Sounding disappoints in a real building.",
+      "status": "FOOTPRINT RESERVED"
+    },
+    {
+      "id": "halo-plus", "name": "Plus", "name_zh": "增强版",
+      "purpose": "Everything that gets ahead of Apple rather than level with them.",
+      "soc": "nRF54L10 or larger",
+      "copies": ["the core"],
+      "changes": ["sensor telemetry carried in the advertisement's spare status bits, so a tag reports temperature or motion through the crowd network with no gateway", "energy harvesting under assessment for a tag that never needs a battery change", "a companion app doing arrow-and-distance by Channel Sounding, which is Precision Finding without Apple"],
+      "cannot": ["being certified by Apple, ever"],
+      "why": "The concepts lane is costing each of these now. Ideas are cheap; this variant exists so the good ones have somewhere to land.",
+      "status": "CONCEPTS UNDER RESEARCH"
+    },
+    {
+      "id": "halo-card", "name": "Card", "name_zh": "卡片版",
+      "purpose": "A wallet-thickness tag, which is the form Apple does not make at all.",
+      "soc": "nRF54L10",
+      "copies": ["the core's circuit"],
+      "changes": ["rectangular card outline, a rechargeable or a soldered cell rather than a CR2032", "the antenna redrawn for a long thin ground plane, which is a genuinely different problem from a 26 mm disc"],
+      "cannot": ["a user-replaceable coin cell, so the child-safety rule applies differently"],
+      "why": "Every competitor sells one and Apple does not. The embeddable block makes it nearly free to try.",
+      "status": "PROPOSED"
+    }
+  ]
+}

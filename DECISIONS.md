@@ -594,3 +594,48 @@ building thousands pays it once. So: **0201 stays**, the $61.40 is a
 prototype-run cost recorded rather than absorbed, and anyone quoting a ten-piece
 run should be told the per-unit figure doubles for that reason alone.
 
+
+## D23 — halo is a family, and one member is a part-for-part replica (2026-09-05)
+
+Leif, verbatim: *"so create many different versions including one which is a
+perfect recreation."* Preceded by: *"first step is recreating it exactly."*
+
+**Why this changes something real.** Until now halo was one board that had
+diverged from the AirTag in seven places, each defensible in isolation, which
+together made it a functional equivalent rather than a copy. Every divergence
+was an assertion — "the piezo is good enough", "the flash is unnecessary" —
+and an assertion is not a measurement. A replica turns each one into a
+**measured difference**, because both boards can be built and compared.
+
+**The family**, in `spec/variants.json`:
+
+| variant | what it is for |
+|---|---|
+| **Replica** | part-for-part recreation of the AirTag internals; the reference every other variant is measured against |
+| **Core** | the open product that ships — cheapest, embeddable, functionally equivalent |
+| **Block** | the circuit as a castellated solder-down module for anyone's board |
+| **Ranger** | Core plus the ultra-wideband transceiver, for the owner's own fleet |
+| **Plus** | the ideas that get ahead of Apple rather than level with them |
+| **Card** | wallet thickness — the form Apple does not make at all |
+
+**What the Replica genuinely cannot have**, and no effort closes these: Apple's
+**U1 is never sold to anyone**, so Precision Finding is out and the footprint
+stays unpopulated; and appearing inside Apple's own Find My application needs a
+per-unit token burned into flash on Apple's own production line under a
+programme whose terms forbid publishing what you learn. Everything else in the
+AirTag is catalogue silicon and can be bought.
+
+**What the Replica must fix rather than copy.** Apple puts its SPI flash on a
+regulated 1.8 V rail through a buck and a load switch. Our first board put the
+same class of part straight on the 3.0 V cell, out of spec — the verification
+lane caught it and the part was deleted. **The Replica restores the flash and
+copies Apple's power path**, which is the correct recreation and also the
+correct engineering. Where an Apple part is obsolete or unbuyable, the closest
+functional substitute is used and **named as a substitution**, never passed off
+as the original.
+
+**The honest caution.** A replica is the reference, not automatically the
+product. Some of Core's divergences will survive comparison — the deleted
+amplifier looks likely, since the firmware measures 1.27 percent of the SoC's
+own flash and a bare bender needs no amplifier at all. Others may not. The
+point of building both is that the argument stops being about opinions.
