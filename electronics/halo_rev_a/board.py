@@ -990,8 +990,27 @@ def report():
         if h > H_BOT_CELL:
             bad += 1
         print("    %-22s %.2f mm   %s" % (what, h, v))
-    print("  VERDICT: FAIL - %d of %d part classes exceed the stack. "
-          "Lane M owns the resolution." % (bad, len(rows)))
+    print("  VERDICT: FAIL - %d of %d part classes exceed the stack."
+          % (bad, len(rows)))
+    # THE RESOLUTION IS ALREADY WRITTEN DOWN, in lane M's own D17.
+    RECOVERABLE = 0.542
+    worst_h = max(h for _, h in rows)
+    need = worst_h + 0.05                      # body + a solder fillet
+    print("  BUT DECISIONS.md D17 (lane M, 2026-09-04) ends: 'leaving "
+          "%.3f mm of dead air under the cell that a flat pad embossed in "
+          "the door could still recover'." % RECOVERABLE)
+    print("  If that pad is embossed, the cell drops and the bottom-face "
+          "allowance becomes %.3f + %.3f = %.3f mm."
+          % (H_BOT_CELL, RECOVERABLE, H_BOT_CELL + RECOVERABLE))
+    print("  The tallest part here is %.2f mm and needs %.2f mm with a "
+          "fillet.  -> %s" % (worst_h, need,
+                              "EVERY PART CLEARS" if need <= H_BOT_CELL + RECOVERABLE
+                              else "still short by %.3f mm"
+                                   % (need - H_BOT_CELL - RECOVERABLE)))
+    print("  Only %.3f mm of the %.3f has to be recovered to clear the "
+          "tallest part. THIS IS A REQUEST TO LANE M, and it is the single "
+          "change that closes this lane's largest open item."
+          % (max(0.0, need - H_BOT_CELL), RECOVERABLE))
 
     print("\n--- antenna ---")
     print("  eps_eff %.3f  MEASURED by openEMS on this board, not assumed"

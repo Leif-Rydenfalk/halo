@@ -173,8 +173,15 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
    every placed part against lane M's stack: 46 PASS, **5 FAIL**. X1 by
    0.322 mm, L1 by 0.322, U1 by 0.272, U2 by 0.122 and U3's replacement by
    0.022, all against the 0.578 mm the cell leaves under the bottom face. A
-   QFN-48 is 0.85 mm tall. **This is lane M's stack to resolve or lane B1's
-   package choice to change** — a WLCSP nRF54L10 would fit if one is buyable.
+   QFN-48 is 0.85 mm tall.
+
+   **The fix is already written down and it is small.** DECISIONS.md D17
+   (lane M) records *"0.542 mm of dead air under the cell that a flat pad
+   embossed in the door could still recover"*. Recovering it makes the
+   bottom-face allowance 1.120 mm against a 0.95 mm worst case, so **every
+   part clears, and only 0.372 mm of the 0.542 is needed.** That is one
+   embossing feature in a stamped steel door, not a redesign — and it is the
+   single change that closes this item.
 4. **CONTROLLED IMPEDANCE IS NOT IMPLEMENTED.** See `STACKUP.md` §2.
 5. **THE DIELECTRIC HEIGHTS ARE NOT CONFIRMED.** No 0.60 mm 4-layer stackup
    table was retrieved from the fab. Ask for it first.

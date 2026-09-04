@@ -239,11 +239,21 @@ than loosened.
 1. **The board is not routed.** 91 unconnected items. Do not fabricate.
 2. **The antenna has not passed.** 2.886 GHz measured; the corrected 24.49 mm
    meander has not been re-simulated to completion.
-3. **Five part classes do not fit the enclosure.** 46 PASS / 5 FAIL on the
-   height check. A QFN-48 is 0.85 mm and the cell leaves 0.578 mm under the
-   bottom face — X1 and L1 are over by 0.322 mm, the SoC by 0.272. **This is
-   the biggest open cross-lane item and it belongs to lane M's stack or to a
-   WLCSP package choice.**
+3. **Five part classes do not fit the enclosure — and the fix is already
+   written down.** 46 PASS / 5 FAIL on the height check. A QFN-48 is 0.85 mm
+   and the cell leaves 0.578 mm under the bottom face; X1 and L1 are over by
+   0.322 mm, the SoC by 0.272.
+
+   **DECISIONS.md D17 (lane M, 2026-09-04) ends: *"leaving 0.542 mm of dead
+   air under the cell that a flat pad embossed in the door could still
+   recover"*.** If that pad is embossed the cell drops and the bottom-face
+   allowance becomes 0.578 + 0.542 = **1.120 mm**. The tallest part here is
+   0.90 mm and needs 0.95 mm with a solder fillet, so **every part clears** —
+   and only **0.372 mm of the 0.542 mm** has to be recovered to do it.
+
+   **This is a request to lane M, and it is the single change that closes
+   this lane's largest open item.** `board.py height_check()` prints the
+   arithmetic on every run.
 4. **Loudness is unmeasured and DULT makes it mandatory.** 60 Phon at 25 cm
    cannot be simulated; VERIFICATION-DEBT V7 carries it.
 5. **The bender is unsourced at every quantity**, so its land pattern is
