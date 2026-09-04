@@ -1,0 +1,76 @@
+{
+  "_what": "Sourced laminate material minima. DATA ONLY — no arithmetic lives here.",
+  "_rule": "Every row carries source + kind. kind=published means a page was fetched and quoted. A row whose source is null is NOT usable: s_stackup_budget.py refuses to compute with it and exits 2 (CANNOT DETERMINE). That refusal is the point — a missing number must stay missing.",
+  "_units": "mm",
+  "_fetched": "2026-09-05",
+  "_convention": "FRONT = the component side (Apple's FCC filing). See docs/REFERENCE-TEARDOWN.md header.",
+
+  "copper_foil": {
+    "1oz":   {"mm": 0.035,  "source": "PCBWay capabilities page, 'Outer layers: 1oz through 8oz (35um-280um)' — fetched 2026-09-05 https://www.pcbway.com/capabilities.html", "kind": "published"},
+    "0.5oz": {"mm": 0.0175, "source": "JLCPCB PCB capabilities, 'Inner Layer: 0.5 oz / 1 oz / 2 oz'; 0.5 oz = half of the 1 oz = 35 um published above — fetched 2026-09-05 https://jlcpcb.com/capabilities/pcb-capabilities", "kind": "published"},
+    "0.33oz":{"mm": 0.012,  "source": "IPC-4562 nominal 12 um foil (1/3 oz). NOT fetched from a fabricator page in this session.", "kind": "inference"}
+  },
+
+  "outer_finished_copper": {
+    "_why": "An outer layer is base foil PLUS electroplated copper in and around the holes. The finished outer copper is what occupies the thickness budget, not the foil alone.",
+    "economy": {"mm": 0.035, "source": "PCBWay/JLCPCB both publish 1 oz as the standard FINISHED outer weight for multilayer.", "kind": "published"},
+    "thin":    {"mm": 0.025, "source": "0.33 oz foil + ~13 um plate. Arithmetic on the foil row above; no fabricator page fetched stating a 25 um finished outer.", "kind": "inference"}
+  },
+
+  "core": {
+    "_why": "A core is laminate with copper already on both faces; it sets the floor for how thin an inner-layer pair can be.",
+    "fr4_min_rigid": {"mm": 0.10, "source": "Two independent pages agree that 0.1 mm is the thin end of stocked rigid FR-4 core, and that 0.05-0.08 mm 'typically require flexible polyimide substrates' — allpcb.com/allelectrohub/the-definitive-guide-to-pcb-core-thickness-choosing-whats-right-for-your-design and pcbsync.com/0-1mm-pcb/, fetched 2026-09-05", "kind": "published"},
+    "ultrathin_hdi": {"mm": null, "source": null, "kind": "not_determined",
+      "_note": "Apple's suppliers build any-layer HDI with cores well under 0.10 mm. No published capability page giving a number was fetched in this session, so this row is deliberately null and the hdi-ultrathin construction below cannot be evaluated. Filling this in from memory would be the exact defect this project keeps producing."}
+  },
+
+  "prepreg": {
+    "_why": "Prepreg is the glass-and-resin sheet that bonds the stack; its PRESSED thickness is what counts, and that is style-dependent.",
+    "106":  {"mm": 0.050, "source": "MADPCB 'PP 106: thickness 50um' and Bittele/advancedpcb charts, ~2 mil = 0.05 mm — https://madpcb.com/pp/ , fetched 2026-09-05", "kind": "published"},
+    "1080": {"mm": 0.065, "source": "MADPCB 'PP 1080: 60-70 um'; ~2.5 mil = 0.064 mm elsewhere. Midpoint 0.065 used. — https://madpcb.com/pp/ , fetched 2026-09-05", "kind": "published"},
+    "2116": {"mm": 0.100, "source": "MADPCB 'PP 2116: 90-110 um'; ~4.5 mil = 0.114 mm elsewhere. Midpoint 0.100 used. — https://madpcb.com/pp/ , fetched 2026-09-05", "kind": "published"},
+    "7628": {"mm": 0.180, "source": "MADPCB 'PP 7628: 170-190 um'. Midpoint. — https://madpcb.com/pp/ , fetched 2026-09-05", "kind": "published"},
+    "ultrathin_hdi": {"mm": null, "source": null, "kind": "not_determined"}
+  },
+
+  "soldermask_per_side": {
+    "mm_low": 0.010, "mm_high": 0.020,
+    "source": "No fabricator page giving a soldermask film thickness was fetched. This is the customary 10-20 um over laminate and is carried as a RANGE and as an INFERENCE, never folded into a single stack number.",
+    "kind": "inference"
+  },
+
+  "constructions": {
+    "fr4-economy":   {"outer": "economy", "inner_foil": "0.5oz",  "core": "fr4_min_rigid", "prepreg": "1080", "_desc": "what a prototype house stocks and quotes without a review"},
+    "fr4-thin":      {"outer": "thin",    "inner_foil": "0.33oz", "core": "fr4_min_rigid", "prepreg": "106",  "_desc": "thinnest rigid FR-4 build using stocked material at its published thin end"},
+    "hdi-ultrathin": {"outer": "thin",    "inner_foil": "0.33oz", "core": "ultrathin_hdi", "prepreg": "ultrathin_hdi", "_desc": "any-layer HDI of the class Apple's suppliers run. UNEVALUABLE HERE BY DESIGN — see the null rows above."}
+  },
+
+  "fabricator_capability": {
+    "_what": "What a real fabricator will BUILD, read off published capability pages only. No account was created, no quote requested, nobody contacted.",
+    "pcbway": {
+      "url": "https://www.pcbway.com/capabilities.html", "fetched": "2026-09-05",
+      "min_thickness_1_2_layer_mm": 0.20,
+      "min_thickness_4_layer_mm": {"medium_difficulty": 0.40, "normal": 0.60},
+      "min_thickness_6_layer_mm": {"medium_difficulty": 0.70, "normal": 0.90},
+      "thickness_options_mm": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0, 2.4, 2.6, 2.8, 3.0, 3.2],
+      "surface_finishes": ["HASL with lead", "HASL lead free", "Immersion gold", "OSP", "Hard Gold", "Immersion Silver", "Immersion Tin", "ENEPIG"],
+      "soldermask_colours": ["green", "matt green", "blue", "red", "black", "matte black", "white", "yellow"],
+      "silkscreen_colours": ["white", "black", "yellow", "none"],
+      "moq": "CANNOT DETERMINE — the capabilities page publishes no prototype MOQ, and finding one would need the ordering flow. Not pursued: no accounts, no quotes."
+    },
+    "jlcpcb": {
+      "url": "https://jlcpcb.com/capabilities/pcb-capabilities", "fetched": "2026-09-05",
+      "thickness_options_2_layer_mm": [0.4, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0],
+      "min_thickness_overall_mm": 0.40,
+      "min_thickness_overall_note": "0.4 mm, and the page gives it for 2-layer only",
+      "thickness_options_4_layer_mm_CAVEAT": "the fetch returned 0.8/1.0/1.2/1.6/2.0 for 4-layer but flagged it as INFERRED from the standard offering rather than quoted. Treat the 4-layer row as UNVERIFIED; the overall 0.4 mm minimum is the quoted figure.",
+      "surface_finishes": ["HASL leaded", "HASL lead-free", "ENIG", "OSP"],
+      "soldermask_colours": ["green", "purple", "red", "yellow", "blue", "white", "black"],
+      "min_trace_space_mm": 0.10,
+      "min_via_hole_mm": 0.15,
+      "min_via_diameter_mm": 0.25
+    },
+    "_the_delta_in_one_line": "0.30 mm is BELOW the published minimum of both houses at every layer count above two, and below JLCPCB's overall minimum at any layer count. PCBWay lists 0.2 mm for 1-2 layer, so a 2-layer 0.30 mm is inside their envelope while 0.30 mm is not one of their listed thickness options.",
+    "_what_this_does_NOT_tell_us": "NOTHING about Apple. These are prototype houses. Apple's board suppliers build any-layer HDI at volumes and tolerances no prototype capability page describes. A capability page bounds what WE can order; it does not bound what Apple built. Fusing those two is the error this file exists to prevent."
+  }
+}
