@@ -170,8 +170,18 @@ ANT_FEED_DEG = 20.0
 
 #: Where the NFC winding's two halves meet, computed the same way the spiral
 #: is so the net tie lands ON the conductor rather than near it.
+# MEASURED WRONG 2026-09-04, AND THE SHAPE OF THE MISTAKE IS WORTH KEEPING.
+# This read `20.0 + 360.0 * 3 - 40.0`, a hand-typed copy of a THREE-turn coil
+# that was cut to two turns in footprints.py and never copied back. The tie
+# was therefore placed at 180 deg and radius 10.3167 while the winding's gap
+# is at 380 deg and radius 10.4486: 160 degrees and 20 mm away from the
+# conductor it is supposed to join, on a Ø26 mm board. Nothing failed - the
+# tie was simply a two-pad island in the middle of the coil, and the coil was
+# open. Derived from fpg.NFC_TURNS now, and CHECKED against the spiral's own
+# midpoint below, because the defect was not the arithmetic, it was that two
+# expressions for one number were allowed to disagree in silence.
 _NFC_A0_PRE = 20.0
-_NFC_A1_PRE = 20.0 + 360.0 * 3 - 40.0
+_NFC_A1_PRE = _NFC_A0_PRE + 360.0 * fpg.NFC_TURNS
 NFC_TIE_DEG_PRE = (_NFC_A0_PRE + _NFC_A1_PRE) / 2.0
 NFC_TIE_R_PRE = fpg.NFC_R_OUT - (fpg.NFC_W + fpg.NFC_GAP) * \
     (NFC_TIE_DEG_PRE - _NFC_A0_PRE) / 360.0
@@ -368,8 +378,12 @@ PLACE = [
      "top"),
     # KiCad's own net tie, placed where the two halves of the winding
     # meet. See footprints.py for why the coil is not a footprint.
+    # +90: the tie's two pads lie on its local x axis, so rotating it to the
+    # spiral's TANGENT puts them along the conductor. Rotated to the radius
+    # instead they sit 0.5 mm off it on either side and the stubs that close
+    # the winding have to jump the gap sideways.
     ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", NFC_TIE_R_PRE,
-     NFC_TIE_DEG_PRE, NFC_TIE_DEG_PRE, "bottom"),
+     NFC_TIE_DEG_PRE, NFC_TIE_DEG_PRE + 90.0, "bottom"),
     ("LS1", "halo:HALO_PIEZO_LEADS_2", 10.30, 118.0, 28.0, "top"),
 ]
 
@@ -709,7 +723,25 @@ NFC_A1 = NFC_A0 + 360.0 * fpg.NFC_TURNS
 NFC_PITCH = fpg.NFC_W + fpg.NFC_GAP
 
 
-def _spiral_pts(n=600):
+# HOW MANY SEGMENTS, AND WHY IT IS NOT 600. The spiral was drawn with 600
+# chords, which is 583 track segments once the tie gap is cut out - 97 % of
+# every piece of copper on this board and 583 of the 600 obstacle edges the
+# autorouter has to reason about. That is the difference between this board
+# and the Ø31.87 mm puck the same jar routes in 96 s. The count is now
+# DERIVED FROM A CHORD-ERROR BUDGET instead of typed: a chord across angle
+# dtheta at radius r sits r*(1-cos(dtheta/2)) inside the true arc, and 5 um
+# is a twentieth of the 0.10 mm the fab can hold anyway.
+NFC_CHORD_ERR_MM = 0.005
+_dtheta = 2.0 * math.degrees(math.acos(1.0 - NFC_CHORD_ERR_MM / fpg.NFC_R_OUT))
+# EVEN, so that `_sp[len(_sp)//2]` is the exact midpoint of the sweep and the
+# net tie placed from the closed-form midpoint lands on it. With an odd count
+# the two expressions disagree by half a chord - 0.317 mm, measured, which is
+# most of a 0.5 mm pad.
+NFC_SEGS = 2 * int(math.ceil((NFC_A1 - NFC_A0) / _dtheta / 2.0))
+
+
+def _spiral_pts(n=None):
+    n = NFC_SEGS if n is None else n
     out = []
     for k in range(n + 1):
         f = k / float(n)
@@ -720,17 +752,83 @@ def _spiral_pts(n=600):
 
 
 _sp = _spiral_pts()
+# MEASURED, NOT ASSUMED: the polyline actually drawn is shorter than the
+# spiral it approximates, and the coil's inductance goes with its length. If
+# this ever exceeds the budget the number above is wrong, not the geometry.
+_true_len = 0.0
+for _k in range(len(_sp) - 1):
+    (_r0, _a0), (_r1, _a1) = _sp[_k], _sp[_k + 1]
+    _true_len += math.hypot(_r1 - _r0,
+                            math.radians(_a1 - _a0) * 0.5 * (_r0 + _r1))
+_chord_len = sum(math.dist(at_r(*_sp[_k]), at_r(*_sp[_k + 1]))
+                 for _k in range(len(_sp) - 1))
+NFC_LEN_ERR_PCT = 100.0 * (_true_len - _chord_len) / _true_len
 _mid = len(_sp) // 2
 # A gap of GAP_PTS points at the midpoint is where the net tie sits: the
 # winding is one conductor, and the tie is how a two-net conductor is
 # declared to KiCad rather than hidden from it.
-GAP_PTS = 8
+# THE GAP IS A LENGTH, NOT A POINT COUNT. `GAP_PTS = 8` was written when the
+# spiral had 600 chords; at 207 it is 5.07 mm of missing copper in a
+# conductor that has to be continuous, and a coil with a 5 mm hole in it is
+# not a coil. The tie's two pads sit 1.0 mm apart, so the gap is sized from
+# that and the stubs below actually close it.
+NFC_GAP_MM = 1.6
+_arc_per_seg = math.radians((NFC_A1 - NFC_A0) / NFC_SEGS) * fpg.NFC_R_OUT
+GAP_PTS = max(1, int(round(NFC_GAP_MM / (2.0 * _arc_per_seg))))
 NFC_TIE_R, NFC_TIE_DEG_ACTUAL = _sp[_mid]
+# THE TWO EXPRESSIONS FOR ONE NUMBER, MADE TO AGREE OUT LOUD. See the note on
+# _NFC_A1_PRE: this is the check that would have caught a tie 20 mm from its
+# own conductor the first time, instead of a coil that was open on the board
+# and closed in every report.
+_tie_err = math.hypot(NFC_TIE_R - NFC_TIE_R_PRE,
+                      math.radians(NFC_TIE_DEG_ACTUAL - NFC_TIE_DEG_PRE)
+                      * NFC_TIE_R)
+if _tie_err > 0.05:
+    raise SystemExit(
+        "the net tie is placed at r=%.4f deg=%.2f and the winding's gap is at "
+        "r=%.4f deg=%.2f - %.3f mm apart. One of the two spiral definitions "
+        "is stale." % (NFC_TIE_R_PRE, NFC_TIE_DEG_PRE, NFC_TIE_R,
+                       NFC_TIE_DEG_ACTUAL, _tie_err))
 
-b.track("NFC1", [at_r(r, a) for r, a in _sp[:_mid - GAP_PTS]],
-        width=fpg.NFC_W, layer="B.Cu")
-b.track("NFC2", [at_r(r, a) for r, a in _sp[_mid + GAP_PTS:]],
-        width=fpg.NFC_W, layer="B.Cu")
+_nfc1_pts = [at_r(r, a) for r, a in _sp[:_mid - GAP_PTS + 1]]
+_nfc2_pts = [at_r(r, a) for r, a in _sp[_mid + GAP_PTS:]]
+b.track("NFC1", _nfc1_pts, width=fpg.NFC_W, layer="B.Cu")
+b.track("NFC2", _nfc2_pts, width=fpg.NFC_W, layer="B.Cu")
+
+# -- and CLOSE the gap onto the tie's own pads ----------------------------
+# Measured 2026-09-04: the winding was drawn with a hole in it and nothing
+# reached the tie, so the "net tie" tied nothing and both coil halves ended
+# in mid-air. The stubs are drawn to the pads that are actually there, read
+# off the placed footprint rather than recomputed from the placement angle -
+# NetTie-2_SMD_Pad0.5mm puts its pads on its local x axis and the part is
+# rotated to the spiral's tangent, so re-deriving them is one sign error
+# away from a coil that is open on the board and closed in the report.
+def _pad_xy(ref, num):
+    for pad in b.refs[ref].Pads():
+        if pad.GetNumber() == str(num):
+            pos = pad.GetPosition()
+            return (pos.x / 1e6, 26.0 - pos.y / 1e6)
+    raise SystemExit("no pad %s on %s" % (num, ref))
+
+
+NFC_TIE_STUBS = []
+for _net, _end, _padnum in (("NFC1", _nfc1_pts[-1], 1),
+                            ("NFC2", _nfc2_pts[0], 2)):
+    _pxy = _pad_xy("AE2", _padnum)
+    b.track(_net, [_end, _pxy], width=fpg.NFC_W, layer="B.Cu")
+    NFC_TIE_STUBS.append((_net, round(math.dist(_end, _pxy), 4)))
+
+# WHICH COIL COPPER IS WHICH, FOR THE Specctra EXPORT. KiCad merges NFC1 into
+# NFC2 the moment a net tie joins them - correctly, because a coil IS a DC
+# short between its own terminals - and the .kicad_pcb that comes out labels
+# every one of the winding's segments NFC2 while the PADS keep their own
+# nets. Handed that, freerouting sees one net with six pins and joins them by
+# the shortest path it can find, which is a 2 mm trace straight across the
+# feed: the coil is bypassed, the board is DRC-clean, and there is no NFC
+# antenna. The winding is a spiral, so RADIUS separates the two halves
+# exactly, and this is the number that does it.
+NFC_SPLIT_R = 0.5 * (math.hypot(_nfc1_pts[-1][0] - CX, _nfc1_pts[-1][1] - CY)
+                     + math.hypot(_nfc2_pts[0][0] - CX, _nfc2_pts[0][1] - CY))
 
 # ==========================================================================
 # 6c. VIAS — because a plane nobody stitched is not a plane
@@ -755,9 +853,15 @@ import pcbnew as _pcbnew                                          # noqa: E402
 
 VIA_D, VIA_DRILL = 0.45, 0.25
 
+#: Nets this file draws itself and the autorouter must not touch. GND and VDD
+#: are poured and stitched below; NFC1/NFC2 are the winding, which a router
+#: would short out; the RF chain is a matching network whose element ORDER is
+#: the circuit. `dsnfix.py` removes exactly these from the Specctra network.
+HAND_ROUTED = {"GND", "VDD", "NFC1", "NFC2"}
+
 
 def _obstacles():
-    """Everything a via must not land on.
+    """Everything a via must not land on, EACH ONE CARRYING ITS NET.
 
     PADS AND TRACKS. The first version knew only about pads, so the widened
     search happily dropped vias on top of the antenna element and the NFC
@@ -765,6 +869,20 @@ def _obstacles():
     appeared the moment the search got good enough to find those spaces. An
     obstacle model that omits a class of obstacle does not prevent
     collisions, it just moves them somewhere the search likes better.
+
+    THE NET IS THE FOURTH FIELD, AND ITS ABSENCE WAS A MEASURED DEFECT.
+    Without it every obstacle was foreign, INCLUDING THE PAD THE VIA WAS
+    BEING PLACED FOR. A VDD pad's own copper is 0.21 mm across; the stub
+    check skipped only the first 0.35 mm of its own path while the pad's own
+    obstacle disc reached 0.45 mm, so every single pad-origin candidate
+    collided with the pad it started on. Effect, measured on 2026-09-04:
+    ZERO fanout vias placed and ZERO stubs drawn on either plane net. The 35
+    vias that did land all came from the rings, where `origin is None` skips
+    the stub check entirely - so 13 VDD vias sat on the In2 plane joined to
+    nothing, KiCad reported 13 dangling vias and 24 unconnected VDD pads,
+    and the board looked like a routing problem. It was an arithmetic one,
+    in the obstacle model, and it is the reason clearance is a rule BETWEEN
+    NETS rather than a rule about distance.
     """
     out = []
     for ref, fp in b.refs.items():
@@ -772,18 +890,19 @@ def _obstacles():
             pos = pad.GetPosition()
             sz = pad.GetSize()
             out.append((pos.x / 1e6, 26.0 - pos.y / 1e6,
-                        math.hypot(sz.x, sz.y) / 2e6))
+                        math.hypot(sz.x, sz.y) / 2e6, pad.GetNetname()))
     for t in b._pcb.GetTracks():
         if t.Type() != _pcbnew.PCB_TRACE_T:
             continue
         w = t.GetWidth() / 2e6
+        nn = t.GetNetname()
         a = (t.GetStart().x / 1e6, 26.0 - t.GetStart().y / 1e6)
         z = (t.GetEnd().x / 1e6, 26.0 - t.GetEnd().y / 1e6)
         n = max(1, int(math.hypot(z[0] - a[0], z[1] - a[1]) / 0.25))
         for k in range(n + 1):
             f = k / float(n)
             out.append((a[0] + (z[0] - a[0]) * f,
-                        a[1] + (z[1] - a[1]) * f, w))
+                        a[1] + (z[1] - a[1]) * f, w, nn))
     return out
 
 
@@ -793,7 +912,11 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
     Returns the list actually placed. A via that will not fit is NOT placed
     and NOT silently dropped - the count is reported.
     """
-    obs = _obstacles()
+    all_obs = _obstacles()
+    # SAME NET IS NOT AN OBSTACLE - it is the thing being joined. Foreign
+    # copper must be cleared; own copper must merely not be drilled through.
+    obs = [o for o in all_obs if o[3] != net]
+    own = [o for o in all_obs if o[3] == net]
     placed = []
     cands = []          # (x, y, origin_pad_xy_or_None, layer)
     if pads_of_net:
@@ -832,7 +955,16 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
         # for the fact that this model treats every obstacle as a disc.
         clear = VIA_D / 2.0 + 0.30
         if any(math.hypot(x - ox, y - oy) < (clear + orr)
-               for ox, oy, orr in obs):
+               for ox, oy, orr, _ in obs):
+            continue
+        # ...AND NOT DRILLED INTO ITS OWN NET'S PADS EITHER. Clearance does
+        # not apply between copper of one net, but a hole through a land is
+        # via-in-pad, which is a fab option this board has not bought: the
+        # solder wicks down the barrel and the joint starves. 0.05 mm of air
+        # edge to edge, no more, because on the same net that is all that is
+        # needed.
+        if any(math.hypot(x - ox, y - oy) < (VIA_D / 2.0 + orr + 0.05)
+               for ox, oy, orr, _ in own):
             continue
         if any(math.hypot(x - vx, y - vy) < VIA_D + 0.45
                for vx, vy in placed):
@@ -849,10 +981,8 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
             for k in range(1, steps):
                 f = k / float(steps)
                 sx, sy = ox0 + (x - ox0) * f, oy0 + (y - oy0) * f
-                if math.hypot(sx - ox0, sy - oy0) < 0.35:
-                    continue          # still inside its own pad
                 if any(math.hypot(sx - bx, sy - by) < (0.10 + 0.14 + br)
-                       for bx, by, br in obs):
+                       for bx, by, br, _ in obs):
                     hit = True
                     break
             if hit:
@@ -867,7 +997,15 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
         if origin is not None:
             b.track(net, [origin, (x, y)], width=0.20, layer=lay)
         placed.append((x, y))
-        obs.append((x, y, VIA_D / 2.0))
+        obs.append((x, y, VIA_D / 2.0, net))
+        own.append((x, y, VIA_D / 2.0, net))
+        if origin is not None:
+            # the stub is copper too, and the NEXT via must clear it
+            steps = max(2, int(math.hypot(x - ox0, y - oy0) / 0.2))
+            for k in range(steps + 1):
+                f = k / float(steps)
+                own.append((ox0 + (x - ox0) * f, oy0 + (y - oy0) * f,
+                            0.10, net))
     return placed
 
 
@@ -1294,6 +1432,117 @@ FAB_RULES = {
 }
 
 
+# ---------------------------------------------------------------------------
+# THE NET NAMES KiCad LOSES ON THE WAY TO DISK
+# ---------------------------------------------------------------------------
+def track_net_snapshot():
+    """{(x0,y0,x1,y1) in nm, KiCad frame: netname} for every track in memory."""
+    out = {}
+    for t in b._pcb.GetTracks():
+        if t.Type() != _pcbnew.PCB_TRACE_T:
+            continue
+        a, z = t.GetStart(), t.GetEnd()
+        out[(a.x, a.y, z.x, z.y)] = t.GetNetname()
+    return out
+
+
+_SEG_RE = __import__("re").compile(
+    r'\(segment\s*\n\s*\(start ([-\d.]+) ([-\d.]+)\)\s*\n'
+    r'\s*\(end ([-\d.]+) ([-\d.]+)\)\s*\n'
+    r'(?:\s*\([^\n]*\)\s*\n)*?\s*\(net "([^"]*)"\)')
+
+
+def repair_track_nets(pcb_path, snapshot):
+    """Put back the net names `BOARD::Save()` dropped, and PROVE it took.
+
+    MEASURED 2026-09-04, KiCad 10.0.6. board.py draws the NFC winding as two
+    conductors, NFC1 from the outer end to the net tie and NFC2 from the tie
+    to the inner end, and in memory that is exactly what it is - 291 segments
+    on NFC1 and 292 on NFC2, printed straight off `GetTracks()` immediately
+    before the write. The file that comes out has 583 segments on NFC2 and
+    ZERO on NFC1. The four NFC1 PADS keep their net; only the tracks lose it.
+    The same board saved through a two-net minimal case does not reproduce
+    it, with or without the net-tie footprint, so this is not cepcb.
+
+    WHY IT MATTERS RATHER THAN BEING COSMETIC. The Specctra export reads the
+    file, so freerouting is handed an NFC1 that is three pads with no coil
+    between them - and it will happily join those three pads with a short
+    trace that BYPASSES THE WINDING ENTIRELY. The board would come back
+    routed, DRC-clean, and with no NFC antenna. A net name is not a label
+    here; it is the statement of what the copper is for.
+
+    The repair is textual and it is checked by reloading the file through
+    pcbnew afterwards - the same reader that found the loss. A repair that
+    cannot be seen by a second reader is not a repair.
+    """
+    txt = open(pcb_path).read()
+    fixed, checked = 0, 0
+    out, pos = [], 0
+    for m in _SEG_RE.finditer(txt):
+        checked += 1
+        key = tuple(int(round(float(m.group(i)) * 1e6)) for i in (1, 2, 3, 4))
+        want = snapshot.get(key)
+        if want is None or want == m.group(5):
+            continue
+        out.append(txt[pos:m.start(5)])
+        out.append(want)
+        pos = m.end(5)
+        fixed += 1
+    if fixed:
+        out.append(txt[pos:])
+        with open(pcb_path, "w") as fh:
+            fh.write("".join(out))
+    # READ IT BACK WITH pcbnew, not with the regex that just wrote it.
+    rl = _pcbnew.LoadBoard(pcb_path)
+    got = {}
+    for t in rl.GetTracks():
+        if t.Type() == _pcbnew.PCB_TRACE_T:
+            got[t.GetNetname()] = got.get(t.GetNetname(), 0) + 1
+    want_counts = {}
+    for n in snapshot.values():
+        want_counts[n] = want_counts.get(n, 0) + 1
+    ok = got == want_counts
+    return {"segments_in_file": checked, "net_names_repaired": fixed,
+            "want": want_counts, "got": got, "verdict": "PASS" if ok else "FAIL"}
+
+
+def write_dsn_hints(pcb_path):
+    """What the Specctra export cannot say, written beside it for `dsnfix`.
+
+    The DSN is a lossy picture of this board (see dsnfix.py's header). The two
+    facts a router needs that it does not carry are which copper layers are
+    poured planes and which half of the NFC winding is which net. Both are
+    computed here, in the file that knows them, rather than typed into the
+    fixer as constants that would silently go stale the day the coil moves.
+    """
+    import json as _j
+    out = os.path.join(os.path.dirname(pcb_path), "dsn_hints.json")
+    doc = {
+        "source": "electronics/halo_rev_a/board.py",
+        "board_centre_mm": [CX, CY],
+        "dsn_centre_um": [CX * 1000.0, -(26.0 - CY) * 1000.0],
+        "plane_layers": {"In1.Cu": "GND", "In2.Cu": "VDD"},
+        "hand_routed_nets": sorted(HAND_ROUTED),
+        "nfc": {
+            "layer": "B.Cu",
+            "width_um": fpg.NFC_W * 1000.0,
+            "split_radius_um": NFC_SPLIT_R * 1000.0,
+            "outer_half_net": "NFC1",
+            "inner_half_net": "NFC2",
+            "why": "KiCad merges NFC1 into NFC2 through the AE2 net tie - "
+                   "correct, because a coil is a DC short between its own "
+                   "terminals - so every winding segment exports as NFC2 "
+                   "while the pads keep their own nets. The winding is a "
+                   "spiral, so radius separates the halves exactly.",
+            "segments_outer": len(_nfc1_pts) - 1,
+            "segments_inner": len(_nfc2_pts) - 1,
+        },
+    }
+    with open(out, "w") as fh:
+        _j.dump(doc, fh, indent=1)
+    return out
+
+
 def write_fab_rules(pcb_path):
     import json as _j
     pro = os.path.splitext(pcb_path)[0] + ".kicad_pro"
@@ -1332,12 +1581,34 @@ def verify_rules(pcb_path):
 
 if __name__ == "__main__":
     b.fill_zones()
+    _snap = track_net_snapshot()
     path = b.save(OUT)
+    NET_REPAIR = repair_track_nets(path, _snap)
+    HINTS = write_dsn_hints(path)
     write_fab_rules(path)
     # LAST, because `bin/sch build` overwrites this file with an 8-library
     # version of its own and anything written earlier is discarded.
     _n = fpg.write_fp_lib_table(os.path.dirname(path))
     print("fp-lib-table: %d libraries (KiCad's %d + halo)" % (_n, _n - 1))
     report()
+    print("\n--- net names on the saved copper ---")
+    print("  segments in the file: %d   net names repaired after save: %d"
+          % (NET_REPAIR["segments_in_file"], NET_REPAIR["net_names_repaired"]))
+    for _n in sorted(set(NET_REPAIR["want"]) | set(NET_REPAIR["got"])):
+        print("    %-10s built %4d   in file %4d %s"
+              % (_n, NET_REPAIR["want"].get(_n, 0), NET_REPAIR["got"].get(_n, 0),
+                 "" if NET_REPAIR["want"].get(_n) == NET_REPAIR["got"].get(_n)
+                 else "  <-- MISMATCH"))
+    print("  verdict: %s   (KiCad 10.0.6 drops NFC1 on write; see "
+          "repair_track_nets)" % NET_REPAIR["verdict"])
+    print("  NFC winding: %d chords, chord error %.4f mm, length error "
+          "%.5f %% of the true spiral"
+          % (NFC_SEGS, NFC_CHORD_ERR_MM, NFC_LEN_ERR_PCT))
+    print("  coil closed onto the tie: " + ", ".join(
+        "%s %.3f mm" % (n, d) for n, d in NFC_TIE_STUBS)
+        + ("   -> PASS" if all(d < 2.0 for _, d in NFC_TIE_STUBS)
+           else "   -> FAIL, the winding has a hole in it"))
+    print("  NFC split radius for the DSN: %.4f mm   hints -> %s"
+          % (NFC_SPLIT_R, os.path.basename(HINTS)))
     verify_rules(path)
     print("\nwrote", path)
