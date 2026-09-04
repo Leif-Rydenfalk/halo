@@ -639,3 +639,48 @@ product. Some of Core's divergences will survive comparison — the deleted
 amplifier looks likely, since the firmware measures 1.27 percent of the SoC's
 own flash and a bare bender needs no amplifier at all. Others may not. The
 point of building both is that the argument stops being about opinions.
+
+## D24 — an NFC field can push current backwards into the cell (2026-09-05)
+
+**Nordic's own product specification, §42.10, verbatim:**
+
+> *"If the antenna is exposed to a strong NFC field, current may flow in the
+> opposite direction on the supply due to parasitic diodes and ESD structures.
+> If the battery used does not tolerate return current, a series diode must be
+> placed between the battery and the device in order to protect the battery."*
+
+**A CR2032 does not tolerate reverse current.** A phone held against the tag is
+a strong field by design — it is the whole point of the NFC feature.
+
+**Decision: carry a series Schottky or ideal-diode controller between the cell
+and the device** until the nRF54L product specification is read and proves it
+unnecessary. This is a bill-of-materials line and a forward drop the power
+budget has not accounted for, on a cell whose end-of-life headroom the coin-cell
+model already tracks to 68 mV of droop. An ideal-diode controller costs more
+than a Schottky but drops millivolts rather than a few hundred, which matters
+here. The board lane must price both against the measured discharge curve.
+
+**Confidence.** The quotation is from the nRF52832 specification, which is the
+part Apple used and the part the Replica copies. Whether the nRF54L repeats the
+warning is **CANNOT DETERMINE** — Nordic's documentation site is gated and the
+page could not be fetched. The underlying parasitic-diode behaviour is
+silicon-level and shared, so the safe reading is to assume it applies.
+
+## D25 — an NFC tap on a sleeping halo is a reset, not an interrupt (2026-09-05)
+
+Same specification, §42.1, verbatim:
+
+> *"In system OFF, the NFC Low Power Field Detect function can wake the system
+> up **through a reset**… Note that as a consequence of reset, NFC is disabled,
+> so the reset handler will have to activate NFC again and set it up properly."*
+
+**This constrains the firmware, not just its implementation.** Everything a tap
+must serve — the encrypted identifier, the battery byte, any pointer into a log
+— has to be **re-derivable from non-volatile state inside the reset handler**,
+and the whole boot path has to finish while the phone is still in the field. The
+specification's ≤500 µs activation figure explicitly **excludes supply and
+oscillator startup**, so the real budget is larger and unmeasured.
+
+Consequence: the record format and the key schedule are constrained by a
+hardware behaviour, and any concept that assumes a tap can interrupt a running
+tag is wrong. Recorded now so it is not discovered during bring-up.
