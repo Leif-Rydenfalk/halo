@@ -1,0 +1,13 @@
+(footprint "HALO_TP_D0.8"
+  (version 20240108)
+  (generator "halo/footprints.py")
+  (layer "F.Cu")
+  (descr "halo probe land, 0.80 mm round, for a 0.5 mm pogo tip. Smaller than KiCad TestPoint_Pad_D1.0mm because eleven of those do not fit on a O26 mm board - see the docstring.")
+  (tags "halo test point probe pad pogo")
+  (attr smd exclude_from_pos_files exclude_from_bom)
+  (pad "1" smd circle (at 0 0) (size 0.80 0.80) (layers "F.Cu" "F.Mask"))
+  (fp_line (start -0.550 -0.550) (end 0.550 -0.550) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start 0.550 -0.550) (end 0.550 0.550) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start 0.550 0.550) (end -0.550 0.550) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start -0.550 0.550) (end -0.550 -0.550) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+)

@@ -53,6 +53,7 @@
   {
    "name": "antenna-ground-clearance",
    "layers": [
+    "F.Cu",
     "In1.Cu",
     "In2.Cu",
     "B.Cu"

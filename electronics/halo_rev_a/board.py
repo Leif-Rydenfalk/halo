@@ -326,6 +326,8 @@ b.keepout(outline=ANT_CLEAR, layers=["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
 C0201 = "Capacitor_SMD:C_0201_0603Metric"
 R0201 = "Resistor_SMD:R_0201_0603Metric"
 L0201 = "Inductor_SMD:L_0201_0603Metric"
+TP = "halo:HALO_TP_D0.8"        # ours, not KiCad's - see footprints.py
+FID = "Fiducial:Fiducial_0.5mm_Mask1mm"
 
 # side: actives BOTTOM, passives TOP. See the height paragraph - the top
 # face inside Ø21.2 allows 0.400 mm and every active here is taller, so the
@@ -334,8 +336,6 @@ PLACE = [
     # ref, footprint,                                  r,     deg, rot, side
     ("U1", "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
      0.0, 0.0, 0.0, "bottom"),
-    ("U3", "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm",
-     7.3, 197.0, 17.0, "bottom"),
     ("U2", "Package_LGA:LGA-12_2x2mm_P0.5mm", 7.6, 262.0, 0.0, "bottom"),
     ("X2", "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm", 7.4, 330.0, 60.0,
      "bottom"),
@@ -346,7 +346,7 @@ PLACE = [
     ("BT1", "halo:HALO_BATT_CONTACT_3PAD", 0.0, 0.0, 0.0, "bottom"),
     # bulk, 0402, on the bottom where 0.55 mm still fits under 0.578 mm
     ("C9", "Capacitor_SMD:C_0402_1005Metric", 8.5, 352.0, 82.0, "bottom"),
-    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.5, 296.0, 26.0, "bottom"),
+    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.5, 286.0, 16.0, "bottom"),
     ("C11", "Capacitor_SMD:C_0402_1005Metric", 8.5, 172.0, 82.0, "bottom"),
     ("C12", "Capacitor_SMD:C_0402_1005Metric", 8.5, 235.0, 325.0, "bottom"),
     # Crystal load capacitors, DNP, beside the crystal each one loads. 0201
@@ -426,8 +426,6 @@ STREETS = [
     #    ray that was near enough to be useful was already 10 degrees from
     #    another street - C25/C14 and C16/R8 both came out at 1.111 mm.
     #    They are in PLACE instead, on the bottom, next to X1 and X2.
-    # -- flash straps
-    (176.0, 4.70, [("R3", R0201), ("R4", R0201)]),
     # -- the accelerometer's straps and its bus pull-ups
     (255.0, 4.70, [("R5", R0201), ("R6", R0201)]),
     (275.0, 4.70, [("R7", R0201), ("R8", R0201)]),
@@ -497,6 +495,119 @@ for ref, fpid, r, deg, rot, side in PLACE + SMALL:
             anchor="origin" if ref in ANCHOR_ORIGIN else "center")
     placed.append(ref)
 
+# ---------------------------------------------------------------------------
+# TEST ACCESS, PLACED BY SEARCH RATHER THAN BY HAND
+# ---------------------------------------------------------------------------
+# Eleven probe pads, two fiducials and a serial-mark land had to go onto a
+# board that was already full, and placing them by hand produced a new set of
+# courtyard overlaps on every attempt - eight, then eleven, each one a
+# different pair. Hand-placing into a crowded board is guesswork with a
+# feedback loop, and the loop was the DRC, which is expensive and late.
+#
+# So they are placed by SEARCH. Every part already on the board contributes
+# its real courtyard radius; each test pad starts from a preferred angle -
+# near the net it probes, because that is what makes the fixture short - and
+# spirals outward through (radius, angle) until it finds a spot that clears
+# everything placed so far by CLEAR_MM. First fit wins, the order is fixed,
+# so the result is deterministic and re-running this file reproduces it
+# exactly. A pad that cannot be placed is REPORTED, not dropped.
+CLEAR_MM = 0.25            # edge-to-edge air between courtyards
+
+
+def _extent(ref):
+    """The radius of the smallest circle that covers this part's courtyard."""
+    fp = b.refs[ref]
+    bb = fp.GetBoundingBox(False, False)
+    return math.hypot(bb.GetWidth(), bb.GetHeight()) / 2e6
+
+
+def _centre(ref):
+    fp = b.refs[ref]
+    p = fp.GetPosition()
+    return p.x / 1e6, 26.0 - p.y / 1e6
+
+
+def auto_place(items, r_lo=3.4, r_hi=11.4, dr=0.2, dtheta=3.0):
+    """Place each (ref, fpid, radius_of_this_part, preferred_deg) by search."""
+    taken = [(_centre(r)[0], _centre(r)[1], _extent(r))
+             for r in b.refs if not b.refs[r].IsFlipped()]
+    placed_here, failed = [], []
+    for item in items:
+        ref, fpid, rad, pref_deg = item[:4]
+        # An optional per-item radius band. The fiducials use it: a pair at
+        # the same radius maps onto itself under rotation and therefore
+        # fixes position but NOT rotation, which is most of what a fiducial
+        # is for. The search found them 0.20 mm apart on its own and the
+        # asymmetry check refused that, so the bands are stated here.
+        lo = item[4] if len(item) > 4 else r_lo
+        hi = item[5] if len(item) > 5 else r_hi
+        best = None
+        # spiral: try the preferred angle first, then walk away from it in
+        # both directions, at each radius from the inside out
+        for rr in [lo + dr * k for k in range(int((hi - lo) / dr) + 1)]:
+            for off in [0.0] + [s2 * dtheta * k
+                                for k in range(1, int(180 / dtheta) + 1)
+                                for s2 in (1, -1)]:
+                deg = (pref_deg + off) % 360.0
+                x, y = at_r(rr, deg)
+                if math.hypot(x - CX, y - CY) + rad > R - 0.6:
+                    continue
+                if all(math.hypot(x - tx, y - ty) > (rad + tr + CLEAR_MM)
+                       for tx, ty, tr in taken):
+                    best = (deg, rr, x, y)
+                    break
+            if best:
+                break
+        if not best:
+            failed.append(ref)
+            continue
+        deg, rr, x, y = best
+        b.place(ref, fpid, at=(x, y), rot=0.0, side="top")
+        taken.append((x, y, rad))
+        placed_here.append((ref, rr, deg))
+    return placed_here, failed
+
+
+#: (ref, footprint, its own courtyard radius, the angle it would prefer).
+#: THE RADII ARE MEASURED FROM THE LAND PATTERNS, not guessed. They were
+#: declared as 0.80 and 1.10 first and the DRC found three courtyard
+#: overlaps among the test points themselves: TestPoint_Pad_D1.0mm has a
+#: 2.05 x 2.05 mm courtyard, so its circumradius is 1.45 mm, and
+#: Fiducial_1mm_Mask2mm's is 1.80 mm. A placer fed the wrong size places
+#: confidently and wrongly.
+#:
+#: AT THOSE SIZES FIVE OF THE THIRTEEN DID NOT FIT, and the placer said so
+#: rather than dropping them. The fix is a fixture sized for the product:
+#: halo's own HALO_TP_D0.8 (0.78 mm circumradius, a 0.80 mm land for a
+#: 0.5 mm pogo tip) and Fiducial_0.5mm_Mask1mm (0.95 mm). A 26 mm board
+#: gets a 26 mm fixture; it does not get fewer tests.
+#: The preferred angle is where the net it probes already lives, so the
+#: fixture's wiring is short; the search moves it only as far as it must.
+TEST_ACCESS = [
+    # THE FIDUCIALS GO FIRST, and the order is the point. This is a first-fit
+    # placer, so whatever is placed earliest gets the widest choice. The
+    # fiducials are the MOST constrained items on the list - each is banded
+    # to a radius range, and the pair has to come out asymmetric - while a
+    # probe pad only wants to be somewhere near its net. Placing eleven
+    # flexible things first left the two rigid ones with nowhere to go, and
+    # the placer refused FID2 rather than fudging it. Datums first.
+    ("FID1", FID, 1.10, 250.0, 9.6, 11.4),
+    ("FID2", FID, 1.10, 196.0, 3.4, 7.2),
+    ("TP1", TP, 0.78, 20.0),     # VDD force
+    ("TP2", TP, 0.78, 340.0),    # VDD sense
+    ("TP3", TP, 0.78, 200.0),    # GND force
+    ("TP4", TP, 0.78, 160.0),    # GND sense
+    ("TP5", TP, 0.78, 108.0),    # PIEZO_P, near LS1
+    ("TP6", TP, 0.78, 126.0),    # PIEZO_N, near LS1
+    ("TP7", TP, 0.78, 224.0),    # VBAT_SNS, near R1/R2
+    ("TP8", TP, 0.78, 268.0),    # I2C_SDA
+    ("TP9", TP, 0.78, 282.0),    # I2C_SCL
+    ("TP10", TP, 0.78, 152.0),   # NFC1
+    ("TP11", TP, 0.78, 138.0),   # NFC2
+]
+
+_tp_placed, _tp_failed = auto_place(TEST_ACCESS)
+
 # AE1, AE2 and LS1 have no footprint ON PURPOSE — etched copper and a bonded
 # bender are not catalogue land patterns, and the schematic says so. Their
 # copper is drawn below; their pads are real pads on real nets.
@@ -525,7 +636,8 @@ for name, pins in sorted(nets.items()):
 # gives it one (VSS_PAD, and Nordic requires it tied to pins 32 and 44).
 # U3's does not, so the decision is made HERE, where the copper is, and it
 # is GND per the GD25LQ32E datasheet's own land-pattern note.
-b.net("GND", "U3.9")
+# (U3's exposed pad was bonded here when the flash existed. The flash is
+# deleted - schematic block 6 - so there is nothing left to bond.)
 
 
 # ==========================================================================
@@ -566,19 +678,19 @@ def arc_track(net, r, a0, a1, width, layer, steps=40):
 # "custom pad shape must resolve to a single polygon". A track is arbitrary
 # in shape, carries a net, plots as copper and is understood by the DRC.
 
-# -- AE1: the bent quarter-wave monopole ----------------------------------
-ANT_ARC_DEG_WANT = math.degrees(fpg.QUARTER_MM / fpg.ANT_R)
-ANT_ARC_DEG = min(ANT_ARC_DEG_WANT, fpg.ANT_ARC_MAX_DEG)
-ANT_ARC_MM = math.radians(ANT_ARC_DEG) * fpg.ANT_R
-ANT_TAIL_MM = max(0.0, fpg.QUARTER_MM - ANT_ARC_MM)
-
-arc_track("ANT_FEED", fpg.ANT_R, ANT_FEED_DEG, ANT_FEED_DEG + ANT_ARC_DEG,
-          fpg.ANT_W, "F.Cu", steps=72)
-if ANT_TAIL_MM > 0.05:
-    _a = ANT_FEED_DEG + ANT_ARC_DEG
-    b.track("ANT_FEED",
-            [at_r(fpg.ANT_R, _a), at_r(fpg.ANT_R - ANT_TAIL_MM, _a)],
-            width=fpg.ANT_W, layer="F.Cu")
+# -- AE1: the meandered quarter-wave monopole -----------------------------
+# The waypoints come from footprints.element_path(), whose tooth depth is
+# SOLVED so the conductor is exactly a quarter wave at the eps_eff openEMS
+# measured on this board (1.573, not the textbook 2.2). One path, drawn here
+# as tracks and in make_rf_specs.py as a staircase.
+ANT_PATH = fpg.element_path()
+ANT_LEN_MM = fpg.path_length_mm(ANT_PATH)
+_prev = None
+for _r, _a in ANT_PATH:
+    _pt = at_r(_r, ANT_FEED_DEG + _a)
+    if _prev is not None:
+        b.track("ANT_FEED", [_prev, _pt], width=fpg.ANT_W, layer="F.Cu")
+    _prev = _pt
 
 # -- AE2: the NFC winding, one half on each net ---------------------------
 # A TRUE ARCHIMEDEAN SPIRAL, not three concentric arcs joined by radial
@@ -659,7 +771,15 @@ b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
 # starved thermal. There is also no reflow argument for spokes here: every
 # part on this board is a chip passive or a leadless package on a 0.6 mm
 # four-layer board, none of them a thermal mass a spoke would protect.
+# THE BOARD IS 0.60 mm THICK AND KiCad's DEFAULT IS 1.6. Board() does not
+# take a thickness, so without this line the .kicad_pcb says 1.6 mm, the DFM
+# report says 1.6 mm, and a fab quoting from these files builds a board
+# nearly three times too thick for a stack that has 1.5 mm of headroom in
+# total. Found by reading ce-fab's DFM output, which prints the thickness it
+# measured - which is exactly what that line is for.
 import pcbnew as _pcbnew
+b._pcb.GetDesignSettings().SetBoardThickness(int(round(T_PCB * 1e6)))
+
 for _z in b._pcb.Zones():
     _z.SetPadConnection(_pcbnew.ZONE_CONNECTION_FULL)
     # ISLANDS ARE REMOVED, not left and reported. A pour on a crowded 26 mm
@@ -693,7 +813,6 @@ for _fp in b._pcb.GetFootprints():
 BODY_H = {
     "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm": (0.85, "nRF54L10-QFAA, QFN48 "
                                                   "0.75-0.85 mm"),
-    "Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm": (0.60, "GD25LQ32E USON-8"),
     "LGA-12_2x2mm_P0.5mm": (0.70, "LIS2DW12TR LGA-12, 0.7 mm"),
     "Crystal_SMD_2016-4Pin_2.0x1.6mm": (0.50, "NX2016SA, 2.0x1.6x0.5"),
     "Crystal_SMD_3215-2Pin_3.2x1.5mm": (0.90, "X321532768KGD2SI, 3.2x1.5x0.9"),
@@ -703,6 +822,8 @@ BODY_H = {
     "R_0201_0603Metric": (0.33, "0201 thick film"),
     "L_0201_0603Metric": (0.33, "0201 wirewound RF inductor"),
     "HALO_SWD_PADS_1x06_P1.27": (0.00, "PADS ONLY, no connector"),
+    "TestPoint_Pad_D1.0mm": (0.00, "a probe land, no body"),
+    "Fiducial_1mm_Mask2mm": (0.00, "bare copper, no body"),
     "HALO_UWB_LANDS_1x08_P1.00": (0.00, "PADS ONLY, not fitted"),
     "HALO_BATT_CONTACT_3PAD": (0.00, "solder lands, no body"),
     "HALO_ANT_2G4_MONOPOLE": (0.00, "etched copper"),
@@ -840,19 +961,20 @@ def report():
     print("  VERDICT: FAIL - %d of %d part classes exceed the stack. "
           "Lane M owns the resolution." % (bad, len(rows)))
 
-    print("\n--- antenna, CANNOT DETERMINE ---")
-    print("  quarter wave at %.2f GHz, eps_eff %.1f: %.2f mm"
-          % (F0 / 1e9, EPS_EFF, QUARTER_MM))
-    print("  arc at R%.2f: %.1f deg wanted, %.1f deg drawn (sector is %.0f)"
-          % (ANT_R, ANT_ARC_DEG, ANT_ARC_DEG_FIT, ANT_SECTOR_ARC))
-    if ANT_ARC_DEG_FIT < ANT_ARC_DEG:
-        print("  THE ELEMENT IS TRUNCATED: the clear sector is shorter than a "
-              "quarter wave by %.1f deg (%.2f mm of arc). A truncated element "
-              "resonates HIGH, which is the direction ce-rf's two cases "
-              "already failed in. This is a real finding, not a placement "
-              "detail." % (ANT_ARC_DEG - ANT_ARC_DEG_FIT,
-                           math.radians(ANT_ARC_DEG - ANT_ARC_DEG_FIT) * ANT_R))
-    print("  S11 on this copper: CANNOT DETERMINE until ce-rf solves it.")
+    print("\n--- antenna ---")
+    print("  eps_eff %.3f  MEASURED by openEMS on this board, not assumed"
+          % fpg.EPS_EFF)
+    print("  quarter wave at %.2f GHz          %.4f mm"
+          % (fpg.F0 / 1e9, fpg.QUARTER_MM))
+    print("  meander: %d teeth, depth SOLVED   %.4f mm"
+          % (fpg.ANT_TEETH, fpg.ANT_TOOTH_DEPTH))
+    print("  conductor drawn                   %.4f mm (error %.5f)"
+          % (ANT_LEN_MM, ANT_LEN_MM - fpg.QUARTER_MM))
+    print("  radial extent  R%.2f .. R%.2f, inside the cleared sector"
+          % (min(r for r, a in ANT_PATH), max(r for r, a in ANT_PATH)))
+    print("  S11 on this copper: ce-rf's to grade, and its last run on the")
+    print("  20.71 mm version returned 2.886 GHz - which is why this is")
+    print("  24.49 mm. Re-run halo-rev-a-2g4 to see whether that closed it.")
 
     if deferred:
         print("\n--- nets with pins on parts that have no land pattern ---")
@@ -876,6 +998,30 @@ def report():
                 paste += 1
             elif not pad.GetNetname():
                 real.append("%s.%s" % (fp.GetReference(), pad.GetNumber()))
+    print("\n--- test access, placed by search ---")
+    for ref, rr, deg in _tp_placed:
+        print("  %-5s r=%5.2f  %5.1f deg" % (ref, rr, deg))
+    if _tp_failed:
+        print("  COULD NOT PLACE: %s — the board has no clear spot for "
+              "these, which is a finding and not a reason to drop them"
+              % ", ".join(_tp_failed))
+    else:
+        print("  all %d placed with >= %.2f mm of courtyard air"
+              % (len(_tp_placed), CLEAR_MM))
+    # THE ASYMMETRY THAT MAKES THE FIDUCIALS USEFUL, measured rather than
+    # asserted: two fiducials at the same radius on opposite sides fix
+    # position but NOT rotation, because the pair maps onto itself. These
+    # must differ in radius and must not be diametrically opposite.
+    fids = {r: (rr, dg) for r, rr, dg in _tp_placed if r.startswith("FID")}
+    if len(fids) == 2:
+        (r1, d1), (r2, d2) = fids["FID1"], fids["FID2"]
+        dd = abs(d1 - d2) % 360.0
+        dd = min(dd, 360.0 - dd)
+        print("  fiducial asymmetry: dr = %.2f mm, dtheta = %.1f deg  -> %s"
+              % (abs(r1 - r2), dd,
+                 "PASS" if abs(r1 - r2) > 0.5 and abs(dd - 180.0) > 10.0
+                 else "FAIL — the pair is symmetric and cannot fix rotation"))
+
     print("\n--- pads on no net ---")
     print("  paste-relief sub-pads (no number, not electrical): %d" % paste)
     print("  NUMBERED pads with no net: %d%s"

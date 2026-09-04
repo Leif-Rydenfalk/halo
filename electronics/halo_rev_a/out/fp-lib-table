@@ -22,6 +22,13 @@
 		(descr "written by ce-pcb bin/sch")
 	)
 	(lib
+		(name "Fiducial")
+		(type "KiCad")
+		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Fiducial.pretty")
+		(options "")
+		(descr "written by ce-pcb bin/sch")
+	)
+	(lib
 		(name "Inductor_SMD")
 		(type "KiCad")
 		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Inductor_SMD.pretty")
@@ -39,13 +46,6 @@
 		(name "Package_LGA")
 		(type "KiCad")
 		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Package_LGA.pretty")
-		(options "")
-		(descr "written by ce-pcb bin/sch")
-	)
-	(lib
-		(name "Package_SON")
-		(type "KiCad")
-		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Package_SON.pretty")
 		(options "")
 		(descr "written by ce-pcb bin/sch")
 	)

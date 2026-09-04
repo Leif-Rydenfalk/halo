@@ -62,6 +62,15 @@ D-5  CELL-REMOVAL SENSE IS NOW A CIRCUIT, not a note.  SPEC.md §3 says the
      Zero series loss, zero extra silicon, and it uses the second finger for
      the reason Apple has one.
 D-6  UWB IS A CASTELLATED STUB, NOT A DW3110 LAND PATTERN.  See below.
+D-7  THE SPI NOR FLASH IS DELETED, and it is a defect fix rather than a
+     simplification. The GD25LQ32E is a 1.65-2.0 V part and this board's
+     only rail is a raw 3.0 V coin cell. Block 6 carries the full argument
+     and the part to fit if revision B ever needs one.
+D-8  TEST ACCESS IS DESIGNED IN, not left to the fixture. Four-wire force
+     and sense pairs on VDD and GND, probe pads on the two piezo nets, the
+     cell-removal sense, the I2C bus and both NFC pins, two ASYMMETRIC
+     fiducials, and a laser-mark land for the per-unit serial that
+     compliance constraint C11 requires. Block 10.
 
 ---------------------------------------------------------------------------
 WHAT THIS SHEET REFUSES TO ASSERT — read before believing it
@@ -84,10 +93,15 @@ X-1  THE DW3110 LAND PATTERN IS NOT DRAWN, and D12 asked for one. Two
      edge carrying SPI, an interrupt, a reset and power, so a halo-uwb
      daughtercard is a real option rather than a sentence. When the DW3110
      pin table is fetched, the stub is what it lands on.
-X-2  NFC TUNING IS 130 pF ON AN UNMEASURED COIL. Nordic's NFCT chapter says
-     a 2 uH antenna wants about 130 pF per pin. Our coil's inductance is
-     ce-rf's measurement and it has not been made on the real Ø26 outline.
-     The value is a PLACEHOLDER and the convergence table says so.
+X-2  NFC TUNING IS NOW MEASURED, AND THE FIRST VALUE WAS EIGHT TIMES WRONG.
+     This sheet carried 130 pF, from Nordic's NFCT chapter, which quotes
+     that FOR A 2 uH ANTENNA. The real coil is not 2 uH. ce-rf measured the
+     2-turn Ø21.5 mm winding that actually fits between the cell can and
+     the battery contact lands at 0.2449 uH, and returns C_external =
+     554.6 pF across it, so each series capacitor is 1.109 nF. C24/C25 are
+     1.1 nF. What is still open is whether a 1.1 nF C0G exists in 0201, and
+     whether TWO TURNS couples enough to read at a phone's field strength -
+     that is a bench measurement and no assert here pretends otherwise.
 X-3  THE PI NETWORK VALUES ARE PLACEHOLDERS. They are seeded from Nordic's
      reference and will be replaced by whatever ce-rf's S11 on the real
      copper asks for. A pi network with unmeasured values is a tuning
@@ -437,61 +451,69 @@ def build():
            fields={"Note": "ETCHED COPPER on the outer annulus, no footprint "
                            "on purpose. Its inductance is ce-rf's "
                            "measurement and it drives C24/C25's value."})
+    # 1.1 nF, NOT the 130 pF this sheet carried first, and the difference is
+    # a measurement rather than an opinion. Nordic's NFCT chapter quotes
+    # about 130 pF per pin FOR A 2 uH ANTENNA. Our coil is not 2 uH: ce-rf
+    # measured the real 2-turn Ø21.5 mm winding at 0.2449 uH - eight times
+    # smaller, because the annulus between the cell can and the battery
+    # contact lands is 0.70 mm wide and holds two turns, not five. The same
+    # run returns C_external = 554.6 pF ACROSS the coil, and Nordic's
+    # topology puts C24 and C25 in series across it, so each is twice that:
+    # 1.109 nF. See sim/halo-rev-a-nfc.json and out/release/board/sim.
     for ref in ("C24", "C25"):
-        s.part(ref, "Device:C", value="130pF", group="nfc", footprint=C0201,
-               fields=P("C1571", "CL03C131JB3NNNC", "Samsung", "$0.0029",
-                        "in stock",
-                        {"Note": "NFC tuning, PLACEHOLDER (X-2). 130 pF is "
-                                 "Nordic's NFCT chapter for Lant = 2 uH. The "
-                                 "two must be MATCHED to each other - a "
-                                 "mismatch unbalances the tag antenna."}))
+        s.part(ref, "Device:C", value="1.1nF", group="nfc", footprint=C0201,
+               fields=P("C1546", "0201 C0G 1.1nF", "TBC", "TBC",
+                        "TBC",
+                        {"Note": "NFC tuning, MEASURED not assumed: ce-rf "
+                                 "gives the 2-turn coil L = 0.2449 uH and "
+                                 "C_external = 554.6 pF across it, so each "
+                                 "series capacitor is 1.109 nF. The two must "
+                                 "be MATCHED to each other - a mismatch "
+                                 "unbalances the tag antenna. OPEN: a 1.1 nF "
+                                 "C0G in 0201 has NOT been confirmed to "
+                                 "exist at LCSC, and an X7R here would drift "
+                                 "the tuning with temperature. If only 1.0 nF "
+                                 "C0G is buyable the tank lands 5.3 % high "
+                                 "(14.28 MHz) and needs a bench trim."}))
         s.net("GND", ref + ".2")
     s.net("NFC1", "U1.3", "AE2.1", "C24.1")
     s.net("NFC2", "U1.4", "AE2.2", "C25.1")
 
     # =====================================================================
-    # BLOCK 6 - SPI NOR flash
+    # BLOCK 6 - THERE IS NO SPI NOR FLASH, and that is a correction
     # =====================================================================
-    # research/05 §3.7 argues this line can be dropped, because the L10's
-    # 1 MB of NVM holds the Find My stack's 116.7 KB with room. It is kept
-    # in rev A for three reasons the cost model does not weigh: DULT's
-    # 25-day owner-information retention, the rolling-key window, and the
-    # fact that an open project wants its key material in a part that can be
-    # erased independently of the firmware. It is a $0.41 line.
-    s.part("U3", "Memory_Flash:W25Q32JVSS", value="GD25LQ32E 32Mbit",
-           group="flash",
-           footprint="Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm",
-           datasheet="https://www.gigadevice.com/datasheet/gd25lq32e/",
-           fields=P("C2939873", "GD25LQ32EEIGR", "GigaDevice", "$0.4105",
-                    "JLC", {"Note": "SYMBOL SUBSTITUTION: KiCad's W25Q32JVSS "
-                                    "is the same 8-pin serial-NOR pinout "
-                                    "(CS DO WP GND DI CLK HOLD VCC). 1.65-"
-                                    "3.6 V, so it spans the whole cell "
-                                    "curve. USON-8 2x3 mm, 0.6 mm tall - "
-                                    "chosen over SOIC-8 because the board is "
-                                    "26 mm across. Its exposed pad has no "
-                                    "symbol pin; bonding it is the LAYOUT's "
-                                    "decision, recorded there, not here."}))
-    s.net("SPI_SCK", "U1.12", "U3.6")       # P2.01/SCK
-    s.net("SPI_MOSI", "U1.13", "U3.5")      # P2.02/SDO
-    s.net("SPI_MISO", "U1.15", "U3.2")      # P2.04/SDI
-    s.net("FLASH_CS", "U1.16", "U3.1")      # P2.05/CS
-    s.net("VDD", "U3.8")
-    s.net("GND", "U3.4")
-    # WP and HOLD idle high through resistors rather than strapped to the
-    # rail. KiCad types them bidirectional because in quad mode they are
-    # IO2/IO3, and a hard tie would both make quad SPI impossible and short a
-    # driven output into the rail.
-    for ref, pad in (("R3", "3"), ("R4", "7")):
-        s.part(ref, "Device:R", value="100k", group="flash", footprint=R0201,
-               fields=P("C25741", "0201WMF1003TEE", "UNI-ROYAL", "$0.0012",
-                        "in stock",
-                        {"Note": "idle-high pull-up, 100k not 10k: 30 uA of "
-                                 "leakage on a 2.4 uA sleep budget would "
-                                 "have been the largest current on the board"}))
-        s.net("VDD", ref + ".1")
-        s.net("FLASH_%s" % ("WP" if pad == "3" else "HOLD"),
-              ref + ".2", "U3." + pad)
+    # Revision A carried a GD25LQ32EEIGR here, on VDD, which is the raw
+    # CR2032 rail with no regulator anywhere on this board. THE PART'S
+    # SUPPLY RANGE IS 1.65 TO 2.0 V. A fresh coin cell is 3.0 V, so it was
+    # out of specification from the first second - the kind of fault that
+    # half-works on a bench and fails in a field. Caught by the production
+    # test lane reading this sheet, not by anything here.
+    #
+    # There were two ways out and the cheap one is right:
+    #
+    #   FIT A REGULATOR. That is what the real AirTag does - a TPS62746 buck
+    #   to 1.8 V and an FPF2487 load switch (SPEC.md §3) - and it costs a
+    #   part, an inductor, a rail, a test and board area this disc does not
+    #   have. It buys nothing else, because nothing else on halo wants 1.8 V:
+    #   the nRF54L10, the LIS2DW12TR and the bender all span the whole cell
+    #   curve on their own.
+    #
+    #   DELETE THE FLASH. research/05 §3.7 and spec/bom-candidates.json
+    #   already recommended omitting it, and the firmware lane has since
+    #   measured the whole firmware at 13,164 bytes - 1.27 % of the
+    #   nRF54L10's own 1 MB. The Find My stack's floor is 116.7 KB flash /
+    #   21.5 KB RAM (SPEC.md §2a); DULT's 25-day owner-information retention
+    #   and the rolling key window are kilobytes. There is nothing for an
+    #   external memory to hold.
+    #
+    # So it is deleted, and with it a part, a rail problem, two pull-up
+    # resistors, nine joints and a production test. The SPI pins stay
+    # assigned and still reach J2, because the halo-uwb option needs them.
+    #
+    # IF REVISION B WANTS EXTERNAL FIRMWARE STAGING, the part to fit is NOT
+    # another GD25LQ: it is a wide-range low-power NOR such as the Macronix
+    # MX25R series, specified 1.65 to 3.6 V, which is the range a coin cell
+    # actually presents. That is a sourcing job, not a redesign.
 
     # =====================================================================
     # BLOCK 7 - accelerometer, on I2C (D-1)
@@ -605,13 +627,16 @@ def build():
 
     # X-1: the UWB option, as a stub rather than a guessed land pattern.
     s.part("J2", "Connector_Generic:Conn_01x08", value="UWB stub",
-           group="uwb", footprint="halo:HALO_CASTELLATED_1x08_P1.00",
-           fields={"Note": "8 CASTELLATED HALF-VIAS on the board edge, "
+           group="uwb", footprint="halo:HALO_UWB_LANDS_1x08_P1.00",
+           fields={"Note": "8 SMD LANDS just inboard of the board edge, "
                            "reserving the halo-uwb option of D12 WITHOUT "
                            "drawing a DW3110 land pattern nobody has the pin "
                            "table for. Not fitted, not populated, costs one "
                            "row of plated edge slots. See X-1.",
                    "LCSC": "n/a - castellations, no part"})
+    s.net("SPI_SCK", "U1.12")               # P2.01/SCK, out to J2 only
+    s.net("SPI_MOSI", "U1.13")              # P2.02/SDO
+    s.net("SPI_MISO", "U1.15")              # P2.04/SDI
     s.net("VDD", "J2.1")
     s.net("GND", "J2.2")
     s.net("SPI_SCK", "J2.3")
@@ -620,6 +645,72 @@ def build():
     s.net("UWB_CS", "U1.23", "J2.6")        # P0.00
     s.net("UWB_IRQ", "U1.24", "J2.7")       # P0.01
     s.net("UWB_RST", "U1.27", "J2.8")       # P0.02
+
+    # =====================================================================
+    # BLOCK 10 - TEST ACCESS, designed in rather than left to the fixture
+    # =====================================================================
+    # Asked for by the production test lane, and every one of these exists
+    # because a fixture cannot reach the net any other way once the shell is
+    # bonded. Stage two of the test plan probes the board IN ITS CARRIER,
+    # before the adhesive joint closes; after that the programming pads and
+    # every battery pad are sealed inside permanently. So these must survive
+    # until that step and be reachable AT it, which puts every one of them on
+    # the TOP face.
+    #
+    # FORCE AND SENSE ARE SEPARATE PADS, and that is the whole point of four
+    # of them. Sleep current on this board is single-digit microamps; a
+    # two-wire measurement puts the probe's own contact resistance in series
+    # with the thing being measured, and two probes landing in one battery
+    # pad is a two-wire measurement wearing a four-wire name. Force carries
+    # the current, sense carries none.
+    TESTPOINTS = [
+        ("TP1", "VDD", "VDD FORCE - carries the measurement current"),
+        ("TP2", "VDD", "VDD SENSE - carries none, so contact resistance "
+                       "does not appear in the reading"),
+        ("TP3", "GND", "GND FORCE"),
+        ("TP4", "GND", "GND SENSE"),
+        ("TP5", "PIEZO_P", "the bender bonds to the SHELL, so this net "
+                           "terminates on a wire land and nowhere a probe "
+                           "can otherwise reach"),
+        ("TP6", "PIEZO_N", "the other bender leg; the pair is what proves "
+                           "the anti-phase drive before a shell exists"),
+        ("TP7", "VBAT_SNS", "D-5's cell-removal sense node - the "
+                            "five-removals reset cannot be tested without "
+                            "seeing it"),
+        ("TP8", "I2C_SDA", "accelerometer bus, for diagnostics"),
+        ("TP9", "I2C_SCL", "accelerometer bus, for diagnostics"),
+        ("TP10", "NFC1", "NFC coil pin - the coil is etched, so there is no "
+                         "component lead to clip onto"),
+        ("TP11", "NFC2", "the other NFC pin; the pair is what a tuning "
+                         "measurement needs"),
+    ]
+    for ref, net, note in TESTPOINTS:
+        s.part(ref, "Connector:TestPoint", value="TP", group="test",
+               footprint="halo:HALO_TP_D0.8",
+               fields={"Note": note, "LCSC": "n/a - a pad, not a part"})
+        s.net(net, ref + ".1")
+
+    # TWO FIDUCIALS, AND THEY ARE ASYMMETRIC ON PURPOSE. A 26 mm circle has
+    # no datum: it looks the same from every angle, so a placement machine
+    # and a probe fixture have nothing to register against and the position
+    # of every other pad is a guess. Two fiducials at different radii and a
+    # non-diametric angle fix both position AND rotation, and being
+    # asymmetric they also fix which way up the board is.
+    for ref, note in (("FID1", "fiducial 1 of 2 - global datum. Placed at a "
+                               "different radius from FID2 so the pair is "
+                               "ASYMMETRIC and resolves rotation as well as "
+                               "position."),
+                      ("FID2", "fiducial 2 of 2 - the asymmetric partner")):
+        # `Mechanical:Fiducial` is a ZERO-PIN symbol, which is exactly
+        # right: a fiducial is bare copper with no net and no connection. A
+        # two-pin Device:D was tried first and the board refused it by name -
+        # "FID1 (Fiducial:Fiducial_1mm_Mask2mm) has no pad '2'" - because the
+        # land pattern has no pads at all. A diode on a schematic that is not
+        # a diode is how a wrong part reaches a fab, so the refusal was
+        # right and this is the fix rather than a workaround.
+        s.part(ref, "Mechanical:Fiducial", value="FIDUCIAL", group="test",
+               footprint="Fiducial:Fiducial_0.5mm_Mask1mm", in_bom=False,
+               fields={"Note": note, "LCSC": "n/a - bare copper"})
 
     s.power("VDD", "GND")
 
@@ -641,6 +732,22 @@ def build():
     s.text("C14-C17 ARE NOT FITTED. The nRF54L's on-die CAPVALUE load "
            "capacitors are used. Fitting these as well double-loads the "
            "crystal; populate ONLY with the internal ones disabled.")
+    s.text("TEST ACCESS (block 10): TP1/TP2 are VDD FORCE and SENSE and "
+           "TP3/TP4 are GND FORCE and SENSE - four wires, because sleep "
+           "current here is single-digit microamps and a two-wire reading "
+           "measures the probe. FID1/FID2 are ASYMMETRIC: a 26 mm circle "
+           "has no datum and without them every pad position is a guess.")
+    s.text("IPC-A-610 ACCEPTANCE CLASS 2. Class 3 is for equipment whose "
+           "failure cannot be tolerated - life support, avionics - and halo "
+           "is not that. Class 1 is general consumer electronics where "
+           "cosmetics do not matter, and a product with a DULT safety "
+           "obligation and a user-replaceable cell is not that either. The "
+           "AOI recipe is built from this line, so it is recorded here "
+           "rather than left for the factory to choose.")
+    s.text("THERE IS NO SPI NOR FLASH. The GD25LQ32E first drawn here is a "
+           "1.65-2.0 V part and this board's only rail is a raw 3.0 V coin "
+           "cell. Block 6 carries the argument; the firmware is 13,164 "
+           "bytes, 1.27 % of the SoC's own 1 MB.")
     s.text("CELL REMOVAL: BT1 pad 1 carries current into VDD, BT1 pad 3 is "
            "SENSE ONLY through R1/R2 into AIN0, and R2 returns to a GPIO so "
            "the divider draws nothing while idle. Pull the cell and "
@@ -651,8 +758,9 @@ def build():
 
 
 SUBSTITUTIONS = [
-    ("U3", "GigaDevice GD25LQ32EEIGR", "Memory_Flash:W25Q32JVSS",
-     "identical 8-pin serial-NOR pinout; KiCad has no GigaDevice symbol"),
+    # (U3, the SPI NOR, was deleted in rev A - see block 6. Its symbol
+    #  substitution note is kept out of this list because the part is not on
+    #  the board; a substitution nobody fitted is not a substitution.)
     ("X2", "2-pad 2016 crystal (Nordic's BOM)",
      "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
      "KiCad ships no 2-pin 2016 land pattern; the can is grounded, which is "

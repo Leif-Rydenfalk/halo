@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_sch")
-		(date "2026-09-04T17:11:30")
+		(date "2026-09-04T17:58:39")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2396,25 +2396,25 @@
 		)
 		(comp
 			(ref "C24")
-			(value "130pF")
+			(value "1.1nF")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1571")
+					(name "LCSC") "C1546")
 				(field
-					(name "MPN") "CL03C131JB3NNNC")
+					(name "MPN") "0201 C0G 1.1nF")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "TBC")
 				(field
-					(name "Note") "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+					(name "Note") "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "TBC")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "in stock")
+					(name "Stock") "TBC")
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
 				(field
@@ -2429,23 +2429,23 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C1571")
+				(value "C1546")
 			)
 			(property
 				(name "MPN")
-				(value "CL03C131JB3NNNC")
+				(value "0201 C0G 1.1nF")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "TBC")
 			)
 			(property
 				(name "Note")
-				(value "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+				(value "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "TBC")
 			)
 			(property
 				(name "Priced")
@@ -2453,7 +2453,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "in stock")
+				(value "TBC")
 			)
 			(property
 				(name "Sheetname")
@@ -2492,25 +2492,25 @@
 		)
 		(comp
 			(ref "C25")
-			(value "130pF")
+			(value "1.1nF")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1571")
+					(name "LCSC") "C1546")
 				(field
-					(name "MPN") "CL03C131JB3NNNC")
+					(name "MPN") "0201 C0G 1.1nF")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "TBC")
 				(field
-					(name "Note") "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+					(name "Note") "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "TBC")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "in stock")
+					(name "Stock") "TBC")
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
 				(field
@@ -2525,23 +2525,23 @@
 			)
 			(property
 				(name "LCSC")
-				(value "C1571")
+				(value "C1546")
 			)
 			(property
 				(name "MPN")
-				(value "CL03C131JB3NNNC")
+				(value "0201 C0G 1.1nF")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "TBC")
 			)
 			(property
 				(name "Note")
-				(value "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+				(value "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "TBC")
 			)
 			(property
 				(name "Priced")
@@ -2549,7 +2549,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "in stock")
+				(value "TBC")
 			)
 			(property
 				(name "Sheetname")
@@ -2583,6 +2583,130 @@
 							(num "2")
 						)
 					)
+				)
+			)
+		)
+		(comp
+			(ref "FID1")
+			(value "FIDUCIAL")
+			(footprint "Fiducial:Fiducial_0.5mm_Mask1mm")
+			(datasheet "~")
+			(description "Fiducial Marker")
+			(fields
+				(field
+					(name "LCSC") "n/a - bare copper")
+				(field
+					(name "Note") "fiducial 1 of 2 - global datum. Placed at a different radius from FID2 so the pair is ASYMMETRIC and resolves rotation as well as position.")
+				(field
+					(name "Footprint") "Fiducial:Fiducial_0.5mm_Mask1mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Fiducial Marker")
+			)
+			(libsource
+				(lib "Mechanical")
+				(part "Fiducial")
+				(description "Fiducial Marker")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - bare copper")
+			)
+			(property
+				(name "Note")
+				(value "fiducial 1 of 2 - global datum. Placed at a different radius from FID2 so the pair is ASYMMETRIC and resolves rotation as well as position.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "fiducial marker")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Fiducial*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "0fa77cc9-048c-51d1-a7ae-9d6a8d1c3a45")
+			(units
+				(unit
+					(name "A")
+					(pins)
+				)
+			)
+		)
+		(comp
+			(ref "FID2")
+			(value "FIDUCIAL")
+			(footprint "Fiducial:Fiducial_0.5mm_Mask1mm")
+			(datasheet "~")
+			(description "Fiducial Marker")
+			(fields
+				(field
+					(name "LCSC") "n/a - bare copper")
+				(field
+					(name "Note") "fiducial 2 of 2 - the asymmetric partner")
+				(field
+					(name "Footprint") "Fiducial:Fiducial_0.5mm_Mask1mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Fiducial Marker")
+			)
+			(libsource
+				(lib "Mechanical")
+				(part "Fiducial")
+				(description "Fiducial Marker")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - bare copper")
+			)
+			(property
+				(name "Note")
+				(value "fiducial 2 of 2 - the asymmetric partner")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "fiducial marker")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Fiducial*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "534cd024-8dc9-50c0-9631-513a153fc999")
+			(units
+				(unit
+					(name "A")
+					(pins)
 				)
 			)
 		)
@@ -2667,16 +2791,16 @@
 		(comp
 			(ref "J2")
 			(value "UWB stub")
-			(footprint "halo:HALO_CASTELLATED_1x08_P1.00")
+			(footprint "halo:HALO_UWB_LANDS_1x08_P1.00")
 			(datasheet "~")
 			(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			(fields
 				(field
 					(name "LCSC") "n/a - castellations, no part")
 				(field
-					(name "Note") "8 CASTELLATED HALF-VIAS on the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
+					(name "Note") "8 SMD LANDS just inboard of the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
 				(field
-					(name "Footprint") "halo:HALO_CASTELLATED_1x08_P1.00")
+					(name "Footprint") "halo:HALO_UWB_LANDS_1x08_P1.00")
 				(field
 					(name "Datasheet") "~")
 				(field
@@ -2693,7 +2817,7 @@
 			)
 			(property
 				(name "Note")
-				(value "8 CASTELLATED HALF-VIAS on the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
+				(value "8 SMD LANDS just inboard of the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
 			)
 			(property
 				(name "Sheetname")
@@ -3517,198 +3641,6 @@
 			)
 		)
 		(comp
-			(ref "R3")
-			(value "100k")
-			(footprint "Resistor_SMD:R_0201_0603Metric")
-			(datasheet "~")
-			(description "Resistor")
-			(fields
-				(field
-					(name "LCSC") "C25741")
-				(field
-					(name "MPN") "0201WMF1003TEE")
-				(field
-					(name "Manufacturer") "UNI-ROYAL")
-				(field
-					(name "Note") "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
-				(field
-					(name "Price@1k") "$0.0012")
-				(field
-					(name "Priced") "2026-09-03")
-				(field
-					(name "Stock") "in stock")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
-				(field
-					(name "Datasheet") "~")
-				(field
-					(name "Description") "Resistor")
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "LCSC")
-				(value "C25741")
-			)
-			(property
-				(name "MPN")
-				(value "0201WMF1003TEE")
-			)
-			(property
-				(name "Manufacturer")
-				(value "UNI-ROYAL")
-			)
-			(property
-				(name "Note")
-				(value "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
-			)
-			(property
-				(name "Price@1k")
-				(value "$0.0012")
-			)
-			(property
-				(name "Priced")
-				(value "2026-09-03")
-			)
-			(property
-				(name "Stock")
-				(value "in stock")
-			)
-			(property
-				(name "Sheetname")
-				(value "halo_rev_a")
-			)
-			(property
-				(name "Sheetfile")
-				(value "halo_rev_a.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "94f3988e-5c69-580f-a166-10d4d39d87b1")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
-			(ref "R4")
-			(value "100k")
-			(footprint "Resistor_SMD:R_0201_0603Metric")
-			(datasheet "~")
-			(description "Resistor")
-			(fields
-				(field
-					(name "LCSC") "C25741")
-				(field
-					(name "MPN") "0201WMF1003TEE")
-				(field
-					(name "Manufacturer") "UNI-ROYAL")
-				(field
-					(name "Note") "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
-				(field
-					(name "Price@1k") "$0.0012")
-				(field
-					(name "Priced") "2026-09-03")
-				(field
-					(name "Stock") "in stock")
-				(field
-					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
-				(field
-					(name "Datasheet") "~")
-				(field
-					(name "Description") "Resistor")
-			)
-			(libsource
-				(lib "Device")
-				(part "R")
-				(description "Resistor")
-			)
-			(property
-				(name "LCSC")
-				(value "C25741")
-			)
-			(property
-				(name "MPN")
-				(value "0201WMF1003TEE")
-			)
-			(property
-				(name "Manufacturer")
-				(value "UNI-ROYAL")
-			)
-			(property
-				(name "Note")
-				(value "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
-			)
-			(property
-				(name "Price@1k")
-				(value "$0.0012")
-			)
-			(property
-				(name "Priced")
-				(value "2026-09-03")
-			)
-			(property
-				(name "Stock")
-				(value "in stock")
-			)
-			(property
-				(name "Sheetname")
-				(value "halo_rev_a")
-			)
-			(property
-				(name "Sheetfile")
-				(value "halo_rev_a.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "R res resistor")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "R_*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "d16b26a2-fc0a-5831-adad-f2cb01907e72")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "2")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "R5")
 			(value "10k")
 			(footprint "Resistor_SMD:R_0201_0603Metric")
@@ -4106,7 +4038,7 @@
 				(field
 					(name "Manufacturer") "UNI-ROYAL")
 				(field
-					(name "Note") "series damping on one leg. A bender is a near-pure capacitance and a GPIO edge into it is a current spike straight off the bulk caps; 100 R holds the peak near 30 mA and costs 0.2 dB at 4 kHz into ~500 ohm.")
+					(name "Note") "series damping on one leg, and it EARNS ITS PLACE - measured, not argued. A bender is a near-pure capacitance and a GPIO edge into it is a current spike off the bulk capacitors. sim/sounder_drive.py: with a low-loss 40 nF bender the peak pin current is 32.0 mA with R9 removed and 17.8 mA with it fitted - a 44 % cut, and the difference between exceeding and clearing a 25 mA ceiling. An earlier note here said '100 R holds the peak near 30 mA', which had the right magnitude and the wrong side of it.")
 				(field
 					(name "Price@1k") "$0.0012")
 				(field
@@ -4139,7 +4071,7 @@
 			)
 			(property
 				(name "Note")
-				(value "series damping on one leg. A bender is a near-pure capacitance and a GPIO edge into it is a current spike straight off the bulk caps; 100 R holds the peak near 30 mA and costs 0.2 dB at 4 kHz into ~500 ohm.")
+				(value "series damping on one leg, and it EARNS ITS PLACE - measured, not argued. A bender is a near-pure capacitance and a GPIO edge into it is a current spike off the bulk capacitors. sim/sounder_drive.py: with a low-loss 40 nF bender the peak pin current is 32.0 mA with R9 removed and 17.8 mA with it fitted - a 44 % cut, and the difference between exceeding and clearing a 25 mA ceiling. An earlier note here said '100 R holds the peak near 30 mA', which had the right magnitude and the wrong side of it.")
 			)
 			(property
 				(name "Price@1k")
@@ -4279,6 +4211,699 @@
 						)
 						(pin
 							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP1")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "VDD FORCE - carries the measurement current")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "VDD FORCE - carries the measurement current")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "1ea684ac-3795-5b20-b338-14c5432771cd")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP2")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "VDD SENSE - carries none, so contact resistance does not appear in the reading")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "VDD SENSE - carries none, so contact resistance does not appear in the reading")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d0596d9a-cbf6-5519-b011-7c61057c584f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP3")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "GND FORCE")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "GND FORCE")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "bf42d31b-114c-5c50-8634-5b3cb47a9ae2")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP4")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "GND SENSE")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "GND SENSE")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6dce181a-1027-5db2-b96a-e3740a1f67e1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP5")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "the bender bonds to the SHELL, so this net terminates on a wire land and nowhere a probe can otherwise reach")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "the bender bonds to the SHELL, so this net terminates on a wire land and nowhere a probe can otherwise reach")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "824d5523-0160-579c-bbc6-3d1f7083fc3b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP6")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "the other bender leg; the pair is what proves the anti-phase drive before a shell exists")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "the other bender leg; the pair is what proves the anti-phase drive before a shell exists")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f5558fe6-2887-5d53-8bb9-d28544b81eae")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP7")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "D-5's cell-removal sense node - the five-removals reset cannot be tested without seeing it")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "D-5's cell-removal sense node - the five-removals reset cannot be tested without seeing it")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ec94c4d2-fa6c-5b90-bf85-8b42aadab721")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP8")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "accelerometer bus, for diagnostics")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "accelerometer bus, for diagnostics")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "97f1662b-0577-50bf-a5bb-17e206a7e00e")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP9")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "accelerometer bus, for diagnostics")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "accelerometer bus, for diagnostics")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fdf7a07d-f10a-5c80-8b2a-17612464a376")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP10")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "NFC coil pin - the coil is etched, so there is no component lead to clip onto")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "NFC coil pin - the coil is etched, so there is no component lead to clip onto")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "70c92169-2ebb-53d6-9c88-758b281fb503")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP11")
+			(value "TP")
+			(footprint "halo:HALO_TP_D0.8")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "LCSC") "n/a - a pad, not a part")
+				(field
+					(name "Note") "the other NFC pin; the pair is what a tuning measurement needs")
+				(field
+					(name "Footprint") "halo:HALO_TP_D0.8")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - a pad, not a part")
+			)
+			(property
+				(name "Note")
+				(value "the other NFC pin; the pair is what a tuning measurement needs")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "1928254a-79f4-5b7b-9de9-682ee56e14eb")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
 						)
 					)
 				)
@@ -4640,120 +5265,6 @@
 			)
 		)
 		(comp
-			(ref "U3")
-			(value "GD25LQ32E 32Mbit")
-			(footprint "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm")
-			(datasheet "https://www.gigadevice.com/datasheet/gd25lq32e/")
-			(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
-			(fields
-				(field
-					(name "LCSC") "C2939873")
-				(field
-					(name "MPN") "GD25LQ32EEIGR")
-				(field
-					(name "Manufacturer") "GigaDevice")
-				(field
-					(name "Note") "SYMBOL SUBSTITUTION: KiCad's W25Q32JVSS is the same 8-pin serial-NOR pinout (CS DO WP GND DI CLK HOLD VCC). 1.65-3.6 V, so it spans the whole cell curve. USON-8 2x3 mm, 0.6 mm tall - chosen over SOIC-8 because the board is 26 mm across. Its exposed pad has no symbol pin; bonding it is the LAYOUT's decision, recorded there, not here.")
-				(field
-					(name "Price@1k") "$0.4105")
-				(field
-					(name "Priced") "2026-09-03")
-				(field
-					(name "Stock") "JLC")
-				(field
-					(name "Footprint") "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm")
-				(field
-					(name "Datasheet") "https://www.gigadevice.com/datasheet/gd25lq32e/")
-				(field
-					(name "Description") "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
-			)
-			(libsource
-				(lib "Memory_Flash")
-				(part "W25Q32JVSS")
-				(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
-			)
-			(property
-				(name "LCSC")
-				(value "C2939873")
-			)
-			(property
-				(name "MPN")
-				(value "GD25LQ32EEIGR")
-			)
-			(property
-				(name "Manufacturer")
-				(value "GigaDevice")
-			)
-			(property
-				(name "Note")
-				(value "SYMBOL SUBSTITUTION: KiCad's W25Q32JVSS is the same 8-pin serial-NOR pinout (CS DO WP GND DI CLK HOLD VCC). 1.65-3.6 V, so it spans the whole cell curve. USON-8 2x3 mm, 0.6 mm tall - chosen over SOIC-8 because the board is 26 mm across. Its exposed pad has no symbol pin; bonding it is the LAYOUT's decision, recorded there, not here.")
-			)
-			(property
-				(name "Price@1k")
-				(value "$0.4105")
-			)
-			(property
-				(name "Priced")
-				(value "2026-09-03")
-			)
-			(property
-				(name "Stock")
-				(value "JLC")
-			)
-			(property
-				(name "Sheetname")
-				(value "halo_rev_a")
-			)
-			(property
-				(name "Sheetfile")
-				(value "halo_rev_a.kicad_sch")
-			)
-			(property
-				(name "ki_keywords")
-				(value "flash memory SPI")
-			)
-			(property
-				(name "ki_fp_filters")
-				(value "*SOIC*5.3x5.3mm*P1.27mm*")
-			)
-			(sheetpath
-				(names "/")
-				(tstamps "/")
-			)
-			(tstamps "4bd2005f-f946-5d31-adac-382908d243da")
-			(units
-				(unit
-					(name "A")
-					(pins
-						(pin
-							(num "1")
-						)
-						(pin
-							(num "6")
-						)
-						(pin
-							(num "5")
-						)
-						(pin
-							(num "2")
-						)
-						(pin
-							(num "3")
-						)
-						(pin
-							(num "7")
-						)
-						(pin
-							(num "8")
-						)
-						(pin
-							(num "4")
-						)
-					)
-				)
-			)
-		)
-		(comp
 			(ref "X1")
 			(value "32.768kHz")
 			(footprint "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
@@ -5005,6 +5516,36 @@
 					(num "6")
 					(name "SWO")
 					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "Connector")
+			(part "TestPoint")
+			(description "test point")
+			(footprints
+				(fp "Pin*")
+				(fp "Test*")
+			)
+			(fields
+				(field
+					(name "Reference") "TP")
+				(field
+					(name "Value") "TestPoint")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "test point")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
 				)
 			)
 		)
@@ -5351,66 +5892,25 @@
 			)
 		)
 		(libpart
-			(lib "Memory_Flash")
-			(part "W25Q32JVSS")
-			(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
-			(docs "http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf")
+			(lib "Mechanical")
+			(part "Fiducial")
+			(description "Fiducial Marker")
 			(footprints
-				(fp "*SOIC*5.3x5.3mm*P1.27mm*")
+				(fp "Fiducial*")
 			)
 			(fields
 				(field
-					(name "Reference") "U")
+					(name "Reference") "FID")
 				(field
-					(name "Value") "W25Q32JVSS")
+					(name "Value") "Fiducial")
 				(field
-					(name "Footprint") "Package_SO:SOIC-8_5.3x5.3mm_P1.27mm")
+					(name "Footprint")
+				)
 				(field
-					(name "Datasheet") "http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf")
+					(name "Datasheet")
+				)
 				(field
-					(name "Description") "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "~{CS}")
-					(type "input")
-				)
-				(pin
-					(num "2")
-					(name "DO/IO_{1}")
-					(type "bidirectional")
-				)
-				(pin
-					(num "3")
-					(name "~{WP}/IO_{2}")
-					(type "bidirectional")
-				)
-				(pin
-					(num "4")
-					(name "GND")
-					(type "power_in")
-				)
-				(pin
-					(num "5")
-					(name "DI/IO_{0}")
-					(type "bidirectional")
-				)
-				(pin
-					(num "6")
-					(name "CLK")
-					(type "input")
-				)
-				(pin
-					(num "7")
-					(name "~{HOLD}/~{RESET}/IO_{3}")
-					(type "bidirectional")
-				)
-				(pin
-					(num "8")
-					(name "VCC")
-					(type "power_in")
-				)
+					(name "Description") "Fiducial Marker")
 			)
 		)
 		(libpart
@@ -5811,8 +6311,8 @@
 			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Device.kicad_sym")
 		)
 		(library
-			(logical "Memory_Flash")
-			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Memory_Flash.kicad_sym")
+			(logical "Mechanical")
+			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Mechanical.kicad_sym")
 		)
 		(library
 			(logical "local")
@@ -5981,55 +6481,6 @@
 		)
 		(net
 			(code "9")
-			(name "FLASH_CS")
-			(class "Default")
-			(node
-				(ref "U1")
-				(pin "16")
-				(pinfunction "P2.05/CS_16")
-				(pintype "bidirectional")
-			)
-			(node
-				(ref "U3")
-				(pin "1")
-				(pinfunction "~{CS}_1")
-				(pintype "input")
-			)
-		)
-		(net
-			(code "10")
-			(name "FLASH_HOLD")
-			(class "Default")
-			(node
-				(ref "R4")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U3")
-				(pin "7")
-				(pinfunction "~{HOLD}/~{RESET}/IO_{3}_7")
-				(pintype "bidirectional")
-			)
-		)
-		(net
-			(code "11")
-			(name "FLASH_WP")
-			(class "Default")
-			(node
-				(ref "R3")
-				(pin "2")
-				(pintype "passive")
-			)
-			(node
-				(ref "U3")
-				(pin "3")
-				(pinfunction "~{WP}/IO_{2}_3")
-				(pintype "bidirectional")
-			)
-		)
-		(net
-			(code "12")
 			(name "GND")
 			(class "Default")
 			(node
@@ -6176,6 +6627,18 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "TP3")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP4")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
 				(pin "32")
 				(pinfunction "VSS_PA_32")
@@ -6218,12 +6681,6 @@
 				(pintype "power_in")
 			)
 			(node
-				(ref "U3")
-				(pin "4")
-				(pinfunction "GND_4")
-				(pintype "power_in")
-			)
-			(node
 				(ref "X2")
 				(pin "2")
 				(pinfunction "G_2")
@@ -6237,12 +6694,18 @@
 			)
 		)
 		(net
-			(code "13")
+			(code "10")
 			(name "I2C_SCL")
 			(class "Default")
 			(node
 				(ref "R7")
 				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP9")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -6259,12 +6722,18 @@
 			)
 		)
 		(net
-			(code "14")
+			(code "11")
 			(name "I2C_SDA")
 			(class "Default")
 			(node
 				(ref "R8")
 				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP8")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -6281,7 +6750,7 @@
 			)
 		)
 		(net
-			(code "15")
+			(code "12")
 			(name "NFC1")
 			(class "Default")
 			(node
@@ -6295,6 +6764,12 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "TP10")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
 				(pin "3")
 				(pinfunction "P1.02/NFC1_3")
@@ -6302,7 +6777,7 @@
 			)
 		)
 		(net
-			(code "16")
+			(code "13")
 			(name "NFC2")
 			(class "Default")
 			(node
@@ -6316,6 +6791,12 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "TP11")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
 				(pin "4")
 				(pinfunction "P1.03/NFC2_4")
@@ -6323,7 +6804,7 @@
 			)
 		)
 		(net
-			(code "17")
+			(code "14")
 			(name "PIEZO_DRV")
 			(class "Default")
 			(node
@@ -6339,13 +6820,19 @@
 			)
 		)
 		(net
-			(code "18")
+			(code "15")
 			(name "PIEZO_N")
 			(class "Default")
 			(node
 				(ref "LS1")
 				(pin "2")
 				(pinfunction "-_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP6")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -6356,12 +6843,18 @@
 			)
 		)
 		(net
-			(code "19")
+			(code "16")
 			(name "PIEZO_P")
 			(class "Default")
 			(node
 				(ref "R9")
 				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP5")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -6372,7 +6865,7 @@
 			)
 		)
 		(net
-			(code "20")
+			(code "17")
 			(name "RF_50")
 			(class "Default")
 			(node
@@ -6399,7 +6892,7 @@
 			)
 		)
 		(net
-			(code "21")
+			(code "18")
 			(name "RF_A")
 			(class "Default")
 			(node
@@ -6421,7 +6914,7 @@
 			)
 		)
 		(net
-			(code "22")
+			(code "19")
 			(name "RF_ANT")
 			(class "Default")
 			(node
@@ -6443,7 +6936,7 @@
 			)
 		)
 		(net
-			(code "23")
+			(code "20")
 			(name "RF_B")
 			(class "Default")
 			(node
@@ -6465,7 +6958,7 @@
 			)
 		)
 		(net
-			(code "24")
+			(code "21")
 			(name "SNS_EN")
 			(class "Default")
 			(node
@@ -6486,7 +6979,7 @@
 			)
 		)
 		(net
-			(code "25")
+			(code "22")
 			(name "SPI_MISO")
 			(class "Default")
 			(node
@@ -6501,15 +6994,9 @@
 				(pinfunction "P2.04/SDI_15")
 				(pintype "bidirectional")
 			)
-			(node
-				(ref "U3")
-				(pin "2")
-				(pinfunction "DO/IO_{1}_2")
-				(pintype "bidirectional")
-			)
 		)
 		(net
-			(code "26")
+			(code "23")
 			(name "SPI_MOSI")
 			(class "Default")
 			(node
@@ -6524,15 +7011,9 @@
 				(pinfunction "P2.02/SDO_13")
 				(pintype "bidirectional")
 			)
-			(node
-				(ref "U3")
-				(pin "5")
-				(pinfunction "DI/IO_{0}_5")
-				(pintype "bidirectional")
-			)
 		)
 		(net
-			(code "27")
+			(code "24")
 			(name "SPI_SCK")
 			(class "Default")
 			(node
@@ -6547,15 +7028,9 @@
 				(pinfunction "P2.01/SCK_12")
 				(pintype "bidirectional")
 			)
-			(node
-				(ref "U3")
-				(pin "6")
-				(pinfunction "CLK_6")
-				(pintype "input")
-			)
 		)
 		(net
-			(code "28")
+			(code "25")
 			(name "SWDCLK")
 			(class "Default")
 			(node
@@ -6572,7 +7047,7 @@
 			)
 		)
 		(net
-			(code "29")
+			(code "26")
 			(name "SWDIO")
 			(class "Default")
 			(node
@@ -6589,7 +7064,7 @@
 			)
 		)
 		(net
-			(code "30")
+			(code "27")
 			(name "SWO")
 			(class "Default")
 			(node
@@ -6606,7 +7081,7 @@
 			)
 		)
 		(net
-			(code "31")
+			(code "28")
 			(name "UWB_CS")
 			(class "Default")
 			(node
@@ -6623,7 +7098,7 @@
 			)
 		)
 		(net
-			(code "32")
+			(code "29")
 			(name "UWB_IRQ")
 			(class "Default")
 			(node
@@ -6640,7 +7115,7 @@
 			)
 		)
 		(net
-			(code "33")
+			(code "30")
 			(name "UWB_RST")
 			(class "Default")
 			(node
@@ -6657,7 +7132,7 @@
 			)
 		)
 		(net
-			(code "34")
+			(code "31")
 			(name "VBAT_SNS")
 			(class "Default")
 			(node
@@ -6676,6 +7151,12 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "TP7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
 				(pin "5")
 				(pinfunction "P1.04/AIN0_5")
@@ -6683,7 +7164,7 @@
 			)
 		)
 		(net
-			(code "35")
+			(code "32")
 			(name "VBAT_SNS_HI")
 			(class "Default")
 			(node
@@ -6699,7 +7180,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "33")
 			(name "VDD")
 			(class "Default")
 			(node
@@ -6766,16 +7247,6 @@
 				(pintype "passive")
 			)
 			(node
-				(ref "R3")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
-				(ref "R4")
-				(pin "1")
-				(pintype "passive")
-			)
-			(node
 				(ref "R5")
 				(pin "1")
 				(pintype "passive")
@@ -6788,6 +7259,18 @@
 			(node
 				(ref "R8")
 				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP2")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -6832,15 +7315,9 @@
 				(pinfunction "VDD_9")
 				(pintype "power_in")
 			)
-			(node
-				(ref "U3")
-				(pin "8")
-				(pinfunction "VCC_8")
-				(pintype "power_in")
-			)
 		)
 		(net
-			(code "37")
+			(code "34")
 			(name "XC1")
 			(class "Default")
 			(node
@@ -6862,7 +7339,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "35")
 			(name "XC2")
 			(class "Default")
 			(node
@@ -6884,7 +7361,7 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "36")
 			(name "XL1")
 			(class "Default")
 			(node
@@ -6906,7 +7383,7 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "37")
 			(name "XL2")
 			(class "Default")
 			(node
@@ -6928,7 +7405,7 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "38")
 			(name "nRESET")
 			(class "Default")
 			(node
@@ -6950,7 +7427,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "39")
 			(name "unconnected-(U1-P0.03-Pad28)")
 			(class "Default")
 			(node
@@ -6961,7 +7438,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "40")
 			(name "unconnected-(U1-P0.04-Pad29)")
 			(class "Default")
 			(node
@@ -6972,7 +7449,7 @@
 			)
 		)
 		(net
-			(code "44")
+			(code "41")
 			(name "unconnected-(U1-P1.06{slash}AIN2-Pad7)")
 			(class "Default")
 			(node
@@ -6983,7 +7460,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "42")
 			(name "unconnected-(U1-P1.07{slash}AIN3-Pad8)")
 			(class "Default")
 			(node
@@ -6994,7 +7471,7 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "43")
 			(name "unconnected-(U1-P1.08{slash}EXTREF-Pad9)")
 			(class "Default")
 			(node
@@ -7005,7 +7482,7 @@
 			)
 		)
 		(net
-			(code "47")
+			(code "44")
 			(name "unconnected-(U1-P1.09-Pad37)")
 			(class "Default")
 			(node
@@ -7016,7 +7493,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "45")
 			(name "unconnected-(U1-P1.10-Pad38)")
 			(class "Default")
 			(node
@@ -7027,7 +7504,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "46")
 			(name "unconnected-(U1-P1.13{slash}AIN6-Pad41)")
 			(class "Default")
 			(node
@@ -7038,7 +7515,7 @@
 			)
 		)
 		(net
-			(code "50")
+			(code "47")
 			(name "unconnected-(U1-P1.14{slash}AIN7-Pad42)")
 			(class "Default")
 			(node
@@ -7049,7 +7526,7 @@
 			)
 		)
 		(net
-			(code "51")
+			(code "48")
 			(name "unconnected-(U1-P2.00-Pad11)")
 			(class "Default")
 			(node
@@ -7060,13 +7537,24 @@
 			)
 		)
 		(net
-			(code "52")
+			(code "49")
 			(name "unconnected-(U1-P2.03-Pad14)")
 			(class "Default")
 			(node
 				(ref "U1")
 				(pin "14")
 				(pinfunction "P2.03_14")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "50")
+			(name "unconnected-(U1-P2.05{slash}CS-Pad16)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "16")
+				(pinfunction "P2.05/CS_16")
 				(pintype "bidirectional+no_connect")
 			)
 		)

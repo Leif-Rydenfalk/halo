@@ -11,6 +11,7 @@ the mechanical source — not to borrow a similar-looking one.
   HALO_ANT_2G4_FEED           the 2.4 GHz feed land
   HALO_PIEZO_LEADS_2          two wire lands for the bender (D11a)
   HALO_SWD_PADS_1x06_P1.27    programming lands
+  HALO_TP_D0.8                a probe land sized for THIS board
   HALO_UWB_LANDS_1x08_P1.00   the reserved halo-uwb stub (D12)
 
 The two ETCHED SHAPES - the antenna element and the NFC coil - are NOT
@@ -92,9 +93,19 @@ PAD_RADIAL = 1.20          # radial length of a contact land. 1.20 mm gives
 
 C0 = 299792458.0
 F0 = 2.44e9
-EPS_EFF = 2.2              # a surface trace with its reference plane cleared
-                           # away sits nearer the air/substrate average than
-                           # FR4's eps_r of 4.3
+EPS_EFF = 1.573            # MEASURED, not assumed. 2.2 was the textbook
+                           # figure for a surface trace with its reference
+                           # plane cleared away, and it was wrong for this
+                           # board: openEMS solved the real Ø26 x 0.60 mm
+                           # geometry and reported eps_eff_implied = 1.573
+                           # with the element resonating at 2.886 GHz
+                           # against a 2.4-2.4835 GHz target. A thinner
+                           # board with its ground cleared holds less of the
+                           # field in the substrate, so the effective
+                           # permittivity is lower and the quarter wave is
+                           # LONGER: 24.49 mm, not 20.71.
+                           # Source: ce-rf/out/halo-rev-a-2g4, run
+                           # 2026-09-04, 664224 cells, 934.6 s, converged.
 QUARTER_MM = (C0 / F0) * 1000.0 / math.sqrt(EPS_EFF) / 4.0
 
 ANT_R = 11.90              # mid-annulus, and inside R12.25
@@ -102,6 +113,11 @@ ANT_W = 0.60
 ANT_ARC_MAX_DEG = 84.0     # the three 26 deg keying notches at 0/120/240
                            # leave clear arcs of 94 deg; 5 deg of margin at
                            # each end keeps the element off the routed edge
+ANT_TEETH = 4              # four meander teeth; see element_path()
+ANT_TOOTH_MAX = 1.05       # the deepest a tooth may reach inward. The
+                           # element sits at R11.90 and the NFC winding's
+                           # outermost turn is at R10.75 on the other face,
+                           # so 1.05 mm stops at R10.85 and no deeper.
 
 NFC_W = 0.15
 NFC_GAP = 0.15
@@ -187,6 +203,91 @@ def _pad_row(n, pitch, sx, sy):
 # ==========================================================================
 # THE PATTERNS
 # ==========================================================================
+def _tooth_depth():
+    """Solve the tooth depth so the element is EXACTLY a quarter wave.
+
+    Set by hand at 0.88 mm first, which gave 24.056 mm against a 24.491 mm
+    target - 0.435 mm short, which is 1.8 % of the length and therefore
+    about 1.8 % of the resonant frequency, or 44 MHz. Half the ISM band. A
+    dimension that has to hit a number is solved for, not estimated and left.
+
+    Bisection on the path length, because the relation between depth and
+    length is not quite linear: a tooth replaces some arc as well as adding
+    two radial runs.
+    """
+    lo, hi = 0.0, ANT_TOOTH_MAX
+    for _ in range(60):
+        mid = (lo + hi) / 2.0
+        if path_length_mm(element_path(mid)) < QUARTER_MM:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2.0
+
+
+def element_path(depth=None):
+    """The 2.4 GHz element as (radius, angle) waypoints — A MEANDER, not an arc.
+
+    WHY IT MEANDERS, and the number that forced it. openEMS solved the first
+    geometry - a plain arc plus an inward fold, 20.71 mm of conductor sized
+    for an assumed eps_eff of 2.2 - and returned a series resonance of
+    2.886 GHz against a 2.400-2.4835 GHz target. The same run reported
+    eps_eff_implied = 1.573. A thinner board with its ground plane cleared
+    away holds less field in the substrate than the textbook figure assumes,
+    so the quarter wave is LONGER than 20.71 mm:
+
+        c / (4 x 2.44 GHz x sqrt(1.573)) = 24.49 mm
+
+    That is 3.78 mm more conductor than the first attempt and there is
+    nowhere to put it as arc: 84 degrees at R11.90 is 17.45 mm and the
+    keying notches take everything past that. The radial direction has about
+    1 mm before the element would sit over the NFC winding.
+
+    So the element MEANDERS. Four teeth, each reaching inward by a depth
+    SOLVED so the whole path is exactly the quarter wave - see
+    _tooth_depth(), which bisects rather than estimating, because 0.435 mm
+    of error here is 44 MHz of resonance and half the ISM band.
+    A meander is not free - it couples to itself and radiates a little less
+    efficiently than a straight run of the same length - and that cost is
+    real and unmeasured here. It is still the only way this length fits this
+    board, and the alternative (accepting 2.886 GHz) is not an antenna.
+
+    Returns waypoints in (radius_mm, angle_deg); board.py turns them into
+    tracks and make_rf_specs.py into a staircase, so there is one path.
+    """
+    depth = globals().get("ANT_TOOTH_DEPTH") if depth is None else depth
+    if depth is None:
+        raise RuntimeError("element_path() needs a depth before "
+                           "ANT_TOOTH_DEPTH is solved")
+    arc_deg = ANT_ARC_MAX_DEG
+    pts = [(ANT_R, 0.0)]
+    # Teeth are spread over the arc, each one an inward excursion and back.
+    for k in range(ANT_TEETH):
+        a = arc_deg * (k + 0.5) / ANT_TEETH
+        w = arc_deg / (ANT_TEETH * 3.0)          # the tooth's angular width
+        pts.append((ANT_R, a - w / 2.0))
+        pts.append((ANT_R - depth, a - w / 2.0))
+        pts.append((ANT_R - depth, a + w / 2.0))
+        pts.append((ANT_R, a + w / 2.0))
+    pts.append((ANT_R, arc_deg))
+    return pts
+
+
+def path_length_mm(pts):
+    """The conductor length of a (radius, angle) path, arcs measured as arcs."""
+    total = 0.0
+    for (r0, a0), (r1, a1) in zip(pts, pts[1:]):
+        if abs(r1 - r0) < 1e-9:
+            total += abs(math.radians(a1 - a0)) * r0      # an arc
+        elif abs(a1 - a0) < 1e-9:
+            total += abs(r1 - r0)                         # a radial run
+        else:
+            x0, y0 = r0 * math.cos(math.radians(a0)), r0 * math.sin(math.radians(a0))
+            x1, y1 = r1 * math.cos(math.radians(a1)), r1 * math.sin(math.radians(a1))
+            total += math.hypot(x1 - x0, y1 - y0)
+    return total
+
+
 def batt_contact():
     """Three lands where the sprung C5191 fingers meet the board.
 
@@ -370,6 +471,39 @@ def piezo_pads():
     return "".join(body)
 
 
+def test_pad():
+    """A Ø0.80 mm probe land — because KiCad's is too big for this board.
+
+    `TestPoint:TestPoint_Pad_D1.0mm` is a 1.0 mm pad inside a 2.05 x 2.05 mm
+    courtyard, so it claims a 1.45 mm circumradius. Eleven of those plus two
+    fiducials do not fit on the top face of a Ø26 mm disc that already
+    carries 34 passives, an antenna, a coil and two land rows: the placer
+    searched the whole board and REFUSED five of them.
+
+    The answer is not to drop the test points - the production test lane
+    needs every one, and stage two probes this board before the shell is
+    bonded and seals them in forever. The answer is that a 26 mm product
+    gets a 26 mm fixture. A 0.80 mm land takes a 0.5 mm pogo tip with
+    0.15 mm of registration error to spare, which is inside what the two
+    fiducials buy, and its courtyard is 1.10 mm square - a 0.78 mm
+    circumradius instead of 1.45.
+    """
+    body = ['(footprint "HALO_TP_D0.8"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo probe land, 0.80 mm round, for a 0.5 mm pogo '
+            'tip. Smaller than KiCad TestPoint_Pad_D1.0mm because eleven of '
+            'those do not fit on a O26 mm board - see the docstring.")\n',
+            '  (tags "halo test point probe pad pogo")\n',
+            '  (attr smd exclude_from_pos_files exclude_from_bom)\n',
+            '  (pad "1" smd circle (at 0 0) (size 0.80 0.80) '
+            '(layers "F.Cu" "F.Mask"))\n']
+    body.extend(_courtyard([(-0.55, -0.55), (0.55, -0.55), (0.55, 0.55),
+                            (-0.55, 0.55), (-0.55, -0.55)]))
+    body.append(')\n')
+    return "".join(body)
+
+
 def swd_pads():
     """J1 — six SWD lands, because a Tag-Connect does not fit a Ø26 mm board.
 
@@ -447,11 +581,15 @@ def uwb_lands():
     return "".join(body)
 
 
+#: Solved once, at import, so every consumer sees the same element.
+ANT_TOOTH_DEPTH = _tooth_depth()
+
 PATTERNS = [
     ("HALO_BATT_CONTACT_3PAD", batt_contact),
     ("HALO_ANT_2G4_FEED", antenna_2g4),
     ("HALO_PIEZO_LEADS_2", piezo_pads),
     ("HALO_SWD_PADS_1x06_P1.27", swd_pads),
+    ("HALO_TP_D0.8", test_pad),
     ("HALO_UWB_LANDS_1x08_P1.00", uwb_lands),
 ]
 

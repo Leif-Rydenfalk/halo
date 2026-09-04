@@ -22,9 +22,9 @@
 		(descr "written by ce-pcb bin/sch")
 	)
 	(lib
-		(name "Memory_Flash")
+		(name "Mechanical")
 		(type "KiCad")
-		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Memory_Flash.kicad_sym")
+		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Mechanical.kicad_sym")
 		(options "")
 		(descr "written by ce-pcb bin/sch")
 	)

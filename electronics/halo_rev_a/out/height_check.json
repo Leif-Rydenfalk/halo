@@ -1,9 +1,9 @@
 {
  "verdict": "FAIL",
  "counts": {
-  "PASS": 44,
-  "FAIL": 5,
-  "CANNOT DETERMINE": 2
+  "PASS": 42,
+  "FAIL": 4,
+  "CANNOT DETERMINE": 15
  },
  "allowances_mm": {
   "bottom_over_cell": 0.578,
@@ -236,6 +236,22 @@
    "where": "over the cell"
   },
   {
+   "ref": "FID1",
+   "package": "Fiducial_0.5mm_Mask1mm",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "FID2",
+   "package": "Fiducial_0.5mm_Mask1mm",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
    "ref": "J1",
    "package": "HALO_SWD_PADS_1x06_P1.27",
    "body_mm": 0.0,
@@ -324,22 +340,6 @@
    "where": "top face inside \u00d821.2"
   },
   {
-   "ref": "R3",
-   "package": "R_0201_0603Metric",
-   "body_mm": 0.33,
-   "allow_mm": 0.4,
-   "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
-  },
-  {
-   "ref": "R4",
-   "package": "R_0201_0603Metric",
-   "body_mm": 0.33,
-   "allow_mm": 0.4,
-   "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
-  },
-  {
    "ref": "R5",
    "package": "R_0201_0603Metric",
    "body_mm": 0.33,
@@ -380,6 +380,94 @@
    "where": "top face inside \u00d821.2"
   },
   {
+   "ref": "TP1",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP10",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP11",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP2",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP3",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP4",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP5",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP6",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP7",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP8",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
+   "ref": "TP9",
+   "package": "HALO_TP_D0.8",
+   "body_mm": null,
+   "allow_mm": null,
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
+  },
+  {
    "ref": "U1",
    "package": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
    "body_mm": 0.85,
@@ -394,14 +482,6 @@
    "allow_mm": 0.578,
    "verdict": "FAIL",
    "where": "over the cell"
-  },
-  {
-   "ref": "U3",
-   "package": "Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm",
-   "body_mm": 0.6,
-   "allow_mm": 0.578,
-   "verdict": "FAIL",
-   "where": "straddles the cell's edge"
   },
   {
    "ref": "X1",
