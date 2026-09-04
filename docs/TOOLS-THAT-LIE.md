@@ -120,6 +120,61 @@ Two traps it hit on its own first run, both worth knowing:
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
 
+## The sixth direction: a clearance measured from a centre, and a number nobody asked for
+
+*Added 2026-09-05 by lane B1, from the NFC coil's ground clearance. Three
+findings, and the first two generalise past this board.*
+
+### 1 · A clearance test on a CENTRE passes things a clearance does not
+
+The new `nfc-coil-clearance` keep-out caught a via on its first run that this
+lane's own point-in-polygon test had just declared clean. The via's **centre**
+sits at r 9.5389, outside a band starting at r 9.7431 — so a centre test says
+0.20 mm of margin. Its **0.45 mm pad reaches r 9.7639** and intrudes
+**0.0208 mm**.
+
+Both numbers are right. Only one of them is a clearance.
+
+**The rule.** A clearance is between COPPER and COPPER, never between a centre
+and a boundary. Every item in a clearance test has an extent — a via has a pad
+diameter, a track has a width, a pad is a capsule — and the test must subtract
+half of each. This project has now been bitten by the same arithmetic twice
+from opposite directions: here, a centre test that passed an intruding via; and
+earlier, `_obstacles()` treating a 0.25 × 0.60 mm QFN land as a disc of its own
+DIAGONAL, which forbade every escape route from every fine-pitch pin. Under-
+and over-stating an extent are the same defect.
+
+Grep for the shape of it: any comparison of `hypot(...)` or a point-in-polygon
+result against a limit, where the thing being located has a size.
+
+### 2 · A polygon drawn as chords is smaller than the circle it is named after
+
+`annulus_polygon` drew 180 chords. A chord ring sits inside its circle by
+`r · (1 − cos(π/steps))` — at r 9.74 that is **0.0015 mm**, so a band asked for
+**0.30 mm was drawn at 0.2983 mm**, and every report of that keep-out would
+have quoted a number nobody had asked for. Immaterial against a 0.15 mm mesh;
+not immaterial as a habit, because the next such band might be checked against
+a limit it now silently fails.
+
+**The rule.** When a curve is approximated by segments, the approximation has a
+SIGN — inscribed chords always fall short — and the error is `r(1−cos(π/n))`,
+computable before you draw. Either compute it and add it, or use enough
+segments that it is below the precision you report at. 360 chords put it at
+0.0004 mm. And say which you did, because a reader cannot tell a drawn 0.30
+from a drawn 0.2983 by looking at the constant that asked for it.
+
+### 3 · A cost is not a regression, and the difference has to be stated
+
+Cutting the planes out from under the coil took the board from **81 unconnected
+items to 83**: two connections the pour used to make now need routing. That is
+the price of the fix, it was predicted, and it is closed by the router.
+
+It matters that this is written down next to the fix. An unconnected count that
+rises is exactly what a regression looks like from the outside, and the next
+person to read the numbers without the reason has every ground to revert the
+change that made the board work. **A measured cost, named and attributed, is
+part of the result. An unexplained one is a defect report.**
+
 ## The fifth direction: a reader that silently covers less than it claims
 
 *Added 2026-09-05 by lane B1, from a check of its own.*
