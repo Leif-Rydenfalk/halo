@@ -14,9 +14,9 @@
    "name": "Gerbers, drill and netlist",
    "name_zh": "Gerber、钻孔与网表",
    "status": "PARTIAL",
-   "reason": "The pipeline is proven end to end on the real outline: a Ø31.87 mm true circle on the edge layer, four layers with both planes, a nine-via array under the exposed pad, both keep-outs honoured, routed from 11 unconnected to 0 with 0 violations, reproduced three times, exporting a 29-file fabrication set. What it does not yet contain is our circuit — that is the board lane's work, in flight.",
-   "evidence": "ce-pcb/examples/round32_4layer — 11 unconnected to 0, 0 violations; committed 3d2840b8, 30dd7485",
-   "command": "ce-pcb/bin/route <board>.kicad_pcb ; bin/pcb --cli pcb drc --format json"
+   "reason": "WITHDRAWN from ready 2026-09-04 by the verification lane. The shipped package does not describe the board: its drill files contain ZERO holes against a source board declaring 66 vias, and the package is 12,669 seconds older than the board it claims to represent. The exporter exited 0 and nothing had ever asserted that a drill file contains holes. The pipeline itself is proven — a test board routes clean and exports 29 files — but this package must be regenerated and re-checked before anyone fabricates from it.",
+   "evidence": "verification lane, 2026-09-04: 14 files, exporter exit 0, drill files empty",
+   "command": "ce-fab/bin/fab jlc <board>.kicad_pcb ; then assert the drill file has holes"
   },
   {
    "n": 2,
@@ -32,9 +32,9 @@
    "name": "Bill of materials with prices and alternates",
    "name_zh": "物料清单（含价格与替代料）",
    "status": "PARTIAL",
-   "reason": "A full component study exists with live prices pulled from LCSC and JLCPCB, and a roll-up at 10/100/1000/10000 units. It is being re-run now against the newer Nordic chip chosen in decision D12, which removes the ultra-wideband parts entirely.",
-   "evidence": "research/05-components-and-cost-model.md, spec/bom-candidates.json",
-   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000"
+   "reason": "The bill of materials is not orderable as it stands: the verification lane found it ordering a 3.5 mm screw terminal block in place of three capacitor values and a 33 MHz oscillator in place of two inductors, with 40 assertion failures across 24 lines. Live pricing FAILS at all four quantities, with the main chip showing zero stock on both distributor sites at the time of reading. A sourcing lane is resolving every line now.",
+   "evidence": "fab bom cost --live at 2026-09-04T10:40Z — FAIL at 10/100/1000/10000",
+   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live"
   },
   {
    "n": 4,
@@ -286,6 +286,10 @@
   }
  ],
  "risks": [
+  {
+   "r": "A physical law had been turned into a tolerance",
+   "d": "The antenna's sanity check required an implied permittivity above 1, because a dielectric cannot speed a wave up. To admit a failing case, that floor had been widened to 0.64. The verification lane found it, and the number it was admitting came from a run that hit its timestep limit without converging and shows no reactance zero-crossing anywhere in the sweep — meaning there is no resonance at all, and the 2.425 GHz figure was not a resonance. Both the floor and the convergence table have been corrected. This is the exact prohibition the project runs on: a row closed by weakening its check is worse than an open row, because it stops anyone looking."
+  },
   {
    "r": "The antenna does not yet resonate in the Bluetooth band",
    "d": "Two round-board geometries return a passing verdict while resonating at 4.0 and 5.8 GHz, because their assertions test only how deep the match is and how efficient the radiator is, never the frequency. Caught by the orchestrator on 2026-09-03, the assertion is being made mandatory and the geometry retuned. This is stated here rather than hidden because a passing test that checks the wrong thing is the most dangerous artifact in any release pack."

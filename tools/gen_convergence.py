@@ -22,8 +22,22 @@ def jload(p):
     except Exception:
         return None
 
+def rf_verdict(case):
+    r = jload(WS / "ce-rf" / "out" / case / "verdict.json")
+    return (r or {}).get("verdict")
+
 def rf(case, key):
-    """Read one measured value out of a ce-rf case."""
+    """Read one measured value out of a ce-rf case.
+
+    A number from a case whose own verdict is FAIL is NOT a measurement of the
+    thing we wanted — it is a number the solver emitted on the way to failing.
+    Reading it and calling the row MATCH is exactly the defect this project
+    keeps finding (docs/TOOLS-THAT-LIE.md). Found 2026-09-04: the antenna row
+    read 2.425 GHz and showed MATCH while its case had hit max timesteps with no
+    convergence and no reactance zero-crossing anywhere in the sweep.
+    """
+    if rf_verdict(case) == "FAIL":
+        return None
     r = jload(WS / "ce-rf" / "out" / case / "measurements.json")
     if not r:
         return None
@@ -59,6 +73,9 @@ for r in SPEC["rows"]:
     no_target = tt.startswith("CANNOT DETERMINE") or tt.startswith("n/a")
     if cur is None:
         state = "CANNOT DETERMINE"
+        if m and m.get("from") == "ce-rf" and rf_verdict(m["case"]) == "FAIL":
+            src = f'ce-rf/out/{m["case"]}/verdict.json says FAIL — its numbers are not admissible'
+            delta = "source case FAILED"
     elif no_target:
         state = "NO TARGET"
         delta = "target unknown"
