@@ -63,7 +63,13 @@ w("|---|--:|")
 w(f"| Placed references in the release bill of materials | **{D['placed_refs_in_release_bom']}** |")
 w(f"| References covered here | **{D['refs_covered']}** |")
 w(f"| Bill-of-materials lines | {len(D['lines'])} |")
-w(f"| Lines **RESOLVED** — order code fetched, manufacturer part number matched | **{len(resolved)}** |")
+byrep = [l for l in D["lines"] if l["verdict"] == "RESOLVED BY REPLACEMENT"]
+w(f"| Lines **RESOLVED** — order code fetched, manufacturer part number and "
+  f"package both matched | **{len(resolved)}** |")
+w(f"| Lines **RESOLVED BY REPLACEMENT** — specified part is end-of-life, a "
+  f"buyable equivalent is named | **{len(byrep)}** |")
+w(f"| **Lines that now name a part a factory can buy** | "
+  f"**{len(resolved)+len(byrep)}** of {len(D['lines'])} |")
 needalt = [l for l in D["lines"] if l["verdict"] not in ("DNP", "NOT AN SMT LINE",
                                                          "SEE SOUNDER SECTION")]
 w(f"| Lines with a documented alternate | **{len(withalt)}** of the {len(needalt)} "
@@ -84,11 +90,31 @@ w("")
 w(f"- **LCSC** — `{D['endpoints']['lcsc']}`")
 w(f"- **JLCPCB** — `{D['endpoints']['jlcpcb']}`")
 w("")
-w("**The check that makes this not a tool that lies** "
-  "(`docs/TOOLS-THAT-LIE.md`): a candidate is accepted only if the "
-  "manufacturer part number the vendor returns for the order code MATCHES the "
-  "one the line asks for. A resolver that merely fetched a price would have "
-  "reported the previous bill of materials entirely green.")
+w("**Two checks make this not a tool that lies** (`docs/TOOLS-THAT-LIE.md`). "
+  "An order code is accepted only if:")
+w("")
+w("1. the **manufacturer part number** the vendor returns for it matches the "
+  "one the line asks for, and")
+w("2. the **package** the vendor returns for it matches the size of the land "
+  "pattern the release bill of materials places, read off that file's own "
+  "Footprint column.")
+w("")
+w("The second check is the one that catches this board's actual defect, and no "
+  "price check can: a 0402 order code under a 0201 land pattern is a real "
+  "part, correctly valued, deeply stocked and sanely priced. It is simply "
+  "twice the size of the pads it is going on.")
+w("")
+w("Both checks are **broken on purpose** by "
+  "`python3 tools/resolve_bom.py --self-test`, which asserts that a "
+  "nonexistent order code refuses rather than invents, that the L10's code "
+  "claimed as an L15 fails, that a 0402 part on a 0201 pad fails, and that "
+  "halo's own battery land pattern — for which there is no size rule — comes "
+  "back CANNOT DETERMINE rather than waving through whatever the vendor "
+  "happened to say. **11 of 11 pass.** Writing that self-test found a real "
+  "bug in this tool: the page's JSON blob carries recommended and "
+  "recently-viewed products beside the one asked for, and a first-match walk "
+  "returned a JST connector for a piezo bender's order code. The parser now "
+  "requires the node's own `productCode` to be the code requested.")
 w("")
 w(f"> {D['price_note']}")
 w("")
@@ -102,14 +128,17 @@ w("Price columns are **JLCPCB assembly** prices — what the factory pays when "
   "many boards actually buys. LCSC retail prices and the full ladders are in "
   "`spec/bom-resolved.json`.")
 w("")
-w("| Ref | Qty | Value | Function | LCSC | MPN | Mfr | Pkg | Lib | JLC stock | @10 | @100 | @1k | @10k |")
-w("|---|--:|---|---|---|---|---|---|---|--:|--:|--:|--:|--:|")
+w("| Ref | Qty | Value | Function | LCSC | MPN | Mfr | Land pattern | Vendor pkg | Pkg check | Lib | JLC stock | @10 | @100 | @1k | @10k |")
+w("|---|--:|---|---|---|---|---|---|---|---|---|--:|--:|--:|--:|--:|")
 for l in D["lines"]:
     p = l["part"]
     c, m, mf, pk, lib = part_cell(p)
     px = (p or {}).get("jlcpcb_price_usd", {})
+    pc = (p or {}).get("package_check") or "—"
+    pc = {"MATCH": "**ok**", "MISMATCH": "**MISMATCH**"}.get(pc, pc)
     w(f"| **{', '.join(l['refs'])}** | {l['qty']} | {l['value']} | {l['function']} "
-      f"| {c} | {m} | {mf} | {pk} | {lib} | {num((p or {}).get('jlcpcb_stock'))} "
+      f"| {c} | {m} | {mf} | `{l.get('board_footprint') or '—'}` | {pk} | {pc} "
+      f"| {lib} | {num((p or {}).get('jlcpcb_stock'))} "
       + "".join(f"| {money(px.get(q))} " for q in QTYS) + "|")
 w("")
 
@@ -130,26 +159,68 @@ for l in D["lines"]:
 w("")
 
 # ---- the sounder ---------------------------------------------------------
-s = cost["sounder"]
+S = cost["sounder"]
+R = S.get("resolved_to") or {}
+SA = S.get("alternate") or {}
 w("## The sounder")
 w("")
-w(f"**Specified (D11a):** {s['specified']}")
+w(f"**Specified by D11a:** {S['specified']}")
 w("")
-w(f"**Verdict: {s['verdict']}**")
+w(f"**Verdict: {S['verdict']}**")
 w("")
-for line in s.get("notes", []):
-    w(line)
-    w("")
-if s.get("candidates"):
-    w("| Part | Manufacturer | Ø | Thickness | f0 | Capacitance | Where | Price | Datasheet |")
-    w("|---|---|--:|--:|--:|--:|---|---|---|")
-    for c in s["candidates"]:
-        ds = f"[PDF]({c['datasheet']})" if c.get("datasheet") else "**none found**"
-        w(f"| {c['mpn']} | {c.get('manufacturer','—')} | {c.get('diameter_mm','—')} mm "
-          f"| {c.get('thickness_mm','—')} mm | {c.get('f0','—')} | {c.get('capacitance','—')} "
-          f"| {c.get('availability','—')} | {c.get('price','—')} | {ds} |")
-    w("")
-
+w("### Why the specified part is not the part")
+w("")
+for n in S.get("why_not_the_specified_part", []):
+    w(f"- {n}")
+w("")
+w("### What replaces it")
+w("")
+w(f"**{R.get('mpn')}** — {R.get('manufacturer')} — "
+  f"[datasheet]({R.get('datasheet')}) ({R.get('datasheet_rev')})")
+w("")
+w("| | 7BB-20-3 (D11a asked for) | AB2036B-2 (what is buyable) |")
+w("|---|---|---|")
+w(f"| Diameter | 20.0 mm | **{R.get('diameter_mm')} mm** |")
+w(f"| Total thickness | 0.22 mm | **{R.get('thickness_mm')} mm {R.get('thickness_tol')}** |")
+w(f"| Ceramic layer | — | {R.get('ceramic_layer_mm')} mm {R.get('ceramic_layer_tol')} |")
+w(f"| Brass plate | — | {R.get('brass_mm')} mm ({R.get('brass_note')}) |")
+w(f"| Ceramic / electrode Ø | — | {R.get('ceramic_diameter_mm')} / {R.get('electrode_diameter_mm')} mm |")
+w(f"| Resonant frequency | ~3.6 kHz | **{R.get('f0_hz'):,} ± {R.get('f0_tol_hz')} Hz** |")
+w(f"| Resonant impedance | — | ≤ {R.get('resonant_impedance_ohm_max')} Ω |")
+w(f"| Capacitance | — | **{R.get('capacitance_pf'):,} pF {R.get('capacitance_tol')}** |")
+w(f"| Max input | — | {R.get('max_input_vpp')} Vp-p |")
+w(f"| Plate | brass | {R.get('plate')} |")
+w(f"| Termination | bare | **{R.get('terminals')}** |")
+w(f"| Operating | — | {R.get('operating_c')} °C |")
+w(f"| Authorized stock, {D['generated']} | **0** (38 at TTI, Americas) "
+  f"| " + " · ".join(f"{k} **{v}**" for k, v in (R.get("stock") or {}).items()) + " |")
+px = R.get("usd_per_unit", {})
+w(f"| Price @10 / @100 / @1k / @10k | not orderable "
+  f"| **{' / '.join(money(px.get(q),4) for q in QTYS)}** |")
+w("")
+w(f"*{R.get('dimensions_read')}*")
+w("")
+w(f"*Price: {R.get('price_source')} {R.get('corroboration','')}*")
+w("")
+for n in S.get("why_this_replacement", []):
+    w(f"- {n}")
+w("")
+w("### Second source")
+w("")
+w(f"**{SA.get('mpn')}** — {SA.get('manufacturer')}, Ø{SA.get('diameter_mm')} mm, "
+  f"{SA.get('thickness_mm')} mm {SA.get('thickness_tol')}, "
+  f"{SA.get('f0_hz'):,} ± {SA.get('f0_tol_hz')} Hz, "
+  f"{SA.get('capacitance_pf'):,} pF, "
+  + " · ".join(f"{k} {v}" for k, v in (SA.get("stock") or {}).items())
+  + f" — [datasheet]({SA.get('datasheet')})")
+w("")
+w(SA.get("why", ""))
+w("")
+w("### Cautions")
+w("")
+for n in S.get("cautions", []):
+    w(f"- {n}")
+w("")
 # ---- board changes -------------------------------------------------------
 w("## What the board should change")
 w("")
@@ -264,21 +335,28 @@ w("")
 w(f"The joint count landing on **{cost['joints_measured']}**, exactly D15's "
   f"assumption, is an independent confirmation of that half of the model.")
 w("")
-w("| Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** | D15 | **Δ** |")
-w("|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
+w("| Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** | D15 | **Δ** | with the C24/C25 fix |")
+w("|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
 for q in QTYS:
     r = cost["per_unit"][q]
     w(f"| {int(q):,} | {money(r['bom'],4)} | {money(r['pcb'],3)} "
       f"| {money(r['assembly'],4)} | {money(r['enclosure'],2)} "
       f"| {money(r['tooling'],2)} | {money(r['labour'],2)} "
       f"| **{money(r['total'],4)}** | {money(r['d15_total'],2)} "
-      f"| **{'+' if r['delta_vs_d15']>=0 else '-'}${abs(r['delta_vs_d15']):.4f}** |")
+      f"| **{'+' if r['delta_vs_d15']>=0 else '-'}${abs(r['delta_vs_d15']):.4f}** "
+      f"| {money(r['total_with_alternates'],4)} |")
 w("")
 unpriced = cost["per_unit"]["1000"]["bom_lines_not_priced"]
 if unpriced:
-    w(f"**These totals are a floor, not a quote: {', '.join(unpriced)} carry no "
-      f"price** and contribute zero to every row above. A total with a missing "
-      f"line is stated as missing, never padded with a plausible number.")
+    w(f"**The Total/unit column is a floor, not a quote: {', '.join(unpriced)} "
+      f"carry no price** and contribute zero to it. A total with a missing line "
+      f"is stated as missing, never padded with a plausible number. The last "
+      f"column is the same build with the recommended fix taken on every "
+      f"unresolved line — "
+      + "; ".join(f"`{', '.join(x['refs'])}` → {x['lcsc']} `{x['mpn']}`"
+                  for x in cost["substituted_lines"])
+      + f" — which is a real fetched part but needs a board change first, so it "
+        f"is reported beside the honest number and never in place of it.")
     w("")
 w("Fee constants, so the arithmetic can be checked: "
   f"${m['assembly_setup_usd']} setup + ${m['stencil_usd']} stencil + "
@@ -316,26 +394,44 @@ w("## What could stop the line")
 w("")
 rows = []
 for l in D["lines"]:
-    p = l["part"]
+    p = l.get("part")
     if not p:
         continue
     st = p.get("jlcpcb_stock")
-    need = l["qty"] * 1000
-    if st is not None and st < need * 3:
-        rows.append((l, p, st, need))
-rows.sort(key=lambda r: r[2] / max(r[3], 1))
-if rows:
-    w("Stock that does not cover a thousand-unit build three times over. "
-      "Three times, not once, because a factory buys attrition too and because "
-      "nobody else stops buying while you order.")
-    w("")
-    w("| Ref | Part | JLC stock | A 1k build needs | Cover | Alternate stock |")
-    w("|---|---|--:|--:|--:|--:|")
-    for l, p, st, need in rows:
-        a = l.get("alternate") or {}
-        w(f"| **{', '.join(l['refs'])}** | `{p.get('mpn')}` | {num(st)} | {num(need)} "
-          f"| **{st/need:.1f}×** | {num(a.get('jlcpcb_stock'))} |")
-    w("")
+    if st is None:
+        continue
+    rows.append((l, p, st, l["qty"] * 1000, l["qty"] * 10000))
+rows.sort(key=lambda r: r[2] / max(r[4], 1))
+w("Every line's JLCPCB stock against what a build actually consumes. Cover is "
+  "stock divided by need; **a factory buys attrition too, and nobody else "
+  "stops buying while you order, so anything under about 3x is a line that "
+  "can stop.**")
+w("")
+w("| Ref | Part | JLC stock | 1k build needs | cover | 10k build needs | cover | Alternate stock |")
+w("|---|---|--:|--:|--:|--:|--:|--:|")
+for l, p, st, n1, n10 in rows:
+    alt = l.get("alternate") or {}
+    def cov(n):
+        c = st / n
+        return f"**{c:.1f}×**" if c < 3 else f"{c:.1f}×"
+    w(f"| **{', '.join(l['refs'])}** | `{p.get('mpn')}` | {num(st)} | {num(n1)} "
+      f"| {cov(n1)} | {num(n10)} | {cov(n10)} | {num(alt.get('jlcpcb_stock'))} |")
+w("")
+thin1 = [l for l, p, st, n1, n10 in rows if st / n1 < 3]
+thin10 = [l for l, p, st, n1, n10 in rows if st / n10 < 3]
+w(f"**{len(thin1)} of {len(rows)} lines cannot cover a thousand units three "
+  f"times over — "
+  + (" · ".join("/".join(l["refs"]) for l in thin1) or "none")
+  + f". {len(thin10)} of {len(rows)} cannot cover ten thousand — "
+  + (" · ".join("/".join(l["refs"]) for l in thin10) or "none") + ".**")
+w("")
+w("The ten-thousand column is the one to read before quoting that row of the "
+  "cost table. It is not a price problem — it is that the catalogue does not "
+  "hold the parts, and several of these are values with only two or three "
+  "entries in the whole 685,000-part catalogue. Reserving stock, or asking "
+  "ce-rf whether a neighbouring value will do, is cheaper than discovering it "
+  "at the purchase order.")
+w("")
 w("Minimum packet sizes worth knowing before an order is placed — several of "
   "these parts cannot be bought from LCSC in small numbers at all, though "
   "JLCPCB will consume them from its own reels during assembly:")

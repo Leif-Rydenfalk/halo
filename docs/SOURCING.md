@@ -1,6 +1,6 @@
 # Sourcing — every placed part on halo_rev_a, with an order code that was read back
 
-*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `aadf48b`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
+*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `44528cc`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
 
 ## The count
 
@@ -9,8 +9,10 @@
 | Placed references in the release bill of materials | **42** |
 | References covered here | **42** |
 | Bill-of-materials lines | 26 |
-| Lines **RESOLVED** — order code fetched, manufacturer part number matched | **22** |
-| Lines with a documented alternate | **23** of the 23 that can have one |
+| Lines **RESOLVED** — order code fetched, manufacturer part number and package both matched | **22** |
+| Lines **RESOLVED BY REPLACEMENT** — specified part is end-of-life, a buyable equivalent is named | **1** |
+| **Lines that now name a part a factory can buy** | **23** of 26 |
+| Lines with a documented alternate | **23** of the 24 that can have one |
 | Resolved lines that are a JLCPCB **Basic** part | **2** of 22 |
 | Distinct **Extended** order codes on the board | **20** |
 | Feeder fee those Extended parts cost, per order | **$61.40** |
@@ -18,7 +20,7 @@
 
 - **CANNOT DETERMINE** — `C24, C25` (1.1nF)
 - **DNP** — `C14, C15, C16, C17` (DNP)
-- **SEE SOUNDER SECTION** — `LS1` (7BB-20-3)
+- **RESOLVED BY REPLACEMENT** — `LS1` (7BB-20-3)
 - **NOT AN SMT LINE** — `BT1` (CR2032)
 
 ## How every number here was obtained
@@ -28,7 +30,14 @@ Two endpoints, both plain HTTPS, both re-runnable:
 - **LCSC** — `GET https://www.lcsc.com/product-detail/<code>.html, __NEXT_DATA__ application/json blob`
 - **JLCPCB** — `POST https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList {currentPage,pageSize,keyword}`
 
-**The check that makes this not a tool that lies** (`docs/TOOLS-THAT-LIE.md`): a candidate is accepted only if the manufacturer part number the vendor returns for the order code MATCHES the one the line asks for. A resolver that merely fetched a price would have reported the previous bill of materials entirely green.
+**Two checks make this not a tool that lies** (`docs/TOOLS-THAT-LIE.md`). An order code is accepted only if:
+
+1. the **manufacturer part number** the vendor returns for it matches the one the line asks for, and
+2. the **package** the vendor returns for it matches the size of the land pattern the release bill of materials places, read off that file's own Footprint column.
+
+The second check is the one that catches this board's actual defect, and no price check can: a 0402 order code under a 0201 land pattern is a real part, correctly valued, deeply stocked and sanely priced. It is simply twice the size of the pads it is going on.
+
+Both checks are **broken on purpose** by `python3 tools/resolve_bom.py --self-test`, which asserts that a nonexistent order code refuses rather than invents, that the L10's code claimed as an L15 fails, that a 0402 part on a 0201 pad fails, and that halo's own battery land pattern — for which there is no size rule — comes back CANNOT DETERMINE rather than waving through whatever the vendor happened to say. **11 of 11 pass.** Writing that self-test found a real bug in this tool: the page's JSON blob carries recommended and recently-viewed products beside the one asked for, and a first-match walk returned a JST connector for a piezo bender's order code. The parser now requires the node's own `productCode` to be the code requested.
 
 > Two channels, never mixed. price_usd is LCSC RETAIL (you buy the reel). jlcpcb_price_usd is what JLCPCB charges when IT supplies the part during assembly. They differ by up to 2x and the assembly number is the one that belongs in a PCBA quote.
 
@@ -38,34 +47,34 @@ Two endpoints, both plain HTTPS, both re-runnable:
 
 Price columns are **JLCPCB assembly** prices — what the factory pays when JLC supplies the part during placement — at the piece count a build of that many boards actually buys. LCSC retail prices and the full ladders are in `spec/bom-resolved.json`.
 
-| Ref | Qty | Value | Function | LCSC | MPN | Mfr | Pkg | Lib | JLC stock | @10 | @100 | @1k | @10k |
-|---|--:|---|---|---|---|---|---|---|--:|--:|--:|--:|--:|
-| **C1, C2, C3, C4** | 4 | 100nF | SoC supply decoupling, one per VDD pin | [C5142565](https://www.lcsc.com/product-detail/C5142565.html) | `TCC0201X5R104K100ZT` | CCTC | 0201 | extended | 6,131,303 | $0.0013 | $0.0013 | $0.0010 | $0.0008 |
-| **C5, C8** | 2 | 2.2uF | SoC DEC/DCDC reservoir | [C335106](https://www.lcsc.com/product-detail/C335106.html) | `GRM033R61A225KE47D` | muRata | 0201 | extended | 97,325 | $0.0233 | $0.0233 | $0.0189 | $0.0165 |
-| **C6** | 1 | 10nF | SoC decoupling | [C76941](https://www.lcsc.com/product-detail/C76941.html) | `GRM033R71A103KA01D` | muRata | 0201 | extended | 368,495 | $0.0047 | $0.0047 | $0.0039 | $0.0034 |
-| **C7** | 1 | 2.2nF | SoC decoupling | [C161479](https://www.lcsc.com/product-detail/C161479.html) | `GRM033R71A222KA01D` | muRata | 0201 | extended | 11,619 | $0.0028 | $0.0028 | $0.0022 | $0.0019 |
-| **C9, C10, C11, C12** | 4 | 10uF | bulk rail capacitance (4 x 10 uF replaces Apple's 5 x 100 uF) | [C15525](https://www.lcsc.com/product-detail/C15525.html) | `CL05A106MQ5NUNC` | Samsung Electro-Mechanics | 0402 | **basic** | 9,770,076 | $0.0256 | $0.0256 | $0.0192 | $0.0142 |
-| **C13** | 1 | 100pF | battery-sense divider settling cap | [C76922](https://www.lcsc.com/product-detail/C76922.html) | `GRM0335C1H101JA01D` | muRata | 0201 | extended | 873,602 | $0.0066 | $0.0066 | $0.0054 | $0.0047 |
-| **C18** | 1 | 1.5pF | 2.4 GHz match, Nordic reference network | [C435397](https://www.lcsc.com/product-detail/C435397.html) | `GJM0335C1E1R5WB01D` | muRata | 0201 | extended | 57,341 | $0.0337 | $0.0337 | $0.0244 | $0.0225 |
-| **C19** | 1 | 2.0pF | 2.4 GHz match, Nordic reference network | [C668326](https://www.lcsc.com/product-detail/C668326.html) | `GJM0335C1E2R0WB01D` | muRata | 0201 | extended | 29,352 | $0.0949 | $0.0782 | $0.0636 | $0.0559 |
-| **C20, C21** | 2 | 0.5pF | antenna tuning pi, shunt legs (values are placeholders until ce-rf's S11) | [C237424](https://www.lcsc.com/product-detail/C237424.html) | `GJM0335C1HR50WB01D` | muRata | 0201 | extended | 13,101 | $0.0257 | $0.0257 | $0.0181 | $0.0165 |
-| **C22** | 1 | 0.3pF | 2.4 GHz match, series trim into the pi | [C3904589](https://www.lcsc.com/product-detail/C3904589.html) | `GJM0335C1HR30WB01D` | muRata | 0201 | extended | 24,048 | $0.0309 | $0.0309 | $0.0220 | $0.0200 |
-| **C23** | 1 | 3.9pF | 2.4 GHz shunt at ANT (Nordic Table 82; node placement CANNOT DETERMINE) | [C1852416](https://www.lcsc.com/product-detail/C1852416.html) | `GJM0335C1E3R9WB01D` | muRata | 0201 | extended | 13,804 | $0.0243 | $0.0243 | $0.0171 | $0.0156 |
-| **C24, C25** | 2 | 1.1nF | NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER | — | — | — | — | — | — | — | — | — | — |
-| **C14, C15, C16, C17** | 4 | DNP | crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps) | — | — | — | — | — | — | — | — | — | — |
-| **R1, R2** | 2 | 4.7M | battery-sense divider (4.7 M keeps the divider current in the nanoamps) | [C778408](https://www.lcsc.com/product-detail/C778408.html) | `0201WMF4704TEE` | UNI-ROYAL | 0201 | extended | 10,112 | $0.0019 | $0.0019 | $0.0015 | $0.0013 |
-| **R5, R6, R7, R8, R10** | 5 | 10k | I2C/SWD pull-ups and strapping | [C473048](https://www.lcsc.com/product-detail/C473048.html) | `0201WMF1002TEE` | UNI-ROYAL | 0201 | extended | 644,258 | $0.0012 | $0.0012 | $0.0010 | $0.0009 |
-| **R9** | 1 | 100R | piezo drive series resistor (D11a: limits GPIO current into a 40 nF bender) | [C270366](https://www.lcsc.com/product-detail/C270366.html) | `0201WMF1000TEE` | UNI-ROYAL | 0201 | extended | 793,687 | $0.0020 | $0.0020 | $0.0016 | $0.0013 |
-| **L1** | 1 | 4.7uH | SoC DC-DC inductor | [C76799](https://www.lcsc.com/product-detail/C76799.html) | `MLZ1608M4R7WT000` | TDK | 0603 | extended | 19,481 | $0.0600 | $0.0502 | $0.0416 | $0.0368 |
-| **L2** | 1 | 2.7nH | 2.4 GHz match, Nordic reference network | [C7216765](https://www.lcsc.com/product-detail/C7216765.html) | `LQP03HQ2N7B02D` | muRata | 0201 | extended | 14,930 | $0.0502 | $0.0415 | $0.0338 | $0.0312 |
-| **L3, L4** | 2 | 3.5nH | 2.4 GHz match, Nordic reference network | [C3911055](https://www.lcsc.com/product-detail/C3911055.html) | `LQP03HQ3N5B02D` | muRata | 0201 | extended | 7,257 | $0.0431 | $0.0431 | $0.0306 | $0.0280 |
-| **L10** | 1 | 0R | antenna pi series element, fitted as a jumper so the board works untuned | [C473473](https://www.lcsc.com/product-detail/C473473.html) | `0201WMF0000TEE` | UNI-ROYAL | 0201 | extended | 4,475,080 | $0.0009 | $0.0009 | $0.0007 | $0.0006 |
-| **U1** | 1 | nRF54L10-QFAA-R7 | the SoC: BLE + Channel Sounding + NFC-A (D12) | [C44800139](https://www.lcsc.com/product-detail/C44800139.html) | `NRF54L10-QFAA-R7` | NORDIC | VFQFN-48 | extended | 1,003 | $3.2296 | $2.5944 | $2.3800 | $2.3800 |
-| **U2** | 1 | LIS2DW12TR | 3-axis accelerometer: motion wake, DULT unwanted-tracking detection | [C189624](https://www.lcsc.com/product-detail/C189624.html) | `LIS2DW12TR` | ST | LGA-12(2x2) | extended | 14,160 | $1.0381 | $0.7961 | $0.7343 | $0.7343 |
-| **X1** | 1 | 32.768kHz | LFXO: the rotation clock the anti-stalking timing depends on | [C32346](https://www.lcsc.com/product-detail/C32346.html) | `Q13FC13500004` | EPSON | SMD3215-2P | **basic** | 778,128 | $0.1731 | $0.1365 | $0.1026 | $0.0813 |
-| **X2** | 1 | 32MHz | HFXO: the radio reference | [C843260](https://www.lcsc.com/product-detail/C843260.html) | `NX2016SA-32MHZ-STD-CZS-5` | NDK | SMD2016-4P | extended | 13,631 | $0.3518 | $0.2908 | $0.2322 | $0.2090 |
-| **LS1** | 1 | 7BB-20-3 | sounder: bare Ø20 x 0.22 mm piezo bender (D11a) | — | — | — | — | — | — | — | — | — | — |
-| **BT1** | 1 | CR2032 | the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder | — | — | — | — | — | — | — | — | — | — |
+| Ref | Qty | Value | Function | LCSC | MPN | Mfr | Land pattern | Vendor pkg | Pkg check | Lib | JLC stock | @10 | @100 | @1k | @10k |
+|---|--:|---|---|---|---|---|---|---|---|---|--:|--:|--:|--:|--:|
+| **C1, C2, C3, C4** | 4 | 100nF | SoC supply decoupling, one per VDD pin | [C5142565](https://www.lcsc.com/product-detail/C5142565.html) | `TCC0201X5R104K100ZT` | CCTC | `C_0201_0603Metric` | 0201 | **ok** | extended | 6,133,888 | $0.0013 | $0.0013 | $0.0010 | $0.0008 |
+| **C5, C8** | 2 | 2.2uF | SoC DEC/DCDC reservoir | [C335106](https://www.lcsc.com/product-detail/C335106.html) | `GRM033R61A225KE47D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 97,335 | $0.0233 | $0.0233 | $0.0189 | $0.0165 |
+| **C6** | 1 | 10nF | SoC decoupling | [C76941](https://www.lcsc.com/product-detail/C76941.html) | `GRM033R71A103KA01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 368,597 | $0.0047 | $0.0047 | $0.0039 | $0.0034 |
+| **C7** | 1 | 2.2nF | SoC decoupling | [C161479](https://www.lcsc.com/product-detail/C161479.html) | `GRM033R71A222KA01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 11,619 | $0.0028 | $0.0028 | $0.0022 | $0.0019 |
+| **C9, C10, C11, C12** | 4 | 10uF | bulk rail capacitance (4 x 10 uF replaces Apple's 5 x 100 uF) | [C15525](https://www.lcsc.com/product-detail/C15525.html) | `CL05A106MQ5NUNC` | Samsung Electro-Mechanics | `C_0402_1005Metric` | 0402 | **ok** | **basic** | 9,701,120 | $0.0256 | $0.0256 | $0.0192 | $0.0142 |
+| **C13** | 1 | 100pF | battery-sense divider settling cap | [C76922](https://www.lcsc.com/product-detail/C76922.html) | `GRM0335C1H101JA01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 873,542 | $0.0066 | $0.0066 | $0.0054 | $0.0047 |
+| **C18** | 1 | 1.5pF | 2.4 GHz match, Nordic reference network | [C435397](https://www.lcsc.com/product-detail/C435397.html) | `GJM0335C1E1R5WB01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 57,341 | $0.0337 | $0.0337 | $0.0244 | $0.0225 |
+| **C19** | 1 | 2.0pF | 2.4 GHz match, Nordic reference network | [C668326](https://www.lcsc.com/product-detail/C668326.html) | `GJM0335C1E2R0WB01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 29,352 | $0.0949 | $0.0782 | $0.0636 | $0.0559 |
+| **C20, C21** | 2 | 0.5pF | antenna tuning pi, shunt legs (values are placeholders until ce-rf's S11) | [C237424](https://www.lcsc.com/product-detail/C237424.html) | `GJM0335C1HR50WB01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 13,101 | $0.0257 | $0.0257 | $0.0181 | $0.0165 |
+| **C22** | 1 | 0.3pF | 2.4 GHz match, series trim into the pi | [C3904589](https://www.lcsc.com/product-detail/C3904589.html) | `GJM0335C1HR30WB01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 24,048 | $0.0309 | $0.0309 | $0.0220 | $0.0200 |
+| **C23** | 1 | 3.9pF | 2.4 GHz shunt at ANT (Nordic Table 82; node placement CANNOT DETERMINE) | [C1852416](https://www.lcsc.com/product-detail/C1852416.html) | `GJM0335C1E3R9WB01D` | muRata | `C_0201_0603Metric` | 0201 | **ok** | extended | 13,804 | $0.0243 | $0.0243 | $0.0171 | $0.0156 |
+| **C24, C25** | 2 | 1.1nF | NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER | — | — | — | `C_0201_0603Metric` | — | — | — | — | — | — | — | — |
+| **C14, C15, C16, C17** | 4 | DNP | crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps) | — | — | — | `C_0201_0603Metric` | — | — | — | — | — | — | — | — |
+| **R1, R2** | 2 | 4.7M | battery-sense divider (4.7 M keeps the divider current in the nanoamps) | [C778408](https://www.lcsc.com/product-detail/C778408.html) | `0201WMF4704TEE` | UNI-ROYAL | `R_0201_0603Metric` | 0201 | **ok** | extended | 10,142 | $0.0019 | $0.0019 | $0.0015 | $0.0013 |
+| **R5, R6, R7, R8, R10** | 5 | 10k | I2C/SWD pull-ups and strapping | [C473048](https://www.lcsc.com/product-detail/C473048.html) | `0201WMF1002TEE` | UNI-ROYAL | `R_0201_0603Metric` | 0201 | **ok** | extended | 640,390 | $0.0012 | $0.0012 | $0.0010 | $0.0009 |
+| **R9** | 1 | 100R | piezo drive series resistor (D11a: limits GPIO current into a 40 nF bender) | [C270366](https://www.lcsc.com/product-detail/C270366.html) | `0201WMF1000TEE` | UNI-ROYAL | `R_0201_0603Metric` | 0201 | **ok** | extended | 792,721 | $0.0020 | $0.0020 | $0.0016 | $0.0013 |
+| **L1** | 1 | 4.7uH | SoC DC-DC inductor | [C76799](https://www.lcsc.com/product-detail/C76799.html) | `MLZ1608M4R7WT000` | TDK | `L_0603_1608Metric` | 0603 | **ok** | extended | 19,472 | $0.0600 | $0.0502 | $0.0416 | $0.0368 |
+| **L2** | 1 | 2.7nH | 2.4 GHz match, Nordic reference network | [C7216765](https://www.lcsc.com/product-detail/C7216765.html) | `LQP03HQ2N7B02D` | muRata | `L_0201_0603Metric` | 0201 | **ok** | extended | 14,930 | $0.0502 | $0.0415 | $0.0338 | $0.0312 |
+| **L3, L4** | 2 | 3.5nH | 2.4 GHz match, Nordic reference network | [C3911055](https://www.lcsc.com/product-detail/C3911055.html) | `LQP03HQ3N5B02D` | muRata | `L_0201_0603Metric` | 0201 | **ok** | extended | 8,477 | $0.0431 | $0.0431 | $0.0306 | $0.0280 |
+| **L10** | 1 | 0R | antenna pi series element, fitted as a jumper so the board works untuned | [C473473](https://www.lcsc.com/product-detail/C473473.html) | `0201WMF0000TEE` | UNI-ROYAL | `L_0201_0603Metric` | 0201 | **ok** | extended | 4,472,786 | $0.0009 | $0.0009 | $0.0007 | $0.0006 |
+| **U1** | 1 | nRF54L10-QFAA-R7 | the SoC: BLE + Channel Sounding + NFC-A (D12) | [C44800139](https://www.lcsc.com/product-detail/C44800139.html) | `NRF54L10-QFAA-R7` | NORDIC | `QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm` | VFQFN-48 | **ok** | extended | 1,003 | $3.2296 | $2.5944 | $2.3800 | $2.3800 |
+| **U2** | 1 | LIS2DW12TR | 3-axis accelerometer: motion wake, DULT unwanted-tracking detection | [C189624](https://www.lcsc.com/product-detail/C189624.html) | `LIS2DW12TR` | ST | `LGA-12_2x2mm_P0.5mm` | LGA-12(2x2) | **ok** | extended | 14,150 | $1.0381 | $0.7961 | $0.7343 | $0.7343 |
+| **X1** | 1 | 32.768kHz | LFXO: the rotation clock the anti-stalking timing depends on | [C32346](https://www.lcsc.com/product-detail/C32346.html) | `Q13FC13500004` | EPSON | `Crystal_SMD_3215-2Pin_3.2x1.5mm` | SMD3215-2P | **ok** | **basic** | 777,983 | $0.1714 | $0.1352 | $0.1016 | $0.0805 |
+| **X2** | 1 | 32MHz | HFXO: the radio reference | [C843260](https://www.lcsc.com/product-detail/C843260.html) | `NX2016SA-32MHZ-STD-CZS-5` | NDK | `Crystal_SMD_2016-4Pin_2.0x1.6mm` | SMD2016-4P | **ok** | extended | 13,631 | $0.3518 | $0.2908 | $0.2322 | $0.2090 |
+| **LS1** | 1 | 7BB-20-3 | sounder: bare Ø20 x 0.22 mm piezo bender (D11a) | — | — | — | `—` | — | — | — | — | — | — | — | — |
+| **BT1** | 1 | CR2032 | the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder | — | — | — | `—` | — | — | — | — | — | — | — | — |
 
 ## The second source for every line
 
@@ -73,13 +82,13 @@ Lane T6 measured **212** of the main chip in stock. Single-sourcing is not a the
 
 | Ref | Pick | LCSC stock | Alternate | LCSC stock | Why this pick, and what the alternate costs you |
 |---|---|--:|---|--:|---|
-| **C1, C2, C3, C4** | [C5142565](https://www.lcsc.com/product-detail/C5142565.html) `TCC0201X5R104K100ZT` | 5,981,500 | [C190183](https://www.lcsc.com/product-detail/C190183.html) `CC0201KRX5R6BB104` | 3,151,700 | Deepest 0201 100nF stock in the catalogue and the cheapest. 10 V X5R against a 3.0 V cell leaves margin for X5R DC-bias derating. |
-| **C5, C8** | [C335106](https://www.lcsc.com/product-detail/C335106.html) `GRM033R61A225KE47D` | 59,700 | [C318539](https://www.lcsc.com/product-detail/C318539.html) `CL03A225MP3CRNC` | 312,440 | 10 V X5R at 2.2 uF in 0201 is a stretched dielectric; the Murata part is the deepest-stocked one and Murata publishes its DC-bias curve. |
+| **C1, C2, C3, C4** | [C5142565](https://www.lcsc.com/product-detail/C5142565.html) `TCC0201X5R104K100ZT` | 5,981,500 | [C190183](https://www.lcsc.com/product-detail/C190183.html) `CC0201KRX5R6BB104` | 3,151,600 | Deepest 0201 100nF stock in the catalogue and the cheapest. 10 V X5R against a 3.0 V cell leaves margin for X5R DC-bias derating. |
+| **C5, C8** | [C335106](https://www.lcsc.com/product-detail/C335106.html) `GRM033R61A225KE47D` | 59,700 | [C318539](https://www.lcsc.com/product-detail/C318539.html) `CL03A225MP3CRNC` | 312,460 | 10 V X5R at 2.2 uF in 0201 is a stretched dielectric; the Murata part is the deepest-stocked one and Murata publishes its DC-bias curve. |
 | **C6** | [C76941](https://www.lcsc.com/product-detail/C76941.html) `GRM033R71A103KA01D` | 242,700 | [C285200](https://www.lcsc.com/product-detail/C285200.html) `0201X103K100NT` | 14,000 | X7R rather than X5R at no cost premium; 330k stock. |
 | **C7** | [C161479](https://www.lcsc.com/product-detail/C161479.html) `GRM033R71A222KA01D` | 11,600 | [C2184294](https://www.lcsc.com/product-detail/C2184294.html) `GCM033R71A222KA03D` | 12,000 | THE SNAPSHOT'S FIRST CHOICE WAS WRONG BY A DAY. YAGEO C526940 held 29,573 in the 2026-09-03 catalogue snapshot and 600 when the live page was read on 2026-09-04 - a 49x collapse overnight. Both parts here are Murata, which is a real weakness in this line: it has two order codes and one manufacturer. |
-| **C9, C10, C11, C12** | [C15525](https://www.lcsc.com/product-detail/C15525.html) `CL05A106MQ5NUNC` | 5,742,500 | [C7472949](https://www.lcsc.com/product-detail/C7472949.html) `HGC0402R5106M100NTEJ` | 1,998,760 | THE ONLY JLCPCB BASIC PART ON THIS BOARD. No feeder fee, ~10 M in stock. 6.3 V X5R at 3.0 V is inside spec but derates hard - the 10 V alternate is there if the measured rail droop needs it. |
+| **C9, C10, C11, C12** | [C15525](https://www.lcsc.com/product-detail/C15525.html) `CL05A106MQ5NUNC` | 5,672,100 | [C7472949](https://www.lcsc.com/product-detail/C7472949.html) `HGC0402R5106M100NTEJ` | 1,999,080 | THE ONLY JLCPCB BASIC PART ON THIS BOARD. No feeder fee, ~10 M in stock. 6.3 V X5R at 3.0 V is inside spec but derates hard - the 10 V alternate is there if the measured rail droop needs it. |
 | **C13** | [C76922](https://www.lcsc.com/product-detail/C76922.html) `GRM0335C1H101JA01D` | 825,900 | [C272870](https://www.lcsc.com/product-detail/C272870.html) `CC0201JRNPO9BN101` | 1,215,200 | C0G, so the ADC settling time and the 0.24 ms cell-removal collapse do not move with temperature. Deepest line on the board: 826 k and 1.2 M, two manufacturers. |
-| **C18** | [C435397](https://www.lcsc.com/product-detail/C435397.html) `GJM0335C1E1R5WB01D` | 53,420 | [C88913](https://www.lcsc.com/product-detail/C88913.html) `GRM0335C1H1R5WA01D` | 86,150 | Murata GJM03 is the high-Q RF series the Nordic reference network assumes; a general-purpose C0G would lower the match Q. The GRM alternate is that general-purpose C0G, 5x cheaper and deeper stocked - acceptable only once ce-rf has measured S11 with it. |
+| **C18** | [C435397](https://www.lcsc.com/product-detail/C435397.html) `GJM0335C1E1R5WB01D` | 53,420 | [C88913](https://www.lcsc.com/product-detail/C88913.html) `GRM0335C1H1R5WA01D` | 86,300 | Murata GJM03 is the high-Q RF series the Nordic reference network assumes; a general-purpose C0G would lower the match Q. The GRM alternate is that general-purpose C0G, 5x cheaper and deeper stocked - acceptable only once ce-rf has measured S11 with it. |
 | **C19** | [C668326](https://www.lcsc.com/product-detail/C668326.html) `GJM0335C1E2R0WB01D` | 25,165 | [C577359](https://www.lcsc.com/product-detail/C577359.html) `CQ0201BRNPO8BN2R0` | 5,800 | Same GJM03 high-Q family as C18. THE MOST EXPENSIVE PASSIVE ON THE BOARD at $0.064/1k - 40x a plain C0G - because 2.0 pF in the GJM high-Q series is a thin line. The YAGEO CQ series alternate is the deepest non-Murata 2 pF that survived the live stock check; the snapshot's two better-looking candidates (C161383, C1855389) read 200 and ZERO on the live page. |
 | **C20, C21** | [C237424](https://www.lcsc.com/product-detail/C237424.html) `GJM0335C1HR50WB01D` | 13,100 | [C85922](https://www.lcsc.com/product-detail/C85922.html) `GRM0335C1HR50WA01D` | 132,200 | THE SCHEMATIC ASKED FOR GJM0335C1ER50WB01 (25 V), which is C464955 with 329 pieces in stock - not orderable. The 50 V 1H variant is the same 0.5 pF part with 25x the stock. |
 | **C22** | [C3904589](https://www.lcsc.com/product-detail/C3904589.html) `GJM0335C1HR30WB01D` | 23,660 | [C723329](https://www.lcsc.com/product-detail/C723329.html) `0201CG0R3B500NT` | 14,200 | GJM03 high-Q, 50 V. At 0.3 pF the parasitics of a cheap C0G are a large fraction of the value, so the RF series earns its price here. |
@@ -87,24 +96,75 @@ Lane T6 measured **212** of the main chip in stock. Single-sourcing is not a the
 | **C24, C25** | — | — | [C161371](https://www.lcsc.com/product-detail/C161371.html) `GRM0335C1E102JA01D` | 139,150 | NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, and none exists in 0402 either - the smallest 1.1 nF in the whole catalogue is 0603 (C710889), which is three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is no bracketing pair. The only 0201 part in the neighbourhood is 1.0 nF C0G, and the schematic's own note says that lands the NFC tank 5.3 % high at 14.28 MHz. THE FIX IS FREE AND IT IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so if each capacitor drops 1.109 nF -> 1.0 nF the series capacitance drops 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. The coil is etched, so that costs nothing but a re-run of ce-rf's inductance solve on a slightly longer 2-turn path. This is a BOARD CHANGE for lane B1, not a sourcing choice, and the alternate recorded here is the 1.0 nF part it would use. |
 | **C14, C15, C16, C17** | — | — | — | — | Not a sourcing gap. These four pads are the four parts jlc.md counts as CANNOT DETERMINE, and the right answer is that they carry no order code because nothing is placed on them. |
 | **R1, R2** | [C778408](https://www.lcsc.com/product-detail/C778408.html) `0201WMF4704TEE` | 10,100 | [C423341](https://www.lcsc.com/product-detail/C423341.html) `0201WMJ0475TEE` | 29,000 | THINNEST STOCK ON THE BOARD AFTER THE SoC. 4.7 M in 0201 is a rare value: seven parts exist in the whole catalogue and only two carry four figures of stock. Both pick and alternate are UNI-ROYAL, so this line has ONE manufacturer, not two. |
-| **R5, R6, R7, R8, R10** | [C473048](https://www.lcsc.com/product-detail/C473048.html) `0201WMF1002TEE` | 700 | [C138117](https://www.lcsc.com/product-detail/C138117.html) `RC0201JR-0710KL` | 631,100 | The exact MPN the schematic named - it was simply carrying the 0402 part's order code. Half a million in stock. |
+| **R5, R6, R7, R8, R10** | [C473048](https://www.lcsc.com/product-detail/C473048.html) `0201WMF1002TEE` | 600 | [C138117](https://www.lcsc.com/product-detail/C138117.html) `RC0201JR-0710KL` | 627,100 | The exact MPN the schematic named - it was simply carrying the 0402 part's order code. Half a million in stock. |
 | **R9** | [C270366](https://www.lcsc.com/product-detail/C270366.html) `0201WMF1000TEE` | 713,400 | [C77623](https://www.lcsc.com/product-detail/C77623.html) `RC0201FR-07100RL` | 1,815,200 | Again the schematic's own MPN under its real order code. |
 | **L1** | [C76799](https://www.lcsc.com/product-detail/C76799.html) `MLZ1608M4R7WT000` | 18,790 | [C394952](https://www.lcsc.com/product-detail/C394952.html) `CMH160808B4R7MT` | 49,800 | The schematic's own TDK part under its real order code. The alternate is AEC-Q200 with 700 mA rating vs the TDK's 350 mA. |
 | **L2** | [C7216765](https://www.lcsc.com/product-detail/C7216765.html) `LQP03HQ2N7B02D` | 13,770 | [C76752](https://www.lcsc.com/product-detail/C76752.html) `MLG0603P2N7CT000` | 8,700 | The schematic's own Murata high-Q part under its real order code. The TDK MLG0603 is the standard second source for LQP03 and is Q=14 vs Q=20 - acceptable, measurably worse. |
-| **L3, L4** | [C3911055](https://www.lcsc.com/product-detail/C3911055.html) `LQP03HQ3N5B02D` | 7,240 | [C206424](https://www.lcsc.com/product-detail/C206424.html) `LQP03TN3N5B02D` | 9,450 | 3.5 nH is a rare value: THREE parts exist in 0201 across the whole catalogue and the alternate holds only ~1.6 k. Both are Murata. If ce-rf's S11 permits 3.3 nH or 3.6 nH the sourcing risk vanishes. |
-| **L10** | [C473473](https://www.lcsc.com/product-detail/C473473.html) `0201WMF0000TEE` | 4,145,500 | [C106228](https://www.lcsc.com/product-detail/C106228.html) `RC0201JR-070RL` | 1,020,600 | Sits in an inductor footprint on purpose; a 0 ohm 0201 resistor is the same land pattern. Both options carry 500k+. |
+| **L3, L4** | [C3911055](https://www.lcsc.com/product-detail/C3911055.html) `LQP03HQ3N5B02D` | 8,000 | [C206424](https://www.lcsc.com/product-detail/C206424.html) `LQP03TN3N5B02D` | 9,450 | 3.5 nH is a rare value: THREE parts exist in 0201 across the whole catalogue and the alternate holds only ~1.6 k. Both are Murata. If ce-rf's S11 permits 3.3 nH or 3.6 nH the sourcing risk vanishes. |
+| **L10** | [C473473](https://www.lcsc.com/product-detail/C473473.html) `0201WMF0000TEE` | 4,142,500 | [C106228](https://www.lcsc.com/product-detail/C106228.html) `RC0201JR-070RL` | 1,019,400 | Sits in an inductor footprint on purpose; a 0 ohm 0201 resistor is the same land pattern. Both options carry 500k+. |
 | **U1** | [C44800139](https://www.lcsc.com/product-detail/C44800139.html) `NRF54L10-QFAA-R7` | 671 | [C45022042](https://www.lcsc.com/product-detail/C45022042.html) `NRF54L05-QFAA-R` | 1,775 | D12. THE SINGLE LARGEST SUPPLY RISK ON THE BOARD - lane T6 measured 212 pieces. D18 says the L05 fallback is not forced by memory, so the alternate is a real second source, at 512 kB/96 kB and a 3,000-piece minimum packet. |
-| **U2** | [C189624](https://www.lcsc.com/product-detail/C189624.html) `LIS2DW12TR` | 14,160 | [C110926](https://www.lcsc.com/product-detail/C110926.html) `LIS2DH12TR` | 297 | 50 nA in the lowest-power mode, the deciding number for a coin cell. PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give 1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be tied to VDD, VDDIO or GND'), which the board ties to GND either way. The cost is 500 nA against 50 nA - a build second source, not a design equal. REJECTED as an alternate on evidence: Silan SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, 3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It would short VDDIO to the SDO net on this land pattern. |
-| **X1** | [C32346](https://www.lcsc.com/product-detail/C32346.html) `Q13FC13500004` | 657,450 | [C95361](https://www.lcsc.com/product-detail/C95361.html) `Q13FC13500049` | 134,315 | JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED AGAINST THE nRF54L's on-die CAPVALUE RANGE, because D-3 deleted the external load capacitors. The alternate is the same Epson FC-135 body at CL 6 pF if the internal caps cannot reach 12.5 pF. |
+| **U2** | [C189624](https://www.lcsc.com/product-detail/C189624.html) `LIS2DW12TR` | 14,150 | [C110926](https://www.lcsc.com/product-detail/C110926.html) `LIS2DH12TR` | 297 | 50 nA in the lowest-power mode, the deciding number for a coin cell. PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give 1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be tied to VDD, VDDIO or GND'), which the board ties to GND either way. The cost is 500 nA against 50 nA - a build second source, not a design equal. REJECTED as an alternate on evidence: Silan SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, 3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It would short VDDIO to the SDO net on this land pattern. |
+| **X1** | [C32346](https://www.lcsc.com/product-detail/C32346.html) `Q13FC13500004` | 657,565 | [C95361](https://www.lcsc.com/product-detail/C95361.html) `Q13FC13500049` | 134,310 | JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED AGAINST THE nRF54L's on-die CAPVALUE RANGE, because D-3 deleted the external load capacitors. The alternate is the same Epson FC-135 body at CL 6 pF if the internal caps cannot reach 12.5 pF. |
 | **X2** | [C843260](https://www.lcsc.com/product-detail/C843260.html) `NX2016SA-32MHZ-STD-CZS-5` | 12,840 | [C718072](https://www.lcsc.com/product-detail/C718072.html) `X201632MKB4SI` | 34,405 | CL 8 pF +/-10 ppm, which is what the schematic specified and what the vendor record confirms. The YXC alternate is the same 8 pF / +/-10 ppm at a third of the price with 60 k stock. |
-| **LS1** | — | — | — | — | Hand-assembled, not placed by the machine. Resolved separately - see the sounder section of docs/SOURCING.md. |
+| **LS1** | — | — | — | — | Hand-assembled and bonded to the shell, so the machine never touches it and it carries no LCSC code by design. THE SPECIFIED MURATA PART IS END-OF-LIFE and is replaced by the PUI Audio AB2036B-2, which is a specification-for-specification match at 0.215 mm rather than 0.22. Full evidence in the sounder section of docs/SOURCING.md and in the `cost.sounder` block of this file. |
 | **BT1** | — | — | — | — | The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER. No holder is fitted - lane M's design puts three stamped fingers on halo's own three-pad footprint. The order code was wrong AND the part it named must not be ordered. |
 
 ## The sounder
 
-**Specified (D11a):** Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz
+**Specified by D11a:** Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz
 
-**Verdict: PENDING**
+**Verdict: RESOLVED - BY REPLACEMENT. The specified part is end-of-life.**
+
+### Why the specified part is not the part
+
+- **The Murata 7BB-20-3 is end-of-life.** Four authorized channels agree, all read 2026-09-04: Digi-Key's product page says *"Obsolete and no longer manufactured"* with 0 stock; TME says *"Product withdrawn from the offer"*; RS Components returns `statusCode: STATUS_UNAVAILABLE` with an empty price-break array on both its SKUs; AXEL/ASONE Japan prefixes it [Discontinued].
+- **It is not in the Chinese catalogues at all.** The keyword `7BB-20-3` returns ZERO rows from the JLCPCB assembly catalogue endpoint and from LCSC. Only 7BB-20-6C (C3812347), 7BB-20-6L0 (C3812354) and 7BB-20-6CL0 (C3812422) exist there, all at stockCount 0, and C3812347's LCSC page now returns HTTP 404.
+- **The quantity that exists is broker stock.** Win Source lists 23,886 and several unauthorized brokers list 3,000-36,000 pieces of a part Digi-Key says is no longer manufactured. Designing that in means single-sourcing a product on dead stock with no traceability.
+- **The only authorized stock anywhere is 38 pieces** at TTI, Americas. That is a sample quantity, not a supply.
+- **Murata's own live status could not be read and is recorded as CANNOT DETERMINE.** murata.com/products/productdetail redirects to a client-rendered SPA that returns a 5,961-byte shell to any fetch; the /webapi/PsdispRest endpoints return an error page; and Murata's published *Discontinued Products Information of Sound Components* lists only PKM, PKB, PKLCS, PKHPS, PKMC, PKMCS and VSB housed parts, with no 7BB entry, while stating that not all discontinued products are listed. It therefore neither confirms nor clears the series.
+
+### What replaces it
+
+**AB2036B-2** — PUI Audio (Same Sky) — [datasheet](https://puiaudio.com/file/specs-AB2036B-2.pdf) (A, 2024-03-06, fetched 2026-09-04 (HTTP 200, 159,631 bytes))
+
+| | 7BB-20-3 (D11a asked for) | AB2036B-2 (what is buyable) |
+|---|---|---|
+| Diameter | 20.0 mm | **20.0 mm** |
+| Total thickness | 0.22 mm | **0.215 mm +/-10%** |
+| Ceramic layer | — | 0.1 mm +/-0.015 |
+| Brass plate | — | 0.115 mm (derived: 0.215 total - 0.100 ceramic) |
+| Ceramic / electrode Ø | — | 15.0 / 13.5 mm |
+| Resonant frequency | ~3.6 kHz | **3,600 ± 600 Hz** |
+| Resonant impedance | — | ≤ 500 Ω |
+| Capacitance | — | **20,000 pF +/-30% @ 120 Hz** |
+| Max input | — | 30 Vp-p |
+| Plate | brass | Brass |
+| Termination | bare | **bare, two pads, no wires, no housing** |
+| Operating | — | -20 to +70 °C |
+| Authorized stock, 2026-09-04 | **0** (38 at TTI, Americas) | Digi-Key **390** · Mouser **400** |
+| Price @10 / @100 / @1k / @10k | not orderable | **$0.3620 / $0.2840 / $0.2200 / $0.1860** |
+
+*off the datasheet's own dimensioned drawing, page 1, rendered at 200 dpi and read: 20 / 15 +/-0.3 / 13.5 +/-0.3 diameters, 0.215 +/-10% total, 0.1 +/-0.015 ceramic. The specification table is extractable text; the drawing is not, so it was read as a picture.*
+
+*Price: Mouser Electronics, ECIA member, authorized distributor, via oemstrade.com/search/AB2036B-2, read 2026-09-04. Ladder: 1 $0.48, 10 $0.362, 25 $0.326, 50 $0.303, 100 $0.284, 300 $0.251, 500 $0.237, 1000 $0.220, 5000 $0.186. The 10,000 figure is the 5000-and-up break, which is the deepest the ladder publishes. Digi-Key (authorized, 390 in stock) quotes EUR 0.1595 at 5000 and EUR 0.43 at 1 on the same part.*
+
+- It is a **specification-for-specification match to what D11a asked for**, not an approximation: 20.0 mm brass plate, **0.215 mm total against the 7BB-20-3's 0.22 mm**, 3,600 Hz +/-600, 20 nF +/-30%, <=500 ohm, 30 Vp-p, -20 to +70 C. Every one of those numbers is read off the vendor's own datasheet, and the thicknesses off its dimensioned drawing.
+- **It is bare.** Two pads, no wires, no housing - which is what an anti-phase GPIO pair bonded to a shell needs, and what D17 requires: at 0.215 mm +10% = 0.237 mm worst case it uses a sixth of the ~1.5 mm above the module, and nothing about it is over 3.5 mm.
+- **The drive D11a specified still works, on the vendor's numbers.** At 20 nF and 3,600 Hz, two pins swinging 6 V peak-to-peak draw I = 2*pi*f*C*V = 2*pi*3600*20e-9*3 = **1.36 mA peak**, inside nRF54L high-drive GPIO. R9's 100 ohms is 4.5% of the element's 2.21 kohm reactance at f0 and 20% of its <=500 ohm resonant impedance - the series resistor is correctly sized and stays on the bill of materials.
+- **It is stocked at two authorized distributors today** - Digi-Key 390, Mouser 400 - so first articles can be built this week, and it is quoted in production quantity rather than by RFQ.
+
+### Second source
+
+**AB2036B** — PUI Audio (Same Sky), Ø20.0 mm, 0.23 mm +/-0.03, 3,600 ± 500 Hz, 25,000 pF, Digi-Key 200 — [datasheet](https://puiaudio.com/file/specs-AB2036B.pdf)
+
+Same family, same 20 mm brass plate, 0.23 mm instead of 0.215, 25 nF instead of 20 nF. Its drawing publishes the dimensions as extractable text (n20 +/-0.1, 0.23 +/-0.03, ceramic 0.1 +/-0.02), which makes it the better reference for the bond-pad and shell-cavity geometry even where the -2 is the part fitted.
+
+### Cautions
+
+- **Digi-Key's own description string for this part is wrong.** It reads *BUZZER ELEMENT STD 6.3 KHZ 20MM*. The PUI datasheet says 3,600 Hz. Do not let a buyer reject the part on the catalogue line.
+- **Do not substitute the CUI / Same Sky CEB-20D64 or CEB-20FD64** despite their far deeper stock (6,486 and 6,023 at Digi-Key). They are 0.43 mm thick, they arrive with lead wires already attached whose solder joints stack on top of the height budget, and at 10-13 nF they present about half the capacitive load the GPIO drive was sized around.
+- **Skip LCSC and JLCPCB for this line entirely.** Of the 129 parts in JLCPCB's whole *Buzzer Plates* category, exactly one has stock (Dragonstate HE-2739E-C, 81 pieces, no datasheet published, and 27 mm). All 22 of the 20 mm bare benders in that catalogue are at zero.
+- **The loudness is still unmeasured and D11a says so.** A 3,600 Hz free-air element bonded to a stiff shell moves upward in loaded resonance; whether that lands 60 Phon at 25 cm is lane G's calibrated meter to answer, not this lane's, and nothing here converts a datasheet into a decibel.
 
 ## What the board should change
 
@@ -168,30 +228,55 @@ Every **rate** below is lane E's, from `research/05-components-and-cost-model.md
 
 The joint count landing on **131**, exactly D15's assumption, is an independent confirmation of that half of the model.
 
-| Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** | D15 | **Δ** |
-|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| 10 | $5.7952 | $6.211 | $7.3206 | $1.20 | $0.00 | $0.30 | **$20.8268** | $19.25 | **+$1.5768** |
-| 100 | $4.7594 | $0.692 | $0.9207 | $1.20 | $0.00 | $0.30 | **$7.8721** | $9.28 | **-$1.4079** |
-| 1,000 | $4.2533 | $0.140 | $0.2807 | $0.90 | $0.00 | $0.15 | **$5.7240** | $7.17 | **-$1.4460** |
-| 10,000 | $4.1653 | $0.085 | $0.2167 | $0.30 | $0.40 | $0.08 | **$5.2470** | $6.75 | **-$1.5030** |
+| Qty | BOM | PCB | Assembly | Enclosure | Tooling | Labour | **Total/unit** | D15 | **Δ** | with the C24/C25 fix |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 10 | $6.1555 | $6.211 | $7.3206 | $1.20 | $0.00 | $0.30 | **$21.1871** | $19.25 | **+$1.9371** | $21.2183 |
+| 100 | $5.0421 | $0.692 | $0.9207 | $1.20 | $0.00 | $0.30 | **$8.1548** | $9.28 | **-$1.1252** | $8.1860 |
+| 1,000 | $4.4723 | $0.140 | $0.2807 | $0.90 | $0.00 | $0.15 | **$5.9430** | $7.17 | **-$1.2270** | $5.9658 |
+| 10,000 | $4.3505 | $0.085 | $0.2167 | $0.30 | $0.40 | $0.08 | **$5.4322** | $6.75 | **-$1.3178** | $5.4482 |
 
-**These totals are a floor, not a quote: C24,C25, LS1 carry no price** and contribute zero to every row above. A total with a missing line is stated as missing, never padded with a plausible number.
+**The Total/unit column is a floor, not a quote: C24,C25 carry no price** and contribute zero to it. A total with a missing line is stated as missing, never padded with a plausible number. The last column is the same build with the recommended fix taken on every unresolved line — `C24, C25` → C161371 `GRM0335C1E102JA01D` — which is a real fetched part but needs a board change first, so it is reported beside the honest number and never in place of it.
 
 Fee constants, so the arithmetic can be checked: $8.18 setup + $1.53 stencil + $3.07 × 20 extended parts, amortised over the build, plus $0.0016 × 131 joints per unit. Source: https://jlcpcb.com/help/article/pcb-assembly-price. Staleness: the fee table is the archived 2024-08-29 revision; ce-fab's data/jlc-pricing.json records that the $8 Economic setup fee still held on 2026-09-03 and the per-joint rate had moved 0.0017 -> 0.0016.
 
 ### Why the delta goes the way it does
 
-At a thousand units the board comes out at **$5.72** against D15's $7.17, **-$1.45 a unit**. Two thirds of that is not a price movement at all: D15 priced a *candidate* bill of materials from research/05 §5.2, which still carried five 100 µF bulk capacitors sized for a voice coil and an ultra-wideband burst. The board that exists carries four 10 µF 0402 instead, because D11a and D12 deleted both of those loads. The rest is that the real 0201 passives are cheaper than the 0402 parts whose codes the sheet was carrying.
+At a thousand units the board comes out at **$5.94** against D15's $7.17, **-$1.23 a unit**. Two thirds of that is not a price movement at all: D15 priced a *candidate* bill of materials from research/05 §5.2, which still carried five 100 µF bulk capacitors sized for a voice coil and an ultra-wideband burst. The board that exists carries four 10 µF 0402 instead, because D11a and D12 deleted both of those loads. The rest is that the real 0201 passives are cheaper than the 0402 parts whose codes the sheet was carrying.
 
-**The ten-unit row moves the other way, +$1.58, and that is the honest news in this table.** Feeder fees do not amortise at ten. 20 extended parts instead of 7 costs $3.99 a unit at that volume, and it is the whole of the difference. First articles cost more than D15 said; a thousand costs less.
+**The ten-unit row moves the other way, +$1.94, and that is the honest news in this table.** Feeder fees do not amortise at ten. 20 extended parts instead of 7 costs $3.99 a unit at that volume, and it is the whole of the difference. First articles cost more than D15 said; a thousand costs less.
 
 ## What could stop the line
 
-Stock that does not cover a thousand-unit build three times over. Three times, not once, because a factory buys attrition too and because nobody else stops buying while you order.
+Every line's JLCPCB stock against what a build actually consumes. Cover is stock divided by need; **a factory buys attrition too, and nobody else stops buying while you order, so anything under about 3x is a line that can stop.**
 
-| Ref | Part | JLC stock | A 1k build needs | Cover | Alternate stock |
-|---|---|--:|--:|--:|--:|
-| **U1** | `NRF54L10-QFAA-R7` | 1,003 | 1,000 | **1.0×** | 1,775 |
+| Ref | Part | JLC stock | 1k build needs | cover | 10k build needs | cover | Alternate stock |
+|---|---|--:|--:|--:|--:|--:|--:|
+| **U1** | `NRF54L10-QFAA-R7` | 1,003 | 1,000 | **1.0×** | 10,000 | **0.1×** | 1,775 |
+| **L3, L4** | `LQP03HQ3N5B02D` | 8,477 | 2,000 | 4.2× | 20,000 | **0.4×** | 9,454 |
+| **R1, R2** | `0201WMF4704TEE` | 10,142 | 2,000 | 5.1× | 20,000 | **0.5×** | 29,417 |
+| **C20, C21** | `GJM0335C1HR50WB01D` | 13,101 | 2,000 | 6.6× | 20,000 | **0.7×** | 135,053 |
+| **C7** | `GRM033R71A222KA01D` | 11,619 | 1,000 | 11.6× | 10,000 | **1.2×** | 12,030 |
+| **X2** | `NX2016SA-32MHZ-STD-CZS-5` | 13,631 | 1,000 | 13.6× | 10,000 | **1.4×** | 41,666 |
+| **C23** | `GJM0335C1E3R9WB01D` | 13,804 | 1,000 | 13.8× | 10,000 | **1.4×** | 14,364 |
+| **U2** | `LIS2DW12TR` | 14,150 | 1,000 | 14.2× | 10,000 | **1.4×** | 1,162 |
+| **L2** | `LQP03HQ2N7B02D` | 14,930 | 1,000 | 14.9× | 10,000 | **1.5×** | 8,781 |
+| **L1** | `MLZ1608M4R7WT000` | 19,472 | 1,000 | 19.5× | 10,000 | **1.9×** | 56,281 |
+| **C22** | `GJM0335C1HR30WB01D` | 24,048 | 1,000 | 24.0× | 10,000 | **2.4×** | 15,149 |
+| **C19** | `GJM0335C1E2R0WB01D` | 29,352 | 1,000 | 29.4× | 10,000 | **2.9×** | 5,854 |
+| **C5, C8** | `GRM033R61A225KE47D` | 97,335 | 2,000 | 48.7× | 20,000 | 4.9× | 352,713 |
+| **C18** | `GJM0335C1E1R5WB01D` | 57,341 | 1,000 | 57.3× | 10,000 | 5.7× | 86,329 |
+| **R5, R6, R7, R8, R10** | `0201WMF1002TEE` | 640,390 | 5,000 | 128.1× | 50,000 | 12.8× | 930,146 |
+| **C6** | `GRM033R71A103KA01D` | 368,597 | 1,000 | 368.6× | 10,000 | 36.9× | 14,016 |
+| **X1** | `Q13FC13500004` | 777,983 | 1,000 | 778.0× | 10,000 | 77.8× | 135,144 |
+| **R9** | `0201WMF1000TEE` | 792,721 | 1,000 | 792.7× | 10,000 | 79.3× | 2,067,381 |
+| **C13** | `GRM0335C1H101JA01D` | 873,542 | 1,000 | 873.5× | 10,000 | 87.4× | 1,251,731 |
+| **C1, C2, C3, C4** | `TCC0201X5R104K100ZT` | 6,133,888 | 4,000 | 1533.5× | 40,000 | 153.3× | 3,271,572 |
+| **C9, C10, C11, C12** | `CL05A106MQ5NUNC` | 9,701,120 | 4,000 | 2425.3× | 40,000 | 242.5× | 1,999,506 |
+| **L10** | `0201WMF0000TEE` | 4,472,786 | 1,000 | 4472.8× | 10,000 | 447.3× | 1,201,384 |
+
+**1 of 22 lines cannot cover a thousand units three times over — U1. 12 of 22 cannot cover ten thousand — U1 · L3/L4 · R1/R2 · C20/C21 · C7 · X2 · C23 · U2 · L2 · L1 · C22 · C19.**
+
+The ten-thousand column is the one to read before quoting that row of the cost table. It is not a price problem — it is that the catalogue does not hold the parts, and several of these are values with only two or three entries in the whole 685,000-part catalogue. Reserving stock, or asking ce-rf whether a neighbouring value will do, is cheaper than discovering it at the purchase order.
 
 Minimum packet sizes worth knowing before an order is placed — several of these parts cannot be bought from LCSC in small numbers at all, though JLCPCB will consume them from its own reels during assembly:
 

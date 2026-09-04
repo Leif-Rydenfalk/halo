@@ -182,9 +182,14 @@ CHOICES = [
           "+/-10 ppm at a third of the price with 60 k stock."),
  # ---- not on the JLC bill of materials, but real parts the product needs ----
  dict(refs="LS1", value="7BB-20-3", fp="bonded to shell, no land pattern", function="sounder: bare Ø20 x 0.22 mm piezo bender (D11a)",
-      pick=None, pick_mpn=None, alt=None, alt_mpn=None, verdict="SEE SOUNDER SECTION",
-      why="Hand-assembled, not placed by the machine. Resolved separately - "
-          "see the sounder section of docs/SOURCING.md.", off_bom=True),
+      pick=None, pick_mpn=None, alt=None, alt_mpn=None,
+      verdict="RESOLVED BY REPLACEMENT",
+      why="Hand-assembled and bonded to the shell, so the machine never touches "
+          "it and it carries no LCSC code by design. THE SPECIFIED MURATA PART "
+          "IS END-OF-LIFE and is replaced by the PUI Audio AB2036B-2, which is "
+          "a specification-for-specification match at 0.215 mm rather than "
+          "0.22. Full evidence in the sounder section of docs/SOURCING.md and "
+          "in the `cost.sounder` block of this file.", off_bom=True),
  dict(refs="BT1", value="CR2032", fp="halo:HALO_BATT_CONTACT_3PAD", function="the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder",
       pick=None, pick_mpn=None, alt=None, alt_mpn=None, verdict="NOT AN SMT LINE",
       why="The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 "
@@ -208,9 +213,17 @@ def lcsc(code):
     m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', h, re.S)
     if not m:
         return {"error": "no __NEXT_DATA__ blob on the page"}
+    # The blob carries recommended and recently-viewed products beside the one
+    # asked for. FOUND BY THE SELF-TEST: a first-match walk happily returned a
+    # JST connector for a piezo bender's order code, and for a code that does
+    # not exist at all - which is exactly the shape of defect
+    # docs/TOOLS-THAT-LIE.md is about, a well-formed answer about the wrong
+    # thing. The node is only accepted if ITS OWN productCode is the one asked
+    # for.
     def grab(o):
         if isinstance(o, dict):
-            if {"productCode", "productModel", "productPriceList"} <= set(o):
+            if {"productCode", "productModel", "productPriceList"} <= set(o) \
+               and str(o.get("productCode", "")).upper() == code.upper():
                 return o
             for v in o.values():
                 r = grab(v)
@@ -221,7 +234,8 @@ def lcsc(code):
                 if r: return r
     d = grab(json.loads(m.group(1)))
     if not d:
-        return {"error": "no product node inside the blob"}
+        return {"error": f"the page carries no product node whose productCode "
+                         f"is {code} - LCSC does not sell this order code"}
     return {"mpn": d.get("productModel"), "manufacturer": d.get("brandNameEn"),
             "package": d.get("encapStandard"), "stock": d.get("stockNumber"),
             "min_packet": d.get("minPacketNumber"), "split": d.get("split"),
@@ -271,7 +285,39 @@ def jlc_at(ladder, qty):
 def norm(s):
     return re.sub(r"[^A-Z0-9]", "", (s or "").upper())
 
-def resolve(code, want_mpn):
+# KiCad footprint name -> the token the vendor's package string must contain.
+# Read off the RELEASE BILL OF MATERIALS' own Footprint column, so it tracks
+# the board rather than this file. This is the check that catches the exact
+# defect this lane found: a 0402 order code under a 0201 land pattern is a real
+# part, correctly valued, in stock, at a sane price - and twice the size of the
+# pads it is going on. No price check can see that.
+FP_TOKENS = [
+ (re.compile(r"_0201_0603Metric"),      ["0201"]),
+ (re.compile(r"_0402_1005Metric"),      ["0402"]),
+ (re.compile(r"_0603_1608Metric"),      ["0603"]),
+ (re.compile(r"_0805_2012Metric"),      ["0805"]),
+ (re.compile(r"LGA-12_2x2"),            ["LGA-12"]),
+ (re.compile(r"Crystal_SMD_3215"),      ["3215"]),
+ (re.compile(r"Crystal_SMD_2016"),      ["2016"]),
+ (re.compile(r"QFN-48.*6x6"),           ["QFN-48"]),
+]
+
+
+def package_check(footprint, vendor_package):
+    if not footprint or not vendor_package:
+        return "CANNOT DETERMINE", "no footprint or no vendor package string"
+    for rx, tokens in FP_TOKENS:
+        if rx.search(footprint):
+            if any(t.upper() in vendor_package.upper() for t in tokens):
+                return "MATCH", f"{footprint} wants {tokens[0]}, vendor says {vendor_package!r}"
+            return "MISMATCH", (f"land pattern {footprint} is {tokens[0]}, but the "
+                                f"vendor's package for this order code is "
+                                f"{vendor_package!r}")
+    return "CANNOT DETERMINE", (f"no size rule for footprint {footprint!r} - add one "
+                                f"to FP_TOKENS rather than assuming it fits")
+
+
+def resolve(code, want_mpn, footprint=None):
     if not code:
         return None
     L, J = lcsc(code), jlc(code)
@@ -287,6 +333,11 @@ def resolve(code, want_mpn):
     rec["jlcpcb_ladder"] = J.get("ladder")
     if "error" in J:
         rec["jlcpcb_error"] = J["error"]
+    if footprint:
+        v, why = package_check(footprint, L.get("package"))
+        rec["board_footprint"] = footprint
+        rec["package_check"] = v
+        rec["package_check_why"] = why
     if "error" in L:
         rec["mpn_check"] = "CANNOT DETERMINE"
         rec["mpn_check_why"] = L["error"]
@@ -333,8 +384,114 @@ COST_MODEL = {
 # a null price is a null price and is never replaced by a plausible one.
 SOUNDER = {
  "specified": "Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
- "verdict": "PENDING",
- "usd_per_unit": {"10": None, "100": None, "1000": None, "10000": None},
+ "verdict": "RESOLVED - BY REPLACEMENT. The specified part is end-of-life.",
+ "resolved_to": {
+   "mpn": "AB2036B-2", "manufacturer": "PUI Audio (Same Sky)",
+   "diameter_mm": 20.0, "thickness_mm": 0.215, "thickness_tol": "+/-10%",
+   "ceramic_layer_mm": 0.1, "ceramic_layer_tol": "+/-0.015",
+   "brass_mm": 0.115, "brass_note": "derived: 0.215 total - 0.100 ceramic",
+   "ceramic_diameter_mm": 15.0, "electrode_diameter_mm": 13.5,
+   "f0_hz": 3600, "f0_tol_hz": 600, "resonant_impedance_ohm_max": 500,
+   "capacitance_pf": 20000, "capacitance_tol": "+/-30% @ 120 Hz",
+   "max_input_vpp": 30, "plate": "Brass",
+   "operating_c": "-20 to +70", "terminals": "bare, two pads, no wires, no housing",
+   "datasheet": "https://puiaudio.com/file/specs-AB2036B-2.pdf",
+   "datasheet_rev": "A, 2024-03-06, fetched 2026-09-04 (HTTP 200, 159,631 bytes)",
+   "dimensions_read": "off the datasheet's own dimensioned drawing, page 1, "
+                      "rendered at 200 dpi and read: 20 / 15 +/-0.3 / 13.5 "
+                      "+/-0.3 diameters, 0.215 +/-10% total, 0.1 +/-0.015 "
+                      "ceramic. The specification table is extractable text; "
+                      "the drawing is not, so it was read as a picture.",
+   "stock": {"Digi-Key": 390, "Mouser": 400},
+   "usd_per_unit": {"10": 0.3620, "100": 0.2840, "1000": 0.2200, "10000": 0.1860},
+   "price_source": "Mouser Electronics, ECIA member, authorized distributor, "
+                   "via oemstrade.com/search/AB2036B-2, read 2026-09-04. "
+                   "Ladder: 1 $0.48, 10 $0.362, 25 $0.326, 50 $0.303, "
+                   "100 $0.284, 300 $0.251, 500 $0.237, 1000 $0.220, "
+                   "5000 $0.186. The 10,000 figure is the 5000-and-up break, "
+                   "which is the deepest the ladder publishes.",
+   "corroboration": "Digi-Key (authorized, 390 in stock) quotes EUR 0.1595 at "
+                    "5000 and EUR 0.43 at 1 on the same part.",
+ },
+ "alternate": {
+   "mpn": "AB2036B", "manufacturer": "PUI Audio (Same Sky)",
+   "diameter_mm": 20.0, "thickness_mm": 0.23, "thickness_tol": "+/-0.03",
+   "ceramic_layer_mm": 0.1, "f0_hz": 3600, "f0_tol_hz": 500,
+   "capacitance_pf": 25000, "max_input_vpp": 30,
+   "datasheet": "https://puiaudio.com/file/specs-AB2036B.pdf",
+   "stock": {"Digi-Key": 200},
+   "why": "Same family, same 20 mm brass plate, 0.23 mm instead of 0.215, "
+          "25 nF instead of 20 nF. Its drawing publishes the dimensions as "
+          "extractable text (n20 +/-0.1, 0.23 +/-0.03, ceramic 0.1 +/-0.02), "
+          "which makes it the better reference for the bond-pad and "
+          "shell-cavity geometry even where the -2 is the part fitted.",
+ },
+ "why_not_the_specified_part": [
+   "**The Murata 7BB-20-3 is end-of-life.** Four authorized channels agree, "
+   "all read 2026-09-04: Digi-Key's product page says *\"Obsolete and no "
+   "longer manufactured\"* with 0 stock; TME says *\"Product withdrawn from "
+   "the offer\"*; RS Components returns `statusCode: STATUS_UNAVAILABLE` with "
+   "an empty price-break array on both its SKUs; AXEL/ASONE Japan prefixes it "
+   "[Discontinued].",
+   "**It is not in the Chinese catalogues at all.** The keyword `7BB-20-3` "
+   "returns ZERO rows from the JLCPCB assembly catalogue endpoint and from "
+   "LCSC. Only 7BB-20-6C (C3812347), 7BB-20-6L0 (C3812354) and 7BB-20-6CL0 "
+   "(C3812422) exist there, all at stockCount 0, and C3812347's LCSC page now "
+   "returns HTTP 404.",
+   "**The quantity that exists is broker stock.** Win Source lists 23,886 and "
+   "several unauthorized brokers list 3,000-36,000 pieces of a part Digi-Key "
+   "says is no longer manufactured. Designing that in means single-sourcing a "
+   "product on dead stock with no traceability.",
+   "**The only authorized stock anywhere is 38 pieces** at TTI, Americas. "
+   "That is a sample quantity, not a supply.",
+   "**Murata's own live status could not be read and is recorded as CANNOT "
+   "DETERMINE.** murata.com/products/productdetail redirects to a "
+   "client-rendered SPA that returns a 5,961-byte shell to any fetch; the "
+   "/webapi/PsdispRest endpoints return an error page; and Murata's published "
+   "*Discontinued Products Information of Sound Components* lists only PKM, "
+   "PKB, PKLCS, PKHPS, PKMC, PKMCS and VSB housed parts, with no 7BB entry, "
+   "while stating that not all discontinued products are listed. It therefore "
+   "neither confirms nor clears the series.",
+ ],
+ "why_this_replacement": [
+   "It is a **specification-for-specification match to what D11a asked for**, "
+   "not an approximation: 20.0 mm brass plate, **0.215 mm total against the "
+   "7BB-20-3's 0.22 mm**, 3,600 Hz +/-600, 20 nF +/-30%, <=500 ohm, 30 Vp-p, "
+   "-20 to +70 C. Every one of those numbers is read off the vendor's own "
+   "datasheet, and the thicknesses off its dimensioned drawing.",
+   "**It is bare.** Two pads, no wires, no housing - which is what an "
+   "anti-phase GPIO pair bonded to a shell needs, and what D17 requires: at "
+   "0.215 mm +10% = 0.237 mm worst case it uses a sixth of the ~1.5 mm above "
+   "the module, and nothing about it is over 3.5 mm.",
+   "**The drive D11a specified still works, on the vendor's numbers.** At "
+   "20 nF and 3,600 Hz, two pins swinging 6 V peak-to-peak draw "
+   "I = 2*pi*f*C*V = 2*pi*3600*20e-9*3 = **1.36 mA peak**, inside nRF54L "
+   "high-drive GPIO. R9's 100 ohms is 4.5% of the element's 2.21 kohm "
+   "reactance at f0 and 20% of its <=500 ohm resonant impedance - the "
+   "series resistor is correctly sized and stays on the bill of materials.",
+   "**It is stocked at two authorized distributors today** - Digi-Key 390, "
+   "Mouser 400 - so first articles can be built this week, and it is quoted "
+   "in production quantity rather than by RFQ.",
+ ],
+ "cautions": [
+   "**Digi-Key's own description string for this part is wrong.** It reads "
+   "*BUZZER ELEMENT STD 6.3 KHZ 20MM*. The PUI datasheet says 3,600 Hz. Do "
+   "not let a buyer reject the part on the catalogue line.",
+   "**Do not substitute the CUI / Same Sky CEB-20D64 or CEB-20FD64** despite "
+   "their far deeper stock (6,486 and 6,023 at Digi-Key). They are 0.43 mm "
+   "thick, they arrive with lead wires already attached whose solder joints "
+   "stack on top of the height budget, and at 10-13 nF they present about "
+   "half the capacitive load the GPIO drive was sized around.",
+   "**Skip LCSC and JLCPCB for this line entirely.** Of the 129 parts in "
+   "JLCPCB's whole *Buzzer Plates* category, exactly one has stock (Dragonstate "
+   "HE-2739E-C, 81 pieces, no datasheet published, and 27 mm). All 22 of the "
+   "20 mm bare benders in that catalogue are at zero.",
+   "**The loudness is still unmeasured and D11a says so.** A 3,600 Hz free-air "
+   "element bonded to a stiff shell moves upward in loaded resonance; whether "
+   "that lands 60 Phon at 25 cm is lane G's calibrated meter to answer, not "
+   "this lane's, and nothing here converts a datasheet into a decibel.",
+ ],
+ "usd_per_unit": {"10": 0.3620, "100": 0.2840, "1000": 0.2200, "10000": 0.1860},
 }
 
 # Parts the product needs that the pick-and-place machine never touches.
@@ -370,6 +527,12 @@ def cost(lines, sounder):
     joints, extended, basic, unknown_joints = 0, [], [], []
     bom = {str(q): 0.0 for q in LADDER_QTYS}
     incomplete = {str(q): [] for q in LADDER_QTYS}
+    # A second pass that substitutes the ALTERNATE wherever the pick is absent,
+    # so the roll-up can also answer "what does this cost if the board takes
+    # the recommended fix". Reported separately and labelled; it never
+    # contributes to the primary total, which stays honestly incomplete.
+    bom_fixed = {str(q): 0.0 for q in LADDER_QTYS}
+    substituted = []
     for l in lines:
         p = l.get("part")
         if not p:
@@ -394,13 +557,27 @@ def cost(lines, sounder):
                 incomplete[str(q)].append(",".join(l["refs"]))
             else:
                 bom[str(q)] += unit * l["qty"]
+                bom_fixed[str(q)] += unit * l["qty"]
+    # the substitution pass: a line with no pick but a fetched alternate
+    for l in lines:
+        if l.get("part") or not l.get("alternate") or not l["on_jlc_bom"]:
+            continue
+        a = l["alternate"]
+        substituted.append({"refs": l["refs"], "lcsc": a["lcsc"], "mpn": a.get("mpn")})
+        for q in LADDER_QTYS:
+            unit = jlc_at(a.get("jlcpcb_ladder"), q * l["qty"]) or at(a.get("price_ladder_lcsc"), q * l["qty"])
+            if unit is not None:
+                bom_fixed[str(q)] += unit * l["qty"]
     # off-machine lines
     for ref, d in OFF_MACHINE.items():
         for q in LADDER_QTYS:
             bom[str(q)] += d["usd_per_unit"][str(q)]
+            bom_fixed[str(q)] += d["usd_per_unit"][str(q)]
     for q in LADDER_QTYS:
-        if sounder.get("usd_per_unit", {}).get(str(q)) is not None:
-            bom[str(q)] += sounder["usd_per_unit"][str(q)]
+        v = sounder.get("usd_per_unit", {}).get(str(q))
+        if v is not None:
+            bom[str(q)] += v
+            bom_fixed[str(q)] += v
         else:
             incomplete[str(q)].append("LS1")
     m = COST_MODEL
@@ -410,7 +587,12 @@ def cost(lines, sounder):
         asm = (m["assembly_setup_usd"] + m["stencil_usd"]
                + m["feeder_fee_per_extended_part_usd"] * len(set(extended))) / q               + m["per_joint_usd"] * joints
         tot = bom[k] + m["pcb_usd_per_unit"][k] + asm + m["enclosure_usd_per_unit"][k]               + m["tooling_usd_per_unit"][k] + m["labour_usd_per_unit"][k]
-        rows[k] = {"bom": round(bom[k], 4), "pcb": m["pcb_usd_per_unit"][k],
+        asm_j = m["per_joint_usd"] * joints
+        tot_f = bom_fixed[k] + m["pcb_usd_per_unit"][k] + asm + m["enclosure_usd_per_unit"][k] \
+                + m["tooling_usd_per_unit"][k] + m["labour_usd_per_unit"][k]
+        rows[k] = {"bom": round(bom[k], 4),
+                   "bom_with_alternates": round(bom_fixed[k], 4),
+                   "total_with_alternates": round(tot_f, 4), "pcb": m["pcb_usd_per_unit"][k],
                    "assembly": round(asm, 4),
                    "enclosure": m["enclosure_usd_per_unit"][k],
                    "tooling": m["tooling_usd_per_unit"][k],
@@ -429,6 +611,13 @@ def cost(lines, sounder):
             "extended_part_count": len(set(extended)),
             "basic_parts": sorted(set(basic)),
             "basic_part_count": len(set(basic)),
+            "substituted_lines": substituted,
+            "substituted_note": "what the board would cost if lane B1 takes the "
+                                "recommended fix on every unresolved line - the "
+                                "alternate is a real fetched part, but the line "
+                                "needs a board change first, so this total is "
+                                "reported beside the honest one and never in "
+                                "place of it",
             "feeder_fee_total_usd": round(len(set(extended)) * m["feeder_fee_per_extended_part_usd"], 2),
             "per_unit": rows}
 
@@ -496,16 +685,26 @@ def main():
         for ref in r["Designator"].split(","):
             csv_refs.add(ref.strip())
     lines, claimed = [], set()
+    fp_by_ref = {}
+    for r in placed_bom():
+        for ref in r["Designator"].split(","):
+            fp_by_ref[ref.strip()] = r["Footprint"]
     for ch in CHOICES:
         refs = [x.strip() for x in ch["refs"].split(",")]
         claimed.update(refs)
-        pick = resolve(ch.get("pick"), ch.get("pick_mpn"))
-        alt = resolve(ch.get("alt"), ch.get("alt_mpn"))
+        fp = fp_by_ref.get(refs[0])
+        pick = resolve(ch.get("pick"), ch.get("pick_mpn"), fp)
+        alt = resolve(ch.get("alt"), ch.get("alt_mpn"), fp)
         verdict = ch.get("verdict")
         if verdict is None:
-            verdict = "RESOLVED" if pick and pick["mpn_check"] == "MATCH" else "CANNOT DETERMINE"
+            if not (pick and pick["mpn_check"] == "MATCH"):
+                verdict = "CANNOT DETERMINE"
+            elif pick.get("package_check") == "MISMATCH":
+                verdict = "PACKAGE MISMATCH"
+            else:
+                verdict = "RESOLVED"
         lines.append({"refs": refs, "qty": len(refs), "value": ch["value"],
-                      "footprint": ch["fp"], "function": ch["function"],
+                      "footprint": ch["fp"], "board_footprint": fp, "function": ch["function"],
                       "why": ch["why"], "verdict": verdict,
                       "on_jlc_bom": not ch.get("off_bom", False),
                       "part": pick, "alternate": alt})
@@ -538,5 +737,65 @@ def main():
     if missing:
         print("  refs in the release BOM with no choice here:", missing)
 
+def self_test():
+    """Break the MPN check on purpose and watch it go red.
+
+    docs/TOOLS-THAT-LIE.md: "break every new check on purpose before trusting
+    it". The whole value of this tool is one boolean - does the order code name
+    the part the line asks for - and a boolean that cannot come back False is
+    a decoration. Each case below is a way this tool could have reported PASS
+    while being badly wrong.
+    """
+    cases = [
+      # (order code, MPN claimed, expected verdict, why this case exists)
+      ("C15525", "CL05A106MQ5NUNC", "MATCH",
+       "the true positive: a code that really is the part"),
+      ("C25744", "0201WMF1002TEE", "MISMATCH",
+       "THE ACTUAL DEFECT THIS LANE FOUND - the sheet's 10k line. C25744 is a "
+       "real, in-stock, correctly-valued 10k resistor, so a price-only check "
+       "passes it. It is 0402 and the land pattern is 0201."),
+      ("C1568", "GJM0335C1ER50WB01", "MISMATCH",
+       "the code the sheet used for five different capacitor values"),
+      ("C2827888", "CL03A225MQ3CSNC", "MISMATCH",
+       "a ceramic capacitor line pointing at a screw terminal block"),
+      ("C44800139", "NRF54L15-QFAA-R", "MISMATCH",
+       "right family, wrong member: the L10 code claimed as an L15. A check "
+       "that matched on 'NRF54L' would pass this one."),
+      ("C0000000000", "ANYTHING", "CANNOT DETERMINE",
+       "a code that does not exist must refuse, not invent"),
+    ]
+    pkg_cases = [
+      ("C_0201_0603Metric", "0201", "MATCH", "the true positive"),
+      ("C_0201_0603Metric", "0402", "MISMATCH",
+       "THE DEFECT, ISOLATED: a correctly-valued, in-stock, sanely-priced 0402 "
+       "part under a 0201 land pattern. Every check except this one passes it."),
+      ("C_0402_1005Metric", "0201", "MISMATCH", "and the same error the other way"),
+      ("Crystal_SMD_2016-4Pin_2.0x1.6mm", "SMD2016-4P", "MATCH", "non-chip packages too"),
+      ("halo:HALO_BATT_CONTACT_3PAD", "SMD", "CANNOT DETERMINE",
+       "halo's own land pattern has no size rule and must refuse rather than "
+       "wave through whatever the vendor happens to say"),
+    ]
+    fails = 0
+    for code, mpn, want, why in cases:
+        got = (resolve(code, mpn) or {}).get("mpn_check")
+        ok = got == want
+        fails += not ok
+        print(f"  [{'PASS' if ok else 'FAIL'}] {code:12} as {mpn:20.20} "
+              f"expected {want:17} got {got}")
+        print(f"         {why}")
+    for fp, pkg, want, why in pkg_cases:
+        got, _ = package_check(fp, pkg)
+        ok = got == want
+        fails += not ok
+        print(f"  [{'PASS' if ok else 'FAIL'}] {fp:34.34} vs {pkg:12} "
+              f"expected {want:17} got {got}")
+        print(f"         {why}")
+    n = len(cases) + len(pkg_cases)
+    print(f"\nself-test: {n-fails}/{n} passed")
+    return 1 if fails else 0
+
+
 if __name__ == "__main__":
+    if "--self-test" in sys.argv:
+        sys.exit(self_test())
     main()

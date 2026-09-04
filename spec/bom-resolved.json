@@ -23,6 +23,7 @@
    "qty": 4,
    "value": "100nF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "SoC supply decoupling, one per VDD pin",
    "why": "Deepest 0201 100nF stock in the catalogue and the cheapest. 10 V X5R against a 3.0 V cell leaves margin for X5R DC-bias derating.",
    "verdict": "RESOLVED",
@@ -70,7 +71,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 6131303,
+    "jlcpcb_stock": 6133888,
     "jlcpcb_price_usd": {
      "10": 0.0013,
      "100": 0.0013,
@@ -109,6 +110,9 @@
       0.0006
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -120,7 +124,7 @@
     "mpn": "CC0201KRX5R6BB104",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 3151700,
+    "stock": 3151600,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/5b3aae1e7925073bc9bd92db48d7aba2.pdf?productCode=C190183",
@@ -154,7 +158,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 3271519,
+    "jlcpcb_stock": 3271572,
     "jlcpcb_price_usd": {
      "10": 0.0035,
      "100": 0.0035,
@@ -193,6 +197,9 @@
       0.0021
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -204,6 +211,7 @@
    "qty": 2,
    "value": "2.2uF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "SoC DEC/DCDC reservoir",
    "why": "10 V X5R at 2.2 uF in 0201 is a stretched dielectric; the Murata part is the deepest-stocked one and Murata publishes its DC-bias curve.",
    "verdict": "RESOLVED",
@@ -255,7 +263,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 97325,
+    "jlcpcb_stock": 97335,
     "jlcpcb_price_usd": {
      "10": 0.0233,
      "100": 0.0233,
@@ -294,6 +302,9 @@
       0.013
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -305,7 +316,7 @@
     "mpn": "CL03A225MP3CRNC",
     "manufacturer": "Samsung Electro-Mechanics",
     "package": "0201",
-    "stock": 312440,
+    "stock": 312460,
     "min_packet": 10000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/e5e1a6cb60bd6713d2271da395963f60.pdf?productCode=C318539",
@@ -343,7 +354,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 352745,
+    "jlcpcb_stock": 352713,
     "jlcpcb_price_usd": {
      "10": 0.0212,
      "100": 0.0212,
@@ -382,6 +393,9 @@
       0.0119
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -392,6 +406,7 @@
    "qty": 1,
    "value": "10nF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "SoC decoupling",
    "why": "X7R rather than X5R at no cost premium; 330k stock.",
    "verdict": "RESOLVED",
@@ -443,7 +458,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 368495,
+    "jlcpcb_stock": 368597,
     "jlcpcb_price_usd": {
      "10": 0.0047,
      "100": 0.0047,
@@ -482,6 +497,9 @@
       0.0027
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -566,6 +584,9 @@
       0.0005
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -576,6 +597,7 @@
    "qty": 1,
    "value": "2.2nF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "SoC decoupling",
    "why": "THE SNAPSHOT'S FIRST CHOICE WAS WRONG BY A DAY. YAGEO C526940 held 29,573 in the 2026-09-03 catalogue snapshot and 600 when the live page was read on 2026-09-04 - a 49x collapse overnight. Both parts here are Murata, which is a real weakness in this line: it has two order codes and one manufacturer.",
    "verdict": "RESOLVED",
@@ -662,6 +684,9 @@
       0.0016
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -750,6 +775,9 @@
       0.0036
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -763,6 +791,7 @@
    "qty": 4,
    "value": "10uF",
    "footprint": "0402",
+   "board_footprint": "C_0402_1005Metric",
    "function": "bulk rail capacitance (4 x 10 uF replaces Apple's 5 x 100 uF)",
    "why": "THE ONLY JLCPCB BASIC PART ON THIS BOARD. No feeder fee, ~10 M in stock. 6.3 V X5R at 3.0 V is inside spec but derates hard - the 10 V alternate is there if the measured rail droop needs it.",
    "verdict": "RESOLVED",
@@ -776,7 +805,7 @@
     "mpn": "CL05A106MQ5NUNC",
     "manufacturer": "Samsung Electro-Mechanics",
     "package": "0402",
-    "stock": 5742500,
+    "stock": 5672100,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/65bc266350d348ca20afaa6e412e395a.pdf?productCode=C15525",
@@ -814,7 +843,7 @@
      ]
     ],
     "library_type": "basic",
-    "jlcpcb_stock": 9770076,
+    "jlcpcb_stock": 9701120,
     "jlcpcb_price_usd": {
      "10": 0.0256,
      "100": 0.0256,
@@ -853,6 +882,9 @@
       0.0127
      ]
     ],
+    "board_footprint": "C_0402_1005Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0402_1005Metric wants 0402, vendor says '0402'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -864,7 +896,7 @@
     "mpn": "HGC0402R5106M100NTEJ",
     "manufacturer": "Chinocera",
     "package": "0402",
-    "stock": 1998760,
+    "stock": 1999080,
     "min_packet": 10000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/3025399970486160f9625970e5fd5973.pdf?productCode=C7472949",
@@ -902,7 +934,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1998826,
+    "jlcpcb_stock": 1999506,
     "jlcpcb_price_usd": {
      "10": 0.0301,
      "100": 0.0301,
@@ -941,6 +973,9 @@
       0.0162
      ]
     ],
+    "board_footprint": "C_0402_1005Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0402_1005Metric wants 0402, vendor says '0402'",
     "mpn_check": "MATCH"
    }
   },
@@ -951,6 +986,7 @@
    "qty": 1,
    "value": "100pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "battery-sense divider settling cap",
    "why": "C0G, so the ADC settling time and the 0.24 ms cell-removal collapse do not move with temperature. Deepest line on the board: 826 k and 1.2 M, two manufacturers.",
    "verdict": "RESOLVED",
@@ -1002,7 +1038,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 873602,
+    "jlcpcb_stock": 873542,
     "jlcpcb_price_usd": {
      "10": 0.0066,
      "100": 0.0066,
@@ -1041,6 +1077,9 @@
       0.0035
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -1086,7 +1125,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1251817,
+    "jlcpcb_stock": 1251731,
     "jlcpcb_price_usd": {
      "10": 0.0034,
      "100": 0.0034,
@@ -1125,6 +1164,9 @@
       0.0018
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -1135,6 +1177,7 @@
    "qty": 1,
    "value": "1.5pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "2.4 GHz match, Nordic reference network",
    "why": "Murata GJM03 is the high-Q RF series the Nordic reference network assumes; a general-purpose C0G would lower the match Q. The GRM alternate is that general-purpose C0G, 5x cheaper and deeper stocked - acceptable only once ce-rf has measured S11 with it.",
    "verdict": "RESOLVED",
@@ -1225,6 +1268,9 @@
       0.0176
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -1236,7 +1282,7 @@
     "mpn": "GRM0335C1H1R5WA01D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 86150,
+    "stock": 86300,
     "min_packet": 15000,
     "split": 50,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/bb7c7daf22f40d74dc9493dcdcae707d.pdf?productCode=C88913",
@@ -1274,7 +1320,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 86159,
+    "jlcpcb_stock": 86329,
     "jlcpcb_price_usd": {
      "10": 0.0212,
      "100": 0.0212,
@@ -1313,6 +1359,9 @@
       0.0119
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -1323,6 +1372,7 @@
    "qty": 1,
    "value": "2.0pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "2.4 GHz match, Nordic reference network",
    "why": "Same GJM03 high-Q family as C18. THE MOST EXPENSIVE PASSIVE ON THE BOARD at $0.064/1k - 40x a plain C0G - because 2.0 pF in the GJM high-Q series is a thin line. The YAGEO CQ series alternate is the deepest non-Murata 2 pF that survived the live stock check; the snapshot's two better-looking candidates (C161383, C1855389) read 200 and ZERO on the live page.",
    "verdict": "RESOLVED",
@@ -1413,6 +1463,9 @@
       0.0559
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -1501,6 +1554,9 @@
       0.0056
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -1512,6 +1568,7 @@
    "qty": 2,
    "value": "0.5pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "antenna tuning pi, shunt legs (values are placeholders until ce-rf's S11)",
    "why": "THE SCHEMATIC ASKED FOR GJM0335C1ER50WB01 (25 V), which is C464955 with 329 pieces in stock - not orderable. The 50 V 1H variant is the same 0.5 pF part with 25x the stock.",
    "verdict": "RESOLVED",
@@ -1602,6 +1659,9 @@
       0.0144
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -1690,6 +1750,9 @@
       0.0039
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -1700,6 +1763,7 @@
    "qty": 1,
    "value": "0.3pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "2.4 GHz match, series trim into the pi",
    "why": "GJM03 high-Q, 50 V. At 0.3 pF the parasitics of a cheap C0G are a large fraction of the value, so the RF series earns its price here.",
    "verdict": "RESOLVED",
@@ -1790,6 +1854,9 @@
       0.0169
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -1835,7 +1902,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 15169,
+    "jlcpcb_stock": 15149,
     "jlcpcb_price_usd": {
      "10": 0.0018,
      "100": 0.0018,
@@ -1874,6 +1941,9 @@
       0.0009
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -1884,6 +1954,7 @@
    "qty": 1,
    "value": "3.9pF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "2.4 GHz shunt at ANT (Nordic Table 82; node placement CANNOT DETERMINE)",
    "why": "GJM03 high-Q. Alternate is 28x cheaper and adequate if this ends up being a DNP once ce-rf measures the real feed.",
    "verdict": "RESOLVED",
@@ -1974,6 +2045,9 @@
       0.0136
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -2058,6 +2132,9 @@
       0.0007
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -2069,6 +2146,7 @@
    "qty": 2,
    "value": "1.1nF",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER",
    "why": "NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, and none exists in 0402 either - the smallest 1.1 nF in the whole catalogue is 0603 (C710889), which is three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is no bracketing pair. The only 0201 part in the neighbourhood is 1.0 nF C0G, and the schematic's own note says that lands the NFC tank 5.3 % high at 14.28 MHz. THE FIX IS FREE AND IT IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so if each capacitor drops 1.109 nF -> 1.0 nF the series capacitance drops 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. The coil is etched, so that costs nothing but a re-run of ce-rf's inductance solve on a slightly longer 2-turn path. This is a BOARD CHANGE for lane B1, not a sourcing choice, and the alternate recorded here is the 1.0 nF part it would use.",
    "verdict": "CANNOT DETERMINE",
@@ -2160,6 +2238,9 @@
       0.0068
      ]
     ],
+    "board_footprint": "C_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "C_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -2173,6 +2254,7 @@
    "qty": 4,
    "value": "DNP",
    "footprint": "0201",
+   "board_footprint": "C_0201_0603Metric",
    "function": "crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps)",
    "why": "Not a sourcing gap. These four pads are the four parts jlc.md counts as CANNOT DETERMINE, and the right answer is that they carry no order code because nothing is placed on them.",
    "verdict": "DNP",
@@ -2188,6 +2270,7 @@
    "qty": 2,
    "value": "4.7M",
    "footprint": "0201",
+   "board_footprint": "R_0201_0603Metric",
    "function": "battery-sense divider (4.7 M keeps the divider current in the nanoamps)",
    "why": "THINNEST STOCK ON THE BOARD AFTER THE SoC. 4.7 M in 0201 is a rare value: seven parts exist in the whole catalogue and only two carry four figures of stock. Both pick and alternate are UNI-ROYAL, so this line has ONE manufacturer, not two.",
    "verdict": "RESOLVED",
@@ -2235,7 +2318,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 10112,
+    "jlcpcb_stock": 10142,
     "jlcpcb_price_usd": {
      "10": 0.0019,
      "100": 0.0019,
@@ -2274,6 +2357,9 @@
       0.001
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -2354,6 +2440,9 @@
       0.0006
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -2368,6 +2457,7 @@
    "qty": 5,
    "value": "10k",
    "footprint": "0201",
+   "board_footprint": "R_0201_0603Metric",
    "function": "I2C/SWD pull-ups and strapping",
    "why": "The exact MPN the schematic named - it was simply carrying the 0402 part's order code. Half a million in stock.",
    "verdict": "RESOLVED",
@@ -2381,7 +2471,7 @@
     "mpn": "0201WMF1002TEE",
     "manufacturer": "UNI-ROYAL",
     "package": "0201",
-    "stock": 700,
+    "stock": 600,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C473048",
@@ -2411,7 +2501,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 644258,
+    "jlcpcb_stock": 640390,
     "jlcpcb_price_usd": {
      "10": 0.0012,
      "100": 0.0012,
@@ -2450,6 +2540,9 @@
       0.0008
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -2461,7 +2554,7 @@
     "mpn": "RC0201JR-0710KL",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 631100,
+    "stock": 627100,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C138117",
@@ -2495,7 +2588,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 935086,
+    "jlcpcb_stock": 930146,
     "jlcpcb_price_usd": {
      "10": 0.0022,
      "100": 0.0022,
@@ -2534,6 +2627,9 @@
       0.0015
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -2544,6 +2640,7 @@
    "qty": 1,
    "value": "100R",
    "footprint": "0201",
+   "board_footprint": "R_0201_0603Metric",
    "function": "piezo drive series resistor (D11a: limits GPIO current into a 40 nF bender)",
    "why": "Again the schematic's own MPN under its real order code.",
    "verdict": "RESOLVED",
@@ -2591,7 +2688,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 793687,
+    "jlcpcb_stock": 792721,
     "jlcpcb_price_usd": {
      "10": 0.002,
      "100": 0.002,
@@ -2630,6 +2727,9 @@
       0.0011
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -2675,7 +2775,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 2067195,
+    "jlcpcb_stock": 2067381,
     "jlcpcb_price_usd": {
      "10": 0.0032,
      "100": 0.0032,
@@ -2714,6 +2814,9 @@
       0.0021
      ]
     ],
+    "board_footprint": "R_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "R_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -2724,6 +2827,7 @@
    "qty": 1,
    "value": "4.7uH",
    "footprint": "0603",
+   "board_footprint": "L_0603_1608Metric",
    "function": "SoC DC-DC inductor",
    "why": "The schematic's own TDK part under its real order code. The alternate is AEC-Q200 with 700 mA rating vs the TDK's 350 mA.",
    "verdict": "RESOLVED",
@@ -2775,7 +2879,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 19481,
+    "jlcpcb_stock": 19472,
     "jlcpcb_price_usd": {
      "10": 0.06,
      "100": 0.0502,
@@ -2814,6 +2918,9 @@
       0.0368
      ]
     ],
+    "board_footprint": "L_0603_1608Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0603_1608Metric wants 0603, vendor says '0603'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -2863,7 +2970,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 56261,
+    "jlcpcb_stock": 56281,
     "jlcpcb_price_usd": {
      "10": 0.0361,
      "100": 0.0361,
@@ -2902,6 +3009,9 @@
       0.021
      ]
     ],
+    "board_footprint": "L_0603_1608Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0603_1608Metric wants 0603, vendor says '0603'",
     "mpn_check": "MATCH"
    }
   },
@@ -2912,6 +3022,7 @@
    "qty": 1,
    "value": "2.7nH",
    "footprint": "0201",
+   "board_footprint": "L_0201_0603Metric",
    "function": "2.4 GHz match, Nordic reference network",
    "why": "The schematic's own Murata high-Q part under its real order code. The TDK MLG0603 is the standard second source for LQP03 and is Q=14 vs Q=20 - acceptable, measurably worse.",
    "verdict": "RESOLVED",
@@ -3002,6 +3113,9 @@
       0.0299
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3090,6 +3204,9 @@
       0.0022
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -3101,6 +3218,7 @@
    "qty": 2,
    "value": "3.5nH",
    "footprint": "0201",
+   "board_footprint": "L_0201_0603Metric",
    "function": "2.4 GHz match, Nordic reference network",
    "why": "3.5 nH is a rare value: THREE parts exist in 0201 across the whole catalogue and the alternate holds only ~1.6 k. Both are Murata. If ce-rf's S11 permits 3.3 nH or 3.6 nH the sourcing risk vanishes.",
    "verdict": "RESOLVED",
@@ -3114,7 +3232,7 @@
     "mpn": "LQP03HQ3N5B02D",
     "manufacturer": "muRata",
     "package": "0201",
-    "stock": 7240,
+    "stock": 8000,
     "min_packet": 15000,
     "split": 20,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/ac186320274d922facfc49f3dd9954de.pdf?productCode=C3911055",
@@ -3152,7 +3270,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 7257,
+    "jlcpcb_stock": 8477,
     "jlcpcb_price_usd": {
      "10": 0.0431,
      "100": 0.0431,
@@ -3191,6 +3309,9 @@
       0.0244
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3279,6 +3400,9 @@
       0.0079
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -3289,6 +3413,7 @@
    "qty": 1,
    "value": "0R",
    "footprint": "0201",
+   "board_footprint": "L_0201_0603Metric",
    "function": "antenna pi series element, fitted as a jumper so the board works untuned",
    "why": "Sits in an inductor footprint on purpose; a 0 ohm 0201 resistor is the same land pattern. Both options carry 500k+.",
    "verdict": "RESOLVED",
@@ -3302,7 +3427,7 @@
     "mpn": "0201WMF0000TEE",
     "manufacturer": "UNI-ROYAL",
     "package": "0201",
-    "stock": 4145500,
+    "stock": 4142500,
     "min_packet": 15000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f42da6c80a0747bae77c2f98f4e46d1d.pdf?productCode=C473473",
@@ -3332,7 +3457,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 4475080,
+    "jlcpcb_stock": 4472786,
     "jlcpcb_price_usd": {
      "10": 0.0009,
      "100": 0.0009,
@@ -3371,6 +3496,9 @@
       0.0005
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3382,7 +3510,7 @@
     "mpn": "RC0201JR-070RL",
     "manufacturer": "YAGEO",
     "package": "0201",
-    "stock": 1020600,
+    "stock": 1019400,
     "min_packet": 10000,
     "split": 100,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C106228",
@@ -3416,7 +3544,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1200608,
+    "jlcpcb_stock": 1201384,
     "jlcpcb_price_usd": {
      "10": 0.0025,
      "100": 0.0025,
@@ -3455,6 +3583,9 @@
       0.0015
      ]
     ],
+    "board_footprint": "L_0201_0603Metric",
+    "package_check": "MATCH",
+    "package_check_why": "L_0201_0603Metric wants 0201, vendor says '0201'",
     "mpn_check": "MATCH"
    }
   },
@@ -3465,6 +3596,7 @@
    "qty": 1,
    "value": "nRF54L10-QFAA-R7",
    "footprint": "QFN-48",
+   "board_footprint": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
    "function": "the SoC: BLE + Channel Sounding + NFC-A (D12)",
    "why": "D12. THE SINGLE LARGEST SUPPLY RISK ON THE BOARD - lane T6 measured 212 pieces. D18 says the L05 fallback is not forced by memory, so the alternate is a real second source, at 512 kB/96 kB and a 3,000-piece minimum packet.",
    "verdict": "RESOLVED",
@@ -3555,6 +3687,9 @@
       2.38
      ]
     ],
+    "board_footprint": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
+    "package_check": "MATCH",
+    "package_check_why": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm wants QFN-48, vendor says 'VFQFN-48'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3643,6 +3778,9 @@
       2.0112
      ]
     ],
+    "board_footprint": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
+    "package_check": "MATCH",
+    "package_check_why": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm wants QFN-48, vendor says 'VFQFN-48'",
     "mpn_check": "MATCH"
    }
   },
@@ -3653,6 +3791,7 @@
    "qty": 1,
    "value": "LIS2DW12TR",
    "footprint": "LGA-12",
+   "board_footprint": "LGA-12_2x2mm_P0.5mm",
    "function": "3-axis accelerometer: motion wake, DULT unwanted-tracking detection",
    "why": "50 nA in the lowest-power mode, the deciding number for a coin cell. PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give 1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be tied to VDD, VDDIO or GND'), which the board ties to GND either way. The cost is 500 nA against 50 nA - a build second source, not a design equal. REJECTED as an alternate on evidence: Silan SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, 3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It would short VDDIO to the SDO net on this land pattern.",
    "verdict": "RESOLVED",
@@ -3666,7 +3805,7 @@
     "mpn": "LIS2DW12TR",
     "manufacturer": "ST",
     "package": "LGA-12(2x2)",
-    "stock": 14160,
+    "stock": 14150,
     "min_packet": 10000,
     "split": 1,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/faa0f1ff935ff2be849a090ec963fd19.pdf?productCode=C189624",
@@ -3704,7 +3843,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 14160,
+    "jlcpcb_stock": 14150,
     "jlcpcb_price_usd": {
      "10": 1.0381,
      "100": 0.7961,
@@ -3743,6 +3882,9 @@
       0.7343
      ]
     ],
+    "board_footprint": "LGA-12_2x2mm_P0.5mm",
+    "package_check": "MATCH",
+    "package_check_why": "LGA-12_2x2mm_P0.5mm wants LGA-12, vendor says 'LGA-12(2x2)'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3760,77 +3902,80 @@
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/80fd3cb5c04ce9b30e9bec7b53c4a455.pdf?productCode=C110926",
     "category": "Accelerometers",
     "price_usd": {
-     "10": 0.8473,
-     "100": 0.6507,
-     "1000": 0.5999,
-     "10000": 0.5999
+     "10": 0.8531,
+     "100": 0.6562,
+     "1000": 0.6037,
+     "10000": 0.6037
     },
     "price_ladder_lcsc": [
      [
       1,
-      0.9669
+      0.9744
      ],
      [
       10,
-      0.8473
+      0.8531
      ],
      [
       30,
-      0.7359
+      0.7399
      ],
      [
       100,
-      0.6507
+      0.6562
      ],
      [
       500,
-      0.6162
+      0.6218
      ],
      [
       1000,
-      0.5999
+      0.6037
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 1362,
+    "jlcpcb_stock": 1162,
     "jlcpcb_price_usd": {
-     "10": 0.8399,
-     "100": 0.645,
-     "1000": 0.5946,
-     "10000": 0.5946
+     "10": 0.8448,
+     "100": 0.6499,
+     "1000": 0.5979,
+     "10000": 0.5979
     },
     "jlcpcb_ladder": [
      [
       1,
       9,
-      0.9585
+      0.965
      ],
      [
       10,
       29,
-      0.8399
+      0.8448
      ],
      [
       30,
       99,
-      0.7295
+      0.7327
      ],
      [
       100,
       499,
-      0.645
+      0.6499
      ],
      [
       500,
       999,
-      0.6109
+      0.6157
      ],
      [
       1000,
       -1,
-      0.5946
+      0.5979
      ]
     ],
+    "board_footprint": "LGA-12_2x2mm_P0.5mm",
+    "package_check": "MATCH",
+    "package_check_why": "LGA-12_2x2mm_P0.5mm wants LGA-12, vendor says 'LGA-12(2x2)'",
     "mpn_check": "MATCH"
    }
   },
@@ -3841,6 +3986,7 @@
    "qty": 1,
    "value": "32.768kHz",
    "footprint": "SMD3215-2P",
+   "board_footprint": "Crystal_SMD_3215-2Pin_3.2x1.5mm",
    "function": "LFXO: the rotation clock the anti-stalking timing depends on",
    "why": "JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED AGAINST THE nRF54L's on-die CAPVALUE RANGE, because D-3 deleted the external load capacitors. The alternate is the same Epson FC-135 body at CL 6 pF if the internal caps cannot reach 12.5 pF.",
    "verdict": "RESOLVED",
@@ -3854,7 +4000,7 @@
     "mpn": "Q13FC13500004",
     "manufacturer": "EPSON",
     "package": "SMD3215-2P",
-    "stock": 657450,
+    "stock": 657565,
     "min_packet": 3000,
     "split": 5,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d4d1bd2e87b2e72a8e8e7fe7d590f4c0.pdf?productCode=C32346",
@@ -3892,45 +4038,48 @@
      ]
     ],
     "library_type": "basic",
-    "jlcpcb_stock": 778128,
+    "jlcpcb_stock": 777983,
     "jlcpcb_price_usd": {
-     "10": 0.1731,
-     "100": 0.1365,
-     "1000": 0.1026,
-     "10000": 0.0813
+     "10": 0.1714,
+     "100": 0.1352,
+     "1000": 0.1016,
+     "10000": 0.0805
     },
     "jlcpcb_ladder": [
      [
       1,
       49,
-      0.1731
+      0.1714
      ],
      [
       50,
       149,
-      0.1365
+      0.1352
      ],
      [
       150,
       499,
-      0.1186
+      0.1175
      ],
      [
       500,
       2999,
-      0.1026
+      0.1016
      ],
      [
       3000,
       5999,
-      0.0839
+      0.0831
      ],
      [
       6000,
       -1,
-      0.0813
+      0.0805
      ]
     ],
+    "board_footprint": "Crystal_SMD_3215-2Pin_3.2x1.5mm",
+    "package_check": "MATCH",
+    "package_check_why": "Crystal_SMD_3215-2Pin_3.2x1.5mm wants 3215, vendor says 'SMD3215-2P'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -3942,7 +4091,7 @@
     "mpn": "Q13FC13500049",
     "manufacturer": "EPSON",
     "package": "SMD3215-2P",
-    "stock": 134315,
+    "stock": 134310,
     "min_packet": 3000,
     "split": 5,
     "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/87f4fb5292528ca7f0dcfb918a7643ad.pdf?productCode=C95361",
@@ -3980,7 +4129,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 135159,
+    "jlcpcb_stock": 135144,
     "jlcpcb_price_usd": {
      "10": 0.2017,
      "100": 0.1614,
@@ -4019,6 +4168,9 @@
       0.0964
      ]
     ],
+    "board_footprint": "Crystal_SMD_3215-2Pin_3.2x1.5mm",
+    "package_check": "MATCH",
+    "package_check_why": "Crystal_SMD_3215-2Pin_3.2x1.5mm wants 3215, vendor says 'SMD3215-2P'",
     "mpn_check": "MATCH"
    }
   },
@@ -4029,6 +4181,7 @@
    "qty": 1,
    "value": "32MHz",
    "footprint": "SMD2016-4P",
+   "board_footprint": "Crystal_SMD_2016-4Pin_2.0x1.6mm",
    "function": "HFXO: the radio reference",
    "why": "CL 8 pF +/-10 ppm, which is what the schematic specified and what the vendor record confirms. The YXC alternate is the same 8 pF / +/-10 ppm at a third of the price with 60 k stock.",
    "verdict": "RESOLVED",
@@ -4119,6 +4272,9 @@
       0.209
      ]
     ],
+    "board_footprint": "Crystal_SMD_2016-4Pin_2.0x1.6mm",
+    "package_check": "MATCH",
+    "package_check_why": "Crystal_SMD_2016-4Pin_2.0x1.6mm wants 2016, vendor says 'SMD2016-4P'",
     "mpn_check": "MATCH"
    },
    "alternate": {
@@ -4168,7 +4324,7 @@
      ]
     ],
     "library_type": "extended",
-    "jlcpcb_stock": 41673,
+    "jlcpcb_stock": 41666,
     "jlcpcb_price_usd": {
      "10": 0.1095,
      "100": 0.0866,
@@ -4207,6 +4363,9 @@
       0.0525
      ]
     ],
+    "board_footprint": "Crystal_SMD_2016-4Pin_2.0x1.6mm",
+    "package_check": "MATCH",
+    "package_check_why": "Crystal_SMD_2016-4Pin_2.0x1.6mm wants 2016, vendor says 'SMD2016-4P'",
     "mpn_check": "MATCH"
    }
   },
@@ -4217,9 +4376,10 @@
    "qty": 1,
    "value": "7BB-20-3",
    "footprint": "bonded to shell, no land pattern",
+   "board_footprint": null,
    "function": "sounder: bare Ø20 x 0.22 mm piezo bender (D11a)",
-   "why": "Hand-assembled, not placed by the machine. Resolved separately - see the sounder section of docs/SOURCING.md.",
-   "verdict": "SEE SOUNDER SECTION",
+   "why": "Hand-assembled and bonded to the shell, so the machine never touches it and it carries no LCSC code by design. THE SPECIFIED MURATA PART IS END-OF-LIFE and is replaced by the PUI Audio AB2036B-2, which is a specification-for-specification match at 0.215 mm rather than 0.22. Full evidence in the sounder section of docs/SOURCING.md and in the `cost.sounder` block of this file.",
+   "verdict": "RESOLVED BY REPLACEMENT",
    "on_jlc_bom": false,
    "part": null,
    "alternate": null
@@ -4231,6 +4391,7 @@
    "qty": 1,
    "value": "CR2032",
    "footprint": "halo:HALO_BATT_CONTACT_3PAD",
+   "board_footprint": null,
    "function": "the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder",
    "why": "The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER. No holder is fitted - lane M's design puts three stamped fingers on halo's own three-pad footprint. The order code was wrong AND the part it named must not be ordered.",
    "verdict": "NOT AN SMT LINE",
@@ -4302,12 +4463,85 @@
   },
   "sounder": {
    "specified": "Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
-   "verdict": "PENDING",
+   "verdict": "RESOLVED - BY REPLACEMENT. The specified part is end-of-life.",
+   "resolved_to": {
+    "mpn": "AB2036B-2",
+    "manufacturer": "PUI Audio (Same Sky)",
+    "diameter_mm": 20.0,
+    "thickness_mm": 0.215,
+    "thickness_tol": "+/-10%",
+    "ceramic_layer_mm": 0.1,
+    "ceramic_layer_tol": "+/-0.015",
+    "brass_mm": 0.115,
+    "brass_note": "derived: 0.215 total - 0.100 ceramic",
+    "ceramic_diameter_mm": 15.0,
+    "electrode_diameter_mm": 13.5,
+    "f0_hz": 3600,
+    "f0_tol_hz": 600,
+    "resonant_impedance_ohm_max": 500,
+    "capacitance_pf": 20000,
+    "capacitance_tol": "+/-30% @ 120 Hz",
+    "max_input_vpp": 30,
+    "plate": "Brass",
+    "operating_c": "-20 to +70",
+    "terminals": "bare, two pads, no wires, no housing",
+    "datasheet": "https://puiaudio.com/file/specs-AB2036B-2.pdf",
+    "datasheet_rev": "A, 2024-03-06, fetched 2026-09-04 (HTTP 200, 159,631 bytes)",
+    "dimensions_read": "off the datasheet's own dimensioned drawing, page 1, rendered at 200 dpi and read: 20 / 15 +/-0.3 / 13.5 +/-0.3 diameters, 0.215 +/-10% total, 0.1 +/-0.015 ceramic. The specification table is extractable text; the drawing is not, so it was read as a picture.",
+    "stock": {
+     "Digi-Key": 390,
+     "Mouser": 400
+    },
+    "usd_per_unit": {
+     "10": 0.362,
+     "100": 0.284,
+     "1000": 0.22,
+     "10000": 0.186
+    },
+    "price_source": "Mouser Electronics, ECIA member, authorized distributor, via oemstrade.com/search/AB2036B-2, read 2026-09-04. Ladder: 1 $0.48, 10 $0.362, 25 $0.326, 50 $0.303, 100 $0.284, 300 $0.251, 500 $0.237, 1000 $0.220, 5000 $0.186. The 10,000 figure is the 5000-and-up break, which is the deepest the ladder publishes.",
+    "corroboration": "Digi-Key (authorized, 390 in stock) quotes EUR 0.1595 at 5000 and EUR 0.43 at 1 on the same part."
+   },
+   "alternate": {
+    "mpn": "AB2036B",
+    "manufacturer": "PUI Audio (Same Sky)",
+    "diameter_mm": 20.0,
+    "thickness_mm": 0.23,
+    "thickness_tol": "+/-0.03",
+    "ceramic_layer_mm": 0.1,
+    "f0_hz": 3600,
+    "f0_tol_hz": 500,
+    "capacitance_pf": 25000,
+    "max_input_vpp": 30,
+    "datasheet": "https://puiaudio.com/file/specs-AB2036B.pdf",
+    "stock": {
+     "Digi-Key": 200
+    },
+    "why": "Same family, same 20 mm brass plate, 0.23 mm instead of 0.215, 25 nF instead of 20 nF. Its drawing publishes the dimensions as extractable text (n20 +/-0.1, 0.23 +/-0.03, ceramic 0.1 +/-0.02), which makes it the better reference for the bond-pad and shell-cavity geometry even where the -2 is the part fitted."
+   },
+   "why_not_the_specified_part": [
+    "**The Murata 7BB-20-3 is end-of-life.** Four authorized channels agree, all read 2026-09-04: Digi-Key's product page says *\"Obsolete and no longer manufactured\"* with 0 stock; TME says *\"Product withdrawn from the offer\"*; RS Components returns `statusCode: STATUS_UNAVAILABLE` with an empty price-break array on both its SKUs; AXEL/ASONE Japan prefixes it [Discontinued].",
+    "**It is not in the Chinese catalogues at all.** The keyword `7BB-20-3` returns ZERO rows from the JLCPCB assembly catalogue endpoint and from LCSC. Only 7BB-20-6C (C3812347), 7BB-20-6L0 (C3812354) and 7BB-20-6CL0 (C3812422) exist there, all at stockCount 0, and C3812347's LCSC page now returns HTTP 404.",
+    "**The quantity that exists is broker stock.** Win Source lists 23,886 and several unauthorized brokers list 3,000-36,000 pieces of a part Digi-Key says is no longer manufactured. Designing that in means single-sourcing a product on dead stock with no traceability.",
+    "**The only authorized stock anywhere is 38 pieces** at TTI, Americas. That is a sample quantity, not a supply.",
+    "**Murata's own live status could not be read and is recorded as CANNOT DETERMINE.** murata.com/products/productdetail redirects to a client-rendered SPA that returns a 5,961-byte shell to any fetch; the /webapi/PsdispRest endpoints return an error page; and Murata's published *Discontinued Products Information of Sound Components* lists only PKM, PKB, PKLCS, PKHPS, PKMC, PKMCS and VSB housed parts, with no 7BB entry, while stating that not all discontinued products are listed. It therefore neither confirms nor clears the series."
+   ],
+   "why_this_replacement": [
+    "It is a **specification-for-specification match to what D11a asked for**, not an approximation: 20.0 mm brass plate, **0.215 mm total against the 7BB-20-3's 0.22 mm**, 3,600 Hz +/-600, 20 nF +/-30%, <=500 ohm, 30 Vp-p, -20 to +70 C. Every one of those numbers is read off the vendor's own datasheet, and the thicknesses off its dimensioned drawing.",
+    "**It is bare.** Two pads, no wires, no housing - which is what an anti-phase GPIO pair bonded to a shell needs, and what D17 requires: at 0.215 mm +10% = 0.237 mm worst case it uses a sixth of the ~1.5 mm above the module, and nothing about it is over 3.5 mm.",
+    "**The drive D11a specified still works, on the vendor's numbers.** At 20 nF and 3,600 Hz, two pins swinging 6 V peak-to-peak draw I = 2*pi*f*C*V = 2*pi*3600*20e-9*3 = **1.36 mA peak**, inside nRF54L high-drive GPIO. R9's 100 ohms is 4.5% of the element's 2.21 kohm reactance at f0 and 20% of its <=500 ohm resonant impedance - the series resistor is correctly sized and stays on the bill of materials.",
+    "**It is stocked at two authorized distributors today** - Digi-Key 390, Mouser 400 - so first articles can be built this week, and it is quoted in production quantity rather than by RFQ."
+   ],
+   "cautions": [
+    "**Digi-Key's own description string for this part is wrong.** It reads *BUZZER ELEMENT STD 6.3 KHZ 20MM*. The PUI datasheet says 3,600 Hz. Do not let a buyer reject the part on the catalogue line.",
+    "**Do not substitute the CUI / Same Sky CEB-20D64 or CEB-20FD64** despite their far deeper stock (6,486 and 6,023 at Digi-Key). They are 0.43 mm thick, they arrive with lead wires already attached whose solder joints stack on top of the height budget, and at 10-13 nF they present about half the capacitive load the GPIO drive was sized around.",
+    "**Skip LCSC and JLCPCB for this line entirely.** Of the 129 parts in JLCPCB's whole *Buzzer Plates* category, exactly one has stock (Dragonstate HE-2739E-C, 81 pieces, no datasheet published, and 27 mm). All 22 of the 20 mm bare benders in that catalogue are at zero.",
+    "**The loudness is still unmeasured and D11a says so.** A 3,600 Hz free-air element bonded to a stiff shell moves upward in loaded resonance; whether that lands 60 Phon at 25 cm is lane G's calibrated meter to answer, not this lane's, and nothing here converts a datasheet into a decibel."
+   ],
    "usd_per_unit": {
-    "10": null,
-    "100": null,
-    "1000": null,
-    "10000": null
+    "10": 0.362,
+    "100": 0.284,
+    "1000": 0.22,
+    "10000": 0.186
    }
   },
   "joints_measured": 131,
@@ -4341,66 +4575,81 @@
    "C32346"
   ],
   "basic_part_count": 2,
+  "substituted_lines": [
+   {
+    "refs": [
+     "C24",
+     "C25"
+    ],
+    "lcsc": "C161371",
+    "mpn": "GRM0335C1E102JA01D"
+   }
+  ],
+  "substituted_note": "what the board would cost if lane B1 takes the recommended fix on every unresolved line - the alternate is a real fetched part, but the line needs a board change first, so this total is reported beside the honest one and never in place of it",
   "feeder_fee_total_usd": 61.4,
   "per_unit": {
    "10": {
-    "bom": 5.7952,
+    "bom": 6.1555,
+    "bom_with_alternates": 6.1867,
+    "total_with_alternates": 21.2183,
     "pcb": 6.211,
     "assembly": 7.3206,
     "enclosure": 1.2,
     "tooling": 0.0,
     "labour": 0.3,
-    "total": 20.8268,
+    "total": 21.1871,
     "d15_total": 19.25,
-    "delta_vs_d15": 1.5768,
+    "delta_vs_d15": 1.9371,
     "bom_lines_not_priced": [
-     "C24,C25",
-     "LS1"
+     "C24,C25"
     ]
    },
    "100": {
-    "bom": 4.7594,
+    "bom": 5.0421,
+    "bom_with_alternates": 5.0733,
+    "total_with_alternates": 8.186,
     "pcb": 0.692,
     "assembly": 0.9207,
     "enclosure": 1.2,
     "tooling": 0.0,
     "labour": 0.3,
-    "total": 7.8721,
+    "total": 8.1548,
     "d15_total": 9.28,
-    "delta_vs_d15": -1.4079,
+    "delta_vs_d15": -1.1252,
     "bom_lines_not_priced": [
-     "C24,C25",
-     "LS1"
+     "C24,C25"
     ]
    },
    "1000": {
-    "bom": 4.2533,
+    "bom": 4.4723,
+    "bom_with_alternates": 4.4951,
+    "total_with_alternates": 5.9658,
     "pcb": 0.14,
     "assembly": 0.2807,
     "enclosure": 0.9,
     "tooling": 0.0,
     "labour": 0.15,
-    "total": 5.724,
+    "total": 5.943,
     "d15_total": 7.17,
-    "delta_vs_d15": -1.446,
+    "delta_vs_d15": -1.227,
     "bom_lines_not_priced": [
-     "C24,C25",
-     "LS1"
+     "C24,C25"
     ]
    },
    "10000": {
-    "bom": 4.1653,
+    "bom": 4.3505,
+    "bom_with_alternates": 4.3665,
+    "total_with_alternates": 5.4482,
     "pcb": 0.085,
     "assembly": 0.2167,
     "enclosure": 0.3,
     "tooling": 0.4,
     "labour": 0.08,
-    "total": 5.247,
+    "total": 5.4322,
     "d15_total": 6.75,
-    "delta_vs_d15": -1.503,
+    "delta_vs_d15": -1.3178,
     "bom_lines_not_priced": [
-     "C24,C25",
-     "LS1"
+     "C24,C25"
     ]
    }
   }
