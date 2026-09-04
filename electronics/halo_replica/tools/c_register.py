@@ -333,3 +333,193 @@ def fit_homography_dlt(P, Q):
     _, _, Vt = np.linalg.svd(A)
     H = Vt[-1].reshape(3, 3)
     return H / H[2, 2]
+
+
+# ------------------------------------------------------------------- pipeline
+def prepare(src_name, tgt_name, downsample=None):
+    sv, tv = resolve_view(src_name), resolve_view(tgt_name)
+    for v in (sv, tv):
+        if v['centre'] is None:
+            raise SystemExit("no board circle seed for %s - only catalogue views are "
+                             "supported (%s)" % (v['name'], ', '.join(VIEWS)))
+    if downsample is None:
+        downsample = max(1.0, round(sv['r']/tv['r'], 2))
+    src = Frame(sv, downsample=downsample)
+    tgt = Frame(tv, downsample=1.0,
+                crop=(int(tv['centre'][0]-1.12*tv['r']), int(tv['centre'][1]-1.12*tv['r']),
+                      int(tv['centre'][0]+1.12*tv['r']), int(tv['centre'][1]+1.12*tv['r'])))
+    return src, tgt, downsample
+
+
+def transfer_scale(H, src, tgt, tgt_px_per_mm):
+    """px/mm in the SOURCE image, carried across the registration.
+    A homography has no single scale, so this is reported as the mean over the
+    board area together with its spread - and the spread is the honest statement
+    that a tilted view has no one scale."""
+    ny, nx = tgt.img.shape
+    vals = []
+    for cy in np.linspace(0.2*ny, 0.8*ny, 9):
+        for cx in np.linspace(0.2*nx, 0.8*nx, 9):
+            if math.hypot(cx-tgt.cx, cy-tgt.cy) > 0.95*tgt.r:
+                continue
+            e = 1.0
+            x0, y0 = apply_H(H, cx, cy)
+            x1, y1 = apply_H(H, cx+e, cy)
+            x2, y2 = apply_H(H, cx, cy+e)
+            J = abs((x1-x0)*(y2-y0) - (x2-x0)*(y1-y0))      # source px per target px^2
+            vals.append(math.sqrt(J))
+    v = np.array(vals)
+    # source px per target px, times target px per mm, in SOURCE full-res px
+    return (v * tgt_px_per_mm * src.k), v
+
+
+def run_fit(a):
+    src, tgt, ds = prepare(a.source, a.target, a.downsample)
+    print("c_register fit")
+    print("  SIDE CONVENTION  FRONT = component side (Apple FCC caption 'MLB - Front')")
+    print("  SOURCE  %s  %s" % (src.view['name'], src.view['path']))
+    print("          face=%s  seed centre=(%.1f,%.1f) r=%.1f  pre-averaged /%.2f"
+          % (src.view['face'], src.view['centre'][0], src.view['centre'][1], src.view['r'], ds))
+    print("  TARGET  %s  %s" % (tgt.view['name'], tgt.view['path']))
+    print("          face=%s  seed centre=(%.1f,%.1f) r=%.1f  crop=(%d,%d)"
+          % (tgt.view['face'], tgt.view['centre'][0], tgt.view['centre'][1], tgt.view['r'],
+             tgt.ox, tgt.oy))
+    print("  METHOD  gradient-magnitude NCC, coarse similarity sweep -> %s" % a.model)
+
+    H, stages, coarse, mask = register(src, tgt, model=a.model)
+    for s in stages:
+        print("    %-11s NCC %.4f" % (s['model'], s['ncc']))
+    ncc = stages[-1]['ncc']
+
+    null = null_distribution(H, src, tgt, mask)
+    nvals = np.array([v for _, v in null])
+    print("  NULL CONTROL  same score at wrong rotations: max %.4f  mean %.4f  (n=%d)"
+          % (nvals.max(), nvals.mean(), len(nvals)))
+    margin = ncc/max(nvals.max(), 1e-9)
+    print("                fit / worst-case null = %.2fx  (floor %.2fx)" % (margin, a.min_margin))
+
+    lm, disc, tex = landmark_field(H, src, tgt, step=a.step, patch=a.patch, search=a.search)
+    ndisc = sum(disc.values())
+    print("  LANDMARKS  %d kept, %d discarded  %s"
+          % (len(lm), ndisc, ' '.join('%s=%d' % kv for kv in sorted(disc.items()))))
+    out = dict(tool='c_register.py', verb='fit',
+               side_convention="FRONT = component side (Apple FCC 'MLB - Front'); "
+                               "O'Flynn 'backside' is this FRONT",
+               source=dict(name=src.view['name'], path=src.view['path'], face=src.view['face'],
+                           note=src.view['note'], seed_centre=src.view['centre'],
+                           seed_r=src.view['r'], pre_average=ds, full_size=src.full_size),
+               target=dict(name=tgt.view['name'], path=tgt.view['path'], face=tgt.view['face'],
+                           note=tgt.view['note'], seed_centre=tgt.view['centre'],
+                           seed_r=tgt.view['r'], crop_origin=[tgt.ox, tgt.oy],
+                           px_per_mm=tgt.view['px_per_mm'],
+                           px_per_mm_basis=tgt.view['px_per_mm_basis']),
+               method='gradient-magnitude NCC; coarse similarity sweep then Nelder-Mead',
+               model=a.model, coarse=coarse, stages=stages, ncc=ncc,
+               null_control=dict(offsets_deg=[d for d, _ in null],
+                                 ncc=[v for _, v in null], max=float(nvals.max()),
+                                 mean=float(nvals.mean()), margin=float(margin),
+                                 min_margin_required=a.min_margin),
+               H_target_to_source_cropframe=H.tolist(),
+               landmarks=dict(kept=len(lm), discarded=disc, discarded_total=ndisc))
+
+    if len(lm) >= 8:
+        d = np.array([[l['dx'], l['dy']] for l in lm])
+        rms = float(np.sqrt((d**2).sum(axis=1).mean()))
+        out['landmarks']['residual_px_rms_in_sample'] = rms
+        print("  IN-SAMPLE landmark residual RMS %.3f px  (NOT a validation - see `validate`)" % rms)
+
+    verdict = PASS
+    why = []
+    if ncc < a.min_ncc:
+        verdict = CANNOT; why.append("alignment score %.4f below floor %.2f" % (ncc, a.min_ncc))
+    if margin < a.min_margin:
+        verdict = CANNOT; why.append("fit only %.2fx its own null (floor %.2f) - not "
+                                     "distinguishable from a wrong alignment" % (margin, a.min_margin))
+    if len(lm) < a.min_landmarks:
+        verdict = CANNOT; why.append("only %d usable landmarks (need %d)" % (len(lm), a.min_landmarks))
+    out['verdict'] = V[verdict]; out['why'] = why
+    if a.json_out:
+        with open(a.json_out, 'w') as fh: json.dump(out, fh, indent=1)
+        print("  wrote %s" % a.json_out)
+    print("  %s%s" % (V[verdict], (': ' + '; '.join(why)) if why else ''))
+    return verdict
+
+
+def run_validate(a):
+    """SPATIAL HOLD-OUT. Fit the transform on landmarks in one angular sector,
+    predict landmarks in the sector it never saw, measure the error there.
+    What would have to be true for this to disagree: if the registration were
+    only locally right - matching the sector it was fitted on and drifting
+    elsewhere - the held-out sector's residual would blow up while the in-sample
+    one stayed small. That is the disagreement this test can see."""
+    src, tgt, ds = prepare(a.source, a.target, a.downsample)
+    print("c_register validate  (spatial hold-out)")
+    print("  SOURCE %s   TARGET %s" % (src.view['path'], tgt.view['path']))
+    H, stages, coarse, mask = register(src, tgt, model=a.model)
+    lm, disc, _ = landmark_field(H, src, tgt, step=a.step, patch=a.patch, search=a.search)
+    print("  landmarks %d kept, %d discarded %s"
+          % (len(lm), sum(disc.values()), ' '.join('%s=%d' % kv for kv in sorted(disc.items()))))
+    if len(lm) < a.min_landmarks:
+        print("  CANNOT DETERMINE: %d landmarks, need %d" % (len(lm), a.min_landmarks))
+        return CANNOT
+
+    # each landmark's TRUE source correspondence, from the local shift
+    P = np.array([[l['tx']+l['dx'], l['ty']+l['dy']] for l in lm])       # target px (corrected)
+    Q = np.array([apply_H(H, l['tx'], l['ty']) for l in lm])             # source px
+    th = np.array([l['theta_deg'] for l in lm])
+
+    ppm = tgt.view['px_per_mm']
+    folds = []
+    K = a.folds
+    for i in range(K):
+        a0, a1 = 360.0*i/K, 360.0*(i+1)/K
+        held = (th >= a0) & (th < a1)
+        fit = ~held
+        if held.sum() < 4 or fit.sum() < 12:
+            folds.append(dict(sector=[a0, a1], n_held=int(held.sum()),
+                              verdict='CANNOT DETERMINE', why='too few landmarks in fold'))
+            continue
+        Hf = fit_homography_dlt(P[fit], Q[fit])
+        px, py = apply_H(Hf, P[held][:, 0], P[held][:, 1])
+        err = np.hypot(px-Q[held][:, 0], py-Q[held][:, 1]) / (src.k)      # source FULL-RES px
+        # express in TARGET px (the frame the ruler lives in) and in mm
+        src_px_per_tgt_px = math.sqrt(abs(np.linalg.det(Hf[:2, :2]))) * 1.0
+        err_tgt = err * src.k / (src_px_per_tgt_px * src.k) if src_px_per_tgt_px else np.nan
+        folds.append(dict(sector=[a0, a1], n_held=int(held.sum()), n_fit=int(fit.sum()),
+                          rms_source_px=float(np.sqrt((err**2).mean())),
+                          p95_source_px=float(np.percentile(err, 95)),
+                          rms_target_px=float(np.sqrt((err_tgt**2).mean())),
+                          rms_mm=float(np.sqrt((err_tgt**2).mean())/ppm) if ppm else None))
+    print("  %-16s %5s %10s %10s %9s" % ('held-out sector', 'n', 'RMS src px', 'RMS tgt px', 'RMS mm'))
+    ok = []
+    for f in folds:
+        if 'rms_mm' not in f:
+            print("  %5.0f-%-9.0f %5d   %s" % (f['sector'][0], f['sector'][1], f['n_held'], f.get('why', '')))
+            continue
+        ok.append(f)
+        print("  %5.0f-%-9.0f %5d %10.2f %10.3f %9.4f"
+              % (f['sector'][0], f['sector'][1], f['n_held'],
+                 f['rms_source_px'], f['rms_target_px'], f['rms_mm']))
+    verdict = PASS; why = []
+    if not ok:
+        verdict = CANNOT; why.append('no fold had enough landmarks')
+        worst = None
+    else:
+        worst = max(f['rms_mm'] for f in ok)
+        print("  WORST held-out fold: %.4f mm  (tolerance %.4f mm)" % (worst, a.tol_mm))
+        if worst > a.tol_mm:
+            verdict = FAIL
+            why.append("worst held-out RMS %.4f mm exceeds tolerance %.4f mm" % (worst, a.tol_mm))
+    out = dict(tool='c_register.py', verb='validate',
+               side_convention="FRONT = component side (Apple FCC 'MLB - Front')",
+               source=src.view['path'], target=tgt.view['path'],
+               scale_basis=tgt.view['px_per_mm_basis'], px_per_mm=ppm,
+               model=a.model, ncc=stages[-1]['ncc'], folds=folds,
+               worst_holdout_rms_mm=worst, tolerance_mm=a.tol_mm,
+               landmarks_kept=len(lm), landmarks_discarded=disc,
+               verdict=V[verdict], why=why)
+    if a.json_out:
+        with open(a.json_out, 'w') as fh: json.dump(out, fh, indent=1)
+        print("  wrote %s" % a.json_out)
+    print("  %s%s" % (V[verdict], (': ' + '; '.join(why)) if why else ''))
+    return verdict
