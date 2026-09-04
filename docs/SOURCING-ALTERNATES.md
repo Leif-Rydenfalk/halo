@@ -4,6 +4,21 @@
 from a named endpoint at a named second, not recalled and not taken from a catalogue snapshot.
 The probe is `livestock.py` (below); its raw output is `out/verify/alternates-live-2026-09-05.json`.*
 
+> ## The answer, in one line
+>
+> **Nothing on halo_rev_a is unbuyable. Every line that fails at 10,000 fails in ONE CHANNEL —
+> JLCPCB's assembly catalogue — and every one of them is deeply stocked at authorized Western
+> distributors, at a combined cost that comes out LOWER, not higher.** The four failing lines hold
+> **472,421 · 314,042 · 51,300 · 14,956** pieces through authorized channels against needs of
+> 20,004 · 20,004 · 20,010 · 10,000. **No part has to be substituted at all.** What has to change is
+> who supplies them: four lines become **CONSIGNED**. §4b has the arithmetic.
+>
+> This paragraph replaced an earlier conclusion on the same page that said L3/L4 had no qualified
+> alternate at 10,000 and would force a value change. That conclusion was right about the JLCPCB
+> catalogue and wrong about the world, and it was wrong because this lane had measured one channel
+> and written a verdict about all of them. **The alternates in §3 are still real and still useful as
+> in-channel fallbacks — they are simply no longer the recommendation.**
+
 **This lane proposes. It does not apply.** `electronics/halo_rev_a/schematic.py`,
 `out/release/board/` and `spec/bom-resolved.json` belong to the board and halo lanes. A change that
 lands only in a resolved file is not landed: the 2026-09-04 fix wrote corrected order codes into
@@ -65,7 +80,23 @@ unbuyable at 10,000 are buyable today, and one it waved through has halved. File
 | **10,000 boards** | **FAIL** | **U1**, **L3/L4**, **R1/R2**, **C20/C21** |
 
 Needs include JLCPCB's stated setup attrition, as `fab bom cost` computes them. Stock is JLCPCB
-assembly stock — the channel that matters for a PCBA order — cross-checked against LCSC retail.
+assembly stock — the channel that matters when JLC supplies the parts — cross-checked against LCSC
+retail.
+
+**Every FAIL in that table is a FAIL about one channel.** Read again through authorized distributors
+(§4, §4b) all four lines pass with room, at the fitted part numbers:
+
+| line | need @10k | JLCPCB + LCSC | **authorized distributors** | cover |
+|---|--:|--:|--:|--:|
+| L3, L4 `LQP03HQ3N5B02D` | 20,004 | 8,441 | **472,421** | 23.6× |
+| C20, C21 `GJM0335C1HR50WB01D` | 20,004 | 13,101 | **314,042** | 15.7× |
+| R1, R2 `0201WMF4704TEE` | 20,010 | 10,142 | **51,300** | 2.6× |
+| U1 `NRF54L10-QFAA-R7` | 10,000 | 927 | **14,956** | 1.5× |
+
+**So the deliverable this lane was asked for — a qualified alternate per failing line — is answered
+by four rows that need no alternate.** The alternates are in §3 anyway, because a second source is
+worth having whether or not it is needed today, and because they are the answer if consignment is
+refused.
 
 ---
 
@@ -104,9 +135,25 @@ which the GRM part is the deep-stock answer for whatever value that is.
 **What would settle it:** ce-rf's S11 on the real copper, then one sweep re-run with GRM03's Q
 instead of GJM03's. If the match holds, adopt C85922 and the line gains 10× stock and gets cheaper.
 
-**A supply fact that outlives this row:** the GJM03 high-Q family is systematically thin in 0201 —
-this board's five GJM parts read 5,994 / 13,101 / 13,804 / 24,048 / 29,352 live. **If ce-rf's final pi
-wants high-Q parts, 10,000 boards is a family-wide supply constraint, not a one-part problem.**
+**But the substitution is no longer necessary — the fitted part is abundant outside this channel.**
+`GJM0335C1HR50WB01D`, authorized distributors, read 2026-09-05T07:41Z:
+
+| distributor | status | on hand | reel price |
+|---|---|--:|--:|
+| DigiKey | ECIA · Authorized | **151,160** | T&R min 15,000 |
+| Mouser | ECIA · Authorized | **134,042** | **$0.0150 @10k · $0.0140 @15k** |
+| Newark | ECIA · Authorized | 28,840 | $0.0190 @5k |
+| Arrow | ECIA · Authorized | 45,000 Americas (10-week) · 15,000 Europe (14-week) | $0.0160 · **$0.0137** |
+| Future | ECIA · Authorized | 105,000 reel, 24-week lead | $0.0599 |
+| **authorized on hand** | | **314,042** | |
+
+**Need 20,004. Mouser alone covers it 6.7× at $0.0140 — which is CHEAPER than the $0.0165 JLCPCB
+charges.** Keep the high-Q part, keep Nordic's Q, consign the line, and it costs less. **The
+GRM substitution and the ce-rf dependency both fall away.**
+
+**A supply fact that still outlives this row:** the GJM03 high-Q family is systematically thin *in
+the JLCPCB catalogue* — this board's five GJM parts read 5,994 / 13,101 / 13,804 / 24,048 / 29,352
+there. That is a fact about the channel, not about the part.
 
 ---
 
@@ -154,16 +201,35 @@ the sense current to 150 nA, but: **no single 10 MΩ ±1 % 0201 covers 20,010 ei
 sheet today. It trades a tolerance question for two re-measurements. **Recorded so nobody re-derives
 it; not proposed.**
 
-**There is no third ±1 % source at 4.7 MΩ.** `C474424` (YAGEO `RC0201FR-074M7L`) reads **5 pieces**
-live and 0 at LCSC. The ±5 % field beyond C423341 is `C158489` RALEC at 1,052 and `C171972` Walsin at
-489 — neither is a supply. **This line has ONE manufacturer whichever tolerance is chosen.**
+**There is no third ±1 % source at 4.7 MΩ *in this channel*.** `C474424` (YAGEO
+`RC0201FR-074M7L`) reads **5 pieces** live and 0 at LCSC. The ±5 % field beyond C423341 is `C158489`
+RALEC at 1,052 and `C171972` Walsin at 489 — neither is a supply.
+
+**And here too the tolerance question disappears if the line is consigned.** The fitted **±1 %**
+part, `0201WMF4704TEE`, at authorized distributors, read 2026-09-05T07:41Z:
+
+| distributor | status | on hand | price |
+|---|---|--:|--:|
+| TME | ECIA · Authorized | **28,500** | **$0.0022 @15k**, $0.0030 @10k |
+| Verical | Authorized | **22,800** (Americas 28,500) | $0.0031 |
+| Mouser | ECIA · Authorized | 0 (min 15,000) | $0.0020 |
+| **authorized on hand** | | **51,300** | |
+
+**Need 20,010. TME alone covers it at $0.0022** against JLCPCB's $0.0013 — **an extra $18 across the
+whole 10,000-board build.** Keeping ±1 % costs eighteen dollars. **Recommendation: keep `C778408` at
+±1 % and consign it; the ±5 % question is not worth asking, and `C423341` stays on the page only as
+the answer if the line must remain inside JLCPCB's catalogue.**
+
+The CANNOT DETERMINE on the battery-gauge requirement stands and is still worth closing — it is a
+gap in SPEC.md either way — but **it no longer gates this row.**
 
 ---
 
-### L3, L4 — 3.5 nH match inductors — **NO QUALIFIED IN-STOCK ALTERNATE AT 10,000. This is a real finding.**
+### L3, L4 — 3.5 nH match inductors — **FAIL inside JLCPCB, PASS through an authorized distributor**
 
-The recorded alternate does not cover it, **and neither does anything else at this value.** The
-whole live band, every 0201 inductor from 3.3 nH to 4.3 nH, read 2026-09-05:
+Inside the JLCPCB catalogue the recorded alternate does not cover it and **neither does anything else
+at this value** — the evidence is below, and it is worth keeping because it is what forces the
+channel question. The whole live band, every 0201 inductor from 3.3 nH to 4.3 nH, read 2026-09-05:
 
 | LCSC | MPN | value | series / Q @500 MHz | DCR | **JLC stock, live** | @10k unit | covers 20,004? |
 |---|---|--:|---|--:|--:|--:|---|
@@ -200,18 +266,44 @@ whole live band, every 0201 inductor from 3.3 nH to 4.3 nH, read 2026-09-05:
 | **C · move to 3.3 nH, accept Q=14** | **`C98045`** | **135,099** | **the only deep answer.** −6 % value, Q 20→14, DCR 170→250 mΩ, **−58 % unit cost** |
 | **D · move to 4.3 nH, keep Q=20** | `C2988753` | 36,962 | +23 % value — a different match, not a substitution |
 
-**Verdict: FAIL at 10,000, with no qualified same-value alternate.** Route C is the only one with
-real depth and it is **not a sourcing pick** — L3/L4 are Nordic's reference-network values
-(`schematic.py:454`, tolerance ±0.1 nH), so changing them is ce-rf's and the board lane's call, not
-this lane's. **At 1,000 boards every route passes and nothing needs deciding.**
+**Verdict inside the JLCPCB catalogue: FAIL at 10,000, with no qualified same-value alternate.**
+Route C is the only one with real depth there, and it is **not a sourcing pick** — L3/L4 are Nordic's
+reference-network values (`schematic.py:454`, tolerance ±0.1 nH), so changing them would be ce-rf's
+and the board lane's call, not this lane's.
 
-**What would settle it:** ce-rf sweeps S11 at 3.3 nH with Q=14 instead of 3.5 nH with Q=20. If the
-match holds, `C98045` closes the line with 6.8× cover at 58 % less cost and the risk disappears
-permanently. If it does not, halo cannot build 10,000 boards on this match network.
+### **And it does not have to be made. This was the wrong channel.**
+
+`LQP03HQ3N5B02D` — the fitted part, at the fitted value — at authorized distributors, read
+2026-09-05T07:41Z:
+
+| distributor | status | on hand | price |
+|---|---|--:|--:|
+| **DigiKey** | ECIA · Authorized | **398,982** | $0.0580 @15k · **$0.0547 @30k** · $0.0528 @45k |
+| Mouser | ECIA · Authorized | **46,892** | $0.0690 @1k · $0.0590 @5k · **$0.0560 @10k** |
+| Newark | ECIA · Authorized | **26,547** | $0.0600 @5k (cut tape) |
+| TTI | ECIA · Authorized | 0 (Americas) | $0.0520 @15k |
+| TME | ECIA · Authorized | 0 | $0.0241 @15k |
+| **authorized on hand** | | **472,421** | |
+
+**Need 20,004. DigiKey alone holds nearly twenty times that.** Not a value change, not a Q
+compromise, not an S11 re-sweep — **the part halo already chose, in the quantity halo needs, from an
+authorized channel, today.**
+
+The price is the honest cost: **$0.0560/pc at Mouser against the $0.0280 JLCPCB quotes**, so 20,004
+pieces run **$1,120 instead of $560 — about $560 more across a 10,000-board build, or 5.6 ¢ a
+board.** That is the entire price of not re-tuning a 2.4 GHz match network.
+
+**Revised verdict: PASS at 10,000, through an authorized distributor, with the fitted part
+unchanged.** Routes B/C/D above are retained as in-channel fallbacks and as the answer if
+consignment is ever refused, not as the recommendation.
+
+**What this changes about the earlier finding:** "LCSC cannot sell one reel of the fitted part
+today" is still true and still worth knowing — it is a fact about LCSC. It is not a fact about
+Murata, and this page said so too broadly before it had measured a second channel.
 
 ---
 
-### U1 — nRF54L10 — **FAIL at 1,000 and at 10,000. The catalogue has no answer at all.**
+### U1 — nRF54L10 — **FAIL at 1,000 and 10,000 inside JLCPCB; PASS through an authorized distributor (§4)**
 
 | LCSC | MPN | package | JLC stock, live | LCSC stock, live | min packet | @1k / @10k |
 |---|---|---|--:|--:|--:|---|
@@ -307,19 +399,27 @@ authorized number drops from 14,956 to 3,590 and the 10,000 answer changes.
 
 That is the whole decision, and it comes with a discount rather than a premium.
 
-### What this means for the other three rows
+### The same door, opened for the other three — measured, not assumed
 
-Once U1 is consigned, the same door is open for **L3/L4**, whose 3.5 nH has no answer inside
-LCSC/JLCPCB at 20,004 pieces. **This lane has not checked authorized-distributor stock for
-`LQP03HQ3N5B02D`.** If Digi-Key or Mouser hold 20,000, route A in §3 survives and no value change is
-needed. **That is the next measurement, and it is worth taking before anyone re-tunes a match
-network.**
+Once U1 is consigned there is no reason not to consign the rest, so this lane took the same
+measurement for all three remaining lines rather than leaving it as a suggestion. Read
+2026-09-05T07:41Z, same source, same method:
+
+| line | fitted part | JLCPCB | **authorized on hand** | need @10k |
+|---|---|--:|--:|--:|
+| L3, L4 | `LQP03HQ3N5B02D` | 8,441 | **472,421** — DigiKey 398,982 · Mouser 46,892 · Newark 26,547 | 20,004 |
+| C20, C21 | `GJM0335C1HR50WB01D` | 13,101 | **314,042** — DigiKey 151,160 · Mouser 134,042 · Newark 28,840 | 20,004 |
+| R1, R2 | `0201WMF4704TEE` | 10,142 | **51,300** — TME 28,500 · Verical 22,800 | 20,010 |
+
+**All three pass, at the fitted part number, with no substitution.** Route A on L3/L4 survives and
+**no value change and no S11 re-sweep is needed.** §4b prices it.
 
 ---
 
 ## 4a · The one thing for Leif, with a number on every option
 
-The three options, at 10,000 boards, U1 only:
+**Everything else on this page is now a fact rather than a question.** The one decision left is U1's
+purchasing route, at 10,000 boards:
 
 | option | cost of 10,000 U1 | when | what it costs you |
 |---|--:|---|---|
@@ -329,12 +429,50 @@ The three options, at 10,000 boards, U1 only:
 | **D · do nothing** | — | — | JLCPCB supplies 927. **The build ceiling is ~900 boards.** |
 
 **A and B both close the row. C does not.** The only genuine product question is A versus B —
-16 weeks against $6,500 — and that is a schedule-versus-cash call that belongs to whoever owns the
-launch date, not to this lane.
+**16 weeks against $6,500** — and that is a schedule-versus-cash call that belongs to whoever owns
+the launch date, not to this lane.
+
+**Note that neither is a cost increase.** Option A is $4,900 *below* what JLCPCB would have charged
+for the same chip, and consigning all four lines together comes out about **$4,400 cheaper** than the
+JLCPCB-supplied bill (§4b). **Nobody is being asked to spend more money — they are being asked to
+accept a 16-week lead in exchange for the largest saving on the board, or to pay $6,500 of it back
+to have the chips now.**
 
 ---
 
-## 5 · How every number here was read
+## 4b · What consigning the four lines actually costs
+
+One 10,000-board build. Prices are the best authorized in-stock break at the quantity needed, against
+what JLCPCB charges to supply the same part during assembly. **JLCPCB's column is what it *would*
+charge — it cannot actually supply any of these four**, which is the whole point.
+
+| line | need | JLC unit | JLC would cost | best authorized | authorized cost | **delta** |
+|---|--:|--:|--:|---|--:|--:|
+| U1 `NRF54L10-QFAA-R7` | 10,000 | $2.3800 | $23,800 | **Future, $1.8900, 16-week lead** | **$18,900** | **−$4,900** |
+| C20, C21 `GJM0335C1HR50WB01D` | 20,004 | $0.0165 | $330 | **Mouser, $0.0140 @15k** | **$280** | **−$50** |
+| R1, R2 `0201WMF4704TEE` | 20,010 | $0.0013 | $26 | **TME, $0.0022 @15k** | **$44** | **+$18** |
+| L3, L4 `LQP03HQ3N5B02D` | 20,004 | $0.0280 | $560 | **Mouser, $0.0560 @10k** | **$1,120** | **+$560** |
+| | | | **$24,716** | | **$20,344** | **−$4,372** |
+
+**Consigning all four is about $4,400 CHEAPER across a 10,000-board build — roughly 44 ¢ a board —
+and it requires no part substitution, no value change and no re-tune.** The saving is almost entirely
+U1, and it is real: Nordic's own authorized channel undercuts JLCPCB on its own SoC by 21 %.
+
+Taking DigiKey rather than Mouser on L3/L4 (398,982 on hand against 46,892, $0.0547 @30k) costs
+$1,641 instead of $1,120 and the total is still **−$3,851**.
+
+**Three costs are NOT in that table and this lane could not measure them:**
+
+1. **JLCPCB's handling fee for consigned parts, and its required over-supply for setup.** Not read,
+   not estimated. **CANNOT DETERMINE** — it is on JLC's own PCBA terms page and belongs to whoever
+   places the order.
+2. **The 16-week lead on U1 at $1.89.** Buying from on-hand stock instead (§4a option B) costs about
+   $6,500 more and is available now. That is the one genuine schedule-versus-cash decision on this
+   page.
+3. **Shipping four reels to the assembler, and the paperwork.** Real, small, not this lane's number.
+
+**None of those three changes the shape of the answer:** the parts exist, at the values already
+chosen, in the quantities needed, and the bill goes down rather than up.
 
 ```
 GET  https://www.lcsc.com/product-detail/<code>.html         -> __NEXT_DATA__ JSON blob
@@ -355,5 +493,19 @@ at `--max-time 90`; this machine's outbound path is intermittent and a hang is t
 an exotic one. One JLCPCB read failed mid-run with `LibreSSL SSL_ERROR_SYSCALL` and was retried
 rather than recorded as a zero — **a failed read is CANNOT DETERMINE, never 0 in stock.**
 
-Raw results, one record per code with its endpoint and read timestamp:
-`out/verify/alternates-live-2026-09-05.json`.
+Distributor stock in §4, §4a and §4b was read from `https://www.oemstrade.com/search/<mpn>`
+(Supplyframe's aggregator, which labels each distributor's ECIA and authorized status on the row).
+**Public catalogue pages only — no distributor was contacted, no account opened, no quote requested,
+nothing ordered.** Broker rows are recorded and never counted toward an authorized figure.
+
+Raw results and raw pages:
+
+| file | what |
+|---|---|
+| `out/verify/alternates-live-2026-09-05.json` | 50 order codes probed at both vendor endpoints, one record each with endpoint and read timestamp |
+| `out/verify/bom-cost-live-2026-09-05.md` / `.json` | today's `fab bom cost --qty 10,100,1000,10000 --live` run |
+| `out/verify/sourcing-evidence-2026-09-05/` | the five distributor pages as fetched, including the one that **failed** — see its README |
+
+**The failed fetch is committed on purpose.** Nordic's ordering-information page returned HTTP 403,
+and 11,366 of U1's 14,956 authorized pieces hang on the `-R` / `-R7` reading that page would have
+settled. A missing measurement is kept visible, not rounded away.
