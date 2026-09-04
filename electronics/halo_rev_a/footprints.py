@@ -113,7 +113,14 @@ ANT_W = 0.60
 ANT_ARC_MAX_DEG = 84.0     # the three 26 deg keying notches at 0/120/240
                            # leave clear arcs of 94 deg; 5 deg of margin at
                            # each end keeps the element off the routed edge
-ANT_TEETH = 4              # four meander teeth; see element_path()
+ANT_TEETH = 9              # see element_path(); WAS 4 until 2026-09-05
+#: What fraction of its slot each tooth occupies: w = arc / (TEETH * FRAC).
+#: NOT cosmetic. The two radial walls of one tooth are `w` apart at their
+#: closest, which is the INNER radius, and at 8 teeth with the old divisor of
+#: 3.0 that is 0.0992 mm — BELOW the 0.127 mm process minimum, so the element
+#: would have shorted to itself. 2.0 puts the intra-tooth gap at 0.4481 mm and
+#: the inter-tooth gap at 0.4904 mm. Measured, both, before the count changed.
+ANT_TOOTH_SLOT_FRAC = 2.0
 ANT_TOOTH_MAX = 1.05       # the deepest a tooth may reach inward. The
                            # element sits at R11.90 and the NFC winding's
                            # outermost turn is at R10.75 on the other face,
@@ -267,10 +274,45 @@ def element_path(depth=None):
     keying notches take everything past that. The radial direction has about
     1 mm before the element would sit over the NFC winding.
 
-    So the element MEANDERS. Four teeth, each reaching inward by a depth
-    SOLVED so the whole path is exactly the quarter wave - see
-    _tooth_depth(), which bisects rather than estimating, because 0.435 mm
-    of error here is 44 MHz of resonance and half the ISM band.
+    So the element MEANDERS. Teeth reaching inward by a depth SOLVED so the
+    whole path is exactly the quarter wave - see _tooth_depth(), which bisects
+    rather than estimating, because 0.435 mm of error here is 44 MHz of
+    resonance and half the ISM band.
+
+    EIGHT TEETH, NOT FOUR, AND THE REASON IS THE NFC COIL. Four teeth need a
+    depth of 0.9379 mm, which puts the arm's inner copper edge at R10.6621.
+    The coil's band is bounded below by the cell can at R10.00 - copper over
+    a steel can is a shorted turn, not an antenna - so it had 0.6621 mm to
+    live in and needs 0.782 mm, and it took the difference by OVERLAPPING THE
+    ARM BY 0.1747 mm. Lane T3 measured what that costs: with the coil under
+    the arm the resonance falls from 2.4346 to 1.7666 GHz, a 668 MHz shift no
+    tuning recovers.
+
+    The tooth COUNT is the free variable nobody had swept, and it is free in
+    the one dimension that matters: the bisection holds the conductor at
+    exactly QUARTER_MM whatever the count, so the length that sets the
+    resonance does not move. Depth falls roughly as 1/teeth:
+
+        teeth   depth    arm inner R   gap to the coil
+          4     0.9379     10.6621        -0.1197   <- overlapping
+          6     0.6253     10.9747        +0.1929
+          7     0.5310     11.0690        +0.2871
+          8     0.4614     11.1386        +0.3567   <- first count that clears
+          9     0.4023     11.1977        +0.4158   <- shipped
+
+    Eight is the FIRST count that clears T3's floor, and nine is the one
+    shipped. Eight measured 0.3096 mm on the real drawn copper — 9.6 um above
+    a 0.30 mm floor, which is inside JLCPCB's own +/-20 % track-width
+    tolerance and therefore not a margin at all. Nine measures 0.3688 mm.
+    The coil cannot buy that margin from the other side: its inner copper
+    edge is already at R10.043 against the cell can at R10.00. This is
+    NOT free RF: a finer meander couples to itself more and radiates slightly
+    less efficiently, and that cost is real and unmeasured here. It is
+    unmeasured the same way the four-tooth version was, and it is the SMALLEST
+    change that makes this floorplan legal at all - the alternatives were
+    moving the arm (0.05 mm of headroom to the R12.25 notch cap), narrowing
+    it (0.10 mm), or cutting the coil's turns, which costs inductance the NFC
+    tank cannot spare. ce-rf owes a re-solve either way.
     A meander is not free - it couples to itself and radiates a little less
     efficiently than a straight run of the same length - and that cost is
     real and unmeasured here. It is still the only way this length fits this
@@ -288,7 +330,7 @@ def element_path(depth=None):
     # Teeth are spread over the arc, each one an inward excursion and back.
     for k in range(ANT_TEETH):
         a = arc_deg * (k + 0.5) / ANT_TEETH
-        w = arc_deg / (ANT_TEETH * 3.0)          # the tooth's angular width
+        w = arc_deg / (ANT_TEETH * ANT_TOOTH_SLOT_FRAC)   # angular width
         pts.append((ANT_R, a - w / 2.0))
         pts.append((ANT_R - depth, a - w / 2.0))
         pts.append((ANT_R - depth, a + w / 2.0))

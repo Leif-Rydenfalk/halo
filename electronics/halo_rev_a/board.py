@@ -329,6 +329,55 @@ b.keepout(outline=ANT_CLEAR, layers=["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
               "is a short circuit. F.Cu is deliberately NOT in this list - "
               "the antenna itself lives there.")
 
+# 4b. THE ARM'S SHADOW. The rule above allows TRACKS, and it has to: the
+#     antenna is itself a track in that sector, and cepcb's keepout() -- like
+#     KiCad's rule areas -- has no per-net exception, so "forbid tracks" would
+#     forbid the element. That exemption is far too broad, and it is the hole
+#     the whole 2026-09-05 antenna defect walked through: NOTHING stopped the
+#     NFC coil, a signal net, or the autorouter's output from lying directly
+#     under the radiating arm. Measured before this existed: NFC1 overlapping
+#     the arm by 0.1747 mm, and after one autoroute XL1 at 0.2630 mm and
+#     PIEZO_DRV at 0.3429 mm.
+#
+#     THE FIX NEEDS NO NET EXCEPTION, because of where the antenna is not.
+#     The element lives on F.Cu ALONE. On In1.Cu, In2.Cu and B.Cu the antenna
+#     has no copper at all, so a keep-out there can forbid EVERYTHING without
+#     forbidding the element -- and those three layers are exactly where the
+#     668 MHz comes from, since the coupling that matters is vertical through
+#     0.60 mm of laminate, not lateral along F.Cu.
+#
+#     The band is the arm's own radial extent grown by lane T3's measured
+#     0.30 mm floor: they solved the Ø25.2 mm coil at a 0.30 mm gap to
+#     2.4321 GHz, in band, and the same coil under the arm to 1.7666 GHz.
+ANT_SHADOW_GAP = 0.30          # T3, 2026-09-05: the smallest gap ever solved
+_arm_in = fpg.ANT_R - fpg.ANT_TOOTH_DEPTH - fpg.ANT_W / 2.0
+_arm_out = fpg.ANT_R + fpg.ANT_W / 2.0
+ANT_SHADOW = sector_polygon(_arm_in - ANT_SHADOW_GAP,
+                            min(_arm_out + ANT_SHADOW_GAP, R - 0.05),
+                            ANT_SECTOR_MID, ANT_SECTOR_ARC + 6.0)
+# PADS ARE EXCLUDED, AND THE REASON IS ON THE RECORD RATHER THAN IMPLIED.
+# With pads=True this rule's first run reported exactly one hit: BT1.2, the
+# cell's negative contact land (GND, B.Cu, 23.046/7.200), sitting directly
+# under the arm. That land's position is set by where a CR2032's rim actually
+# touches, so it is a mechanical fact and not a routing choice - lane M's and
+# lane C's, not this one's. A rule that is permanently red for something
+# nobody intends to change is a rule people learn to skip, which is how the
+# original keep-out's blanket tracks=False exemption survived. So this
+# governs what this lane and the autorouter CAN move - tracks, vias, pours -
+# and BT1.2 is carried in docs/VERIFICATION-DEBT.md as RF copper the antenna
+# case must model, which is where it actually belongs: ce-rf's own
+# halo-rev-a-2g4 has `passive_copper: []` and models neither it nor the coil.
+b.keepout(outline=ANT_SHADOW, layers=["In1.Cu", "In2.Cu", "B.Cu"],
+          tracks=True, vias=True, pads=False, pours=True, footprints=False,
+          scope="board", name="antenna-arm-shadow",
+          why="NOTHING under the 2.4 GHz arm on any layer the arm is not on. "
+              "R%.4f to R%.4f is the arm's own copper grown by the 0.30 mm "
+              "gap lane T3 solved as the working point; the same coil under "
+              "the arm moves the resonance 668 MHz and no tuning recovers it. "
+              "The element is on F.Cu only, so this forbids everything on the "
+              "other three layers and still cannot forbid the element."
+              % (_arm_in - ANT_SHADOW_GAP, _arm_out + ANT_SHADOW_GAP))
+
 
 # ==========================================================================
 # 4. PLACEMENT

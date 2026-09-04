@@ -72,6 +72,26 @@
    "hits": [],
    "verdict": "CANNOT DETERMINE",
    "note": "host-scope: this region constrains whatever the board is fitted INTO, and 57.089 mm2 of the board's 523.660 mm2 lies inside it, so it cannot be graded from this file. Not enforced as a KiCad rule area either \u2014 it would fail every pad on the board for a rule that does not govern it."
+  },
+  {
+   "name": "antenna-arm-shadow",
+   "layers": [
+    "In1.Cu",
+    "In2.Cu",
+    "B.Cu"
+   ],
+   "forbids": [
+    "tracks",
+    "vias",
+    "pours"
+   ],
+   "scope": "board",
+   "contained_in_board": true,
+   "area_mm2": 30.849,
+   "why": "NOTHING under the 2.4 GHz arm on any layer the arm is not on. R10.8920 to R12.5000 is the arm's own copper grown by the 0.30 mm gap lane T3 solved as the working point; the same coil under the arm moves the resonance 668 MHz and no tuning recovers it. The element is on F.Cu only, so this forbids everything on the other three layers and still cannot forbid the element.",
+   "outline_error": null,
+   "hits": [],
+   "verdict": "PASS"
   }
  ],
  "hits": 0,
