@@ -791,6 +791,38 @@ for _z in b._pcb.Zones():
 
 
 # ---------------------------------------------------------------------------
+# CARRY THE SCHEMATIC'S FIELDS ONTO THE BOARD
+# ---------------------------------------------------------------------------
+# `Board.place()` puts a land pattern down; it does not bring the part's
+# VALUE or its order code with it, because those live on the schematic. The
+# consequence was silent and total: `fab jlc` reads the .kicad_pcb, found no
+# LCSC field on any footprint, and returned CANNOT DETERMINE for 42 of 44
+# placed parts - every order code was on the sheet and not one of them
+# reached the bill of materials. The BOM's Comment column was the footprint
+# name repeated back, which is not a part number either.
+#
+# So the schematic is imported and its fields are copied across. That also
+# makes the schematic the single place a part number is typed, which is the
+# point.
+import schematic as sch_mod                                       # noqa: E402
+
+_sch = sch_mod.build()
+_fielded, _valued = 0, 0
+for _ref, _part in _sch.parts.items():
+    if _ref not in b.refs:
+        continue
+    _fp = b.refs[_ref]
+    if _part.value:
+        _fp.SetValue(str(_part.value))
+        _valued += 1
+    for _k, _v in (_part.fields or {}).items():
+        if _v in (None, ""):
+            continue
+        _fp.SetField(str(_k), str(_v))
+        _fielded += 1
+
+
+# ---------------------------------------------------------------------------
 # SILKSCREEN OFF, and it is a decision rather than a tidy-up. 51 reference
 # designators do not fit on a Ø26 mm disc: KiCad's DRC reported 45 of them
 # over copper and 7 overlapping each other, and every one was true. A
@@ -998,6 +1030,15 @@ def report():
                 paste += 1
             elif not pad.GetNetname():
                 real.append("%s.%s" % (fp.GetReference(), pad.GetNumber()))
+    print("\n--- schematic fields carried onto the board ---")
+    print("  %d values and %d fields copied across %d parts"
+          % (_valued, _fielded, len(_sch.parts)))
+    _missing = [r for r in sorted(b.refs)
+                if r in _sch.parts
+                and not (_sch.parts[r].fields or {}).get("LCSC Part #")]
+    print("  placed parts with NO LCSC Part # field: %d%s"
+          % (len(_missing), ("  " + ", ".join(_missing)) if _missing else ""))
+
     print("\n--- test access, placed by search ---")
     for ref, rr, deg in _tp_placed:
         print("  %-5s r=%5.2f  %5.1f deg" % (ref, rr, deg))
@@ -1115,6 +1156,10 @@ if __name__ == "__main__":
     b.fill_zones()
     path = b.save(OUT)
     write_fab_rules(path)
+    # LAST, because `bin/sch build` overwrites this file with an 8-library
+    # version of its own and anything written earlier is discarded.
+    _n = fpg.write_fp_lib_table(os.path.dirname(path))
+    print("fp-lib-table: %d libraries (KiCad's %d + halo)" % (_n, _n - 1))
     report()
     verify_rules(path)
     print("\nwrote", path)

@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_sch")
-		(date "2026-09-04T17:58:39")
+		(date "2026-09-04T18:12:04")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -171,7 +171,7 @@
 			(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
 			(fields
 				(field
-					(name "LCSC") "C7498149")
+					(name "LCSC Part #") "C7498149")
 				(field
 					(name "MPN") "CR2032")
 				(field
@@ -197,7 +197,7 @@
 				(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C7498149")
 			)
 			(property
@@ -266,7 +266,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "CL03A104KA3NNNC")
 				(field
@@ -294,7 +294,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -368,7 +368,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "CL03A104KA3NNNC")
 				(field
@@ -396,7 +396,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -470,7 +470,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "CL03A104KA3NNNC")
 				(field
@@ -498,7 +498,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -572,7 +572,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "CL03A104KA3NNNC")
 				(field
@@ -600,7 +600,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -674,7 +674,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C2827888")
+					(name "LCSC Part #") "C2827888")
 				(field
 					(name "MPN") "CL03A225MQ3CSNC")
 				(field
@@ -700,7 +700,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C2827888")
 			)
 			(property
@@ -770,7 +770,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C2827888")
+					(name "LCSC Part #") "C2827888")
 				(field
 					(name "MPN") "CL03A225MQ3CSNC")
 				(field
@@ -796,7 +796,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C2827888")
 			)
 			(property
@@ -866,7 +866,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C2827888")
+					(name "LCSC Part #") "C2827888")
 				(field
 					(name "MPN") "CL03A225MQ3CSNC")
 				(field
@@ -892,7 +892,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C2827888")
 			)
 			(property
@@ -962,7 +962,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C2827888")
+					(name "LCSC Part #") "C2827888")
 				(field
 					(name "MPN") "CL03A225MQ3CSNC")
 				(field
@@ -988,7 +988,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C2827888")
 			)
 			(property
@@ -1058,7 +1058,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C15525")
+					(name "LCSC Part #") "C15525")
 				(field
 					(name "MPN") "CL05A106MQ5NUNC")
 				(field
@@ -1084,7 +1084,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C15525")
 			)
 			(property
@@ -1154,7 +1154,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C15525")
+					(name "LCSC Part #") "C15525")
 				(field
 					(name "MPN") "CL05A106MQ5NUNC")
 				(field
@@ -1180,7 +1180,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C15525")
 			)
 			(property
@@ -1250,7 +1250,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C15525")
+					(name "LCSC Part #") "C15525")
 				(field
 					(name "MPN") "CL05A106MQ5NUNC")
 				(field
@@ -1276,7 +1276,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C15525")
 			)
 			(property
@@ -1346,7 +1346,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C15525")
+					(name "LCSC Part #") "C15525")
 				(field
 					(name "MPN") "CL05A106MQ5NUNC")
 				(field
@@ -1372,7 +1372,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C15525")
 			)
 			(property
@@ -1442,7 +1442,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1523")
+					(name "LCSC Part #") "C1523")
 				(field
 					(name "MPN") "CL03C101JB3NNNC")
 				(field
@@ -1468,7 +1468,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1523")
 			)
 			(property
@@ -1802,7 +1802,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1E1R5WB01")
 				(field
@@ -1830,7 +1830,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -1904,7 +1904,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1E1R5WB01")
 				(field
@@ -1932,7 +1932,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -2006,7 +2006,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1ER50WB01")
 				(field
@@ -2032,7 +2032,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -2102,7 +2102,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1ER50WB01")
 				(field
@@ -2128,7 +2128,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -2198,7 +2198,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1E1R5WB01")
 				(field
@@ -2226,7 +2226,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -2300,7 +2300,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1568")
+					(name "LCSC Part #") "C1568")
 				(field
 					(name "MPN") "GJM0335C1E1R5WB01")
 				(field
@@ -2328,7 +2328,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1568")
 			)
 			(property
@@ -2402,7 +2402,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "0201 C0G 1.1nF")
 				(field
@@ -2428,7 +2428,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -2498,7 +2498,7 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC") "C1546")
+					(name "LCSC Part #") "C1546")
 				(field
 					(name "MPN") "0201 C0G 1.1nF")
 				(field
@@ -2524,7 +2524,7 @@
 				(description "Unpolarized capacitor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1546")
 			)
 			(property
@@ -2594,7 +2594,7 @@
 			(description "Fiducial Marker")
 			(fields
 				(field
-					(name "LCSC") "n/a - bare copper")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "fiducial 1 of 2 - global datum. Placed at a different radius from FID2 so the pair is ASYMMETRIC and resolves rotation as well as position.")
 				(field
@@ -2610,8 +2610,8 @@
 				(description "Fiducial Marker")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - bare copper")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -2656,7 +2656,7 @@
 			(description "Fiducial Marker")
 			(fields
 				(field
-					(name "LCSC") "n/a - bare copper")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "fiducial 2 of 2 - the asymmetric partner")
 				(field
@@ -2672,8 +2672,8 @@
 				(description "Fiducial Marker")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - bare copper")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -2718,7 +2718,7 @@
 			(description "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
 			(fields
 				(field
-					(name "LCSC") "n/a - pads only, no part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "NO CONNECTOR IS FITTED. These are pogo-pin pads, which cost 0 mm of height - the only debug interface that fits SPEC.md §4's 1.5 mm budget.")
 				(field
@@ -2734,8 +2734,8 @@
 				(description "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - pads only, no part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -2796,7 +2796,7 @@
 			(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			(fields
 				(field
-					(name "LCSC") "n/a - castellations, no part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "8 SMD LANDS just inboard of the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
 				(field
@@ -2812,8 +2812,8 @@
 				(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - castellations, no part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -2880,7 +2880,7 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC") "C1046")
+					(name "LCSC Part #") "C1046")
 				(field
 					(name "MPN") "MLZ1608M4R7WT000")
 				(field
@@ -2906,7 +2906,7 @@
 				(description "Inductor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1046")
 			)
 			(property
@@ -2976,7 +2976,7 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC") "C1046539")
+					(name "LCSC Part #") "C1046539")
 				(field
 					(name "MPN") "LQP03HQ2N7B02D")
 				(field
@@ -3004,7 +3004,7 @@
 				(description "Inductor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1046539")
 			)
 			(property
@@ -3078,7 +3078,7 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC") "C1046539")
+					(name "LCSC Part #") "C1046539")
 				(field
 					(name "MPN") "LQP03HQ2N7B02D")
 				(field
@@ -3106,7 +3106,7 @@
 				(description "Inductor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1046539")
 			)
 			(property
@@ -3180,7 +3180,7 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC") "C1046539")
+					(name "LCSC Part #") "C1046539")
 				(field
 					(name "MPN") "LQP03HQ2N7B02D")
 				(field
@@ -3208,7 +3208,7 @@
 				(description "Inductor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C1046539")
 			)
 			(property
@@ -3282,7 +3282,7 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC") "C25076")
+					(name "LCSC Part #") "C25076")
 				(field
 					(name "MPN") "0201WMJ0000TEE")
 				(field
@@ -3308,7 +3308,7 @@
 				(description "Inductor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25076")
 			)
 			(property
@@ -3377,7 +3377,7 @@
 			(description "Buzzer, polarized")
 			(fields
 				(field
-					(name "LCSC") "NOT IN CATALOGUE")
+					(name "LCSC Part #") "NOT IN CATALOGUE")
 				(field
 					(name "MPN") "7BB-20-3")
 				(field
@@ -3398,7 +3398,7 @@
 				(description "Buzzer, polarized")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "NOT IN CATALOGUE")
 			)
 			(property
@@ -3456,7 +3456,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25765")
+					(name "LCSC Part #") "C25765")
 				(field
 					(name "MPN") "0201WMF4704TEE")
 				(field
@@ -3482,7 +3482,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25765")
 			)
 			(property
@@ -3552,7 +3552,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25765")
+					(name "LCSC Part #") "C25765")
 				(field
 					(name "MPN") "0201WMF4704TEE")
 				(field
@@ -3578,7 +3578,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25765")
 			)
 			(property
@@ -3648,7 +3648,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25744")
+					(name "LCSC Part #") "C25744")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3674,7 +3674,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25744")
 			)
 			(property
@@ -3744,7 +3744,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25744")
+					(name "LCSC Part #") "C25744")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3770,7 +3770,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25744")
 			)
 			(property
@@ -3840,7 +3840,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25744")
+					(name "LCSC Part #") "C25744")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3866,7 +3866,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25744")
 			)
 			(property
@@ -3936,7 +3936,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25744")
+					(name "LCSC Part #") "C25744")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3962,7 +3962,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25744")
 			)
 			(property
@@ -4032,7 +4032,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25076")
+					(name "LCSC Part #") "C25076")
 				(field
 					(name "MPN") "0201WMF1000TEE")
 				(field
@@ -4058,7 +4058,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25076")
 			)
 			(property
@@ -4128,7 +4128,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC") "C25744")
+					(name "LCSC Part #") "C25744")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -4154,7 +4154,7 @@
 				(description "Resistor")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C25744")
 			)
 			(property
@@ -4224,7 +4224,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "VDD FORCE - carries the measurement current")
 				(field
@@ -4240,8 +4240,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4287,7 +4287,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "VDD SENSE - carries none, so contact resistance does not appear in the reading")
 				(field
@@ -4303,8 +4303,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4350,7 +4350,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "GND FORCE")
 				(field
@@ -4366,8 +4366,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4413,7 +4413,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "GND SENSE")
 				(field
@@ -4429,8 +4429,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4476,7 +4476,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "the bender bonds to the SHELL, so this net terminates on a wire land and nowhere a probe can otherwise reach")
 				(field
@@ -4492,8 +4492,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4539,7 +4539,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "the other bender leg; the pair is what proves the anti-phase drive before a shell exists")
 				(field
@@ -4555,8 +4555,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4602,7 +4602,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "D-5's cell-removal sense node - the five-removals reset cannot be tested without seeing it")
 				(field
@@ -4618,8 +4618,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4665,7 +4665,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "accelerometer bus, for diagnostics")
 				(field
@@ -4681,8 +4681,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4728,7 +4728,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "accelerometer bus, for diagnostics")
 				(field
@@ -4744,8 +4744,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4791,7 +4791,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "NFC coil pin - the coil is etched, so there is no component lead to clip onto")
 				(field
@@ -4807,8 +4807,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4854,7 +4854,7 @@
 			(description "test point")
 			(fields
 				(field
-					(name "LCSC") "n/a - a pad, not a part")
+					(name "LCSC Part #") "n/a")
 				(field
 					(name "Note") "the other NFC pin; the pair is what a tuning measurement needs")
 				(field
@@ -4870,8 +4870,8 @@
 				(description "test point")
 			)
 			(property
-				(name "LCSC")
-				(value "n/a - a pad, not a part")
+				(name "LCSC Part #")
+				(value "n/a")
 			)
 			(property
 				(name "Note")
@@ -4917,7 +4917,7 @@
 			(description "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
 			(fields
 				(field
-					(name "LCSC") "C44800139")
+					(name "LCSC Part #") "C44800139")
 				(field
 					(name "MPN") "NRF54L10-QFAA-R7")
 				(field
@@ -4943,7 +4943,7 @@
 				(description "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C44800139")
 			)
 			(property
@@ -5150,7 +5150,7 @@
 			(description "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
 			(fields
 				(field
-					(name "LCSC") "C189624")
+					(name "LCSC Part #") "C189624")
 				(field
 					(name "MPN") "LIS2DW12TR")
 				(field
@@ -5176,7 +5176,7 @@
 				(description "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C189624")
 			)
 			(property
@@ -5272,19 +5272,19 @@
 			(description "Two pin crystal")
 			(fields
 				(field
-					(name "LCSC") "C620155")
+					(name "LCSC Part #") "C32346")
 				(field
-					(name "MPN") "X321532768KGD2SI")
+					(name "MPN") "FC-135 32.768kHz")
 				(field
-					(name "Manufacturer") "Yangxing Tech")
+					(name "Manufacturer") "Epson")
 				(field
-					(name "Note") "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm TALL, which X-5's height delta also binds. A 2012 part would fit; none was priced by lane E.")
+					(name "Note") "Epson 32.768 kHz. CHANGED from X321532768KGD2SI (C620155) on the factory lane's find: C32346 is a JLCPCB BASIC part with 444,985 in stock at $0.1375/100, so it avoids the $3.07 extended-part feeder fee as well as being deeper stock. OPEN: its package is assumed to be the 3215 land pattern drawn here and that has NOT been confirmed against Epson's drawing - confirm before ordering. Still 0.9 mm tall, which X-5's height delta binds.")
 				(field
-					(name "Price@1k") "$0.1347")
+					(name "Price@1k") "$0.1375")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "in stock")
+					(name "Stock") "444,985")
 				(field
 					(name "Footprint") "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
 				(field
@@ -5298,24 +5298,24 @@
 				(description "Two pin crystal")
 			)
 			(property
-				(name "LCSC")
-				(value "C620155")
+				(name "LCSC Part #")
+				(value "C32346")
 			)
 			(property
 				(name "MPN")
-				(value "X321532768KGD2SI")
+				(value "FC-135 32.768kHz")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Yangxing Tech")
+				(value "Epson")
 			)
 			(property
 				(name "Note")
-				(value "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm TALL, which X-5's height delta also binds. A 2012 part would fit; none was priced by lane E.")
+				(value "Epson 32.768 kHz. CHANGED from X321532768KGD2SI (C620155) on the factory lane's find: C32346 is a JLCPCB BASIC part with 444,985 in stock at $0.1375/100, so it avoids the $3.07 extended-part feeder fee as well as being deeper stock. OPEN: its package is assumed to be the 3215 land pattern drawn here and that has NOT been confirmed against Epson's drawing - confirm before ordering. Still 0.9 mm tall, which X-5's height delta binds.")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.1347")
+				(value "$0.1375")
 			)
 			(property
 				(name "Priced")
@@ -5323,7 +5323,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "in stock")
+				(value "444,985")
 			)
 			(property
 				(name "Sheetname")
@@ -5368,7 +5368,7 @@
 			(description "Four pin crystal, GND on pins 2 and 4")
 			(fields
 				(field
-					(name "LCSC") "C843260")
+					(name "LCSC Part #") "C843260")
 				(field
 					(name "MPN") "NX2016SA-32MHZ")
 				(field
@@ -5394,7 +5394,7 @@
 				(description "Four pin crystal, GND on pins 2 and 4")
 			)
 			(property
-				(name "LCSC")
+				(name "LCSC Part #")
 				(value "C843260")
 			)
 			(property

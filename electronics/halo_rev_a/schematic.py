@@ -146,8 +146,17 @@ PULLED = "2026-09-03"
 
 
 def P(lcsc, mpn, mfr, price_1k=None, stock=None, extra=None):
-    """One BOM line's sourcing, as schematic fields."""
-    f = {"LCSC": lcsc, "MPN": mpn, "Manufacturer": mfr, "Priced": PULLED}
+    """One BOM line's sourcing, as schematic fields.
+
+    THE FIELD IS CALLED "LCSC Part #", NOT "LCSC". ce-fab looks for a fixed
+    list of spellings - "LCSC Part #", "LCSC Part", "LCSC PN", "LCSC P/N",
+    "LCSC Part No.", "LCSC Part Number" - and a plain "LCSC" is in none of
+    them. With the short name, `fab jlc` returned CANNOT DETERMINE on 42 of
+    44 placed parts: every order code was present on the sheet and none of
+    them reached the bill of materials. A field name is an interface.
+    """
+    f = {"LCSC Part #": lcsc, "MPN": mpn, "Manufacturer": mfr,
+         "Priced": PULLED}
     if price_1k is not None:
         f["Price@1k"] = price_1k
     if stock is not None:
@@ -167,6 +176,13 @@ def pinouts():
 
 
 def build():
+    # NOTE: the project's fp-lib-table is written by board.py, NOT here.
+    # `bin/sch build` calls build() and then save(), and save() writes its own
+    # minimal fp-lib-table over anything this function had put there - 8
+    # libraries, no halo, so ERC could not resolve a footprint and reported
+    # one warning per part. Writing it at the END of the pipeline instead of
+    # the start is the fix; footprints.write_fp_lib_table() is the one
+    # implementation and board.py calls it.
     parts = pinouts()
     nrf, lis = parts["nRF54L10-QFAA"], parts["LIS2DW12"]
 
@@ -344,11 +360,18 @@ def build():
     # =====================================================================
     s.part("X1", "Device:Crystal", value="32.768kHz", group="clocks",
            footprint="Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm",
-           fields=P("C620155", "X321532768KGD2SI", "Yangxing Tech", "$0.1347",
-                    "in stock",
-                    {"Note": "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm "
-                             "TALL, which X-5's height delta also binds. A "
-                             "2012 part would fit; none was priced by lane E."}))
+           fields=P("C32346", "FC-135 32.768kHz", "Epson", "$0.1375",
+                    "444,985",
+                    {"Note": "Epson 32.768 kHz. CHANGED from X321532768KGD2SI "
+                             "(C620155) on the factory lane's find: C32346 is "
+                             "a JLCPCB BASIC part with 444,985 in stock at "
+                             "$0.1375/100, so it avoids the $3.07 "
+                             "extended-part feeder fee as well as being "
+                             "deeper stock. OPEN: its package is assumed to "
+                             "be the 3215 land pattern drawn here and that "
+                             "has NOT been confirmed against Epson's "
+                             "drawing - confirm before ordering. Still "
+                             "0.9 mm tall, which X-5's height delta binds."}))
     s.net("XL1", "U1.1", "X1.1")
     s.net("XL2", "U1.2", "X1.2")
 
@@ -574,7 +597,7 @@ def build():
     # wrong part for a bender.
     s.part("LS1", "Device:Buzzer", value="7BB-20-3", group="sounder",
            fields={"MPN": "7BB-20-3", "Manufacturer": "Murata",
-                   "LCSC": "NOT IN CATALOGUE",
+                   "LCSC Part #": "NOT IN CATALOGUE",
                    "Note": "NO FOOTPRINT ON PURPOSE: a bare Ø20.0 x 0.22 mm "
                            "bender BONDED TO THE INSIDE OF THE SHELL, wired "
                            "to the board, not soldered to it. Two flying "
@@ -610,7 +633,7 @@ def build():
            fields={"Note": "NO CONNECTOR IS FITTED. These are pogo-pin pads, "
                            "which cost 0 mm of height - the only debug "
                            "interface that fits SPEC.md §4's 1.5 mm budget.",
-                   "LCSC": "n/a - pads only, no part"})
+                   "LCSC Part #": "n/a"})
     s.part("R10", "Device:R", value="10k", group="debug", footprint=R0201,
            fields=P("C25744", "0201WMF1002TEE", "UNI-ROYAL", "$0.0012",
                     "in stock",
@@ -633,7 +656,7 @@ def build():
                            "drawing a DW3110 land pattern nobody has the pin "
                            "table for. Not fitted, not populated, costs one "
                            "row of plated edge slots. See X-1.",
-                   "LCSC": "n/a - castellations, no part"})
+                   "LCSC Part #": "n/a"})
     s.net("SPI_SCK", "U1.12")               # P2.01/SCK, out to J2 only
     s.net("SPI_MOSI", "U1.13")              # P2.02/SDO
     s.net("SPI_MISO", "U1.15")              # P2.04/SDI
@@ -687,7 +710,7 @@ def build():
     for ref, net, note in TESTPOINTS:
         s.part(ref, "Connector:TestPoint", value="TP", group="test",
                footprint="halo:HALO_TP_D0.8",
-               fields={"Note": note, "LCSC": "n/a - a pad, not a part"})
+               fields={"Note": note, "LCSC Part #": "n/a"})
         s.net(net, ref + ".1")
 
     # TWO FIDUCIALS, AND THEY ARE ASYMMETRIC ON PURPOSE. A 26 mm circle has
@@ -710,7 +733,7 @@ def build():
         # right and this is the fix rather than a workaround.
         s.part(ref, "Mechanical:Fiducial", value="FIDUCIAL", group="test",
                footprint="Fiducial:Fiducial_0.5mm_Mask1mm", in_bom=False,
-               fields={"Note": note, "LCSC": "n/a - bare copper"})
+               fields={"Note": note, "LCSC Part #": "n/a"})
 
     s.power("VDD", "GND")
 

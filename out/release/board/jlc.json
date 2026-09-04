@@ -1,9 +1,9 @@
 {
   "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
-  "generated": "2026-09-04T09:42:07Z",
+  "generated": "2026-09-04T10:13:15Z",
   "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
-  "bom_lines": 10,
-  "cpl_rows": 45,
+  "bom_lines": 24,
+  "cpl_rows": 44,
   "aux_origin_mm": [
     0.0,
     0.0
@@ -20,24 +20,49 @@
   ],
   "notes": [
     {
+      "ref": "TP8",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP10",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "FID2",
+      "verdict": "POS-ONLY",
+      "why": "exclude_from_bom: placed but not ordered"
+    },
+    {
       "ref": "LS1",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C25",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "AE1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "L2",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C6",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP4",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP7",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "FID1",
+      "verdict": "POS-ONLY",
+      "why": "exclude_from_bom: placed but not ordered"
     },
     {
       "ref": "J1",
@@ -45,82 +70,27 @@
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "L10",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP9",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "L4",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP6",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "R9",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP3",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "L3",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP11",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "R3",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C7",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C24",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R6",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C3",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C20",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C21",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R4",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C2",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R7",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R2",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "AE1",
+      "ref": "TP5",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
@@ -130,74 +100,9 @@
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C19",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C5",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C22",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R10",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C4",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C1",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C8",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C23",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C13",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C18",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R5",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R1",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "R8",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "U3",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "TP1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
       "ref": "C17",
@@ -205,49 +110,9 @@
       "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
-      "ref": "C14",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "L1",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on L_0603_1608Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
       "ref": "BT1",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "C10",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "AE2",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "C15",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "U1",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "X1",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on Crystal_SMD_3215-2Pin_3.2x1.5mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C11",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
       "ref": "C16",
@@ -255,28 +120,23 @@
       "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
-      "ref": "X2",
+      "ref": "C15",
       "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on Crystal_SMD_2016-4Pin_2.0x1.6mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
-      "ref": "U2",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on LGA-12_2x2mm_P0.5mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "AE2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C9",
+      "ref": "C14",
       "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
-    },
-    {
-      "ref": "C12",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     }
   ],
   "verdict": "CANNOT DETERMINE",
-  "why": "45 placed part(s) carry no LCSC number; JLC cannot source them",
+  "why": "4 placed part(s) carry no LCSC number; JLC cannot source them",
   "gerber_zip": "ce-designs/halo/out/release/board/halo_rev_a-gerber-jlc.zip",
   "gerber_error": null,
   "gerbers": {

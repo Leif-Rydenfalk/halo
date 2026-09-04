@@ -4046,7 +4046,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C44800139"
+		(property "LCSC Part #" "C44800139"
 			(at 40.64 102.87 0)
 			(effects
 				(font
@@ -5524,7 +5524,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 88.9 39.37 0)
 			(effects
 				(font
@@ -5836,7 +5836,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 88.9 69.85 0)
 			(effects
 				(font
@@ -6148,7 +6148,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 88.9 101.6 0)
 			(effects
 				(font
@@ -6460,7 +6460,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 88.9 132.08 0)
 			(effects
 				(font
@@ -6772,7 +6772,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1046"
+		(property "LCSC Part #" "C1046"
 			(at 87.63 163.83 0)
 			(effects
 				(font
@@ -6976,7 +6976,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2827888"
+		(property "LCSC Part #" "C2827888"
 			(at 118.11 39.37 0)
 			(effects
 				(font
@@ -7229,7 +7229,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2827888"
+		(property "LCSC Part #" "C2827888"
 			(at 118.11 69.85 0)
 			(effects
 				(font
@@ -7482,7 +7482,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2827888"
+		(property "LCSC Part #" "C2827888"
 			(at 118.11 101.6 0)
 			(effects
 				(font
@@ -7735,7 +7735,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2827888"
+		(property "LCSC Part #" "C2827888"
 			(at 118.11 132.08 0)
 			(effects
 				(font
@@ -7988,7 +7988,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C7498149"
+		(property "LCSC Part #" "C7498149"
 			(at 171.45 39.37 0)
 			(effects
 				(font
@@ -8346,7 +8346,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C15525"
+		(property "LCSC Part #" "C15525"
 			(at 148.59 69.85 0)
 			(effects
 				(font
@@ -8648,7 +8648,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C15525"
+		(property "LCSC Part #" "C15525"
 			(at 148.59 101.6 0)
 			(effects
 				(font
@@ -8950,7 +8950,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C15525"
+		(property "LCSC Part #" "C15525"
 			(at 148.59 132.08 0)
 			(effects
 				(font
@@ -9252,7 +9252,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C15525"
+		(property "LCSC Part #" "C15525"
 			(at 148.59 163.83 0)
 			(effects
 				(font
@@ -9554,7 +9554,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25765"
+		(property "LCSC Part #" "C25765"
 			(at 231.14 39.37 0)
 			(effects
 				(font
@@ -9758,7 +9758,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25765"
+		(property "LCSC Part #" "C25765"
 			(at 228.6 69.85 0)
 			(effects
 				(font
@@ -9962,7 +9962,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1523"
+		(property "LCSC Part #" "C1523"
 			(at 228.6 101.6 0)
 			(effects
 				(font
@@ -10166,7 +10166,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C620155"
+		(property "LCSC Part #" "C32346"
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10176,7 +10176,7 @@
 				(hide yes)
 			)
 		)
-		(property "MPN" "X321532768KGD2SI"
+		(property "MPN" "FC-135 32.768kHz"
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10186,7 +10186,7 @@
 				(hide yes)
 			)
 		)
-		(property "Manufacturer" "Yangxing Tech"
+		(property "Manufacturer" "Epson"
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10196,7 +10196,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm TALL, which X-5's height delta also binds. A 2012 part would fit; none was priced by lane E."
+		(property "Note" "Epson 32.768 kHz. CHANGED from X321532768KGD2SI (C620155) on the factory lane's find: C32346 is a JLCPCB BASIC part with 444,985 in stock at $0.1375/100, so it avoids the $3.07 extended-part feeder fee as well as being deeper stock. OPEN: its package is assumed to be the 3215 land pattern drawn here and that has NOT been confirmed against Epson's drawing - confirm before ordering. Still 0.9 mm tall, which X-5's height delta binds."
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10206,7 +10206,7 @@
 				(hide yes)
 			)
 		)
-		(property "Price@1k" "$0.1347"
+		(property "Price@1k" "$0.1375"
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10226,7 +10226,7 @@
 				(hide yes)
 			)
 		)
-		(property "Stock" "in stock"
+		(property "Stock" "444,985"
 			(at 269.24 36.83 0)
 			(effects
 				(font
@@ -10370,7 +10370,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C843260"
+		(property "LCSC Part #" "C843260"
 			(at 269.24 68.58 0)
 			(effects
 				(font
@@ -11524,7 +11524,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1046539"
+		(property "LCSC Part #" "C1046539"
 			(at 330.2 69.85 0)
 			(effects
 				(font
@@ -11738,7 +11738,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1046539"
+		(property "LCSC Part #" "C1046539"
 			(at 327.66 101.6 0)
 			(effects
 				(font
@@ -11952,7 +11952,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1046539"
+		(property "LCSC Part #" "C1046539"
 			(at 328.93 132.08 0)
 			(effects
 				(font
@@ -12166,7 +12166,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 330.2 163.83 0)
 			(effects
 				(font
@@ -12429,7 +12429,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 368.3 39.37 0)
 			(effects
 				(font
@@ -12692,7 +12692,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 369.57 69.85 0)
 			(effects
 				(font
@@ -12955,7 +12955,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 370.84 101.6 0)
 			(effects
 				(font
@@ -13218,7 +13218,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 369.57 132.08 0)
 			(effects
 				(font
@@ -13471,7 +13471,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25076"
+		(property "LCSC Part #" "C25076"
 			(at 370.84 163.83 0)
 			(effects
 				(font
@@ -13675,7 +13675,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1568"
+		(property "LCSC Part #" "C1568"
 			(at 408.94 39.37 0)
 			(effects
 				(font
@@ -14072,7 +14072,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 444.5 71.12 0)
 			(effects
 				(font
@@ -14325,7 +14325,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C1546"
+		(property "LCSC Part #" "C1546"
 			(at 444.5 102.87 0)
 			(effects
 				(font
@@ -14578,7 +14578,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C189624"
+		(property "LCSC Part #" "C189624"
 			(at 495.3 54.61 0)
 			(effects
 				(font
@@ -15122,7 +15122,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25744"
+		(property "LCSC Part #" "C25744"
 			(at 480.06 85.09 0)
 			(effects
 				(font
@@ -15375,7 +15375,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25744"
+		(property "LCSC Part #" "C25744"
 			(at 481.33 116.84 0)
 			(effects
 				(font
@@ -15628,7 +15628,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25744"
+		(property "LCSC Part #" "C25744"
 			(at 481.33 147.32 0)
 			(effects
 				(font
@@ -15881,7 +15881,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25744"
+		(property "LCSC Part #" "C25744"
 			(at 481.33 179.07 0)
 			(effects
 				(font
@@ -16134,7 +16134,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "NOT IN CATALOGUE"
+		(property "LCSC Part #" "NOT IN CATALOGUE"
 			(at 548.64 36.83 0)
 			(effects
 				(font
@@ -16308,7 +16308,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25076"
+		(property "LCSC Part #" "C25076"
 			(at 547.37 68.58 0)
 			(effects
 				(font
@@ -16512,7 +16512,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - pads only, no part"
+		(property "LCSC Part #" "n/a"
 			(at 27.94 233.68 0)
 			(effects
 				(font
@@ -16802,7 +16802,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C25744"
+		(property "LCSC Part #" "C25744"
 			(at 24.13 264.16 0)
 			(effects
 				(font
@@ -17055,7 +17055,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - castellations, no part"
+		(property "LCSC Part #" "n/a"
 			(at 74.93 233.68 0)
 			(effects
 				(font
@@ -17413,7 +17413,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 106.68 217.17 0)
 			(effects
 				(font
@@ -17593,7 +17593,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 106.68 243.84 0)
 			(effects
 				(font
@@ -17773,7 +17773,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 106.68 270.51 0)
 			(effects
 				(font
@@ -17942,7 +17942,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 106.68 297.18 0)
 			(effects
 				(font
@@ -18111,7 +18111,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 110.49 323.85 0)
 			(effects
 				(font
@@ -18231,7 +18231,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 110.49 350.52 0)
 			(effects
 				(font
@@ -18351,7 +18351,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 144.78 217.17 0)
 			(effects
 				(font
@@ -18471,7 +18471,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 143.51 243.84 0)
 			(effects
 				(font
@@ -18591,7 +18591,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 143.51 270.51 0)
 			(effects
 				(font
@@ -18711,7 +18711,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 140.97 297.18 0)
 			(effects
 				(font
@@ -18831,7 +18831,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - a pad, not a part"
+		(property "LCSC Part #" "n/a"
 			(at 140.97 323.85 0)
 			(effects
 				(font
@@ -18951,7 +18951,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - bare copper"
+		(property "LCSC Part #" "n/a"
 			(at 135.89 346.71 0)
 			(effects
 				(font
@@ -19037,7 +19037,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "n/a - bare copper"
+		(property "LCSC Part #" "n/a"
 			(at 172.72 213.36 0)
 			(effects
 				(font
