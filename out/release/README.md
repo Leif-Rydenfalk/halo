@@ -1,14 +1,14 @@
 # halo — open AirTag-compatible tracker — Factory handoff pack
 
-Generated 2026-09-03 from `spec/release-pack.json` by `tools/gen_release_pack.py`.
+Generated 2026-09-04 from `spec/release-pack.json` by `tools/gen_release_pack.py`.
 
 | # | artifact | status |
 |---|---|---|
 | 1 | Gerbers, drill and netlist | **PARTIAL** |
 | 2 | Schematic, ERC-clean, plus a reusable design block | **PARTIAL** |
 | 3 | Bill of materials with prices and alternates | **PARTIAL** |
-| 4 | Pick-and-place file in factory format | **NOT STARTED** |
-| 5 | Panel drawing, stackup and materials | **NOT STARTED** |
+| 4 | Pick-and-place file in factory format | **PARTIAL** |
+| 5 | Panel drawing, stackup and materials | **READY** |
 | 6 | Simulation evidence | **READY** |
 | 7 | Firmware, build instructions and a proven advertisement | **PARTIAL** |
 | 8 | Mechanical files and assembly instructions | **PARTIAL** |
