@@ -1,0 +1,7074 @@
+(export
+	(version "E")
+	(design
+		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_sch")
+		(date "2026-09-04T12:01:03")
+		(tool "Eeschema 10.0.6")
+		(sheet
+			(number "1")
+			(name "/")
+			(tstamps "/")
+			(title_block
+				(title "halo revision A - open Find My tag, nRF54L10, CR2032, Ø26 mm")
+				(company "Leif-Rydenfalk/halo - CERN-OHL-S")
+				(rev "A")
+				(date "2026-09-04")
+				(source "halo_rev_a.kicad_sch")
+				(comment
+					(number "1")
+					(value "Board is Ø26.00 x 0.60 mm, 4 layers (lane M design.py D_PCB).")
+				)
+				(comment
+					(number "2")
+					(value "nRF54L10-QFAA-R7 per D12; piezo anti-phase on 2 GPIO per D11a.")
+				)
+				(comment
+					(number "3")
+					(value "RF passives seeded from Nordic ref circuit config 1 (Fig 175).")
+				)
+				(comment
+					(number "4")
+					(value "Values marked PLACEHOLDER are re-valued from ce-rf measurements.")
+				)
+				(comment
+					(number "5")
+					(value "")
+				)
+				(comment
+					(number "6")
+					(value "")
+				)
+				(comment
+					(number "7")
+					(value "")
+				)
+				(comment
+					(number "8")
+					(value "")
+				)
+				(comment
+					(number "9")
+					(value "")
+				)
+			)
+		)
+	)
+	(components
+		(comp
+			(ref "AE1")
+			(value "2G4 PCB antenna")
+			(datasheet "~")
+			(description "Antenna")
+			(fields
+				(field
+					(name "Note") "ETCHED COPPER, NOT A BOUGHT PART, and therefore DELIBERATELY WITHOUT A FOOTPRINT - bin/sch check reports it CANNOT DETERMINE, which is the true answer. Geometry is ce-rf's (lane T3) on the Ø26.00 outline with the cell can in the model.")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Antenna")
+			)
+			(libsource
+				(lib "Device")
+				(part "Antenna")
+				(description "Antenna")
+			)
+			(property
+				(name "Note")
+				(value "ETCHED COPPER, NOT A BOUGHT PART, and therefore DELIBERATELY WITHOUT A FOOTPRINT - bin/sch check reports it CANNOT DETERMINE, which is the true answer. Geometry is ce-rf's (lane T3) on the Ø26.00 outline with the cell can in the model.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "antenna")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ac9a1ff7-25b2-5b7d-9ee4-5305f300504d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "AE2")
+			(value "NFC coil 13.56MHz")
+			(datasheet "~")
+			(description "Loop antenna")
+			(fields
+				(field
+					(name "Note") "ETCHED COPPER on the outer annulus, no footprint on purpose. Its inductance is ce-rf's measurement and it drives C24/C25's value.")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Loop antenna")
+			)
+			(libsource
+				(lib "Device")
+				(part "Antenna_Loop")
+				(description "Loop antenna")
+			)
+			(property
+				(name "Note")
+				(value "ETCHED COPPER on the outer annulus, no footprint on purpose. Its inductance is ce-rf's measurement and it drives C24/C25's value.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "loop antenna")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "8c8c2acb-65c6-5961-b312-12f63bcdbc68")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "BT1")
+			(value "CR2032")
+			(footprint "halo:HALO_BATT_CONTACT_3PAD")
+			(datasheet "https://industrial.panasonic.com/cdbs/www-data/pdf/AAC4000/AAC4000CE7.pdf")
+			(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
+			(fields
+				(field
+					(name "LCSC") "C7498149")
+				(field
+					(name "MPN") "CR2032")
+				(field
+					(name "Manufacturer") "Panasonic")
+				(field
+					(name "Note") "THE FOOTPRINT IS halo's OWN, drawn by the layout: three pads at the radii lane M fixed (R_CONTACT_POS 9.50 x2, R_CONTACT_NEG 6.00 x1, design.py). Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
+				(field
+					(name "Price@1k") "$0.39")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "halo:HALO_BATT_CONTACT_3PAD")
+				(field
+					(name "Datasheet") "https://industrial.panasonic.com/cdbs/www-data/pdf/AAC4000/AAC4000CE7.pdf")
+				(field
+					(name "Description") "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
+			)
+			(libsource
+				(lib "local")
+				(part "HALO-CR2032-3C")
+				(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
+			)
+			(property
+				(name "LCSC")
+				(value "C7498149")
+			)
+			(property
+				(name "MPN")
+				(value "CR2032")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Panasonic")
+			)
+			(property
+				(name "Note")
+				(value "THE FOOTPRINT IS halo's OWN, drawn by the layout: three pads at the radii lane M fixed (R_CONTACT_POS 9.50 x2, R_CONTACT_NEG 6.00 x1, design.py). Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.39")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cr2032 coin cell sprung contact")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "7c61f0df-65fe-5644-9c86-584d14e2f528")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C1")
+			(value "100nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1546")
+				(field
+					(name "MPN") "CL03A104KA3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R 16V, at VDD pin 10")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "10%")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1546")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A104KA3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R 16V, at VDD pin 10")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "10%")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "057340a7-440b-5744-8bba-9678e6a235de")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C2")
+			(value "100nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1546")
+				(field
+					(name "MPN") "CL03A104KA3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R 16V, at VDD pin 22")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "10%")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1546")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A104KA3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R 16V, at VDD pin 22")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "10%")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6f1073b0-f481-5162-902b-b6ea9d6082d9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C3")
+			(value "100nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1546")
+				(field
+					(name "MPN") "CL03A104KA3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R 16V, at VDD pin 36")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "10%")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1546")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A104KA3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R 16V, at VDD pin 36")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "10%")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9b59a48c-44b0-519d-b9dd-6551b566af7a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C4")
+			(value "100nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1546")
+				(field
+					(name "MPN") "CL03A104KA3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R 16V, at VDD pins 47/48")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "10%")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1546")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A104KA3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R 16V, at VDD pins 47/48")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "10%")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c5f00378-3485-56e6-b539-4bb116f1a21c")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C5")
+			(value "2.2uF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C2827888")
+				(field
+					(name "MPN") "CL03A225MQ3CSNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X6T 6.3V, DECD reservoir (Table 82)")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C2827888")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A225MQ3CSNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X6T 6.3V, DECD reservoir (Table 82)")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "3621c343-8dbf-511c-93ce-0c30def062a7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C6")
+			(value "10nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C2827888")
+				(field
+					(name "MPN") "CL03A225MQ3CSNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C2827888")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A225MQ3CSNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "a1e0f953-db36-5e54-9fa8-bccabdbc3f91")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C7")
+			(value "2.2nF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C2827888")
+				(field
+					(name "MPN") "CL03A225MQ3CSNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X7R - same, CANNOT DETERMINE")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C2827888")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A225MQ3CSNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X7R - same, CANNOT DETERMINE")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e41071d2-42a8-5eec-a8f6-5b31addf01d8")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C8")
+			(value "2.2uF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C2827888")
+				(field
+					(name "MPN") "CL03A225MQ3CSNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0201 X6T, on the DECA=DECRF node")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C2827888")
+			)
+			(property
+				(name "MPN")
+				(value "CL03A225MQ3CSNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0201 X6T, on the DECA=DECRF node")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "3add9174-204e-59b2-a9a1-cb3b80e09651")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C9")
+			(value "10uF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C15525")
+				(field
+					(name "MPN") "CL05A106MQ5NUNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+				(field
+					(name "Price@1k") "$0.0136")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C15525")
+			)
+			(property
+				(name "MPN")
+				(value "CL05A106MQ5NUNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0136")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "3a76ae04-47bf-597d-9394-18caeee74d28")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C10")
+			(value "10uF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C15525")
+				(field
+					(name "MPN") "CL05A106MQ5NUNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+				(field
+					(name "Price@1k") "$0.0136")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C15525")
+			)
+			(property
+				(name "MPN")
+				(value "CL05A106MQ5NUNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0136")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "64e8a2bf-24a9-54db-a628-4ead208e5dfb")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C11")
+			(value "10uF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C15525")
+				(field
+					(name "MPN") "CL05A106MQ5NUNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+				(field
+					(name "Price@1k") "$0.0136")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C15525")
+			)
+			(property
+				(name "MPN")
+				(value "CL05A106MQ5NUNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0136")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c08c327e-9482-5d14-8849-be01bf93a12a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C12")
+			(value "10uF")
+			(footprint "Capacitor_SMD:C_0402_1005Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C15525")
+				(field
+					(name "MPN") "CL05A106MQ5NUNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+				(field
+					(name "Price@1k") "$0.0136")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0402_1005Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C15525")
+			)
+			(property
+				(name "MPN")
+				(value "CL05A106MQ5NUNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "0402 X5R 6.3V, 0.55 mm tall. Bulk store: TX pulse support AND the hold-up the five-removals reset counts on.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0136")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "10dd52a5-c6c5-53e8-8461-36dcd660b2b8")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C13")
+			(value "100pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1523")
+				(field
+					(name "MPN") "CL03C101JB3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1523")
+			)
+			(property
+				(name "MPN")
+				(value "CL03C101JB3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "be70fcee-ef9c-5dfc-b90d-db2b3c93c8c0")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C14")
+			(value "DNP")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "Note") "NOT FITTED. X1 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "Note")
+				(value "NOT FITTED. X1 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "dnp")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "35944d99-3085-5cb7-82d7-d2f30e0234f4")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C15")
+			(value "DNP")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "Note") "NOT FITTED. X1 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "Note")
+				(value "NOT FITTED. X1 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "dnp")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "246103fa-5656-549d-b443-83aaf03d89e5")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C16")
+			(value "DNP")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "Note") "NOT FITTED. X2 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "Note")
+				(value "NOT FITTED. X2 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "dnp")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "52930859-a8e7-5a86-939b-5900eeef2790")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C17")
+			(value "DNP")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "Note") "NOT FITTED. X2 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "Note")
+				(value "NOT FITTED. X2 load, DNP. Internal CAPVALUE load capacitors are used instead. Fit ONLY with the internal ones disabled.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "dnp")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "600681ca-84ce-5764-9976-021eb40aa4ec")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C18")
+			(value "1.5pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1E1R5WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.05pF")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1E1R5WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.05pF")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "62cae0ed-1179-5bff-a169-cee2f33fe347")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C19")
+			(value "2.0pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1E1R5WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.05pF")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1E1R5WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.05pF")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6ce07d38-f8de-5552-b913-a682bf08c26e")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C20")
+			(value "0.5pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1ER50WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1ER50WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d50ed8c2-d7e9-5340-8fbf-ecc32b53618f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C21")
+			(value "0.5pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1ER50WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "PI SHUNT, antenna side. PLACEHOLDER, as C20.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1ER50WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "PI SHUNT, antenna side. PLACEHOLDER, as C20.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2b57ddbb-21cc-5ea2-8291-d76e0535ac7a")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C22")
+			(value "0.3pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1E1R5WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 C0G, series trim into the pi")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.05pF")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1E1R5WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 C0G, series trim into the pi")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.05pF")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ea7e34e6-bcec-51a5-a9bd-5d32a3e23f7b")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C23")
+			(value "3.9pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1568")
+				(field
+					(name "MPN") "GJM0335C1E1R5WB01")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE.")
+				(field
+					(name "Price@1k") "$0.0091")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.05pF")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1568")
+			)
+			(property
+				(name "MPN")
+				(value "GJM0335C1E1R5WB01")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0091")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.05pF")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "318ad885-5dd6-5337-927d-1299727a2692")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C24")
+			(value "130pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1571")
+				(field
+					(name "MPN") "CL03C131JB3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1571")
+			)
+			(property
+				(name "MPN")
+				(value "CL03C131JB3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "81648614-54f8-595c-9974-3156038cdf34")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "C25")
+			(value "130pF")
+			(footprint "Capacitor_SMD:C_0201_0603Metric")
+			(datasheet "~")
+			(description "Unpolarized capacitor")
+			(fields
+				(field
+					(name "LCSC") "C1571")
+				(field
+					(name "MPN") "CL03C131JB3NNNC")
+				(field
+					(name "Manufacturer") "Samsung")
+				(field
+					(name "Note") "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+				(field
+					(name "Price@1k") "$0.0029")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(libsource
+				(lib "Device")
+				(part "C")
+				(description "Unpolarized capacitor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1571")
+			)
+			(property
+				(name "MPN")
+				(value "CL03C131JB3NNNC")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Samsung")
+			)
+			(property
+				(name "Note")
+				(value "NFC tuning, PLACEHOLDER (X-2). 130 pF is Nordic's NFCT chapter for Lant = 2 uH. The two must be MATCHED to each other - a mismatch unbalances the tag antenna.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0029")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "cap capacitor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "C_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "5e18dac6-c104-5662-b159-0215e7bea5d8")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J1")
+			(value "TC2030")
+			(footprint "Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical")
+			(datasheet "https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf")
+			(description "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
+			(fields
+				(field
+					(name "LCSC") "n/a - pads only, no part")
+				(field
+					(name "Note") "NO CONNECTOR IS FITTED. These are pogo-pin pads, which cost 0 mm of height - the only debug interface that fits SPEC.md §4's 1.5 mm budget.")
+				(field
+					(name "Footprint") "Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical")
+				(field
+					(name "Datasheet") "https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf")
+				(field
+					(name "Description") "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
+			)
+			(libsource
+				(lib "Connector")
+				(part "Conn_ARM_SWD_TagConnect_TC2030")
+				(description "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - pads only, no part")
+			)
+			(property
+				(name "Note")
+				(value "NO CONNECTOR IS FITTED. These are pogo-pin pads, which cost 0 mm of height - the only debug interface that fits SPEC.md §4's 1.5 mm budget.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "Cortex Debug Connector ARM SWD JTAG")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "*TC2030*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "a90235c7-4aa6-57de-be3c-7a2b6d013a93")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "6")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "J2")
+			(value "UWB stub")
+			(footprint "halo:HALO_CASTELLATED_1x08_P1.00")
+			(datasheet "~")
+			(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			(fields
+				(field
+					(name "LCSC") "n/a - castellations, no part")
+				(field
+					(name "Note") "8 CASTELLATED HALF-VIAS on the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
+				(field
+					(name "Footprint") "halo:HALO_CASTELLATED_1x08_P1.00")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			)
+			(libsource
+				(lib "Connector_Generic")
+				(part "Conn_01x08")
+				(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			)
+			(property
+				(name "LCSC")
+				(value "n/a - castellations, no part")
+			)
+			(property
+				(name "Note")
+				(value "8 CASTELLATED HALF-VIAS on the board edge, reserving the halo-uwb option of D12 WITHOUT drawing a DW3110 land pattern nobody has the pin table for. Not fitted, not populated, costs one row of plated edge slots. See X-1.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "connector")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Connector*:*_1x??_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "317a7ad8-21d2-5d24-a445-56da84ce3c3f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "8")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L1")
+			(value "4.7uH")
+			(footprint "Inductor_SMD:L_0603_1608Metric")
+			(datasheet "~")
+			(description "Inductor")
+			(fields
+				(field
+					(name "LCSC") "C1046")
+				(field
+					(name "MPN") "MLZ1608M4R7WT000")
+				(field
+					(name "Manufacturer") "TDK")
+				(field
+					(name "Note") "0603 multilayer, >=120 mA Isat, DCC->DECD. 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
+				(field
+					(name "Price@1k") "$0.0180")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0603_1608Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Inductor")
+			)
+			(libsource
+				(lib "Device")
+				(part "L")
+				(description "Inductor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1046")
+			)
+			(property
+				(name "MPN")
+				(value "MLZ1608M4R7WT000")
+			)
+			(property
+				(name "Manufacturer")
+				(value "TDK")
+			)
+			(property
+				(name "Note")
+				(value "0603 multilayer, >=120 mA Isat, DCC->DECD. 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0180")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "inductor choke coil reactor magnetic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Choke_* *Coil* Inductor_* L_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "cb5d39b2-1fb0-5e77-b625-d7a8e07cf659")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L2")
+			(value "2.7nH")
+			(footprint "Inductor_SMD:L_0201_0603Metric")
+			(datasheet "~")
+			(description "Inductor")
+			(fields
+				(field
+					(name "LCSC") "C1046539")
+				(field
+					(name "MPN") "LQP03HQ2N7B02D")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 LQP03HQ2N7B02, Nordic ref")
+				(field
+					(name "Price@1k") "$0.0304")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.1nH")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Inductor")
+			)
+			(libsource
+				(lib "Device")
+				(part "L")
+				(description "Inductor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1046539")
+			)
+			(property
+				(name "MPN")
+				(value "LQP03HQ2N7B02D")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 LQP03HQ2N7B02, Nordic ref")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0304")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.1nH")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "inductor choke coil reactor magnetic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Choke_* *Coil* Inductor_* L_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "fb22aac5-594a-5389-965c-fa5d8637a474")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L3")
+			(value "3.5nH")
+			(footprint "Inductor_SMD:L_0201_0603Metric")
+			(datasheet "~")
+			(description "Inductor")
+			(fields
+				(field
+					(name "LCSC") "C1046539")
+				(field
+					(name "MPN") "LQP03HQ2N7B02D")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201 LQP03HQ3N5B02, Nordic ref")
+				(field
+					(name "Price@1k") "$0.0304")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.1nH")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Inductor")
+			)
+			(libsource
+				(lib "Device")
+				(part "L")
+				(description "Inductor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1046539")
+			)
+			(property
+				(name "MPN")
+				(value "LQP03HQ2N7B02D")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201 LQP03HQ3N5B02, Nordic ref")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0304")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.1nH")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "inductor choke coil reactor magnetic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Choke_* *Coil* Inductor_* L_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "75bca77a-f540-5f4d-a1e4-03d3825a960f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L4")
+			(value "3.5nH")
+			(footprint "Inductor_SMD:L_0201_0603Metric")
+			(datasheet "~")
+			(description "Inductor")
+			(fields
+				(field
+					(name "LCSC") "C1046539")
+				(field
+					(name "MPN") "LQP03HQ2N7B02D")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "0201, = L3, Nordic ref")
+				(field
+					(name "Price@1k") "$0.0304")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Tol") "+/-0.1nH")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Inductor")
+			)
+			(libsource
+				(lib "Device")
+				(part "L")
+				(description "Inductor")
+			)
+			(property
+				(name "LCSC")
+				(value "C1046539")
+			)
+			(property
+				(name "MPN")
+				(value "LQP03HQ2N7B02D")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "0201, = L3, Nordic ref")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0304")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Tol")
+				(value "+/-0.1nH")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "inductor choke coil reactor magnetic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Choke_* *Coil* Inductor_* L_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "274bcb67-2c5e-532d-a424-cce2816e9a6f")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "L10")
+			(value "0R")
+			(footprint "Inductor_SMD:L_0201_0603Metric")
+			(datasheet "~")
+			(description "Inductor")
+			(fields
+				(field
+					(name "LCSC") "C25076")
+				(field
+					(name "MPN") "0201WMJ0000TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one.")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Inductor_SMD:L_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Inductor")
+			)
+			(libsource
+				(lib "Device")
+				(part "L")
+				(description "Inductor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25076")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMJ0000TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "inductor choke coil reactor magnetic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Choke_* *Coil* Inductor_* L_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "c73801a7-7d8a-5022-aac0-44c7b2a6d3e7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "LS1")
+			(value "7BB-20-3")
+			(datasheet "~")
+			(description "Buzzer, polarized")
+			(fields
+				(field
+					(name "LCSC") "NOT IN CATALOGUE")
+				(field
+					(name "MPN") "7BB-20-3")
+				(field
+					(name "Manufacturer") "Murata")
+				(field
+					(name "Note") "NO FOOTPRINT ON PURPOSE: a bare Ø20.0 x 0.22 mm bender BONDED TO THE INSIDE OF THE SHELL, wired to the board, not soldered to it. Two flying leads land on pads the layout draws. PRICE AND STOCK ARE UNKNOWN - research/05 §11.7: not in LCSC or JLCPCB, Digi-Key 403, Mouser captcha. One rep quote closes it.")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Buzzer, polarized")
+			)
+			(libsource
+				(lib "Device")
+				(part "Buzzer")
+				(description "Buzzer, polarized")
+			)
+			(property
+				(name "LCSC")
+				(value "NOT IN CATALOGUE")
+			)
+			(property
+				(name "MPN")
+				(value "7BB-20-3")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Murata")
+			)
+			(property
+				(name "Note")
+				(value "NO FOOTPRINT ON PURPOSE: a bare Ø20.0 x 0.22 mm bender BONDED TO THE INSIDE OF THE SHELL, wired to the board, not soldered to it. Two flying leads land on pads the layout draws. PRICE AND STOCK ARE UNKNOWN - research/05 §11.7: not in LCSC or JLCPCB, Digi-Key 403, Mouser captcha. One rep quote closes it.")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "quartz resonator ceramic")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "*Buzzer*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "dff47db9-3af7-5828-afa1-cf8b9a9e8820")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R1")
+			(value "4.7M")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25765")
+				(field
+					(name "MPN") "0201WMF4704TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "sense divider, high leg")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25765")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF4704TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "sense divider, high leg")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "f12ac6b7-2d9c-5c0d-ac3b-0e60ea9d3cf7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R2")
+			(value "4.7M")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25765")
+				(field
+					(name "MPN") "0201WMF4704TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "sense divider, low leg - returns to a GPIO, not to GND, so the divider is OFF when idle")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25765")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF4704TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "sense divider, low leg - returns to a GPIO, not to GND, so the divider is OFF when idle")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "79822d97-9c8c-5077-a741-b15a53277ec6")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R3")
+			(value "100k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25741")
+				(field
+					(name "MPN") "0201WMF1003TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25741")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1003TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "94f3988e-5c69-580f-a166-10d4d39d87b1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R4")
+			(value "100k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25741")
+				(field
+					(name "MPN") "0201WMF1003TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25741")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1003TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "idle-high pull-up, 100k not 10k: 30 uA of leakage on a 2.4 uA sleep budget would have been the largest current on the board")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d16b26a2-fc0a-5831-adad-f2cb01907e72")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R5")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25744")
+				(field
+					(name "MPN") "0201WMF1002TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it.")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25744")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1002TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "62cbf97e-d158-54dd-91fa-6bb1e6753172")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R6")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25744")
+				(field
+					(name "MPN") "0201WMF1002TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "SA0 strapped LOW = address 0x18")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25744")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1002TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "SA0 strapped LOW = address 0x18")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "673e53cb-19d6-558f-9b22-4db78da604b9")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R7")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25744")
+				(field
+					(name "MPN") "0201WMF1002TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "I2C bus pull-up")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25744")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1002TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "I2C bus pull-up")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e3983ccc-5e7a-5f6d-8b4e-39a4144548be")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R8")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25744")
+				(field
+					(name "MPN") "0201WMF1002TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "I2C bus pull-up")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25744")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1002TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "I2C bus pull-up")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9862fb2b-bd41-53b7-87f9-efd0ecae06e3")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R9")
+			(value "100R")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25076")
+				(field
+					(name "MPN") "0201WMF1000TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "series damping on one leg. A bender is a near-pure capacitance and a GPIO edge into it is a current spike straight off the bulk caps; 100 R holds the peak near 30 mA and costs 0.2 dB at 4 kHz into ~500 ohm.")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25076")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1000TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "series damping on one leg. A bender is a near-pure capacitance and a GPIO edge into it is a current spike straight off the bulk caps; 100 R holds the peak near 30 mA and costs 0.2 dB at 4 kHz into ~500 ohm.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "19bc6838-a488-57e5-85e2-cf9569b9d994")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "R10")
+			(value "10k")
+			(footprint "Resistor_SMD:R_0201_0603Metric")
+			(datasheet "~")
+			(description "Resistor")
+			(fields
+				(field
+					(name "LCSC") "C25744")
+				(field
+					(name "MPN") "0201WMF1002TEE")
+				(field
+					(name "Manufacturer") "UNI-ROYAL")
+				(field
+					(name "Note") "nRESET pull-up. Table 82 says 1k; 10k is used because 1k across a coin cell is 3 mA if anything ever holds reset low, and the nRESET input's leakage is nanoamps.")
+				(field
+					(name "Price@1k") "$0.0012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Resistor_SMD:R_0201_0603Metric")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Resistor")
+			)
+			(libsource
+				(lib "Device")
+				(part "R")
+				(description "Resistor")
+			)
+			(property
+				(name "LCSC")
+				(value "C25744")
+			)
+			(property
+				(name "MPN")
+				(value "0201WMF1002TEE")
+			)
+			(property
+				(name "Manufacturer")
+				(value "UNI-ROYAL")
+			)
+			(property
+				(name "Note")
+				(value "nRESET pull-up. Table 82 says 1k; 10k is used because 1k across a coin cell is 3 mA if anything ever holds reset low, and the nRESET input's leakage is nanoamps.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.0012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "R res resistor")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "R_*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e153cbc6-da90-521d-b9b0-1527465154af")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U1")
+			(value "nRF54L10-QFAA-R7")
+			(footprint "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm")
+			(datasheet "https://www.farnell.com/datasheets/4557217.pdf")
+			(description "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
+			(fields
+				(field
+					(name "LCSC") "C44800139")
+				(field
+					(name "MPN") "NRF54L10-QFAA-R7")
+				(field
+					(name "Manufacturer") "Nordic Semiconductor")
+				(field
+					(name "Note") "1000-piece MINIMUM PACKET (research/05 §11.1) - the only nRF54L whose minimum packet a 1k build actually consumes. TX 3.7 mA @0 dBm, RX 2.1 mA, System-ON 192 kB retained 2.4 uA (Table 86).")
+				(field
+					(name "Price@1k") "$2.4012")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "669 LCSC / 1003 JLC")
+				(field
+					(name "Footprint") "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm")
+				(field
+					(name "Datasheet") "https://www.farnell.com/datasheets/4557217.pdf")
+				(field
+					(name "Description") "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
+			)
+			(libsource
+				(lib "local")
+				(part "nRF54L10-QFAA")
+				(description "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
+			)
+			(property
+				(name "LCSC")
+				(value "C44800139")
+			)
+			(property
+				(name "MPN")
+				(value "NRF54L10-QFAA-R7")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Nordic Semiconductor")
+			)
+			(property
+				(name "Note")
+				(value "1000-piece MINIMUM PACKET (research/05 §11.1) - the only nRF54L whose minimum packet a 1k build actually consumes. TX 3.7 mA @0 dBm, RX 2.1 mA, System-ON 192 kB retained 2.4 uA (Table 86).")
+			)
+			(property
+				(name "Price@1k")
+				(value "$2.4012")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "669 LCSC / 1003 JLC")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "nordic nrf54l ble channel sounding nfc soc")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "9630d59a-4e41-56ff-910e-af2cae9c8a53")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "25")
+						)
+						(pin
+							(num "26")
+						)
+						(pin
+							(num "30")
+						)
+						(pin
+							(num "31")
+						)
+						(pin
+							(num "34")
+						)
+						(pin
+							(num "35")
+						)
+						(pin
+							(num "33")
+						)
+						(pin
+							(num "43")
+						)
+						(pin
+							(num "45")
+						)
+						(pin
+							(num "46")
+						)
+						(pin
+							(num "10")
+						)
+						(pin
+							(num "22")
+						)
+						(pin
+							(num "36")
+						)
+						(pin
+							(num "47")
+						)
+						(pin
+							(num "48")
+						)
+						(pin
+							(num "32")
+						)
+						(pin
+							(num "44")
+						)
+						(pin
+							(num "49")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "9")
+						)
+						(pin
+							(num "37")
+						)
+						(pin
+							(num "38")
+						)
+						(pin
+							(num "39")
+						)
+						(pin
+							(num "40")
+						)
+						(pin
+							(num "41")
+						)
+						(pin
+							(num "42")
+						)
+						(pin
+							(num "11")
+						)
+						(pin
+							(num "12")
+						)
+						(pin
+							(num "13")
+						)
+						(pin
+							(num "14")
+						)
+						(pin
+							(num "15")
+						)
+						(pin
+							(num "16")
+						)
+						(pin
+							(num "17")
+						)
+						(pin
+							(num "18")
+						)
+						(pin
+							(num "19")
+						)
+						(pin
+							(num "20")
+						)
+						(pin
+							(num "21")
+						)
+						(pin
+							(num "23")
+						)
+						(pin
+							(num "24")
+						)
+						(pin
+							(num "27")
+						)
+						(pin
+							(num "28")
+						)
+						(pin
+							(num "29")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U2")
+			(value "LIS2DW12TR")
+			(footprint "Package_LGA:LGA-12_2x2mm_P0.5mm")
+			(datasheet "https://www.st.com/resource/en/datasheet/lis2dw12.pdf")
+			(description "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
+			(fields
+				(field
+					(name "LCSC") "C189624")
+				(field
+					(name "MPN") "LIS2DW12TR")
+				(field
+					(name "Manufacturer") "STMicroelectronics")
+				(field
+					(name "Note") "<1 uA low-power mode. SPEC.md F7: sample every 10 s at rest, 0.5 s once moving. LGA-12 2x2, 0.7 mm tall.")
+				(field
+					(name "Price@1k") "$0.7408")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "14651")
+				(field
+					(name "Footprint") "Package_LGA:LGA-12_2x2mm_P0.5mm")
+				(field
+					(name "Datasheet") "https://www.st.com/resource/en/datasheet/lis2dw12.pdf")
+				(field
+					(name "Description") "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
+			)
+			(libsource
+				(lib "local")
+				(part "LIS2DW12")
+				(description "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
+			)
+			(property
+				(name "LCSC")
+				(value "C189624")
+			)
+			(property
+				(name "MPN")
+				(value "LIS2DW12TR")
+			)
+			(property
+				(name "Manufacturer")
+				(value "STMicroelectronics")
+			)
+			(property
+				(name "Note")
+				(value "<1 uA low-power mode. SPEC.md F7: sample every 10 s at rest, 0.5 s once moving. LGA-12 2x2, 0.7 mm tall.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.7408")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "14651")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "accelerometer mems motion i2c")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "19967f52-7c9d-5832-9d2c-37f8d37bc299")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "9")
+						)
+						(pin
+							(num "10")
+						)
+						(pin
+							(num "11")
+						)
+						(pin
+							(num "12")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "U3")
+			(value "GD25LQ32E 32Mbit")
+			(footprint "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm")
+			(datasheet "https://www.gigadevice.com/datasheet/gd25lq32e/")
+			(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
+			(fields
+				(field
+					(name "LCSC") "C2939873")
+				(field
+					(name "MPN") "GD25LQ32EEIGR")
+				(field
+					(name "Manufacturer") "GigaDevice")
+				(field
+					(name "Note") "SYMBOL SUBSTITUTION: KiCad's W25Q32JVSS is the same 8-pin serial-NOR pinout (CS DO WP GND DI CLK HOLD VCC). 1.65-3.6 V, so it spans the whole cell curve. USON-8 2x3 mm, 0.6 mm tall - chosen over SOIC-8 because the board is 26 mm across. Its exposed pad has no symbol pin; bonding it is the LAYOUT's decision, recorded there, not here.")
+				(field
+					(name "Price@1k") "$0.4105")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "JLC")
+				(field
+					(name "Footprint") "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm")
+				(field
+					(name "Datasheet") "https://www.gigadevice.com/datasheet/gd25lq32e/")
+				(field
+					(name "Description") "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
+			)
+			(libsource
+				(lib "Memory_Flash")
+				(part "W25Q32JVSS")
+				(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
+			)
+			(property
+				(name "LCSC")
+				(value "C2939873")
+			)
+			(property
+				(name "MPN")
+				(value "GD25LQ32EEIGR")
+			)
+			(property
+				(name "Manufacturer")
+				(value "GigaDevice")
+			)
+			(property
+				(name "Note")
+				(value "SYMBOL SUBSTITUTION: KiCad's W25Q32JVSS is the same 8-pin serial-NOR pinout (CS DO WP GND DI CLK HOLD VCC). 1.65-3.6 V, so it spans the whole cell curve. USON-8 2x3 mm, 0.6 mm tall - chosen over SOIC-8 because the board is 26 mm across. Its exposed pad has no symbol pin; bonding it is the LAYOUT's decision, recorded there, not here.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.4105")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "JLC")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "flash memory SPI")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "*SOIC*5.3x5.3mm*P1.27mm*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "4bd2005f-f946-5d31-adac-382908d243da")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "6")
+						)
+						(pin
+							(num "5")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "3")
+						)
+						(pin
+							(num "7")
+						)
+						(pin
+							(num "8")
+						)
+						(pin
+							(num "4")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "X1")
+			(value "32.768kHz")
+			(footprint "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
+			(datasheet "~")
+			(description "Two pin crystal")
+			(fields
+				(field
+					(name "LCSC") "C620155")
+				(field
+					(name "MPN") "X321532768KGD2SI")
+				(field
+					(name "Manufacturer") "Yangxing Tech")
+				(field
+					(name "Note") "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm TALL, which X-5's height delta also binds. A 2012 part would fit; none was priced by lane E.")
+				(field
+					(name "Price@1k") "$0.1347")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Two pin crystal")
+			)
+			(libsource
+				(lib "Device")
+				(part "Crystal")
+				(description "Two pin crystal")
+			)
+			(property
+				(name "LCSC")
+				(value "C620155")
+			)
+			(property
+				(name "MPN")
+				(value "X321532768KGD2SI")
+			)
+			(property
+				(name "Manufacturer")
+				(value "Yangxing Tech")
+			)
+			(property
+				(name "Note")
+				(value "CL 12.5 pF, +/-20 ppm. 3.2x1.5x0.9 mm - 0.9 mm TALL, which X-5's height delta also binds. A 2012 part would fit; none was priced by lane E.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.1347")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "quartz ceramic resonator oscillator")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Crystal*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d08719c3-ace0-5829-bd05-6fc8ad9d92e1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "X2")
+			(value "32MHz")
+			(footprint "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm")
+			(datasheet "~")
+			(description "Four pin crystal, GND on pins 2 and 4")
+			(fields
+				(field
+					(name "LCSC") "C843260")
+				(field
+					(name "MPN") "NX2016SA-32MHZ")
+				(field
+					(name "Manufacturer") "NDK")
+				(field
+					(name "Note") "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution.")
+				(field
+					(name "Price@1k") "$0.2333")
+				(field
+					(name "Priced") "2026-09-03")
+				(field
+					(name "Stock") "in stock")
+				(field
+					(name "Footprint") "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "Four pin crystal, GND on pins 2 and 4")
+			)
+			(libsource
+				(lib "Device")
+				(part "Crystal_GND24")
+				(description "Four pin crystal, GND on pins 2 and 4")
+			)
+			(property
+				(name "LCSC")
+				(value "C843260")
+			)
+			(property
+				(name "MPN")
+				(value "NX2016SA-32MHZ")
+			)
+			(property
+				(name "Manufacturer")
+				(value "NDK")
+			)
+			(property
+				(name "Note")
+				(value "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution.")
+			)
+			(property
+				(name "Price@1k")
+				(value "$0.2333")
+			)
+			(property
+				(name "Priced")
+				(value "2026-09-03")
+			)
+			(property
+				(name "Stock")
+				(value "in stock")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_rev_a")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_rev_a.kicad_sch")
+			)
+			(property
+				(name "ki_keywords")
+				(value "quartz ceramic resonator oscillator")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Crystal*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "59c0f1f5-a224-5e81-830b-6fe71439b143")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+						(pin
+							(num "2")
+						)
+						(pin
+							(num "4")
+						)
+						(pin
+							(num "3")
+						)
+					)
+				)
+			)
+		)
+	)
+	(groups)
+	(variants)
+	(libparts
+		(libpart
+			(lib "Connector")
+			(part "Conn_ARM_SWD_TagConnect_TC2030")
+			(description "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
+			(docs "https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf")
+			(footprints
+				(fp "*TC2030*")
+			)
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "Conn_ARM_SWD_TagConnect_TC2030")
+				(field
+					(name "Footprint") "Connector:Tag-Connect_TC2030-IDC-FP_2x03_P1.27mm_Vertical")
+				(field
+					(name "Datasheet") "https://www.tag-connect.com/wp-content/uploads/bsk-pdf-manager/TC2030-CTX_1.pdf")
+				(field
+					(name "Description") "Tag-Connect ARM Cortex SWD JTAG connector, 6 pin")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "VCC")
+					(type "power_in")
+				)
+				(pin
+					(num "2")
+					(name "SWDIO")
+					(type "bidirectional")
+				)
+				(pin
+					(num "3")
+					(name "~{RESET}")
+					(type "open_collector")
+				)
+				(pin
+					(num "4")
+					(name "SWCLK")
+					(type "output")
+				)
+				(pin
+					(num "5")
+					(name "GND")
+					(type "power_in")
+				)
+				(pin
+					(num "6")
+					(name "SWO")
+					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "Connector_Generic")
+			(part "Conn_01x08")
+			(description "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			(footprints
+				(fp "Connector*:*_1x??_*")
+			)
+			(fields
+				(field
+					(name "Reference") "J")
+				(field
+					(name "Value") "Conn_01x08")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Generic connector, single row, 01x08, script generated (kicad-library-utils/schlib/autogen/connector/)")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "Pin_1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "Pin_2")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "Pin_3")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "Pin_4")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "Pin_5")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "Pin_6")
+					(type "passive")
+				)
+				(pin
+					(num "7")
+					(name "Pin_7")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "Pin_8")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "Antenna")
+			(description "Antenna")
+			(fields
+				(field
+					(name "Reference") "AE")
+				(field
+					(name "Value") "Antenna")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Antenna")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "A")
+					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "Antenna_Loop")
+			(description "Loop antenna")
+			(fields
+				(field
+					(name "Reference") "AE")
+				(field
+					(name "Value") "Antenna_Loop")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Loop antenna")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "")
+					(type "input")
+				)
+				(pin
+					(num "2")
+					(name "")
+					(type "input")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "Buzzer")
+			(description "Buzzer, polarized")
+			(footprints
+				(fp "*Buzzer*")
+			)
+			(fields
+				(field
+					(name "Reference") "BZ")
+				(field
+					(name "Value") "Buzzer")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Buzzer, polarized")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "+")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "-")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "C")
+			(description "Unpolarized capacitor")
+			(footprints
+				(fp "C_*")
+			)
+			(fields
+				(field
+					(name "Reference") "C")
+				(field
+					(name "Value") "C")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Unpolarized capacitor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "Crystal")
+			(description "Two pin crystal")
+			(footprints
+				(fp "Crystal*")
+			)
+			(fields
+				(field
+					(name "Reference") "Y")
+				(field
+					(name "Value") "Crystal")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Two pin crystal")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "Crystal_GND24")
+			(description "Four pin crystal, GND on pins 2 and 4")
+			(footprints
+				(fp "Crystal*")
+			)
+			(fields
+				(field
+					(name "Reference") "Y")
+				(field
+					(name "Value") "Crystal_GND24")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Four pin crystal, GND on pins 2 and 4")
+				(field
+					(name "KLC_S3.3") "The rectangle is not a symbol body but a graphical element")
+				(field
+					(name "KLC_S4.1") "Some pins are on 50mil grid to make the symbol small")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "G")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "3")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "G")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "L")
+			(description "Inductor")
+			(footprints
+				(fp "Choke_*")
+				(fp "*Coil*")
+				(fp "Inductor_*")
+				(fp "L_*")
+			)
+			(fields
+				(field
+					(name "Reference") "L")
+				(field
+					(name "Value") "L")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Inductor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "2")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Device")
+			(part "R")
+			(description "Resistor")
+			(footprints
+				(fp "R_*")
+			)
+			(fields
+				(field
+					(name "Reference") "R")
+				(field
+					(name "Value") "R")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet")
+				)
+				(field
+					(name "Description") "Resistor")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "Memory_Flash")
+			(part "W25Q32JVSS")
+			(description "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
+			(docs "http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf")
+			(footprints
+				(fp "*SOIC*5.3x5.3mm*P1.27mm*")
+			)
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "W25Q32JVSS")
+				(field
+					(name "Footprint") "Package_SO:SOIC-8_5.3x5.3mm_P1.27mm")
+				(field
+					(name "Datasheet") "http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf")
+				(field
+					(name "Description") "32Mbit / 4MiB Serial Flash Memory, Standard/Dual/Quad SPI, 2.7-3.6V, SOIC-8 (208 mil)")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "~{CS}")
+					(type "input")
+				)
+				(pin
+					(num "2")
+					(name "DO/IO_{1}")
+					(type "bidirectional")
+				)
+				(pin
+					(num "3")
+					(name "~{WP}/IO_{2}")
+					(type "bidirectional")
+				)
+				(pin
+					(num "4")
+					(name "GND")
+					(type "power_in")
+				)
+				(pin
+					(num "5")
+					(name "DI/IO_{0}")
+					(type "bidirectional")
+				)
+				(pin
+					(num "6")
+					(name "CLK")
+					(type "input")
+				)
+				(pin
+					(num "7")
+					(name "~{HOLD}/~{RESET}/IO_{3}")
+					(type "bidirectional")
+				)
+				(pin
+					(num "8")
+					(name "VCC")
+					(type "power_in")
+				)
+			)
+		)
+		(libpart
+			(lib "local")
+			(part "HALO-CR2032-3C")
+			(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
+			(docs "https://industrial.panasonic.com/cdbs/www-data/pdf/AAC4000/AAC4000CE7.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "HALO-CR2032-3C")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "https://industrial.panasonic.com/cdbs/www-data/pdf/AAC4000/AAC4000CE7.pdf")
+				(field
+					(name "Description") "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "P+_(current)")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "P-_(return)")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "P+_(sense)")
+					(type "passive")
+				)
+			)
+		)
+		(libpart
+			(lib "local")
+			(part "LIS2DW12")
+			(description "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
+			(docs "https://www.st.com/resource/en/datasheet/lis2dw12.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "LIS2DW12")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "https://www.st.com/resource/en/datasheet/lis2dw12.pdf")
+				(field
+					(name "Description") "3-axis MEMS accelerometer, I2C/SPI, LGA-12 2x2. Wakes the tag on motion and supplies the orientation vector that D12 attaches to every range.  [pinout: STMicroelectronics, 'LIS2DW12 MEMS digital output motion sensor', DS11811 Rev 9, Table 1 'Pin description', p.4. Downloaded 2026-09-03 from https://www.st.com/resource/en/datasheet/lis2dw12.pdf]")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "SCL/SPC")
+					(type "input")
+				)
+				(pin
+					(num "2")
+					(name "CS")
+					(type "input")
+				)
+				(pin
+					(num "3")
+					(name "SDO/SA0")
+					(type "bidirectional")
+				)
+				(pin
+					(num "4")
+					(name "SDA/SDI/SDO")
+					(type "bidirectional")
+				)
+				(pin
+					(num "5")
+					(name "NC")
+					(type "passive")
+				)
+				(pin
+					(num "6")
+					(name "GND")
+					(type "power_in")
+				)
+				(pin
+					(num "7")
+					(name "RES")
+					(type "passive")
+				)
+				(pin
+					(num "8")
+					(name "GND")
+					(type "power_in")
+				)
+				(pin
+					(num "9")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "10")
+					(name "VDD_IO")
+					(type "power_in")
+				)
+				(pin
+					(num "11")
+					(name "INT2")
+					(type "output")
+				)
+				(pin
+					(num "12")
+					(name "INT1")
+					(type "output")
+				)
+			)
+		)
+		(libpart
+			(lib "local")
+			(part "nRF54L10-QFAA")
+			(description "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
+			(docs "https://www.farnell.com/datasheets/4557217.pdf")
+			(fields
+				(field
+					(name "Reference") "U")
+				(field
+					(name "Value") "nRF54L10-QFAA")
+				(field
+					(name "Footprint")
+				)
+				(field
+					(name "Datasheet") "https://www.farnell.com/datasheets/4557217.pdf")
+				(field
+					(name "Description") "Multiprotocol BLE SoC with Bluetooth Channel Sounding and an on-die NFC-A tag peripheral, QFN48 6x6. halo DECISIONS.md D12.  [pinout: Nordic Semiconductor, 'nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs', doc 4503_018 v0.10, Table 77 'QFN48 pin assignments', p.840-845. Downloaded 2026-09-03 from https://www.farnell.com/datasheets/4557217.pdf (906 pp).]")
+			)
+			(pins
+				(pin
+					(num "1")
+					(name "P1.00/XL1")
+					(type "passive")
+				)
+				(pin
+					(num "2")
+					(name "P1.01/XL2")
+					(type "passive")
+				)
+				(pin
+					(num "3")
+					(name "P1.02/NFC1")
+					(type "passive")
+				)
+				(pin
+					(num "4")
+					(name "P1.03/NFC2")
+					(type "passive")
+				)
+				(pin
+					(num "5")
+					(name "P1.04/AIN0")
+					(type "bidirectional")
+				)
+				(pin
+					(num "6")
+					(name "P1.05/AIN1")
+					(type "bidirectional")
+				)
+				(pin
+					(num "7")
+					(name "P1.06/AIN2")
+					(type "bidirectional")
+				)
+				(pin
+					(num "8")
+					(name "P1.07/AIN3")
+					(type "bidirectional")
+				)
+				(pin
+					(num "9")
+					(name "P1.08/EXTREF")
+					(type "bidirectional")
+				)
+				(pin
+					(num "10")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "11")
+					(name "P2.00")
+					(type "bidirectional")
+				)
+				(pin
+					(num "12")
+					(name "P2.01/SCK")
+					(type "bidirectional")
+				)
+				(pin
+					(num "13")
+					(name "P2.02/SDO")
+					(type "bidirectional")
+				)
+				(pin
+					(num "14")
+					(name "P2.03")
+					(type "bidirectional")
+				)
+				(pin
+					(num "15")
+					(name "P2.04/SDI")
+					(type "bidirectional")
+				)
+				(pin
+					(num "16")
+					(name "P2.05/CS")
+					(type "bidirectional")
+				)
+				(pin
+					(num "17")
+					(name "P2.06")
+					(type "bidirectional")
+				)
+				(pin
+					(num "18")
+					(name "P2.07/SWO")
+					(type "bidirectional")
+				)
+				(pin
+					(num "19")
+					(name "P2.08")
+					(type "bidirectional")
+				)
+				(pin
+					(num "20")
+					(name "P2.09")
+					(type "bidirectional")
+				)
+				(pin
+					(num "21")
+					(name "P2.10")
+					(type "bidirectional")
+				)
+				(pin
+					(num "22")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "23")
+					(name "P0.00")
+					(type "bidirectional")
+				)
+				(pin
+					(num "24")
+					(name "P0.01")
+					(type "bidirectional")
+				)
+				(pin
+					(num "25")
+					(name "SWDIO")
+					(type "bidirectional")
+				)
+				(pin
+					(num "26")
+					(name "SWDCLK")
+					(type "input")
+				)
+				(pin
+					(num "27")
+					(name "P0.02")
+					(type "bidirectional")
+				)
+				(pin
+					(num "28")
+					(name "P0.03")
+					(type "bidirectional")
+				)
+				(pin
+					(num "29")
+					(name "P0.04")
+					(type "bidirectional")
+				)
+				(pin
+					(num "30")
+					(name "nRESET")
+					(type "input")
+				)
+				(pin
+					(num "31")
+					(name "ANT")
+					(type "passive")
+				)
+				(pin
+					(num "32")
+					(name "VSS_PA")
+					(type "power_in")
+				)
+				(pin
+					(num "33")
+					(name "DECRF")
+					(type "passive")
+				)
+				(pin
+					(num "34")
+					(name "XC1")
+					(type "passive")
+				)
+				(pin
+					(num "35")
+					(name "XC2")
+					(type "passive")
+				)
+				(pin
+					(num "36")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "37")
+					(name "P1.09")
+					(type "bidirectional")
+				)
+				(pin
+					(num "38")
+					(name "P1.10")
+					(type "bidirectional")
+				)
+				(pin
+					(num "39")
+					(name "P1.11/AIN4")
+					(type "bidirectional")
+				)
+				(pin
+					(num "40")
+					(name "P1.12/AIN5")
+					(type "bidirectional")
+				)
+				(pin
+					(num "41")
+					(name "P1.13/AIN6")
+					(type "bidirectional")
+				)
+				(pin
+					(num "42")
+					(name "P1.14/AIN7")
+					(type "bidirectional")
+				)
+				(pin
+					(num "43")
+					(name "DECA")
+					(type "passive")
+				)
+				(pin
+					(num "44")
+					(name "VSS")
+					(type "power_in")
+				)
+				(pin
+					(num "45")
+					(name "DECD")
+					(type "passive")
+				)
+				(pin
+					(num "46")
+					(name "DCC")
+					(type "passive")
+				)
+				(pin
+					(num "47")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "48")
+					(name "VDD")
+					(type "power_in")
+				)
+				(pin
+					(num "49")
+					(name "VSS_PAD")
+					(type "power_in")
+				)
+			)
+		)
+	)
+	(libraries
+		(library
+			(logical "Connector")
+			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Connector.kicad_sym")
+		)
+		(library
+			(logical "Connector_Generic")
+			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Connector_Generic.kicad_sym")
+		)
+		(library
+			(logical "Device")
+			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Device.kicad_sym")
+		)
+		(library
+			(logical "Memory_Flash")
+			(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Memory_Flash.kicad_sym")
+		)
+		(library
+			(logical "local")
+			(uri "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/local.kicad_sym")
+		)
+	)
+	(nets
+		(net
+			(code "1")
+			(name "ACC_CS")
+			(class "Default")
+			(node
+				(ref "R5")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U2")
+				(pin "2")
+				(pinfunction "CS_2")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "2")
+			(name "ACC_INT1")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "20")
+				(pinfunction "P2.09_20")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U2")
+				(pin "12")
+				(pinfunction "INT1_12")
+				(pintype "output")
+			)
+		)
+		(net
+			(code "3")
+			(name "ACC_INT2")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "21")
+				(pinfunction "P2.10_21")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U2")
+				(pin "11")
+				(pinfunction "INT2_11")
+				(pintype "output")
+			)
+		)
+		(net
+			(code "4")
+			(name "ACC_SA0")
+			(class "Default")
+			(node
+				(ref "R6")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U2")
+				(pin "3")
+				(pinfunction "SDO/SA0_3")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "5")
+			(name "ANT_FEED")
+			(class "Default")
+			(node
+				(ref "AE1")
+				(pin "1")
+				(pinfunction "A_1")
+				(pintype "input")
+			)
+			(node
+				(ref "C21")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L10")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "6")
+			(name "DCC")
+			(class "Default")
+			(node
+				(ref "L1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "46")
+				(pinfunction "DCC_46")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "7")
+			(name "DECA")
+			(class "Default")
+			(node
+				(ref "C8")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "33")
+				(pinfunction "DECRF_33")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "43")
+				(pinfunction "DECA_43")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "8")
+			(name "DECD")
+			(class "Default")
+			(node
+				(ref "C5")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C6")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C7")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "45")
+				(pinfunction "DECD_45")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "9")
+			(name "FLASH_CS")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "16")
+				(pinfunction "P2.05/CS_16")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U3")
+				(pin "1")
+				(pinfunction "~{CS}_1")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "10")
+			(name "FLASH_HOLD")
+			(class "Default")
+			(node
+				(ref "R4")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "7")
+				(pinfunction "~{HOLD}/~{RESET}/IO_{3}_7")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "11")
+			(name "FLASH_WP")
+			(class "Default")
+			(node
+				(ref "R3")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U3")
+				(pin "3")
+				(pinfunction "~{WP}/IO_{2}_3")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "12")
+			(name "GND")
+			(class "Default")
+			(node
+				(ref "BT1")
+				(pin "2")
+				(pinfunction "P-_(return)_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C1")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C10")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C11")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C12")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C14")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C15")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C16")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C17")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C18")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C19")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C2")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C20")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C21")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C22")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C23")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C24")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C25")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C3")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C4")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C5")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C6")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C7")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C8")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "C9")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "5")
+				(pinfunction "GND_5")
+				(pintype "power_in")
+			)
+			(node
+				(ref "J2")
+				(pin "2")
+				(pinfunction "Pin_2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R6")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "32")
+				(pinfunction "VSS_PA_32")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "44")
+				(pinfunction "VSS_44")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "49")
+				(pinfunction "VSS_PAD_49")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U2")
+				(pin "5")
+				(pinfunction "NC_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "U2")
+				(pin "6")
+				(pinfunction "GND_6")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U2")
+				(pin "7")
+				(pinfunction "RES_7")
+				(pintype "passive")
+			)
+			(node
+				(ref "U2")
+				(pin "8")
+				(pinfunction "GND_8")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U3")
+				(pin "4")
+				(pinfunction "GND_4")
+				(pintype "power_in")
+			)
+			(node
+				(ref "X2")
+				(pin "2")
+				(pinfunction "G_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "X2")
+				(pin "4")
+				(pinfunction "G_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "13")
+			(name "I2C_SCL")
+			(class "Default")
+			(node
+				(ref "R7")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "17")
+				(pinfunction "P2.06_17")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U2")
+				(pin "1")
+				(pinfunction "SCL/SPC_1")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "14")
+			(name "I2C_SDA")
+			(class "Default")
+			(node
+				(ref "R8")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "19")
+				(pinfunction "P2.08_19")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U2")
+				(pin "4")
+				(pinfunction "SDA/SDI/SDO_4")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "15")
+			(name "NFC1")
+			(class "Default")
+			(node
+				(ref "AE2")
+				(pin "1")
+				(pintype "input")
+			)
+			(node
+				(ref "C24")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "3")
+				(pinfunction "P1.02/NFC1_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "16")
+			(name "NFC2")
+			(class "Default")
+			(node
+				(ref "AE2")
+				(pin "2")
+				(pintype "input")
+			)
+			(node
+				(ref "C25")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "4")
+				(pinfunction "P1.03/NFC2_4")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "17")
+			(name "PIEZO_DRV")
+			(class "Default")
+			(node
+				(ref "LS1")
+				(pin "1")
+				(pinfunction "+_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R9")
+				(pin "2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "18")
+			(name "PIEZO_N")
+			(class "Default")
+			(node
+				(ref "LS1")
+				(pin "2")
+				(pinfunction "-_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "40")
+				(pinfunction "P1.12/AIN5_40")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "19")
+			(name "PIEZO_P")
+			(class "Default")
+			(node
+				(ref "R9")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "39")
+				(pinfunction "P1.11/AIN4_39")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "20")
+			(name "RF_50")
+			(class "Default")
+			(node
+				(ref "C20")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C22")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L10")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L4")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "21")
+			(name "RF_A")
+			(class "Default")
+			(node
+				(ref "C18")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L2")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "L3")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "22")
+			(name "RF_ANT")
+			(class "Default")
+			(node
+				(ref "C23")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "31")
+				(pinfunction "ANT_31")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "23")
+			(name "RF_B")
+			(class "Default")
+			(node
+				(ref "C19")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "L3")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "L4")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "24")
+			(name "SNS_EN")
+			(class "Default")
+			(node
+				(ref "C13")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R2")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "6")
+				(pinfunction "P1.05/AIN1_6")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "25")
+			(name "SPI_MISO")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "5")
+				(pinfunction "Pin_5_5")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "15")
+				(pinfunction "P2.04/SDI_15")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U3")
+				(pin "2")
+				(pinfunction "DO/IO_{1}_2")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "26")
+			(name "SPI_MOSI")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "4")
+				(pinfunction "Pin_4_4")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "13")
+				(pinfunction "P2.02/SDO_13")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U3")
+				(pin "5")
+				(pinfunction "DI/IO_{0}_5")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "27")
+			(name "SPI_SCK")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "3")
+				(pinfunction "Pin_3_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "12")
+				(pinfunction "P2.01/SCK_12")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U3")
+				(pin "6")
+				(pinfunction "CLK_6")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "28")
+			(name "SWDCLK")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "4")
+				(pinfunction "SWCLK_4")
+				(pintype "output")
+			)
+			(node
+				(ref "U1")
+				(pin "26")
+				(pinfunction "SWDCLK_26")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "29")
+			(name "SWDIO")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "2")
+				(pinfunction "SWDIO_2")
+				(pintype "bidirectional")
+			)
+			(node
+				(ref "U1")
+				(pin "25")
+				(pinfunction "SWDIO_25")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "30")
+			(name "SWO")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "6")
+				(pinfunction "SWO_6")
+				(pintype "input")
+			)
+			(node
+				(ref "U1")
+				(pin "18")
+				(pinfunction "P2.07/SWO_18")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "31")
+			(name "UWB_CS")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "6")
+				(pinfunction "Pin_6_6")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "23")
+				(pinfunction "P0.00_23")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "32")
+			(name "UWB_IRQ")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "7")
+				(pinfunction "Pin_7_7")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "24")
+				(pinfunction "P0.01_24")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "33")
+			(name "UWB_RST")
+			(class "Default")
+			(node
+				(ref "J2")
+				(pin "8")
+				(pinfunction "Pin_8_8")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "27")
+				(pinfunction "P0.02_27")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "34")
+			(name "VBAT_SNS")
+			(class "Default")
+			(node
+				(ref "C13")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "R2")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "5")
+				(pinfunction "P1.04/AIN0_5")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "35")
+			(name "VBAT_SNS_HI")
+			(class "Default")
+			(node
+				(ref "BT1")
+				(pin "3")
+				(pinfunction "P+_(sense)_3")
+				(pintype "passive")
+			)
+			(node
+				(ref "R1")
+				(pin "1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "36")
+			(name "VDD")
+			(class "Default")
+			(node
+				(ref "BT1")
+				(pin "1")
+				(pinfunction "P+_(current)_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C1")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C10")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C11")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C12")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C2")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C3")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C4")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "C9")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "J1")
+				(pin "1")
+				(pinfunction "VCC_1")
+				(pintype "power_in")
+			)
+			(node
+				(ref "J2")
+				(pin "1")
+				(pinfunction "Pin_1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R10")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R3")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R4")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R5")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R7")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "R8")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "10")
+				(pinfunction "VDD_10")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "22")
+				(pinfunction "VDD_22")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "36")
+				(pinfunction "VDD_36")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "47")
+				(pinfunction "VDD_47")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U1")
+				(pin "48")
+				(pinfunction "VDD_48")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U2")
+				(pin "10")
+				(pinfunction "VDD_IO_10")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U2")
+				(pin "9")
+				(pinfunction "VDD_9")
+				(pintype "power_in")
+			)
+			(node
+				(ref "U3")
+				(pin "8")
+				(pinfunction "VCC_8")
+				(pintype "power_in")
+			)
+		)
+		(net
+			(code "37")
+			(name "XC1")
+			(class "Default")
+			(node
+				(ref "C16")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "34")
+				(pinfunction "XC1_34")
+				(pintype "passive")
+			)
+			(node
+				(ref "X2")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "38")
+			(name "XC2")
+			(class "Default")
+			(node
+				(ref "C17")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "35")
+				(pinfunction "XC2_35")
+				(pintype "passive")
+			)
+			(node
+				(ref "X2")
+				(pin "3")
+				(pinfunction "3_3")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "39")
+			(name "XL1")
+			(class "Default")
+			(node
+				(ref "C14")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "1")
+				(pinfunction "P1.00/XL1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "X1")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "40")
+			(name "XL2")
+			(class "Default")
+			(node
+				(ref "C15")
+				(pin "1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "2")
+				(pinfunction "P1.01/XL2_2")
+				(pintype "passive")
+			)
+			(node
+				(ref "X1")
+				(pin "2")
+				(pinfunction "2_2")
+				(pintype "passive")
+			)
+		)
+		(net
+			(code "41")
+			(name "nRESET")
+			(class "Default")
+			(node
+				(ref "J1")
+				(pin "3")
+				(pinfunction "~{RESET}_3")
+				(pintype "open_collector")
+			)
+			(node
+				(ref "R10")
+				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "30")
+				(pinfunction "nRESET_30")
+				(pintype "input")
+			)
+		)
+		(net
+			(code "42")
+			(name "unconnected-(U1-P0.03-Pad28)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "28")
+				(pinfunction "P0.03_28")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "43")
+			(name "unconnected-(U1-P0.04-Pad29)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "29")
+				(pinfunction "P0.04_29")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "44")
+			(name "unconnected-(U1-P1.06{slash}AIN2-Pad7)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "7")
+				(pinfunction "P1.06/AIN2_7")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "45")
+			(name "unconnected-(U1-P1.07{slash}AIN3-Pad8)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "8")
+				(pinfunction "P1.07/AIN3_8")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "46")
+			(name "unconnected-(U1-P1.08{slash}EXTREF-Pad9)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "9")
+				(pinfunction "P1.08/EXTREF_9")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "47")
+			(name "unconnected-(U1-P1.09-Pad37)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "37")
+				(pinfunction "P1.09_37")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "48")
+			(name "unconnected-(U1-P1.10-Pad38)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "38")
+				(pinfunction "P1.10_38")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "49")
+			(name "unconnected-(U1-P1.13{slash}AIN6-Pad41)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "41")
+				(pinfunction "P1.13/AIN6_41")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "50")
+			(name "unconnected-(U1-P1.14{slash}AIN7-Pad42)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "42")
+				(pinfunction "P1.14/AIN7_42")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "51")
+			(name "unconnected-(U1-P2.00-Pad11)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "11")
+				(pinfunction "P2.00_11")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+		(net
+			(code "52")
+			(name "unconnected-(U1-P2.03-Pad14)")
+			(class "Default")
+			(node
+				(ref "U1")
+				(pin "14")
+				(pinfunction "P2.03_14")
+				(pintype "bidirectional+no_connect")
+			)
+		)
+	)
+)
