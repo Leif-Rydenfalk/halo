@@ -449,3 +449,42 @@ conclusion drawn from JLCPCB's catalogue alone. DigiKey holds **398,982** of tha
 reading a stale snapshot: a true number, and a claim wider than the thing that was measured.** The
 question to ask a verdict is not only *when* was this read, but *where did I look, and what did I not
 look at.*
+
+---
+
+## An empty answer is not a measurement — and the tell is that it cost nothing
+
+*Added 2026-09-05, after the same shape bit three different people on this
+machine in one morning. It has its own section because it is the most common
+of all the directions on this page and the easiest to miss: nothing is wrong
+with the output, because there is no output.*
+
+| the probe | what it returned | what it meant | what it nearly caused |
+|---|---|---|---|
+| `lsof` with no `timeout` binary present | rc 127, **empty** | the command did not exist | a liveness probe read the absence of output as "nothing is holding this file" |
+| `fab bom cost --live` on a matched line | a confident verdict | it never fetched anything for that line | a stock verdict wrong in **both** directions, quoted as live |
+| `find … -newermt '-40 minutes'` | **empty** | BSD `find` rejects that relative format and printed nothing | "no launchers were created", escalating a benign fan-out into a security question |
+
+**The tell, and it generalises:** *the negative result required no work to
+produce.* A search that genuinely looked and found nothing takes about as long
+as one that finds something. A search that failed to start returns instantly.
+When a probe comes back empty and fast, ask what it would have had to do to
+answer, and whether it did any of it.
+
+**The three cheap defences:**
+
+1. **Check the exit status, always.** An empty result with a non-zero status is
+   a failed probe, not a clean one. Two of the three above announce themselves
+   this way and nobody looked.
+2. **Give every probe a positive control.** Run it once against something you
+   know it should find. A probe that has never returned a hit is not known to
+   be capable of returning one — the same rule as an assertion never seen to
+   fail.
+3. **Prefer a tool that must name what it examined.** `ls -lt` on the directory
+   answered in one command what the broken `find` could not, because it reports
+   the contents rather than a filtered opinion about them.
+
+This is the sibling of the rule at the top of this page. There, a tool reported
+success it had not earned. Here, a tool reports an **absence** it has not earned
+— and absence is more persuasive, because it looks like the world being simple.
+
