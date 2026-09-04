@@ -18,12 +18,35 @@ standard, applied to the one tool we hand the board to wholesale.
 
 Exit 0 PASS · 1 FAIL · 2 CANNOT DETERMINE.
 
-The seven assertions, each with the sentence it defeats:
+A NOTE ON EXACTNESS, AND THE FALSE FAIL THAT PUT IT HERE. The first
+version of R1 required the protected segments to be geometrically IDENTICAL,
+rounded to 1 nm. On the first real routed board it reported **235 segments
+lost — the whole antenna and both halves of the NFC coil** — and that was
+wrong. The measured worst displacement of any protected segment was
+**0.000071 mm**. Specctra's own header on this board says `(resolution um 10)`:
+one integer step in the DSN and the SES is 0.1 um = 0.0001 mm, so 71 nm is
+LESS THAN ONE UNIT of the format the copper travelled through. Nothing was
+rerouted; the coordinates were quantised and came back.
 
-  R1 protected_copper_identical  could PASS while the router rerouted the
+So the match tolerance is **read from the interchange file's own resolution**
+and is one unit. That is a fact about the format, not a knob — it is not
+widened to make a board pass, and `--dsn` is required for R1 to be graded at
+all, because a tolerance nobody can point at a source for is the defect
+`docs/TOOLS-THAT-LIE.md` records as a physical law becoming a tolerance.
+A false FAIL costs exactly what a false PASS costs: this one would have made
+the lane revert a routing run that was correct.
+
+The eight assertions, each with the sentence it defeats:
+
+  R1 protected_copper_preserved  could PASS while the router rerouted the
                                  antenna and the DRC stayed green, because a
                                  rerouted antenna is still electrically
-                                 connected — it just is not an antenna
+                                 connected — it just is not an antenna.
+                                 Matched WITHIN ONE INTERCHANGE UNIT, not
+                                 exactly: see quantisation below
+  R8 protected_length_preserved  could PASS while every segment matched a
+                                 neighbour and the conductor still came back
+                                 a different length
   R2 protected_vias_identical    the same, for the vias inside those nets
   R3 unconnected_improved        could PASS while the router achieved nothing
                                  and the import silently wrote the old board
@@ -135,6 +158,55 @@ def edge_cuts(text):
     return frozenset(keys)
 
 
+def interchange_tolerance_mm(dsn_or_ses):
+    """One integer step of the Specctra file, in mm. -> (mm, why)
+
+    `(resolution um 10)` means the unit is the micrometre and there are 10
+    steps to it, so one step is 0.1 um = 0.0001 mm. Copper that goes out
+    through this file and comes back is quantised to that grid, and a check
+    that demands more precision than the format carries reports every routed
+    board as destroyed.
+    """
+    p = pathlib.Path(dsn_or_ses)
+    if not p.is_file():
+        return None, f"no interchange file at {p}"
+    m = re.search(r"\(resolution\s+(\w+)\s+([\d.]+)\)", p.read_text(errors="replace"))
+    if not m:
+        return None, f"{p.name} declares no (resolution ...)"
+    unit, steps = m.group(1).lower(), float(m.group(2))
+    per_unit_mm = {"um": 1e-3, "mm": 1.0, "mil": 0.0254, "inch": 25.4,
+                   "cm": 10.0}.get(unit)
+    if per_unit_mm is None or steps <= 0:
+        return None, f"{p.name} declares (resolution {unit} {steps}), which is not a length"
+    return per_unit_mm / steps, f"{p.name}: (resolution {unit} {steps:g}) = one step is {per_unit_mm / steps:g} mm"
+
+
+def _match(seg, pool, tol):
+    """The pool segment that is `seg` moved by less than `tol`, or None.
+
+    Same layer and same width required exactly — those are not quantised the
+    way coordinates are, and a 0.127 mm route standing in for a 0.6 mm feed is
+    not the same conductor. Endpoints are compared both ways round because
+    nothing promises the round trip keeps a segment's direction.
+    """
+    best, bestd = None, None
+    for c in pool:
+        if c[5] != seg[5] or c[4] != seg[4]:
+            continue
+        fwd = max(abs(c[0] - seg[0]), abs(c[1] - seg[1]),
+                  abs(c[2] - seg[2]), abs(c[3] - seg[3]))
+        rev = max(abs(c[2] - seg[0]), abs(c[3] - seg[1]),
+                  abs(c[0] - seg[2]), abs(c[1] - seg[3]))
+        d = min(fwd, rev)
+        if bestd is None or d < bestd:
+            best, bestd = c, d
+    return (best, bestd) if (bestd is not None and bestd <= tol) else (None, bestd)
+
+
+def _seglen(s):
+    return ((s[2] - s[0]) ** 2 + (s[3] - s[1]) ** 2) ** 0.5
+
+
 def drc(pcb, project=None):
     """kicad-cli's own DRC on this file. -> (report, error)
 
@@ -177,6 +249,10 @@ def main():
     ap.add_argument("after")
     ap.add_argument("--protect", default="ANT_FEED,NFC1,NFC2",
                     help="comma-separated nets whose copper must be unchanged")
+    ap.add_argument("--dsn", help="the .dsn or .ses the copper travelled "
+                                  "through. Its (resolution ...) IS the match "
+                                  "tolerance for the protected nets; without "
+                                  "it R1 and R8 are CANNOT DETERMINE")
     ap.add_argument("--json")
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args()
@@ -190,30 +266,69 @@ def main():
     prot = [n for n in a.protect.split(",") if n]
     rows = []
 
-    # ---- R1 protected_copper_identical ----------------------------------
+    # ---- R1 protected_copper_preserved / R8 protected_length_preserved --
     bs, as_ = segments(bt), segments(at)
-    lost, gained = {}, {}
-    for n in prot:
-        b, c = bs.get(n, frozenset()), as_.get(n, frozenset())
-        if b - c:
-            lost[n] = len(b - c)
-        if c - b:
-            gained[n] = len(c - b)
-    n_prot_before = sum(len(bs.get(n, ())) for n in prot)
-    rows.append(row(
-        "protected_copper_identical", sum(lost.values()), {"eq": 0},
-        (f"every segment on {', '.join(prot)} survives the round trip "
-         f"byte-for-geometry: {n_prot_before} segment(s) in, "
-         f"{sum(len(as_.get(n, ())) for n in prot)} out"
-         + (f"; {sum(gained.values())} ADDED, which is the router extending a "
-            f"protected net rather than rerouting it: {gained}"
-            if gained else ""))
-        if not lost else
-        (f"THE ROUTER CHANGED COPPER IT WAS TOLD NOT TO TOUCH. Segments lost "
-         f"per net: {lost}. These shapes were solved (a quarter-wave element, "
-         f"an involute spiral); a rerouted one is still electrically "
-         f"connected and is no longer the thing that was simulated"),
-        PASS if not lost else FAIL, "segments lost"))
+    tol, tolwhy = (None, "no --dsn given")
+    if a.dsn:
+        tol, tolwhy = interchange_tolerance_mm(a.dsn)
+    if tol is None:
+        for nm in ("protected_copper_preserved", "protected_length_preserved"):
+            rows.append(row(nm, None, {},
+                            f"the match tolerance must come from the interchange "
+                            f"file's own (resolution ...) and it could not: "
+                            f"{tolwhy}. Copper that went through Specctra is "
+                            f"quantised to that grid; demanding more precision "
+                            f"than the format carries reports every routed board "
+                            f"as destroyed, and inventing a tolerance instead is "
+                            f"how a limit stops meaning anything", CD, "mm"))
+    else:
+        lost, worst, matched_len_b, matched_len_a, extra = {}, 0.0, 0.0, 0.0, {}
+        for n in prot:
+            b, c = bs.get(n, frozenset()), as_.get(n, frozenset())
+            used = set()
+            for s in b:
+                m, d = _match(s, [x for x in c if x not in used], tol)
+                if d is not None:
+                    worst = max(worst, d) if m is not None else worst
+                if m is None:
+                    lost[n] = lost.get(n, 0) + 1
+                else:
+                    used.add(m)
+                    matched_len_b += _seglen(s)
+                    matched_len_a += _seglen(m)
+            if len(c) - len(used):
+                extra[n] = len(c) - len(used)
+        n_in = sum(len(bs.get(n, ())) for n in prot)
+        rows.append(row(
+            "protected_copper_preserved", round(worst, 7), {"lte": tol},
+            (f"all {n_in} segment(s) on {', '.join(prot)} came back, each within "
+             f"{worst * 1e6:.0f} nm of where it was sent — under the {tol * 1e6:.0f} nm "
+             f"the format can carry ({tolwhy})"
+             + (f". {sum(extra.values())} segment(s) ADDED on those nets "
+                f"({extra}) — the router extending a protected net to reach its "
+                f"pads, which is routing, not rerouting" if extra else ""))
+            if not lost else
+            (f"THE ROUTER CHANGED COPPER IT WAS TOLD NOT TO TOUCH. Segments with "
+             f"no match within {tol * 1e6:.0f} nm, per net: {lost}. These shapes "
+             f"were solved (a quarter-wave element, an involute spiral); a "
+             f"rerouted one is still electrically connected and is no longer the "
+             f"thing that was simulated"),
+            PASS if not lost else FAIL, "mm worst displacement"))
+        d_len = abs(matched_len_a - matched_len_b)
+        # One quantisation step per endpoint, per matched segment: the most the
+        # grid can move a length without anything having been redrawn.
+        budget = 2 * tol * max(1, sum(len(bs.get(n, ())) for n in prot))
+        rows.append(row("protected_length_preserved", round(d_len, 7),
+                        {"lte": round(budget, 7)},
+                        f"the matched conductor is {matched_len_b:.4f} mm going out "
+                        f"and {matched_len_a:.4f} mm coming back, a difference of "
+                        f"{d_len * 1e6:.0f} nm against a quantisation budget of "
+                        f"{budget * 1e6:.0f} nm (two grid steps per segment). The "
+                        f"NFC coil's inductance and the element's resonance are "
+                        f"both functions of this length"
+                        + ("" if d_len <= budget else
+                           " — MORE THAN QUANTISATION CAN EXPLAIN"),
+                        PASS if d_len <= budget else FAIL, "mm"))
 
     # ---- R2 protected_vias_identical ------------------------------------
     bv, av = vias(bt), vias(at)
@@ -226,6 +341,7 @@ def main():
                     PASS if not vlost else FAIL, "vias lost"))
 
     # ---- R5 copper_actually_added ---------------------------------------
+    bs, as_ = segments(bt), segments(at)
     nb = sum(len(v) for v in bs.values())
     na = sum(len(v) for v in as_.values())
     nvb = sum(len(v) for v in bv.values())
@@ -304,6 +420,7 @@ def main():
            "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
            "before": str(bp.resolve()), "after": str(ap_.resolve()),
            "protected_nets": prot,
+           "interchange_file": a.dsn,
            "drc_before": db, "drc_after": da,
            "verdict": verdict, "counts": counts, "rows": rows}
     if not a.quiet:
