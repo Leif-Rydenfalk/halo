@@ -820,6 +820,15 @@ for _ref, _part in _sch.parts.items():
             continue
         _fp.SetField(str(_k), str(_v))
         _fielded += 1
+    # AND HIDE THEM. A KiCad footprint field is a TEXT ITEM, and a new one
+    # arrives VISIBLE and on the silkscreen. Copying 324 fields across 61
+    # parts therefore put 324 strings - order codes, prices, stock figures,
+    # paragraphs of Note - onto the silk of a 26 mm disc, and the DRC went
+    # from 10 violations to 584: 199 silk overlaps, 199 silk over copper,
+    # 101 off the board edge and 75 unmirrored on the back. The fields are
+    # wanted (the BOM reads them); the printing is not.
+    for _fld in _fp.GetFields():
+        _fld.SetVisible(False)
 
 
 # ---------------------------------------------------------------------------

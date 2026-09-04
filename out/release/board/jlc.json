@@ -1,6 +1,6 @@
 {
   "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
-  "generated": "2026-09-04T10:13:15Z",
+  "generated": "2026-09-04T10:40:07Z",
   "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
   "bom_lines": 24,
   "cpl_rows": 44,
@@ -20,72 +20,7 @@
   ],
   "notes": [
     {
-      "ref": "TP8",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP10",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "FID2",
-      "verdict": "POS-ONLY",
-      "why": "exclude_from_bom: placed but not ordered"
-    },
-    {
-      "ref": "LS1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
       "ref": "AE1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP2",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP4",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP7",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "FID1",
-      "verdict": "POS-ONLY",
-      "why": "exclude_from_bom: placed but not ordered"
-    },
-    {
-      "ref": "J1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP9",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP6",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP3",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP11",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
@@ -100,9 +35,79 @@
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
+      "ref": "FID2",
+      "verdict": "POS-ONLY",
+      "why": "exclude_from_bom: placed but not ordered"
+    },
+    {
       "ref": "TP1",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP10",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP3",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP11",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP4",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "FID1",
+      "verdict": "POS-ONLY",
+      "why": "exclude_from_bom: placed but not ordered"
+    },
+    {
+      "ref": "TP7",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP9",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP8",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP6",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "LS1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "J1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C15",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
       "ref": "C17",
@@ -110,17 +115,12 @@
       "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
-      "ref": "BT1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "C16",
+      "ref": "C14",
       "verdict": "CANNOT DETERMINE",
       "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
     {
-      "ref": "C15",
+      "ref": "C16",
       "verdict": "CANNOT DETERMINE",
       "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
     },
@@ -130,9 +130,9 @@
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C14",
-      "verdict": "CANNOT DETERMINE",
-      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+      "ref": "BT1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     }
   ],
   "verdict": "CANNOT DETERMINE",

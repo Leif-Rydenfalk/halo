@@ -1,6 +1,6 @@
 # JLCPCB assembly files — halo_rev_a.kicad_pcb
 
-**CANNOT DETERMINE** — 4 placed part(s) carry no LCSC number; JLC cannot source them. Generated 2026-09-04T10:13:15Z.
+**CANNOT DETERMINE** — 4 placed part(s) carry no LCSC number; JLC cannot source them. Generated 2026-09-04T10:40:07Z.
 
 - 24 BOM lines, 44 CPL rows
 - place-file origin: [0.0, 0.0] mm (KiCad's aux axis origin; JLC coordinates are relative to it)
@@ -38,26 +38,26 @@
 
 ## Notes
 
-- [SKIPPED] `TP8` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP10` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [POS-ONLY] `FID2` — exclude_from_bom: placed but not ordered
-- [SKIPPED] `LS1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
 - [SKIPPED] `AE1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP2` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP4` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP7` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [POS-ONLY] `FID1` — exclude_from_bom: placed but not ordered
-- [SKIPPED] `J1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP9` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP6` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP3` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [SKIPPED] `TP11` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
 - [SKIPPED] `TP5` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
 - [SKIPPED] `J2` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [POS-ONLY] `FID2` — exclude_from_bom: placed but not ordered
 - [SKIPPED] `TP1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [CANNOT DETERMINE] `C17` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
-- [SKIPPED] `BT1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
-- [CANNOT DETERMINE] `C16` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
+- [SKIPPED] `TP2` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP10` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP3` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP11` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP4` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [POS-ONLY] `FID1` — exclude_from_bom: placed but not ordered
+- [SKIPPED] `TP7` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP9` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP8` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `TP6` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `LS1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `J1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
 - [CANNOT DETERMINE] `C15` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
-- [SKIPPED] `AE2` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [CANNOT DETERMINE] `C17` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
 - [CANNOT DETERMINE] `C14` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
+- [CANNOT DETERMINE] `C16` — no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ...
+- [SKIPPED] `AE2` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
+- [SKIPPED] `BT1` — footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)
