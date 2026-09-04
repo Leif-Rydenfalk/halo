@@ -1,6 +1,6 @@
 # DFM — halo_rev_a.kicad_pcb against `jlc-4layer`
 
-**FAIL** — 26 PASS, 2 FAIL, 0 CANNOT DETERMINE, of the PASSes 3 VACUOUS (the board carries no item the rule governs — satisfied, not covered). Generated 2026-09-04T21:58:27Z.
+**FAIL** — 26 PASS, 2 FAIL, 0 CANNOT DETERMINE, of the PASSes 3 VACUOUS (the board carries no item the rule governs — satisfied, not covered). Generated 2026-09-04T22:06:53Z.
 
 *Rule set: JLCPCB 4-layer FR4, 1 oz outer / 0.5 oz inner — published capability limits*
 
@@ -12,7 +12,7 @@ Board: 25.6138 x 26.0 mm, 4 copper layers, 0.6 mm, 62 footprints, 49 vias, 255 t
 
 | Rule | Limit | Measured | Verdict | How | Why |
 |---|--:|--:|---|---|---|
-| **smd_pad_min** — Minimum SMD pad size (each side) | 0.25 | 0.15 | FAIL | geometry | narrowest side of any of 254 SMD pads |
+| **smd_pad_min** — Minimum SMD pad size (each side) | 0.25 | 0.15 | FAIL | geometry | narrowest side of any of 254 SMD pads. Solderable lands: 0.2 mm over 175; net-tie pads (copper join, nothing soldered to them): 0.15 mm over 2; unnumbered paste-relief apertures (no land): 0.318 mm over 77 |
 | **smt_min_package** — Smallest component package | — | C_0201_0603Metric, L_0201_0603Metric, R_0201_0603Metric | FAIL | footprint names | 3 footprint(s) smaller than the Economic 0402 floor: ['C_0201_0603Metric', 'L_0201_0603Metric', 'R_0201_0603Metric'] |
 | **blind_buried_vias** — Blind / buried vias | — | 0 | PASS | geometry | 0 blind/buried/micro via(s); the fab makes through holes only |
 | **board_size_max** — Maximum board dimensions, 4-layer FR4 | 663 x 593 | 25.6138 x 26.0 | PASS | geometry | 25.6138 x 26.0 mm against 663 x 593 mm |

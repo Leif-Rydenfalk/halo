@@ -1,7 +1,7 @@
 {
  "$halo": 1,
  "tool": "tools/check_cpl_rotations.py",
- "generated": "2026-09-04T21:49:36+00:00",
+ "generated": "2026-09-04T22:06:40+00:00",
  "cpl": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-CPL.csv",
  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
  "table": "/Users/leifrydenfalk/dev/ce-workshop/ce-fab/data/vendor/transformations.csv",

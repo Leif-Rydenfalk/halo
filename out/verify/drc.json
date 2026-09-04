@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T05:58:22",
+    "date": "2026-09-05T06:06:48",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -137,12 +137,12 @@
                     "uuid": "858ab5e6-60e8-4f14-9b8f-3f8ac2960340"
                 },
                 {
-                    "description": "Ledare [GND] på F.Cu, längd 1.2500 mm",
+                    "description": "Zon [GND] på B.Cu, prioritetsnivå 0",
                     "pos": {
-                        "x": 21.803328,
-                        "y": 11.128795
+                        "x": 25.25,
+                        "y": 13.0
                     },
-                    "uuid": "dce08651-3037-42b6-994b-2215b47ddaea"
+                    "uuid": "459d674e-fa9d-4504-bfc9-216e1ee8a0cf"
                 }
             ],
             "severity": "error",
@@ -160,12 +160,12 @@
                     "uuid": "aeab0f6d-2985-4a4c-8089-4a1590b55cd1"
                 },
                 {
-                    "description": "Via [VDD] på F.Cu - B.Cu",
+                    "description": "Ledare [VDD] på B.Cu, längd 0.8800 mm",
                     "pos": {
-                        "x": 10.520869,
-                        "y": 15.77219
+                        "x": 11.3875,
+                        "y": 15.925
                     },
-                    "uuid": "65f677cb-c232-431d-8d7d-4390045f672f"
+                    "uuid": "9bdb5463-01c4-4f30-8f42-c55b83c8d6dc"
                 }
             ],
             "severity": "error",
@@ -773,12 +773,12 @@
             "description": "Missing connection between items",
             "items": [
                 {
-                    "description": "Ledare [ANT_FEED] på F.Cu, längd 0.9379 mm",
+                    "description": "Ledare [ANT_FEED] på F.Cu, längd 1.3384 mm",
                     "pos": {
-                        "x": 19.287615,
-                        "y": 4.020355
+                        "x": 20.335091,
+                        "y": 4.853556
                     },
-                    "uuid": "e03414c4-3da1-4bbe-880a-2d3211e3a804"
+                    "uuid": "ed58d1ae-90ae-4752-8e59-a69332aecfe1"
                 },
                 {
                     "description": "Lödyta 2 [ANT_FEED] av L10 på F.Cu",
@@ -1241,12 +1241,12 @@
                     "uuid": "e83eae8d-fb10-459a-9bf0-06c7cccb8c02"
                 },
                 {
-                    "description": "Ledare [NFC2] på B.Cu, längd 0.6274 mm",
+                    "description": "Ledare [NFC2] på B.Cu, längd 0.6276 mm",
                     "pos": {
-                        "x": 3.716191,
-                        "y": 8.450952
+                        "x": 4.006751,
+                        "y": 7.894674
                     },
-                    "uuid": "acd8dce5-c8bf-41b9-8124-d2bbd3efd12c"
+                    "uuid": "6831d1ac-ec40-42a2-84af-e493a470bdf4"
                 }
             ],
             "severity": "error",

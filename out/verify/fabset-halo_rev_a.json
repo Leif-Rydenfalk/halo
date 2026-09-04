@@ -1,7 +1,7 @@
 {
  "$halo": 1,
  "tool": "tools/check_fabset.py",
- "generated": "2026-09-04T21:49:35+00:00",
+ "generated": "2026-09-04T22:06:39+00:00",
  "fabset": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
  "verdict": "PASS",
@@ -154,12 +154,12 @@
   },
   {
    "name": "export_is_fresh",
-   "value": 415.0,
+   "value": 1439.0,
    "unit": "s",
    "rule": {
     "gte": 0
    },
-   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T21:49:34+00:00 vs board saved 2026-09-04T21:42:39.036077+00:00: export is at or after the board",
+   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T22:06:38+00:00 vs board saved 2026-09-04T21:42:39.036077+00:00: export is at or after the board",
    "verdict": "PASS"
   }
  ],

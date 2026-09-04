@@ -25,8 +25,9 @@ fit inside a Ø31.87 shell. Lane M's `design.py` fixes the PCB, and it has
 three 26° keying notches cut to R12.60 at 0/120/240° so it can only be
 assembled one way round.
 
-**61 parts. 38 nets. 40 placed for assembly. Regenerated 2026-09-05 — see
-§3 for what was re-measured, and §5 for what is still not done.**
+**61 parts. 38 nets. 40 placed for assembly. 49 vias, 255 track segments.
+Regenerated 2026-09-05 06:06 — see §2 for every file and what its check said,
+§3 for the numbers, and §5 for what is still not done.**
 
 ---
 
@@ -36,19 +37,25 @@ assembled one way round.
 
 | file | what it is |
 |---|---|
-| `halo_rev_a-gerber-jlc.zip` | **the board.** 13 files, named for JLCPCB's published table, layer check PASS, plus two Excellon drills (50 plated holes on the routed board) and a drill map |
+| `halo_rev_a-gerber-jlc.zip` | **the board.** 13 members, named for JLCPCB's published table; every loose Gerber and drill has a byte-identical member (`zip_matches_disk` PASS) |
 | `gerber/` | the same files unzipped, for inspection |
 | `gerber/halo_rev_a-F_Cu.gtl` … `-B_Cu.gbl` | the four copper layers |
 | `gerber/halo_rev_a-Edge_Cuts.gm1` | the Ø26.00 outline with its three keying notches |
-| `gerber/halo_rev_a-PTH.drl`, `-NPTH.drl` | drills, Excellon — **50 plated hits, matching the board's 50 vias; NPTH legitimately empty, the board has no non-plated holes** |
+| `gerber/halo_rev_a-PTH.drl` | plated drills, Excellon — **49 holes, all T1C0.250, against the board's 49 vias + 0 thru-hole pads. Exactly 49, not "at least 49"** |
+| `gerber/halo_rev_a-NPTH.drl` | non-plated drills — **0 holes against the board's 0 `np_thru_hole` pads.** Empty because the board has no non-plated holes, and the file says `TF.FileFunction,NonPlated,1,4,NPTH` itself rather than being classified by its name |
+| `gerber/halo_rev_a-PTH-drl_map.gbr`, `-NPTH-drl_map.gbr` | the human-readable drill maps KiCad writes beside each Excellon |
+| `gerber/halo_rev_a-F_Mask.gts`, `-B_Mask.gbs` | solder mask, both faces |
+| `gerber/halo_rev_a-F_Silkscreen.gto`, `-B_Silkscreen.gbo` | silkscreen — deliberately almost empty, see §6 |
+| `gerber/halo_rev_a-job.gbrjob` | the Gerber job file; it parses and names 9 files |
+| `fabset-check.json` | **the pack's own gate, machine-readable: 15 PASS / 0 FAIL / 0 CANNOT DETERMINE.** If this file does not say PASS the pack must not be sent |
 | `STACKUP.md` | the four layers, dielectrics, finish, and the impedance target with the reason it is not yet met |
 
-**These Gerbers were opened and checked, not trusted.** `F_Cu` carries 3700
-draw commands, `B_Cu` 2160, `In1` 1208, `In2` 2284, and `Edge_Cuts` 720. A
-gerber export that silently produces an empty file has bitten this project
-before — the 2026-09-04 pack shipped drill files with **zero holes** — so
-`tools/build_fabset.sh` now refuses to cut a pack its own read-back does not
-pass.
+**These Gerbers were opened and checked, not trusted.** `F_Cu` carries 3674
+metal-depositing operations, `B_Cu` 2117, `In1` 1169, `In2` 2293, and
+`Edge_Cuts` 720 outline points. A Gerber export that silently produces an
+empty file has bitten this project before — the 2026-09-04 pack shipped drill
+files with **zero holes** — so `tools/build_fabset.sh` cuts the pack and reads
+it back in one step and refuses to exit 0 unless the read-back passes.
 
 ### Assembly
 
@@ -67,6 +74,31 @@ pass.
 | `sim/halo-rev-a-nfc/` | **PASS** — the NFC coil's inductance and tuning |
 | `sim/halo-rev-a-2g4/` | **FAIL** — the 2.4 GHz element. See §4. |
 
+### Verification (in `out/verify/`, one file per check, all re-run 2026-09-05 06:06)
+
+| file | the check | verdict |
+|---|---|---|
+| `fabset-halo_rev_a.json` (= `board/fabset-check.json`) | `check_fabset.py` — the pack read back and cross-checked against the board | **PASS 15 / 0 / 0** |
+| `dfm-jlc-4layer.json`, `.md` | `fab dfm --fab jlc-4layer` — the board against JLCPCB's published capability lines | **FAIL 26 / 2 / 0**, 3 PASSes vacuous |
+| `drc.json` | `kicad-cli pcb drc --severity-all` under the fab's netclass | **3 violations, 0 errors, 81 unconnected** |
+| `drc-liveness.json`, `drc-liveness-per-item.json` | the same DRC with every custom rule at 40× its limit, run both with and without `--all-track-errors`, to prove each rule can fail | 511 / 502 violations |
+| `bom-identity-check.json` | `check_bom_identity.py` — every BOM line's LCSC code against the catalogue by MPN, value, class and package | **PASS 138 / 0 / 0** over 23 lines |
+| `cpl-rotations-check.json` | `check_cpl_rotations.py` — every CPL row re-derived from `kicad-cli pcb export pos` incl. the bottom-side flip | **PASS 40 / 40 agree** |
+| `lcsc-netlist-check.json` | `check_lcsc_netlist.py` — the exported netlist's order codes against the catalogue | **PASS 50 / 0 / 0**, 23 distinct codes |
+| `convergence-integrity.json` | `check_convergence.py` — can the convergence table's rows change state, and did anything measure them | **FAIL 47 / 18 / 18** — §5.12 |
+| `prove-checks.json` | `prove_checks.py` — every assertion above, watched going red on an artifact broken on purpose | **PASS 32 of 32** |
+| `halo_rev_a.kicad_pcb`, `.kicad_pro`, `.kicad_dru` | the copy `fab dfm` graded, with the fab's constraints written into the project and the six custom rules into the `.kicad_dru` | the artifacts the DRC actually read |
+| `fab-jlc.log` | `fab jlc`'s own output, including its bottom-flip cross-check FAIL | see §3 |
+
+**The gate is one command and its exit code is the verdict:**
+
+```
+tools/build_fabset.sh          # export, then read the pack back
+                               # exit 0 = FABSET GATE: PASS, the pack
+                               #          describes the board
+                               # exit 1 = do NOT mark the artifact READY
+```
+
 ### Sources (in `electronics/halo_rev_a/`)
 
 `schematic.py`, `board.py`, `footprints.py` and `sim/` generate everything
@@ -80,14 +112,16 @@ at the top of each file.
 | check | command | result |
 |---|---|---|
 | Electrical rules | `kicad-cli sch erc` | **PASS — 0 errors, 0 warnings** (2026-09-05 02:07; `bin/sch` adds 13 footprint-link notes about its own library config, none an ERC finding) |
-| Design rules | `kicad-cli pcb drc --schematic-parity` | **9 violations, 80 unconnected** — 3 dangling track ends, 2 crossings, 2 NFC1/NFC2 shorts, 1 clearance, 1 hole clearance. See §5.1 |
+| Design rules | `kicad-cli pcb drc --severity-all` | **3 violations, 81 unconnected** (2026-09-05 06:06). All three are `track_dangling` **warnings**; there are **0 errors**. The 2026-09-05 02:37 board had 12 (4 shorting items, 3 dangling, 2 crossings, 2 hole clearance, 1 clearance) — the nine that are gone were the two crossed net-tie stubs and the copper around them. Each surviving warning is named in §5.1 |
 | Order codes vs schematic | `tools/check_lcsc_netlist.py` | **PASS — 23 of 23 distinct codes match the catalogue on MPN and package** |
 | BOM identity | `tools/check_bom_identity.py` | **PASS — 0 fail**, 23 lines, one code per value |
 | CPL vs KiCad | `tools/check_cpl_rotations.py` | **40/40 agree**, positions and rotations incl. the bottom-side flip |
-| Manufacturability | `fab dfm` (re-run 2026-09-05) | **20 PASS, 4 FAIL, 4 CANNOT DETERMINE** — §5.2 |
+| Manufacturability | `fab dfm --fab jlc-4layer` | **26 PASS, 2 FAIL, 0 CANNOT DETERMINE**, of the PASSes **3 vacuous** — §5.2. Was 20/4/4 on 2026-09-05 02:37; the four CANNOT DETERMINEs were a defect in `fab dfm` itself, fixed and proved, see §3.1 |
 | Component height | `board.py height_check()` | **58 PASS, 4 FAIL** — L1, U1, U2, X1 over the cell; see §5.3 |
-| Assembly files | `tools/build_fabset.sh` | 23 BOM lines, 40 CPL rows, gerber layer check PASS, gate exit 0 |
-| **The pack read back** | `tools/check_fabset.py` | **11 PASS, 0 FAIL** — see below |
+| Assembly files | `tools/build_fabset.sh` | 23 BOM lines, 40 CPL rows, **gate exit 0 — FABSET GATE: PASS** |
+| **The pack read back** | `tools/check_fabset.py` | **15 PASS, 0 FAIL, 0 CANNOT DETERMINE** — see below |
+| Every check proved to fire | `tools/prove_checks.py` | **32 of 32**, exit 0 — each assertion above was watched going red on an artifact broken on purpose |
+| Convergence table integrity | `tools/check_convergence.py` | **FAIL — 47 PASS, 18 FAIL, 18 CANNOT DETERMINE.** No board row fails it any more; the residue is the ce-rf antenna case (lane T3) and four product rows no lane has measured yet. See §5.6 |
 
 ### The pack, checked by reading it back
 
@@ -95,18 +129,56 @@ Lane V1's `check_fabset.py` opens these files as a board house would, rather
 than trusting the exporter's exit code. On the 2026-09-05 pack:
 
 ```
-PASS  job_file_parses        9 files named
-PASS  layer_count            4 declared, 4 named, 4 on disk
-PASS  copper_has_geometry    B_Cu 2160 ops, F_Cu 3700, In1 1208, In2 2284
-PASS  format_spec_present    11 Gerbers, all carry %FSLA..% and %MO..%
-PASS  apertures_defined      every D-code selected is defined
-PASS  drill_has_hits         50 holes   <-- the 2026-09-04 defect, closed
-PASS  drill_covers_board     board declares 50 holes; drill files carry 50
-PASS  outline_has_extent     720 points, 25.6138 x 26.0000 mm
-PASS  outline_matches_spec   worst deviation 0.3862 mm against 26.0
-PASS  zip_matches_disk       13 members, every loose file byte-identical
-PASS  export_is_fresh        export is after the board was saved
+PASS  job_file_parses          9 files named
+PASS  layer_count              4 declared, 4 named, 4 on disk
+PASS  copper_has_geometry      F_Cu 3674 ops, B_Cu 2117, In1 1169, In2 2293
+PASS  format_spec_present      11 Gerbers, all carry %FSLA..% and %MO..%
+PASS  apertures_defined        every D-code selected is defined
+PASS  drill_has_hits           49 holes      <-- the 2026-09-04 defect, closed
+PASS  drill_covers_board       49 needed, 49 carried  (== , not >=)
+PASS  drill_files_declare_class  PTH.drl says PTH, NPTH.drl says NPTH
+PASS  drill_pth_count_exact    49 vias + 0 thru-hole pads = 49; PTH file 49
+PASS  drill_npth_count_exact   0 np_thru_hole pads; NPTH file 0
+PASS  drill_sizes_match        PTH 0.25 mm x49 on both sides; NPTH none
+PASS  outline_has_extent       720 points, 25.6138 x 26.0000 mm
+PASS  outline_matches_spec     worst deviation 0.3862 mm against 26.0
+PASS  zip_matches_disk         13 members, every loose file byte-identical
+PASS  export_is_fresh          export 1439 s AFTER the board was saved
 ```
+
+### The drill blocker: "the file exists" was never "the file describes this board"
+
+The handover into this session said the drill question looked closed —
+`PTH.drl` carried **50 holes** against **49 vias**, and since a PTH file also
+carries through-hole pads, 50 looked plausible. It was not. **halo_rev_a has
+49 vias, 0 `thru_hole` pads and 0 `np_thru_hole` pads: 49 plated holes and
+nothing else.** The 50th hole came from a board revision that no longer
+exists — the pack had been cut at 02:27 and the board was rewritten at 03:31.
+
+`drill_covers_board` could not see it, because it asked `total_hits >= board
+holes`. That rule passes a drill program cut from a **different board** as
+long as the other board had at least as many holes, and it added the plated
+and non-plated totals together, so swapping the two files was invisible to it.
+Four assertions replace that question, and `drill_covers_board` itself is now
+`==`:
+
+- **`drill_files_declare_class`** — PTH and NPTH are told apart by each file's
+  own `TF.FileFunction` header, **never by its filename**. A file called
+  `-NPTH.drl` that declares itself plated is a FAIL, not a naming quirk.
+- **`drill_pth_count_exact`** — holes in the files that *declare* themselves
+  PTH must equal vias + through-hole pads, exactly.
+- **`drill_npth_count_exact`** — holes declaring NPTH must equal the
+  `np_thru_hole` pad count, exactly. Zero must be zero, not "at least zero".
+- **`drill_sizes_match`** — the multiset of hole **diameters** in the drill
+  program must equal the board's, per class. A count cannot see every hole
+  drilled at 0.8 mm.
+
+Against the pack as it stood: `drill_pth_count_exact` **FAIL 50 vs 49**,
+`drill_sizes_match` **FAIL (board 0.25 mm x49, file 0.25 mm x50)**,
+`export_is_fresh` **FAIL by 11 705 s**. The pack was re-cut from the current
+board and all four now pass. All four were also watched going red on an
+artifact broken on purpose (`tools/prove_checks.py`), which is what
+`docs/TOOLS-THAT-LIE.md` §6 requires before a check is trusted.
 
 **What the 2026-09-04 defect actually was.** The pack had been cut at 18:40
 from a board that was not routed yet — vias do not exist before routing, so
@@ -116,7 +188,8 @@ fabset checker that caught it had to be written by hand afterwards. The fix
 at source is `tools/build_fabset.sh`: it runs the export and the read-back
 in one step and refuses to exit 0 unless the pack provably describes the
 board. The exporter itself was never broken — the same flags on the routed
-board produce all 50 holes.
+board produce every hole the board declares (49 today; 50 on the revision
+that was current at 02:27, which is how the stale pack was caught).
 
 **One check is run and does not apply**: `--round` measures radius variation,
 and this outline is *deliberately* not round — three 26° keying notches take
@@ -140,22 +213,89 @@ Measured 2026-09-05: re-deriving all 40 rows from `kicad-cli pcb export pos`
 position and a layer before it was trusted). The defect is ce-fab's checker
 and is recorded for that lane; the CPL file is correct.
 
+### 3.1 `fab dfm` said CANNOT DETERMINE four times, and it did not have to
+
+Four rules — `smd_pad_to_pad_min`, `pth_to_track_min`, `pad_hole_to_hole_min`,
+`inner_pth_to_copper_min` — reported *"THIS RULE NEVER FIRED even with its
+limit multiplied by 40, so either the board has no items it matches, or the
+condition is one KiCad cannot evaluate."* That refusal is right in shape and
+was wrong in fact, twice over. Both halves are now fixed in `ce-fab` and both
+fixes were watched failing first (`ce-fab/tests/prove_dfm_liveness.py`, 3 of 3).
+
+**The probe was blind to a rule that fires 258 times.** `fab dfm` decides a
+custom `.kicad_dru` rule is alive by writing it at 40× its limit and looking
+for the rule's own NAME inside a DRC violation description. It ran that probe
+with `kicad-cli pcb drc --all-track-errors`, and that flag changes
+**attribution**, not just verbosity. Measured on this board, same `.kicad_dru`,
+same project:
+
+```
+with    --all-track-errors:  499 clearance violations, ALL naming
+                             jlc_pad_to_track; jlc_smd_pad_to_pad: 0
+without --all-track-errors:  241 jlc_pad_to_track + 258 jlc_smd_pad_to_pad
+```
+
+So a rule governing 254 SMD pads was reported dead. The probe now runs both
+ways and takes the union — neither run dominates, so neither alone is a probe.
+`smd_pad_to_pad_min` is a real **PASS** on this board now.
+
+**"The board has no items it matches" is a number anybody can count.** The
+other three rules govern plated through-hole pads, and **this board has zero**
+(measured: 254 pads, all SMD). Reporting that as an unknown was a refusal that
+did not have to be made. Those rows are now **PASS marked `vacuous: true`**,
+carrying the count as the reason and listed separately in the report under
+*"PASSes that measured nothing"*, so the totals can never be read as coverage
+they do not have. A rule that governs items the board *does* carry and still
+cannot fire is still CANNOT DETERMINE.
+
 ### The two DFM failures, and what to do about them
 
-1. **0201 passives are below JLCPCB's Economic PCBA floor.** This board needs
-   **Standard PCBA**, not Economic. It is not a choice: lane M's stack allows
-   0.400 mm of component height on the top face inside Ø21.2 mm, and 0201 at
-   0.33 mm is the only passive that fits. Standard PCBA is also required
-   anyway because 14 parts are on the bottom face.
-2. **Narrowest pad reported as 0.16 mm against a 0.25 mm limit.** *This
-   measurement is wrong and the reason is worth knowing.* The 0.16 mm item is
-   U3's unnumbered **paste-relief aperture**, which carries no copper — ce-fab
-   counts it as an SMD pad. The narrowest real copper pad is **0.200 mm**, the
-   nRF54L10's own 0.4 mm-pitch QFN land. **That is still below JLCPCB's
-   published 0.25 mm and the factory must confirm it**, which is a question,
-   not a pass. (Reported to lane T6.)
+Both are real, both are **decided**, and neither is closed by anything in this
+repository — they are the two lines a factory has to sign off before this board
+is cut. `fab dfm` still says **FAIL** because of them, and that is correct.
 
----
+1. **0201 passives are below JLCPCB's Economic PCBA floor** (`smt_min_package`
+   FAIL: `C_0201_0603Metric`, `L_0201_0603Metric`, `R_0201_0603Metric`). This
+   board needs **Standard PCBA**, not Economic, and that is not a preference.
+   **DECISIONS.md D22:** lane M's stack allows **0.400 mm** of component height
+   on the top face inside Ø21.2 mm — the piezo bender's moving gap — and 22
+   parts sit in that circle. An 0402 body is 0.55 mm; an 0201 is 0.33 mm.
+   Converting them does not cost money, **it costs the sounder.** The money is
+   $61.40 per order in extended-part fees (zero of 9 030 0201 parts is a
+   JLCPCB Basic part, lane S1 measured), which is $0.061/unit at a thousand
+   against a $6.09 bill of materials. Standard PCBA is required anyway: 14
+   parts are on the bottom face.
+
+2. **`smd_pad_min` FAIL — 0.15 mm against a published 0.25 mm.** *The previous
+   version of this README explained the sub-limit pad away as U3's
+   paste-relief aperture "which carries no copper", with the narrowest real
+   land at 0.200 mm. That exoneration was backwards.* Measured 2026-09-05 over
+   all 254 pads, broken out by kind:
+
+   | kind | narrowest | how many |
+   |---|--:|--:|
+   | solderable lands | **0.200 mm** | 175 |
+   | net-tie pads (copper join, nothing soldered to them) | **0.150 mm** | 2 |
+   | unnumbered paste-relief apertures (no land at all) | 0.318 mm | 77 |
+
+   The paste apertures are the **widest** of the three, not the narrowest. The
+   0.15 mm items are **AE2**, the NFC coil's net tie (`HALO_NFC_TIE_2`: two
+   0.30 × 0.15 mm rectangles butted at the origin, 0.15 mm being `NFC_W` — as
+   wide as the conductor they join and deliberately not wider). No part is
+   soldered to them; AE2 carries `exclude_from_pos` and appears on neither the
+   BOM nor the CPL. **Two questions for the factory, and they are different
+   questions:**
+
+   - the 0.150 mm net-tie pads are an **etch** question — bare copper 0.15 mm
+     across, well above the 0.09 mm minimum track width, but below the
+     published SMD-pad line, which is written about solderable lands;
+   - the **0.200 mm** lands are an **assembly** question — that is the
+     nRF54L10's own 0.4 mm-pitch QFN land, 48 of them plus 127 more at 0.2 mm,
+     and it is genuinely 0.05 mm under JLCPCB's published minimum.
+
+   **Neither is waved through here.** `fab dfm` reports FAIL, `by_class` in
+   `out/verify/dfm-jlc-4layer.json` carries all three numbers, and the answer
+   has to come from the board house.
 
 ## 4. The simulations, on this board and not on an example
 
@@ -226,18 +366,38 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
 
 ## 5. What is NOT done — read this before quoting
 
-1. **THE BOARD IS PART-ROUTED, NOT FINISHED.** 80 unconnected items, 50
-   vias, 9 DRC violations (3 dangling track ends, 2 crossings, 2
-   NFC1/NFC2 shorts, 1 clearance, 1 hole clearance — measured 2026-09-05
-   02:16, `electronics/halo_rev_a/out/drc.json`).
+1. **THE BOARD IS PART-ROUTED, NOT FINISHED. THIS IS THE ONE BLOCKER THAT
+   MATTERS.** 81 unconnected items across 38 nets, 49 vias, 255 track
+   segments — measured 2026-09-05 06:06, `out/verify/drc.json`. VDD alone
+   accounts for 28 of the 81; every signal net between the SoC and the
+   accelerometer, the crystal, the SWD lands and the sounder is a ratline,
+   not copper.
 
    This is no longer the unrouted board of 2026-09-04 (91 unconnected, 0
-   vias, freerouting timed out three times). The routing lane has since
-   drawn the power structures, the plane stitching and the antenna copper —
-   the 50 vias the drill files now carry are real — but point-to-point
-   completion and the nine violations above are still open, owned by lane
-   B1. **Do not fabricate this revision until that list is empty.** The
-   gerbers in this pack describe the board as it stands, honestly.
+   vias, freerouting timed out three times). The power structures, the plane
+   stitching, the NFC winding and the antenna copper are drawn, and the 49
+   vias the drill files carry are real. **Point-to-point completion is not
+   done, and there is no autorouter on this machine to do it** — freerouting
+   is a Java program and this Mac has no Java runtime (`java -version`:
+   *"Unable to locate a Java Runtime"*, measured 2026-09-05; installing one
+   is lane T1's item). **Do not fabricate this revision.** The Gerbers in
+   this pack describe the board as it stands, honestly and exactly.
+
+   **The three DRC violations are all `track_dangling` warnings — there are
+   zero errors — and each one is a named track end, not a mystery:**
+
+   | net | layer | the free end | what it is |
+   |---|---|---|---|
+   | `ANT_FEED` | F.Cu | (10.121, 1.453), 1.4530 mm long | **the antenna's open tip.** An inverted-F radiator terminates in free space; a track end with nothing on it is what an antenna *is*. This one is correct and will still be there when the board is finished |
+   | `NFC1` | B.Cu | (22.857, 8.718), 0.6524 mm long | the coil's outer terminal, waiting on the route to C24 and the SoC's NFC pin — part of the 81 above |
+   | `NFC2` | B.Cu | (18.327, 4.398), 0.6142 mm long | the same, for C25 |
+
+   The two 0.4834 mm stubs that close the winding onto AE2's pads are **not**
+   in this list: they connect, and KiCad agrees. The 2026-09-05 02:37 board
+   had **12** violations — four shorting items, three dangling ends, two
+   track crossings, two hole-clearance and one clearance breach — and the
+   nine that are gone were the crossed net-tie stubs and the copper around
+   them.
 2. **THE ANTENNA'S VERDICT IS THE ONE §4 STATES**, measured — nothing above
    it is asserted. See §4 for the number and its case.
 3. **FOUR PART CLASSES DO NOT FIT THE ENCLOSURE.** The height check grades
@@ -285,6 +445,28 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
     carries its pin assignment, and D9 forbids guessing 48 net names. J2
     reserves the option as eight SMD lands carrying SPI, an interrupt, a
     reset and power.
+12. **THE CONVERGENCE TABLE STILL FAILS ITS OWN INTEGRITY CHECK**, and none
+    of it is this board's any more. `tools/check_convergence.py` reports 47
+    PASS / 18 FAIL / 18 CANNOT DETERMINE. Every remaining FAIL, and all but
+    four of the CANNOT DETERMINEs, belong to `ce-rf`'s `halo-rev-a-2g4`
+    antenna case, whose own `verdict.json` says FAIL and whose numbers the
+    generator therefore refuses to quote — lane T3's, and §4's subject. The
+    four others are rows that declare no measurement source at all: sounder
+    SPL at 25 cm, peer ranging error, sleep current and battery life. Nobody
+    has produced those numbers yet, and the table says so rather than
+    guessing. **The three board rows that used to be typed literals now read
+    themselves out of `out/verify/dfm-jlc-4layer.json`** — layer count 4,
+    outline 26.0 mm, thickness 0.60 mm, all measured off the `.kicad_pcb` by
+    `fab dfm` — and PCB thickness reads **DIVERGENT by D17** against Apple's
+    0.30 mm rather than the un-failable "no target" it carried before.
+13. **THE BOARD FILE IS NOT BYTE-REPRODUCIBLE.** Re-running `board.py`
+    produces the same geometry — 49 vias, 255 segments, 62 footprints,
+    measured over three consecutive runs — but a different byte stream: the
+    footprint order and every UUID are regenerated. The fabrication package
+    is therefore only ever valid against the board it was cut from, which is
+    exactly what `export_is_fresh` and the four drill assertions exist to
+    enforce. **Always cut the pack with `tools/build_fabset.sh`, never with
+    `fab jlc` alone.**
 
 ---
 

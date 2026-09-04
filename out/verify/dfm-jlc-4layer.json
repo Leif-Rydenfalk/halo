@@ -31,7 +31,7 @@
     "JLCPCB publishes ONE track width/spacing figure covering all copper layers on a multilayer board; there is no separate inner-layer number to encode.",
     "The page's own FAQ says thicknesses run 0.4-3.2 mm while its table says 0.4-4.5 mm. The table is encoded."
   ],
-  "generated": "2026-09-04T21:58:27Z",
+  "generated": "2026-09-04T22:06:53Z",
   "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/verify",
   "board_facts": {
     "copper_layers": 4,
@@ -149,9 +149,17 @@
       "verdict": "FAIL",
       "limit": 0.25,
       "measured": 0.15,
-      "why": "narrowest side of any of 254 SMD pads",
+      "why": "narrowest side of any of 254 SMD pads. Solderable lands: 0.2 mm over 175; net-tie pads (copper join, nothing soldered to them): 0.15 mm over 2; unnumbered paste-relief apertures (no land): 0.318 mm over 77",
       "cite": "\u201cMinimum SMD pad: 0.25mm \u00d7 0.25mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "geometry"
+      "how": "geometry",
+      "by_class": {
+        "solderable_land_min_mm": 0.2,
+        "solderable_lands": 175,
+        "net_tie_pad_min_mm": 0.15,
+        "net_tie_pads": 2,
+        "paste_relief_min_mm": 0.318,
+        "paste_relief_apertures": 77
+      }
     },
     {
       "id": "smt_min_package",

@@ -1,6 +1,6 @@
 # JLCPCB assembly files — halo_rev_a.kicad_pcb
 
-**FAIL** — 23 BOM lines, all with an LCSC number. Generated 2026-09-04T21:49:35Z.
+**FAIL** — 23 BOM lines, all with an LCSC number. Generated 2026-09-04T22:06:39Z.
 
 - 23 BOM lines, 40 CPL rows
 - place-file origin: [0.0, 0.0] mm (KiCad's aux axis origin; JLC coordinates are relative to it)
