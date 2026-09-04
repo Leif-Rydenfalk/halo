@@ -1,7 +1,7 @@
 {
  "$halo": 1,
  "tool": "tools/check_routed.py",
- "generated": "2026-09-04T22:44:57+00:00",
+ "generated": "2026-09-04T23:08:27+00:00",
  "before": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
  "after": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
  "protected_nets": [
@@ -22,20 +22,20 @@
   "project_borrowed_from": null
  },
  "drc_after": {
-  "violations": 2,
+  "violations": 3,
   "errors": 0,
-  "warnings": 2,
-  "unconnected": 35,
+  "warnings": 3,
+  "unconnected": 33,
   "by_type": [
    "track_dangling"
   ],
   "project": "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pro",
   "project_borrowed_from": null
  },
- "verdict": "FAIL",
+ "verdict": "PASS",
  "counts": {
-  "PASS": 8,
-  "FAIL": 1,
+  "PASS": 9,
+  "FAIL": 0,
   "CANNOT DETERMINE": 0
  },
  "rows": [
@@ -46,17 +46,17 @@
    "rule": {
     "lte": 0.0001
    },
-   "why": "all 235 segment(s) on ANT_FEED, NFC1, NFC2 came back, each within 55 nm of where it was sent \u2014 under the 100 nm the format can carry (halo_rev_a.filtered.ses: (resolution um 10) = one step is 0.0001 mm). 10 segment(s) ADDED on those nets ({'ANT_FEED': 5, 'NFC1': 5}) \u2014 the router extending a protected net to reach its pads, which is routing, not rerouting",
+   "why": "all 255 segment(s) on ANT_FEED, NFC1, NFC2 came back, each within 55 nm of where it was sent \u2014 under the 100 nm the format can carry (halo_rev_a.filtered.ses: (resolution um 10) = one step is 0.0001 mm). 25 segment(s) ADDED on those nets ({'ANT_FEED': 2, 'NFC1': 5, 'NFC2': 18}) \u2014 the router extending a protected net to reach its pads, which is routing, not rerouting",
    "verdict": "PASS"
   },
   {
    "name": "protected_length_preserved",
-   "value": 0.0001694,
+   "value": 5.72e-05,
    "unit": "mm",
    "rule": {
-    "lte": 0.047
+    "lte": 0.051
    },
-   "why": "the matched conductor is 162.2257 mm going out and 162.2258 mm coming back, a difference of 169 nm against a quantisation budget of 47000 nm (two grid steps per segment). The NFC coil's inductance and the element's resonance are both functions of this length",
+   "why": "the matched conductor is 162.2479 mm going out and 162.2480 mm coming back, a difference of 57 nm against a quantisation budget of 51000 nm (two grid steps per segment). The NFC coil's inductance and the element's resonance are both functions of this length",
    "verdict": "PASS"
   },
   {
@@ -71,12 +71,12 @@
   },
   {
    "name": "copper_actually_added",
-   "value": 298,
+   "value": 374,
    "unit": "segments",
    "rule": {
     "gt": 0
    },
-   "why": "255 segment(s) + 49 via(s) in, 553 + 86 out: +298 segments, +37 vias",
+   "why": "275 segment(s) + 49 via(s) in, 649 + 91 out: +374 segments, +42 vias",
    "verdict": "PASS"
   },
   {
@@ -91,12 +91,12 @@
   },
   {
    "name": "unconnected_improved",
-   "value": 46,
+   "value": 48,
    "unit": "items closed",
    "rule": {
     "gt": 0
    },
-   "why": "unconnected items 81 -> 35",
+   "why": "unconnected items 81 -> 33",
    "verdict": "PASS"
   },
   {
@@ -106,7 +106,7 @@
    "rule": {
     "lte": 0
    },
-   "why": "DRC errors 0 -> 0 (warnings 3 -> 2, types ['track_dangling'])",
+   "why": "DRC errors 0 -> 0 (warnings 3 -> 3, types ['track_dangling'])",
    "verdict": "PASS"
   },
   {
@@ -119,13 +119,13 @@
   },
   {
    "name": "antenna_arm_not_shadowed",
-   "value": -0.1747,
+   "value": 0.3627,
    "unit": "mm",
    "rule": {
     "gte": 0.3
    },
-   "why": "COPPER IS SHADOWING THE 2.4 GHz ARM at -0.1747 mm, under the 0.3 mm floor: net NFC1 on B.Cu at (22.577, 8.13). The board's own keep-out forbids pours and vias in the antenna sector and ALLOWS TRACKS, so a router walks straight through it. lane T3, 2026-09-05: the \u00d825.2 mm coil at a 0.30 mm gap solves to 2.4321 GHz in band; the same coil under the arm solves to 1.7666 GHz, a 668 MHz shift that is not recoverable by tuning. Closest per net: NFC1 -0.1747, NFC2 -0.0901, XL1 +0.2630, PIEZO_DRV +0.3429, GND +0.4929",
-   "verdict": "FAIL"
+   "why": "the closest foreign copper to the 2.4 GHz arm (37 segment(s) at 0.6 mm; 2 further ANT_FEED segment(s) are the feed run and are NOT the radiator), IN PLAN VIEW ACROSS ALL LAYERS, is 0.3627 mm \u2014 net NFC1 on B.Cu at (22.857, 8.718). Floor is 0.3 mm: lane T3, 2026-09-05: the \u00d825.2 mm coil at a 0.30 mm gap solves to 2.4321 GHz in band; the same coil under the arm solves to 1.7666 GHz, a 668 MHz shift that is not recoverable by tuning",
+   "verdict": "PASS"
   }
  ]
 }

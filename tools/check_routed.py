@@ -113,26 +113,57 @@ def _num(blk, tag, n=1):
     return m.group(n)
 
 
-def segments(text):
+#: `(net "GND")` is what KiCad 10 writes on a segment, but `(net 2 "GND")` and
+#: a bare `(net 2)` are both legal and both appear in files this project has
+#: handled. A net regex that only matched the first form did not ERROR on the
+#: others — it dropped the segment into the "" bucket or out of the map
+#: entirely, and copper a check cannot see is copper a check cannot grade. Found
+#: 2026-09-05 when a negative-control fixture written as `(net 2 "GND")`
+#: vanished and R9 reported PASS on a board with a track laid deliberately under
+#: the antenna. The fixture was the malformed thing that time; the silent loss
+#: was not, and `segments()` now COUNTS what it read against what is there.
+NET_RE = re.compile(r'\(net\s+(?:\d+\s+)?"([^"]*)"\)|\(net\s+(\d+)\s*\)')
+
+
+def _net_of(blk):
+    m = NET_RE.search(blk)
+    if not m:
+        return None
+    return m.group(1) if m.group(1) is not None else "#" + m.group(2)
+
+
+def segments(text, strict=True):
     """{net: frozenset of (x0,y0,x1,y1,width,layer)} — geometry, not order.
 
     Rounded to 1 nm. KiCad rewrites coordinates on every save, so comparing
     the strings would report every board different from itself.
+
+    `strict` raises if the number of segments read back differs from the number
+    of `(segment` blocks in the file. A parser that silently skips what it
+    cannot read reduces a check's coverage without reducing its confidence,
+    which is the failure this whole repository is written against.
     """
-    out = {}
+    out, n_read = {}, 0
     for blk in _blocks(text, "segment"):
         s = re.search(r"\(start ([-\d.]+) ([-\d.]+)\)", blk)
         e = re.search(r"\(end ([-\d.]+) ([-\d.]+)\)", blk)
         w = re.search(r"\(width ([-\d.]+)\)", blk)
         lay = re.search(r'\(layer "([^"]*)"', blk)
-        net = re.search(r'\(net "([^"]*)"', blk)
         if not (s and e):
             continue
+        n_read += 1
         key = (round(float(s.group(1)), 6), round(float(s.group(2)), 6),
                round(float(e.group(1)), 6), round(float(e.group(2)), 6),
                round(float(w.group(1)), 6) if w else None,
                lay.group(1) if lay else None)
-        out.setdefault(net.group(1) if net else "", set()).add(key)
+        out.setdefault(_net_of(blk) or "", set()).add(key)
+    n_blocks = len(re.findall(r"\(segment\b", text))
+    if strict and n_read != n_blocks:
+        raise ValueError(
+            "read %d segment(s) out of %d `(segment` block(s) in the file. "
+            "The %d that did not parse are copper this check cannot see, and a "
+            "check that silently covers less than it claims is worse than one "
+            "that fails." % (n_read, n_blocks, n_blocks - n_read))
     return {k: frozenset(v) for k, v in out.items()}
 
 
@@ -142,13 +173,12 @@ def vias(text):
         at = re.search(r"\(at ([-\d.]+) ([-\d.]+)\)", blk)
         sz = re.search(r"\(size ([-\d.]+)\)", blk)
         dr = re.search(r"\(drill ([-\d.]+)\)", blk)
-        net = re.search(r'\(net "([^"]*)"', blk)
         if not at:
             continue
         key = (round(float(at.group(1)), 6), round(float(at.group(2)), 6),
                round(float(sz.group(1)), 6) if sz else None,
                round(float(dr.group(1)), 6) if dr else None)
-        out.setdefault(net.group(1) if net else "", set()).add(key)
+        out.setdefault(_net_of(blk) or "", set()).add(key)
     return {k: frozenset(v) for k, v in out.items()}
 
 
@@ -225,6 +255,18 @@ ANT_MIN_GAP_MM = 0.30
 #: "the feed tap and any copper past the short are NOT in" the resonant arm.
 #: Everything not on this list is foreign copper and is graded.
 ANT_OWN_NETS = ("ANT_FEED", "RF_ANT", "RF_A", "RF_B", "RF_50")
+
+#: THE ARM IS NOT THE WHOLE NET, and grading it as if it were produced a false
+#: FAIL on the first board that had a routed feed. `ANT_FEED` also carries the
+#: run from L10 out to the element's tap, which the autorouter draws at the
+#: NETCLASS width — measured 2026-09-05: 37 segments at 0.600 mm forming the
+#: radiator at theta 20-104 deg, and 2 at 0.127 mm running out at theta 254-259
+#: deg, 150 degrees away. R9 reported the coil 0.0262 mm from "the arm" when
+#: what it was near was that feed run. ce-rf's own model draws the same line in
+#: its own words: "the feed tap and any copper past the short are NOT in" the
+#: resonant arm. So the arm is the copper drawn at the ELEMENT'S OWN width, and
+#: the split is reported on every run so a change in it cannot pass unseen.
+ANT_ARM_WIDTH_MM = 0.60
 ANT_GAP_WHY = ("lane T3, 2026-09-05: the Ø25.2 mm coil at a 0.30 mm gap solves "
                "to 2.4321 GHz in band; the same coil under the arm solves to "
                "1.7666 GHz, a 668 MHz shift that is not recoverable by tuning")
@@ -296,6 +338,11 @@ def main():
     ap.add_argument("after")
     ap.add_argument("--protect", default="ANT_FEED,NFC1,NFC2",
                     help="comma-separated nets whose copper must be unchanged")
+    ap.add_argument("--arm-width", type=float, default=ANT_ARM_WIDTH_MM,
+                    help="the radiating element's own trace width, in mm. Only "
+                         "ANT_FEED copper AT THIS WIDTH is graded as the arm; "
+                         "the feed run is drawn at the netclass width and is "
+                         "not the radiator")
     ap.add_argument("--dsn", help="the .dsn or .ses the copper travelled "
                                   "through. Its (resolution ...) IS the match "
                                   "tolerance for the protected nets; without "
@@ -461,12 +508,17 @@ def main():
                     PASS if same else CD))
 
     # ---- R9 antenna_arm_not_shadowed ------------------------------------
-    arm = list(as_.get("ANT_FEED", frozenset()))
+    ant = list(as_.get("ANT_FEED", frozenset()))
+    arm = [s for s in ant if s[4] is not None
+           and abs(s[4] - a.arm_width) < 1e-6]
+    feed = [s for s in ant if s not in arm]
     if not arm:
         rows.append(row("antenna_arm_not_shadowed", None, {},
-                        "no ANT_FEED copper on the routed board, so there is no "
-                        "arm to shadow — and a board that lost its antenna is a "
-                        "different problem, which R1 grades", CD, "mm"))
+                        f"no ANT_FEED copper at the element width "
+                        f"{a.arm_width} mm on the routed board "
+                        f"({len(ant)} ANT_FEED segment(s) exist at other widths), "
+                        f"so there is no arm to grade. A board that lost its "
+                        f"antenna is a different problem, which R1 grades", CD, "mm"))
     else:
         worstd, offender = None, None
         av_ = vias(at)
@@ -495,8 +547,11 @@ def main():
         ok = worstd is not None and worstd >= ANT_MIN_GAP_MM
         rows.append(row("antenna_arm_not_shadowed", round(worstd, 4),
                         {"gte": ANT_MIN_GAP_MM},
-                        (f"the closest foreign copper to the 2.4 GHz arm, IN PLAN "
-                         f"VIEW ACROSS ALL LAYERS, is {worstd:.4f} mm — net "
+                        (f"the closest foreign copper to the 2.4 GHz arm "
+                         f"({len(arm)} segment(s) at {a.arm_width} mm; "
+                         f"{len(feed)} further ANT_FEED segment(s) are the feed "
+                         f"run and are NOT the radiator), IN PLAN VIEW ACROSS "
+                         f"ALL LAYERS, is {worstd:.4f} mm — net "
                          f"{offender[0]} on {offender[1]} at ({offender[2]}, "
                          f"{offender[3]}). Floor is {ANT_MIN_GAP_MM} mm: {ANT_GAP_WHY}")
                         if ok else
