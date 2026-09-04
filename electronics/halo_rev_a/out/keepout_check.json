@@ -1,0 +1,87 @@
+{
+ "verdict": "CANNOT DETERMINE",
+ "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+ "keepouts": [
+  {
+   "name": "cell-body-HEIGHT-0.578mm",
+   "layers": [
+    "B.Cu"
+   ],
+   "forbids": [],
+   "scope": "board",
+   "contained_in_board": true,
+   "area_mm2": 326.785,
+   "why": "DOCUMENTATION, NOT AN ENFORCED RULE, and the distinction is the point. A \u00d820.0 mm CR2032 sits 0.578 mm below this face (ce-designs/halo/design.py (lane M): Z_CELL_TOP 4.022, Z_DECK_TOP 4.600). What is forbidden here is HEIGHT, not presence: a 0201 at 0.33 mm is welcome and a QFN-48 at 0.85 mm is not. KiCad rule areas have no height axis, so forbidding footprints outright would fail every part on the bottom face including the ones that fit - an alarm that is always on tells you nothing. The real check is arithmetic and it is in height_check() below, which grades each part against the allowance at its own radius.",
+   "outline_error": null,
+   "hits": [],
+   "verdict": "PASS"
+  },
+  {
+   "name": "bender-diaphragm-HEIGHT-0.400mm",
+   "layers": [
+    "F.Cu"
+   ],
+   "forbids": [],
+   "scope": "board",
+   "contained_in_board": true,
+   "area_mm2": 352.918,
+   "why": "DOCUMENTATION, same reason as the cell. The Murata 7BB-20-3 is bonded to the shell's \u00d821.2 mm land and needs a 0.680 mm moving gap, so ce-designs/halo/design.py (lane M) limits top-face parts inside this circle to 0.400 mm. Height again, not presence: 0201 (0.33 mm) passes and every active on this board does not. Graded in height_check().",
+   "outline_error": null,
+   "hits": [],
+   "verdict": "PASS"
+  },
+  {
+   "name": "antenna-host-clearance",
+   "layers": [
+    "F.Cu",
+    "In1.Cu",
+    "In2.Cu",
+    "B.Cu"
+   ],
+   "forbids": [
+    "tracks",
+    "vias",
+    "pads",
+    "pours"
+   ],
+   "scope": "host",
+   "contained_in_board": false,
+   "area_mm2": 1093.081,
+   "board_area_mm2": 523.66,
+   "board_area_inside_mm2": 523.66,
+   "why": "SPEC.md \u00a74, Apple's own callout: no metal above or below, \u00d837.31 mm - 11.44 mm LARGER than this board. Every square millimetre of halo is inside it, so it is a constraint on the HOST, and this board cannot grade it.",
+   "outline_error": null,
+   "hits": [],
+   "verdict": "CANNOT DETERMINE",
+   "note": "host-scope: this region constrains whatever the board is fitted INTO, and 523.660 mm2 of the board's 523.660 mm2 lies inside it, so it cannot be graded from this file. Not enforced as a KiCad rule area either \u2014 it would fail every pad on the board for a rule that does not govern it."
+  },
+  {
+   "name": "antenna-ground-clearance",
+   "layers": [
+    "In1.Cu",
+    "In2.Cu",
+    "B.Cu"
+   ],
+   "forbids": [
+    "tracks",
+    "vias",
+    "pads",
+    "pours"
+   ],
+   "scope": "host",
+   "contained_in_board": false,
+   "area_mm2": 57.158,
+   "board_area_mm2": 523.66,
+   "board_area_inside_mm2": 57.089,
+   "why": "No ground plane, no inner copper and no bottom copper under the 2.4 GHz element. An inverted-F over its own ground plane is a short circuit. F.Cu is deliberately NOT in this list - the antenna itself lives there.",
+   "outline_error": null,
+   "hits": [],
+   "verdict": "CANNOT DETERMINE",
+   "note": "host-scope: this region constrains whatever the board is fitted INTO, and 57.089 mm2 of the board's 523.660 mm2 lies inside it, so it cannot be graded from this file. Not enforced as a KiCad rule area either \u2014 it would fail every pad on the board for a rule that does not govern it."
+  }
+ ],
+ "hits": 0,
+ "grid_mm": 0.2,
+ "outline_error": null,
+ "note": ""
+}

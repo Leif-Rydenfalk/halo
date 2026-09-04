@@ -1,0 +1,11 @@
+(footprint "HALO_PIEZO_LEADS_2"
+  (version 20240108)
+  (generator "halo/footprints.py")
+  (layer "F.Cu")
+  (descr "halo piezo bender leads: two wire lands for a Murata 7BB-20-3 bonded to the shell (DECISIONS.md D11a). The bender is NOT mounted on the board and carries no land pattern of its own.")
+  (tags "halo piezo bender wire land")
+  (attr smd exclude_from_pos_files)
+  (pad "1" smd roundrect (at -1.00 0) (size 1.20 0.80) (layers "F.Cu" "F.Mask" "F.Paste") (roundrect_rratio 0.2))
+  (pad "2" smd roundrect (at 1.00 0) (size 1.20 0.80) (layers "F.Cu" "F.Mask" "F.Paste") (roundrect_rratio 0.2))
+  (fp_text user "LS1 bender" (at 0 -1.1) (layer "F.Fab") (effects (font (size 0.5 0.5) (thickness 0.08))))
+)
