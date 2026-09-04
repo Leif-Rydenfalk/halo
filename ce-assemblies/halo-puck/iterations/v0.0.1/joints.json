@@ -89,6 +89,44 @@
         },
         "why": "D11a. Full-face bonding is the point: the bender strains the crown in-plane and a curved cap turns in-plane strain into axial motion. A thick or compliant bond line would decouple it."
       }
+    ],
+    "requires": [
+      {
+        "id": "adhesive",
+        "what": "a structural adhesive for the carrier-into-shell bond and the bender-onto-land bond",
+        "why": "the bond IS the structural joint, the parting-line seal and the acoustic coupling. No part number is chosen and no lap-shear figure is measured — connection:adhesive-bonded grades itself CANNOT DETERMINE.",
+        "state": "OPEN"
+      },
+      {
+        "id": "sounder-drive",
+        "what": "two SoC pins driven anti-phase into the Ø20 bender, at or near its 3600 Hz resonance",
+        "why": "DECISIONS.md D11a. This lane guarantees the mechanical path only; the drive is firmware's and the current is ce-spice's (SPEC §5 E3).",
+        "state": "OPEN"
+      },
+      {
+        "id": "antenna-traces",
+        "what": "BLE, NFC and the reserved UWB pattern, laser-direct-structured on the carrier's Ø27.60 outer wall",
+        "why": "this lane owns the surface and guarantees no metal is added outside the Ø31.874 envelope. The pattern, the match and the efficiency are ce-rf's (SPEC §5 E4/E5) and are CANNOT DETERMINE here.",
+        "state": "OPEN"
+      },
+      {
+        "id": "board-copper",
+        "what": "the 4-layer stackup, the copper and the component heights inside part:halo-pcb-blank's outline",
+        "why": "this lane fixes the outline (Ø26.00 x 0.60, three 26 deg notches) and two keep-outs: 0.40 mm maximum top-side component height inside Ø21.20, and nothing at all in the Ø25.75 diaphragm gap.",
+        "state": "OPEN"
+      },
+      {
+        "id": "cell-crimp-geometry",
+        "what": "the sourced CR2032's exposed positive can rim on its negative face",
+        "why": "the two positive fingers land at R9.50 on the assumption that the rim is exposed from about Ø18.4 to Ø20.0. Standard construction, but per-vendor. A caliper on the cell actually bought settles it.",
+        "state": "OPEN"
+      },
+      {
+        "id": "abuse-tests",
+        "what": "16 CFR 1263's drop, torque and compression tests with the cell retained",
+        "why": "the two-movement geometry is measured and PASSES; the standard's test regime is physical and has not been run, so compliance is NOT claimed.",
+        "state": "OPEN"
+      }
     ]
   }
 }

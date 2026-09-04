@@ -45,8 +45,16 @@ import math
 import os
 import sys
 
-from cecad import *
-from cecad.fits import MATERIALS, Material
+# This repo is its own triad root. Set it before cecad is imported so that
+# `publish(triad="assembly:halo-puck")` can resolve the ref; the workshop root
+# is appended so shared refs still resolve.
+_HERE = os.path.dirname(os.path.abspath(__file__))
+os.environ.setdefault(
+    "CE_TRIAD_ROOT",
+    _HERE + ":" + os.path.dirname(os.path.dirname(_HERE)))
+
+from cecad import *                                          # noqa: E402
+from cecad.fits import MATERIALS, Material                   # noqa: E402
 
 # --------------------------------------------------------------------------
 # Materials this design needs that ce-cad's table does not carry. Declared
@@ -172,6 +180,8 @@ Z_FOOT_BOT     = 1.290
 DETENT_H       = 0.250    # ridge height = the press the user must apply
 DETENT_ARC_DEG = 4.0
 RAMP_DEG       = 12.0     # closing cam on the foot's leading edge
+RAMP_ARC_MM    = 1.50     # ... over this much arc length
+N_RAMP_STEP    = 6        # steps the helicoid is cut as (it is not a primitive)
 MU_PC_SS       = 0.35     # PC on stainless, dry — an ASSUMPTION, bench item
 
 # --- acoustics (D11a): the numbers the wall thickness was chosen against ---
@@ -214,7 +224,15 @@ H_SEAL         = 0.350
 D_DOOR_ID      = D_DOOR_WALL - 2 * T_DOOR      # 24.95
 
 # --- FDM prototype variant ------------------------------------------------
-FDM_WALL       = 1.200    # 3 perimeters at 0.4 mm
+FDM_WALL       = 1.200    # the SHELL: 3 perimeters at a 0.4 mm nozzle
+FDM_DOOR_WALL  = 0.500    # the DOOR: it cannot be 1.200. Measured — a 1.200 mm
+                          # wall makes the door's bore Ø22.95 and fouls the
+                          # carrier's Ø24.15 seal land by 0.60 mm radially, and
+                          # the exported STL read back 25.92 x 26.17 x 3.090 mm
+                          # against the moulded 26.08 x 26.37 x 2.190. 0.500 is
+                          # one 0.4 mm extrusion at 125 % line width, which a
+                          # Bambu prints, and it leaves 0.100 mm radial on the
+                          # seal land
 FDM_FIT        = 0.200    # opened clearance on every sliding fit
 FDM_FOOT_T     = 0.600    # the feet cannot be thinner than this on FDM
 FDM_DETENT_H   = 0.350
@@ -254,6 +272,8 @@ Z_CELL_BOT  = round(z_door(D_CELL_SEAT) + T_DOOR, 4)   # 0.822 — cell on the d
 Z_CELL_TOP  = round(Z_CELL_BOT + H_CELL, 4)            # 4.022
 Z_SPRING    = round(Z_CELL_TOP + T_DIMPLE, 4)           # finger underside, compressed
 Z_DECK_BOT  = round(Z_SPRING + T_SPRING, 4)             # the deck sits ON the fingers
+RAMP_DROP   = RAMP_ARC_MM * math.tan(math.radians(RAMP_DEG))   # mm the cam falls
+RAMP_STEP   = RAMP_DROP / N_RAMP_STEP                          # per modelled step
 DEAD_AIR    = round(Z_CELL_BOT - T_DOOR, 4)            # 0.522, the dome's sagitta
 R_INNER_CAP = round(R_CROWN_CAP - WALL_CROWN, 4)       # 91.2
 
@@ -333,6 +353,11 @@ def shell_top(wall=WALL_CROWN, fdm=False):
     name = "halo-shell-top-fdm" if fdm else "halo-shell-top"
     p = Part(name, material=M_SHELL)
     w = FDM_WALL if fdm else wall
+    # FDM compensation: an internal feature prints UNDERSIZE, so the printed
+    # bore is MODELLED oversize by FDM_FIT to measure nominal. The crown's
+    # outer profile is deliberately NOT compensated — it is a free surface,
+    # and holders are cut with +0.15 to +0.30 mm of margin (research/07 §5.1).
+    bore = D_BORE + (FDM_FIT if fdm else 0.0)
     land_z = round(z_crown(D_LAND) - w, 4)
 
     # ---- the closed revolve profile, (r, h) pairs, apex -> inside -> apex
@@ -341,8 +366,8 @@ def shell_top(wall=WALL_CROWN, fdm=False):
         prof.append((d / 2.0, z))
     prof += [(D_LIP / 2.0, Z_PARTING + CHAMFER),         # the 0.05 chamfer
              (D_LIP / 2.0 - CHAMFER, Z_PARTING),
-             (D_BORE / 2.0, Z_PARTING)]                  # the parting face
-    r_bore_top = D_BORE / 2.0 - (Z_BORE_TOP - Z_PARTING) * math.tan(
+             (bore / 2.0, Z_PARTING)]                     # the parting face
+    r_bore_top = bore / 2.0 - (Z_BORE_TOP - Z_PARTING) * math.tan(
         math.radians(DRAFT_BORE_DEG))
     prof += [(r_bore_top, Z_BORE_TOP),                   # up the drafted bore
              (D_SPEAKER_KO / 2.0, Z_STIFFENER),          # cavity shoulder
@@ -391,8 +416,11 @@ def carrier():
     ]
     p.revolve(prof, axis="z")
 
-    # ---- the PCB seat deck: an outer ring plus three spokes
-    _sector(p, D_CARRIER_RIM / 2.0 - 1.20, D_CARRIER_RIM / 2.0,
+    # ---- the PCB seat deck: an outer ring plus three spokes.
+    # The ring reaches D_CARRIER_OD/2 - 0.600, which is the wall's INNER face
+    # at this height. Ending it at the rim diameter instead left a 0.10 mm
+    # annular slot between deck and wall — one solid still, and unmouldable.
+    _sector(p, D_CARRIER_RIM / 2.0 - 1.20, D_CARRIER_OD / 2.0 - 0.600,
             Z_DECK_BOT, Z_DECK_TOP, 0.0, 360.0)
     for a in SPOKE_ANGLES:
         arc = math.degrees(W_SPOKE / R_SPOKE_IN)
@@ -415,11 +443,19 @@ def carrier():
                 Z_DOOR_RIM + DETENT_H,
                 a + TAB_ARC_DEG / 2.0 + DETENT_ARC_DEG / 2.0,
                 DETENT_ARC_DEG)                                # the detent ridge
-        # the closing cam: 12 deg ramp on the leading edge of the foot
-        _sector(p, R_FOOT_IN - 0.05, R_FOOT_OUT + 0.05,
-                Z_DOOR_RIM - math.tan(math.radians(RAMP_DEG)) * 1.5,
-                Z_DOOR_RIM,
-                a - LEG_ARC_DEG / 2.0 + 3.5, 8.0, op="cut")
+        # The closing cam: a RAMP_DEG helicoid on the foot's leading edge, so
+        # the closing rotation lifts the tab onto the bearing face instead of
+        # butting into its corner. A helicoid is not a cecad primitive, so it
+        # is cut as N_RAMP_STEP steps of equal arc — the step height is
+        # printed by report_stack() and the moulded feature is the true ramp.
+        arc_ramp = math.degrees(RAMP_ARC_MM / R_FOOT_OUT)
+        a_start = a - LEG_ARC_DEG / 2.0
+        for i in range(N_RAMP_STEP):
+            frac = 1.0 - (i + 0.5) / N_RAMP_STEP
+            _sector(p, R_FOOT_IN - 0.05, R_FOOT_OUT + 0.05,
+                    Z_DOOR_RIM - RAMP_DROP * frac, Z_DOOR_RIM,
+                    a_start + arc_ramp * (i + 0.5) / N_RAMP_STEP,
+                    arc_ramp / N_RAMP_STEP + 0.01, op="cut")
 
     # the three contacts are INSERT-MOULDED: the metal displaces plastic, so
     # cut them out rather than let the checker find 0.89 mm3 of shared volume
@@ -440,25 +476,31 @@ def battery_door(fdm=False):
     and the radial seal face.
     """
     name = "halo-battery-door-fdm" if fdm else "halo-battery-door"
-    t = FDM_WALL if fdm else T_DOOR
+    t = FDM_DOOR_WALL if fdm else T_DOOR
     p = Part(name, material=M_SHELL if fdm else M_DOOR)
+    # FDM compensation, the other way round: an EXTERNAL feature prints
+    # oversize, so the wall and the tabs are MODELLED undersize by FDM_FIT.
+    c = FDM_FIT if fdm else 0.0
 
     prof = [(d / 2.0, z) for d, z in reversed(DOOR_DOME_PROFILE)]   # outer dome
     prof += [
-        (D_DOOR_BAND / 2.0, z_door(D_DOOR_BAND)),
-        (D_DOOR_WALL / 2.0, z_door(D_DOOR_BAND) + CHAMFER),
-        (D_DOOR_WALL / 2.0, Z_DOOR_RIM - CHAMFER),
-        (D_DOOR_BAND / 2.0, Z_DOOR_RIM),
-        (D_DOOR_WALL / 2.0 - t, Z_DOOR_RIM),                        # rim, in
-        (D_DOOR_WALL / 2.0 - t, z_door(D_DOOR_BAND) + t),           # bore, down
+        ((D_DOOR_BAND - c) / 2.0, z_door(D_DOOR_BAND)),
+        ((D_DOOR_WALL - c) / 2.0, z_door(D_DOOR_BAND) + CHAMFER),
+        ((D_DOOR_WALL - c) / 2.0, Z_DOOR_RIM - CHAMFER),
+        ((D_DOOR_BAND - c) / 2.0, Z_DOOR_RIM),
+        ((D_DOOR_WALL - c) / 2.0 - t, Z_DOOR_RIM),                  # rim, in
+        ((D_DOOR_WALL - c) / 2.0 - t, z_door(D_DOOR_BAND) + t),     # bore, down
     ]
     prof += [(d / 2.0, z + t) for d, z in DOOR_DOME_PROFILE
-             if d / 2.0 <= D_DOOR_WALL / 2.0 - t]                   # inner dome
+             if d / 2.0 <= (D_DOOR_WALL - c) / 2.0 - t]             # inner dome
     p.revolve(prof, axis="z")
 
     for a in TAB_ANGLES:                                            # the tabs
-        _sector(p, D_DOOR_WALL / 2.0 - 0.20, D_TAB / 2.0,
-                Z_DOOR_RIM, Z_DOOR_RIM + t, a, TAB_ARC_DEG)
+        # the tab thickness is T_DOOR even on the printed part: z 1.890..2.190
+        # is all the room the carrier's floor at 2.500 leaves once the door's
+        # 0.250 mm of press travel is taken out of it
+        _sector(p, (D_DOOR_WALL - c) / 2.0 - 0.20, (D_TAB - c) / 2.0,
+                Z_DOOR_RIM, Z_DOOR_RIM + T_DOOR, a, TAB_ARC_DEG)
     return p.clean()
 
 
@@ -749,6 +791,27 @@ def measure_cavity_air(P):
     return v_mm3
 
 
+def check_fdm_variants(carrier_p, door, shell):
+    """The printed variants have to ASSEMBLE, and nothing checked that until a
+    1.200 mm printed door wall shrank its bore to Ø22.95 and buried it 0.60 mm
+    inside the carrier's seal land. Measured against the same carrier."""
+    fd = battery_door(fdm=True)
+    fs = shell_top(fdm=True)
+    o_dc = overlap(fd, carrier_p)
+    o_sc = overlap(fs, carrier_p)
+    h_fd = fd.bbox[2]
+    h_md = door.bbox[2]
+    ok = (o_dc < 1e-6 and o_sc < 1e-6 and abs(h_fd - h_md) < 1e-3)
+    return _v("FDM variants assemble", "PASS" if ok else "FAIL",
+              "printed door into the SAME carrier %.4f mm3, printed shell "
+              "%.4f mm3; printed door height %.3f mm against the moulded "
+              "%.3f (they must match — the tab's axial budget belongs to the "
+              "carrier, not the printer). Door wall %.2f mm, shell wall "
+              "%.2f mm, bore modelled Ø%.2f to measure Ø%.2f"
+              % (o_dc, o_sc, h_fd, h_md, FDM_DOOR_WALL, FDM_WALL,
+                 D_BORE + FDM_FIT, D_BORE))
+
+
 def check_walls(shell):
     d = thinnest_wall_detail(shell)
     mm = d.get("mm")
@@ -797,6 +860,14 @@ def build(fast=False):
     a.add("contact_neg", P["cn1"], color="orange", joint="glued")
     a.add("pcb", P["pcb"], color="green", joint="soldered")
     a.add("piezo", P["piezo"], color="purple", joint="glued")
+    # Standing rule 22's sanctioned statement, not a dodge: the audit asks why
+    # a placement was typed rather than derived, and here nothing was typed.
+    a.placement_reviewed = (
+        "concentric product, ONE datum: every part is BUILT in the product "
+        "frame (Apple's own drawing datum — the axis of revolution and the "
+        "lowest point of the door's outer face), so every placement is the "
+        "IDENTITY. There is not a coordinate in any add() to get wrong, and "
+        "nothing to derive a transform from")
     a.insertion("door", moves="press +z %.2f mm and rotate %.0f deg"
                 % (DETENT_H, LEG_ARC_DEG),
                 direction="+z then about z",
@@ -816,6 +887,7 @@ def build(fast=False):
     check_diaphragm_clearance(P["piezo"], P["pcb"], P["carrier"], P["shell"])
     check_seal(P["door"], P["seal"])
     measure_cavity_air(P)
+    check_fdm_variants(P["carrier"], P["door"], P["shell"])
     if not fast:
         check_walls(P["shell"])
     os.makedirs("out/mech", exist_ok=True)
@@ -904,6 +976,9 @@ def report_stack():
             "  crown wall at the axis      %.4f" % T_APEX,
             "  crown wall at the land edge %.4f" % WALL_CROWN,
             "  reclaimable dead air        %.4f" % DEAD_AIR,
+            "  closing cam %.0f deg over %.2f mm = %.4f mm drop, cut as %d "
+            "steps of %.4f mm" % (RAMP_DEG, RAMP_ARC_MM, RAMP_DROP,
+                                  N_RAMP_STEP, RAMP_STEP),
             "  spring: L %.3f mm  k %.4f N/mm  (E %.0f MPa, I %.3e mm^4)"
             % (L_SPRING, K_SPRING, E_SPRING, I_SPRING),
             "  spring force  nominal %.3f N/finger, %.3f N total"

@@ -8,12 +8,13 @@
     "shape": "iterations",
     "tier": "T0",
     "tier_name": "untested",
-    "computed_at": "2026-09-04T12:07:01+0800",
+    "computed_at": "2026-09-04T17:07:22+0800",
     "computed_by": "bin/triad",
-    "ledger_lines": 2,
+    "ledger_lines": 5,
     "counts": {
-      "failure/PASS": 1,
-      "use/PASS": 1
+      "export/PASS": 1,
+      "failure/PASS": 2,
+      "use/PASS": 2
     },
     "unresolved_fails": [],
     "own_environment": {
@@ -23,9 +24,10 @@
     },
     "not_this_folders_evidence": [],
     "counted_on_their_own_word": [],
-    "why": "2 ledger entries; T0 from the ledger",
+    "why": "5 ledger entries; T0 from the ledger",
     "notes": [
-      "T4 not earned: no standard stated and no sourced offers"
+      "T4 not earned: no standard stated and no sourced offers",
+      "1 export row(s) counted but ignored by the tier (TRIAD.md 'Ledger kind export': an export proves a file was written, not that anything works)"
     ]
   }
 }

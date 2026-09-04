@@ -7,11 +7,15 @@ calculation rather than a measurement it says so, and where nothing has been
 measured the verdict is CANNOT DETERMINE and the test that would settle it is
 named. Nothing is asserted.*
 
+**Twelve measured checks, all PASS** — `out/mech/verdicts.json` is the record,
+and two of them went red first and are in the ledger as a `failure` row.
 Reproduce every number in this page with:
 
 ```bash
 cd ce-designs/halo
-~/dev/ce-workshop/ce-cad/bin/cad design.py          # builds, checks, renders, exports
+~/dev/ce-workshop/ce-cad/bin/cad design.py            # build, check, render, export
+~/dev/ce-workshop/ce-cad/bin/cad tools/section_view.py  # the section, seconds
+python3 tools/stl_bbox.py out/mech/*.stl              # read the exports BACK
 CE_TRIAD_ROOT=$PWD ~/dev/ce-workshop/bin/triad check --all
 ```
 
@@ -79,7 +83,11 @@ in `design.py`. The table is printed by `report_stack()` on every build.
 
 **Verdict: PASS.** The sum is 7.980 mm against the 7.980 mm of Apple's drawing,
 and the built assembly measures **31.874 × 31.874 × 7.980 mm** — SPEC §4's
-envelope, read off the solid, not asserted.
+envelope, read off the solid, not asserted. The exported `halo-puck.stl`, read
+back by `tools/stl_bbox.py` (stdlib only, and it knows nothing about ce-cad),
+measures **31.874 × 31.864 × 7.980 mm over z 0.000…7.980** — and every part's
+STL confirms its own row of the table: door z 0.000…2.190, cell z 0.842…4.042,
+carrier z 1.290…4.900, bender z 6.280…6.500, shell z 2.290…7.980.
 
 ### 2.1 Why SPEC §4's "about 1.5 mm remains" is no longer the binding constraint
 
@@ -133,7 +141,7 @@ is below, and it is halo's, not a measurement of an AirTag.
 | **28.94** | the shell's underside lip, at z = 2.290, with the 0.05 chamfer | Apple's drawing |
 | **27.90** | the shell's bore — the hole the whole door assembly sits in | halo's reading of a plan-view callout |
 | **27.84** | the carrier's three bayonet legs, sitting in that bore | halo's reading of the adjacent callout |
-| **25.75 / 25.45** | the door's wall, with the 0.05 mm chamfer at each end | Apple's drawing (Ø25.55 band, Ø25.45 at each end) |
+| **25.55 / 25.45** | the door's wall, with the 0.05 mm chamfer at each end | Apple's drawing (the DXF's Ø25.55 band between z 0.930 and 1.840, Ø25.45 at each end) |
 | **23.11** | the carrier's seal land — the widest *continuous* feature in the 0.40 mm band between the door's rim (z 1.890) and the shell's underside (z 2.290) | halo's reading |
 | **25.75** | Apple's speaker keep-out, realised as the **diameter of the acoustic surround** and as a declared keep-out volume on the shell | Apple's drawing |
 | **37.31** | Apple's antenna keep-out. **Measured: the annulus Ø31.874…Ø37.31 contains no halo material at all**, so the keep-out is entirely the host's obligation | Apple's drawing |
@@ -227,7 +235,7 @@ decides halo's loudness, it is not the actuator's stroke.
 ### 4.4 The sealed cavity is not the limiter either
 
 The free air volume inside the puck, **measured** by subtracting every solid
-from the product's envelope of revolution, is **1407 mm³** (an upper bound — it
+from the product's envelope of revolution, is **1405 mm³** (an upper bound — it
 includes the seam gap around the door, which is open to atmosphere). The air
 spring behind a Ø21.2 piston is then γP₀S²/V = **12.6 kN/m**, which against the
 bender's own 0.451 g resonates at about **840 Hz** — far below the 3.6 kHz drive
@@ -263,7 +271,7 @@ height. halo's realisation:
 | carrier legs | three, 60° arc, R 13.40 → **Ø27.84**/2, z 1.290 → 2.500, joining the feet to the carrier floor |
 | entry windows | the three 60° gaps between the legs |
 | **detent** | a **square** ridge on each foot, 4° of arc, **0.250 mm** tall, at the closed position's trailing edge |
-| closing cam | a 12° ramp on each foot's leading edge, so the closing rotation lifts the tab onto the foot progressively |
+| closing cam | a **12° helicoid** on each foot's leading edge, 1.50 mm of arc and 0.319 mm of drop, so the closing rotation lifts the tab onto the bearing face instead of butting into its corner. A helicoid is not a cecad primitive, so the model cuts it as **six steps of 0.053 mm**; the moulded feature is the true ramp |
 | rotation to open | 60° |
 
 The load path is: the contact springs push the cell **down**, the cell pushes
@@ -394,17 +402,45 @@ rating at all.
 | bore draft | 1° | — | straight pull |
 | edge break | 0.05 × 45° | — | Apple's own callout |
 
+**Thinnest section, measured** (`cecad.inspect.thinnest_wall_detail`, a ray
+probe over the finished solid): **0.698 mm**, at (−7.01, −12.62, 2.31) — the
+shell's bore lip at the parting face, which is designed at 0.52 mm. The two
+numbers differ because the probe's sample spacing on this part is 0.671 mm and
+it reports that limit rather than hiding it: a feature narrower than the step
+can be missed, and 0.698 is the thinnest section the probe actually found. The
+designed minimum stands at 0.52 mm and it is a lip, not a wall.
+
 ### 8.2 The FDM prototype variant
 
 `part:halo-shell-top-fdm` and `part:halo-battery-door-fdm` are built from the
 same parametric source with `fdm=True`:
 
-- **wall 1.200 mm** — three perimeters at a 0.4 mm nozzle, which is the real
-  floor for an FDM shell;
-- **every sliding fit opened 0.200 mm**;
-- **the outer envelope is byte-identical to the moulded part**, so a printed
-  puck still drops into the AirTag holder ecosystem (holders are cut with
-  +0.15 to +0.30 mm of margin, research/07 §5.1);
+- **the shell's wall is 1.200 mm** — three perimeters at a 0.4 mm nozzle, which
+  is the real floor for an FDM shell;
+- **the door's wall is 0.500 mm, and NOT 1.200**, because a measurement said so.
+  Printed at 1.200 the door's bore comes out Ø22.95 and buries itself 0.60 mm
+  radially inside the carrier's Ø24.15 seal land — the exported STL read back
+  **25.92 × 26.17 × 3.090 mm** against the moulded **26.08 × 26.37 × 2.190**,
+  and it could not be assembled at all. 0.500 mm is one 0.4 mm extrusion at
+  125 % line width, which a Bambu prints, and it leaves 0.100 mm radial on the
+  land. `check_fdm_variants()` now measures the printed door and the printed
+  shell against the **same carrier** on every build; nothing did before, which
+  is why this shipped once;
+- **the door's tabs stay 0.300 mm thick even on the printed part.** z 1.890 →
+  2.190 is all the room the carrier's floor at 2.500 leaves once the door's
+  0.250 mm of press travel is taken out of it. The tab's axial budget belongs
+  to the bayonet, not to the printer;
+- **FDM_FIT = 0.200 mm, applied in the direction each feature errs.** An
+  internal feature prints undersize, so the shell's bore is **modelled 0.200 mm
+  oversize** (Ø28.10) to measure Ø27.90; an external feature prints oversize,
+  so the door's wall and its three tabs are **modelled 0.200 mm undersize**
+  (Ø25.35 and Ø26.40) to measure Ø25.55 and Ø26.60. Both are in `design.py`,
+  not only in this paragraph;
+- **the crown's outer profile is deliberately NOT compensated.** It is a free
+  surface and it will print up to ~0.15 mm over Ø31.874 — which the AirTag
+  holder ecosystem takes, because holders are cut with +0.15 to +0.30 mm of
+  margin (research/07 §5.1). Compensating it would make the *model* wrong for
+  anything but one printer's flow;
 - suggested process: 0.12 mm layers, **no brim**.
 
 **A printed shell will be markedly quieter** — 1.20 mm of PC is 3.4× the
@@ -428,7 +464,7 @@ Lane G's six open measurement tasks (research/07 §8), plus what this lane adds.
 | 6 | **the door seal** — gasket, cross-section, groove, or only adhesive | the single public statement about it is a low-trust Taobao page | halo designed a 20 %-squeeze radial MIP bead, §7 |
 | **7** | **(new) the two plan-view callouts Ø27.90 and Ø27.84** | the CC BY half-section DXF omits both circles; lane G rates the interpretation *medium*. A donor sample sectioned through a bayonet tab settles what they are | halo reads them as the shell's bore and the carrier's leg circle, §3 |
 
-And three verdicts this lane cannot close from geometry:
+And four verdicts this lane cannot close from geometry:
 
 | what | verdict | the test |
 |---|---|---|
@@ -471,5 +507,24 @@ electronics lane's, and they are the gap between 7.8 g and 11 g.
 | the blueprint (P12) — the stack budget as ten space claims | `ce-assemblies/halo-puck/current/blueprint.json`, `out/mech/halo-puck-blueprint.svg` |
 | the assembly | `ce-assemblies/halo-puck/` — `assembly.json`, `bom.json` (8 rows), `joints.json` (5 rows) |
 | the parts | `ce-parts/halo-*/` — ten folders, each with `cad/part.py`, `cad/interfaces.json`, `mech/mech.py`, `evidence/ledger.jsonl` |
-| renders, section, STEP, STL | `out/mech/` |
+| the connection kinds these parts join through | `ce-connections/` — eight folders; five grade themselves CANNOT DETERMINE and say why |
+| renders, STEP, STL | `out/mech/` |
+| **the section that shows the stack** | `out/mech/halo-puck-section-front.png` (square on) and `-quarter.png`, drawn by [`tools/section_view.py`](../tools/section_view.py) — a render-only pass, seconds instead of minutes |
 | the measured verdicts, as data | `out/mech/verdicts.json` |
+| the evidence | every folder's `evidence/ledger.jsonl` — append-only, and it carries the two `failure` rows as well as the passes |
+
+**What `CE_TRIAD_ROOT=$PWD triad check --all` returns, and why it is not all
+PASS: checked 19 · PASS 10 · CANNOT DETERMINE 9 · FAIL 0.** Five of the nine
+are connection folders that grade **themselves** CANNOT DETERMINE — adhesive
+strength, the seal, insert retention, solderability and contact force are all
+untested, and TRIAD.md forbids a reader grading a folder better than it grades
+itself. The other four carry a **superseded** ledger row: `out/mech/verdicts.json`
+was rebuilt when two checks were added, and the standard's rule is to append a
+new row naming the artifact rather than edit the old one, after which the old
+row is reported as history and never deleted. Both are the system working, not
+the design failing.
+
+A note on the section renders, because it cost a wasted pass: the cut must be
+kept on the **far** side of the camera (`section=("y", 0.0, "max")` viewed from
+the front). Keep the near half and the camera sees an intact outside face — it
+renders perfectly and shows nothing.

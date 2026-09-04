@@ -1,0 +1,74 @@
+{
+  "$generated": "ce-designs/halo/design.py — every row is read off the finished solid, never off the parameter block",
+  "date": "2026-09-04",
+  "assembly": "assembly:halo-puck",
+  "stack_budget_mm": {
+    "total": 7.98,
+    "land_z": 6.5499,
+    "crown_wall_axis": 1.4301,
+    "crown_wall_land_edge": 0.8,
+    "reclaimable_dead_air": 0.5416
+  },
+  "checks": [
+    {
+      "name": "envelope",
+      "verdict": "PASS",
+      "why": "assembly bbox 31.874 x 31.874 x 7.980 vs SPEC Ø31.874 x 7.980"
+    },
+    {
+      "name": "max-OD height",
+      "verdict": "PASS",
+      "why": "material outside Ø31.864 lives at z 4.263..4.384 (mid 4.323); Apple's drawing puts Ø31.874 at z 4.339"
+    },
+    {
+      "name": "stepped diameters",
+      "verdict": "PASS",
+      "why": "SPEC §4's 5 stepped diameters: all present on a solid"
+    },
+    {
+      "name": "antenna keep-out",
+      "verdict": "PASS",
+      "why": "annulus Ø31.874..Ø37.31 is empty of halo material"
+    },
+    {
+      "name": "metal inside the keep-out",
+      "verdict": "PASS",
+      "why": "7 conductive parts, all inside the Ø31.874 envelope, exactly as in the AirTag: halo-battery-door Ø26.37 (the stamped door); halo-pcb-blank Ø26.00 (the board (its copper)); halo-piezo-7bb-20-3 Ø20.00 (the bender's brass shim); halo-cr2032 Ø20.00 (the cell); halo-battery-contact-pos-a Ø8.77 (a battery contact); halo-battery-contact-pos-b Ø8.41 (a battery contact); halo-battery-contact-neg Ø9.61 (a battery contact). The antennas sit ABOVE them, on the carrier's outer wall. RF performance is ce-rf's lane, not measured here"
+    },
+    {
+      "name": "bayonet mechanism",
+      "verdict": "PASS",
+      "why": "A closed 0.0000=0 · B dropped 0.3 3.7114>0 (retained) · C twist-only 10° 0.2735>0 (blocked) · D press 0.25 + twist 10° 0.0000=0 (freed) · E in the window, dropped 0.0000=0 mm3"
+    },
+    {
+      "name": "press travel",
+      "verdict": "PASS",
+      "why": "door pressed 0.250 mm: 0.0000 mm3 into the carrier, 0.0000 into the shell — the contact springs are the only thing resisting"
+    },
+    {
+      "name": "diaphragm gap",
+      "verdict": "PASS",
+      "why": "bender to board 1.080 mm, to carrier 1.912 mm (both must clear), to shell 0.050 mm (the 0.05 mm bond line)"
+    },
+    {
+      "name": "door seal",
+      "verdict": "PASS",
+      "why": "installed radial gap 0.400 mm on a 0.500 mm free section = 20.0% squeeze (want 15-30%); bead touches the door's bore at 0.000 mm"
+    },
+    {
+      "name": "cavity air (upper bound)",
+      "verdict": "PASS",
+      "why": "envelope 4605.9 mm3 minus every solid = 1404.9 mm3 of void; air-spring stiffness 12582 N/m over the Ø21.20 piston. With the bender's 0.451 g alone that is 840 Hz, well below the 3600 Hz drive point, so the sealed cavity is NOT the limiter at the design frequency"
+    },
+    {
+      "name": "FDM variants assemble",
+      "verdict": "PASS",
+      "why": "printed door into the SAME carrier 0.0000 mm3, printed shell 0.0000 mm3; printed door height 2.190 mm against the moulded 2.190 (they must match — the tab's axial budget belongs to the carrier, not the printer). Door wall 0.50 mm, shell wall 1.20 mm, bore modelled Ø28.10 to measure Ø27.90"
+    },
+    {
+      "name": "shell wall",
+      "verdict": "PASS",
+      "why": "thinnest measured section 0.698 mm at (-7.01, -12.62, 2.31) (step 0.671 mm). The acoustic surround is 0.80 and the design's thinnest intended feature is the 0.52 mm bore lip at z=2.29"
+    }
+  ]
+}
