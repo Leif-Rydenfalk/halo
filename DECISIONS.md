@@ -734,3 +734,49 @@ divergent integral sitting beside its own claim of no singularity.
 
 Checks in that app went from 91 to 115 across 16 groups, every one broken on
 purpose and restored.
+
+## D26a — correction: the 1.5 mm does not transfer, and the shipping board has the bad geometry
+
+*Written 2026-09-05. Two corrections to D26, both found by lane B1, and the first
+of them is my error.*
+
+**1. I passed a number to the board lane that does not apply to the board.**
+D26's "shorten the antenna's open-end tail by 1.5 mm" was solved on a **Ø30 mm,
+1.00 mm-thick study puck** whose tail is 2.5 mm — so the change removed 60
+percent of that tail and 4.7 percent of the conductor. **The shipping board's
+tail is 1.4539 mm.** On it, 1.5 mm is **103 percent of the tail** and 6.1 percent
+of the conductor: it deletes the tail outright and cuts 0.046 mm into the last
+meander tooth. Different outline, different thickness, different effective
+permittivity. The lane refused to apply it and recorded the reason rather than
+cutting the copper, which was correct. **The direction may still be right; the
+number does not transfer**, and I should have checked that before relaying it.
+
+**2. The 668 MHz condition is present on the shipping board right now.**
+D26 recorded that the coil must not sit under the antenna arm, because that costs
+668 MHz and no tuning recovers it. Measured on the real copper, plan view, all
+layers:
+
+| net | clearance to the antenna arm |
+|---|---|
+| **NFC1** | **−0.1746 mm — the coil's copper OVERLAPS the arm** |
+| **NFC2** | **+0.1473 mm — inside the 0.30 mm floor** |
+| GND | +1.4928 mm |
+| VDD | +10.3810 mm |
+
+Identical before and after routing, so this is the **design**, not the router.
+And it explains the 2.71 Ω radiation resistance that looked wrong on
+`halo-rev-a-2g4`: a radiator welded over a large passive conductor shows exactly
+that signature. The electromagnetic study did not see it because that case
+carries an empty passive-copper list — **it solved the arm with no coil present
+at all.**
+
+**How it got through:** the board's `antenna-ground-clearance` keep-out forbids
+pours and vias but **allows tracks**, because the antenna is itself a track
+there. The coil walked through the hole that exemption left. It is now assertion
+R9, graded in plan view because the coupling is vertical through 0.6 mm of
+laminate rather than lateral.
+
+**What follows:** the coil must move off the arm before the antenna result means
+anything on this board, and the electromagnetic re-solve is owed with the real
+passive copper present. Until then the antenna's numbers describe a board we are
+not building.
