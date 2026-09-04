@@ -1,0 +1,216 @@
+{
+  "$cespice": 1,
+  "kind": "verdict",
+  "record": {
+    "source": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/sim/sounder_drive.py",
+    "example": "sim",
+    "verdict": "PASS",
+    "exit": 0,
+    "why": "7 scenario(s), every assert held",
+    "generated": "2026-09-04T17:31:11+08:00",
+    "ngspice": "ngspice-47  (ngspice-47 : Circuit level simulation program)",
+    "scenarios": [
+      {
+        "circuit": "sounder_15nf_rs500",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9999894467169224,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 5.60242059095743,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_25nf_rs500",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9986046679207656,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 5.708494707942512,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_40nf_rs500",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9784450106454594,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 5.717453832112586,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_15nf_rs32",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9999999999999982,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 16.187955402278607,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_25nf_rs32",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9999999995839914,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 17.191958906929866,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_40nf_rs32",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_bender_pp_V",
+            "op": ">",
+            "expect": 3.0,
+            "actual": 3.9999971605705023,
+            "verdict": "PASS",
+            "why": "D11a's claim is 2 x VDD peak to peak, the same swing a bridge-tied class-D gives. 1.5 x VDD is that with room for the drive and series resistance; below it the anti-phase trick is not working and the amplifier was not free to delete."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 25.0,
+            "actual": 17.795255742036375,
+            "verdict": "PASS",
+            "why": "an nRF54L GPIO in high drive is specified in the single-digit to low-tens of mA. 25 mA is the ceiling this study will call safe without the datasheet figure in hand."
+          },
+          {
+            "name": "v_rail_min_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 2.0000000000005924,
+            "verdict": "PASS",
+            "why": "the SoC has to stay alive while it is making a noise. Below 1.7 V it browns out mid-alert, which is the one moment DULT requires it to be audible."
+          }
+        ]
+      },
+      {
+        "circuit": "sounder_40nf_rs32_no_r9",
+        "verdict": "PASS",
+        "why": "1 assert(s) evaluated, all held; 5 measurement(s) read",
+        "asserts": [
+          {
+            "name": "i_peak_mA",
+            "op": ">",
+            "expect": 20.0,
+            "actual": 32.003825074179,
+            "verdict": "PASS",
+            "why": "THIS ONE IS MEANT TO BE HIGH. In the low-loss model the edge is limited by the pin's own 40 ohm and the bender's 32 ohm, so the spike approaches VDD/72 = 28 mA. A PASS here is the evidence that R9 is doing a job; the fitted 40 nF / 32 ohm case above shows what it reduces that spike to."
+          }
+        ]
+      }
+    ]
+  }
+}

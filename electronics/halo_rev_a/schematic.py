@@ -563,11 +563,18 @@ def build():
     s.part("R9", "Device:R", value="100R", group="sounder", footprint=R0201,
            fields=P("C25076", "0201WMF1000TEE", "UNI-ROYAL", "$0.0012",
                     "in stock",
-                    {"Note": "series damping on one leg. A bender is a "
+                    {"Note": "series damping on one leg, and it EARNS ITS "
+                             "PLACE - measured, not argued. A bender is a "
                              "near-pure capacitance and a GPIO edge into it "
-                             "is a current spike straight off the bulk caps; "
-                             "100 R holds the peak near 30 mA and costs "
-                             "0.2 dB at 4 kHz into ~500 ohm."}))
+                             "is a current spike off the bulk capacitors. "
+                             "sim/sounder_drive.py: with a low-loss 40 nF "
+                             "bender the peak pin current is 32.0 mA with R9 "
+                             "removed and 17.8 mA with it fitted - a 44 % "
+                             "cut, and the difference between exceeding and "
+                             "clearing a 25 mA ceiling. An earlier note here "
+                             "said '100 R holds the peak near 30 mA', which "
+                             "had the right magnitude and the wrong side of "
+                             "it."}))
     s.net("PIEZO_P", "U1.39", "R9.1")       # P1.11
     s.net("PIEZO_DRV", "R9.2", "LS1.1")
     s.net("PIEZO_N", "U1.40", "LS1.2")      # P1.12
