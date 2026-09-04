@@ -19,9 +19,19 @@ Three instances, all in one night, all found by different means:
 | Two antenna simulations returned **PASS** | They resonated at 4.0 and 5.8 GHz against a 2.44 GHz target. The assertions tested only how deep the impedance match was and how efficient the radiator was — never the frequency | Reading the measured values instead of the verdict |
 | A patch script reported files patched (peer session) | It had changed nothing. The regular expression skipped every option object containing an interpolation | Counting the occurrences afterwards |
 
-## Why the three are one defect
+Four more, found the same night by the same method — running the thing and
+counting the result:
 
-In each case the tool's report describes its *intent*, not its *effect*. The
+| what reported success | what was actually true | how it was caught |
+|---|---|---|
+| Gerber export, as part of a working fabrication pipeline | **No export had ever succeeded.** The exporter passed a flag that does not exist in KiCad 10 | Looking for the files |
+| A design-rule report naming the factory's 0.09 mm limit | The check was running against a **0.2 mm default netclass**; the report named a rule that never fired | Comparing the named rule to the loaded one |
+| The keep-out containment test | It **never ran once**. A method gained an argument in KiCad 10, and a bare `except` swallowed the resulting error, so the test returned null on every board | Using the primitive and finding it accepted everything |
+| `bin/exercise` printing `DRC: None violations` | The board file had been **rejected outright** by KiCad; there were no violations because there was no check | Asking what "None" meant |
+
+## Why they are one defect
+
+In every case the tool's report describes its *intent*, not its *effect*. The
 router wrapper reported the pipeline it would run. The antenna assertion
 reported the properties it chose to test. The patch script reported the files it
 had opened. None of them measured the thing the reader would infer from a pass.

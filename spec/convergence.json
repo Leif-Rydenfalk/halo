@@ -34,12 +34,12 @@
    "target_value": 0.3,
    "tolerance": 0.1,
    "cite": "research/01 §2 — AirTag PCB measured 0.3 mm, annular",
-   "weight": 5,
+   "weight": 2,
    "measure": {
     "from": "literal",
     "value": 1.0
    },
-   "current_note": "ce-rf board model uses 1.0 mm; the real board lane has not chosen a stackup yet"
+   "current_note": "ce-rf antenna model still uses 1.0 mm; the routed board is 4-layer. Apple's 0.3 mm is a flex-thin annular board we are not copying — see note"
   },
   {
    "name": "Board outline diameter",
@@ -50,9 +50,9 @@
    "weight": 8,
    "measure": {
     "from": "literal",
-    "value": 30.0
+    "value": 31.87
    },
-   "current_note": "ce-rf antenna model uses Ø30 mm"
+   "current_note": "ce-pcb/examples/round32_4layer — true circle on Edge.Cuts, r=15.935 verified in the file and in the gerber (arcs, not chords)"
   },
   {
    "name": "Antenna realized gain",

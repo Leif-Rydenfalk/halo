@@ -24,8 +24,8 @@ is a set of claims about a board nobody has built.
 
 | # | claim | status | what would close it |
 |---|---|---|---|
-| V1 | the autorouter routes a board | **being closed by lane T1** — install a runtime, then report the unrouted-connection count before and after on a real example | a measured before-and-after count |
-| V2 | the Ø31.87 mm four-layer round board builds, routes and passes design-rule checks | not yet proven end to end | one gerber set from the real outline with a clean check |
+| V1 | the autorouter routes a board | **CLOSED 2026-09-04.** OpenJDK installed; `bin/route --doctor` exits 0 and now asserts *the jar runs*, not that a path exists. Measured on the Ø31.87 mm puck: **11 unconnected → 0, with 0 violations**, reproduced three times | done |
+| V2 | the Ø31.87 mm four-layer round board builds, routes and passes design-rule checks | **CLOSED 2026-09-04** for the outline and stackup: true circle on the edge layer, four layers, both planes, a 9-via array under the exposed pad, both keep-outs, routed clean, **29-file fabrication set exported**. Still open for *our circuit* rather than a placeholder | one fabrication set from the halo schematic |
 | V3 | the electromagnetic solver is trustworthy | **being closed by lane T3** — the validation case reproducing a published reference antenna had not finished | the delta between simulated and published resonant frequency and bandwidth |
 | V4 | the coin-cell model reflects a real cell | passes against its own datasheet-derived assertions, but has never been compared to a physical measurement | a real cell under a real pulse load, when hardware exists |
 | V5 | the firmware advertises correctly | **proven in emulation only** — verified field by field against SPEC F1, but no radio has transmitted | a live scan seeing our own board, and a location report coming back |
