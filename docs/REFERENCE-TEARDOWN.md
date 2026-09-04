@@ -85,7 +85,34 @@ which are the figures to quote since the datum itself is approximate). Method:
 Confidence HIGH for this unit. **Whether ANT1 and ANT3 share one carrier is
 still CANNOT DETERMINE** — the front photograph shows only the coil.
 
-The original claim, now superseded for ANT2 and unverified for the rest:
+**ANT1 and ANT3 CORROBORATED 2026-09-05, after a hypothesis that they might be
+on the board was tested and refuted.** Apple's own arrows in FCC photo 6 label
+Bluetooth and UWB antennas at the rim, which raised the possibility that they
+are etched in board copper and that the laser-structuring obstacle was
+imaginary. It is not. That photograph calibrates at 15.887 px/mm against the
+steel rule in frame, so one pixel is 0.063 mm and antenna trace geometry of
+0.2–0.5 mm spans three to eight pixels — at which scale an etched trace, a
+structured trace and a solder joint to a carrier are indistinguishable. Apple's
+labels establish **where** the antennas are, not **what they are on**.
+
+The instrument that answers it is O'Flynn's backside scan at roughly 90–110
+px/mm, six to seven times better, and taken with the plastic carrier removed:
+**there is no antenna structure of any kind in the outer copper of either
+side** — no meander, no inverted-F, no patch. Every copper feature resolves as
+routing, a pad or a via. What lines the rim is a fibrous grey conductive gasket
+or adhesive, the same material that defeats edge-detection on the board outline,
+so the two findings corroborate from opposite directions.
+
+The reasoning was stated before the images were interpreted, deliberately,
+because the prize was large enough to bias the reading: a 2.4 GHz antenna on a
+26 mm board is a **large** feature, hundreds of pixels at this scale. Low
+resolution misleads about fine detail; the absence of a large feature is not
+that kind of claim. Full argument: `electronics/halo_replica/evidence/E01-ARE-THE-ANTENNAS-ON-THE-BOARD.md`, commit 52d2931.
+
+**Still open:** whether an antenna exists on an **inner** layer. No photograph
+sees inner layers; an X-ray or a cross-section would settle it.
+
+The original claim, corroborated for ANT1 and ANT3 and superseded for ANT2:
 all three are **laser-direct-structured (LDS) onto a single plastic carrier** and soldered to the
 board edge (6 tear-off joints). The NFC coil has an extra return trace on the far side of the
 plastic with a via at each end.
