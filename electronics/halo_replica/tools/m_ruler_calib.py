@@ -249,6 +249,14 @@ RULES = {
     "photo1_right":  ("fcc-BCGA2187-internal-photo-1.jpg", "y", (100, 900),  (1460, 1620)),
     "photo8_bottom": ("fcc-BCGA2187-internal-photo-8.jpg", "x", (400, 2000), (1040, 1200)),
     "photo8_right":  ("fcc-BCGA2187-internal-photo-8.jpg", "y", (100, 900),  (1460, 1620)),
+    "photo2_bottom": ("fcc-BCGA2187-internal-photo-2.jpg", "x", (400, 2000), (1020, 1220)),
+    "photo2_right":  ("fcc-BCGA2187-internal-photo-2.jpg", "y", (100, 900),  (1440, 1640)),
+    "photo3_bottom": ("fcc-BCGA2187-internal-photo-3.jpg", "x", (400, 2000), (1020, 1220)),
+    "photo3_right":  ("fcc-BCGA2187-internal-photo-3.jpg", "y", (100, 900),  (1440, 1640)),
+    "photo4_bottom": ("fcc-BCGA2187-internal-photo-4.jpg", "x", (400, 2000), (1020, 1220)),
+    "photo4_right":  ("fcc-BCGA2187-internal-photo-4.jpg", "y", (100, 900),  (1440, 1640)),
+    "photo5_bottom": ("fcc-BCGA2187-internal-photo-5.jpg", "x", (400, 2000), (1020, 1220)),
+    "photo5_right":  ("fcc-BCGA2187-internal-photo-5.jpg", "y", (100, 900),  (1440, 1640)),
 }
 
 
