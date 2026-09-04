@@ -82,8 +82,34 @@ lives outside the workshop tree at
 **`ce-pcb/bin/route --doctor` exits 0** and prints
 `jar runs -> Freerouting v2.3.0 (build-date: 2026-08-07)`. Recorded in
 `docs/TOOLS-THAT-LIE.md` as the mirror image of that page: a capability
-declared absent because the probe looked in the wrong place. **Do not
-fabricate until the routing below is finished.**
+declared absent because the probe looked in the wrong place.
+
+**THE BOARD IS ROUTED. Measured 2026-09-05 06:43:**
+
+| | before | after |
+|---|--:|--:|
+| unconnected items | 81 | **35** |
+| DRC errors | 0 | **0** |
+| DRC warnings | 3 | 2 |
+| track segments | 255 | 553 |
+| vias | 49 | 86 |
+
+`tools/route_board.sh` — one command: `route --doctor`, then export → `dsnfix`
+→ freerouting → SES → KiCad's own DRC, then `check_routed.py`. What had made
+three earlier attempts grind for 900, 3300 and 2400 s was that **`dsnfix.py`
+was never being run**: it was correct, committed since 09-04, and the routing
+seam had no hook to call it. Wired in as ce-pcb's new `--dsn-filter`, the
+problem goes from 176 pins to **113 across 48 nets** and the route completes.
+
+**`check_routed.py`: 8 PASS / 1 FAIL / 0 CANNOT DETERMINE.** All 235 segments
+of solved copper — the antenna and both halves of the NFC coil — came back
+within **55 nm**, under the 100 nm the Specctra format can carry, and the
+conductor is 162.2257 mm out against 162.2258 mm back. The one FAIL is
+`antenna_arm_not_shadowed` and it is **not the router's**: NFC1 overlaps the
+arm by 0.1747 mm on the board as designed. See §the antenna debt.
+
+**Still do not fabricate.** 35 unconnected remain, and the antenna/coil overlap
+is a geometry change that will invalidate this routing when it is made.
 
 **The drill blocker is closed by measurement, and it was not closed before.**
 The 02:27 pack carried **50 PTH holes against a board with 49 vias, 0
