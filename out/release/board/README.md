@@ -186,8 +186,11 @@ ground cleared holds less field in the substrate, so the quarter wave is
 
 There is nowhere to put 3.78 mm more arc, so **the element now meanders**:
 four teeth whose depth is solved by bisection to make the conductor exactly
-24.4910 mm. The re-run of the FDTD on that geometry **had not completed when
-this pack was written**, so §5 carries it as open. With the L-section match
+24.4910 mm. **The re-run of the FDTD on that geometry did not complete** —
+three attempts were started and each was cut short before openEMS finished
+its near-to-far-field transform, so §5 carries it as open. The corrected
+element is in the copper and in the Gerbers; what is missing is the
+confirmation that it lands in band. With the L-section match
 the first geometry already reached **−7.75 dB** worst-case S11 in band, which
 passes the −6 dB coverage assert; the resonance assert is the one that fails.
 
@@ -195,11 +198,21 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
 
 ## 5. What is NOT done — read this before quoting
 
-1. **THE BOARD IS NOT ROUTED.** 91 unconnected items. Freerouting timed out
-   at 900 s on 12 passes and a 3-pass re-run was still going when this was
-   written. The planes, the outline, the placement, the keep-outs and the
-   etched copper are all real; the point-to-point connections are not. **Do
-   not fabricate this revision.**
+1. **THE BOARD IS NOT ROUTED.** 91 unconnected items, 0 vias.
+
+   **Freerouting was run three times and timed out three times**: 900 s at 12
+   passes, 3300 s at 3 passes, 2400 s at 2 passes. The tool itself works —
+   lane T1 proved it on a Ø31.87 mm board and closed VERIFICATION-DEBT V1,
+   and the Java runtime it needs is now installed. **This board is simply
+   denser than it can handle**: a Ø26.00 mm disc, a 0.4 mm pitch QFN-48 whose
+   escape must pass through 0.20 mm gaps, and 0.127 mm rules. That is a
+   measured limit, not a step nobody tried.
+
+   The planes, the outline, the placement, the keep-outs, the test access and
+   the etched copper are all real; the point-to-point connections are not.
+   **Do not fabricate this revision.** The next move is either hand-routing
+   the escape and letting the router finish the rest, or relaxing the
+   placement to give it room.
 2. **THE ANTENNA HAS NOT PASSED.** 2.886 GHz measured on the first geometry;
    the corrected 24.49 mm meander has not been re-simulated to completion.
 3. **FIVE PART CLASSES DO NOT FIT THE ENCLOSURE.** The height check grades

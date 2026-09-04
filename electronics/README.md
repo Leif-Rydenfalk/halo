@@ -236,9 +236,15 @@ than loosened.
 
 **Load-bearing, in rough order of how much they matter.**
 
-1. **The board is not routed.** 91 unconnected items. Do not fabricate.
-2. **The antenna has not passed.** 2.886 GHz measured; the corrected 24.49 mm
-   meander has not been re-simulated to completion.
+1. **The board is not routed.** 91 unconnected items, 0 vias. Freerouting
+   was run three times and timed out three times — 900 s at 12 passes,
+   3300 s at 3, 2400 s at 2. The tool works (lane T1 proved it on a Ø31.87 mm
+   board); this board is denser than it can handle. Do not fabricate.
+2. **The antenna has not passed.** 2.886 GHz measured on the 20.71 mm
+   element, with `eps_eff_implied = 1.573` naming the cause. The corrected
+   24.49 mm meander is drawn in the copper but its FDTD re-run did not
+   complete — the confirmation that it lands in band is the missing piece,
+   not the correction itself.
 3. **Five part classes do not fit the enclosure — and the fix is already
    written down.** 46 PASS / 5 FAIL on the height check. A QFN-48 is 0.85 mm
    and the cell leaves 0.578 mm under the bottom face; X1 and L1 are over by
