@@ -523,3 +523,185 @@ def run_validate(a):
         print("  wrote %s" % a.json_out)
     print("  %s%s" % (V[verdict], (': ' + '; '.join(why)) if why else ''))
     return verdict
+
+
+# ------------------------------------------------------------------ selftest
+def _synth(tmp):
+    """A synthetic source/target pair with a KNOWN homography, so the recovered
+    one can be graded against an answer rather than against itself."""
+    rng = np.random.default_rng(7)
+    n = 900
+    a = np.full((n, n), 40.0)
+    Y, X = np.mgrid[0:n, 0:n].astype(np.float64)
+    rr = np.hypot(X-n/2, Y-n/2)
+    a[(rr < 400) & (rr > 170)] = 90.0
+    for _ in range(260):                       # bright "pads" - the texture to lock onto
+        t = rng.uniform(0, 2*math.pi); r = rng.uniform(200, 375)
+        cx, cy = n/2+r*math.cos(t), n/2+r*math.sin(t)
+        w, h = rng.uniform(8, 26), rng.uniform(8, 26)
+        a[int(cy-h/2):int(cy+h/2), int(cx-w/2):int(cx+w/2)] = rng.uniform(150, 235)
+    a += rng.normal(0, 2.0, a.shape)
+    sp = os.path.join(tmp, 'synth_source.png')
+    Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).save(sp)
+    return sp, n
+
+def _synth_target(sp, tmp, theta, scale, tx, ty, name='synth_target.png'):
+    im = np.asarray(Image.open(sp).convert('L'), dtype=np.float64)
+    n = im.shape[0]; m = int(n*scale)
+    Y, X = np.mgrid[0:m, 0:m].astype(np.float64)
+    th = math.radians(theta); ct, st = math.cos(th), math.sin(th)
+    dx = X - m/2 - tx; dy = Y - m/2 - ty
+    sx = (ct*dx + st*dy)/scale + n/2
+    sy = (-st*dx + ct*dy)/scale + n/2
+    v = ndimage.map_coordinates(im, [sy, sx], order=1, mode='constant', cval=40.0)
+    p = os.path.join(tmp, name)
+    Image.fromarray(np.clip(v, 0, 255).astype(np.uint8)).save(p)
+    return p, m
+
+def _view(path, centre, r, face='synthetic'):
+    return dict(path=path, abspath=path, name=os.path.basename(path), centre=centre, r=r,
+                face=face, note='selftest synthetic', px_per_mm=10.0,
+                px_per_mm_basis='synthetic: 10 px/mm by construction')
+
+def run_selftest(a):
+    print("c_register selftest - synthetic ground truth and deliberate breaks")
+    tmp = tempfile.mkdtemp(prefix='c_register-selftest-')
+    results = []
+    def rec(ok, msg):
+        results.append(ok); print("  %s  %s" % ('PASS' if ok else 'FAIL', msg))
+
+    sp, n = _synth(tmp)
+    TH, SC = 37.0, 0.42
+    tp, m = _synth_target(sp, tmp, TH, SC, 0.0, 0.0)
+    src = Frame(_view(sp, (n/2, n/2), 400.0), downsample=1/SC if SC < 1 else 1.0)
+    # pre-average the source to the target's sampling, as the real pipeline does
+    src = Frame(_view(sp, (n/2, n/2), 400.0), downsample=round(1/SC, 2))
+    tgt = Frame(_view(tp, (m/2, m/2), 400.0*SC))
+    H, stages, coarse, mask = register(src, tgt, model='similarity')
+    # 1: recover a known transform
+    x0, y0 = apply_H(H, tgt.cx, tgt.cy)
+    cerr = math.hypot(x0-src.cx, y0-src.cy)*src.k
+    rec(stages[-1]['ncc'] > 0.9 and cerr < 4.0,
+        "recover a KNOWN transform (theta=%.0f scale=%.2f): NCC %.4f, centre error %.2f source px"
+        % (TH, SC, stages[-1]['ncc'], cerr))
+    # 2: null control must sit far below the true fit
+    nul = null_distribution(H, src, tgt, mask)
+    nm = max(v for _, v in nul)
+    rec(stages[-1]['ncc'] > 3.0*nm,
+        "NULL control separates: fit %.4f vs worst wrong-rotation %.4f (%.1fx)"
+        % (stages[-1]['ncc'], nm, stages[-1]['ncc']/max(nm, 1e-9)))
+    # 3: pure noise as target -> no registration
+    rng = np.random.default_rng(3)
+    npth = os.path.join(tmp, 'noise.png')
+    Image.fromarray(rng.integers(0, 255, (m, m)).astype(np.uint8)).save(npth)
+    ntgt = Frame(_view(npth, (m/2, m/2), 400.0*SC))
+    _, nst, _, _ = register(src, ntgt, model='similarity')
+    rec(nst[-1]['ncc'] < 0.30,
+        "NOISE target yields no registration: best NCC %.4f (floor for a claim is %.2f)"
+        % (nst[-1]['ncc'], 0.30))
+    # 4: landmark gate DISCARDS a featureless patch
+    flat = os.path.join(tmp, 'flat.png')
+    Image.fromarray(np.full((m, m), 128, dtype=np.uint8)).save(flat)
+    ftgt = Frame(_view(flat, (m/2, m/2), 400.0*SC))
+    lm, disc, _ = landmark_field(H, src, ftgt, step=20, patch=15, search=5)
+    rec(len(lm) == 0 and sum(disc.values()) > 0,
+        "landmark gate DISCARDS a featureless target: 0 kept, %d discarded %s"
+        % (sum(disc.values()), dict(disc)))
+    # 5: the hold-out MUST GO RED on a deliberately wrong transform
+    lm2, _, _ = landmark_field(H, src, tgt, step=16, patch=15, search=5)
+    if len(lm2) >= 30:
+        P = np.array([[l['tx']+l['dx'], l['ty']+l['dy']] for l in lm2])
+        Q = np.array([apply_H(H, l['tx'], l['ty']) for l in lm2])
+        th = np.array([l['theta_deg'] for l in lm2])
+        def worst_rms(Pp, Qq):
+            w = 0.0
+            for i in range(4):
+                a0, a1 = 90.0*i, 90.0*(i+1)
+                held = (th >= a0) & (th < a1); fit = ~held
+                if held.sum() < 4 or fit.sum() < 12: continue
+                Hf = fit_homography_dlt(Pp[fit], Qq[fit])
+                px, py = apply_H(Hf, Pp[held][:, 0], Pp[held][:, 1])
+                w = max(w, float(np.sqrt(((px-Qq[held][:, 0])**2+(py-Qq[held][:, 1])**2).mean())))
+            return w
+        clean = worst_rms(P, Q)
+        Qb = Q * 1.03                      # a 3% scale error, deliberately injected
+        bad = worst_rms(P, Qb)
+        rec(bad > 3.0*clean and bad > 2.0,
+            "HOLD-OUT goes RED on a deliberate 3%% scale error: clean %.3f px -> broken %.3f px"
+            % (clean, bad))
+    else:
+        rec(False, "hold-out break test could not run: only %d landmarks" % len(lm2))
+    ok = sum(1 for r in results if r)
+    print("\n%d/%d passed, %d failed" % (ok, len(results), len(results)-ok))
+    print("synthetic inputs kept at %s" % tmp)
+    return PASS if ok == len(results) else FAIL
+
+
+def run_doctor(a):
+    print("c_register doctor")
+    good = True
+    for mod, ver in (('numpy', np.__version__),
+                     ('PIL', Image.__version__ if hasattr(Image, '__version__') else '?'),
+                     ('scipy', __import__('scipy').__version__)):
+        print("  PASS  %s %s" % (mod, ver))
+    print("  image catalogue: %s" % IMGDIR)
+    for k, v in VIEWS.items():
+        p = os.path.join(IMGDIR, v['path'])
+        e = os.path.exists(p)
+        good &= e
+        print("  %s  view %-14s %-42s face=%s" % ('PASS' if e else 'FAIL', k, v['path'], v['face']))
+    cal = os.path.join(os.path.dirname(HERE), 'metrology', 'ruler-calibration.json')
+    if os.path.exists(cal):
+        d = json.load(open(cal))['photo6_bottom']
+        agree = abs(d['px_per_mm'] - VIEWS['fcc6-front']['px_per_mm']) < 1e-9
+        good &= agree
+        print("  %s  scale basis matches metrology/ruler-calibration.json photo6_bottom "
+              "(%.6f px/mm)" % ('PASS' if agree else 'FAIL', d['px_per_mm']))
+    else:
+        good = False; print("  FAIL  metrology/ruler-calibration.json missing")
+    # CANARY: a real registration with a known answer, not a ping
+    tmp = tempfile.mkdtemp(prefix='c_register-doctor-')
+    sp, n = _synth(tmp)
+    tp, m = _synth_target(sp, tmp, -63.0, 0.35, 0, 0)
+    src = Frame(_view(sp, (n/2, n/2), 400.0), downsample=round(1/0.35, 2))
+    tgt = Frame(_view(tp, (m/2, m/2), 400.0*0.35))
+    H, stages, _, _ = register(src, tgt, model='similarity')
+    x0, y0 = apply_H(H, tgt.cx, tgt.cy)
+    cerr = math.hypot(x0-src.cx, y0-src.cy)*src.k
+    ok = stages[-1]['ncc'] > 0.9 and cerr < 4.0
+    good &= ok
+    print("  CANARY  known transform theta=-63 scale=0.35: NCC %.4f, centre error %.2f px "
+          "(expect NCC>0.9, err<4)" % (stages[-1]['ncc'], cerr))
+    print("  %s  canary - a doctor pass is a MEASUREMENT, not a ping" % ('PASS' if ok else 'FAIL'))
+    return PASS if good else FAIL
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest='verb', required=True)
+    def common(p):
+        p.add_argument('--source', default='oflynn-front')
+        p.add_argument('--target', default='fcc6-front')
+        p.add_argument('--model', default='homography', choices=['similarity', 'affine', 'homography'])
+        p.add_argument('--downsample', type=float, default=None)
+        p.add_argument('--step', type=int, default=14)
+        p.add_argument('--patch', type=int, default=15)
+        p.add_argument('--search', type=int, default=5)
+        p.add_argument('--min-landmarks', type=int, default=40)
+        p.add_argument('--json-out', default=None)
+    p = sub.add_parser('fit'); common(p)
+    p.add_argument('--min-ncc', type=float, default=0.35)
+    p.add_argument('--min-margin', type=float, default=2.5,
+                   help='fit must beat its worst wrong-rotation null by this factor')
+    q = sub.add_parser('validate'); common(q)
+    q.add_argument('--folds', type=int, default=4)
+    q.add_argument('--tol-mm', type=float, default=0.20)
+    sub.add_parser('doctor')
+    sub.add_parser('selftest')
+    a = ap.parse_args()
+    return {'fit': run_fit, 'validate': run_validate,
+            'doctor': run_doctor, 'selftest': run_selftest}[a.verb](a)
+
+if __name__ == '__main__':
+    sys.exit(main())
