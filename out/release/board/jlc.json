@@ -1,0 +1,440 @@
+{
+  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+  "generated": "2026-09-04T09:42:07Z",
+  "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
+  "bom_lines": 10,
+  "cpl_rows": 45,
+  "aux_origin_mm": [
+    0.0,
+    0.0
+  ],
+  "corrections_applied": [
+    {
+      "ref": "U1",
+      "footprint": "QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
+      "kicad_rot": 0.0,
+      "added": 90.0,
+      "jlc_rot": 270.0,
+      "matched": "^QFN-"
+    }
+  ],
+  "notes": [
+    {
+      "ref": "LS1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C25",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "L2",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C6",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "J1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "L10",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "L4",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R9",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "L3",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on L_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R3",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C7",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C24",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R6",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C3",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C20",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C21",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R4",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C2",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R7",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R2",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "AE1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "J2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C19",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C5",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C22",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R10",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C4",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C1",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C8",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C23",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C13",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C18",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R5",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R1",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "R8",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on R_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "U3",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C17",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C14",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "L1",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on L_0603_1608Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "BT1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C10",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "AE2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C15",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "U1",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "X1",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on Crystal_SMD_3215-2Pin_3.2x1.5mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C11",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C16",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0201_0603Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "X2",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on Crystal_SMD_2016-4Pin_2.0x1.6mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "U2",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on LGA-12_2x2mm_P0.5mm. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C9",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    },
+    {
+      "ref": "C12",
+      "verdict": "CANNOT DETERMINE",
+      "why": "no LCSC part number on C_0402_1005Metric. Looked for fields: LCSC Part #, LCSC Part, LCSC PN, LCSC P/N, LCSC Part No., LCSC Part Number, ..."
+    }
+  ],
+  "verdict": "CANNOT DETERMINE",
+  "why": "45 placed part(s) carry no LCSC number; JLC cannot source them",
+  "gerber_zip": "ce-designs/halo/out/release/board/halo_rev_a-gerber-jlc.zip",
+  "gerber_error": null,
+  "gerbers": {
+    "zip": "ce-designs/halo/out/release/board/halo_rev_a-gerber-jlc.zip",
+    "naming": "JLCPCB published table",
+    "layers_exported": "F.Silkscreen,F.Mask,F.Cu,In1.Cu,In2.Cu,B.Cu,B.Mask,B.Silkscreen,Edge.Cuts",
+    "in_zip": [
+      "halo_rev_a-NPTH-drill-map.gbr",
+      "halo_rev_a-NPTH.XLN",
+      "halo_rev_a-PTH-drill-map.gbr",
+      "halo_rev_a-PTH.XLN",
+      "halo_rev_a.G2L",
+      "halo_rev_a.G3L",
+      "halo_rev_a.GBL",
+      "halo_rev_a.GBO",
+      "halo_rev_a.GBS",
+      "halo_rev_a.GKO",
+      "halo_rev_a.GTL",
+      "halo_rev_a.GTO",
+      "halo_rev_a.GTS"
+    ],
+    "rename_map": [
+      {
+        "kicad": "halo_rev_a-B_Cu.gbl",
+        "jlc": "halo_rev_a.GBL"
+      },
+      {
+        "kicad": "halo_rev_a-B_Mask.gbs",
+        "jlc": "halo_rev_a.GBS"
+      },
+      {
+        "kicad": "halo_rev_a-B_Silkscreen.gbo",
+        "jlc": "halo_rev_a.GBO"
+      },
+      {
+        "kicad": "halo_rev_a-Edge_Cuts.gm1",
+        "jlc": "halo_rev_a.GKO"
+      },
+      {
+        "kicad": "halo_rev_a-F_Cu.gtl",
+        "jlc": "halo_rev_a.GTL"
+      },
+      {
+        "kicad": "halo_rev_a-F_Mask.gts",
+        "jlc": "halo_rev_a.GTS"
+      },
+      {
+        "kicad": "halo_rev_a-F_Silkscreen.gto",
+        "jlc": "halo_rev_a.GTO"
+      },
+      {
+        "kicad": "halo_rev_a-In1_Cu.g1",
+        "jlc": "halo_rev_a.G2L"
+      },
+      {
+        "kicad": "halo_rev_a-In2_Cu.g2",
+        "jlc": "halo_rev_a.G3L"
+      },
+      {
+        "kicad": "halo_rev_a-NPTH-drl_map.gbr",
+        "jlc": "halo_rev_a-NPTH-drill-map.gbr"
+      },
+      {
+        "kicad": "halo_rev_a-NPTH.drl",
+        "jlc": "halo_rev_a-NPTH.XLN"
+      },
+      {
+        "kicad": "halo_rev_a-PTH-drl_map.gbr",
+        "jlc": "halo_rev_a-PTH-drill-map.gbr"
+      },
+      {
+        "kicad": "halo_rev_a-PTH.drl",
+        "jlc": "halo_rev_a-PTH.XLN"
+      }
+    ],
+    "dropped": [
+      {
+        "file": "halo_rev_a-job.gbrjob",
+        "why": "Gerber job file \u2014 not one of the layers JLCPCB's table names, and 'any other layers ... should be remarked' when ordering"
+      }
+    ],
+    "layer_check": {
+      "required": [
+        "G2L",
+        "G3L",
+        "GBL",
+        "GBO",
+        "GBS",
+        "GKO",
+        "GTL",
+        "GTO",
+        "GTS"
+      ],
+      "missing": [],
+      "drill_files": [
+        "halo_rev_a-NPTH.drl",
+        "halo_rev_a-PTH.drl"
+      ],
+      "verdict": "PASS",
+      "why": "every layer JLCPCB's published table names is in the zip under its published extension, plus 2 Excellon drill file(s) and a drill map",
+      "cite": "\"Recommended layer names in the Gerber file ... boardname.GTL Top Layer ... boardname.GKO/GM1 Board Outline\" \u2014 jlcpcb.com/help/article/592-gerber-files-preparation, read via web.archive.org/web/20240324142101 on 2026-09-03"
+    },
+    "origin": "aux (drill/place) origin, shared with the CPL: gerbers --use-drill-file-origin, drill --drill-origin plot",
+    "commands": [
+      {
+        "what": "gerbers",
+        "cmd": [
+          "/opt/homebrew/bin/kicad-cli",
+          "pcb",
+          "export",
+          "gerbers",
+          "-o",
+          "ce-designs/halo/out/release/board/gerber/",
+          "--layers",
+          "F.Silkscreen,F.Mask,F.Cu,In1.Cu,In2.Cu,B.Cu,B.Mask,B.Silkscreen,Edge.Cuts",
+          "--use-drill-file-origin",
+          "--precision",
+          "6",
+          "ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+        ],
+        "rc": 0,
+        "stderr": ""
+      },
+      {
+        "what": "drill",
+        "cmd": [
+          "/opt/homebrew/bin/kicad-cli",
+          "pcb",
+          "export",
+          "drill",
+          "-o",
+          "ce-designs/halo/out/release/board/gerber/",
+          "--format",
+          "excellon",
+          "--drill-origin",
+          "plot",
+          "--excellon-units",
+          "mm",
+          "--excellon-zeros-format",
+          "decimal",
+          "--excellon-separate-th",
+          "--generate-map",
+          "--map-format",
+          "gerberx2",
+          "ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+        ],
+        "rc": 0,
+        "stderr": ""
+      }
+    ]
+  },
+  "files": [
+    "ce-designs/halo/out/release/board/halo_rev_a-BOM.csv",
+    "ce-designs/halo/out/release/board/halo_rev_a-CPL.csv",
+    "ce-designs/halo/out/release/board/halo_rev_a-gerber-jlc.zip"
+  ],
+  "provenance": {
+    "rotation_table": "data/vendor/transformations.csv (bennymeg/JLC-Plugin-for-KiCad @038cd1d, retrieved 2026-09-03)",
+    "transform": "plugins/process.py:222-252, reimplemented"
+  }
+}

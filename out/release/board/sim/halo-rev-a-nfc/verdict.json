@@ -1,0 +1,39 @@
+{
+  "case": "halo-rev-a-nfc",
+  "kind": "nfc-coil",
+  "verdict": "PASS",
+  "rows": [
+    {
+      "name": "inductance_uH",
+      "value": 0.2448560617230066,
+      "unit": "uH",
+      "rule": {
+        "gt": 0.2
+      },
+      "why": "0.244856 > 0.2 is True",
+      "verdict": "PASS"
+    },
+    {
+      "name": "C_external_pF",
+      "value": 554.6133384599331,
+      "unit": "pF",
+      "rule": {
+        "gt": 0.0
+      },
+      "why": "554.613 > 0 is True",
+      "verdict": "PASS"
+    },
+    {
+      "name": "cross_check_spread_pct",
+      "value": 2.5045778986970166,
+      "unit": "%",
+      "rule": {
+        "lte": 8.0
+      },
+      "why": "2.50458 <= 8 is True",
+      "verdict": "PASS"
+    }
+  ],
+  "why": "3 asserts, worst is PASS",
+  "when": "2026-09-04T09:34:47Z"
+}

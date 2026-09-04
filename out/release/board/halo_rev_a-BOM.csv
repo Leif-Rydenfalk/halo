@@ -1,0 +1,11 @@
+﻿Comment,Designator,Footprint,LCSC Part #,Quantity,Value
+C_0201_0603Metric,"C25,C6,C7,C24,C3,C20,C21,C2,C19,C5,C22,C4,C1,C8,C23,C13,C18,C17,C14,C15,C16",C_0201_0603Metric,,21,C_0201_0603Metric
+L_0201_0603Metric,"L2,L10,L4,L3",L_0201_0603Metric,,4,L_0201_0603Metric
+R_0201_0603Metric,"R9,R3,R6,R4,R7,R2,R10,R5,R1,R8",R_0201_0603Metric,,10,R_0201_0603Metric
+Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm,U3,Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm,,1,Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm
+L_0603_1608Metric,L1,L_0603_1608Metric,,1,L_0603_1608Metric
+C_0402_1005Metric,"C10,C11,C9,C12",C_0402_1005Metric,,4,C_0402_1005Metric
+QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,U1,QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,,1,QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm
+Crystal_SMD_3215-2Pin_3.2x1.5mm,X1,Crystal_SMD_3215-2Pin_3.2x1.5mm,,1,Crystal_SMD_3215-2Pin_3.2x1.5mm
+Crystal_SMD_2016-4Pin_2.0x1.6mm,X2,Crystal_SMD_2016-4Pin_2.0x1.6mm,,1,Crystal_SMD_2016-4Pin_2.0x1.6mm
+LGA-12_2x2mm_P0.5mm,U2,LGA-12_2x2mm_P0.5mm,,1,LGA-12_2x2mm_P0.5mm

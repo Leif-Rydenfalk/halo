@@ -246,6 +246,11 @@
    "q": "Can you source a bare piezo bender of about 20 mm diameter and 0.2 mm thickness, and what is your bare-board price for a Ø31.87 mm four-layer panel?",
    "why": "Two things our catalogue cannot answer. The sounder part we specified is not in the assembly catalogue at all, and the factory publishes no bare-board rate, so our cost model has a hand-entered number where it should have a quote.",
    "zh": "能否采购约 20 mm、0.2 mm 厚的裸压电片？Ø31.87 mm 四层板的裸板价格是多少？"
+  },
+  {
+   "q": "Which IPC-A-610 acceptance class do you build to, and can you measure loudness in phon rather than decibels?",
+   "why": "The inspection recipe is derived from the acceptance class and nobody has chosen one. And the anti-stalking standard's 60 Phon requirement cannot be gated on a line with a decibel meter until a reference unit is characterised in phon.",
+   "zh": "贵厂按哪个 IPC-A-610 验收等级生产？能否以 phon（宋）而非分贝测量响度？"
   }
  ],
  "compliance": [
@@ -300,6 +305,14 @@
   {
    "r": "Every gerber export had been failing silently",
    "d": "The factory tooling lane found that a flag it passed to the board exporter does not exist in this version, so no gerber export had ever succeeded, while the pipeline reported success. Same defect class as the router that never ran and the antenna that asserted the wrong quantity — see docs/TOOLS-THAT-LIE.md. Found by measurement, not review."
+  },
+  {
+   "r": "The mandated sound level has no production limit yet",
+   "d": "The anti-stalking standard specifies 60 Phon, which is a loudness level under ISO 532-1. A sound level meter does not measure phon; it measures decibels. So the production line's decibel gate has no anchor until a golden unit is measured in phon and correlated, which is a qualification task and a gauge study, not a line test. Until then the loudest requirement in the product is untestable on the line. This is the single sharpest open item in the pack."
+  },
+  {
+   "r": "The flash sits on an unregulated coin-cell rail",
+   "d": "The revision A schematic puts the SPI flash on the raw CR2032 rail at 3.0 V, while the part is rated 1.65 to 2.0 V. Found by the test lane reading the schematic, not by a simulation. The board lane has been asked either to regulate it or to delete it — deleting is likely, since the entire firmware is 13,164 bytes and fits in 1.27 percent of the chip's own memory."
   }
  ]
 }
