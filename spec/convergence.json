@@ -11,12 +11,13 @@
    "weight": 10,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-round-ifa-straight",
+    "case": "halo-rim-ifa-low-loss-laminate",
     "key": "f_res_GHz"
-   }
+   },
+   "current_note": "rim inverted-F on a low-loss laminate — the geometry that replaced the two impossible cases"
   },
   {
-   "name": "Bluetooth antenna resonant frequency (meander variant)",
+   "name": "Bluetooth antenna resonant frequency (round-board variant)",
    "unit": "GHz",
    "target_value": 2.44,
    "tolerance": 0.0435,
@@ -24,9 +25,10 @@
    "weight": 9,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-round-meander",
+    "case": "halo-round-rim-ifa",
     "key": "f_res_GHz"
-   }
+   },
+   "current_note": "second geometry still under test"
   },
   {
    "name": "PCB thickness",
@@ -57,15 +59,15 @@
    "name": "Antenna realized gain",
    "unit": "dBi",
    "target_value": -3.2,
-   "tolerance": 2.0,
+   "tolerance": 1.0,
    "cite": "research/01 §3 — Apple FCC BLE test report, IFA max gain -3.2 dBi",
    "weight": 7,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-round-ifa-straight",
+    "case": "halo-rim-ifa-low-loss-laminate",
     "key": "gain_dBi"
    },
-   "current_note": "measured at the wrong resonance, so not yet comparable"
+   "current_note": "in-band now, so this number is finally comparable to Apple's -3.2 dBi"
   },
   {
    "name": "Overall stack height",
@@ -121,7 +123,7 @@
    "weight": 4,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-round-ifa-straight",
+    "case": "halo-rim-ifa-low-loss-laminate",
     "key": "radiation_efficiency_pct"
    }
   },
@@ -225,6 +227,18 @@
    "cite": "research/07 — Apple claims about a year on a CR2032",
    "weight": 6,
    "current_note": "derivable once sleep and TX currents are measured on real silicon"
+  },
+  {
+   "name": "Implied effective permittivity (physics sanity)",
+   "unit": "-",
+   "target_text": "must exceed ~1 — a dielectric cannot speed a wave up",
+   "cite": "docs/TOOLS-THAT-LIE.md — the free check that caught two impossible geometries at 0.676 and 0.216",
+   "weight": 8,
+   "measure": {
+    "from": "ce-rf",
+    "case": "halo-rim-ifa-low-loss-laminate",
+    "key": "eps_eff_implied"
+   }
   }
  ]
 }
