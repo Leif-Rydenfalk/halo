@@ -136,12 +136,16 @@ def draw(board, px_per_mm, margin_mm, with_caption):
     if with_caption:
         f1, f2 = font(26), font(19)
         p = board["parameters"]
-        d.text((14, H + 8), "halo Replica MLB - FRONT (component side)", font=f1, fill=INK)
+        d.text((14, H + 8), "halo Replica MLB - the side carrying the SoC and the shield can", font=f1, fill=INK)
         lines = [
             (f"outer dia {p['outer_diameter_mm']['value']:.3f} mm", "PROVISIONAL - IN DISPUTE"),
             (f"thickness {p['thickness_mm']['value']:.2f} mm as-drawn",
              "below both fab floors - see board.json"),
-            (f"{p['layer_count']['value']} layers", "STATED REPLICA CHOICE, not Apple's fact"),
+            # The qualifier is READ FROM board.json, never hardcoded. It was hardcoded once,
+            # and when the layer count moved from a Replica assumption to a COUNTED fact the
+            # picture went on asserting the superseded line while its own data said otherwise.
+            # A caption that cannot track its source is a tool that lies.
+            (f"{p['layer_count']['value']} layers", p['layer_count'].get('state', 'STATE MISSING FROM board.json')),
             ("centre hole: rounded square + notch", f"roundness {p['centre_hole']['measured_roundness_rmax_over_rmin']:.3f}; NO diameter published"),
         ]
         y = H + 44

@@ -43,6 +43,7 @@ import argparse, hashlib, json, math, os, subprocess, sys, time
 import numpy as np
 from PIL import Image
 from scipy.optimize import least_squares
+from scipy import ndimage
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 
@@ -117,6 +118,42 @@ def profile(lum, bad, cx, cy, r_lo, r_hi, mode, n_ang):
         (ok.append((math.degrees(a), r)) if r is not None
          else drop.setdefault(why, []).append(round(math.degrees(a), 2)))
     return ok, drop
+
+
+def caliper_widths(X, Y, n_phi=180):
+    """Support-function width of the outline in every direction.
+
+    WHY THIS AND NOT A CIRCLE FIT.  A circle fit returns one radius about one
+    fitted centre, so a contaminated arc on ONE side drags the centre and
+    corrupts every reported radius.  The caliper width in direction phi is
+    max(proj) - min(proj): it needs no centre at all, and contamination on one
+    side moves only the few phi that look through it.  The MEDIAN width over
+    phi is therefore the robust diameter, and the SPREAD of width(phi) is the
+    honest statement of how far from circular the outline measures.
+    """
+    phi = np.linspace(0.0, math.pi, n_phi, endpoint=False)
+    w = np.array([ np.ptp(X * math.cos(f) + Y * math.sin(f)) for f in phi ])
+    return np.degrees(phi), w
+
+
+def hole_by_floodfill(lum, cx, cy, level=180.0):
+    """The centre hole as the BRIGHT region connected to the board's centre.
+
+    The hole shows over-exposed white paper (luma ~250) and the board around it
+    is dark (~25-50), so the hole is a connected bright component containing the
+    centre.  This is immune to the two things that broke the ray-cast here: it
+    cannot saturate at a search-window boundary (there is no window), and a pale
+    component beside the hole only matters if it is CONNECTED to it, which the
+    labelling decides rather than a threshold guess.
+    """
+    m = lum > level
+    lab, n = ndimage.label(m)
+    k = lab[int(round(cy)), int(round(cx))]
+    if k == 0:
+        return None, "the board centre is not a bright pixel at this level"
+    blob = ndimage.binary_fill_holes(lab == k)
+    ys, xs = np.nonzero(blob)
+    return (blob, xs, ys), None
 
 
 def robust_circle(X, Y, n_sigma=3.0, iters=6):
@@ -258,86 +295,128 @@ def main():
     To = np.array([t for t, _ in pr_o]); Ro = np.array([r for _, r in pr_o])
     Xo, Yo = cx + Ro * np.cos(np.radians(To)), cy + Ro * np.sin(np.radians(To))
     ocx, ocy, orad, ores, okeep = robust_circle(Xo, Yo)
+    phi, W = caliper_widths(Xo, Yo)
+    Dmed = float(np.median(W))
     s, se = a.px_per_mm, a.px_per_mm_err
-    D = 2 * orad
-    print(f"\n  OUTER EDGE -- fitted primitive: CIRCLE")
-    print(f"    rays used {len(pr_o)}/{a.n_ang}; inliers {int(okeep.sum())} ({okeep.mean():.3f})")
-    print(f"    centre ({ocx:.2f}, {ocy:.2f}) px   radius {orad:.3f} px   DIAMETER {D:.3f} px")
-    print(f"    fit residual: sd {ores[okeep].std():.3f} px, p95 |res| "
-          f"{np.percentile(np.abs(ores[okeep]), 95):.3f} px, max {np.abs(ores[okeep]).max():.3f} px")
-    dmm = D / s
+    print(f"\n  OUTER EDGE")
+    print(f"    rays used {len(pr_o)}/{a.n_ang}")
+    print(f"    PUBLISHED DIAMETER = median caliper width over 180 directions")
+    print(f"      D = {Dmed:.3f} px   (p5 {np.percentile(W,5):.3f}, p95 {np.percentile(W,95):.3f}, "
+          f"min {W.min():.3f}, max {W.max():.3f})")
+    print(f"      spread p95-p5 = {np.percentile(W,95)-np.percentile(W,5):.3f} px "
+          f"= {100*(np.percentile(W,95)-np.percentile(W,5))/Dmed:.2f}% of D")
+    print(f"      widest at phi={phi[int(np.argmax(W))]:.0f} deg, narrowest at "
+          f"phi={phi[int(np.argmin(W))]:.0f} deg")
+    print(f"    for comparison, a CIRCLE fitted to the same points:")
+    print(f"      centre ({ocx:.2f}, {ocy:.2f}) px, D {2*orad:.3f} px, "
+          f"residual sd {ores[okeep].std():.3f} px, max {np.abs(ores[okeep]).max():.3f} px")
+    dmm = Dmed / s
     dmm_err = dmm * (se / s) if s else 0.0
-    print(f"    -> OUTER DIAMETER = {dmm:.3f} mm  (+/- {dmm_err:.3f} mm from the scale basis alone)")
+    dmm_shape = (np.percentile(W,95)-np.percentile(W,5)) / 2.0 / s
+    print(f"    -> OUTER DIAMETER = {dmm:.3f} mm")
+    print(f"       +/- {dmm_err:.3f} mm from the scale basis")
+    print(f"       +/- {dmm_shape:.3f} mm from the directional spread of the outline itself")
     print(f"       scale basis: {s} +/- {se} px/mm [{a.px_per_mm_label}]")
     for why, angs in drop_o.items():
         print(f"    REJECTED {len(angs)} rays: {why}")
-    nout = int((~okeep).sum())
     outl = runs_below(To, -np.abs(ores), -3 * ores[okeep].std(), 2.0)
-    print(f"    {nout} rays rejected by the 3-sigma circle fit; excursion runs >2 deg: "
-          f"{[ (o['start_deg'], o['end_deg']) for o in outl ] or 'none'}")
 
     # ---- INNER ------------------------------------------------------------
     inner = None
-    if r_hole0 is None:
-        print("\n  CENTRE HOLE: CANNOT DETERMINE -- no bright core in the azimuthal profile")
+    hf, why = hole_by_floodfill(lum, ocx, ocy)
+    if hf is None:
+        print(f"\n  CENTRE HOLE: CANNOT DETERMINE -- {why}")
+        drop_i = {}
     else:
-        pr_i, drop_i = profile(lum, bad, ocx, ocy, max(2.0, r_hole0 * 0.60),
-                               r_hole0 * 1.55, "in", a.n_ang)
-        Ti = np.array([t for t, _ in pr_i]); Ri = np.array([r for _, r in pr_i])
-        Xi, Yi = ocx + Ri * np.cos(np.radians(Ti)), ocy + Ri * np.sin(np.radians(Ti))
-        se_p, se_res = fit_superellipse(Xi, Yi, ocx, ocy, float(np.median(Ri)))
+        blob, hxs, hys = hf
+        hcx, hcy = float(hxs.mean()), float(hys.mean())
+        # boundary points of the flood-filled hole, one per angular bin
+        er = ndimage.binary_erosion(blob)
+        bys, bxs = np.nonzero(blob & ~er)
+        Th = np.degrees(np.arctan2(bys - hcy, bxs - hcx)) % 360
+        Rh = np.hypot(bxs - hcx, bys - hcy)
+        NB = 720
+        Ti, Ri, Xi, Yi = [], [], [], []
+        for k in range(NB):
+            sel = (Th >= k * 360.0 / NB) & (Th < (k + 1) * 360.0 / NB)
+            if not sel.any():
+                continue
+            j = int(np.argmax(Rh[sel]))
+            Ti.append(Th[sel][j]); Ri.append(Rh[sel][j])
+            Xi.append(float(bxs[sel][j])); Yi.append(float(bys[sel][j]))
+        Ti = np.array(Ti); Ri = np.array(Ri); Xi = np.array(Xi); Yi = np.array(Yi)
+        drop_i = {}
+        se_p, se_res = fit_superellipse(Xi, Yi, hcx, hcy, float(np.median(Ri)))
         icx, icy, ia, ib, inx, iphi = (se_p["cx"], se_p["cy"], se_p["a"],
                                        se_p["b"], se_p["n"], se_p["phi_deg"])
-        # circle fit, for comparison only -- shows WHY a circle is the wrong primitive
         _, _, crad, cres, ckeep = robust_circle(Xi, Yi)
         rc = se_corner_radius(ia, ib, inx)
         sd_se = float(np.std(se_res))
-        print(f"\n  CENTRE HOLE -- fitted primitive: SUPERELLIPSE  |x/a|^n + |y/b|^n = 1")
-        print(f"    rays used {len(pr_i)}/{a.n_ang}")
-        print(f"    centre ({icx:.2f}, {icy:.2f}) px, offset from the board centre "
+        phi_h, Wh = caliper_widths(Xi, Yi)
+        print(f"\n  CENTRE HOLE -- segmented as the BRIGHT region connected to the board centre")
+        print(f"    hole area {int(blob.sum())} px, boundary sampled at {len(Ti)}/{NB} angular bins")
+        print(f"    caliper widths: median {np.median(Wh):.2f} px = {np.median(Wh)/s:.3f} mm, "
+              f"min {Wh.min():.2f} ({Wh.min()/s:.3f} mm) at {phi_h[int(np.argmin(Wh))]:.0f} deg, "
+              f"max {Wh.max():.2f} ({Wh.max()/s:.3f} mm) at {phi_h[int(np.argmax(Wh))]:.0f} deg")
+        print(f"    -- max/min width ratio {Wh.max()/Wh.min():.3f}; a circle would be 1.000")
+        print(f"\n    fitted primitive: SUPERELLIPSE |x/a|^n + |y/b|^n = 1")
+        print(f"      centre ({icx:.2f}, {icy:.2f}) px, offset from the board centre "
               f"{math.hypot(icx-ocx, icy-ocy):.2f} px = {math.hypot(icx-ocx, icy-ocy)/s:.3f} mm")
-        print(f"    a {ia:.2f} px  b {ib:.2f} px  n {inx:.2f}  major axis {iphi:.1f} deg")
-        print(f"    full extents  2a = {2*ia:.2f} px = {2*ia/s:.3f} mm,  "
-              f"2b = {2*ib:.2f} px = {2*ib/s:.3f} mm")
-        print(f"    corner radius (min radius of curvature) {rc:.2f} px = {rc/s:.3f} mm")
-        print(f"    superellipse residual sd {sd_se:.3f} px   |   "
-              f"CIRCLE residual sd {cres[ckeep].std():.3f} px  <- the circle is the worse primitive")
-        print(f"    n = 2.00 would be an ellipse; n -> inf a rectangle. Measured n = {inx:.2f}.")
+        print(f"      2a = {2*ia:.2f} px = {2*ia/s:.3f} mm   2b = {2*ib:.2f} px = {2*ib/s:.3f} mm")
+        print(f"      n = {inx:.2f}   (2.00 = ellipse, larger = squarer)   "
+              f"major axis {iphi:.1f} deg")
+        print(f"      corner radius (min radius of curvature) {rc:.2f} px = {rc/s:.3f} mm")
+        print(f"      superellipse residual sd {sd_se:.3f} px  |  a CIRCLE on the same points: "
+              f"sd {cres[ckeep].std():.3f} px")
         notches = runs_below(Ti, se_res, -3.0 * sd_se, 3.0)
-        print(f"    NOTCH candidates (residual < -3 sd of the superellipse fit, span > 3 deg):")
-        if notches:
-            for nt in notches:
-                print(f"      {nt['start_deg']:.1f}..{nt['end_deg']:.1f} deg "
-                      f"(span {nt['span_deg']:.1f} deg), depth {nt['depth_px']:.2f} px "
-                      f"= {nt['depth_px']/s:.3f} mm, deepest at {nt['depth_at_deg']:.1f} deg")
-        else:
+        print(f"    NOTCH candidates (fit residual < -3 sd, span > 3 deg):")
+        for nt in (notches or []):
+            print(f"      {nt['start_deg']:.1f}..{nt['end_deg']:.1f} deg (span {nt['span_deg']:.1f}), "
+                  f"depth {nt['depth_px']:.2f} px = {nt['depth_px']/s:.3f} mm, "
+                  f"deepest at {nt['depth_at_deg']:.1f} deg")
+        if not notches:
             print("      none")
-        for why, angs in drop_i.items():
-            print(f"    REJECTED {len(angs)} rays: {why}")
-        inner = dict(primitive="superellipse", **se_p,
+        inner = dict(primitive="superellipse", method="bright region connected to the board centre",
+                     **se_p, area_px=int(blob.sum()),
                      two_a_px=round(2*ia, 3), two_b_px=round(2*ib, 3),
                      two_a_mm=round(2*ia/s, 4), two_b_mm=round(2*ib/s, 4),
+                     caliper_median_px=round(float(np.median(Wh)), 3),
+                     caliper_median_mm=round(float(np.median(Wh))/s, 4),
+                     caliper_min_px=round(float(Wh.min()), 3), caliper_min_mm=round(float(Wh.min())/s, 4),
+                     caliper_max_px=round(float(Wh.max()), 3), caliper_max_mm=round(float(Wh.max())/s, 4),
+                     caliper_max_over_min=round(float(Wh.max()/Wh.min()), 4),
                      corner_radius_px=round(rc, 3), corner_radius_mm=round(rc/s, 4),
                      residual_sd_px=round(sd_se, 3),
                      circle_alternative_radius_px=round(crad, 3),
                      circle_alternative_residual_sd_px=round(float(cres[ckeep].std()), 3),
                      offset_from_board_centre_px=round(math.hypot(icx-ocx, icy-ocy), 3),
                      offset_from_board_centre_mm=round(math.hypot(icx-ocx, icy-ocy)/s, 4),
-                     notches=notches, rays_used=len(pr_i), rejected=drop_i)
+                     notches=notches, boundary_bins=len(Ti))
 
-    ratio = (2 * inner["a"] / (2 * orad)) if inner else None
+    ratio = (inner["caliper_median_px"] / Dmed) if inner else None
     if inner:
         print(f"\n  SCALE-FREE RATIOS (these survive a better scale basis):")
-        print(f"    hole 2a / board OD = {2*inner['a']/(2*orad):.4f}")
-        print(f"    hole 2b / board OD = {2*inner['b']/(2*orad):.4f}")
+        print(f"    hole median caliper / board OD = {ratio:.4f}")
+        print(f"    hole 2a / board OD = {2*inner['a']/Dmed:.4f}")
+        print(f"    hole 2b / board OD = {2*inner['b']/Dmed:.4f}")
 
     fit = dict(**rid, image=os.path.relpath(path, ROOT), box=[x0, y0, x1, y1],
                side_convention="FRONT = component side (Apple FCC caption)",
                px_per_mm=s, px_per_mm_err=se, px_per_mm_label=a.px_per_mm_label,
                n_angles=a.n_ang,
-               outer=dict(primitive="circle", cx=round(ocx, 3), cy=round(ocy, 3),
-                          radius_px=round(orad, 3), diameter_px=round(D, 3),
+               outer=dict(primitive="circle (published D is the median caliper width)",
+                          diameter_px=round(Dmed, 3),
+                          caliper_p5_px=round(float(np.percentile(W, 5)), 3),
+                          caliper_p95_px=round(float(np.percentile(W, 95)), 3),
+                          caliper_min_px=round(float(W.min()), 3),
+                          caliper_max_px=round(float(W.max()), 3),
+                          caliper_spread_pct=round(float(100*(np.percentile(W,95)-np.percentile(W,5))/Dmed), 3),
+                          widest_phi_deg=round(float(phi[int(np.argmax(W))]), 1),
+                          narrowest_phi_deg=round(float(phi[int(np.argmin(W))]), 1),
+                          cx=round(ocx, 3), cy=round(ocy, 3),
+                          circle_fit_radius_px=round(orad, 3),
                           diameter_mm=round(dmm, 4), diameter_mm_scale_err=round(dmm_err, 4),
+                          diameter_mm_shape_err=round(float(dmm_shape), 4),
                           residual_sd_px=round(float(ores[okeep].std()), 3),
                           residual_p95_px=round(float(np.percentile(np.abs(ores[okeep]), 95)), 3),
                           residual_max_px=round(float(np.abs(ores[okeep]).max()), 3),
@@ -354,7 +433,8 @@ def main():
                outer_centre=[round(ocx, 3), round(ocy, 3)],
                inner_r_theta=([[round(float(t), 3), round(float(r), 4)] for t, r in zip(Ti, Ri)]
                               if inner else None),
-               inner_centre=[round(ocx, 3), round(ocy, 3)])
+               inner_centre=([round(float(inner["cx"]), 3), round(float(inner["cy"]), 3)]
+                             if inner else None))
     json.dump(raw, open(a.raw_json, "w"), indent=2)
     print(f"\n  wrote fit  {a.json}")
     print(f"  wrote raw  {a.raw_json}  (evidence; not the published geometry)")

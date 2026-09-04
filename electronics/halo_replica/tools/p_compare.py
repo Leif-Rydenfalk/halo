@@ -200,7 +200,9 @@ def main():
         ("centre hole is a ROUNDED SQUARE WITH A NOTCH. This lane publishes no hole diameter.", PROV),
         ("NOT YET DRAWN: rim pads, component footprints, silkscreen, copper. Outline only.", PROV),
         (f"scale basis: {a.photo_scale_basis}", (110, 110, 114)),
-        ("FRONT = COMPONENT SIDE (Apple's caption). O'Flynn's 'frontside' is this project's BACK.", (110, 110, 114)),
+        ("FACES NAMED BY WHAT IS ON THEM. This panel: the side carrying the SoC and the shield can", (110, 110, 114)),
+        ("(= Apple FCC photo 6 'MLB - Front' = O'Flynn's 'backside-*'). The word 'front' is AMBIGUOUS", (110, 110, 114)),
+        ("across sources and is not used here - see evidence/E03-SIDE-NAMING.md", (110, 110, 114)),
     ]:
         dm.text((bx, y), line, font=ft, fill=col)
         y += 19
