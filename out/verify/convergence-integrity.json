@@ -1,0 +1,623 @@
+{
+ "$halo": 1,
+ "tool": "tools/check_convergence.py",
+ "generated": "2026-09-04T10:49:09+00:00",
+ "spec": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/spec/convergence.json",
+ "verdict": "FAIL",
+ "counts": {
+  "PASS": 37,
+  "FAIL": 17,
+  "CANNOT DETERMINE": 18
+ },
+ "checks": [
+  {
+   "name": "row_can_change_state",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 2.425,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads MATCH",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads MATCH",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
+   "value": 0.9657,
+   "rule": {
+    "gte": 1.0
+   }
+  },
+  {
+   "name": "resonance_exists",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate has no f_series_res_GHz: the reactance never crosses zero anywhere in the sweep, so there is no resonance \u2014 only a dip in |S11|. This row reads MATCH on a frequency that is not a resonance",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Bluetooth antenna resonant frequency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
+   "value": -17775.5,
+   "rule": {
+    "gte": 0
+   }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 5.54,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "halo-round-rim-ifa verdict.json says PASS",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "halo-round-rim-ifa solver_converged = 1.0",
+   "value": 1.0,
+   "rule": null
+  },
+  {
+   "name": "physics_floor",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "FAIL",
+   "why": "halo-round-rim-ifa eps_eff_implied = 0.8910 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
+   "value": 0.891,
+   "rule": {
+    "gte": 1.0
+   }
+  },
+  {
+   "name": "resonance_exists",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "halo-round-rim-ifa f_series_res_GHz = 2.446852437176924 \u2014 a real reactance zero-crossing",
+   "value": 2.446852437176924,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "verdict": "PASS",
+   "why": "halo-round-rim-ifa measurements.json is 5 s newer than its spec",
+   "value": 4.6,
+   "rule": {
+    "gte": 0
+   }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "PCB thickness",
+   "verdict": "FAIL",
+   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12405.0) \u2014 this row's verdict is not derived from any measurement",
+   "value": "OPEN",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "PCB thickness",
+   "verdict": "PASS",
+   "why": "current value is a literal typed into spec/convergence.json (weight 2, state OPEN); no tool produced it and it cannot disagree with its target",
+   "value": 0.6,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Board outline diameter",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Board outline diameter",
+   "verdict": "FAIL",
+   "why": "current value is a literal typed into spec/convergence.json (weight 8, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": 31.87,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Antenna realized gain",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Antenna realized gain",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": -8.333287170160913,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Antenna realized gain",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads OPEN",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Antenna realized gain",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads OPEN",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "Antenna realized gain",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
+   "value": 0.9657,
+   "rule": {
+    "gte": 1.0
+   }
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Antenna realized gain",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
+   "value": -17775.5,
+   "rule": {
+    "gte": 0
+   }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Overall stack height",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Overall stack height",
+   "verdict": "FAIL",
+   "why": "current value is a literal typed into spec/convergence.json (weight 9, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": 7.98,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Sounder output at 25 cm",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Sounder output at 25 cm",
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row declares no measurement source at all (weight 10)",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "NFC coil inductance",
+   "verdict": "PASS",
+   "why": "the row states no target (CANNOT DETERMINE \u2014 Apple's coil not measured...) and reports NO TARGET; there is nothing to compare and the row says so",
+   "value": "NO TARGET",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "NFC coil inductance",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 1.3306157316389617,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "NFC coil inductance",
+   "verdict": "PASS",
+   "why": "haytag-nfc-coil verdict.json says PASS",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "NFC coil inductance",
+   "verdict": "CANNOT DETERMINE",
+   "why": "haytag-nfc-coil records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads NO TARGET",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "NFC coil inductance",
+   "verdict": "CANNOT DETERMINE",
+   "why": "haytag-nfc-coil records no eps_eff_implied",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "NFC coil inductance",
+   "verdict": "CANNOT DETERMINE",
+   "why": "cannot compare: spec haytag-nfc-coil.json or measurements.json missing",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "NFC coil Q",
+   "verdict": "PASS",
+   "why": "the row states no target (CANNOT DETERMINE \u2014 Apple's coil not measured...) and reports NO TARGET; there is nothing to compare and the row says so",
+   "value": "NO TARGET",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "NFC coil Q",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 142.58528476763402,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "NFC coil Q",
+   "verdict": "PASS",
+   "why": "haytag-nfc-coil verdict.json says PASS",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "NFC coil Q",
+   "verdict": "CANNOT DETERMINE",
+   "why": "haytag-nfc-coil records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads NO TARGET",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "NFC coil Q",
+   "verdict": "CANNOT DETERMINE",
+   "why": "haytag-nfc-coil records no eps_eff_implied",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "NFC coil Q",
+   "verdict": "CANNOT DETERMINE",
+   "why": "cannot compare: spec haytag-nfc-coil.json or measurements.json missing",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Antenna radiation efficiency",
+   "verdict": "PASS",
+   "why": "the row states no target (CANNOT DETERMINE \u2014 Apple publishes gain, not eff...) and reports NO TARGET; there is nothing to compare and the row says so",
+   "value": "NO TARGET",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Antenna radiation efficiency",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 7.821777253384734,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Antenna radiation efficiency",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads NO TARGET",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Antenna radiation efficiency",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads NO TARGET",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "Antenna radiation efficiency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
+   "value": 0.9657,
+   "rule": {
+    "gte": 1.0
+   }
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Antenna radiation efficiency",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
+   "value": -17775.5,
+   "rule": {
+    "gte": 0
+   }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Find My advertisement byte layout",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Find My advertisement byte layout",
+   "verdict": "FAIL",
+   "why": "current value is a literal typed into spec/convergence.json (weight 10, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": "PASS",
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Coin cell survives the transmit pulse",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Coin cell survives the transmit pulse",
+   "verdict": "PASS",
+   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "value": "PASS",
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Sounder drive current model",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Sounder drive current model",
+   "verdict": "PASS",
+   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "value": "PASS",
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "NFC tank resonance model",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "NFC tank resonance model",
+   "verdict": "PASS",
+   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "value": "PASS",
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Supply decoupling model",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Supply decoupling model",
+   "verdict": "PASS",
+   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "value": "PASS",
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Unit cost at 1000 units",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Unit cost at 1000 units",
+   "verdict": "CANNOT DETERMINE",
+   "why": "current value is a literal typed into spec/convergence.json (weight 6, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": 7.17,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Layer count",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Layer count",
+   "verdict": "CANNOT DETERMINE",
+   "why": "current value is a literal typed into spec/convergence.json (weight 3, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": 4,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Peer ranging error",
+   "verdict": "PASS",
+   "why": "the row states no target (n/a \u2014 AirTag ranges to a phone, not to another t...) and reports NO TARGET; there is nothing to compare and the row says so",
+   "value": "NO TARGET",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Peer ranging error",
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row declares no measurement source at all (weight 7)",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Sleep current",
+   "verdict": "PASS",
+   "why": "the row states no target (CANNOT DETERMINE \u2014 Apple does not publish it...) and reports NO TARGET; there is nothing to compare and the row says so",
+   "value": "NO TARGET",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Sleep current",
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row declares no measurement source at all (weight 6)",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Battery life",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Battery life",
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row declares no measurement source at all (weight 6)",
+   "value": null,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "FAIL",
+   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12441.573203459599) \u2014 this row's verdict is not derived from any measurement",
+   "value": "OPEN",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "PASS",
+   "why": "current value comes from ce-rf, not from a typed literal",
+   "value": 0.9657320345959884,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads OPEN",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads OPEN",
+   "value": null,
+   "rule": {
+    "gte": 1
+   }
+  },
+  {
+   "name": "physics_floor",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
+   "value": 0.9657,
+   "rule": {
+    "gte": 1.0
+   }
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Implied effective permittivity (physics sanity)",
+   "verdict": "FAIL",
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
+   "value": -17775.5,
+   "rule": {
+    "gte": 0
+   }
+  }
+ ],
+ "command": "python3 tools/check_convergence.py --quiet --json out/verify/convergence-integrity.json"
+}

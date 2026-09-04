@@ -375,7 +375,7 @@ def main():
 
     results, proved, unproven = [], 0, 0
     ctl = {r["name"]: r["verdict"] for r in control["rows"]}
-    print(f"# prove_checks — {len(CASES)} assertions, each fed something that should fail")
+    print(f"# prove_checks — {len(CASES) + len(BOM_CASES) + len(CONV_CASES)} assertions, each fed something that should fail")
     print(f"  control (unmutated, drill file repaired): "
           + ", ".join(f"{k}={v}" for k, v in ctl.items() if v != "PASS") or "  control: all PASS")
 
@@ -421,13 +421,16 @@ def main():
     bp, bu = prove_bom(results)
     proved += bp
     unproven += bu
+    cp, cu = prove_conv(results)
+    proved += cp
+    unproven += cu
 
     out = {
         "$halo": 1,
         "tool": "tools/prove_checks.py",
         "generated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "target": "tools/check_fabset.py",
-        "assertions": len(CASES) + len(BOM_CASES),
+        "assertions": len(CASES) + len(BOM_CASES) + len(CONV_CASES),
         "proved_to_fire": proved,
         "unproven": unproven,
         "verdict": "PASS" if unproven == 0 else "FAIL",
@@ -436,9 +439,126 @@ def main():
     if a.json:
         pathlib.Path(a.json).parent.mkdir(parents=True, exist_ok=True)
         pathlib.Path(a.json).write_text(json.dumps(out, indent=1) + "\n")
-    print(f"{out['verdict']}: {proved} of {len(CASES) + len(BOM_CASES)} "
+    print(f"{out['verdict']}: {proved} of {len(CASES) + len(BOM_CASES) + len(CONV_CASES)} "
           f"assertions proved to fire")
     return 0 if unproven == 0 else 1
+
+
+
+
+# ------------------------------------ convergence-integrity mutations --------
+# check_convergence is proved against a SYNTHETIC workspace, not the real one:
+# the real convergence table already fails 17 assertions, and a check proven
+# only on a broken artifact is not proven. Each case builds a clean one-row
+# table plus a clean ce-rf case, breaks exactly one thing, and requires the
+# named assertion to go red.
+CONVCHECK = HALO / "tools" / "check_convergence.py"
+
+CONV_GOOD_ROW = {
+    "name": "probe row", "unit": "GHz", "target_value": 2.44, "tolerance": 0.05,
+    "cite": "synthetic", "weight": 10,
+    "measure": {"from": "ce-rf", "case": "probe-good", "key": "f_res_GHz"},
+}
+CONV_GOOD_MEAS = {"measurements": {
+    "f_res_GHz": {"value": 2.44}, "f_series_res_GHz": {"value": 2.44},
+    "solver_converged": {"value": 1.0}, "eps_eff_implied": {"value": 2.10}}}
+CONV_GOOD_VERDICT = {"case": "probe-good", "verdict": "PASS", "rows": []}
+
+
+def _conv_ws(row=None, meas=None, verdict=None, spec_newer=False):
+    """A throwaway workspace: <ws>/ce-rf/{specs,out}/probe-good + a halo spec."""
+    ws = pathlib.Path(tempfile.mkdtemp(prefix="halo-conv-"))
+    case = ws / "ce-rf" / "out" / "probe-good"
+    case.mkdir(parents=True)
+    (ws / "ce-rf" / "specs").mkdir(parents=True)
+    sp = ws / "ce-rf" / "specs" / "probe-good.json"
+    sp.write_text("{}")
+    (case / "measurements.json").write_text(json.dumps(meas or CONV_GOOD_MEAS))
+    (case / "verdict.json").write_text(json.dumps(verdict or CONV_GOOD_VERDICT))
+    if spec_newer:
+        os.utime(sp, None)                       # spec touched after the measurement
+    else:
+        os.utime(sp, (FROZEN_MTIME, FROZEN_MTIME))
+    spec = ws / "convergence.json"
+    spec.write_text(json.dumps({"$halo": 1, "rows": [row or CONV_GOOD_ROW]}))
+    return ws, spec
+
+
+def _drop(d, *keys):
+    out = json.loads(json.dumps(d))
+    for k in keys:
+        out["measurements"].pop(k, None)
+    return out
+
+
+def _set(d, key, value):
+    out = json.loads(json.dumps(d))
+    out["measurements"][key] = {"value": value}
+    return out
+
+
+CONV_CASES = [
+    ("row_can_change_state", "FAIL", lambda: _conv_ws(
+        row={**CONV_GOOD_ROW, "target_value": None, "tolerance": None,
+             "target_text": "must exceed ~1 — a dielectric cannot speed a wave up",
+             "measure": {"from": "ce-rf", "case": "probe-good", "key": "eps_eff_implied"}}),
+     "a text target beside a numeric current: the state machine has no branch for that pair"),
+    ("source_verdict_passes", "FAIL", lambda: _conv_ws(
+        verdict={"case": "probe-good", "verdict": "FAIL",
+                 "rows": [{"name": "gain_dBi", "verdict": "FAIL"}]}),
+     "the ce-rf case's own verdict.json says FAIL while the row reads MATCH"),
+    ("solver_converged", "FAIL", lambda: _conv_ws(
+        meas=_drop(CONV_GOOD_MEAS, "solver_converged")),
+     "the case records no solver_converged — the solve cannot be shown to have finished"),
+    ("physics_floor", "FAIL", lambda: _conv_ws(
+        meas=_set(CONV_GOOD_MEAS, "eps_eff_implied", 0.90)),
+     "eps_eff_implied 0.90 — a wave faster than light in the substrate"),
+    ("resonance_exists", "FAIL", lambda: _conv_ws(
+        meas=_drop(CONV_GOOD_MEAS, "f_series_res_GHz")),
+     "no reactance zero-crossing anywhere: a dip in |S11| offered as a resonance"),
+    ("high_weight_measured", "FAIL", lambda: _conv_ws(
+        row={**CONV_GOOD_ROW, "measure": {"from": "literal", "value": 2.44}}),
+     "a weight-10 MATCH whose current value is typed into the spec file"),
+    ("source_is_fresh", "FAIL", lambda: _conv_ws(spec_newer=True),
+     "the antenna spec was edited after the measurement that grades it"),
+]
+
+
+def prove_conv(results):
+    print("# prove_checks — convergence integrity, 7 assertions on a synthetic table")
+    ws, spec = _conv_ws()
+    out = pathlib.Path(tempfile.mkdtemp()) / "c.json"
+    subprocess.run([sys.executable, str(CONVCHECK), "--ws", str(ws), "--spec", str(spec),
+                    "--json", str(out), "--quiet"], capture_output=True, text=True)
+    try:
+        ctl = json.loads(out.read_text())
+    except Exception:
+        ctl = None
+    if not ctl or ctl["verdict"] != "PASS":
+        bad = [(c["name"], c["verdict"], c["why"]) for c in (ctl or {}).get("checks", [])
+               if c["verdict"] != "PASS"]
+        print(f"  CANNOT DETERMINE: the control table is not clean: {bad}")
+        results.append({"suite": "convergence", "proved": False,
+                        "why": f"control verdict {(ctl or {}).get('verdict')}"})
+        return 0, len(CONV_CASES)
+    proved = 0
+    for name, want, build, what in CONV_CASES:
+        w, sp = build()
+        o = pathlib.Path(tempfile.mkdtemp()) / "c.json"
+        subprocess.run([sys.executable, str(CONVCHECK), "--ws", str(w), "--spec", str(sp),
+                        "--json", str(o), "--quiet"], capture_output=True, text=True)
+        try:
+            res = json.loads(o.read_text())
+        except Exception:
+            res = {"checks": []}
+        got = [c["verdict"] for c in res["checks"] if c["name"] == name]
+        ok = want in got
+        proved += ok
+        results.append({"suite": "convergence", "assertion": name, "mutation": what,
+                        "expected": want, "verdicts_seen": got, "proved": ok})
+        print(f"  {'FIRED' if ok else 'SILENT':<6}{name:<22} {what}"
+              + ("" if ok else f"   -> saw {got}, expected {want}"))
+    return proved, len(CONV_CASES) - proved
 
 
 if __name__ == "__main__":

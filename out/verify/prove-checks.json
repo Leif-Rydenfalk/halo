@@ -1,10 +1,10 @@
 {
  "$halo": 1,
  "tool": "tools/prove_checks.py",
- "generated": "2026-09-04T10:47:25+00:00",
+ "generated": "2026-09-04T10:51:20+00:00",
  "target": "tools/check_fabset.py",
- "assertions": 18,
- "proved_to_fire": 18,
+ "assertions": 25,
+ "proved_to_fire": 25,
  "unproven": 0,
  "verdict": "PASS",
  "cases": [
@@ -168,6 +168,76 @@
     "PASS",
     "PASS",
     "PASS"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "row_can_change_state",
+   "mutation": "a text target beside a numeric current: the state machine has no branch for that pair",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "source_verdict_passes",
+   "mutation": "the ce-rf case's own verdict.json says FAIL while the row reads MATCH",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "solver_converged",
+   "mutation": "the case records no solver_converged \u2014 the solve cannot be shown to have finished",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "physics_floor",
+   "mutation": "eps_eff_implied 0.90 \u2014 a wave faster than light in the substrate",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "resonance_exists",
+   "mutation": "no reactance zero-crossing anywhere: a dip in |S11| offered as a resonance",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "high_weight_measured",
+   "mutation": "a weight-10 MATCH whose current value is typed into the spec file",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "source_is_fresh",
+   "mutation": "the antenna spec was edited after the measurement that grades it",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
    ],
    "proved": true
   }
