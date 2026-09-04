@@ -107,3 +107,36 @@ Two traps it hit on its own first run, both worth knowing:
   check's state-machine test first passed its target a *string* while the row
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
+
+---
+
+## The sibling rule: do not prune a row you cannot yet explain
+
+*Added 2026-09-05, from an error I made and a peer session endorsed.*
+
+The convergence table carried a row for a round-board antenna variant sitting at
+5.54 GHz against a 2.44 GHz target — 127 percent out, with no explanation. Both
+I and a peer session judged it noise. The peer wrote: *"either fix it or retire
+it explicitly as a dead variant, an OPEN row nobody intends to close is noise on
+the scoreboard."* I passed that instruction to the lane.
+
+**That variant is the one that worked.** `halo-round-rim-ifa` now passes every
+assertion at 2.4469 GHz with **+0.521 dBi of realized gain against Apple's own
+filed −3.2 dBi**, a 3.7 dB improvement, and it is the antenna halo ships. Had the
+lane obeyed promptly, the geometry carrying the answer would have been deleted
+from the board while three explained-looking failures stayed.
+
+**The rule.** A row that is red and *unexplained* is not the same as a row that is
+red and *understood to be dead*. Retiring the second is housekeeping. Retiring the
+first destroys information, and it is tempting precisely because an unexplained
+row is uncomfortable to look at.
+
+This is the same defect as the rest of this page seen from the other side.
+Elsewhere a tool reported success it had not earned; here a **clean scoreboard**
+would have reported completeness it had not earned. Both trade a true, awkward
+record for a tidy, false one.
+
+**In practice:** never retire a row on the grounds that nobody is working on it.
+Retire it only when someone can say *why* it is dead — and write that reason
+down, because the reason is the thing that makes the removal safe.
+
