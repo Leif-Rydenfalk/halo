@@ -411,6 +411,29 @@ passes the −6 dB coverage assert; the resonance assert is the one that fails.
    them.
 2. **THE ANTENNA'S VERDICT IS THE ONE §4 STATES**, measured — nothing above
    it is asserted. See §4 for the number and its case.
+
+   **AND THE CASE IS SOLVING A BOARD WE ARE NOT BUILDING.** Found 2026-09-05:
+   `ce-rf/out/halo-rev-a-2g4/model.json`, the case for *this board's own*
+   element, carries `"passive_copper": []` — it solves the arm with **no NFC
+   coil present at all**. Measured on the real copper, in plan view across
+   all layers, with the matching network exempted:
+
+   | net | closest approach to the 2.4 GHz arm |
+   |---|--:|
+   | **NFC1** | **−0.1746 mm** — the coil's copper **overlaps** the arm |
+   | **NFC2** | **+0.1473 mm** |
+   | GND | +1.4928 mm |
+   | VDD | +10.3810 mm |
+
+   Lane T3's own solved numbers say what that is worth: the Ø25.2 mm coil at
+   a **0.30 mm** gap gives **2.4321 GHz**, in band; the same coil **under the
+   arm** gives **1.7666 GHz**, a **668 MHz** shift they state is not
+   recoverable by tuning. So this board's antenna resonance is **CANNOT
+   DETERMINE**, and the 2.4927 GHz / 2.71 Ω on the case must not be quoted
+   for it. `tools/check_routed.py` R9 measures this on every routed board;
+   `docs/VERIFICATION-DEBT.md` carries what would settle it. The overlap is
+   in the **design**, not the routing — it is identical before and after the
+   router runs.
 3. **FOUR PART CLASSES DO NOT FIT THE ENCLOSURE.** The height check grades
    every placed part against lane M's stack: 58 PASS, **4 FAIL**
    (2026-09-05 board): L1 (0.9 mm body), U1 (0.85), U2 (0.7), X1 (0.9),
