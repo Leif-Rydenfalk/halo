@@ -88,6 +88,7 @@ def gallery_files():
 # the factory actually read, so they get pinned to the top of the nav.
 PACK = [("out/release/INDEX.html", "Factory handoff pack"),
         ("out/release/CONVERGENCE.html", "Convergence vs the real AirTag"),
+        ("out/release/TEST-PLAN.html", "Production test plan"),
         ("out/release/README.md", "Pack readiness table")]
 
 def nav_html(cur):
