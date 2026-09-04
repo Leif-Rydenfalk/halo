@@ -1,30 +1,70 @@
-"""halo's own land patterns — the two KiCad does not have, generated.
+"""halo's own land patterns — the six KiCad does not have, generated.
 
     python3 ce-designs/halo/electronics/halo_rev_a/footprints.py
 
-Writes `electronics/halo_rev_a/halo.pretty/*.kicad_mod`. Both patterns exist
-because SPEC.md and DECISIONS.md forced parts that no catalogue sells, and
+Writes `electronics/halo_rev_a/halo.pretty/*.kicad_mod`. Every pattern here
+exists because SPEC.md or DECISIONS.md forced a part no catalogue sells, and
 the honest response to "there is no footprint for this" is to draw one from
-the mechanical source, not to borrow a similar-looking one.
+the mechanical source — not to borrow a similar-looking one.
 
-1. HALO_BATT_CONTACT_3PAD — where the three sprung C5191 fingers meet the
-   board. SPEC.md §4: "no coin-cell holder fits", because the lowest-profile
-   surface-mount retainer stands 2 mm above the board and the stack has about
-   1.5 mm. So the cell is held by fingers insert-moulded into lane M's
-   carrier, and the board's job is three solder lands under their roots.
-   EVERY NUMBER HERE IS READ OUT OF ce-designs/halo/design.py, lane M's
-   single mechanical source, and is printed by this script so a reviewer can
-   diff it against that file rather than trust this one:
-     R_SPRING_ARC = 11.60   mean radius of the arc cantilever = the root
-     W_SPRING     =  2.40   strip width -> the pad's tangential size
-     SPOKE_ANGLES = 90/210/330 deg, the three carrier spokes
-   Pad 1 is the positive finger that carries current, pad 3 is the positive
-   finger that only senses (rev A D-5), pad 2 is the negative return.
+  HALO_BATT_CONTACT_3PAD      three sprung CR2032 fingers (SPEC.md §4)
+  HALO_ANT_2G4_FEED           the 2.4 GHz feed land
+  HALO_PIEZO_LEADS_2          two wire lands for the bender (D11a)
+  HALO_SWD_PADS_1x06_P1.27    programming lands
+  HALO_UWB_LANDS_1x08_P1.00   the reserved halo-uwb stub (D12)
 
-2. HALO_CASTELLATED_1x08_P1.00 — the halo-uwb expansion stub of D12, as
-   eight plated half-vias on the board edge at 1.00 mm pitch. It is NOT a
-   DW3110 land pattern and must not be mistaken for one; schematic.py X-1
-   gives the two measured reasons a DW3110 pattern is not drawn.
+The two ETCHED SHAPES - the antenna element and the NFC coil - are NOT
+footprints. They are board tracks, drawn by board.py from the geometry
+constants in this file. Why, and the two constructs that failed first, is
+below and repeated in antenna_2g4().
+
+---------------------------------------------------------------------------
+HOW ETCHED COPPER IS DRAWN, AND THE TWO WAYS THAT DO NOT WORK
+---------------------------------------------------------------------------
+An antenna and a coil are shapes in copper on a net. Getting both halves of
+that at once took three attempts, and the first two are recorded here
+because each produced a board that looked right and failed its own DRC.
+
+  1. A CUSTOM PAD WITH OPEN `gr_line` PRIMITIVES. KiCad closes an open
+     primitive chain into an outline and FILLS it, so a 3-turn coil at
+     R11.7-12.7 became a solid Ø25 mm disc of copper on the coil's net.
+     Measured: 18 shorting_items against pads at the board centre that no
+     winding could reach, including U1 pad 25 three millimetres from the
+     origin.
+  2. FOOTPRINT GRAPHICS ON A COPPER LAYER (`fp_line` with `(layer "F.Cu")`).
+     These stroke correctly and they do reach the Gerbers as copper. But a
+     footprint graphic CARRIES NO NET, so KiCad's DRC treats the element as a
+     foreign object and demands clearance from everything near it —
+     including the antenna's own feed pad. Measured: 41 clearance and 34
+     solder_mask_bridge violations, and there is no way to give an `fp_line`
+     a net.
+  3. A CUSTOM PAD WHOSE PRIMITIVE IS AN EXPLICITLY CLOSED RIBBON — the outer
+     arc forward, the inner arc back. It fills to exactly the trace, and it
+     is on a net. KiCad refuses it too, and says why in as many words:
+     "Padstack is not valid (custom pad shape must resolve to a single
+     polygon)". A 20 mm arc of 0.6 mm trace is a long thin ribbon whose
+     primitive does not merge with the anchor rect into one polygon.
+  4. A TRACK. Which is the construct KiCad has for exactly this — arbitrary
+     shape, on a net, plotted as copper, understood by the DRC, the Gerber
+     plotter and a human. So the antenna element and the NFC winding are
+     drawn in board.py with `Board.track()`, from the geometry constants in
+     this file, which board.py imports rather than re-derives.
+
+The coil needs one more thing: it is a short circuit at DC, and KiCad is
+right to say so. It uses KiCad's own `NetTie:NetTie-2_SMD_Pad0.5mm` placed
+mid-winding. Writing a bespoke net-tie footprint was tried first and failed
+for the same single-polygon reason; also measured on the way, an
+`allow_bridged_nets` token inside `(attr ...)` makes KiCad's parser refuse
+the file outright — found by bisecting four variants through
+`FootprintLoad`, which returned None for every one carrying it.
+
+---------------------------------------------------------------------------
+EVERY MECHANICAL NUMBER COMES FROM LANE M
+---------------------------------------------------------------------------
+`ce-designs/halo/design.py` is the single place every mechanical number in
+this project is typed. This file re-states only the ones it needs, and
+prints them on every run so a reviewer can diff them against that file
+rather than trust this one.
 """
 import math
 import os
@@ -33,247 +73,280 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "halo.pretty")
 
 # --- lane M's numbers, ce-designs/halo/design.py --------------------------
-R_SPRING_ARC = 11.60
-W_SPRING = 2.40
+R_SPRING_ARC = 11.60       # mean radius of the sprung contact's cantilever
+W_SPRING = 2.40            # C5191 strip width -> the land's tangential size
 SPOKE_ANGLES = (90.0, 210.0, 330.0)
 D_PCB = 26.00
+R_PCB_NOTCH = 12.60        # the three keying notches cut this deep
 SRC = ("ce-designs/halo/design.py (lane M): R_SPRING_ARC=11.60, "
-       "W_SPRING=2.40, SPOKE_ANGLES=(90,210,330), D_PCB=26.00")
+       "W_SPRING=2.40, SPOKE_ANGLES=(90,210,330), D_PCB=26.00, "
+       "R_PCB_NOTCH=12.60")
 
-PAD_RADIAL = 1.60          # radial length of the land, halo's own choice:
-                           # 1.6 mm gives the formed tongue a wiping landing
-                           # zone wider than lane M's 0.400 mm working
-                           # deflection plus the 0.250 mm detent travel.
-
-
-
-# ==========================================================================
-# THE ETCHED PARTS — an antenna, a coil and two solder lands
-# ==========================================================================
-# These are the three "parts" on the schematic that carry no footprint,
-# because nobody sells them: AE1 is a shape in copper, AE2 is a shape in
-# copper, and LS1 is a bender bonded to the shell with two flying leads.
-# Drawing them as FOOTPRINTS rather than as loose tracks buys four things
-# that loose tracks do not:
-#   * they carry nets, so DRC checks their connectivity like any other part;
-#   * they appear in the netlist compare (`bin/sch check`), so the drawing
-#     and the copper are graded against each other;
-#   * they export into the Gerbers as copper the fab will actually etch;
-#   * and they can be dropped into somebody else's board, which is
-#     GOAL.md deliverable 2 — "an embeddable block, not only a puck".
-#
-# The element geometry is a CUSTOM PAD (KiCad's `(options (anchor rect))`
-# plus `(primitives ...)`), which is the only KiCad construct that is both
-# an arbitrary shape AND on a net.
+# --- halo's own, each argued where it is used -----------------------------
+PAD_RADIAL = 1.20          # radial length of a contact land. 1.20 mm gives
+                           # the formed tongue a wiping zone wider than lane
+                           # M's 0.400 mm working deflection plus the 0.250
+                           # mm detent travel, and keeps the land's far
+                           # corner inside R12.25 - which the notch bottom at
+                           # R12.60 makes the binding constraint, not taste.
 
 C0 = 299792458.0
 F0 = 2.44e9
 EPS_EFF = 2.2              # a surface trace with its reference plane cleared
-                           # away is closer to the air/substrate average than
-                           # to FR4's eps_r = 4.3
+                           # away sits nearer the air/substrate average than
+                           # FR4's eps_r of 4.3
 QUARTER_MM = (C0 / F0) * 1000.0 / math.sqrt(EPS_EFF) / 4.0
 
-ANT_R = 12.10              # mid-annulus: R10.0 is the cell's edge, R13.0 the
-                           # board's, so this is the middle of the only band
-                           # with no battery under it
+ANT_R = 11.90              # mid-annulus, and inside R12.25
 ANT_W = 0.60
-ANT_ARC_MAX_DEG = 84.0     # what actually fits: the three 26 deg keying
-                           # notches at 0/120/240 leave clear arcs of 94 deg,
-                           # and 5 deg of margin at each end keeps the element
-                           # off the routed edge. A quarter wave at R12.10
-                           # wants 98.1 deg, so IT DOES NOT FIT AS AN ARC -
-                           # which is a finding, not a nuisance, and the
-                           # element is bent inward to make up the rest.
-NFC_R_OUT = 12.70
-NFC_W = 0.25
-NFC_GAP = 0.25
+ANT_ARC_MAX_DEG = 84.0     # the three 26 deg keying notches at 0/120/240
+                           # leave clear arcs of 94 deg; 5 deg of margin at
+                           # each end keeps the element off the routed edge
+
+NFC_W = 0.20
+NFC_GAP = 0.20
 NFC_TURNS = 3
+NFC_R_OUT = 10.75          # INSIDE the contact lands, not outside them. The
+                           # outer annulus is oversubscribed: the three
+                           # contact lands occupy R11.0-12.2 on the bottom
+                           # face and the notches cap everything at R12.25.
+                           # The coil therefore sits between the cell's edge
+                           # (R10.0) and the lands, which puts it just
+                           # outside the can rather than over it.
 
 
-def _arc_primitive(r, a0_deg, a1_deg, width, steps=64):
-    """An arc as a chain of `gr_line` primitives, in the footprint's frame.
+# ==========================================================================
+# COPPER PRIMITIVES
+# ==========================================================================
+def _poly(pts):
+    body = ['      (gr_poly\n        (pts\n']
+    for x, y in pts:
+        body.append('          (xy %.4f %.4f)\n' % (x, y))
+    body.append('        )\n        (width 0) (fill yes)\n      )\n')
+    return body
 
-    Chained lines rather than one `gr_arc` because a custom pad's primitives
-    have to close into a fillable outline, and a stroked arc does not.
+
+def _ribbon(r, a0_deg, a1_deg, width, steps=64):
+    """An arc of copper as a CLOSED FILLED POLYGON, for a custom pad."""
+    half = width / 2.0
+    pts = []
+    for i in range(steps + 1):
+        t = math.radians(a0_deg + (a1_deg - a0_deg) * i / steps)
+        pts.append(((r + half) * math.cos(t), -(r + half) * math.sin(t)))
+    for i in range(steps + 1):
+        t = math.radians(a1_deg - (a1_deg - a0_deg) * i / steps)
+        pts.append(((r - half) * math.cos(t), -(r - half) * math.sin(t)))
+    return _poly(pts)
+
+
+def _ribbon_line(x0, y0, x1, y1, width):
+    """A straight run of copper as a closed filled polygon."""
+    dx, dy = x1 - x0, y1 - y0
+    L = math.hypot(dx, dy) or 1.0
+    nx, ny = -dy / L * width / 2.0, dx / L * width / 2.0
+    return _poly([(x0 + nx, y0 + ny), (x1 + nx, y1 + ny),
+                  (x1 - nx, y1 - ny), (x0 - nx, y0 - ny)])
+
+
+def _courtyard(pts, layer="F.CrtYd"):
+    """A CLOSED courtyard outline.
+
+    Closed, because KiCad's DRC reports an open polyline as a malformed
+    courtyard and it is right to: an open outline encloses no area, so there
+    is nothing for an overlap test to test.
     """
     out = []
-    prev = None
-    for i in range(steps + 1):
-        t = a0_deg + (a1_deg - a0_deg) * i / steps
-        a = math.radians(t)
-        pt = (r * math.cos(a), -r * math.sin(a))
-        if prev is not None:
-            out.append('      (gr_line (start %.4f %.4f) (end %.4f %.4f) '
-                       '(width %.4f) (fill none))\n'
-                       % (prev[0], prev[1], pt[0], pt[1], width))
-        prev = pt
+    for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+        out.append('  (fp_line (start %.3f %.3f) (end %.3f %.3f) (stroke '
+                   '(width 0.05) (type solid)) (layer "%s"))\n'
+                   % (ax, ay, bx, by, layer))
     return out
 
 
+def _pad_row(n, pitch, sx, sy):
+    out = []
+    x0 = -(n - 1) * pitch / 2.0
+    for i in range(n):
+        out.append('  (pad "%d" smd roundrect (at %.4f 0) (size %.2f %.2f) '
+                   '(layers "F.Cu" "F.Mask" "F.Paste") '
+                   '(roundrect_rratio 0.2))\n'
+                   % (i + 1, x0 + i * pitch, sx, sy))
+    return out, x0
+
+
+# ==========================================================================
+# THE PATTERNS
+# ==========================================================================
+def batt_contact():
+    """Three lands where the sprung C5191 fingers meet the board.
+
+    SPEC.md §4: "no coin-cell holder fits" — the lowest-profile surface-mount
+    retainer stands 2 mm above the board and the stack has about 1.5 mm. So
+    the cell is held by fingers insert-moulded into lane M's carrier, and the
+    board's job is three solder lands under their roots. Pad 1 is the
+    positive finger that carries current, pad 3 the positive finger that only
+    senses (rev A D-5), pad 2 the negative return.
+
+    AUTHORED FRONT-SIDE, which is KiCad's convention for every footprint in
+    every library, and it is not cosmetic: `Board.place(side="bottom")` calls
+    Flip(), and Flip() on a footprint already declared B.Cu is a no-op the
+    kernel accepts silently — cepcb catches that and refuses, which is how it
+    was found. Flipping mirrors X, so the authored spokes 90/210/330 land at
+    90/330/210. The three spokes are identical, so which pad number sits on
+    which is this file's free choice; what is NOT free is that they move, and
+    they are printed both ways.
+    """
+    order = [("1", SPOKE_ANGLES[0]), ("3", SPOKE_ANGLES[1]),
+             ("2", SPOKE_ANGLES[2])]
+    body = ['(footprint "HALO_BATT_CONTACT_3PAD"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo CR2032 three sprung-finger lands. Source: %s. '
+            'Pad 1 = P+ current, pad 2 = P- return, pad 3 = P+ sense (rev A '
+            'D-5). Authored F.Cu and PLACED side=bottom, because the cell '
+            'sits below the board.")\n' % SRC,
+            '  (tags "halo cr2032 sprung contact no-holder")\n',
+            '  (attr smd exclude_from_pos_files)\n']
+    for num, ang in order:
+        a = math.radians(ang)
+        x, y = R_SPRING_ARC * math.cos(a), -R_SPRING_ARC * math.sin(a)
+        # ROTATION IS ang + 90, NOT ang, and the difference is 1.2 mm of
+        # copper in the wrong direction. A pad at position angle t has its
+        # radius along (cos t, -sin t) in KiCad's Y-down frame; a pad rotated
+        # by phi has its LONG axis along (cos phi, -sin phi). Setting
+        # phi = t therefore points the 2.40 mm strip RADIALLY, so each land
+        # spanned R10.4 to R12.8 instead of R11.0 to R12.2 - into the NFC
+        # winding on one side and to within 0.35 mm of the routed edge on the
+        # other. Measured, from the DRC's own coordinates: "Pad 3 of BT1
+        # @r11.60/150deg" shorting "Track [NFC1] @r10.75/148deg", and a board
+        # edge clearance of 0.3478 mm against a 0.5 mm rule. Tangential is
+        # phi = t + 90.
+        body.append('  (pad "%s" smd roundrect (at %.4f %.4f %.1f) '
+                    '(size %.4f %.4f) (layers "F.Cu" "F.Mask" "F.Paste") '
+                    '(roundrect_rratio 0.15))\n'
+                    % (num, x, y, ang + 90.0, W_SPRING, PAD_RADIAL))
+    # COURTYARD: three small rectangles, one per land, and NOT the Ø26.4
+    # circle drawn here first. A courtyard is "the area this part occupies,
+    # that nothing else may occupy", and a circle enclosing the whole board
+    # claimed all of it — KiCad's DRC dutifully reported every other part on
+    # the board overlapping it, 28 violations that were entirely an artefact
+    # of the drawing. The cell outline is still shown, on F.Fab, where it
+    # informs a reviewer without forbidding anything.
+    for num, ang in order:
+        a = math.radians(ang)
+        cx, cy = R_SPRING_ARC * math.cos(a), -R_SPRING_ARC * math.sin(a)
+        hw, hh = W_SPRING / 2.0 + 0.15, PAD_RADIAL / 2.0 + 0.15
+        ca, sa = math.cos(-a - math.pi / 2.0), math.sin(-a - math.pi / 2.0)
+        rect = [(-hw, -hh), (hw, -hh), (hw, hh), (-hw, hh), (-hw, -hh)]
+        body.extend(_courtyard([(cx + px * ca - py * sa,
+                                 cy + px * sa + py * ca) for px, py in rect]))
+    body.append('  (fp_circle (center 0 0) (end 10.0 0) (stroke (width 0.10) '
+                '(type dash)) (fill none) (layer "F.Fab"))\n')
+    body.append('  (fp_text user "CR2032 O20, 0.578 mm below this face" '
+                '(at 0 6.0) (layer "F.Fab") (effects (font (size 0.6 0.6) '
+                '(thickness 0.1))))\n')
+    body.append(')\n')
+    return "".join(body)
+
+
 def antenna_2g4():
-    """AE1 — a quarter-wave BENT monopole in the cleared sector.
+    """AE1 — the 2.4 GHz element's FEED LAND. The element itself is tracks.
+
+    WHY THE ELEMENT IS NOT IN THIS FOOTPRINT, after two attempts to put it
+    here. A custom pad is the only footprint construct that is both an
+    arbitrary shape and on a net, and KiCad refuses this one by name:
+
+        "Padstack is not valid (custom pad shape must resolve to a single
+         polygon)"
+
+    A 20 mm arc of 0.6 mm trace is a long thin ribbon; its primitive and the
+    anchor rect do not overlap into one polygon, so the padstack is invalid
+    and the DRC falls back to something disc-like that shorted against every
+    pad inside R10.9 — L1, C11, X1 and eight of the SoC's own. Attempt two,
+    footprint graphics on a copper layer, strokes correctly but carries no
+    net, so the DRC demanded clearance between the antenna and its own feed.
+
+    A TRACK is the construct KiCad has for exactly this: arbitrary shape, on
+    a net, plotted as copper. So the element is drawn in board.py with
+    `Board.track()` on ANT_FEED, from the geometry in THIS file
+    (ANT_R, ANT_W, ANT_ARC_MAX_DEG, QUARTER_MM), which board.py imports
+    rather than re-derives. One source, two consumers.
 
     WHY A MONOPOLE AND NOT AN INVERTED-F, which is what the AirTag uses and
-    what SPEC.md §3 records at -3.2 dBi. An inverted-F is ONE piece of copper
-    galvanically joined to BOTH the feed and the ground plane. KiCad's
-    connectivity has no way to express that: two nets on one conductor is a
-    short, and the usual workarounds are a net tie (which would lie about the
-    ground plane) or a DRC exclusion (which switches off the check that would
-    catch a real short somewhere else). A monopole is one conductor on one
-    net and needs neither. All of its tuning lives in the pi network the
-    schematic carries for exactly this purpose (D-2). If ce-rf measures that
-    an IFA beats it by enough to be worth a net tie, the shorting stub is one
-    more pad and this paragraph is the record of why it was not drawn first.
+    what SPEC.md §3 records at -3.2 dBi. An inverted-F is one piece of copper
+    galvanically joined to BOTH the feed and the ground plane, which KiCad's
+    connectivity would call a short. All of the monopole's tuning lives in
+    the pi network the schematic carries for the purpose (D-2).
 
     WHY IT IS BENT, and this is the real finding. A quarter wave at 2.44 GHz
-    in an eps_eff of 2.2 is 20.71 mm. As an arc at R12.10 that is 98.1
-    degrees. The board's three 26-degree keying notches at 0/120/240 leave
-    clear arcs of only 94 degrees, and 5 degrees of margin at each end for
-    the router bit leaves 84. SO A STRAIGHT ARC QUARTER WAVE DOES NOT FIT ON
-    THIS BOARD — it is short by 14.1 degrees, which is 2.98 mm of conductor.
-    The element therefore runs 84 degrees around the annulus and then turns
-    inward for the remaining length, which is an ordinary bent (inverted-L)
-    monopole and costs a little efficiency for the fold.
-
-    That shortfall is worth stating plainly because ce-rf's two existing
-    cases resonate HIGH — 4.0 and 5.8 GHz against a 2.44 target — and an
-    element short of a quarter wave is exactly what resonates high. This
-    geometry does not prove that is the cause; it does mean the length is
-    the first thing to check.
-
-    THE LENGTH IS COMPUTED, NOT TUNED. Whether it resonates in band ON THIS
-    BOARD, with a Ø20 mm battery can 0.578 mm below the annulus and a ground
-    plane edge about 2 mm away, is ce-rf's measurement. Nothing here asserts
-    it.
+    in an eps_eff of 2.2 is 20.71 mm; as an arc at R11.90 that is 99.7
+    degrees, and the three keying notches leave 84 usable. A STRAIGHT ARC
+    QUARTER WAVE DOES NOT FIT — short by 15.7 degrees, 3.26 mm of conductor —
+    so the element turns inward to make it up. An element short of a quarter
+    wave resonates HIGH, and high is the direction ce-rf's two existing cases
+    already failed in (4.0 and 5.8 GHz against 2.44). That does not prove it
+    is the cause; it does mean length is the first thing to check.
     """
-    arc_deg = min(math.degrees(QUARTER_MM / ANT_R), ANT_ARC_MAX_DEG)
-    used = math.radians(arc_deg) * ANT_R
-    tail = max(0.0, QUARTER_MM - used)          # the inward fold
-    body = ['(footprint "HALO_ANT_2G4_MONOPOLE"\n',
+    body = ['(footprint "HALO_ANT_2G4_FEED"\n',
             '  (version 20240108)\n  (generator "halo/footprints.py")\n',
             '  (layer "F.Cu")\n',
-            '  (descr "halo 2.4 GHz bent quarter-wave monopole on F.Cu: '
-            '%.2f mm arc at R%.2f (%.1f deg) + %.2f mm inward fold = %.2f mm '
-            'total. Length COMPUTED at eps_eff %.1f, NOT TUNED. A straight '
-            'arc quarter wave needs %.1f deg and only %.1f deg is clear of '
-            'the keying notches, which is why it is bent.")\n'
-            % (used, ANT_R, arc_deg, tail, used + tail, EPS_EFF,
-               math.degrees(QUARTER_MM / ANT_R), ANT_ARC_MAX_DEG),
-            '  (tags "halo antenna 2g4 monopole bent etched")\n',
-            '  (attr smd exclude_from_pos_files exclude_from_bom)\n']
-    prim = _arc_primitive(ANT_R, 0.0, arc_deg, ANT_W)
-    if tail > 0.05:
-        a = math.radians(arc_deg)
-        x0, y0 = ANT_R * math.cos(a), -ANT_R * math.sin(a)
-        r1 = ANT_R - tail
-        x1, y1 = r1 * math.cos(a), -r1 * math.sin(a)
-        prim.append('      (gr_line (start %.4f %.4f) (end %.4f %.4f) '
-                    '(width %.4f) (fill none))\n' % (x0, y0, x1, y1, ANT_W))
-    body.append('  (pad "1" smd custom\n'
-                '    (at %.4f %.4f)\n'
-                '    (size %.4f %.4f)\n'
-                '    (layers "F.Cu" "F.Mask")\n'
-                '    (options (clearance outline) (anchor rect))\n'
-                '    (primitives\n' % (ANT_R, 0.0, ANT_W, ANT_W))
-    body.extend(prim)
-    body.append('    )\n  )\n')
-    body.append('  (fp_text user "AE1 2G4 %.1fmm bent" (at %.3f 1.6) '
-                '(layer "F.Fab") (effects (font (size 0.5 0.5) '
-                '(thickness 0.08))))\n' % (used + tail, ANT_R - 3.0))
-    body.append(')\n')
-    return "".join(body)
-
-
-def nfc_coil():
-    """AE2 — a 3-turn NFC loop, as a KiCad NET TIE.
-
-    A coil is a short circuit at DC, and KiCad is right to say so. The
-    construct that expresses "these two nets are deliberately joined by this
-    piece of copper" is `net_tie_pad_groups`, which KiCad's DRC understands
-    and which does NOT switch off shorting checks anywhere else on the board.
-    Using it is the difference between telling the tool the truth and hiding
-    from it.
-
-    Three turns at %.2f mm width and %.2f mm gap, outermost at R%.2f. The
-    turn count is what makes an inductance measurable at all; WHAT that
-    inductance is, is ce-rf's number, and the schematic's 130 pF tuning
-    capacitors depend on it (X-2).
-    """ % (NFC_W, NFC_GAP, NFC_R_OUT)
-    a0, a1 = 0.0, 320.0
-    body = ['(footprint "HALO_NFC_COIL_3T"\n',
-            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
-            # Authored F.Cu and PLACED side="bottom", the same rule
-            # HALO_BATT_CONTACT_3PAD follows and for the same measured
-            # reason: Flip() on a footprint already declared B.Cu is a
-            # silent no-op. The flip mirrors X, so the winding spirals the
-            # other way round - which swaps the coil's sense and nothing
-            # else, because a tag antenna has no polarity to get wrong.
-            '  (layer "F.Cu")\n',
-            '  (descr "halo NFC coil, %d turns, %.2f mm trace / %.2f mm gap, '
-            'outermost R%.2f, on B.Cu. A NET TIE: pads 1 and 2 are joined by '
-            'the winding, which is what a coil is. Inductance UNMEASURED - '
-            'ce-rf owns it and C24/C25 depend on it.")\n'
-            % (NFC_TURNS, NFC_W, NFC_GAP, NFC_R_OUT),
-            '  (tags "halo nfc coil 13.56MHz net-tie")\n',
-            # `(net_tie_pad_groups ...)` is the whole net-tie declaration in
-            # KiCad 10. An `allow_bridged_nets` token in `(attr ...)` was
-            # tried first and KiCad's own parser REFUSED the file - measured
-            # by bisecting the four combinations through FootprintLoad, which
-            # returned None for every variant carrying it. A footprint that
-            # does not load is a hole in the board that only the pad count
-            # reveals, so it is recorded here rather than left as folklore.
+            '  (descr "halo 2.4 GHz antenna FEED LAND. The radiating element '
+            'is drawn as TRACKS by board.py from this file geometry - a '
+            'custom pad cannot hold a long thin arc (KiCad: custom pad shape '
+            'must resolve to a single polygon). Bent quarter wave, %.2f mm '
+            'total at eps_eff %.1f, NOT TUNED.")\n' % (QUARTER_MM, EPS_EFF),
+            '  (tags "halo antenna 2g4 monopole feed")\n',
             '  (attr smd exclude_from_pos_files exclude_from_bom)\n',
-            '  (net_tie_pad_groups "1, 2")\n']
-    prim = []
-    for t in range(NFC_TURNS):
-        rr = NFC_R_OUT - t * (NFC_W + NFC_GAP)
-        prim.extend(_arc_primitive(rr, a0 + t * 3.0, a1 - t * 3.0, NFC_W,
-                                   steps=120))
-        if t + 1 < NFC_TURNS:            # the crossover into the next turn
-            rn = NFC_R_OUT - (t + 1) * (NFC_W + NFC_GAP)
-            aa = math.radians(a0 + t * 3.0)
-            ab = math.radians(a0 + (t + 1) * 3.0)
-            prim.append('      (gr_line (start %.4f %.4f) (end %.4f %.4f) '
-                        '(width %.4f) (fill none))\n'
-                        % (rr * math.cos(aa), -rr * math.sin(aa),
-                           rn * math.cos(ab), -rn * math.sin(ab), NFC_W))
-    # Pad 1 carries the whole winding; pad 2 is a land at the inner end that
-    # the winding reaches, which is what makes the two a tied pair.
-    a_out = math.radians(a1)
-    body.append('  (pad "1" smd custom\n'
-                '    (at %.4f %.4f)\n    (size %.4f %.4f)\n'
-                '    (layers "F.Cu" "F.Mask")\n'
-                '    (options (clearance outline) (anchor rect))\n'
-                '    (primitives\n'
-                % (NFC_R_OUT * math.cos(0.0), 0.0, NFC_W, NFC_W))
-    body.extend(prim)
-    body.append('    )\n  )\n')
-    r_in = NFC_R_OUT - (NFC_TURNS - 1) * (NFC_W + NFC_GAP)
-    body.append('  (pad "2" smd rect\n'
-                '    (at %.4f %.4f)\n    (size 0.60 0.35)\n'
-                '    (layers "F.Cu" "F.Mask" "B.Paste")\n  )\n'
-                % (r_in * math.cos(a_out), -r_in * math.sin(a_out)))
+            '  (pad "1" smd roundrect (at 0 0) (size %.2f %.2f) '
+            '(layers "F.Cu" "F.Mask") (roundrect_rratio 0.2))\n'
+            % (ANT_W, ANT_W),
+            '  (fp_text user "AE1 feed" (at 0 -0.9) (layer "F.Fab") '
+            '(effects (font (size 0.4 0.4) (thickness 0.06))))\n']
+    body.extend(_courtyard([(-0.45, -0.45), (0.45, -0.45), (0.45, 0.45),
+                            (-0.45, 0.45), (-0.45, -0.45)]))
     body.append(')\n')
     return "".join(body)
+
+
+# THE NFC COIL HAS NO FOOTPRINT HERE. It uses KiCad's own
+# `NetTie:NetTie-2_SMD_Pad0.5mm`, placed mid-winding, with the two halves of
+# the coil drawn as TRACKS on NFC1 and NFC2 by board.py.
+#
+# A coil is a short circuit at DC and KiCad is right to say so; a net tie is
+# the construct that means "these two nets are deliberately joined by this
+# piece of metal", and KiCad ships twelve of them. Writing a bespoke one was
+# tried and failed for the same reason the antenna's did - a 3-turn winding
+# is not a single polygon, so the padstack is invalid. Using the stock part
+# also means the winding is ordinary track copper that the DRC, the Gerber
+# plotter and a human reviewer all already understand.
+#
+# The geometry lives here (NFC_R_OUT, NFC_W, NFC_GAP, NFC_TURNS) and board.py
+# imports it, so there is one source for it.
 
 
 def piezo_pads():
     """LS1 — two solder lands for the bender's flying leads.
 
     D11a bonds a bare Murata 7BB-20-3 to the INSIDE OF THE SHELL, not to the
-    board. So the board's part in it is two lands: one for the brass shim's
-    lead and one for the PZT face's. They are 1.2 x 0.8 mm, which is a hand-
-    or robot-solderable land for 32 AWG wire, and they sit 2.0 mm apart so
-    the two leads cannot bridge.
+    board, so the board's part in it is two lands: one for the brass shim's
+    lead and one for the PZT face's. 1.2 x 0.8 mm is solderable for 32 AWG
+    wire, and 2.0 mm apart the two leads cannot bridge.
+
+    THE PART ITSELF IS NOT SOURCED. research/05 §11.7 and the factory lane
+    both return CANNOT DETERMINE at every quantity: the 7BB-20-3 is in
+    neither LCSC nor the assembly catalogue, Digi-Key answers 403 and Mouser
+    a captcha. The land pattern is deliberately generic — ANY Ø20 mm
+    two-terminal bender lands on it — so a substitute costs no board spin.
     """
     body = ['(footprint "HALO_PIEZO_LEADS_2"\n',
             '  (version 20240108)\n  (generator "halo/footprints.py")\n',
             '  (layer "F.Cu")\n',
-            '  (descr "halo piezo bender leads: two wire lands for a Murata '
-            '7BB-20-3 bonded to the shell (DECISIONS.md D11a). The bender is '
-            'NOT mounted on the board and carries no land pattern of its '
-            'own.")\n',
-            '  (tags "halo piezo bender wire land")\n',
+            '  (descr "halo piezo bender leads: two wire lands for a O20 mm '
+            'two-terminal bender bonded to the shell (DECISIONS.md D11a). '
+            'GENERIC ON PURPOSE - the Murata 7BB-20-3 is unsourced at every '
+            'quantity, so any O20 bender must land here without a respin. '
+            'The bender is NOT mounted on the board.")\n',
+            '  (tags "halo piezo bender wire land generic")\n',
             '  (attr smd exclude_from_pos_files)\n']
     for n, x in (("1", -1.0), ("2", 1.0)):
         body.append('  (pad "%s" smd roundrect (at %.2f 0) (size 1.20 0.80) '
@@ -281,143 +354,141 @@ def piezo_pads():
                     '(roundrect_rratio 0.2))\n' % (n, x))
     body.append('  (fp_text user "LS1 bender" (at 0 -1.1) (layer "F.Fab") '
                 '(effects (font (size 0.5 0.5) (thickness 0.08))))\n')
+    body.extend(_courtyard([(-1.9, -0.7), (1.9, -0.7), (1.9, 0.7),
+                            (-1.9, 0.7), (-1.9, -0.7)]))
     body.append(')\n')
     return "".join(body)
 
 
-def sexpr_pad(n, x, y, sx, sy, rot, layers, net_note=""):
-    return (
-        '  (pad "%s" smd roundrect\n'
-        '    (at %.4f %.4f %.1f)\n'
-        '    (size %.4f %.4f)\n'
-        '    (layers %s)\n'
-        '    (roundrect_rratio 0.15)\n'
-        '  )\n' % (n, x, y, rot, sx, sy, layers))
+def swd_pads():
+    """J1 — six SWD lands, because a Tag-Connect does not fit a Ø26 mm board.
 
+    A TC2030 was placed first, per the schematic's reasoning that pogo-pin
+    pads cost no height. That is true, and it is still the reason there is no
+    connector here. What is also true, and only became visible once it was on
+    the board, is that the TC2030 land pattern is about 80 mm2 with TWO NPTH
+    ALIGNMENT HOLES through it. On a 26 mm disc that is a sixth of the area,
+    and the DRC found its holes drilled through the SoC's pads and its
+    courtyard overlapping six other parts.
 
-def batt_contact():
-    """Three lands under the finger roots, on the BOTTOM copper.
-
-    Bottom, because the cell is below the board: lane M puts the cell's top
-    face at z = 4.022 and the board's bottom face at z = 4.600, so the
-    fingers approach from underneath and a top-side land would need a via
-    and a barrel the finger cannot reach.
+    Six 0.8 x 1.4 mm lands on a 1.27 mm pitch carry the same six signals in
+    about 9 mm2, with no holes at all. Pin order is Tag-Connect's own, so a
+    fixture built for one reads the other: 1 VDD, 2 SWDIO, 3 nRESET,
+    4 SWDCLK, 5 GND, 6 SWO.
     """
-    body = []
-    body.append('(footprint "HALO_BATT_CONTACT_3PAD"\n')
-    body.append('  (version 20240108)\n  (generator "halo/footprints.py")\n')
-    # AUTHORED FRONT-SIDE, which is KiCad's convention for every footprint
-    # in every library, and it is not cosmetic: `Board.place(side="bottom")`
-    # calls Flip(), and Flip() on a footprint already declared B.Cu is a
-    # no-op the kernel accepts silently - cepcb catches that and refuses,
-    # which is how this was found. Flipping MIRRORS X, so the authored
-    # spokes 90/210/330 land at 90/330/210. The three spokes are identical,
-    # so which pad number sits on which is this file's free choice; what is
-    # NOT free is that the numbers move, and they are printed both ways.
-    body.append('  (layer "F.Cu")\n')
-    body.append('  (descr "halo CR2032 three sprung-finger lands. Source: %s. '
-                'Pad 1 = P+ current, pad 2 = P- return, pad 3 = P+ sense '
-                '(rev A D-5). BOTTOM copper: the cell sits below the board.")\n'
-                % SRC)
-    body.append('  (tags "halo cr2032 sprung contact no-holder")\n')
-    body.append('  (attr smd exclude_from_pos_files)\n')
-    # pad n -> spoke angle. 1 = current, 3 = sense, 2 = negative.
-    order = [("1", SPOKE_ANGLES[0]), ("3", SPOKE_ANGLES[1]),
-             ("2", SPOKE_ANGLES[2])]
-    for num, ang in order:
-        a = math.radians(ang)
-        x = R_SPRING_ARC * math.cos(a)
-        y = -R_SPRING_ARC * math.sin(a)     # KiCad y is down
-        # The pad's long axis is TANGENTIAL, so rotate by the spoke angle.
-        body.append(sexpr_pad(num, x, y, W_SPRING, PAD_RADIAL, ang,
-                              '"F.Cu" "F.Mask" "F.Paste"'))
-    # Courtyard: the annulus the fingers sweep. Drawn as a circle so a
-    # reviewer sees the cell's footprint on the board, not three islands.
-    body.append('  (fp_circle (center 0 0) (end %.3f 0) (stroke (width 0.05) '
-                '(type solid)) (fill none) (layer "F.CrtYd"))\n'
-                % (R_SPRING_ARC + PAD_RADIAL))
-    body.append('  (fp_circle (center 0 0) (end 10.0 0) (stroke (width 0.10) '
-                '(type dash)) (fill none) (layer "F.Fab"))\n')
-    body.append('  (fp_text user "CR2032 Ø20 cell outline, 0.578 mm below" '
-                '(at 0 12.6) (layer "F.Fab") (effects (font (size 0.6 0.6) '
-                '(thickness 0.1))))\n')
+    body = ['(footprint "HALO_SWD_PADS_1x06_P1.27"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo SWD programming lands, 6 at 1.27 mm pitch. Order '
+            'follows Tag-Connect TC2030: 1 VDD, 2 SWDIO, 3 nRESET, 4 SWDCLK, '
+            '5 GND, 6 SWO. No connector, no holes - a TC2030 pattern is '
+            '80 mm2 with two NPTH and does not fit a O26 mm board.")\n',
+            '  (tags "halo swd pogo programming lands")\n',
+            '  (attr smd exclude_from_pos_files exclude_from_bom)\n']
+    pads, x0 = _pad_row(6, 1.27, 0.80, 1.40)
+    body.extend(pads)
+    body.append('  (fp_text user "SWD" (at 0 -1.4) (layer "F.Fab") '
+                '(effects (font (size 0.5 0.5) (thickness 0.08))))\n')
+    hx, hy = x0 - 0.60, 1.05
+    body.extend(_courtyard([(hx, -hy), (-hx, -hy), (-hx, hy), (hx, hy),
+                            (hx, -hy)]))
     body.append(')\n')
     return "".join(body)
 
 
-def castellated():
-    """Eight plated half-vias at 1.00 mm pitch on the board edge."""
-    pitch, n = 1.00, 8
-    body = []
-    body.append('(footprint "HALO_CASTELLATED_1x08_P1.00"\n')
-    body.append('  (version 20240108)\n  (generator "halo/footprints.py")\n')
-    body.append('  (layer "F.Cu")\n')
-    body.append('  (descr "halo-uwb expansion stub (DECISIONS.md D12): 8 '
-                'plated half-vias, 1.00 mm pitch, on the board edge. THIS IS '
-                'NOT A DW3110 LAND PATTERN - see schematic.py X-1. Place so '
-                'the pad centres sit ON the Edge.Cuts arc; the board house '
-                'routes through them.")\n')
-    body.append('  (tags "halo castellated edge uwb stub")\n')
-    body.append('  (attr through_hole exclude_from_pos_files)\n')
-    x0 = -(n - 1) * pitch / 2.0
-    for i in range(n):
-        x = x0 + i * pitch
-        body.append(
-            '  (pad "%d" thru_hole circle\n'
-            '    (at %.4f 0)\n'
-            '    (size 0.80 0.80)\n'
-            '    (drill 0.50)\n'
-            '    (layers "*.Cu" "*.Mask")\n'
-            '    (property pad_prop_castellated)\n'
-            '  )\n' % (i + 1, x))
-    body.append('  (fp_text user "UWB STUB - not fitted" (at 0 -1.6) '
+def uwb_lands():
+    """J2 — the halo-uwb expansion lands of D12.
+
+    NOT CASTELLATIONS IN REVISION A, and the change is deliberate. Plated
+    half-vias have to sit ON the routed edge, which puts every one of them in
+    permanent violation of copper-edge clearance: the DRC reported 16, and
+    there is then no way to tell those — which are correct and intended —
+    from a real edge-clearance mistake somewhere else. A check whose alarms
+    you have to learn to ignore is not a check.
+
+    So rev A uses eight ordinary SMD lands inboard of the edge. A
+    daughtercard reaches them with a flex tail or pogo pins, which is what a
+    stuffing option needs anyway. Edge castellation is a rev B option and it
+    costs an edge-plating process step at the board house — a real decision
+    with a real price, which should be made deliberately rather than
+    inherited from a footprint.
+
+    IT IS NOT A DW3110 LAND PATTERN. schematic.py X-1 gives the two measured
+    reasons one is not drawn.
+    """
+    body = ['(footprint "HALO_UWB_LANDS_1x08_P1.00"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo-uwb expansion lands (DECISIONS.md D12): 8 SMD '
+            'pads at 1.00 mm pitch, inboard of the edge. NOT a DW3110 land '
+            'pattern - see schematic.py X-1. Castellation is a rev B option; '
+            'see the docstring for why rev A does not use it.")\n',
+            '  (tags "halo uwb expansion stub lands")\n',
+            '  (attr smd exclude_from_pos_files exclude_from_bom)\n']
+    pads, x0 = _pad_row(8, 1.00, 0.60, 1.20)
+    body.extend(pads)
+    body.append('  (fp_text user "UWB - not fitted" (at 0 -1.3) '
                 '(layer "F.Fab") (effects (font (size 0.5 0.5) '
                 '(thickness 0.08))))\n')
-    body.append('  (fp_line (start %.3f -1.0) (end %.3f -1.0) (stroke '
-                '(width 0.05) (type solid)) (layer "F.CrtYd"))\n'
-                % (x0 - 0.6, x0 + (n - 1) * pitch + 0.6))
+    hx, hy = x0 - 0.50, 0.95
+    body.extend(_courtyard([(hx, -hy), (-hx, -hy), (-hx, hy), (hx, hy),
+                            (hx, -hy)]))
     body.append(')\n')
     return "".join(body)
+
+
+PATTERNS = [
+    ("HALO_BATT_CONTACT_3PAD", batt_contact),
+    ("HALO_ANT_2G4_FEED", antenna_2g4),
+    ("HALO_PIEZO_LEADS_2", piezo_pads),
+    ("HALO_SWD_PADS_1x06_P1.27", swd_pads),
+    ("HALO_UWB_LANDS_1x08_P1.00", uwb_lands),
+]
 
 
 if __name__ == "__main__":
     if not os.path.isdir(OUT):
         os.makedirs(OUT)
-    for name, text in (("HALO_BATT_CONTACT_3PAD", batt_contact()),
-                       ("HALO_CASTELLATED_1x08_P1.00", castellated()),
-                       ("HALO_ANT_2G4_MONOPOLE", antenna_2g4()),
-                       ("HALO_NFC_COIL_3T", nfc_coil()),
-                       ("HALO_PIEZO_LEADS_2", piezo_pads())):
-        path = os.path.join(OUT, name + ".kicad_mod")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(text)
-        print("wrote", path)
-    print("\nnumbers taken from lane M, not chosen here:")
+    # A stale .kicad_mod from an earlier name is a footprint the board can
+    # still load and nobody is generating any more. Clear them out.
+    keep = {n + ".kicad_mod" for n, _ in PATTERNS}
+    for f in sorted(os.listdir(OUT)):
+        if f.endswith(".kicad_mod") and f not in keep:
+            os.remove(os.path.join(OUT, f))
+            print("removed stale", f)
+    for name, fn in PATTERNS:
+        with open(os.path.join(OUT, name + ".kicad_mod"), "w",
+                  encoding="utf-8") as fh:
+            fh.write(fn())
+        print("wrote", name)
+
+    print("\n--- from lane M, not chosen here ---")
     print("  " + SRC)
-    print("\n--- the etched parts, computed not chosen ---")
-    print("  quarter wave at %.2f GHz, eps_eff %.1f  -> %.3f mm"
-          % (F0 / 1e9, EPS_EFF, QUARTER_MM))
     _want = math.degrees(QUARTER_MM / ANT_R)
-    _fit = min(_want, ANT_ARC_MAX_DEG)
-    print("  as an arc at R%.2f                      -> %.1f deg wanted"
+    print("\n--- the etched parts, computed not chosen ---")
+    print("  quarter wave at %.2f GHz, eps_eff %.1f -> %.3f mm"
+          % (F0 / 1e9, EPS_EFF, QUARTER_MM))
+    print("  as an arc at R%.2f                    -> %.1f deg wanted"
           % (ANT_R, _want))
-    print("  clear of the three keying notches       -> %.1f deg available"
+    print("  clear of the three keying notches     -> %.1f deg available"
           % ANT_ARC_MAX_DEG)
     if _want > ANT_ARC_MAX_DEG:
-        print("  SHORT BY %.1f deg = %.2f mm of conductor -> the element is "
-              "BENT INWARD by that much" % (_want - _fit,
-                                            math.radians(_want-_fit)*ANT_R))
-    print("  NFC coil: %d turns, %.2f/%.2f mm, outer R%.2f, NET TIE 1-2"
-          % (NFC_TURNS, NFC_W, NFC_GAP, NFC_R_OUT))
+        print("  SHORT BY %.1f deg = %.2f mm -> the element is BENT INWARD "
+              "by that much"
+              % (_want - ANT_ARC_MAX_DEG,
+                 math.radians(_want - ANT_ARC_MAX_DEG) * ANT_R))
+    print("  NFC coil: %d turns, %.2f/%.2f mm, outer R%.2f, inner R%.2f, "
+          "NET TIE 1-2"
+          % (NFC_TURNS, NFC_W, NFC_GAP, NFC_R_OUT,
+             NFC_R_OUT - (NFC_TURNS - 1) * (NFC_W + NFC_GAP)))
     print("  NEITHER IS TUNED. ce-rf owns S11 and the coil's inductance.")
-    print("\nhalo's own, argued in the docstring:")
-    print("  PAD_RADIAL = %.2f mm  (> 0.400 deflection + 0.250 detent)"
-          % PAD_RADIAL)
+
+    print("\n--- contact lands, and where the flip puts them ---")
+    print("  PAD_RADIAL = %.2f mm; far corner reaches R%.2f, against the "
+          "notch bottom at R%.2f"
+          % (PAD_RADIAL, math.hypot(R_SPRING_ARC + PAD_RADIAL / 2.0,
+                                    W_SPRING / 2.0), R_PCB_NOTCH))
     for num, ang in [("1", SPOKE_ANGLES[0]), ("3", SPOKE_ANGLES[1]),
                      ("2", SPOKE_ANGLES[2])]:
-        a = math.radians(ang)
-        print("  pad %s authored at %5.1f deg -> lands on the %5.1f deg "
-              "spoke after the flip  (x,y = %+.3f, %+.3f, r = %.2f)"
-              % (num, ang, (180.0 - ang) % 360.0,
-                 R_SPRING_ARC * math.cos(a),
-                 -R_SPRING_ARC * math.sin(a), R_SPRING_ARC))
+        print("  pad %s authored at %5.1f deg -> lands on the %5.1f deg spoke"
+              % (num, ang, (180.0 - ang) % 360.0))

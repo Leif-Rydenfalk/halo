@@ -1,9 +1,9 @@
 {
  "verdict": "FAIL",
  "counts": {
-  "PASS": 46,
+  "PASS": 44,
   "FAIL": 5,
-  "CANNOT DETERMINE": 0
+  "CANNOT DETERMINE": 2
  },
  "allowances_mm": {
   "bottom_over_cell": 0.578,
@@ -13,19 +13,19 @@
  "rows": [
   {
    "ref": "AE1",
-   "package": "HALO_ANT_2G4_MONOPOLE",
-   "body_mm": 0.0,
+   "package": "HALO_ANT_2G4_FEED",
+   "body_mm": null,
    "allow_mm": null,
-   "verdict": "PASS",
-   "where": "no body: etched copper"
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
   },
   {
    "ref": "AE2",
-   "package": "HALO_NFC_COIL_3T",
-   "body_mm": 0.0,
+   "package": "NetTie-2_SMD_Pad0.5mm",
+   "body_mm": null,
    "allow_mm": null,
-   "verdict": "PASS",
-   "where": "no body: etched copper"
+   "verdict": "CANNOT DETERMINE",
+   "where": "NO PACKAGE HEIGHT ON FILE"
   },
   {
    "ref": "BT1",
@@ -237,7 +237,7 @@
   },
   {
    "ref": "J1",
-   "package": "Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical",
+   "package": "HALO_SWD_PADS_1x06_P1.27",
    "body_mm": 0.0,
    "allow_mm": null,
    "verdict": "PASS",
@@ -245,11 +245,11 @@
   },
   {
    "ref": "J2",
-   "package": "HALO_CASTELLATED_1x08_P1.00",
+   "package": "HALO_UWB_LANDS_1x08_P1.00",
    "body_mm": 0.0,
    "allow_mm": null,
    "verdict": "PASS",
-   "where": "no body: plated half-vias, no body"
+   "where": "no body: PADS ONLY, not fitted"
   },
   {
    "ref": "L1",
@@ -305,7 +305,7 @@
    "body_mm": 0.33,
    "allow_mm": 0.4,
    "verdict": "PASS",
-   "where": "straddles \u00d821.2"
+   "where": "top face inside \u00d821.2"
   },
   {
    "ref": "R10",
@@ -321,7 +321,7 @@
    "body_mm": 0.33,
    "allow_mm": 0.4,
    "verdict": "PASS",
-   "where": "straddles \u00d821.2"
+   "where": "top face inside \u00d821.2"
   },
   {
    "ref": "R3",
@@ -401,7 +401,7 @@
    "body_mm": 0.6,
    "allow_mm": 0.578,
    "verdict": "FAIL",
-   "where": "over the cell"
+   "where": "straddles the cell's edge"
   },
   {
    "ref": "X1",
@@ -417,7 +417,7 @@
    "body_mm": 0.5,
    "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "over the cell"
+   "where": "straddles the cell's edge"
   }
  ]
 }

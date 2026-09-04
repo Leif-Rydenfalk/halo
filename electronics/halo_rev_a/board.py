@@ -117,6 +117,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 _kicad.footprint_libraries()                       # build the cache, then add
 _kicad._LIB_CACHE["halo"] = os.path.join(HERE, "halo.pretty")
 _kicad._INDEX = None                               # so find() re-indexes
+
+# The etched geometry lives in footprints.py and is IMPORTED, not re-typed.
+# The antenna element and the NFC winding are drawn here as tracks; their
+# radii, widths and turn counts are that file's, so a change there moves the
+# copper here and cannot leave the two disagreeing.
+if HERE not in sys.path:
+    sys.path.insert(0, HERE)
+import footprints as fpg                                          # noqa: E402
 SCH = os.path.join(HERE, "out", "halo_rev_a.kicad_sch")
 OUT = os.path.join(HERE, "out", "halo_rev_a.kicad_pcb")
 
@@ -154,6 +162,12 @@ R_ANNULUS_OUT = 12.70          # 0.3 mm in from the edge, for the router bit
 # 13->107, 133->227 and 253->347. The antenna takes the middle of the first.
 ANT_SECTOR_MID = 60.0
 ANT_SECTOR_ARC = 88.0          # 16 -> 104 deg, inside the 13->107 clear arc
+
+
+#: Where the antenna is fed, and where the coil's two halves meet. Both are
+#: angles because everything on a disc is.
+ANT_FEED_DEG = 20.0
+NFC_TIE_DEG = 200.0
 
 
 def at_r(r, deg):
@@ -255,7 +269,14 @@ b.keepout(diameter=D_LAND, center=(CX, CY), layers=["F.Cu"],
 #    it cannot mean "no board". It governs whatever the puck is fitted into.
 #    scope="host" makes keepout_check() grade it CANNOT DETERMINE with the
 #    measurement rather than quietly passing a rule it cannot see.
+# FORBIDS NOTHING, deliberately. Created with the default forbids first, and
+# because Ø37.31 covers every square millimetre of a Ø26 board, KiCad's DRC
+# reported ordinary parts as items_not_allowed inside it - a rule area that
+# outlaws the entire board. A host-scope region is a constraint on whatever
+# the puck is fitted INTO and this board cannot enforce it, so it is drawn
+# and documented and enforces nothing.
 b.keepout(diameter=D_ANTENNA_KO, center=(CX, CY), layers="*",
+          tracks=False, vias=False, pads=False, pours=False, footprints=False,
           scope="host", name="antenna-host-clearance",
           why="SPEC.md §4, Apple's own callout: no metal above or below, "
               "Ø37.31 mm - 11.44 mm LARGER than this board. Every square "
@@ -267,8 +288,17 @@ b.keepout(diameter=D_ANTENNA_KO, center=(CX, CY), layers="*",
 #    under the radiating element or it does not radiate.
 ANT_CLEAR = sector_polygon(R_ANNULUS_IN - 0.3, R - 0.05,
                            ANT_SECTOR_MID, ANT_SECTOR_ARC + 6.0)
+# FORBIDS POURS AND VIAS, NOT TRACKS AND PADS. What an inverted-L monopole
+# needs is its COUNTERPOISE removed - the ground and VDD planes, and any via
+# stitching them - from under the radiating element. Forbidding tracks and
+# pads as well was tried and reported 100 items_not_allowed against the NFC
+# winding, which necessarily crosses this sector on its way round the board
+# and is 13.56 MHz copper that does not behave as a 2.4 GHz counterpoise.
+# WHAT DOES CROSS HERE IS A REAL COUPLING QUESTION AND IT IS ce-rf's: the NFC
+# coil on B.Cu and BT1's positive contact land both sit under this sector and
+# neither can move. They are in the model, not designed out.
 b.keepout(outline=ANT_CLEAR, layers=["In1.Cu", "In2.Cu", "B.Cu"],
-          tracks=True, vias=True, pads=True, pours=True, footprints=False,
+          tracks=False, vias=True, pads=False, pours=True, footprints=False,
           scope="board", name="antenna-ground-clearance",
           why="No ground plane, no inner copper and no bottom copper under "
               "the 2.4 GHz element. An inverted-F over its own ground plane "
@@ -287,89 +317,148 @@ PLACE = [
     ("U1", "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
      0.0, 0.0, 0.0, "bottom"),
     ("U3", "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm",
-     6.6, 200.0, 20.0, "bottom"),
-    ("U2", "Package_LGA:LGA-12_2x2mm_P0.5mm", 6.4, 260.0, 0.0, "bottom"),
-    ("X2", "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm", 6.2, 315.0, 45.0,
+     7.9, 197.0, 17.0, "bottom"),
+    ("U2", "Package_LGA:LGA-12_2x2mm_P0.5mm", 7.6, 262.0, 0.0, "bottom"),
+    ("X2", "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm", 7.4, 330.0, 60.0,
      "bottom"),
-    ("X1", "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm", 7.6, 155.0, 65.0,
+    ("X1", "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm", 7.6, 148.0, 58.0,
      "bottom"),
-    ("L1", "Inductor_SMD:L_0603_1608Metric", 5.4, 40.0, 40.0, "bottom"),
+    ("L1", "Inductor_SMD:L_0603_1608Metric", 7.3, 40.0, 40.0, "bottom"),
     # the CR2032's three lands: its own pads are already at r = 11.6
     ("BT1", "halo:HALO_BATT_CONTACT_3PAD", 0.0, 0.0, 0.0, "bottom"),
     # bulk, 0402, on the bottom where 0.55 mm still fits under 0.578 mm
-    ("C9", "Capacitor_SMD:C_0402_1005Metric", 8.9, 30.0, 120.0, "bottom"),
-    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.9, 55.0, 145.0, "bottom"),
+    ("C9", "Capacitor_SMD:C_0402_1005Metric", 8.9, 340.0, 70.0, "bottom"),
+    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.9, 300.0, 30.0, "bottom"),
     ("C11", "Capacitor_SMD:C_0402_1005Metric", 8.9, 170.0, 80.0, "bottom"),
-    ("C12", "Capacitor_SMD:C_0402_1005Metric", 8.9, 285.0, 15.0, "bottom"),
+    ("C12", "Capacitor_SMD:C_0402_1005Metric", 8.9, 235.0, 325.0, "bottom"),
     # SWD pads and the UWB stub, top face, out of the bender's circle
-    ("J1", "Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical",
-     0.0, 0.0, 0.0, "top"),
-    ("J2", "halo:HALO_CASTELLATED_1x08_P1.00", 12.55, 180.0, 90.0, "top"),
+    # The Tag-Connect went here first and did not fit - 80 mm2 with two NPTH
+    # through the SoC's pads. See footprints.swd_pads().
+    ("J1", "halo:HALO_SWD_PADS_1x06_P1.27", 9.60, 312.0, 42.0, "top"),
+    ("J2", "halo:HALO_UWB_LANDS_1x08_P1.00", 11.10, 180.0, 90.0, "top"),
     # The three etched "parts". Their footprints are generated by
     # footprints.py from computed geometry, and they are placed with
     # anchor="origin" because their origin IS their feed point - a courtyard
     # centre is meaningless for an 84-degree arc.
-    ("AE1", "halo:HALO_ANT_2G4_MONOPOLE", 0.0, 0.0, -16.0, "top"),
-    ("AE2", "halo:HALO_NFC_COIL_3T", 0.0, 0.0, -112.0, "bottom"),
-    ("LS1", "halo:HALO_PIEZO_LEADS_2", 9.40, 100.0, 10.0, "top"),
+    ("AE1", "halo:HALO_ANT_2G4_FEED", fpg.ANT_R, ANT_FEED_DEG, 0.0,
+     "top"),
+    # KiCad's own net tie, placed where the two halves of the winding
+    # meet. See footprints.py for why the coil is not a footprint.
+    ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", fpg.NFC_R_OUT,
+     NFC_TIE_DEG, NFC_TIE_DEG + 90.0, "bottom"),
+    ("LS1", "halo:HALO_PIEZO_LEADS_2", 10.30, 118.0, 28.0, "top"),
 ]
 
 #: Parts whose footprint origin is the feature, not the centre of a body.
-ANCHOR_ORIGIN = {"AE1", "AE2", "BT1"}
+ANCHOR_ORIGIN = {"BT1"}
 
-# The 0201 passives. Each is placed where its job is, not where there is
-# room: decoupling at its VDD pin, the RF chain in a straight line from
-# pin 31 to the feed, the NFC tuning at pins 3/4, the pull-ups at their bus.
-# (r, deg, rot, side) — every one on the TOP face at 0.33 mm, which is the
-# only class of part that fits inside Ø21.2.
+# ---------------------------------------------------------------------------
+# THE 0201 PASSIVES, LAID OUT ON STREETS
+# ---------------------------------------------------------------------------
+# Hand-tuned polar coordinates were tried first and the DRC found 70 shorting
+# pads: a C_0201_0603Metric is 1.09 mm across its two lands, so two of them
+# 1.17 mm apart on the same arc OVERLAP, and by eye they look nicely spaced.
+# A number nobody computed is a number nobody checked.
+#
+# So the passives are placed on radial STREETS instead. Each street is an
+# angle; parts step outward along it by a fixed PITCH that is larger than the
+# longest 0201 land pattern plus a courtyard. Streets that share a radius
+# band are kept far enough apart in angle that their arc separation at the
+# INNERMOST shared radius still clears - which is the case that bites,
+# because arc length shrinks with radius and the eye does not notice.
+STREET_PITCH = 1.60        # mm between parts along a street. A 0201 land
+                           # pattern is 1.09 mm end to end and its courtyard
+                           # is 1.29 mm; 1.60 leaves 0.31 mm of air.
+                           # MIN_ARC_SEP was 1.40 first and the DRC still
+                           # found two pairs at 0.1209 mm against a 0.127 mm
+                           # rule - a courtyard is not a clearance, and 1.58
+                           # is what actually clears.
+MIN_ARC_SEP = 1.58         # mm between neighbouring streets, at the smallest
+                           # radius they both occupy
+
 C0201 = "Capacitor_SMD:C_0201_0603Metric"
 R0201 = "Resistor_SMD:R_0201_0603Metric"
 L0201 = "Inductor_SMD:L_0201_0603Metric"
-SMALL = [
-    # decoupling, one per VDD pin, directly opposite the pin through a via
-    ("C1", C0201, 4.10, 118.0, 28.0, "top"),
-    ("C2", C0201, 4.10, 208.0, 118.0, "top"),
-    ("C3", C0201, 4.10, 298.0, 28.0, "top"),
-    ("C4", C0201, 4.10, 28.0, 118.0, "top"),
-    # DC/DC reservoir, beside L1
-    ("C5", C0201, 6.10, 33.0, 33.0, "top"),
-    ("C6", C0201, 6.10, 47.0, 47.0, "top"),
-    ("C7", C0201, 6.90, 40.0, 40.0, "top"),
-    ("C8", C0201, 5.60, 340.0, 70.0, "top"),
-    # cell-removal sense
-    ("R1", R0201, 9.60, 205.0, 25.0, "top"),
-    ("R2", R0201, 9.60, 215.0, 35.0, "top"),
-    ("C13", C0201, 9.60, 225.0, 45.0, "top"),
-    # crystal load caps, DNP, beside their crystals
-    ("C14", C0201, 9.30, 148.0, 58.0, "top"),
-    ("C15", C0201, 9.30, 162.0, 72.0, "top"),
-    ("C16", C0201, 8.10, 308.0, 38.0, "top"),
-    ("C17", C0201, 8.10, 322.0, 52.0, "top"),
-    # the RF chain: a straight run from pin 31 out to the feed at 60 deg
-    ("L2", L0201, 4.60, 60.0, 150.0, "top"),
-    ("C23", C0201, 5.20, 52.0, 52.0, "top"),
-    ("L3", L0201, 5.60, 60.0, 150.0, "top"),
-    ("C18", C0201, 6.20, 52.0, 52.0, "top"),
-    ("L4", L0201, 6.60, 60.0, 150.0, "top"),
-    ("C19", C0201, 7.20, 52.0, 52.0, "top"),
-    ("C22", C0201, 7.80, 52.0, 52.0, "top"),
-    ("C20", C0201, 7.60, 68.0, 68.0, "top"),
-    ("L10", L0201, 8.30, 60.0, 150.0, "top"),
-    ("C21", C0201, 8.90, 68.0, 68.0, "top"),
-    # NFC tuning, at pins 3/4
-    ("C24", C0201, 5.00, 145.0, 55.0, "top"),
-    ("C25", C0201, 5.00, 132.0, 42.0, "top"),
-    # flash straps and I2C pull-ups
-    ("R3", R0201, 8.60, 192.0, 12.0, "top"),
-    ("R4", R0201, 8.60, 183.0, 3.0, "top"),
-    ("R5", R0201, 8.40, 253.0, 73.0, "top"),
-    ("R6", R0201, 8.40, 244.0, 64.0, "top"),
-    ("R7", R0201, 8.40, 268.0, 88.0, "top"),
-    ("R8", R0201, 8.40, 277.0, 97.0, "top"),
-    # piezo damping and nRESET pull-up
-    ("R9", R0201, 6.60, 100.0, 10.0, "top"),
-    ("R10", R0201, 6.60, 285.0, 15.0, "top"),
+
+#: (angle, first radius, [(ref, footprint), ...]). The order along a street
+#: is the order of the signal, not alphabetical - the RF ladder runs outward
+#: from the SoC pin to the antenna feed, which is also how the current goes.
+STREETS = [
+    # -- the RF ladder. Series parts on one street, shunts on the next, so
+    #    every shunt sits beside the node it shunts.
+    (62.0, 4.70, [("L2", L0201), ("L3", L0201), ("L4", L0201),
+                  ("L10", L0201)]),
+    (84.0, 4.70, [("C23", C0201), ("C18", C0201), ("C19", C0201),
+                  ("C22", C0201)]),
+    (104.0, 6.30, [("C20", C0201), ("C21", C0201)]),
+    # -- decoupling, one per VDD pin, around the SoC
+    (20.0, 4.70, [("C4", C0201), ("C9x", None)][:1]),
+    (130.0, 4.70, [("C1", C0201)]),
+    (200.0, 4.70, [("C2", C0201)]),
+    (310.0, 4.70, [("C3", C0201)]),
+    # -- the DC/DC node, beside L1 at 40 deg on the bottom
+    (40.0, 4.70, [("C5", C0201), ("C6", C0201), ("C7", C0201)]),
+    (330.0, 4.70, [("C8", C0201)]),
+    # -- NFC tuning, at pins 3/4
+    (150.0, 4.70, [("C24", C0201), ("C25", C0201)]),
+    # -- crystal load caps, DNP, out near their crystals
+    (160.0, 6.40, [("C14", C0201), ("C15", C0201)]),
+    (285.0, 6.40, [("C16", C0201), ("C17", C0201)]),
+    # -- flash straps
+    (176.0, 4.70, [("R3", R0201), ("R4", R0201)]),
+    # -- the accelerometer's straps and its bus pull-ups
+    (255.0, 4.70, [("R5", R0201), ("R6", R0201)]),
+    (275.0, 4.70, [("R7", R0201), ("R8", R0201)]),
+    # -- cell-removal sense
+    (215.0, 7.90, [("R1", R0201), ("R2", R0201), ("C13", C0201)]),
+    # -- piezo damping and the reset pull-up
+    (118.0, 7.90, [("R9", R0201)]),
+    (345.0, 6.30, [("R10", R0201)]),
 ]
+
+SMALL = []
+for ang, r0, items in STREETS:
+    for k, (ref, fp) in enumerate(items):
+        if fp is None:
+            continue
+        SMALL.append((ref, fp, r0 + k * STREET_PITCH, ang, ang - 90.0, "top"))
+
+
+def check_street_separation():
+    """Refuse a layout whose streets cannot clear, BEFORE placing anything.
+
+    This is the check that would have caught the 70 shorting pads, and it
+    costs nothing to run. It compares every pair of streets whose radius
+    bands overlap and measures their arc separation at the smallest radius
+    they share - the worst case, and the one the eye is worst at.
+    """
+    bands = []
+    for ang, r0, items in STREETS:
+        n = len([1 for _, fp in items if fp])
+        if n:
+            bands.append((ang, r0, r0 + (n - 1) * STREET_PITCH))
+    bad = []
+    for i, (a1, lo1, hi1) in enumerate(bands):
+        for a2, lo2, hi2 in bands[i + 1:]:
+            lo, hi = max(lo1, lo2), min(hi1, hi2)
+            if lo > hi:
+                continue                      # the bands do not overlap
+            d = abs(a1 - a2) % 360.0
+            d = min(d, 360.0 - d)
+            sep = math.radians(d) * lo
+            if sep < MIN_ARC_SEP:
+                bad.append((a1, a2, lo, sep))
+    return bad
+
+
+_bad = check_street_separation()
+if _bad:
+    raise SystemExit(
+        "REFUSED: %d street pairs are closer than %.2f mm at the radius they "
+        "share, which is how 0201 land patterns end up overlapping:\n%s"
+        % (len(_bad), MIN_ARC_SEP,
+           "\n".join("  %5.1f deg vs %5.1f deg: %.2f mm at r=%.2f"
+                      % (a1, a2, sep, lo) for a1, a2, lo, sep in _bad)))
 
 placed, skipped = [], []
 for ref, fpid, r, deg, rot, side in PLACE + SMALL:
@@ -439,32 +528,110 @@ def arc_track(net, r, a0, a1, width, layer, steps=40):
     return b.track(net, pts, width=width, layer=layer)
 
 
-# The antenna and the coil are PLACED FOOTPRINTS now (see PLACE above), not
-# loose tracks: a track carries a net but not a land pattern, so it never
-# reaches the pick-and-place, never appears in `bin/sch check`'s compare, and
-# cannot be dropped into somebody else's board - which is GOAL.md deliverable
-# 2. footprints.py draws both from computed geometry.
+# ==========================================================================
+# 6b. THE ETCHED COPPER, AS TRACKS
+# ==========================================================================
+# Tracks, not footprint copper. footprints.py records the two constructs that
+# failed first and KiCad's own words for why the second of them is refused:
+# "custom pad shape must resolve to a single polygon". A track is arbitrary
+# in shape, carries a net, plots as copper and is understood by the DRC.
+
+# -- AE1: the bent quarter-wave monopole ----------------------------------
+ANT_ARC_DEG_WANT = math.degrees(fpg.QUARTER_MM / fpg.ANT_R)
+ANT_ARC_DEG = min(ANT_ARC_DEG_WANT, fpg.ANT_ARC_MAX_DEG)
+ANT_ARC_MM = math.radians(ANT_ARC_DEG) * fpg.ANT_R
+ANT_TAIL_MM = max(0.0, fpg.QUARTER_MM - ANT_ARC_MM)
+
+arc_track("ANT_FEED", fpg.ANT_R, ANT_FEED_DEG, ANT_FEED_DEG + ANT_ARC_DEG,
+          fpg.ANT_W, "F.Cu", steps=72)
+if ANT_TAIL_MM > 0.05:
+    _a = ANT_FEED_DEG + ANT_ARC_DEG
+    b.track("ANT_FEED",
+            [at_r(fpg.ANT_R, _a), at_r(fpg.ANT_R - ANT_TAIL_MM, _a)],
+            width=fpg.ANT_W, layer="F.Cu")
+
+# -- AE2: the NFC winding, one half on each net ---------------------------
+# Three turns from NFC_A0 round to NFC_A1, spiralling inward, cut in half at
+# the net tie. The tie is a real part on the board, so the DRC sees a legal
+# junction between two nets rather than a short.
+NFC_A0, NFC_A1 = 20.0, 340.0
+_turn = []
+for _t in range(fpg.NFC_TURNS):
+    _rr = fpg.NFC_R_OUT - _t * (fpg.NFC_W + fpg.NFC_GAP)
+    _turn.append((_rr, NFC_A0 + _t * 4.0, NFC_A1 - _t * 4.0))
+_half = len(_turn) // 2 or 1
+for _i, (_rr, _a0, _a1) in enumerate(_turn):
+    _net = "NFC1" if _i < _half else "NFC2"
+    arc_track(_net, _rr, _a0, _a1, fpg.NFC_W, "B.Cu", steps=120)
+    if _i + 1 < len(_turn):
+        _rn = fpg.NFC_R_OUT - (_i + 1) * (fpg.NFC_W + fpg.NFC_GAP)
+        _nx = "NFC1" if _i + 1 < _half else "NFC2"
+        if _nx == _net:
+            b.track(_net, [at_r(_rr, _a0), at_r(_rn, _a0 + 4.0)],
+                    width=fpg.NFC_W, layer="B.Cu")
 
 # ==========================================================================
 # 7. THE PLANES
 # ==========================================================================
-b.pour("GND", "In1.Cu",
+# THE POURS ARE INSET FROM THE EDGE. Handed the board outline, KiCad fills
+# to it and then reports every pad and every graphic near the rim as a
+# copper-edge-clearance violation - 199 of them on the first run, which is
+# not 199 mistakes, it is one. The inset is 0.35 mm: 0.25 mm is JLCPCB's
+# copper-to-edge minimum and 0.10 mm is margin for the routing bit.
+POUR_OUTLINE = [at_r(rr - 0.35 if rr > 12.9 else rr - 0.35, dd)
+                for rr, dd in
+                [(math.hypot(x - CX, y - CY),
+                  math.degrees(math.atan2(y - CY, x - CX)))
+                 for x, y in b.outline]]
+
+b.pour("GND", "In1.Cu", outline=POUR_OUTLINE,
        why="The uninterrupted return path under every signal. On a 26 mm "
            "disc there is no room to run a ground trunk around a QFN-48's "
            "four sides and still escape the signals; the plane is what buys "
            "the escape. Cleared under the antenna by the rule area above.")
-b.pour("VDD", "In2.Cu",
+b.pour("VDD", "In2.Cu", outline=POUR_OUTLINE,
        why="The cell's rail as a plane rather than a trace. A CR2032 at end "
            "of life has ohms of internal resistance and the board must not "
            "add any: a plane is the lowest-impedance path from the contact "
            "lands to five VDD pins and four bulk capacitors.")
-b.pour("GND", "F.Cu",
+b.pour("GND", "F.Cu", outline=POUR_OUTLINE,
        why="Top-side fill, for the RF ground the matching network's shunt "
            "capacitors return into and for the inverted-F's counterpoise.")
-b.pour("GND", "B.Cu",
+b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
        why="Bottom-side fill under the actives, and the shield between the "
            "circuit and the cell can 0.578 mm below it.")
 
+
+
+# SOLID PAD CONNECTIONS, not thermal spokes. KiCad's default is four spokes
+# per pad, and on a 0201 land 0.40 mm across there is no room for a spoke
+# wider than the zone's own minimum - which KiCad reports, correctly, as a
+# starved thermal. There is also no reflow argument for spokes here: every
+# part on this board is a chip passive or a leadless package on a 0.6 mm
+# four-layer board, none of them a thermal mass a spoke would protect.
+import pcbnew as _pcbnew
+for _z in b._pcb.Zones():
+    _z.SetPadConnection(_pcbnew.ZONE_CONNECTION_FULL)
+    # ISLANDS ARE REMOVED, not left and reported. A pour on a crowded 26 mm
+    # disc strands little pockets of copper that touch nothing; KiCad calls
+    # them isolated_copper and it is right - unconnected copper is an
+    # antenna nobody designed. Removing them is the fix; silencing the check
+    # would not be.
+    _z.SetIslandRemovalMode(_pcbnew.ISLAND_REMOVAL_MODE_ALWAYS)
+
+
+# ---------------------------------------------------------------------------
+# SILKSCREEN OFF, and it is a decision rather than a tidy-up. 51 reference
+# designators do not fit on a Ø26 mm disc: KiCad's DRC reported 45 of them
+# over copper and 7 overlapping each other, and every one was true. A
+# designator printed on top of another designator identifies nothing. The
+# assembly house works from the pick-and-place file, and the F.Fab / B.Fab
+# layers still carry every reference for the fabrication drawing, where
+# there is room for them.
+# ---------------------------------------------------------------------------
+for _fp in b._pcb.GetFootprints():
+    _fp.Reference().SetVisible(False)
+    _fp.Value().SetVisible(False)
 
 
 # ==========================================================================
@@ -485,10 +652,9 @@ BODY_H = {
     "C_0201_0603Metric": (0.33, "0201 MLCC"),
     "R_0201_0603Metric": (0.33, "0201 thick film"),
     "L_0201_0603Metric": (0.33, "0201 wirewound RF inductor"),
-    "Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical": (0.00, "PADS ONLY, no "
-                                                              "connector"),
+    "HALO_SWD_PADS_1x06_P1.27": (0.00, "PADS ONLY, no connector"),
+    "HALO_UWB_LANDS_1x08_P1.00": (0.00, "PADS ONLY, not fitted"),
     "HALO_BATT_CONTACT_3PAD": (0.00, "solder lands, no body"),
-    "HALO_CASTELLATED_1x08_P1.00": (0.00, "plated half-vias, no body"),
     "HALO_ANT_2G4_MONOPOLE": (0.00, "etched copper"),
     "HALO_NFC_COIL_3T": (0.00, "etched copper"),
     "HALO_PIEZO_LEADS_2": (0.00, "solder lands; the bender is on the shell"),
@@ -681,8 +847,78 @@ def report():
         _json.dump(ko, fh, indent=1, default=str)
 
 
+# ==========================================================================
+# 9. THE FAB RULES THE PROJECT FILE DOES NOT CARRY
+# ==========================================================================
+# `Board.rules()` writes clearance, track, via and hole rules. It does not
+# write board-edge clearance or the solder-mask constraints, so KiCad falls
+# back to ITS defaults - and a default is not a decision anybody made.
+#
+# THIS IS THE TRAP THE FACTORY LANE WARNED ABOUT and it caught us: the DRC
+# reported "board setup constraints edge clearance 0.5000 mm; actual 0.3478"
+# while this file's own report named JLCPCB's process. The rule that fired
+# was not the rule the report named. So both are written explicitly below,
+# each with the fab number it comes from, and `verify_rules()` reads the
+# project file BACK and prints what the DRC will actually use.
+FAB_RULES = {
+    # JLCPCB "Min. board outline to copper": 0.2 mm for a routed edge. 0.30
+    # is used - 0.2 plus 0.1 of margin for the routing bit's tolerance on a
+    # 26 mm disc with three notches, where the cutter changes direction
+    # inside the copper's blind spot.
+    "min_copper_edge_clearance": 0.30,
+    # SOLDER MASK: the web between two adjacent lands on a 0.4 mm pitch QFN
+    # is about 0.2 mm and on an 0201 about 0.3 mm. KiCad's default asks for a
+    # web it cannot have there and reported 23 "solder mask aperture bridges
+    # items with different nets". That is TRUE and it is also NORMAL: at
+    # 0.4 mm pitch the fab uses mask-defined openings and does not attempt a
+    # web at all. Setting the minimum to 0 records that the apertures are
+    # deliberately merged; it does not switch off the copper clearance check,
+    # which is the one that would catch a real short.
+    "solder_mask_min_width": 0.0,
+    "solder_mask_to_copper_clearance": 0.0,
+}
+
+
+def write_fab_rules(pcb_path):
+    import json as _j
+    pro = os.path.splitext(pcb_path)[0] + ".kicad_pro"
+    with open(pro) as fh:
+        doc = _j.load(fh)
+    doc.setdefault("board", {}).setdefault("design_settings", {}) \
+       .setdefault("rules", {}).update(FAB_RULES)
+    with open(pro, "w") as fh:
+        _j.dump(doc, fh, indent=2)
+    return pro
+
+
+def verify_rules(pcb_path):
+    """Read the project file BACK and print the rules the DRC will use.
+
+    Not a formality. A rule this script believes it set, that is not in the
+    file the DRC reads, is exactly the failure the edge-clearance default
+    already caused once here.
+    """
+    import json as _j
+    pro = os.path.splitext(pcb_path)[0] + ".kicad_pro"
+    with open(pro) as fh:
+        doc = _j.load(fh)
+    r = doc["board"]["design_settings"]["rules"]
+    nc = doc.get("net_settings", {}).get("classes", [{}])[0]
+    print("\n--- the rules the DRC will actually apply ---")
+    for k in sorted(set(list(r) + ["clearance", "track_width"])):
+        v = r.get(k, nc.get(k))
+        print("  %-34s %s" % (k, v))
+    missing = [k for k in FAB_RULES if k not in r]
+    print("  written and read back: %d of %d%s"
+          % (len(FAB_RULES) - len(missing), len(FAB_RULES),
+             "" if not missing else "   MISSING: " + ", ".join(missing)))
+    return not missing
+
+
 if __name__ == "__main__":
     b.fill_zones()
     path = b.save(OUT)
+    write_fab_rules(path)
     report()
+    verify_rules(path)
     print("\nwrote", path)

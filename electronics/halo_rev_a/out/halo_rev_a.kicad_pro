@@ -6,7 +6,10 @@
         "min_track_width": 0.127,
         "min_hole_clearance": 0.2,
         "min_through_hole_diameter": 0.25,
-        "min_via_diameter": 0.45
+        "min_via_diameter": 0.45,
+        "min_copper_edge_clearance": 0.3,
+        "solder_mask_min_width": 0.0,
+        "solder_mask_to_copper_clearance": 0.0
       }
     }
   },

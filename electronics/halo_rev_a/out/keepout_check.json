@@ -38,12 +38,7 @@
     "In2.Cu",
     "B.Cu"
    ],
-   "forbids": [
-    "tracks",
-    "vias",
-    "pads",
-    "pours"
-   ],
+   "forbids": [],
    "scope": "host",
    "contained_in_board": false,
    "area_mm2": 1093.081,
@@ -63,9 +58,7 @@
     "B.Cu"
    ],
    "forbids": [
-    "tracks",
     "vias",
-    "pads",
     "pours"
    ],
    "scope": "host",
