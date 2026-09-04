@@ -47,6 +47,12 @@ The eight assertions, each with the sentence it defeats:
   R8 protected_length_preserved  could PASS while every segment matched a
                                  neighbour and the conductor still came back
                                  a different length
+  R9 antenna_arm_not_shadowed    could PASS while the router ran a signal
+                                 track UNDER the 2.4 GHz arm on an inner
+                                 layer. The board's own keep-out forbids
+                                 pours and vias there and ALLOWS TRACKS, so
+                                 this is a hole a router walks straight
+                                 through, and it costs 668 MHz
   R2 protected_vias_identical    the same, for the vias inside those nets
   R3 unconnected_improved        could PASS while the router achieved nothing
                                  and the import silently wrote the old board
@@ -201,6 +207,47 @@ def _match(seg, pool, tol):
         if bestd is None or d < bestd:
             best, bestd = c, d
     return (best, bestd) if (bestd is not None and bestd <= tol) else (None, bestd)
+
+
+#: The smallest in-plane gap between the 2.4 GHz arm and foreign copper that
+#: lane T3 has actually solved and found acceptable: the Ø25.2 mm NFC coil at
+#: 0.30 mm from the arm resonates at 2.4321 GHz, in band. The same coil placed
+#: UNDER the arm drags it to 1.7666 GHz — a 668 MHz shift T3 states is not
+#: recoverable by tuning. So 0.30 mm is a MEASURED floor, not a guess, and
+#: anything closer than it has never been solved.
+ANT_MIN_GAP_MM = 0.30
+
+#: The antenna's OWN conductors. schematic.py:487-490,517 gives the chain
+#: U1.31 -> RF_ANT -> RF_A -> RF_B -> RF_50 -> L10 -> ANT_FEED -> AE1.1: the
+#: pi/L matching network arrives AT the feed, so its copper is near the arm by
+#: construction and counting it as an intruder makes this check cry wolf on
+#: the one board it was written for. ce-rf's own model draws the same line —
+#: "the feed tap and any copper past the short are NOT in" the resonant arm.
+#: Everything not on this list is foreign copper and is graded.
+ANT_OWN_NETS = ("ANT_FEED", "RF_ANT", "RF_A", "RF_B", "RF_50")
+ANT_GAP_WHY = ("lane T3, 2026-09-05: the Ø25.2 mm coil at a 0.30 mm gap solves "
+               "to 2.4321 GHz in band; the same coil under the arm solves to "
+               "1.7666 GHz, a 668 MHz shift that is not recoverable by tuning")
+
+
+def _seg_seg_mm(a, b):
+    """Minimum distance between two 2-D segments, in mm. Plan view, any layer.
+
+    Plan view on purpose. Coupling between the arm and copper beneath it is
+    vertical through 0.6 mm of FR4; a check that only looked at the same layer
+    would miss exactly the case that costs 668 MHz.
+    """
+    def d_pt_seg(px, py, x0, y0, x1, y1):
+        dx, dy = x1 - x0, y1 - y0
+        L2 = dx * dx + dy * dy
+        if L2 == 0:
+            return ((px - x0) ** 2 + (py - y0) ** 2) ** 0.5
+        u = max(0.0, min(1.0, ((px - x0) * dx + (py - y0) * dy) / L2))
+        return ((px - x0 - u * dx) ** 2 + (py - y0 - u * dy) ** 2) ** 0.5
+    return min(d_pt_seg(a[0], a[1], b[0], b[1], b[2], b[3]),
+               d_pt_seg(a[2], a[3], b[0], b[1], b[2], b[3]),
+               d_pt_seg(b[0], b[1], a[0], a[1], a[2], a[3]),
+               d_pt_seg(b[2], b[3], a[0], a[1], a[2], a[3]))
 
 
 def _seglen(s):
@@ -412,6 +459,56 @@ def main():
                     "it, so KiCad used its own default netclass and the two "
                     "DRC numbers are not comparable",
                     PASS if same else CD))
+
+    # ---- R9 antenna_arm_not_shadowed ------------------------------------
+    arm = list(as_.get("ANT_FEED", frozenset()))
+    if not arm:
+        rows.append(row("antenna_arm_not_shadowed", None, {},
+                        "no ANT_FEED copper on the routed board, so there is no "
+                        "arm to shadow — and a board that lost its antenna is a "
+                        "different problem, which R1 grades", CD, "mm"))
+    else:
+        worstd, offender = None, None
+        av_ = vias(at)
+        per_net = {}
+        for net, segs in as_.items():
+            if net in ANT_OWN_NETS or net == "":
+                continue
+            for s in segs:
+                for aseg in arm:
+                    d = _seg_seg_mm(s, aseg) - (s[4] or 0) / 2.0 - (aseg[4] or 0) / 2.0
+                    if worstd is None or d < worstd:
+                        worstd, offender = d, (net, s[5], round(s[0], 3), round(s[1], 3))
+                    if net not in per_net or d < per_net[net]:
+                        per_net[net] = d
+        for net, vs in av_.items():
+            if net in ANT_OWN_NETS:
+                continue
+            for v in vs:
+                for aseg in arm:
+                    d = (_seg_seg_mm((v[0], v[1], v[0], v[1]), aseg)
+                         - (v[2] or 0) / 2.0 - (aseg[4] or 0) / 2.0)
+                    if worstd is None or d < worstd:
+                        worstd, offender = d, (net + " (via)", "all", round(v[0], 3), round(v[1], 3))
+                    if net not in per_net or d < per_net[net]:
+                        per_net[net] = d
+        ok = worstd is not None and worstd >= ANT_MIN_GAP_MM
+        rows.append(row("antenna_arm_not_shadowed", round(worstd, 4),
+                        {"gte": ANT_MIN_GAP_MM},
+                        (f"the closest foreign copper to the 2.4 GHz arm, IN PLAN "
+                         f"VIEW ACROSS ALL LAYERS, is {worstd:.4f} mm — net "
+                         f"{offender[0]} on {offender[1]} at ({offender[2]}, "
+                         f"{offender[3]}). Floor is {ANT_MIN_GAP_MM} mm: {ANT_GAP_WHY}")
+                        if ok else
+                        (f"COPPER IS SHADOWING THE 2.4 GHz ARM at {worstd:.4f} mm, "
+                         f"under the {ANT_MIN_GAP_MM} mm floor: net {offender[0]} on "
+                         f"{offender[1]} at ({offender[2]}, {offender[3]}). The "
+                         f"board's own keep-out forbids pours and vias in the "
+                         f"antenna sector and ALLOWS TRACKS, so a router walks "
+                         f"straight through it. {ANT_GAP_WHY}. Closest per net: "
+                         + ", ".join("%s %+.4f" % (n, d) for n, d in
+                                     sorted(per_net.items(), key=lambda kv: kv[1])[:5])),
+                        PASS if ok else FAIL, "mm"))
 
     verdict = max((r["verdict"] for r in rows), key=lambda v: RANK[v])
     counts = {v: sum(1 for r in rows if r["verdict"] == v)
