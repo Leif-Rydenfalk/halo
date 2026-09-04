@@ -120,6 +120,55 @@ Two traps it hit on its own first run, both worth knowing:
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
 
+## The other direction: a capability declared ABSENT because the probe looked in the wrong place
+
+*Added 2026-09-05 by lane B1, correcting lane B1, after the coordinator
+measured the thing I had asserted.*
+
+Everything above is a tool reporting success it had not earned. This is the
+mirror image, and it is on the same page because **it is the same defect and it
+costs the same night's work.**
+
+I reported, in `STATUS.md`, in the factory pack's README and in a published
+changelog entry, that **"there is no autorouter on this machine."** My evidence
+was two commands:
+
+```
+java -version                       -> "Unable to locate a Java Runtime"
+find ~/dev/ce-workshop -iname "*freerouting*"   -> nothing
+```
+
+Both outputs were real. Both conclusions were wrong.
+
+- `/usr/bin/java` on macOS is **Apple's stub**, whose entire job is to print
+  that sentence. Homebrew's openjdk is **keg-only** — deliberately not on
+  `PATH`. `/opt/homebrew/opt/openjdk/bin/java -version` answers
+  **openjdk 26.0.2.1**.
+- The jar is not in the workshop tree because it is not workshop source. It
+  lives at `~/.local/share/freerouting/freerouting-2.3.0.jar`, which is exactly
+  where `cepcb.route.JAR_CANDIDATES` says to look — **the code I was about to
+  give up on already documented the answer.**
+
+**`ce-pcb/bin/route --doctor` exits 0 and prints five rows**, one of which reads
+`jar runs → Freerouting v2.3.0 (build-date: 2026-08-07)`. That row exists
+*precisely because a path is not a running program*, and it was green the whole
+time. It was one command away and I did not run it.
+
+**The rule.** A false negative and a false positive are the same failure of
+method: a verdict inferred from a probe that was never shown to be able to
+answer the question. Before reporting a capability ABSENT, ask **the tool that
+owns it** — `--doctor`, `--selftest`, `health`, whatever that project's own
+entry point is — and quote its answer. A generic probe (`which`, `java
+-version`, a `find` rooted where you happened to be standing) is evidence about
+*your search*, not about the machine. And the absence has to clear the same bar
+as the presence: *"I could not find it"* is CANNOT DETERMINE, and I published it
+as FAIL.
+
+The tell, in hindsight: I wrote **"there is no autorouter"** and cited a
+`find` over a single directory. If a claim's evidence is the *absence* of
+output, name the places you looked and say the claim is bounded by them — or go
+and ask the owner.
+
 ## 7 · `>=` is not `==`, and a tool's own flags can blind its own probe
 
 *Added 2026-09-05, from the drill-count and liveness incidents above.*

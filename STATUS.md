@@ -69,10 +69,21 @@ verified; artifact 3 (BOM) PARTIAL for sourcing reasons only.
 unconnected items** across 38 nets, VDD alone accounting for 28. Each of the
 three warnings is named with its net, layer and free end in
 `out/release/board/README.md` §5.1; one of them (`ANT_FEED`) is the antenna's
-open tip and is correct. **The board is part-routed and there is no
-autorouter on this machine** — freerouting is a Java program and
-`java -version` answers *"Unable to locate a Java Runtime"* (measured
-2026-09-05; installing one is lane T1's item). **Do not fabricate.**
+open tip and is correct.
+
+**CORRECTION, same session: the autorouter exists and runs.** Lane B1 first
+reported "there is no autorouter on this machine" on the strength of
+`java -version` failing and a `find` over `~/dev/ce-workshop` returning
+nothing. Both outputs were real and both conclusions were wrong:
+`/usr/bin/java` is Apple's stub, Homebrew's openjdk is keg-only and answers
+**openjdk 26.0.2.1** at `/opt/homebrew/opt/openjdk/bin/java`, and the jar
+lives outside the workshop tree at
+`~/.local/share/freerouting/freerouting-2.3.0.jar`.
+**`ce-pcb/bin/route --doctor` exits 0** and prints
+`jar runs -> Freerouting v2.3.0 (build-date: 2026-08-07)`. Recorded in
+`docs/TOOLS-THAT-LIE.md` as the mirror image of that page: a capability
+declared absent because the probe looked in the wrong place. **Do not
+fabricate until the routing below is finished.**
 
 **The drill blocker is closed by measurement, and it was not closed before.**
 The 02:27 pack carried **50 PTH holes against a board with 49 vias, 0
