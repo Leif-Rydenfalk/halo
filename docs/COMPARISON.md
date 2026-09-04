@@ -1,6 +1,6 @@
 # halo vs the Apple AirTag — every row, side by side
 
-*Generated 2026-09-05 from `spec/comparison.json` by `tools/gen_comparison.py`, at commit `84590c3`. Nothing on this page is hand-typed: halo's parts, prices and stock come out of `spec/bom-resolved.json`, halo's board numbers out of `out/verify/dfm-jlc-4layer.json`, and Apple's side is transcribed from `research/01-airtag-hardware.md` with each confidence tag carried through rather than laundered into fact.*
+*Generated 2026-09-05 from `spec/comparison.json` by `tools/gen_comparison.py`, at commit `38f10e4`. Nothing on this page is hand-typed: halo's parts, prices and stock come out of `spec/bom-resolved.json`, halo's board numbers out of `out/verify/dfm-jlc-4layer.json`, and Apple's side is transcribed from `research/01-airtag-hardware.md` with each confidence tag carried through rather than laundered into fact.*
 
 > create comparisions between the real apple airtag and ours and show me eveyrthing. we must do a detailed pcb comparison and component comparison. first step is recreating it exactly.
 
