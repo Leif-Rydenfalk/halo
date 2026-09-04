@@ -70,3 +70,23 @@ gauge study.
 **Raised by Leif, 2026-09-05, from the renders — which is the failure.** Closed
 by decision D23 (the variant family) and by a dedicated terminal now building the
 part-for-part replica. Recorded in `docs/THE-DRIFT.md`.
+
+### C-4 · A finding I reported to Leif has weakened
+**Raised 2026-09-05.** I told Leif that Apple's NFC coil is wound wire and that
+this dropped the Replica's unbuildable-antenna count from three to two. The
+lane that found it has since **withdrawn its own supporting argument**: the two
+"independent" measurements were measuring the same radial band, because a
+solenoid and a flat spiral look identical from above, so they could not have
+disagreed. What survives is a direct observation that the conductors are
+individually resolved and coplanar, plus a resistance argument that favours NFC.
+
+**Why it is a concern rather than a correction:** the coil's leads land on pads
+this repository attributes to the **voice coil**, while Apple's own arrow labels
+that annulus the **NFC antenna**. Both cannot be true, and the voice-coil
+attribution turns out to be our own assertion rather than a quotation from the
+source. If it is the voice coil, the Replica's gap returns to three antennas and
+what I told Leif was wrong.
+
+**What settles it:** DC resistance across TP1/TP38 on a live unit, or a
+photograph of the front dome's inner face. Neither is available here — this one
+needs a physical AirTag.

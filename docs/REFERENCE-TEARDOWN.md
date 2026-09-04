@@ -74,7 +74,41 @@ CR2032. Only the U1 is unobtainable. Everything else on this page is buyable tod
 
 ### 2.3 Antennas — all three on one part
 
-**CORRECTED 2026-09-05 — ANT2 is not LDS.** The replica lane measured the front
+**⚠ ANT2 IS OPEN, NOT SETTLED. The supporting argument below was WITHDRAWN by
+its own author on 2026-09-05** (`electronics/halo_replica/evidence/E02-THE-COIL-CORRECTION.md`,
+commit 6d84ac7). The withdrawn part was the strongest-sounding: "a turn count and
+a band width agreeing to 1.4 % with neither fitted to the other". A voice coil is
+a **solenoid**, and seen from above a solenoid and a flat spiral present the
+**same radial band width** — so those were two measurements of one quantity and
+**could not have disagreed**. The count was also wrong: at full resolution the
+per-sector conductor counts are 2, 6, 9, 6 across a 0.998 mm band, so at least 9
+turns at about 111 µm pitch, nearer AWG 38 than AWG 35, and 9 is a lower bound
+because the turns smear when averaged, which itself shows the coil is not
+concentric with the assumed centre.
+
+**What survives, and it is a direct observation rather than an inference:** at
+full resolution the conductors are individually resolved, coplanar and equally
+lit. That is what wound wire looks like. The band geometry is unaffected.
+
+**The unresolved conflict:** the coil's two fine leads terminate on TP1 and TP38,
+and §2.4 of this document calls those the **voice coil's** solder joints, while
+Apple's own arrow in FCC photo 5 labels that annulus the **NFC Antenna**. Both
+cannot be true. Note that the voice-coil attribution for those pads is an
+assertion made inside this repository, not a quotation from O'Flynn — his text
+does not say what they are.
+
+**The physics currently favours NFC:** 9 turns of 111 µm wire on a 10.1 mm mean
+diameter is roughly 286 mm of conductor and about **0.50 Ω**, where a voice coil
+driven by a class-D amplifier into 4–8 Ω needs several ohms — around a hundred
+turns at this gauge, needing a dozen layers of depth and a radial band far wider
+than the 0.727 mm measured. **If it is nonetheless the voice coil, ANT2 returns
+to the laser-structured list and the Replica's gap goes back to three antennas.**
+
+**What would settle it and is not available here:** DC resistance across TP1/TP38
+on a live unit — sub-ohm for a loop against several ohms for a voice coil — or a
+photograph of the front dome's inner face showing whether a coil is glued there.
+
+The measured geometry, which stands regardless: The replica lane measured the front
 photograph and the NFC coil is **wound magnet wire**, not a structured trace:
 individual turns resolve at 2x, the copper band measures 0.727 mm radially, and
 about 5 turns are countable, giving **0.145 mm per turn against AWG 35 magnet

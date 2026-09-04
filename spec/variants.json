@@ -21,7 +21,7 @@
    ],
    "changes": [
     "the U1 ultra-wideband module cannot be bought at any price — the footprint and its feed exist, unpopulated",
-    "Apple's laser-structured antennas need tooling we do not have — but that is TWO of the three, not all three: the NFC coil was measured on 2026-09-05 to be wound magnet wire, about AWG 35 over roughly 5 turns, and is reproducible exactly. The BLE inverted-F and the UWB patch use a flex or an etched carrier, with the difference measured rather than hidden",
+    "Apple's laser-structured antennas need tooling we do not have — and whether that is two of the three or all three is OPEN: the coil at the board's centre is wound wire rather than a structured trace, but whether it is the NFC antenna or the speaker's voice coil is unresolved, because its leads land on pads this repo attributes to the voice coil while Apple's own arrow labels the annulus NFC. The physics favours NFC at about 0.50 ohm against the several ohms a voice coil needs. If it is the voice coil, the gap is three. The BLE inverted-F and the UWB patch use a flex or an etched carrier, with the difference measured rather than hidden",
     "any Apple part that is obsolete or unbuyable is substituted by closest function, each one named"
    ],
    "cannot": [
