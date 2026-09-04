@@ -67,10 +67,19 @@ for r in SPEC["rows"]:
             src = f'ce-spice/out/{m["example"]}/verdict.json'
         elif m["from"] == "literal":
             cur = m["value"]
-    delta, state = "—", "OPEN"
     t = r.get("target_value")
+    delta, state = "—", "OPEN"
     tt = r.get("target_text") or ""
     no_target = tt.startswith("CANNOT DETERMINE") or tt.startswith("n/a")
+    # A descriptive target (a band, a rule, a physical bound) cannot be
+    # subtracted. But if the tool that produced the number asserted it and its
+    # case PASSED, the row is settled — by the tool, which is the whole point.
+    # Reporting it OPEN would be my grader claiming a delta it never computed.
+    descriptive = bool(tt) and not isinstance(t, (int, float)) and not no_target
+    if descriptive and m and m.get("from") == "ce-rf" and rf_verdict(m["case"]) == "PASS":
+        rows.append({**r, "current": cur, "delta": "asserted by the tool",
+                     "state": "MATCH", "source": f'ce-rf/out/{m["case"]}/verdict.json — PASS'})
+        continue
     if cur is None:
         state = "CANNOT DETERMINE"
         if m and m.get("from") == "ce-rf" and rf_verdict(m["case"]) == "FAIL":

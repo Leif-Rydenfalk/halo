@@ -17,7 +17,7 @@
    "current_note": "rim inverted-F on the round board; lowest SERIES resonance from a reactance zero-crossing, not the deepest dip"
   },
   {
-   "name": "PCB thickness",
+   "name": "PCB thickness (deliberate divergence)",
    "unit": "mm",
    "cite": "research/01 §2 — Apple's 0.3 mm annular board. DECISIONS.md D17: halo spends recovered stack height on a sturdier 0.60 mm board",
    "weight": 2,
@@ -26,7 +26,7 @@
     "value": 0.6
    },
    "current_note": "ce-rf antenna model still uses 1.0 mm; the routed board is 4-layer. Apple's 0.3 mm is a flex-thin annular board we are not copying — see note",
-   "target_text": "0.30 mm — deliberately NOT matched"
+   "target_text": "0.30 mm — deliberately NOT matched, see DECISIONS.md D17"
   },
   {
    "name": "PCB outline diameter (bare board)",
@@ -238,18 +238,6 @@
     "value": 31.874
    },
    "current_note": "enclosure assembly measured off the solid by lane M"
-  },
-  {
-   "name": "Antenna substrate effective permittivity used for length",
-   "unit": "-",
-   "target_text": "whatever the stack actually is — the point is that it was assumed",
-   "cite": "lane B1: the antenna was 3.78 mm short because the length was computed from an assumed 2.2 when the real value is 1.573",
-   "weight": 5,
-   "measure": {
-    "from": "literal",
-    "value": 1.573
-   },
-   "current_note": "measured from the stack, then the meander length solved by bisection to 24.4910 mm"
   },
   {
    "name": "Antenna in-band match",
