@@ -304,3 +304,35 @@ Two smaller findings inside that number are worth keeping: the nRF54L05 sleeps
 cent saving, but it ships in a **3,000-piece minimum packet**; and the datasheet
 transmit current is **3.7 mA at 0 dBm**, not the 4.8 mA the first pass assumed,
 which feeds straight into the coin-cell model.
+
+## D16 — the embeddable block ships as a KiCad design block, and the keep-out travels as words (2026-09-04)
+
+GOAL.md deliverable 2 is that anyone can drop halo's circuit into their own board
+in any outline. Lane T5 proved the mechanism and found its one real limit.
+
+**What works, measured.** A KiCad 10 design block is a directory
+`x.kicad_blocks/y.kicad_block/` holding a schematic, **a board fragment** and a
+JSON descriptor. The format was read out of the KiCad library's own error
+strings rather than from documentation, and the decisive sentence is *"Design
+block does not have a schematic or board file"* — the layout is first class. A
+test block carrying 9 footprints and 27 routed segments was applied into a host
+board of a **different outline**, offset in both axes: worst pairwise footprint
+error **0.000000 mm**, rotations unchanged, and the host's own design-rule check
+clean at 0 and 0. So the routed antenna really can travel with the schematic,
+which supersedes lane C's earlier finding that the copper always has to be
+re-laid by hand.
+
+**The limit, and it matters.** A design block carries **no design rules** and
+**no symbol library**. Measured: the fragment's own check reported five clearance
+errors that turn out to be KiCad's 0.2 mm fallback rather than anything the block
+declares. **So halo's antenna keep-out cannot travel inside the block.** It must
+ship as documentation the integrator reads and applies — the Ø37.31 mm region
+with no metal above or below, and lane I's harmonised rule that the antenna end
+sits on the host outline with 16 by 6 mm clear on every layer and ground pour
+with via stitching on the other three sides.
+
+**Decision:** publish the block *and* a one-page integration sheet stating the
+keep-out and the ground requirements, and treat that sheet as part of the
+deliverable rather than as supporting material. A block that places perfect
+copper into a host that then floods ground over the antenna is worse than no
+block at all, because it looks correct.

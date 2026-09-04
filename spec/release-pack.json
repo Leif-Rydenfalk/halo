@@ -14,18 +14,18 @@
    "name": "Gerbers, drill and netlist",
    "name_zh": "Gerber、钻孔与网表",
    "status": "PARTIAL",
-   "reason": "A Ø32 mm four-layer round board builds and exports through KiCad 10.0.6, and the autorouter now runs after a Java runtime was installed. The routed board still shows 7 design-rule violations and 1 unconnected net, so it is not clean yet. It is also a test outline, not the halo circuit.",
-   "evidence": "ce-pcb/out/round32_4layer/round32_4layer-routed.drc.json — violations 7, unconnected 1 (before routing: violations 0, unconnected 12)",
-   "command": "ce-pcb/bin/pcb --cli pcb drc --format json -o out.json <board>.kicad_pcb"
+   "reason": "The pipeline is proven end to end on the real outline: a Ø31.87 mm true circle on the edge layer, four layers with both planes, a nine-via array under the exposed pad, both keep-outs honoured, routed from 11 unconnected to 0 with 0 violations, reproduced three times, exporting a 29-file fabrication set. What it does not yet contain is our circuit — that is the board lane's work, in flight.",
+   "evidence": "ce-pcb/examples/round32_4layer — 11 unconnected to 0, 0 violations; committed 3d2840b8, 30dd7485",
+   "command": "ce-pcb/bin/route <board>.kicad_pcb ; bin/pcb --cli pcb drc --format json"
   },
   {
    "n": 2,
    "name": "Schematic, ERC-clean, plus a reusable design block",
    "name_zh": "原理图（通过 ERC）及可复用设计块",
    "status": "PARTIAL",
-   "reason": "A schematic generator exists and emits real KiCad files, and a halo_core sketch schematic is in progress. The KiCad 10 design block format was confirmed to carry a PCB layout fragment as well as a schematic, which is what makes the circuit droppable into any host board. Not yet ERC-clean end to end.",
-   "evidence": "ce-pcb/bin/sch, ce-pcb/examples/halo_core_sketch/, ce-pcb/docs/schematic-from-code.md",
-   "command": "kicad-cli sch erc --format json <name>.kicad_sch"
+   "reason": "The schematic side is done: halo_core_sketch passes the electrical rule check with 0 errors and 0 warnings, 32 parts and 30 nets, with PDF and SVG exports. The reusable design block is proven to carry a routed layout, not just a schematic — a test block was applied into a host board of a different outline with a worst footprint placement error of 0.000000 mm and the host's own design-rule check clean at 0/0. What remains is applying halo's own block, which needs halo's board to exist.",
+   "evidence": "ce-pcb/out — halo_core_sketch ERC 0/0; blocks/applied/aht20 host DRC 0/0; committed 24bdc2fd, 82f5ff0b, c0167d35, 8fccdb3d",
+   "command": "ce-pcb/bin/sch erc <name>.kicad_sch ; bin/sch apply-block <block> <host>"
   },
   {
    "n": 3,
