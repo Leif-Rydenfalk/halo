@@ -120,6 +120,66 @@ Two traps it hit on its own first run, both worth knowing:
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
 
+## The third direction: a fix that was correct, and was never wired in
+
+*Added 2026-09-05 by lane B1. Distinct from everything above, and the giveaway
+is different.*
+
+The entries on this page are checks that measured the wrong thing, plus one
+capability wrongly declared absent. This is neither. Here the tool was
+**right**, its diagnosis was **right**, it was **committed**, and there was no
+way to invoke it from the place that needed it — so it was run by hand, or not
+at all, and the failures it existed to prevent kept happening.
+
+`ce-designs/halo/electronics/halo_rev_a/dsnfix.py` was written 2026-09-04 after
+three autoroutes of halo_rev_a timed out at **900, 3300 and 2400 seconds**
+while the same jar finished a Ø31.87 mm puck in 96 s. Its docstring names four
+things KiCad's Specctra export says that are false about that board, and the
+numbers are exact:
+
+- `In1.Cu` and `In2.Cu` are **solid poured planes** and come out
+  `(type signal)`, so the router carves channels through plane copper on two
+  extra layers;
+- GND (39 pins) and VDD (24 pins) arrive in `(network)` as **63 pin-to-pin
+  connections** the pours and the stitching vias already make — 36 % of the
+  pins, all of it wrong;
+- the antenna and the NFC spiral come out `(type route)`, which in freerouting
+  means **rippable**, so the only two pieces of copper on that board whose
+  shape was *solved* are the two the router is free to destroy;
+- (added 2026-09-05) the **fiducials have no clear field**, and every DRC error
+  on the first successful autoroute was copper crowding one.
+
+All of that was correct. And `cepcb.route.route()` went
+`export_dsn → run_freerouting → import_ses` with **no seam between the first
+two**, so nothing in the routing path could call it. The lane that wrote it ran
+it by hand once; the lane that inherited the board did not know it existed and
+concluded the board could not be routed.
+
+**Measured after wiring it in** (`--dsn-filter`, one flag): 176 pins → **113
+across 48 nets**, planes retyped `power`, 298 existing wires `protect`. The
+route completed in **856 s** and took unconnected items **81 → 31**.
+
+**The giveaway.** The other defects on this page announce themselves as a
+suspicious green result — a PASS you can interrogate. This one has no result at
+all. It looks like **a capability sitting in the tree unreferenced**: a module
+nothing imports, a script no pipeline calls, a function with no caller. Nothing
+is red, nothing is green, and the symptom shows up somewhere else entirely as a
+job that is inexplicably slow or a lane that concludes the thing cannot be done.
+
+**The rule.** When a tool exists to correct another tool's output, **the
+correction belongs in the seam, not beside it.** If the fix has to be
+remembered, it will not be. Two cheap tests:
+
+1. **Grep for the caller.** A fix with no caller outside its own `__main__` is
+   not deployed, it is available. `grep -rn "dsnfix" --include=*.py` returned
+   the file itself and nothing else for a full day.
+2. **Ask what the pipeline does if nobody remembers.** If the answer is "it
+   silently produces the unfixed artifact", the seam needs the hook — and the
+   hook must **refuse** when the fix was asked for and did not run, because a
+   filter that failed leaves an artifact identical to one that needed no
+   filtering. `apply_dsn_filter` raises on a non-zero exit for exactly that
+   reason, and that refusal is negative-tested.
+
 ## The other direction: a capability declared ABSENT because the probe looked in the wrong place
 
 *Added 2026-09-05 by lane B1, correcting lane B1, after the coordinator
