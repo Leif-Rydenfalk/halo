@@ -23,7 +23,7 @@ Generated 2026-09-04. **3 open · 8 cannot determine · 2 measured but Apple's v
 | Coin cell survives the transmit pulse | PASS | PASS | 0 | **MATCH** |
 | Shell outer diameter | 31.87 mm | 31.87 mm | +0.004 mm  (0.0%) | **MATCH** |
 | Sounder drive current model | PASS | PASS | 0 | **MATCH** |
-| Unit cost at 1000 units | 10 USD | 7.17 USD | -2.83 USD  (28.3%) | **MATCH** |
+| Unit cost at 1000 units | 10 USD | 6.09 USD | -3.91 USD  (39.1%) | **MATCH** |
 | NFC tank resonance model | PASS | PASS | 0 | **MATCH** |
 | Supply decoupling model | PASS | PASS | 0 | **MATCH** |
 | Layer count | 4 layers | 4 layers | +0 layers  (0.0%) | **MATCH** |

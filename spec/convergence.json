@@ -187,9 +187,9 @@
    "weight": 6,
    "measure": {
     "from": "literal",
-    "value": 7.17
+    "value": 6.09
    },
-   "current_note": "bare nRF54L10 roll-up, lane E second pass, live LCSC ladders"
+   "current_note": "lane S1, every line re-verified against the catalogue by MPN and package; spec/bom-resolved.json"
   },
   {
    "name": "Layer count",
