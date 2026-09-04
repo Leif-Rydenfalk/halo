@@ -1,10 +1,10 @@
 {
  "$halo": 1,
  "tool": "tools/prove_checks.py",
- "generated": "2026-09-04T21:51:24+00:00",
+ "generated": "2026-09-04T22:03:08+00:00",
  "target": "tools/check_fabset.py",
- "assertions": 29,
- "proved_to_fire": 29,
+ "assertions": 32,
+ "proved_to_fire": 32,
  "unproven": 0,
  "verdict": "PASS",
  "cases": [
@@ -263,6 +263,36 @@
    "suite": "convergence",
    "assertion": "source_is_fresh",
    "mutation": "the antenna spec was edited after the measurement that grades it",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "source_file_resolves",
+   "mutation": "the row names a measurement file that is not on disk",
+   "expected": "FAIL",
+   "verdicts_seen": [
+    "FAIL"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "high_weight_measured",
+   "mutation": "a weight-10 row names a source that resolves to nothing \u2014 the old check passed on the source's NAME without asking whether it produced a value",
+   "expected": "CANNOT DETERMINE",
+   "verdicts_seen": [
+    "CANNOT DETERMINE"
+   ],
+   "proved": true
+  },
+  {
+   "suite": "convergence",
+   "assertion": "divergence_is_earned",
+   "mutation": "a 'deliberate divergence' whose own value sits inside the target's tolerance \u2014 a MATCH relabelled so the row stops reading OPEN",
    "expected": "FAIL",
    "verdicts_seen": [
     "FAIL"

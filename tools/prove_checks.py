@@ -596,11 +596,27 @@ CONV_CASES = [
      "a weight-10 MATCH whose current value is typed into the spec file"),
     ("source_is_fresh", "FAIL", lambda: _conv_ws(spec_newer=True),
      "the antenna spec was edited after the measurement that grades it"),
+    ("source_file_resolves", "FAIL", lambda: _conv_ws(
+        row={**CONV_GOOD_ROW, "measure": {
+            "from": "file", "path": "out/verify/no-such-file.json",
+            "pointer": "board_facts.copper_layers"}}),
+     "the row names a measurement file that is not on disk"),
+    ("high_weight_measured", "CANNOT DETERMINE", lambda: _conv_ws(
+        row={**CONV_GOOD_ROW, "measure": {
+            "from": "file", "path": "spec/convergence.json",
+            "pointer": "no.such.key"}}),
+     "a weight-10 row names a source that resolves to nothing — the old check "
+     "passed on the source's NAME without asking whether it produced a value"),
+    ("divergence_is_earned", "FAIL", lambda: _conv_ws(
+        row={**CONV_GOOD_ROW,
+             "divergence": {"decision": "D99", "value": 2.44, "tolerance": 0.0}}),
+     "a 'deliberate divergence' whose own value sits inside the target's "
+     "tolerance — a MATCH relabelled so the row stops reading OPEN"),
 ]
 
 
 def prove_conv(results):
-    print("# prove_checks — convergence integrity, 7 assertions on a synthetic table")
+    print(f"# prove_checks — convergence integrity, {len(CONV_CASES)} assertions on a synthetic table")
     ws, spec = _conv_ws()
     out = pathlib.Path(tempfile.mkdtemp()) / "c.json"
     subprocess.run([sys.executable, str(CONVCHECK), "--ws", str(ws), "--spec", str(spec),

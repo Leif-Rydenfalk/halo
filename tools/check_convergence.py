@@ -38,7 +38,7 @@ measures 25.61 x 26.00 mm.
 
 Exit 0 PASS · 1 FAIL · 2 CANNOT DETERMINE.
 
-The seven assertions, each with the sentence it defeats:
+The nine assertions, each with the sentence it defeats:
 
   G1 row_can_change_state  could PASS while a row's verdict is the same whatever
                            the tool measured -- the decoration case
@@ -48,6 +48,10 @@ The seven assertions, each with the sentence it defeats:
   G5 resonance_exists      could PASS while there is no resonance, only a dip
   G6 high_weight_measured  could PASS while a weight-10 claim is a typed literal
   G7 source_is_fresh       could PASS while the measurement predates the spec it grades
+  G8 source_file_resolves  could PASS while a row names a measurement file that does
+                           not exist, or a key inside it that does not
+  G9 divergence_is_earned  could PASS while any inconvenient row is relabelled
+                           "deliberate divergence" and stops reading OPEN
 """
 import argparse
 import json
@@ -66,6 +70,48 @@ def jload(p):
         return d.get("record", d)
     except Exception:
         return None
+
+
+def file_measurement(base, path, pointer, reduce_=None):
+    """A value read out of a verification artifact on disk. -> (value, why)
+
+    `from: "literal"` means somebody typed the number into the spec, and G6
+    exists because a typed number cannot disagree with its target. But three
+    of halo's board rows had numbers that a tool HAD measured and written to
+    disk — the copper-layer count, the finished thickness and the outline
+    extent all sit in out/verify/dfm-jlc-4layer.json's board_facts — and they
+    were still typed in by hand. This reads them instead, and returns None
+    with a reason whenever the file or the key is not there, because a source
+    that silently resolves to nothing is worse than a literal: it LOOKS
+    measured.
+    """
+    f = (base / path)
+    if not f.is_file():
+        return None, f"no such file: {path}"
+    d = jload(f)
+    if d is None:
+        return None, f"{path} is not readable JSON"
+    cur = d
+    for seg in pointer.split("."):
+        if isinstance(cur, list):
+            try:
+                cur = cur[int(seg)]
+                continue
+            except (ValueError, IndexError):
+                return None, f"{path}: no element {seg} in the list at this point"
+        if not isinstance(cur, dict) or seg not in cur:
+            return None, f"{path}: no key {pointer!r}"
+        cur = cur[seg]
+    if reduce_ == "max" and isinstance(cur, list) and cur:
+        cur = max(cur)
+    elif reduce_ == "min" and isinstance(cur, list) and cur:
+        cur = min(cur)
+    elif reduce_ and not isinstance(cur, list):
+        return None, f"{path}: reduce {reduce_!r} needs a list, got {type(cur).__name__}"
+    if isinstance(cur, (dict, list)):
+        return None, (f"{path}: {pointer!r} is a {type(cur).__name__}, not a value — "
+                      f"name a scalar or give a reduce")
+    return cur, f"{path} -> {pointer}"
 
 
 def rf_measurement(ws, case, key):
@@ -90,6 +136,7 @@ def state_of(row, cur):
     t = row.get("target_value")
     tt = row.get("target_text") or ""
     no_target = tt.startswith("CANNOT DETERMINE") or tt.startswith("n/a")
+    div = row.get("divergence")
     state = "OPEN"
     if cur is None:
         state = "CANNOT DETERMINE"
@@ -101,6 +148,16 @@ def state_of(row, cur):
         tol = row.get("tolerance")
         if tol is not None:
             state = "MATCH" if abs(cur - t) <= tol else "OPEN"
+        # A DELIBERATE DIVERGENCE IS A THIRD ANSWER, AND IT HAS TO BE ABLE TO
+        # BE WRONG. The board is 0.60 mm where Apple's is 0.30 mm, on purpose
+        # (D17). Writing that as "no target" made the row answer OPEN for the
+        # right value and for a deliberately wrong one, which is the decoration
+        # this file hunts. A divergence therefore names its OWN committed
+        # value: land on it and the row is DIVERGENT, miss both it and the
+        # target and the row is OPEN like any other.
+        if (isinstance(div, dict) and isinstance(div.get("value"), (int, float))
+                and abs(cur - div["value"]) <= div.get("tolerance", 0.0)):
+            state = "DIVERGENT"
     return state
 
 
@@ -147,11 +204,14 @@ def main():
         n = r["name"]
         m = r.get("measure") or {}
         src = m.get("from")
-        cur = None
+        cur, src_why = None, None
         if src == "ce-rf":
             cur = rf_measurement(ws, m["case"], m["key"])
         elif src == "literal":
             cur = m.get("value")
+        elif src == "file":
+            cur, src_why = file_measurement(HALO, m.get("path", ""),
+                                            m.get("pointer", ""), m.get("reduce"))
         elif src == "ce-spice-verdict":
             v = jload(ws / "ce-spice" / "out" / m["example"] / "verdict.json")
             cur = v.get("verdict") if v else None
@@ -183,12 +243,65 @@ def main():
                 f"current value is a literal typed into spec/convergence.json (weight {w}, "
                 f"state {state}); no tool produced it and it cannot disagree with its target",
                 value=cur)
+        elif src and cur is None:
+            # THE HOLE THIS CLOSES: `elif src:` used to PASS on the STRING in
+            # the `from` field alone. Any source name that was not "literal"
+            # earned a pass whether or not it had produced a number, so a row
+            # pointing at a file that does not exist graded better than one
+            # that honestly typed its value in. A source that measured nothing
+            # is not a measurement.
+            add("high_weight_measured", n, CD,
+                f"the row names source {src!r} (weight {w}) and that source produced NO "
+                f"VALUE" + (f": {src_why}" if src_why else "")
+                + " — a named source that resolves to nothing is not a measurement",
+                value=None)
         elif src:
             add("high_weight_measured", n, PASS,
-                f"current value comes from {src}, not from a typed literal", value=cur)
+                f"current value {cur!r} was READ from {src_why or src}, not typed into "
+                f"the spec file", value=cur)
         else:
             add("high_weight_measured", n, CD,
                 f"the row declares no measurement source at all (weight {w})")
+
+        # ---- G9 divergence_is_earned ------------------------------------
+        # DIVERGENT is a state that stops a row reading OPEN, so it is exactly
+        # the kind of label somebody reaches for when a delta will not close.
+        # Two things make it honest and both are checkable: the divergence
+        # names a DECISION, and its committed value lies OUTSIDE the target's
+        # own tolerance band. A "divergence" inside the band is a match wearing
+        # a costume, and a divergence with no decision behind it is a shrug.
+        div = r.get("divergence")
+        if isinstance(div, dict):
+            dv, dec = div.get("value"), div.get("decision")
+            tol, tgt = r.get("tolerance"), r.get("target_value")
+            if not dec:
+                add("divergence_is_earned", n, FAIL,
+                    "the row declares a divergence with no decision behind it — a "
+                    "state that stops the row reading OPEN needs a named reason",
+                    value=dv)
+            elif not isinstance(dv, (int, float)) or not isinstance(tgt, (int, float)):
+                add("divergence_is_earned", n, CD,
+                    f"the divergence names {dv!r} against target {tgt!r}; one of them is "
+                    f"not a number, so the two cannot be compared", value=dv)
+            elif tol is not None and abs(dv - tgt) <= tol:
+                add("divergence_is_earned", n, FAIL,
+                    f"the divergence's own value {dv} is INSIDE the target's tolerance "
+                    f"({tgt} +/- {tol}) — that is a MATCH relabelled, and it would hide a "
+                    f"row that had actually converged", value=dv)
+            else:
+                add("divergence_is_earned", n, PASS,
+                    f"divergence to {dv} by decision {dec}, {abs(dv - tgt):.4g} from the "
+                    f"target {tgt} and outside its tolerance {tol} — a real gap, chosen "
+                    f"and named", value=dv)
+
+        # ---- G8 source_file_resolves ------------------------------------
+        if src == "file":
+            add("source_file_resolves", n, PASS if cur is not None else FAIL,
+                (f"{m.get('path')} exists and {m.get('pointer')!r} reads {cur!r}"
+                 if cur is not None else
+                 f"the row names {m.get('path')} -> {m.get('pointer')!r} and it does not "
+                 f"resolve: {src_why}"),
+                value=cur)
 
         if src != "ce-rf":
             continue

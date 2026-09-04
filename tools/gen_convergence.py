@@ -48,6 +48,41 @@ def rf(case, key):
             return v.get("value") if isinstance(v, dict) else v
     return None
 
+def file_measure(path, pointer, reduce_=None):
+    """Read one number out of a verification artifact on disk.
+
+    The same reader as tools/check_convergence.py's, kept in step with it on
+    purpose: this one produces the table, that one grades it, and the grader
+    re-reads the file itself rather than trusting this. Returns None when the
+    file or the key is missing, so a broken pointer shows as CANNOT DETERMINE
+    instead of quietly holding the last value somebody typed.
+    """
+    f = HALO / path
+    if not f.is_file():
+        return None
+    d = jload(f)
+    if d is None:
+        return None
+    cur = d
+    for seg in pointer.split("."):
+        if isinstance(cur, list):
+            try:
+                cur = cur[int(seg)]
+                continue
+            except (ValueError, IndexError):
+                return None
+        if not isinstance(cur, dict) or seg not in cur:
+            return None
+        cur = cur[seg]
+    if reduce_ == "max" and isinstance(cur, list) and cur:
+        cur = max(cur)
+    elif reduce_ == "min" and isinstance(cur, list) and cur:
+        cur = min(cur)
+    if isinstance(cur, (dict, list)):
+        return None
+    return cur
+
+
 def spice_ok(example):
     r = jload(WS / "ce-spice" / "out" / example / "verdict.json")
     return r.get("verdict") if r else None
@@ -67,6 +102,10 @@ for r in SPEC["rows"]:
             src = f'ce-spice/out/{m["example"]}/verdict.json'
         elif m["from"] == "literal":
             cur = m["value"]
+        elif m["from"] == "file":
+            cur = file_measure(m.get("path", ""), m.get("pointer", ""),
+                               m.get("reduce"))
+            src = str(m.get("path")) + " -> " + str(m.get("pointer"))
     t = r.get("target_value")
     delta, state = "—", "OPEN"
     tt = r.get("target_text") or ""
@@ -97,12 +136,24 @@ for r in SPEC["rows"]:
         delta = f"{d:+.4g} {r.get('unit','')}".strip()
         if tol is not None:
             state = "MATCH" if abs(d) <= tol else "OPEN"
+        # A DELIBERATE DIVERGENCE IS A THIRD ANSWER AND IT MUST BE ABLE TO BE
+        # WRONG. Writing "we chose not to match this" as a text target made
+        # the row answer OPEN for the right value and for a deliberately wrong
+        # one, so its state was not derived from any measurement. A divergence
+        # names its own committed value; land on it and the row is DIVERGENT,
+        # miss both it and the target and the row is OPEN like any other.
+        _div = r.get("divergence")
+        if (isinstance(_div, dict) and isinstance(_div.get("value"), (int, float))
+                and abs(cur - _div["value"]) <= _div.get("tolerance", 0.0)):
+            state = "DIVERGENT"
+            delta += "  (by decision " + str(_div.get("decision", "?")) + ")"
         rel = abs(d) / abs(t) * 100 if t else None
         if rel is not None:
             delta += f"  ({rel:.1f}%)"
     rows.append({**r, "current": cur, "delta": delta, "state": state, "source": src})
 
-order = {"OPEN": 0, "CANNOT DETERMINE": 1, "NO TARGET": 2, "MATCH": 3}
+order = {"OPEN": 0, "CANNOT DETERMINE": 1, "NO TARGET": 2,
+         "DIVERGENT": 3, "MATCH": 4}
 rows.sort(key=lambda x: (order[x["state"]], -(x.get("weight", 1))))
 tally = {k: sum(1 for x in rows if x["state"] == k) for k in order}
 
@@ -121,7 +172,7 @@ th,td{text-align:left;vertical-align:top;padding:.5rem .65rem;border-bottom:1px 
 th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .b{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.05em;padding:.12rem .4rem;border:1px solid currentColor;border-radius:3px}
-.OPEN{color:var(--bad)}.CD{color:var(--warn)}.MATCH{color:var(--ok)}
+.OPEN{color:var(--bad)}.CD{color:var(--warn)}.MATCH{color:var(--ok)}.DIV{color:var(--dim)}
 code{font:.85em ui-monospace,Menlo,monospace;color:var(--dim);word-break:break-all}
 .meta{color:var(--dim);font-size:.82rem;margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--line)}"""
 
@@ -131,7 +182,9 @@ p = [f'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport
      f'<p class="sub">Generated {datetime.date.today().isoformat()} · '
      f'<b class="OPEN">{tally["OPEN"]} open</b> · '
      f'<b class="CD">{tally["CANNOT DETERMINE"]} cannot determine</b> · '
-     f'<b class="MATCH">{tally["MATCH"]} match</b> · {tally["NO TARGET"]} measured but Apple\'s value unknown</p>',
+     f'<b class="MATCH">{tally["MATCH"]} match</b> · '
+     f'{tally["DIVERGENT"]} divergent by decision · '
+     f'{tally["NO TARGET"]} measured but Apple\'s value unknown</p>',
      '<p>Every parameter where our board can be compared to Apple\'s. TARGET is the real '
      'AirTag, cited. CURRENT is read out of a tool\'s own output file, so no row can claim a '
      'number nothing produced. The loop picks the largest open delta, changes the design, '
@@ -139,7 +192,8 @@ p = [f'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport
      '<table><tr><th>Parameter</th><th>Target (real AirTag)</th><th>Current (halo)</th>'
      '<th>Delta</th><th>State</th><th>Source</th></tr>']
 for x in rows:
-    cls = {"OPEN": "OPEN", "CANNOT DETERMINE": "CD", "NO TARGET": "CD", "MATCH": "MATCH"}[x["state"]]
+    cls = {"OPEN": "OPEN", "CANNOT DETERMINE": "CD", "NO TARGET": "CD",
+           "DIVERGENT": "DIV", "MATCH": "MATCH"}[x["state"]]
     tgt = x.get("target_text") or fmt(x.get("target_value"), x.get("unit", ""))
     p.append(f'<tr><td><b>{E(x["name"])}</b><br><code>{E(x.get("cite",""))}</code></td>'
              f'<td class="num">{E(tgt)}</td><td class="num">{E(fmt(x["current"], x.get("unit","")))}</td>'
@@ -155,7 +209,8 @@ p.append(f'<p class="meta">Generated from <code>spec/convergence.json</code> by 
 md = ["# Convergence against the real AirTag", "",
       f"Generated {datetime.date.today().isoformat()}. "
       f"**{tally['OPEN']} open · {tally['CANNOT DETERMINE']} cannot determine · "
-      f"{tally['NO TARGET']} measured but Apple's value unknown · {tally['MATCH']} match**", "",
+      f"{tally['NO TARGET']} measured but Apple's value unknown · "
+      f"{tally['DIVERGENT']} divergent by decision · {tally['MATCH']} match**", "",
       "| parameter | target | current | delta | state |", "|---|---|---|---|---|"]
 for x in rows:
     tgt = x.get("target_text") or fmt(x.get("target_value"), x.get("unit", ""))

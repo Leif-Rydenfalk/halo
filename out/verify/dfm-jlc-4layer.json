@@ -31,7 +31,7 @@
     "JLCPCB publishes ONE track width/spacing figure covering all copper layers on a multilayer board; there is no separate inner-layer number to encode.",
     "The page's own FAQ says thicknesses run 0.4-3.2 mm while its table says 0.4-4.5 mm. The table is encoded."
   ],
-  "generated": "2026-09-04T18:37:59Z",
+  "generated": "2026-09-04T21:58:27Z",
   "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/verify",
   "board_facts": {
     "copper_layers": 4,
@@ -42,8 +42,8 @@
     ],
     "round": false,
     "footprints": 62,
-    "vias": 50,
-    "track_segments": 257,
+    "vias": 49,
+    "track_segments": 255,
     "solder_mask_min_width_set": true
   },
   "constraints_applied": {
@@ -119,7 +119,7 @@
     {
       "fab_rule": "smd_pad_to_pad_min",
       "kicad_rule": "jlc_smd_pad_to_pad",
-      "exercised": false
+      "exercised": true
     },
     {
       "fab_rule": "pth_to_track_min",
@@ -148,7 +148,7 @@
       "what": "Minimum SMD pad size (each side)",
       "verdict": "FAIL",
       "limit": 0.25,
-      "measured": 0.2,
+      "measured": 0.15,
       "why": "narrowest side of any of 254 SMD pads",
       "cite": "\u201cMinimum SMD pad: 0.25mm \u00d7 0.25mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
       "how": "geometry"
@@ -166,133 +166,6 @@
       "why": "3 footprint(s) smaller than the Economic 0402 floor: ['C_0201_0603Metric', 'L_0201_0603Metric', 'R_0201_0603Metric']",
       "cite": "\u201cMinimum Package \u2014 0402 / 0201\u201d  [https://jlcpcb.com/capabilities/pcb-assembly-capabilities retrieved 2026-09-03]",
       "how": "footprint names"
-    },
-    {
-      "id": "track_spacing_min",
-      "what": "Minimum track-to-track spacing",
-      "verdict": "FAIL",
-      "limit": 0.09,
-      "measured": null,
-      "n_violations": 1,
-      "n_tighter_rule_violations": 0,
-      "why": "KiCad DRC, constraint `min_clearance` = 0.09 mm: 1 violation(s), e.g. \u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng (n\u00e4tklass 'Default' frig\u00e5ng 0.0900 mm; faktisk 0.0639 mm)",
-      "cite": "\u201cMin. track width and spacing (1 oz) ... Multilayer: 0.09 / 0.09 mm (3.5 / 3.5 mil)\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc",
-      "examples": [
-        {
-          "type": "clearance",
-          "severity": "error",
-          "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng (n\u00e4tklass 'Default' frig\u00e5ng 0.0900 mm; faktisk 0.0639 mm)",
-          "at": [
-            {
-              "x": 9.016569,
-              "y": 9.657504
-            },
-            {
-              "x": 7.895728,
-              "y": 10.121947
-            }
-          ]
-        }
-      ],
-      "tighter_rule_examples": []
-    },
-    {
-      "id": "via_to_track_min",
-      "what": "Via hole to track clearance",
-      "verdict": "FAIL",
-      "limit": 0.2,
-      "measured": null,
-      "n_violations": 2,
-      "n_tighter_rule_violations": 0,
-      "why": "KiCad DRC, constraint `min_hole_clearance` = 0.2 mm: 2 violation(s), e.g. Otillr\u00e4cklig frig\u00e5ng f\u00f6r h\u00e5l (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r h\u00e5l frig\u00e5ng 0.2000 mm; faktisk 0.1639 mm)",
-      "cite": "\u201cVia hole to Track \u2014 0.2mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc",
-      "examples": [
-        {
-          "type": "hole_clearance",
-          "severity": "error",
-          "description": "Otillr\u00e4cklig frig\u00e5ng f\u00f6r h\u00e5l (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r h\u00e5l frig\u00e5ng 0.2000 mm; faktisk 0.1639 mm)",
-          "at": [
-            {
-              "x": 7.895728,
-              "y": 10.121947
-            },
-            {
-              "x": 9.016569,
-              "y": 9.657504
-            }
-          ]
-        },
-        {
-          "type": "hole_clearance",
-          "severity": "error",
-          "description": "Otillr\u00e4cklig frig\u00e5ng f\u00f6r h\u00e5l (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r h\u00e5l frig\u00e5ng 0.2000 mm; faktisk 0.1639 mm)",
-          "at": [
-            {
-              "x": 7.895728,
-              "y": 10.121947
-            },
-            {
-              "x": 9.016569,
-              "y": 9.657504
-            }
-          ]
-        }
-      ],
-      "tighter_rule_examples": []
-    },
-    {
-      "id": "inner_pth_to_copper_min",
-      "what": "Inner-layer PTH pad hole to copper clearance",
-      "verdict": "CANNOT DETERMINE",
-      "limit": 0.3,
-      "measured": null,
-      "n_violations": 0,
-      "why": "KiCad DRC, custom rule `jlc_inner_pth_to_copper` from the .kicad_dru written beside the board: no violation  \u2014 AND THIS RULE NEVER FIRED even with its limit multiplied by 40, so either the board has no items it matches, or the condition is one KiCad cannot evaluate. A rule that cannot fail did not pass.",
-      "cite": "\u201cInner layer PTH pad hole to copper clearance \u2014 0.3mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc (custom)",
-      "examples": [],
-      "exercised": false
-    },
-    {
-      "id": "pad_hole_to_hole_min",
-      "what": "PTH pad hole-to-hole spacing",
-      "verdict": "CANNOT DETERMINE",
-      "limit": 0.45,
-      "measured": null,
-      "n_violations": 0,
-      "why": "KiCad DRC, custom rule `jlc_pad_hole_to_hole` from the .kicad_dru written beside the board: no violation  \u2014 AND THIS RULE NEVER FIRED even with its limit multiplied by 40, so either the board has no items it matches, or the condition is one KiCad cannot evaluate. A rule that cannot fail did not pass.",
-      "cite": "\u201cPad Hole-to-Hole Spacing \u2014 0.45mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc (custom)",
-      "examples": [],
-      "exercised": false
-    },
-    {
-      "id": "pth_to_track_min",
-      "what": "PTH to track clearance",
-      "verdict": "CANNOT DETERMINE",
-      "limit": 0.28,
-      "measured": null,
-      "n_violations": 0,
-      "why": "KiCad DRC, custom rule `jlc_pth_to_track` from the .kicad_dru written beside the board: no violation  \u2014 AND THIS RULE NEVER FIRED even with its limit multiplied by 40, so either the board has no items it matches, or the condition is one KiCad cannot evaluate. A rule that cannot fail did not pass.",
-      "cite": "\u201cPTH to Track \u2014 0.28mm \u2014 0.35mm is recommended, minimum 0.28mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc (custom)",
-      "examples": [],
-      "exercised": false
-    },
-    {
-      "id": "smd_pad_to_pad_min",
-      "what": "SMD pad to pad clearance, different nets",
-      "verdict": "CANNOT DETERMINE",
-      "limit": 0.15,
-      "measured": null,
-      "n_violations": 0,
-      "why": "KiCad DRC, custom rule `jlc_smd_pad_to_pad` from the .kicad_dru written beside the board: no violation  \u2014 AND THIS RULE NEVER FIRED even with its limit multiplied by 40, so either the board has no items it matches, or the condition is one KiCad cannot evaluate. A rule that cannot fail did not pass.",
-      "cite": "\u201cSMD pad to pad clearance (different nets) \u2014 0.15mm ... Minimum SMD pad: 0.25mm \u00d7 0.25mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
-      "how": "kicad-cli pcb drc (custom)",
-      "examples": [],
-      "exercised": false
     },
     {
       "id": "blind_buried_vias",
@@ -390,6 +263,22 @@
       "tighter_rule_examples": []
     },
     {
+      "id": "inner_pth_to_copper_min",
+      "what": "Inner-layer PTH pad hole to copper clearance",
+      "verdict": "PASS",
+      "limit": 0.3,
+      "measured": null,
+      "n_violations": 0,
+      "why": "KiCad DRC, custom rule `jlc_inner_pth_to_copper` from the .kicad_dru written beside the board: no violation  \u2014 the rule never fired even with its limit multiplied by 40, AND THIS BOARD CARRIES NO ITEMS IT GOVERNS: 0 plated through-hole pad(s) on a 4-layer board. Nothing was checked because there is nothing to check; this is not coverage.",
+      "cite": "\u201cInner layer PTH pad hole to copper clearance \u2014 0.3mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc (custom)",
+      "examples": [],
+      "exercised": false,
+      "governed_items": 0,
+      "governs": "0 plated through-hole pad(s) on a 4-layer board",
+      "vacuous": true
+    },
+    {
       "id": "inner_via_to_copper_min",
       "what": "Inner-layer via hole to copper clearance",
       "verdict": "PASS",
@@ -401,6 +290,22 @@
       "how": "kicad-cli pcb drc (custom)",
       "examples": [],
       "exercised": true
+    },
+    {
+      "id": "pad_hole_to_hole_min",
+      "what": "PTH pad hole-to-hole spacing",
+      "verdict": "PASS",
+      "limit": 0.45,
+      "measured": null,
+      "n_violations": 0,
+      "why": "KiCad DRC, custom rule `jlc_pad_hole_to_hole` from the .kicad_dru written beside the board: no violation  \u2014 the rule never fired even with its limit multiplied by 40, AND THIS BOARD CARRIES NO ITEMS IT GOVERNS: 0 pad(s) with a hole. Nothing was checked because there is nothing to check; this is not coverage.",
+      "cite": "\u201cPad Hole-to-Hole Spacing \u2014 0.45mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc (custom)",
+      "examples": [],
+      "exercised": false,
+      "governed_items": 0,
+      "governs": "0 pad(s) with a hole",
+      "vacuous": true
     },
     {
       "id": "pad_to_silk_min",
@@ -430,6 +335,22 @@
       "exercised": true
     },
     {
+      "id": "pth_to_track_min",
+      "what": "PTH to track clearance",
+      "verdict": "PASS",
+      "limit": 0.28,
+      "measured": null,
+      "n_violations": 0,
+      "why": "KiCad DRC, custom rule `jlc_pth_to_track` from the .kicad_dru written beside the board: no violation  \u2014 the rule never fired even with its limit multiplied by 40, AND THIS BOARD CARRIES NO ITEMS IT GOVERNS: 0 plated through-hole pad(s) and 255 track segment(s). Nothing was checked because there is nothing to check; this is not coverage.",
+      "cite": "\u201cPTH to Track \u2014 0.28mm \u2014 0.35mm is recommended, minimum 0.28mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc (custom)",
+      "examples": [],
+      "exercised": false,
+      "governed_items": 0,
+      "governs": "0 plated through-hole pad(s) and 255 track segment(s)",
+      "vacuous": true
+    },
+    {
       "id": "silk_line_width_min",
       "what": "Minimum silkscreen line width",
       "verdict": "PASS",
@@ -456,6 +377,19 @@
       "how": "kicad-cli pcb drc",
       "examples": [],
       "tighter_rule_examples": []
+    },
+    {
+      "id": "smd_pad_to_pad_min",
+      "what": "SMD pad to pad clearance, different nets",
+      "verdict": "PASS",
+      "limit": 0.15,
+      "measured": null,
+      "n_violations": 0,
+      "why": "KiCad DRC, custom rule `jlc_smd_pad_to_pad` from the .kicad_dru written beside the board: no violation",
+      "cite": "\u201cSMD pad to pad clearance (different nets) \u2014 0.15mm ... Minimum SMD pad: 0.25mm \u00d7 0.25mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc (custom)",
+      "examples": [],
+      "exercised": true
     },
     {
       "id": "smt_board_size",
@@ -493,6 +427,20 @@
       "how": "geometry"
     },
     {
+      "id": "track_spacing_min",
+      "what": "Minimum track-to-track spacing",
+      "verdict": "PASS",
+      "limit": 0.09,
+      "measured": null,
+      "n_violations": 0,
+      "n_tighter_rule_violations": 0,
+      "why": "KiCad DRC, constraint `min_clearance` = 0.09 mm: no violation",
+      "cite": "\u201cMin. track width and spacing (1 oz) ... Multilayer: 0.09 / 0.09 mm (3.5 / 3.5 mil)\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc",
+      "examples": [],
+      "tighter_rule_examples": []
+    },
+    {
       "id": "track_width_min",
       "what": "Minimum track width",
       "verdict": "PASS",
@@ -500,7 +448,7 @@
       "measured": 0.15,
       "n_violations": 0,
       "n_tighter_rule_violations": 0,
-      "why": "KiCad DRC, constraint `min_track_width` = 0.09 mm: no violation  ||  geometry: narrowest of 257 track segments",
+      "why": "KiCad DRC, constraint `min_track_width` = 0.09 mm: no violation  ||  geometry: narrowest of 255 track segments",
       "cite": "\u201cMin. track width and spacing (1 oz) ... 1- and 2-layer: 0.10 / 0.10 mm (4 / 4 mil) \u2014 Multilayer: 0.09 / 0.09 mm (3.5 / 3.5 mil). 3 mil is acceptable in BGA fan-outs.\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
       "how": "geometry (KiCad DRC checks this too) + kicad-cli pcb drc",
       "examples": [],
@@ -543,7 +491,7 @@
       "verdict": "PASS",
       "limit": 0.15,
       "measured": 0.25,
-      "why": "smallest via drill on the board, over 50 vias",
+      "why": "smallest via drill on the board, over 49 vias",
       "cite": "\u201cMin. Via hole size/diameter \u2014 0.15mm / 0.25mm ... Multilayer: 0.15 mm hole size / 0.25 mm via diameter. \u2461 Preferred Min. Via hole size: 0.2mm \u2462 0.15mm hole size with any size via diameter, and 0.2mm or 0.25mm hole size with via diameter less than 0.45mm, will cost more.\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
       "how": "geometry"
     },
@@ -560,20 +508,49 @@
       "how": "kicad-cli pcb drc",
       "examples": [],
       "tighter_rule_examples": []
+    },
+    {
+      "id": "via_to_track_min",
+      "what": "Via hole to track clearance",
+      "verdict": "PASS",
+      "limit": 0.2,
+      "measured": null,
+      "n_violations": 0,
+      "n_tighter_rule_violations": 0,
+      "why": "KiCad DRC, constraint `min_hole_clearance` = 0.2 mm: no violation",
+      "cite": "\u201cVia hole to Track \u2014 0.2mm\u201d  [https://jlcpcb.com/capabilities/pcb-capabilities retrieved 2026-09-03]",
+      "how": "kicad-cli pcb drc",
+      "examples": [],
+      "tighter_rule_examples": []
     }
   ],
   "drc_error": null,
-  "unconnected_items": 80,
+  "unconnected_items": 81,
   "other_drc_violations": {
-    "tracks_crossing": 2,
-    "shorting_items": 4,
     "track_dangling": 3
   },
   "counts": {
-    "PASS": 20,
-    "FAIL": 4,
-    "CANNOT DETERMINE": 4
+    "PASS": 26,
+    "FAIL": 2,
+    "CANNOT DETERMINE": 0
   },
+  "vacuous_passes": [
+    {
+      "id": "inner_pth_to_copper_min",
+      "governs": "0 plated through-hole pad(s) on a 4-layer board",
+      "governed_items": 0
+    },
+    {
+      "id": "pad_hole_to_hole_min",
+      "governs": "0 pad(s) with a hole",
+      "governed_items": 0
+    },
+    {
+      "id": "pth_to_track_min",
+      "governs": "0 plated through-hole pad(s) and 255 track segment(s)",
+      "governed_items": 0
+    }
+  ],
   "verdict": "FAIL",
   "note": "A PASS here means MANUFACTURABLE against the transcribed capability lines, not CORRECT. Unrouted copper is reported separately as unconnected_items and does not vote."
 }

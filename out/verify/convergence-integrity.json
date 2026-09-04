@@ -1,12 +1,12 @@
 {
  "$halo": 1,
  "tool": "tools/check_convergence.py",
- "generated": "2026-09-04T14:12:44+00:00",
+ "generated": "2026-09-04T22:03:08+00:00",
  "spec": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/spec/convergence.json",
  "verdict": "FAIL",
  "counts": {
-  "PASS": 38,
-  "FAIL": 20,
+  "PASS": 47,
+  "FAIL": 18,
   "CANNOT DETERMINE": 18
  },
  "checks": [
@@ -22,15 +22,15 @@
    "name": "high_weight_measured",
    "row": "Bluetooth antenna resonant frequency",
    "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
-   "value": 2.425,
+   "why": "current value 2.4927439124755972 was READ from ce-rf, not typed into the spec file",
+   "value": 2.4927439124755972,
    "rule": null
   },
   {
    "name": "source_verdict_passes",
    "row": "Bluetooth antenna resonant frequency",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads MATCH",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads OPEN",
    "value": "FAIL",
    "rule": null
   },
@@ -38,43 +38,39 @@
    "name": "solver_converged",
    "row": "Bluetooth antenna resonant frequency",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads MATCH",
-   "value": null,
-   "rule": {
-    "gte": 1
-   }
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
   },
   {
    "name": "physics_floor",
    "row": "Bluetooth antenna resonant frequency",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
-   "value": 0.9657,
-   "rule": {
-    "gte": 1.0
-   }
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
   },
   {
    "name": "resonance_exists",
    "row": "Bluetooth antenna resonant frequency",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate has no f_series_res_GHz: the reactance never crosses zero anywhere in the sweep, so there is no resonance \u2014 only a dip in |S11|. This row reads MATCH on a frequency that is not a resonance",
-   "value": null,
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 f_series_res_GHz = 2.4927439124755972 \u2014 a real reactance zero-crossing",
+   "value": 2.4927439124755972,
    "rule": null
   },
   {
    "name": "source_is_fresh",
    "row": "Bluetooth antenna resonant frequency",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
-   "value": -23026.9,
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
    "rule": {
     "gte": 0
    }
   },
   {
    "name": "row_can_change_state",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "row": "PCB thickness (deliberate divergence)",
    "verdict": "PASS",
    "why": "correct value -> MATCH, wrong value -> OPEN",
    "value": "MATCH",
@@ -82,69 +78,25 @@
   },
   {
    "name": "high_weight_measured",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "row": "PCB thickness (deliberate divergence)",
    "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
-   "value": 5.54,
+   "why": "current value 0.6 was READ from out/verify/dfm-jlc-4layer.json -> board_facts.thickness_mm, not typed into the spec file",
+   "value": 0.6,
    "rule": null
   },
   {
-   "name": "source_verdict_passes",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "name": "divergence_is_earned",
+   "row": "PCB thickness (deliberate divergence)",
    "verdict": "PASS",
-   "why": "halo-round-rim-ifa verdict.json says PASS",
-   "value": null,
+   "why": "divergence to 0.6 by decision D17, 0.3 from the target 0.3 and outside its tolerance 0.02 \u2014 a real gap, chosen and named",
+   "value": 0.6,
    "rule": null
   },
   {
-   "name": "solver_converged",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
+   "name": "source_file_resolves",
+   "row": "PCB thickness (deliberate divergence)",
    "verdict": "PASS",
-   "why": "halo-round-rim-ifa solver_converged = 1.0",
-   "value": 1.0,
-   "rule": null
-  },
-  {
-   "name": "physics_floor",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
-   "verdict": "FAIL",
-   "why": "halo-round-rim-ifa eps_eff_implied = 0.8910 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
-   "value": 0.891,
-   "rule": {
-    "gte": 1.0
-   }
-  },
-  {
-   "name": "resonance_exists",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
-   "verdict": "PASS",
-   "why": "halo-round-rim-ifa f_series_res_GHz = 2.446852437176924 \u2014 a real reactance zero-crossing",
-   "value": 2.446852437176924,
-   "rule": null
-  },
-  {
-   "name": "source_is_fresh",
-   "row": "Bluetooth antenna resonant frequency (round-board variant)",
-   "verdict": "FAIL",
-   "why": "halo-round-rim-ifa measurements.json is 5247 s OLDER than its spec",
-   "value": -5246.8,
-   "rule": {
-    "gte": 0
-   }
-  },
-  {
-   "name": "row_can_change_state",
-   "row": "PCB thickness",
-   "verdict": "FAIL",
-   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12405.0) \u2014 this row's verdict is not derived from any measurement",
-   "value": "OPEN",
-   "rule": null
-  },
-  {
-   "name": "high_weight_measured",
-   "row": "PCB thickness",
-   "verdict": "PASS",
-   "why": "current value is a literal typed into spec/convergence.json (weight 2, state OPEN); no tool produced it and it cannot disagree with its target",
+   "why": "out/verify/dfm-jlc-4layer.json exists and 'board_facts.thickness_mm' reads 0.6",
    "value": 0.6,
    "rule": null
   },
@@ -159,8 +111,16 @@
   {
    "name": "high_weight_measured",
    "row": "PCB outline diameter (bare board)",
-   "verdict": "FAIL",
-   "why": "current value is a literal typed into spec/convergence.json (weight 8, state MATCH); no tool produced it and it cannot disagree with its target",
+   "verdict": "PASS",
+   "why": "current value 26.0 was READ from out/verify/dfm-jlc-4layer.json -> board_facts.size_mm, not typed into the spec file",
+   "value": 26.0,
+   "rule": null
+  },
+  {
+   "name": "source_file_resolves",
+   "row": "PCB outline diameter (bare board)",
+   "verdict": "PASS",
+   "why": "out/verify/dfm-jlc-4layer.json exists and 'board_facts.size_mm' reads 26.0",
    "value": 26.0,
    "rule": null
   },
@@ -175,45 +135,41 @@
   {
    "name": "high_weight_measured",
    "row": "Antenna realized gain",
-   "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
-   "value": -8.333287170160913,
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row names source 'ce-rf' (weight 7) and that source produced NO VALUE \u2014 a named source that resolves to nothing is not a measurement",
+   "value": null,
    "rule": null
   },
   {
    "name": "source_verdict_passes",
    "row": "Antenna realized gain",
    "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads OPEN",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads CANNOT DETERMINE",
    "value": "FAIL",
    "rule": null
   },
   {
    "name": "solver_converged",
    "row": "Antenna realized gain",
-   "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads OPEN",
-   "value": null,
-   "rule": {
-    "gte": 1
-   }
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
   },
   {
    "name": "physics_floor",
    "row": "Antenna realized gain",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
-   "value": 0.9657,
-   "rule": {
-    "gte": 1.0
-   }
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
   },
   {
    "name": "source_is_fresh",
    "row": "Antenna realized gain",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
-   "value": -23026.9,
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
    "rule": {
     "gte": 0
    }
@@ -262,7 +218,7 @@
    "name": "high_weight_measured",
    "row": "NFC coil inductance",
    "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
+   "why": "current value 1.3306157316389617 was READ from ce-rf, not typed into the spec file",
    "value": 1.3306157316389617,
    "rule": null
   },
@@ -312,7 +268,7 @@
    "name": "high_weight_measured",
    "row": "NFC coil Q",
    "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
+   "why": "current value 142.58528476763402 was READ from ce-rf, not typed into the spec file",
    "value": 142.58528476763402,
    "rule": null
   },
@@ -361,45 +317,41 @@
   {
    "name": "high_weight_measured",
    "row": "Antenna radiation efficiency",
-   "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
-   "value": 7.821777253384734,
+   "verdict": "CANNOT DETERMINE",
+   "why": "the row names source 'ce-rf' (weight 4) and that source produced NO VALUE \u2014 a named source that resolves to nothing is not a measurement",
+   "value": null,
    "rule": null
   },
   {
    "name": "source_verdict_passes",
    "row": "Antenna radiation efficiency",
    "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads NO TARGET",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads CANNOT DETERMINE",
    "value": "FAIL",
    "rule": null
   },
   {
    "name": "solver_converged",
    "row": "Antenna radiation efficiency",
-   "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads NO TARGET",
-   "value": null,
-   "rule": {
-    "gte": 1
-   }
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
   },
   {
    "name": "physics_floor",
    "row": "Antenna radiation efficiency",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
-   "value": 0.9657,
-   "rule": {
-    "gte": 1.0
-   }
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
   },
   {
    "name": "source_is_fresh",
    "row": "Antenna radiation efficiency",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
-   "value": -23026.9,
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
    "rule": {
     "gte": 0
    }
@@ -432,7 +384,7 @@
    "name": "high_weight_measured",
    "row": "Coin cell survives the transmit pulse",
    "verdict": "PASS",
-   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "why": "current value 'PASS' was READ from ce-spice-verdict, not typed into the spec file",
    "value": "PASS",
    "rule": null
   },
@@ -448,7 +400,7 @@
    "name": "high_weight_measured",
    "row": "Sounder drive current model",
    "verdict": "PASS",
-   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "why": "current value 'PASS' was READ from ce-spice-verdict, not typed into the spec file",
    "value": "PASS",
    "rule": null
   },
@@ -464,7 +416,7 @@
    "name": "high_weight_measured",
    "row": "NFC tank resonance model",
    "verdict": "PASS",
-   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "why": "current value 'PASS' was READ from ce-spice-verdict, not typed into the spec file",
    "value": "PASS",
    "rule": null
   },
@@ -480,7 +432,7 @@
    "name": "high_weight_measured",
    "row": "Supply decoupling model",
    "verdict": "PASS",
-   "why": "current value comes from ce-spice-verdict, not from a typed literal",
+   "why": "current value 'PASS' was READ from ce-spice-verdict, not typed into the spec file",
    "value": "PASS",
    "rule": null
   },
@@ -497,7 +449,7 @@
    "row": "Unit cost at 1000 units",
    "verdict": "CANNOT DETERMINE",
    "why": "current value is a literal typed into spec/convergence.json (weight 6, state MATCH); no tool produced it and it cannot disagree with its target",
-   "value": 7.17,
+   "value": 6.09,
    "rule": null
   },
   {
@@ -511,8 +463,16 @@
   {
    "name": "high_weight_measured",
    "row": "Layer count",
-   "verdict": "CANNOT DETERMINE",
-   "why": "current value is a literal typed into spec/convergence.json (weight 3, state MATCH); no tool produced it and it cannot disagree with its target",
+   "verdict": "PASS",
+   "why": "current value 4 was READ from out/verify/dfm-jlc-4layer.json -> board_facts.copper_layers, not typed into the spec file",
+   "value": 4,
+   "rule": null
+  },
+  {
+   "name": "source_file_resolves",
+   "row": "Layer count",
+   "verdict": "PASS",
+   "why": "out/verify/dfm-jlc-4layer.json exists and 'board_facts.copper_layers' reads 4",
    "value": 4,
    "rule": null
   },
@@ -568,7 +528,7 @@
    "name": "row_can_change_state",
    "row": "Implied effective permittivity (physics sanity)",
    "verdict": "FAIL",
-   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12441.573203459599) \u2014 this row's verdict is not derived from any measurement",
+   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12495.713809240218) \u2014 this row's verdict is not derived from any measurement",
    "value": "OPEN",
    "rule": null
   },
@@ -576,44 +536,40 @@
    "name": "high_weight_measured",
    "row": "Implied effective permittivity (physics sanity)",
    "verdict": "PASS",
-   "why": "current value comes from ce-rf, not from a typed literal",
-   "value": 0.9657320345959884,
+   "why": "current value 1.5071380924021751 was READ from ce-rf, not typed into the spec file",
+   "value": 1.5071380924021751,
    "rule": null
   },
   {
    "name": "source_verdict_passes",
    "row": "Implied effective permittivity (physics sanity)",
    "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate verdict.json says FAIL (failing: gain_dBi) yet this row reads OPEN",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads OPEN",
    "value": "FAIL",
    "rule": null
   },
   {
    "name": "solver_converged",
    "row": "Implied effective permittivity (physics sanity)",
-   "verdict": "CANNOT DETERMINE",
-   "why": "halo-rim-ifa-low-loss-laminate records no solver_converged value \u2014 the run cannot be shown to have finished, and this row reads OPEN",
-   "value": null,
-   "rule": {
-    "gte": 1
-   }
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
   },
   {
    "name": "physics_floor",
    "row": "Implied effective permittivity (physics sanity)",
-   "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate eps_eff_implied = 0.9657 < 1.0. A dielectric cannot speed a wave up: the reported resonance is ABOVE the free-space quarter-wave frequency of the antenna's own arm, which is impossible. The spec's own floor of 0.64 admits it; a physical law is not a tolerance",
-   "value": 0.9657,
-   "rule": {
-    "gte": 1.0
-   }
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
   },
   {
    "name": "source_is_fresh",
    "row": "Implied effective permittivity (physics sanity)",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
-   "value": -23026.9,
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
    "rule": {
     "gte": 0
    }
@@ -636,20 +592,104 @@
   },
   {
    "name": "row_can_change_state",
-   "row": "Antenna substrate effective permittivity used for length",
+   "row": "Antenna in-band match",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Antenna in-band match",
+   "verdict": "PASS",
+   "why": "current value -6.224815307373618 was READ from ce-rf, not typed into the spec file",
+   "value": -6.224815307373618,
+   "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Antenna in-band match",
    "verdict": "FAIL",
-   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12502.3) \u2014 this row's verdict is not derived from any measurement",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads MATCH",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Antenna in-band match",
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
+  },
+  {
+   "name": "physics_floor",
+   "row": "Antenna in-band match",
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Antenna in-band match",
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
+   "rule": {
+    "gte": 0
+   }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Solver convergence on the antenna case",
+   "verdict": "FAIL",
+   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12345.0) \u2014 this row's verdict is not derived from any measurement",
    "value": "OPEN",
    "rule": null
   },
   {
    "name": "high_weight_measured",
-   "row": "Antenna substrate effective permittivity used for length",
+   "row": "Solver convergence on the antenna case",
    "verdict": "PASS",
-   "why": "current value is a literal typed into spec/convergence.json (weight 5, state OPEN); no tool produced it and it cannot disagree with its target",
-   "value": 1.573,
+   "why": "current value 0.0 was READ from ce-rf, not typed into the spec file",
+   "value": 0.0,
    "rule": null
+  },
+  {
+   "name": "source_verdict_passes",
+   "row": "Solver convergence on the antenna case",
+   "verdict": "CANNOT DETERMINE",
+   "why": "halo-rev-a-2g4 verdict.json says FAIL (failing: solver_converged, f_series_res_GHz, radiation_efficiency_physical, gain_dBi) yet this row reads OPEN",
+   "value": "FAIL",
+   "rule": null
+  },
+  {
+   "name": "solver_converged",
+   "row": "Solver convergence on the antenna case",
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 solver_converged = 0.0: the solve did not converge",
+   "value": 0.0,
+   "rule": null
+  },
+  {
+   "name": "physics_floor",
+   "row": "Solver convergence on the antenna case",
+   "verdict": "PASS",
+   "why": "halo-rev-a-2g4 eps_eff_implied = 1.5071 >= 1.0",
+   "value": 1.5071,
+   "rule": null
+  },
+  {
+   "name": "source_is_fresh",
+   "row": "Solver convergence on the antenna case",
+   "verdict": "FAIL",
+   "why": "halo-rev-a-2g4 measurements.json is 23854 s OLDER than its spec",
+   "value": -23853.9,
+   "rule": {
+    "gte": 0
+   }
   }
  ],
- "command": "python3 tools/check_convergence.py --quiet --json out/verify/convergence-integrity.json"
+ "command": "python3 tools/check_convergence.py --json out/verify/convergence-integrity.json --quiet"
 }
