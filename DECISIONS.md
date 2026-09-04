@@ -467,3 +467,130 @@ unauthenticated and is the only usable free-text search over the LCSC catalogue,
 but its stock figures are JLC assembly stock and it **retains delisted parts**.
 Always re-verify a part number against LCSC's own detail endpoint before trusting
 it.
+
+---
+
+## D21 — controlled impedance: 0.127 mm is 51.9 Ω, and JLCPCB will not sell it at 0.60 mm (lane B1, 2026-09-05)
+
+**The premise this lane inherited was wrong.** The open item read *"a 50 Ω
+microstrip needs 0.086 mm on this stack, below the process floor"*. It does not.
+0.086 mm came from a dielectric height nobody had retrieved —
+`electronics/README.md` §11 says so in as many words: *"the fab's 0.60 mm
+4-layer dielectric heights were never retrieved."* Retrieved now, from the two
+houses that publish them.
+
+### What a 0.60 mm four-layer board actually is
+
+| house | 0.60 mm 4-layer offered? | impedance CONTROLLED at 0.60 mm? | L1→L2 dielectric |
+|---|---|---|---|
+| **JLCPCB** | yes, as a thickness | **NO** | not published |
+| **PCBWay** | yes, six published builds | yes | **0.0855 – 0.1375 mm**, set by inner-layer residual copper |
+| Eurocircuits | no — defined-impedance pool is 1.00 and 1.55 mm only | — | — |
+
+JLCPCB's own impedance stackup page and the thickness dropdown in its own
+impedance calculator both list **0.8 / 1.0 / 1.2 / 1.6 / 2.0 mm and nothing
+else** for four layers; every published 4-layer stackup they carry is
+`JLC04161H-*`, i.e. 1.6 mm. They will *build* 0.60 mm four-layer — it is on the
+capabilities page — they simply do not publish or control the stackup there.
+<https://jlcpcb.com/impedance> · <https://cart.jlcpcb.com/client/template/placeOrder/impedanceCalculation.html>
+
+PCBWay publishes the build sheet, and **the height is a function of the inner
+layers' residual copper ratio**, not of the order:
+<https://www.pcbway.com/multi-layer-laminated-structure.html>
+
+| PCBWay build | inner residual | L1→L2 prepreg | pressed h | Dk |
+|---|---|---|---|---|
+| #35 | 70 % | 3313 RC58% | **0.0925 mm** | 4.45 |
+| #36 | 50 % | 3313 RC58% | 0.0855 mm | 4.45 |
+| #112 | 30 % | 2 × 1080 RC68% | 0.1375 mm | 4.21 |
+
+### The number, computed two ways because one formula is not a measurement
+
+| build | h | Dk | w for 50 Ω | **Z0 at the board's 0.127 mm** |
+|---|---|---|---|---|
+| #35 | 0.0925 | 4.45 | 0.1378 mm | **51.93 Ω** (Hammerstad–Jensen) · **50.26 Ω** (IPC-2141) |
+| #36 | 0.0855 | 4.45 | 0.1254 mm | 49.70 Ω · 47.44 Ω |
+| #112 | 0.1375 | 4.21 | 0.2299 mm | 65.37 Ω · 65.87 Ω |
+
+Two independent closed forms, 1.7 Ω apart on the chosen build. The solver was
+sanity-checked against a case with a published answer — bare 2-layer, h 1.5 mm,
+εr 4.5 → 2.754 mm for 50 Ω, inside the textbook 2.7–2.9 mm band.
+
+### The decision
+
+1. **The RF trace stays at 0.127 mm.** It is the netclass width already, it is
+   what the QFN-48's 0.40 mm pitch escape needs anyway, and on PCBWay build #35
+   it is **51.9 Ω bare, about 49–50 Ω under solder mask** (green mask pulls
+   1.5–2.5 Ω out of a line this thin). 50 Ω is REACHABLE on this stack; nothing
+   has to be restacked and no process floor is crossed. JLCPCB's multilayer
+   minimum is 0.09 / 0.09 mm and 0.127 mm is standard-price — the +20 % of
+   order-value surcharge starts below 0.0889 mm (3.5 mil).
+2. **A controlled-impedance order goes to PCBWay, build #35, named in writing.**
+   Not JLCPCB, which cannot sell impedance control at this thickness at all.
+3. **If the board is built at JLCPCB anyway, THE IMPEDANCE IS UNCONTROLLED and
+   the number to hand the factory is a range, not a value: 47 – 66 Ω.** That is
+   the spread of the same 0.127 mm trace across the three real builds above.
+
+### What the uncontrolled case costs the match, measured rather than waved at
+
+At the worst corner (65.4 Ω into a 50 Ω system) the reflection coefficient is
+Γ = 0.133: **return loss 17.5 dB, 1.8 % of the power reflected, 0.077 dB of
+mismatch loss.** That is small in amplitude and the pi network C20/L10/C21
+exists precisely to absorb it. What it is NOT small in is PHASE: the guided
+wavelength here is about 68 mm, so the ~8 mm feed run is 0.12 λ and rotates the
+impedance it presents by roughly 85°. **A pi network tuned on one build lands
+somewhere else on another.** So the real cost is not decibels, it is that the
+match must be re-tuned per fabrication house, and the tuning cannot be
+transferred.
+
+Separately and independently of the stackup: JLCPCB's **track width tolerance
+is ±20 %**, so a 0.127 mm line ships 0.102–0.152 mm, which on this stack is
+**57.2 – 47.6 Ω, ±10 % on its own** — the same as the ±10 % impedance tolerance
+a controlled-impedance order would have bought.
+
+### Still open, and named
+
+- **εr 4.45 is PCBWay's published figure for 3313 RC58% and NO TEST FREQUENCY
+  IS STATED**, by either house. At 2.44 GHz the real value is lower than a
+  1 MHz figure. JLCPCB's own two pages disagree with each other about the same
+  prepregs (7628 as 4.4 on one page and 4.6 on another), which is a fair
+  measure of how much these numbers are worth.
+- The 51.9 Ω is a closed form of the ±10 % accuracy class, not a 2D field
+  solve and not a TDR. **A number for a factory quote comes from the fab's own
+  calculator against a named stackup.** This one is what to ask them to confirm.
+
+## D22 — the passives stay 0201, and the reason is height, not money (lane B1, 2026-09-05)
+
+Lane S1 measured that **zero of the 9,030 0201 parts in the LCSC catalogue is a
+JLCPCB Basic part**, while 0402 has 51 and 0603 has 118. Every 0201 line
+therefore carries the $3.07 per-order feeder fee, and this board carries **20 of
+them = $61.40 per order** (`docs/SOURCING.md`). Moving the passives to 0402
+would delete most of that.
+
+**It cannot be done, and the reason is in `height_check()` on every build.**
+Lane M's stack (`design.py`, D17) allows **0.400 mm** on the top face inside
+Ø21.2 mm — the moving gap the piezo bender needs. An 0201 body is 0.33 mm and
+fits with 0.07 mm to spare. **An 0402 body is 0.55 mm and misses by 0.15 mm.**
+Twenty-two of the parts in question sit in exactly that circle. Converting them
+to 0402 does not cost money, it costs the sounder: the bender's diaphragm
+touches the tallest part and stops moving.
+
+The four 0402s already on the board (C9–C12, the 10 µF bulk) are on the BOTTOM
+face over the cell, where the allowance is 0.578 mm — they clear by 0.028 mm,
+and they are also **the only JLCPCB Basic part on this board**.
+
+**The fee is per ORDER, not per unit, and that is what settles the money half.**
+
+| build quantity | $61.40 amortised |
+|---|--:|
+| 10 | $6.140 / unit |
+| 100 | $0.614 / unit |
+| 1,000 | $0.061 / unit |
+| 10,000 | $0.006 / unit |
+
+Against a $6.09/unit bill of materials at 1k, the feeder fee is **1.0 % at the
+volume this product is for** and 100 % of the argument at ten. A partner factory
+building thousands pays it once. So: **0201 stays**, the $61.40 is a
+prototype-run cost recorded rather than absorbed, and anyone quoting a ten-piece
+run should be told the per-unit figure doubles for that reason alone.
+
