@@ -120,6 +120,68 @@ Two traps it hit on its own first run, both worth knowing:
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
 
+## The fourth direction: a channel carrying two kinds of content where the reader expects one
+
+*Added 2026-09-05 by lane B1. The sharpest of the three defects that session,
+and the only one with no wrong number in it anywhere.*
+
+`ce-pcb/bin/route --json > route-run.json` does not produce JSON.
+
+Nothing in that sentence is a bug in `route`. It builds a report, calls
+`json.dumps`, and prints it. But the DSN export and the SES import run inside
+**pcbnew**, whose wxWidgets layer writes lines like
+
+```
+06:43:41 AM: Debug: Adding duplicate image handler for 'PNG file'
+```
+
+to **stdout, from C++**, where no Python-level redirect reaches them. So the
+file is forty lines of noise followed by a valid JSON document, and
+`json.load` answers `Extra data: line 1 column 2 (char 1)`.
+
+**What that cost.** The caller was a shell line:
+
+```bash
+SES="$(python3 -c "...json.load(...)['ses']" "$VERIFY/route-run.json")"
+```
+
+`$( )` swallowed the traceback, `$SES` came back **empty**, the `--dsn`
+argument was never passed, and `check_routed` graded a freshly routed board
+**without the interchange file its tolerance comes from**. Its two
+protected-copper assertions reported CANNOT DETERMINE — correctly, and for a
+reason that had nothing whatever to do with the board. Every other row passed.
+A reader skimming that report would have seen eight greens and two shrugs and
+concluded the antenna had not been checked because it *could* not be, rather
+than because a debug line from a graphics toolkit had eaten the argument.
+
+**Why it belongs on this page.** It is the same family as the rest and the
+giveaway is new. Elsewhere: a wrong number, or a capability nobody called.
+Here the number is right, the tool is right, the caller is right, and the
+**medium** is wrong — one stream carrying two kinds of content, where the
+reader was built expecting one. It fails silently by construction, because
+every participant is behaving correctly.
+
+**The rule.** **Never parse a stream that something else can also write to.**
+Machine-readable output goes to a **file the producer names**, or to a stream
+nothing else touches. `--json > file` is a request for trouble the moment any
+dependency links a C or C++ library, and you rarely know which ones do.
+`route` now takes `--json-out PATH` and writes the report there, where no
+library can reach it.
+
+Three cheap habits that come with it:
+
+1. **A flag that emits structured data should write a file, not a stream.**
+   If it must use a stream, use stderr for logs and stdout for data *and say
+   so*, then check that the dependencies honour it — measure, do not assume.
+2. **Never let `$( )` swallow a parse.** The shell hands you an empty string
+   and carries on. `route_board.sh` now REFUSES when the SES path comes back
+   empty or names a file that is not there, and says why.
+3. **An argument that silently defaults to absent is a hazard.** The reason
+   this was caught at all is that `check_routed` treats a missing `--dsn` as
+   CANNOT DETERMINE rather than picking a tolerance. Had it defaulted to a
+   plausible number, the board would have been graded against an invented
+   limit and the row would have been green.
+
 ## The third direction: a fix that was correct, and was never wired in
 
 *Added 2026-09-05 by lane B1. Distinct from everything above, and the giveaway
