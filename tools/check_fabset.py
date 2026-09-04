@@ -20,7 +20,8 @@ tool. Two independent readings that agree are worth more than one that passes.
 Exit codes are the verdict: 0 PASS · 1 FAIL · 2 CANNOT DETERMINE.
 A check that could not be evaluated is 2 and 2 is never a pass.
 
-The eleven assertions, each with the sentence it defeats:
+The fifteen assertions below, each with the sentence it defeats
+(F12 outline_is_round is a sixteenth, evaluated only with --round):
 
   F1  job_file_parses        could PASS while the set is a pile of files no fab can index
   F2  layer_count            could PASS while a four-layer board shipped two copper files
@@ -29,6 +30,10 @@ The eleven assertions, each with the sentence it defeats:
   F5  apertures_defined      could PASS while a file references a D-code it never defined
   F6  drill_has_hits         could PASS while the drill file has no holes at all   <-- the live defect
   F7  drill_covers_board     could PASS while the drill file has holes but not OUR holes
+  F13 drill_files_declare_class  could PASS while PTH and NPTH were told apart by FILENAME
+  F14 drill_pth_count_exact  could PASS while the PTH file has MORE holes than the board has
+  F15 drill_npth_count_exact could PASS while NPTH holes were counted in the plated total
+  F16 drill_sizes_match      could PASS while every hole is drilled at the wrong diameter
   F8  outline_has_extent     could PASS while the board outline is a single point
   F9  outline_matches_spec   could PASS while the board is 26 mm and the spec says 31.87 mm
   F10 zip_matches_disk       could PASS while the zip a fab downloads differs from what we checked
@@ -115,6 +120,141 @@ def drill_hits(text):
         if line[0] in "XY":
             n += 1
     return n
+
+
+def drill_class(text):
+    """PTH or NPTH, read from the FILE'S OWN declaration — never its name.
+
+    Excellon files KiCad writes carry `TF.FileFunction,Plated,1,4,PTH` or
+    `...,NonPlated,1,4,NPTH` in the header. That is the file saying what it is.
+    A check that split the two by looking for "NPTH" in the filename would
+    grade a mislabelled export as correct, which is the whole failure mode
+    this file exists for: the file existing is not the file describing the
+    board. Returns None when the file does not say, and None is not a guess.
+    """
+    m = re.search(r"TF\.FileFunction,(\w+),[^\n]*", text)
+    if not m:
+        return None
+    kind = m.group(1).lower()
+    if kind.startswith("nonplated"):
+        return "NPTH"
+    if kind.startswith("plated"):
+        return "PTH"
+    return None
+
+
+def drill_holes_by_size(text):
+    """-> (total, {diameter_mm: count}, n_slots, note)
+
+    Walks the Excellon body carrying the SELECTED TOOL forward, so every hole
+    is attributed to the diameter it is actually drilled at. Units come from
+    the file's own METRIC/INCH line; an INCH file is converted, because a
+    diameter comparison across units is a comparison of nothing.
+
+    A routed slot (`G85`) is one hole for counting purposes and is reported
+    separately, so a board with slots cannot silently inflate the plain-hole
+    count.
+    """
+    inch = bool(re.search(r"^INCH", text, re.M)) and not re.search(r"^METRIC", text, re.M)
+    k = 25.4 if inch else 1.0
+    tools = {}
+    for m in DRILL_TOOL_RE.finditer(text):
+        tools[m.group(1).lstrip("0") or "0"] = round(float(m.group(2)) * k, 4)
+    body = text.split("\n%\n", 1)
+    body = body[1] if len(body) == 2 else text
+    sizes, cur, slots, total = {}, None, 0, 0
+    for line in body.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        mt = re.match(r"^T(\d+)$", line)
+        if mt:
+            n = mt.group(1).lstrip("0") or "0"
+            cur = tools.get(n)
+            continue
+        if line.startswith(("M", "G9", "G0", ";", "%", "T")):
+            # G85 slots are written as `X..Y..G85X..Y..`; catch those below.
+            if "G85" not in line:
+                continue
+        if line[0] not in "XY":
+            continue
+        total += 1
+        if "G85" in line:
+            slots += 1
+        if cur is None:
+            sizes.setdefault(None, 0)
+            sizes[None] += 1
+        else:
+            sizes[cur] = sizes.get(cur, 0) + 1
+    note = ""
+    if None in sizes:
+        note = (f"{sizes[None]} hole(s) appear before any T-code selection, so "
+                f"their diameter is unknown")
+    return total, sizes, slots, note
+
+
+def board_holes_by_size(board_path):
+    """The board's own holes, by class and diameter, read as text.
+
+    Independent of the exporter on purpose (docs/TOOLS-THAT-LIE.md item 5):
+    the .kicad_pcb is a different artifact written by a different tool, so if
+    it and the Excellon agree on 49 holes at 0.250 mm, two readers agree.
+
+    A via is a plated hole. A `thru_hole` pad is a plated hole. An
+    `np_thru_hole` pad is a NON-plated hole and belongs in the NPTH file, not
+    in the plated total — lumping them was how the old `>= board holes` rule
+    could pass with the two files swapped.
+    """
+    t = read(board_path)
+    plated, nonplated, oval = {}, {}, 0
+
+    def add(d, dia):
+        dia = round(float(dia), 4)
+        d[dia] = d.get(dia, 0) + 1
+
+    # vias: (via ... (drill D) ...) — the drill token inside the via's own block
+    for m in re.finditer(r"\(via\b", t):
+        blk = _sexp_block(t, m.start())
+        dm = re.search(r"\(drill\s+([\d.]+)", blk)
+        if dm:
+            add(plated, dm.group(1))
+        else:
+            add(plated, 0.0)
+    for kind, bucket in (("thru_hole", plated), ("np_thru_hole", nonplated)):
+        for m in re.finditer(r'\(pad\s+"[^"]*"\s+%s\b' % kind, t):
+            blk = _sexp_block(t, m.start())
+            dm = re.search(r"\(drill\s+(oval\s+)?([\d.]+)", blk)
+            if dm:
+                if dm.group(1):
+                    oval += 1
+                add(bucket, dm.group(2))
+            else:
+                add(bucket, 0.0)
+    return {"plated": plated, "nonplated": nonplated, "oval_pads": oval,
+            "plated_total": sum(plated.values()),
+            "nonplated_total": sum(nonplated.values())}
+
+
+def _sexp_block(text, start):
+    """The balanced s-expression beginning at `start`, capped so a runaway
+    scan cannot swallow the file. Used to keep a via's `(drill ...)` attached
+    to that via instead of to whatever token happened to come next."""
+    depth, i, n = 0, start, len(text)
+    while i < n and i - start < 4000:
+        c = text[i]
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start:i + 1]
+        i += 1
+    return text[start:start + 4000]
+
+
+def _sizes_str(d):
+    return ", ".join(f"{k if k is not None else 'unknown'}mm x{v}"
+                     for k, v in sorted(d.items(), key=lambda kv: (kv[0] is None, kv[0])))
 
 
 def parse_ts(s):
@@ -284,11 +424,102 @@ def main():
     else:
         bh = board_hole_count(a.board)
         need = bh["plated_total"] + bh["nonplated_total"]
-        rows.append(row("drill_covers_board", total_hits, {"gte": need},
+        rows.append(row("drill_covers_board", total_hits, {"eq": need},
                         f"source board has {bh['vias']} via(s) + {bh['thru_hole_pads']} thru-hole "
                         f"pad(s) + {bh['np_thru_hole_pads']} NPTH pad(s) = {need} hole(s) that must "
-                        f"be drilled; the drill file(s) carry {total_hits}",
-                        PASS if total_hits >= need else FAIL, "holes"))
+                        f"be drilled; the drill file(s) carry {total_hits}"
+                        + ("" if total_hits == need else
+                           f" — a difference of {total_hits - need:+d}. `>=` was the old rule "
+                           f"and it would have graded a drill file from a DIFFERENT board as "
+                           f"covering this one"),
+                        PASS if total_hits == need else FAIL, "holes"))
+
+    # ---- F13/F14/F15/F16 the drill files must DESCRIBE THIS BOARD ----------
+    # `drill_covers_board` above answers "are there at least as many holes as
+    # the board needs, in total". That was never the same question as "is this
+    # the drill program for this board". Four things it cannot see:
+    #   * PTH and NPTH told apart by FILENAME rather than by the file's own
+    #     TF.FileFunction — swap the two names and the total is unchanged;
+    #   * MORE holes than the board has, which a `>=` rule reads as covered;
+    #   * NPTH pads counted inside the plated total;
+    #   * every hole drilled at the wrong DIAMETER, which no count can see.
+    # Measured on halo_rev_a 2026-09-05: 49 vias + 0 thru-hole pads, all at
+    # 0.250 mm, against PTH.drl 49 holes all T1C0.250, NPTH.drl 0 holes.
+    by_class = {}
+    unnamed = []
+    for pth in drills:
+        txt = read(pth)
+        cls = drill_class(txt)
+        if cls is None:
+            unnamed.append(pth.name)
+        by_class.setdefault(cls, []).append((pth.name, txt))
+    rows.append(row("drill_files_declare_class", len(drills) - len(unnamed),
+                    {"eq": len(drills)},
+                    (f"every drill file states its own function: "
+                     + "; ".join(f"{n}={c}" for c, v in by_class.items() for n, _ in v))
+                    if not unnamed else
+                    (f"{len(unnamed)} drill file(s) carry no TF.FileFunction and were "
+                     f"NOT classified by filename: {', '.join(unnamed)}"),
+                    PASS if not unnamed and drills else (CD if not drills else FAIL),
+                    "files"))
+
+    if not a.board or not pathlib.Path(a.board).is_file():
+        for nm in ("drill_pth_count_exact", "drill_npth_count_exact", "drill_sizes_match"):
+            rows.append(row(nm, None, {},
+                            "no readable --board: nothing to compare the drill program to",
+                            CD, "holes"))
+    else:
+        bsz = board_holes_by_size(a.board)
+        got = {}
+        for cls in ("PTH", "NPTH"):
+            tot, sizes, slots, note = 0, {}, 0, []
+            for nm, txt in by_class.get(cls, []):
+                tt, ss, sl, nt = drill_holes_by_size(txt)
+                tot += tt
+                slots += sl
+                for k, v in ss.items():
+                    sizes[k] = sizes.get(k, 0) + v
+                if nt:
+                    note.append(f"{nm}: {nt}")
+            got[cls] = {"files": [nm for nm, _ in by_class.get(cls, [])],
+                        "holes": tot, "sizes": sizes, "slots": slots,
+                        "note": "; ".join(note)}
+
+        want_p = bsz["plated_total"]
+        rows.append(row("drill_pth_count_exact", got["PTH"]["holes"], {"eq": want_p},
+                        f"board declares {want_p} plated hole(s) "
+                        f"({bsz['plated_total']} = vias + thru-hole pads); the file(s) that "
+                        f"DECLARE THEMSELVES PTH ({', '.join(got['PTH']['files']) or 'none'}) "
+                        f"carry {got['PTH']['holes']}"
+                        + (f", of which {got['PTH']['slots']} slot(s)" if got["PTH"]["slots"] else "")
+                        + (". " + got["PTH"]["note"] if got["PTH"]["note"] else ""),
+                        PASS if got["PTH"]["holes"] == want_p else FAIL, "holes"))
+
+        want_n = bsz["nonplated_total"]
+        rows.append(row("drill_npth_count_exact", got["NPTH"]["holes"], {"eq": want_n},
+                        f"board declares {want_n} non-plated hole(s) (np_thru_hole pads); the "
+                        f"file(s) that DECLARE THEMSELVES NPTH "
+                        f"({', '.join(got['NPTH']['files']) or 'none'}) carry "
+                        f"{got['NPTH']['holes']}"
+                        + (". A board with no NPTH pads must ship an NPTH file with no holes, "
+                           "not an NPTH file carrying the plated ones"
+                           if want_n == 0 else ""),
+                        PASS if got["NPTH"]["holes"] == want_n else FAIL, "holes"))
+
+        mism = []
+        for cls, want in (("PTH", bsz["plated"]), ("NPTH", bsz["nonplated"])):
+            have = {k: v for k, v in got[cls]["sizes"].items()}
+            w = {round(k, 3): v for k, v in want.items()}
+            h = {round(k, 3) if k is not None else None: v for k, v in have.items()}
+            if w != h:
+                mism.append(f"{cls}: board {_sizes_str(w) or 'none'} vs file "
+                            f"{_sizes_str(h) or 'none'}")
+        rows.append(row("drill_sizes_match", len(mism), {"eq": 0},
+                        "every hole diameter in the drill program matches a hole the board "
+                        f"declares — PTH {_sizes_str(bsz['plated']) or 'none'}, "
+                        f"NPTH {_sizes_str(bsz['nonplated']) or 'none'}"
+                        if not mism else "; ".join(mism),
+                        PASS if not mism else FAIL, "mismatched size classes"))
 
     # ---- F8/F9 outline ------------------------------------------------------
     prof = [p for p in gerbers if p.suffix.lower() in (".gm1", ".gko")

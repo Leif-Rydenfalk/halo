@@ -1,10 +1,10 @@
 {
  "$halo": 1,
  "tool": "tools/prove_checks.py",
- "generated": "2026-09-04T14:14:14+00:00",
+ "generated": "2026-09-04T21:51:24+00:00",
  "target": "tools/check_fabset.py",
- "assertions": 25,
- "proved_to_fire": 25,
+ "assertions": 29,
+ "proved_to_fire": 29,
  "unproven": 0,
  "verdict": "PASS",
  "cases": [
@@ -53,6 +53,34 @@
   {
    "assertion": "drill_covers_board",
    "mutation": "the drill file carries 1 hole against a board that declares 40 vias",
+   "verdict_after": "FAIL",
+   "proved": true,
+   "why": "FAIL as required"
+  },
+  {
+   "assertion": "drill_files_declare_class",
+   "mutation": "TF.FileFunction is deleted from the PTH file \u2014 nothing but the filename says it is plated",
+   "verdict_after": "FAIL",
+   "proved": true,
+   "why": "FAIL as required"
+  },
+  {
+   "assertion": "drill_pth_count_exact",
+   "mutation": "one extra coordinate is added to the PTH file \u2014 1 hole more than the board has",
+   "verdict_after": "FAIL",
+   "proved": true,
+   "why": "FAIL as required"
+  },
+  {
+   "assertion": "drill_npth_count_exact",
+   "mutation": "every plated hole is moved into the NPTH file \u2014 the total is unchanged, the classes are swapped",
+   "verdict_after": "FAIL",
+   "proved": true,
+   "why": "FAIL as required"
+  },
+  {
+   "assertion": "drill_sizes_match",
+   "mutation": "the PTH tool is redefined 0.800 mm \u2014 every hole at the wrong diameter, count unchanged",
    "verdict_after": "FAIL",
    "proved": true,
    "why": "FAIL as required"

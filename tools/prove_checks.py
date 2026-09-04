@@ -50,6 +50,19 @@ def _gerber(d, pat):
     return hits[0]
 
 
+def _pth(d):
+    r"""The PLATED drill file. `PTH\.drl$` also matches `...-NPTH.drl`, and
+    rglob order is the filesystem's, so the old pattern silently mutated the
+    NPTH file on this machine: `drill_has_hits` and `drill_npth_count_exact`
+    both reported SILENT for mutations that had been applied to the wrong
+    file. Measured 2026-09-05."""
+    return _gerber(d, r"(?<!N)PTH\.drl$")
+
+
+def _npth(d):
+    return _gerber(d, r"NPTH\.drl$")
+
+
 def m_break_job(d, b):
     _gerber(d, r"\.gbrjob$").write_text("{ this is not json")
     return "the .gbrjob is replaced with text that is not JSON"
@@ -95,7 +108,7 @@ def m_empty_drill(d, b):
     starts from a synthesised drill file WITH holes, confirms the check passes,
     then removes the holes.
     """
-    p = _gerber(d, r"PTH\.drl$")
+    p = _pth(d)
     p.write_text("M48\n; synthetic\nFMAT,2\nMETRIC\n%\nG90\nG05\nM30\n")
     return "the PTH drill file's holes are removed, leaving header and M30"
 
@@ -109,7 +122,7 @@ def m_drill_short_of_board(d, b):
     file carrying one — the shape of a drill export that ran but dropped most
     of its holes.
     """
-    p = _gerber(d, r"PTH\.drl$")
+    p = _pth(d)
     p.write_text("M48\n; synthetic\nFMAT,2\nMETRIC\nT01C0.300\n%\nG90\nG05\nT01\n"
                  "X1.000Y1.000\nT00\nM30\n")
     b.write_text(b.read_text() + "\n" + "\n".join(
@@ -177,6 +190,45 @@ def m_oval_outline(d, b):
     return "the outline is stretched 15% in X only — a round board turned into an oval"
 
 
+def m_drill_one_extra_hole(d, b):
+    """F14: one hole MORE than the board has. The old `>=` rule read this as
+    covered — it is how a drill program cut from a previous revision of the
+    board passes a check that only asks whether there is enough drilling."""
+    p = _pth(d)
+    t = p.read_text()
+    t = t.replace("\nT00\nM30", "\nX99.000Y99.000\nT00\nM30")
+    p.write_text(t)
+    return "one extra coordinate is added to the PTH file — 1 hole more than the board has"
+
+
+def m_drill_wrong_tool_size(d, b):
+    """F16: every hole in the right place, drilled at the wrong diameter."""
+    p = _pth(d)
+    t = re.sub(r"^T(\d+)C[\d.]+", lambda m: f"T{m.group(1)}C0.800", p.read_text(), flags=re.M)
+    p.write_text(t)
+    return "the PTH tool is redefined 0.800 mm — every hole at the wrong diameter, count unchanged"
+
+
+def m_drill_no_file_function(d, b):
+    """F13: the file stops saying what it is, so only its NAME claims PTH."""
+    p = _pth(d)
+    t = re.sub(r"^.*TF\.FileFunction.*\n", "", p.read_text(), flags=re.M)
+    p.write_text(t)
+    return "TF.FileFunction is deleted from the PTH file — nothing but the filename says it is plated"
+
+
+def m_drill_class_swapped(d, b):
+    """F15: the plated holes are written into the file that declares itself
+    NPTH. Both files exist, the TOTAL hole count is unchanged, and a check
+    that adds the two together cannot see it."""
+    pth = _pth(d)
+    npth = _npth(d)
+    body = pth.read_text()
+    npth.write_text(body.replace("Plated,1,4,PTH", "NonPlated,1,4,NPTH"))
+    pth.write_text("M48\n; #@! TF.FileFunction,Plated,1,4,PTH\nFMAT,2\nMETRIC\n%\nG90\nG05\nM30\n")
+    return "every plated hole is moved into the NPTH file — the total is unchanged, the classes are swapped"
+
+
 CASES = [
     ("job_file_parses",      m_break_job,             []),
     ("layer_count",          m_drop_a_copper_layer,   []),
@@ -185,6 +237,10 @@ CASES = [
     ("apertures_defined",    m_undefined_aperture,    []),
     ("drill_has_hits",       m_empty_drill,           []),
     ("drill_covers_board",   m_drill_short_of_board,  []),
+    ("drill_files_declare_class", m_drill_no_file_function, []),
+    ("drill_pth_count_exact",  m_drill_one_extra_hole,  []),
+    ("drill_npth_count_exact", m_drill_class_swapped,   []),
+    ("drill_sizes_match",      m_drill_wrong_tool_size, []),
     ("outline_has_extent",   m_point_outline,         []),
     ("outline_matches_spec", m_wrong_size_outline,    ["--expect-outline-mm", "26.0"]),
     ("zip_matches_disk",     m_zip_truncated_member,  []),
@@ -351,17 +407,30 @@ def main():
     base = pathlib.Path(tempfile.mkdtemp(prefix="halo-fabset-base-"))
     shutil.copytree(FABSET, base / "board")
     good = base / "board"
-    pth = next(p for p in good.rglob("*PTH.drl"))
+    pth = _pth(good)
     # As many holes as the CURRENT board needs. A fixed 8 was enough when the
     # board was unrouted; lane B1 has since routed it to 66 vias, and a control
     # that is already FAIL cannot be shown to go red — the harness said so and
     # skipped drill_covers_board rather than claiming a proof it could not make.
+    # EXACTLY as many holes as the board has vias, at EXACTLY the board's via
+    # drill diameter. A fixed 8 was enough while drill_covers_board only asked
+    # `>=`; the four exact assertions added 2026-09-05 (count per declared
+    # class, and diameter) make a fixture with the wrong count or the wrong
+    # tool a control that is already red, and a check already red cannot be
+    # shown to go red. The via drill is re-read here with its own regex rather
+    # than imported from the checker, so a bug in the checker's board reader
+    # cannot quietly build a fixture that agrees with it.
     import re as _re
-    _n = max(8, len(_re.findall(r"\(via\b", BOARD.read_text())) + 4)
+    _btxt = BOARD.read_text()
+    _n = len(_re.findall(r"\(via\b", _btxt))
+    _dias = _re.findall(r"\(via\b[^()]*(?:\([^()]*\)[^()]*)*?\(drill\s+([\d.]+)", _btxt)
+    _dia = float(_dias[0]) if _dias else 0.25
     holes = "\n".join(f"X{1.0 + 0.5 * i:.3f}Y2.000" for i in range(_n))
     pth.write_text("M48\n; synthetic, prove_checks.py\n"
                    "; #@! TF.CreationDate,2026-09-04T18:29:08+08:00\n"
-                   "FMAT,2\nMETRIC\nT01C0.300\n%\n"
+                   "; #@! TF.FileFunction,Plated,1,4,PTH\n"
+                   "FMAT,2\nMETRIC\n"
+                   f"T01C{_dia:.3f}\n%\n"
                    "G90\nG05\nT01\n" + holes + "\nT00\nM30\n")
     rebuild_zip(good)
 
