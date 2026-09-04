@@ -25,7 +25,20 @@ the exporter makes that are false about this board:
      of copper on this board whose shape was computed. `(type protect)` is the
      token that says do not touch.
 
-  4. The keying notches and rule areas: CHECKED, NOT ASSUMED. Lane T1 measured
+  4. THE FIDUCIALS HAVE NO CLEAR FIELD. FID1 and FID2 are optical targets for
+     the placement machine's camera, not electrical parts: they carry no net,
+     and what they need is not a net clearance but an area with NO COPPER IN
+     IT. The Specctra export sends them as ordinary pads, so the router treats
+     them as obstacles at the netclass clearance and routes right up to them.
+     MEASURED on the first successful autoroute (2026-09-05, 856 s, 10 passes):
+     four DRC errors, ALL FOUR at FID1/FID2 — a via 0.2017 mm from FID1's pad
+     against its own declared 0.35 mm, the same via breaking hole clearance,
+     that via and the pad bridged inside one solder-mask aperture, and an NFC2
+     track 0.3361 mm from FID2. Zero errors anywhere else on the board.
+     `fiducial_keepouts()` emits a real `(keepout)` circle on every copper
+     layer around each part the export marks `(PN FIDUCIAL)`.
+
+  5. The keying notches and rule areas: CHECKED, NOT ASSUMED. Lane T1 measured
      KiCad exporting every rule area as a full copper keepout regardless of its
      flags, which made freerouting route 0 of 11 nets in 923 s. On this board
      the export is `(via_keepout)` x4 and `(keepout)` x0 — the antenna ground
@@ -152,6 +165,72 @@ def renet_nfc(text, hints):
     return "\n".join(out), {"coil_wires_seen": seen, "renamed": moved}
 
 
+#: IPC-7351B: the clear area around a global fiducial is a radius of ONE
+#: FIDUCIAL DIAMETER measured from the fiducial's edge — for halo's 1.00 mm
+#: round fiducial that is a 1.00 mm clear radius, a 2.00 mm circle. This is a
+#: published number and not one tuned until the board passed: the board's own
+#: `(clearance 0.35)` would have needed only 0.85 mm, and clearing to the
+#: standard also separates the 1.27 mm mask apertures that the first autoroute
+#: bridged.
+FIDUCIAL_CLEAR_DIA_MM = 2.00
+
+#: Copper layers a fiducial keepout has to cover. A camera sees the outer
+#: layers, but copper on an inner layer under a fiducial still shows through a
+#: thin board as a shadow, and the placement machines that care about that are
+#: the ones this project is aimed at.
+COPPER_LAYERS = ("F.Cu", "In1.Cu", "In2.Cu", "B.Cu")
+
+
+def fiducial_keepouts(s, dia_mm=FIDUCIAL_CLEAR_DIA_MM, layers=COPPER_LAYERS):
+    """Give every `(PN FIDUCIAL)` part a real no-copper circle. -> (s, stats)
+
+    Specctra coordinates on this export are micrometres — the header says
+    `(resolution um 10)` and KiCad writes FID1 at 9716.607 for a pad the board
+    puts at 9.716607 mm — so the diameter goes in as `dia_mm * 1000`.
+
+    The keepout is inserted at the END of `(structure ...)`, beside the
+    via_keepouts KiCad already writes there, because that is where freerouting
+    reads them from. If the structure block cannot be found the function
+    RETURNS UNCHANGED AND SAYS SO in its stats rather than writing a keepout
+    somewhere freerouting will not look — a keepout in the wrong place is
+    indistinguishable, in the output file, from a board that needed none.
+    """
+    places = re.findall(r"\(place\s+(\S+)\s+([-\d.]+)\s+([-\d.]+)\s+\w+\s+"
+                        r"[-\d.]+\s+\(PN\s+FIDUCIAL\)", s)
+    if not places:
+        return s, {"fiducials": 0, "keepouts_added": 0,
+                   "why": "no part in the export carries (PN FIDUCIAL)"}
+    # end of the (structure ...) block
+    i = s.find("(structure")
+    if i < 0:
+        return s, {"fiducials": len(places), "keepouts_added": 0,
+                   "why": "no (structure ...) block; nothing written"}
+    depth, j = 0, i
+    while j < len(s):
+        if s[j] == "(":
+            depth += 1
+        elif s[j] == ")":
+            depth -= 1
+            if depth == 0:
+                break
+        j += 1
+    if depth != 0:
+        return s, {"fiducials": len(places), "keepouts_added": 0,
+                   "why": "the (structure ...) block does not close; nothing written"}
+    dia_um = dia_mm * 1000.0
+    out, refs = [], []
+    for ref, x, y in places:
+        refs.append(ref)
+        for lay in layers:
+            out.append('    (keepout "" (circle %s %.1f %s %s))'
+                       % (lay, dia_um, x, y))
+    s = s[:j] + "\n" + "\n".join(out) + "\n  " + s[j:]
+    return s, {"fiducials": len(places), "refs": refs,
+               "keepouts_added": len(out), "clear_diameter_mm": dia_mm,
+               "layers": list(layers),
+               "why": "IPC-7351B clear area, one fiducial diameter of no copper"}
+
+
 def report(s):
     return {
         "keepout": s.count("(keepout"),
@@ -163,7 +242,8 @@ def report(s):
     }
 
 
-def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None):
+def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None,
+        fiducials=True):
     before = report(text)
     s, n_lay = _layers_to_power(text)
     nfc = {}
@@ -171,6 +251,9 @@ def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None):
         s, nfc = renet_nfc(s, hints)
     s, n_prot = _protect_wires(s, set(protect) | set(PLANE_NETS))
     s, dropped = _drop_nets_from_network(s, drop) if drop else (s, [])
+    fid = {"fiducials": 0, "keepouts_added": 0, "why": "not requested"}
+    if fiducials:
+        s, fid = fiducial_keepouts(s)
     return s, {
         "before": before,
         "after": report(s),
@@ -178,6 +261,7 @@ def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None):
         "wires_protected": n_prot,
         "nets_dropped": dropped,
         "nfc": nfc,
+        "fiducial_keepouts": fid,
     }
 
 
@@ -202,3 +286,11 @@ if __name__ == "__main__":
                  "layer block is not the shape this expects, and a fix that "
                  "matched nothing is not a fix"
                  % (stats["plane_layers_retyped"], len(PLANE_LAYERS)))
+    f = stats["fiducial_keepouts"]
+    if f["fiducials"] and not f["keepouts_added"]:
+        sys.exit("REFUSED: %d fiducial(s) in the export and 0 keepouts written "
+                 "(%s). Every DRC error on the first successful autoroute of "
+                 "this board was copper crowding a fiducial; a filter that "
+                 "silently skips that step leaves a DSN indistinguishable from "
+                 "one that needed no fiducial keepouts"
+                 % (f["fiducials"], f.get("why")))

@@ -57,16 +57,27 @@ echo "== 0/3 the tools, asked of the tool that owns them"
 
 echo "== 1/3 route: export DSN -> dsnfix -> freerouting -> SES -> DRC"
 "$WS/ce-pcb/bin/route" "$BOARD" -o "$OUT" \
-  --dsn-filter "$FILTER" --passes "$PASSES" --timeout "$TIMEOUT"
+  --dsn-filter "$FILTER" --passes "$PASSES" --timeout "$TIMEOUT" \
+  --json > "$VERIFY/route-run.json"
 rc=$?
 if [ ! -f "$OUT" ]; then
   echo "FAIL: no routed board was written (route exit $rc)" >&2
+  sed -n '1,40p' "$VERIFY/route-run.json" >&2
   exit 2
 fi
+SES="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['ses'])" \
+        "$VERIFY/route-run.json")"
 
 echo "== 2/3 check_routed: is this still my board?"
+# --dsn is REQUIRED, not optional. The protected-net match tolerance is one
+# step of the interchange format's own (resolution ...), read out of the file
+# the copper actually travelled through. Without it check_routed reports
+# CANNOT DETERMINE rather than inventing a number — measured 2026-09-05, the
+# round trip moves a protected segment by up to 71 nm and an exact compare
+# called 235 surviving segments destroyed.
 python3 "$HALO/tools/check_routed.py" "$BOARD" "$OUT" \
-  --protect ANT_FEED,NFC1,NFC2 --json "$VERIFY/routed-check.json"
+  --protect ANT_FEED,NFC1,NFC2 --dsn "$SES" \
+  --json "$VERIFY/routed-check.json"
 crc=$?
 
 echo "== 3/3 verdict"
