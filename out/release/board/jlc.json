@@ -1,6 +1,6 @@
 {
   "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
-  "generated": "2026-09-04T18:27:38Z",
+  "generated": "2026-09-04T21:49:35Z",
   "out_dir": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
   "bom_lines": 23,
   "cpl_rows": 40,
@@ -20,82 +20,12 @@
   ],
   "notes": [
     {
-      "ref": "TP9",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP2",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP10",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "LS1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP3",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "FID2",
-      "verdict": "POS-ONLY",
-      "why": "exclude_from_bom: placed but not ordered"
-    },
-    {
-      "ref": "TP7",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP6",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP8",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "AE1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "J2",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP11",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
       "ref": "FID1",
       "verdict": "POS-ONLY",
       "why": "exclude_from_bom: placed but not ordered"
     },
     {
-      "ref": "TP4",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "J1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
-    },
-    {
-      "ref": "TP5",
+      "ref": "TP9",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
@@ -105,19 +35,79 @@
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
+      "ref": "J1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "LS1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
       "ref": "TP1",
       "verdict": "SKIPPED",
       "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C15",
-      "verdict": "DNP",
-      "why": "marked do-not-place; left out of both files"
+      "ref": "AE1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
-      "ref": "C16",
-      "verdict": "DNP",
-      "why": "marked do-not-place; left out of both files"
+      "ref": "TP7",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP11",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP10",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "FID2",
+      "verdict": "POS-ONLY",
+      "why": "exclude_from_bom: placed but not ordered"
+    },
+    {
+      "ref": "TP2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP3",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP8",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "J2",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP5",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP6",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "TP4",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
     },
     {
       "ref": "AE2",
@@ -130,14 +120,24 @@
       "why": "marked do-not-place; left out of both files"
     },
     {
+      "ref": "BT1",
+      "verdict": "SKIPPED",
+      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+    },
+    {
+      "ref": "C15",
+      "verdict": "DNP",
+      "why": "marked do-not-place; left out of both files"
+    },
+    {
       "ref": "C14",
       "verdict": "DNP",
       "why": "marked do-not-place; left out of both files"
     },
     {
-      "ref": "BT1",
-      "verdict": "SKIPPED",
-      "why": "footprint carries KiCad's exclude_from_pos attribute (a virtual/mechanical part)"
+      "ref": "C16",
+      "verdict": "DNP",
+      "why": "marked do-not-place; left out of both files"
     }
   ],
   "verdict": "FAIL",
@@ -308,23 +308,6 @@
     "disagree": 9,
     "rows": [
       {
-        "ref": "X1",
-        "verdict": "DISAGREE",
-        "dx_mm": 0.0,
-        "dy_mm": 0.0,
-        "drot_deg": 68.0,
-        "kicad": [
-          "7.196737",
-          "-9.085650",
-          "-56.000000"
-        ],
-        "cefab": [
-          7.1967,
-          -9.0856,
-          236.0
-        ]
-      },
-      {
         "ref": "C9",
         "verdict": "DISAGREE",
         "dx_mm": 0.0,
@@ -359,20 +342,20 @@
         ]
       },
       {
-        "ref": "X2",
+        "ref": "L1",
         "verdict": "DISAGREE",
         "dx_mm": 0.0,
         "dy_mm": 0.0,
-        "drot_deg": 60.0,
+        "drot_deg": 100.0,
         "kicad": [
-          "19.408588",
-          "-16.700000",
-          "-60.000000"
+          "18.592124",
+          "-8.307650",
+          "-40.000000"
         ],
         "cefab": [
-          19.4086,
-          -16.7,
-          240.0
+          18.5921,
+          -8.3077,
+          220.0
         ]
       },
       {
@@ -390,6 +373,23 @@
           8.1246,
           -19.9628,
           145.0
+        ]
+      },
+      {
+        "ref": "U2",
+        "verdict": "DISAGREE",
+        "dx_mm": 0.0,
+        "dy_mm": 0.0,
+        "drot_deg": 180.0,
+        "kicad": [
+          "12.064784",
+          "-20.648537",
+          "0.000000"
+        ],
+        "cefab": [
+          12.0648,
+          -20.6485,
+          180.0
         ]
       },
       {
@@ -427,37 +427,37 @@
         ]
       },
       {
-        "ref": "L1",
+        "ref": "X2",
         "verdict": "DISAGREE",
         "dx_mm": 0.0,
         "dy_mm": 0.0,
-        "drot_deg": 100.0,
+        "drot_deg": 60.0,
         "kicad": [
-          "18.592124",
-          "-8.307650",
-          "-40.000000"
+          "19.408588",
+          "-16.700000",
+          "-60.000000"
         ],
         "cefab": [
-          18.5921,
-          -8.3077,
-          220.0
+          19.4086,
+          -16.7,
+          240.0
         ]
       },
       {
-        "ref": "U2",
+        "ref": "X1",
         "verdict": "DISAGREE",
         "dx_mm": 0.0,
         "dy_mm": 0.0,
-        "drot_deg": 180.0,
+        "drot_deg": 68.0,
         "kicad": [
-          "12.064784",
-          "-20.648537",
-          "0.000000"
+          "7.196737",
+          "-9.085650",
+          "-56.000000"
         ],
         "cefab": [
-          12.0648,
-          -20.6485,
-          180.0
+          7.1967,
+          -9.0856,
+          236.0
         ]
       }
     ],

@@ -1,12 +1,12 @@
 {
  "$halo": 1,
  "tool": "tools/check_fabset.py",
- "generated": "2026-09-04T18:27:42+00:00",
+ "generated": "2026-09-04T21:49:35+00:00",
  "fabset": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
  "verdict": "PASS",
  "counts": {
-  "PASS": 11,
+  "PASS": 15,
   "FAIL": 0,
   "CANNOT DETERMINE": 0
  },
@@ -33,12 +33,12 @@
   },
   {
    "name": "copper_has_geometry",
-   "value": 1208,
+   "value": 1169,
    "unit": "ops",
    "rule": {
     "gte": 1
    },
-   "why": "every copper layer carries metal: halo_rev_a-B_Cu.gbl=2160, halo_rev_a-F_Cu.gtl=3700, halo_rev_a-In1_Cu.g1=1208, halo_rev_a-In2_Cu.g2=2284",
+   "why": "every copper layer carries metal: halo_rev_a-B_Cu.gbl=2117, halo_rev_a-F_Cu.gtl=3674, halo_rev_a-In1_Cu.g1=1169, halo_rev_a-In2_Cu.g2=2293",
    "verdict": "PASS"
   },
   {
@@ -63,22 +63,62 @@
   },
   {
    "name": "drill_has_hits",
-   "value": 50,
+   "value": 49,
    "unit": "holes",
    "rule": {
     "gte": 1
    },
-   "why": "4-layer board: it cannot exist without vias. halo_rev_a-NPTH.drl=0, halo_rev_a-PTH.drl=50",
+   "why": "4-layer board: it cannot exist without vias. halo_rev_a-NPTH.drl=0, halo_rev_a-PTH.drl=49",
    "verdict": "PASS"
   },
   {
    "name": "drill_covers_board",
-   "value": 50,
+   "value": 49,
    "unit": "holes",
    "rule": {
-    "gte": 50
+    "eq": 49
    },
-   "why": "source board has 50 via(s) + 0 thru-hole pad(s) + 0 NPTH pad(s) = 50 hole(s) that must be drilled; the drill file(s) carry 50",
+   "why": "source board has 49 via(s) + 0 thru-hole pad(s) + 0 NPTH pad(s) = 49 hole(s) that must be drilled; the drill file(s) carry 49",
+   "verdict": "PASS"
+  },
+  {
+   "name": "drill_files_declare_class",
+   "value": 2,
+   "unit": "files",
+   "rule": {
+    "eq": 2
+   },
+   "why": "every drill file states its own function: halo_rev_a-NPTH.drl=NPTH; halo_rev_a-PTH.drl=PTH",
+   "verdict": "PASS"
+  },
+  {
+   "name": "drill_pth_count_exact",
+   "value": 49,
+   "unit": "holes",
+   "rule": {
+    "eq": 49
+   },
+   "why": "board declares 49 plated hole(s) (49 = vias + thru-hole pads); the file(s) that DECLARE THEMSELVES PTH (halo_rev_a-PTH.drl) carry 49",
+   "verdict": "PASS"
+  },
+  {
+   "name": "drill_npth_count_exact",
+   "value": 0,
+   "unit": "holes",
+   "rule": {
+    "eq": 0
+   },
+   "why": "board declares 0 non-plated hole(s) (np_thru_hole pads); the file(s) that DECLARE THEMSELVES NPTH (halo_rev_a-NPTH.drl) carry 0. A board with no NPTH pads must ship an NPTH file with no holes, not an NPTH file carrying the plated ones",
+   "verdict": "PASS"
+  },
+  {
+   "name": "drill_sizes_match",
+   "value": 0,
+   "unit": "mismatched size classes",
+   "rule": {
+    "eq": 0
+   },
+   "why": "every hole diameter in the drill program matches a hole the board declares \u2014 PTH 0.25mm x49, NPTH none",
    "verdict": "PASS"
   },
   {
@@ -114,12 +154,12 @@
   },
   {
    "name": "export_is_fresh",
-   "value": 695.1,
+   "value": 415.0,
    "unit": "s",
    "rule": {
     "gte": 0
    },
-   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T18:27:34+00:00 vs board saved 2026-09-04T18:15:58.880561+00:00: export is at or after the board",
+   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T21:49:34+00:00 vs board saved 2026-09-04T21:42:39.036077+00:00: export is at or after the board",
    "verdict": "PASS"
   }
  ],
