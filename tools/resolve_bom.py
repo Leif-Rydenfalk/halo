@@ -98,11 +98,21 @@ CHOICES = [
  dict(refs="C24,C25", value="1.1nF", fp="0201", function="NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER",
       pick=None, pick_mpn=None, alt="C161371", alt_mpn="GRM0335C1E102JA01D",
       verdict="CANNOT DETERMINE",
-      why="NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, at LCSC or "
-          "JLCPCB. The nearest 0201 C0G is 1.0 nF, which the schematic's own "
-          "note says lands the NFC tank 5.3 % high at 14.28 MHz. The nearest "
-          "true 1.1 nF C0G is 0603 (C710889), three sizes too big. This is a "
-          "BOARD CHANGE, not a sourcing choice - see docs/SOURCING.md."),
+      why="NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, and none "
+          "exists in 0402 either - the smallest 1.1 nF in the whole catalogue "
+          "is 0603 (C710889), which is three sizes too big for this board. "
+          "1.2 nF C0G does not exist in 0201 either, so there is no bracketing "
+          "pair. The only 0201 part in the neighbourhood is 1.0 nF C0G, and "
+          "the schematic's own note says that lands the NFC tank 5.3 % high at "
+          "14.28 MHz. THE FIX IS FREE AND IT IS IN COPPER, NOT IN THE BOM: the "
+          "tank tunes on L*C, so if each capacitor drops 1.109 nF -> 1.0 nF "
+          "the series capacitance drops 554.6 -> 500 pF and the coil must rise "
+          "by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured "
+          "0.2449 uH to 0.2716 uH. The coil is etched, so that costs nothing "
+          "but a re-run of ce-rf's inductance solve on a slightly longer "
+          "2-turn path. This is a BOARD CHANGE for lane B1, not a sourcing "
+          "choice, and the alternate recorded here is the 1.0 nF part it "
+          "would use."),
  dict(refs="C14,C15,C16,C17", value="DNP", fp="0201", function="crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps)",
       pick=None, pick_mpn=None, alt=None, alt_mpn=None, verdict="DNP",
       why="Not a sourcing gap. These four pads are the four parts jlc.md counts "
@@ -423,6 +433,55 @@ def cost(lines, sounder):
             "per_unit": rows}
 
 
+def schematic_audit():
+    """Read every order code OFF THE SCHEMATIC and ask the catalogue what it is.
+
+    This is the audit that found the gap, and it is derived rather than typed:
+    the codes come out of electronics/halo_rev_a/schematic.py, the answers come
+    out of the catalogue, and the counts in docs/SOURCING.md are whatever this
+    returns today. Lane B1 owns that file - this lane only reads it.
+    """
+    import sqlite3, collections
+    sch = ROOT / "electronics" / "halo_rev_a" / "schematic.py"
+    if not sch.exists():
+        return {"verdict": "CANNOT DETERMINE", "why": "schematic.py not found"}
+    sites = re.findall(r'P\("(C\d+)"\s*,\s*"([^"]*)"', sch.read_text())
+    by_code = collections.defaultdict(set)
+    for c, m in sites:
+        by_code[c].add(m)
+    db = pathlib.Path.home() / "dev/ce-workshop/ce-fab/data/jlcparts-slim.sqlite3"
+    if not db.exists():
+        return {"verdict": "CANNOT DETERMINE", "why": f"no catalogue snapshot at {db}"}
+    con = sqlite3.connect(str(db))
+    rows, wrong, loose, right = [], 0, 0, 0
+    for c, ms in sorted(by_code.items()):
+        r = con.execute("select mpn,package,description from parts where lcsc=?", (c,)).fetchone()
+        real = r[0] if r else None
+        exact = any(real and norm(real) == norm(m) for m in ms)
+        prefix = any(real and (norm(real).startswith(norm(m)) or norm(m).startswith(norm(real))) for m in ms)
+        # A declared string with spaces in it is a DESCRIPTION, not a part
+        # number - "FC-135 32.768kHz" names a family, not an orderable item.
+        # That is a documentation weakness, not a wrong component, and it is
+        # counted separately so the headline number stays honest.
+        descriptive = all(" " in m for m in ms)
+        if exact or (prefix and not descriptive):
+            verdict, right = "MATCH", right + 1
+        elif descriptive:
+            verdict, loose = "FAMILY NAME, NOT AN ORDER-CODE CHECK", loose + 1
+        else:
+            verdict, wrong = "WRONG PART", wrong + 1
+        rows.append({"lcsc": c, "declared_mpn": sorted(ms), "catalogue_mpn": real,
+                     "catalogue_package": r[1] if r else None,
+                     "catalogue_description": r[2] if r else None,
+                     "verdict": verdict})
+    return {"declaration_sites": len(sites), "distinct_order_codes": len(by_code),
+            "match": right, "family_name_only": loose, "wrong_part": wrong,
+            "source_file": "electronics/halo_rev_a/schematic.py",
+            "catalogue": "ce-fab data/jlcparts-slim.sqlite3",
+            "verdict": "FAIL" if wrong else "PASS",
+            "codes": rows}
+
+
 def placed_bom():
     """What is actually on the board, read back from the release pack's own CSV."""
     rows = []
@@ -468,7 +527,8 @@ def main():
            "ladder_note": "A price at a quantity the vendor's ladder does not "
                           "reach is null. Nothing here is extrapolated.",
            "lines": lines,
-           "cost": cost(lines, SOUNDER)}
+           "cost": cost(lines, SOUNDER),
+           "schematic_audit": schematic_audit()}
     OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n")
     res = sum(1 for l in lines if l["verdict"] == "RESOLVED")
     print(f"{res}/{len(lines)} lines RESOLVED; wrote {OUT}")

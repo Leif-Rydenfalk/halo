@@ -2070,7 +2070,7 @@
    "value": "1.1nF",
    "footprint": "0201",
    "function": "NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER",
-   "why": "NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, at LCSC or JLCPCB. The nearest 0201 C0G is 1.0 nF, which the schematic's own note says lands the NFC tank 5.3 % high at 14.28 MHz. The nearest true 1.1 nF C0G is 0603 (C710889), three sizes too big. This is a BOARD CHANGE, not a sourcing choice - see docs/SOURCING.md.",
+   "why": "NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, and none exists in 0402 either - the smallest 1.1 nF in the whole catalogue is 0603 (C710889), which is three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is no bracketing pair. The only 0201 part in the neighbourhood is 1.0 nF C0G, and the schematic's own note says that lands the NFC tank 5.3 % high at 14.28 MHz. THE FIX IS FREE AND IT IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so if each capacitor drops 1.109 nF -> 1.0 nF the series capacitance drops 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. The coil is etched, so that costs nothing but a re-run of ce-rf's inductance solve on a slightly longer 2-turn path. This is a BOARD CHANGE for lane B1, not a sourcing choice, and the alternate recorded here is the 1.0 nF part it would use.",
    "verdict": "CANNOT DETERMINE",
    "on_jlc_bom": true,
    "part": null,
@@ -4404,5 +4404,170 @@
     ]
    }
   }
+ },
+ "schematic_audit": {
+  "declaration_sites": 24,
+  "distinct_order_codes": 15,
+  "match": 4,
+  "family_name_only": 1,
+  "wrong_part": 10,
+  "source_file": "electronics/halo_rev_a/schematic.py",
+  "catalogue": "ce-fab data/jlcparts-slim.sqlite3",
+  "verdict": "FAIL",
+  "codes": [
+   {
+    "lcsc": "C1046",
+    "declared_mpn": [
+     "MLZ1608M4R7WT000"
+    ],
+    "catalogue_mpn": "SDFL2012S100KTF",
+    "catalogue_package": "0805",
+    "catalogue_description": "1.15Ω 10uH 15mA 24MHz 50@2MHz Multilayer inductor ±10% 0805 Inductors (SMD) ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C1046539",
+    "declared_mpn": [
+     "LQP03HQ2N7B02D"
+    ],
+    "catalogue_mpn": null,
+    "catalogue_package": null,
+    "catalogue_description": null,
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C1523",
+    "declared_mpn": [
+     "CL03C101JB3NNNC"
+    ],
+    "catalogue_mpn": "0402B102K500NT",
+    "catalogue_package": "0402",
+    "catalogue_description": "1nF 50V X7R ±10% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C1546",
+    "declared_mpn": [
+     "0201 C0G 1.1nF",
+     "CL03A104KA3NNNC"
+    ],
+    "catalogue_mpn": "0402CG101J500NT",
+    "catalogue_package": "0402",
+    "catalogue_description": "100pF 50V C0G ±5% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C15525",
+    "declared_mpn": [
+     "CL05A106MQ5NUNC"
+    ],
+    "catalogue_mpn": "CL05A106MQ5NUNC",
+    "catalogue_package": "0402",
+    "catalogue_description": "10uF 6.3V X5R ±20% 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C1568",
+    "declared_mpn": [
+     "GJM0335C1E1R5WB01",
+     "GJM0335C1ER50WB01"
+    ],
+    "catalogue_mpn": "0402CG4R0C500NT",
+    "catalogue_package": "0402",
+    "catalogue_description": "4pF 50V C0G 0402 Multilayer Ceramic Capacitors MLCC - SMD/SMT ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C189624",
+    "declared_mpn": [
+     "LIS2DW12TR"
+    ],
+    "catalogue_mpn": "LIS2DW12TR",
+    "catalogue_package": "LGA-12",
+    "catalogue_description": "-40℃~+85℃ 1.62V~3.6V 16bit 50nA Accelerometer Motion event detection SPI、I2C X,Y,Z ±16g LGA-12(2x2) Accelerometers ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C25076",
+    "declared_mpn": [
+     "0201WMF1000TEE",
+     "0201WMJ0000TEE"
+    ],
+    "catalogue_mpn": "0402WGF1000TCE",
+    "catalogue_package": "0402",
+    "catalogue_description": "-55℃~+155℃ 100Ω 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C25744",
+    "declared_mpn": [
+     "0201WMF1002TEE"
+    ],
+    "catalogue_mpn": "0402WGF1002TCE",
+    "catalogue_package": "0402",
+    "catalogue_description": "-55℃~+155℃ 10kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C25765",
+    "declared_mpn": [
+     "0201WMF4704TEE"
+    ],
+    "catalogue_mpn": "0402WGF2002TCE",
+    "catalogue_package": "0402",
+    "catalogue_description": "-55℃~+155℃ 20kΩ 50V 62.5mW Thick Film Resistor ±1% ±100ppm/℃ 0402 Chip Resistor - Surface Mount ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C2827888",
+    "declared_mpn": [
+     "CL03A225MQ3CSNC"
+    ],
+    "catalogue_mpn": "DB2EK-3.5-8P-BK-S",
+    "catalogue_package": "P=3.5mm",
+    "catalogue_description": "-40℃~+105℃ 1 1.5 16~28 1x8P 3.5mm 320V 8 8A 8P Black Male Plug Screw Screw Connection (M2) Top Entry P=3.5mm Pluggable System Terminal Block ROHS",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C32346",
+    "declared_mpn": [
+     "FC-135 32.768kHz"
+    ],
+    "catalogue_mpn": "Q13FC13500004",
+    "catalogue_package": "SMD3215-2P",
+    "catalogue_description": "-40℃~+85℃ 12.5pF 32.768kHz 70kΩ Crystal Oscillator ±20ppm SMD3215-2P Crystals ROHS",
+    "verdict": "FAMILY NAME, NOT AN ORDER-CODE CHECK"
+   },
+   {
+    "lcsc": "C44800139",
+    "declared_mpn": [
+     "NRF54L10-QFAA-R7"
+    ],
+    "catalogue_mpn": "NRF54L10-QFAA-R7",
+    "catalogue_package": "VFQFN-48",
+    "catalogue_description": "VFQFN-48 Microcontrollers (MCU/MPU/SOC) ROHS",
+    "verdict": "MATCH"
+   },
+   {
+    "lcsc": "C7498149",
+    "declared_mpn": [
+     "CR2032"
+    ],
+    "catalogue_mpn": "BS-CR2032-8",
+    "catalogue_package": "SMD",
+    "catalogue_description": "",
+    "verdict": "WRONG PART"
+   },
+   {
+    "lcsc": "C843260",
+    "declared_mpn": [
+     "NX2016SA-32MHZ"
+    ],
+    "catalogue_mpn": "NX2016SA-32MHZ-STD-CZS-5",
+    "catalogue_package": "SMD2016-4P",
+    "catalogue_description": "Crystal Oscillator SMD2016-4P Crystals ROHS",
+    "verdict": "MATCH"
+   }
+  ]
  }
 }
