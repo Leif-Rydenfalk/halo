@@ -29,6 +29,21 @@ counting the result:
 | The keep-out containment test | It **never ran once**. A method gained an argument in KiCad 10, and a bare `except` swallowed the resulting error, so the test returned null on every board | Using the primitive and finding it accepted everything |
 | `bin/exercise` printing `DRC: None violations` | The board file had been **rejected outright** by KiCad; there were no violations because there was no check | Asking what "None" meant |
 
+Eight more, found 2026-09-04 by lane V1 by running each tool's output back
+through a **second** reader, and each one **proved** by breaking something on
+purpose and watching the check go red:
+
+| what reported success | what was actually true | how it was caught |
+|---|---|---|
+| The factory Gerber pack — 14 files, exporter exit 0, pack index READY | The **PTH and NPTH drill files contain zero holes** on a four-layer board, which cannot exist without vias | Counting the coordinate lines after the Excellon header. Nothing had ever asserted a drill file has holes in it |
+| `CONVERGENCE.md`: *Bluetooth antenna resonant frequency · 2.44 GHz · 2.425 GHz · **MATCH***, weight 10 | The case's own `verdict.json` says **FAIL**. `solver.log` says the run hit max timesteps before the −40 dB end criterion. `raw.json` has **no convergence block**. And there are **zero upward reactance zero-crossings in the whole 1–6 GHz sweep** — the reactance is +23.7j…+25.5j across the BLE band. There is no resonance; 2.425 GHz is the minimum of a smooth \|S11\| curve | `gen_convergence.py` reads `measurements.json` and never opens `verdict.json`. Opening it, then reading the impedance instead of the verdict |
+| `eps_eff_implied = 0.9657` **PASS** — the physics check written to catch exactly this | The spec's floor had been widened from **1.0 to 0.64**. A physical law had become a tolerance, so the impossible value cleared it | Comparing the assertion's limit to the law it was named after |
+| The physics-sanity row on the convergence table | Its target is text and its current is a number, and the state machine has **no branch for that pair**. `state` stays at its initialised `"OPEN"` forever. It can never go green and can never go red | Feeding the state machine a correct value and a deliberately wrong one and finding the answer identical |
+| `fab bom cost`, most lines **PASS** | The parts are not the parts. **C2827888**, ordered as 2.2 µF / 10 nF / 2.2 nF, is a **3.5 mm screw terminal block**. **C1046539**, ordered as 2.7 nH and 3.5 nH, is a **33 MHz MEMS oscillator** at $14.73. **C1546** is 100 pF and is ordered as 100 nF *and* as 1.1 nF. Every 0201 land pattern is fitted with an 0402 part | Asking a question the tool never asks. It grades stock and price; nothing compared the catalogue's own description to the schematic's value |
+| `speaker_hbridge` **PASS**, 16 assertions over four corners | **`f_audio_Hz` appears in zero `measure()` expressions.** Every assertion is an amplitude, and amplitudes hold at any frequency. Drive the H-bridge at 7 kHz and `i_coil_peak_mA`, `i_batt_avg_mA` and `efficiency_pct` **all still pass** | Grepping the measurement expressions for the quantity in the study's own title. This is the antenna case, in the audio band, eleven months of assertions later |
+| `fab dfm` on halo_rev_a: **21 PASS / 2 FAIL / 5 CD** | **10 live DRC violations vote zero.** Any violation whose type is not in `CONSTRAINT_MAP` goes to a counter that never enters `rows`, and the verdict is `worst(*rows)`. Also: `smt_sides` is a **hardcoded `PASS`** while measuring 2 sides; three via rows report `PASS, measured 0` because the board has no vias; `castellated_hole_min` reports PASS on a loop that never ran; and **11 of 52 rules produce no row at all**, so the counts read as full coverage of a set they cover 28 of | Adding the violation counts by hand and finding they did not reach the verdict |
+| Two keep-out regions on halo_rev_a, both **PASS** | Both declare `tracks/vias/pads/copperpour/footprints **allowed**`. `forbids == []`, so every hit loop `continue`s and zero hits reads as clean. Separately, if the board outline cannot be read at all, `outline_error` is recorded and the region is **still graded PASS** | Reading what the region actually forbids. The original keep-out bug's alarm was rewired; the sprinkler was not |
+
 ## Why they are one defect
 
 In every case the tool's report describes its *intent*, not its *effect*. The
@@ -67,3 +82,28 @@ When adding any check to this project, write down the sentence "this could
 report PASS while ___ is badly wrong" and fill the blank. If you can fill it,
 the check is incomplete. `VERIFICATION-DEBT.md` is the standing list of blanks
 not yet filled.
+
+## 6 · Prove it fires, or it is not a check
+
+Added 2026-09-04. Every one of the eight incidents above was a check somebody
+wrote and nobody ever watched fail. **An assertion never seen to fail is not
+known to work.**
+
+So a new check is not finished when it goes green on the good artifact. It is
+finished when it has gone **red** on an artifact you broke on purpose, and the
+break is committed beside it so the next person can re-run it.
+
+`ce-designs/halo/tools/prove_checks.py` is the pattern: it copies a real
+passing artifact, applies one named mutation per assertion, and requires that
+assertion — by name, not the overall verdict — to report FAIL. It exits
+non-zero if any assertion stays silent. **25 of 25 fired** when it was written.
+
+Two traps it hit on its own first run, both worth knowing:
+
+- **A control that is already red proves nothing.** Three assertions had to be
+  skipped until the control artifact was repaired, because you cannot show a
+  check going red if it was red before you touched anything.
+- **The probe has to be the shape of the real measurement.** The convergence
+  check's state-machine test first passed its target a *string* while the row
+  really produces a *number*, and the broken row looked fine. The check that
+  hunts decorations was briefly a decoration itself.
