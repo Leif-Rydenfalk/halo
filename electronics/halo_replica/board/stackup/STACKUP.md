@@ -105,6 +105,23 @@ evidence:
 Both brackets close on **4**. Three independent lines agreeing is what a real
 confirmation looks like.
 
+### Could these three have disagreed? — the test this claim has to pass
+
+The orchestrator withdrew a finding today for calling two measurements
+independent corroboration when both measured the same radial extent and so
+**could not have disagreed**. The rule that came out of it: *name what each line
+would have had to see to contradict the others, or they are one measurement.*
+
+| line | what it would have had to show to contradict | could it have? |
+|---|---|---|
+| thickness arithmetic | 6 layers fitting comfortably in 0.30 mm | **yes** — and it nearly did: it only excludes 6 for *stocked rigid FR-4*, and the ultra-thin HDI rows are still null |
+| routing necessity | a 2-layer escape and a usable reference plane | **yes** — a different layout would have falsified it |
+| the delayering | six files, or the land grid present in every image | **yes** — superposition was the dossier's reading and was the expected outcome |
+
+Their inputs do not overlap: laminate thicknesses off fabricator pages, package
+escape geometry, and photographs of a ground-down board. **Three lines that
+could each have gone the other way, and did not.**
+
 ### What is still not known
 
 - **Which board was delayered.** The repo does not say whether it was
@@ -376,3 +393,39 @@ does not bound **what Apple built**.
 | `s_colour.py` | hue of a metal region **against an in-frame control**. Refuses a box with no warm pixels rather than averaging shadow |
 | `s_layerprobe.py` | structure-vs-blank control for §1. **Exits 2 on the layer question by design.** Its docstring records the FFT probe rejected when its negative control went red |
 | `s_crop.py` | crop + Lanczos upscale. No sharpening, no contrast stretch, no gamma |
+
+---
+
+## Handoff — what this lane was about to do and did not
+
+Stood down mid-lane on a fleet quota stop, not because the work ran out. In
+priority order:
+
+1. **Are the vias through, or blind/buried?** The single highest-value open
+   item, and it needs **no new evidence** — compare via land positions between
+   `layer1` and `layer4` in the delayering set. A land on one outer face with no
+   counterpart on the other is a blind via, which would make this an HDI build
+   and would bear on copper weights and on how aggressive 0.30 mm was for Apple.
+   The images are already fetchable; `s_layerprobe.py` has the registration
+   boxes.
+2. **The HDI capability page.** Reading one published page giving a minimum core
+   and prepreg thickness would fill the deliberately-null `hdi-ultrathin` rows
+   in `materials.json` and let `s_stackup_budget.py bounds` evaluate that
+   construction instead of exiting 2. It no longer decides the layer count —
+   §1 did that — but it would say whether 0.30 mm was comfortable or aggressive
+   *for Apple*, which is currently unanswerable. Two attempts died on a 404 and
+   a socket error; neither host was retried. **Published pages only** — a number
+   behind an account is CANNOT DETERMINE.
+3. **Confirm the nRF52832-CIAA ball array** against Nordic's datasheet, to firm
+   up the §2 lower bound. That fetch returned a redirect that was not followed:
+   `http://docs.nordicsemi.com/r/bundle/ps_nrf52832/page/pin.html`. The bound
+   does not depend on it now that the count is settled, but the inference is
+   quoted and should be sourced or softened.
+4. **A contradiction inside `docs/REFERENCE-TEARDOWN.md`, not this lane's to
+   fix.** Its header says *front = the component side* (Apple's filing), while
+   §2's legend says *"**F** = front/top side (battery contacts, coil, NFC)"* —
+   the opposite face. One of the two is stale. Flagged, not edited: it belongs
+   to the lane that owns that document.
+
+Nothing here is blocked. Every item is a reading or a measurement available
+from this machine.
