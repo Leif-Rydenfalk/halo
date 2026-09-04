@@ -1,0 +1,594 @@
+{
+ "schema": "halo/concepts/1",
+ "generated": "2026-09-05",
+ "lane": "R1",
+ "title": "halo concept portfolio",
+ "subtitle": "twelve researched ways to close the last gap to the AirTag and get further ahead than Apple",
+ "leif_verbatim": "concept docs with ideas and different approaches to close the gaps further and get even further ahead than apple themselves",
+ "preamble": [
+  "halo is at functional parity with the AirTag on every row of SPEC.md section 2 except F9, Precision Finding, which needs Apple's own ultra-wideband silicon behind an NDA that cannot coexist with publishing the design. It is already ahead in five measured ways: both Apple's and Google's networks in one advertising event, an antenna simulated at +0.521 dBi against Apple's filed -3.2 dBi, peer-to-peer ranging between the owner's own devices, about a sixth of Apple's retail price, and every file open.",
+  "This portfolio is what comes after parity. Each concept is researched and costed, not brainstormed: what it is, why it beats the alternative, the evidence with sources and dates, the cost in money and current and size and complexity, what it would break in the design that exists today, a verdict, and the smallest experiment that would settle it.",
+  "Nothing here is a commitment. A concept that reaches PROVEN is a thing somebody has already made work, not a thing halo has shipped."
+ ],
+ "verdict_rules": {
+  "PROVEN": "Somebody has already made this work and the artifact is readable — a paper with measurements, a repository whose source says so, a datasheet number. The remaining risk is integration, not physics.",
+  "PLAUSIBLE": "Every component of the argument is sourced, but the combination has not been demonstrated in the shape halo needs. The arithmetic closes; the experiment has not been run.",
+  "SPECULATIVE": "A reasoned idea whose load-bearing claim has no source I could reach. It is written down with what would settle it, and it must not be quoted as a finding."
+ },
+ "baseline": [
+  {
+   "what": "Average cell current, Find My advertising baseline (2 s period, 1 ms TX at 3.7 mA, 2.4 uA sleep)",
+   "value": "4.2506 uA  =  12.75 uW at 3.0 V",
+   "from": "ce-spice rail_droop, out/release/board/sim/rail_droop/measurements.json, i_avg_uA, 2026-09-04"
+  },
+  {
+   "what": "Battery life on a 235 mAh CR2032 at that current, derated for pulsed draw and self-discharge",
+   "value": "64.5 months (5.4 years)",
+   "from": "same file, life_months_derated; derations cited to TI SWRA349 Fig 3 and Energizer 2032NA0618"
+  },
+  {
+   "what": "SoC currents that drive every power figure here",
+   "value": "TX 3.7 mA at 0 dBm, RX 2.1 mA, System-ON 192 kB retained 2.4 uA",
+   "from": "nRF54L10 datasheet 4503_018 v0.10 Table 86, transcribed research/fetched/E-nrf54l-datasheet-currents.md"
+  },
+  {
+   "what": "Unit cost at 10 / 100 / 1 000 / 10 000 against Apple's $29 retail and ~$10 build",
+   "value": "$19.25 / $9.28 / $7.17 / $6.75",
+   "from": "DECISIONS.md D15; spec/bom-resolved.json cost.model.d15_baseline_usd_per_unit"
+  },
+  {
+   "what": "Board, and what is on it",
+   "value": "D26.00 x 0.60 mm, 4 layer, 38 placed refs, 131 joints; part-routed at 49 vias, 255 track segments, 81 unconnected",
+   "from": "electronics/halo_rev_a/schematic.py; STATUS.md board measurement 2026-09-05 06:06 — DO NOT FABRICATE until unconnected reaches 0"
+  },
+  {
+   "what": "Peer ranging accuracy specified for v1",
+   "value": "6-10 cm MAE, 16-20 cm P90, line of sight, static, <=5.5 m",
+   "from": "arXiv:2605.17094 Table I (eight CR2032 nRF54L15 devices); research/08 section 1; DECISIONS.md D12"
+  },
+  {
+   "what": "Energy per pairwise Channel Sounding range, 0 dBm, 37 channels",
+   "value": "~19 uC = ~57 uJ  [derived in research/08 section 9.3 from the paper's 79 uC/cycle for four peers]",
+   "from": "arXiv:2605.17094 section IV-C; research/08 section 9.3"
+  },
+  {
+   "what": "Antenna, study geometry (D30 x 1.0 mm round rim inverted-F)",
+   "value": "PASS: 2.4469 GHz, +0.521 dBi realized gain against Apple's filed -3.2 dBi",
+   "from": "ce-rf out/halo-round-rim-ifa/verdict.json, verdict PASS"
+  },
+  {
+   "what": "Antenna, the board this pack actually ships (D26.00 x 0.60 mm)",
+   "value": "FAIL — 2.4927 GHz, solver_converged 0. The +0.521 dBi is NOT this geometry",
+   "from": "ce-rf out/halo-rev-a-2g4/verdict.json; spec/convergence.json refuses a value from a FAIL case"
+  },
+  {
+   "what": "Firmware footprint with all three protocol layers resident",
+   "value": "13,164 bytes flash (1.27 %) and 704 bytes RAM (0.36 %) on nRF54L10",
+   "from": "SPEC.md section 2a; DECISIONS.md D18 — the DULT transport is NOT yet written and is the expensive part"
+  },
+  {
+   "what": "Stack budget, closed",
+   "value": "31.874 x 31.874 x 7.980 mm assembly, 0.542 mm of dead air left under the cell",
+   "from": "DECISIONS.md D17; design.py stack budget check"
+  },
+  {
+   "what": "Find My location quality, for comparison with anything local",
+   "value": "raw report mean error ~100 m walking; median 26 min from generation to upload; 4 reports per key; 7 day retention",
+   "from": "PETS 2021 Tables 5-7 and sections 6.3-6.4, quoted in research/02 sections 1.6 and 10.4"
+  }
+ ],
+ "concepts": [
+  {
+   "id": "C3",
+   "slug": "sensor-telemetry-over-the-finding-network",
+   "family": "telemetry",
+   "title": "Sensor telemetry over the finding network, with no gateway of its own",
+   "one_line": "The status byte is copied into the location report and encrypted to the owner's key, so a halo can report sensor state through a stranger's phone and Apple cannot read it.",
+   "verdict": "PROVEN",
+   "verdict_reason": "The mechanism has been running in the field since 2022 (dakhnod/FakeTag, a mailbox sensor) and the receiving half is readable in FindMy.py's source: the status byte comes back at offset 9 of the DECRYPTED report payload. What is not proven is the throughput at any particular place, because that is a property of how many phones walk past — and the experiment below measures exactly that.",
+   "what_it_is": [
+    "Every Find My advertisement carries a one-byte status field at PDU byte 12. Apple's own protocol spends bits 7:6 on battery level and bits 5:4 on device type. The rest is unallocated, and it rides the network for free.",
+    "The decisive property is not that the byte is broadcast — it is what happens next. A finder device does not merely relay a location: it copies the tag's status byte into the location report and encrypts the whole report to the tag's own ephemeral public key. FindMy.py reads it back at `self._decrypted_data[1][9:10]`, in the same block as latitude, longitude and horizontal accuracy. So sensor state travelling this channel is end-to-end encrypted to the owner. Apple relays it and cannot read it, and neither can the stranger whose phone carried it.",
+    "That gives halo a capability Apple does not offer at all and no commercial tracker sells: a battery-powered sensor that reports state from anywhere with pedestrian traffic, with no gateway, no SIM, no LoRa, no subscription and no infrastructure of any kind. For Leif's digital twin it is the difference between an asset that is located and an asset that is also *sensed*.",
+    "Three channels stack on one advertisement, in increasing cost: the free bits of the status byte (no cost at all); which of several pre-generated keys is advertised in a given window, which is the Send My trick and costs 28 bytes of flash per key; and the Google Find Hub frame halo already emits in the same advertising event, which has its own payload and its own network."
+   ],
+   "why_it_beats": [
+    "Against a cellular or LoRaWAN sensor: no radio module, no antenna, no gateway, no airtime contract, and an average current that does not move at all. The comparison is not close — the marginal cost of this channel is zero.",
+    "Against a BLE sensor beacon read by a phone app: those need somebody to walk within range WITH the app installed. This needs somebody to walk past with an iPhone, which is a vastly larger population, and it needs no app on their side and no consent flow, because it is the same mechanism that finds a lost AirTag.",
+    "Against doing it on Google's network instead: halo already advertises both, so this is not either/or. Google's Find Hub frame is a second, independent path with its own payload budget — see the open item below.",
+    "And against Apple's own product: an AirTag reports its battery level and nothing else. There is no API, no third-party payload, and no accessory in the Find My programme that carries sensor data. This is not a feature Apple does worse. It is one Apple does not have."
+   ],
+   "numbers": [
+    {
+     "what": "Status byte, total",
+     "value": "8 bits",
+     "from": "PETS 2021 Table 2, byte 12; research/02 section 1.3"
+    },
+    {
+     "what": "Bits Apple's own decode uses",
+     "value": "7:6 battery level, 5:4 device type",
+     "from": "FindMy.py findmy/scanner/scanner.py BATTERY_LEVEL / APPLE_DEVICE_TYPE; research/02 section 1.4"
+    },
+    {
+     "what": "Bit named MAINTAINED by the one firmware that exploits this",
+     "value": "bit 2 (0b00000100)",
+     "from": "reference/FakeTag/main.c:38 STATUS_FLAG_MAINTAINED"
+    },
+    {
+     "what": "Bits free with no claim about halo that is untrue",
+     "value": "3 (bits 3, 1, 0)",
+     "from": "[derived] — the bits no open decode assigns a meaning to"
+    },
+    {
+     "what": "Bits demonstrated working end to end in the field",
+     "value": "6 (bits 5:0)",
+     "from": "reference/FakeTag/main.c:34 STATUS_FLAG_COUNTER_MASK 0b00111111, and its README"
+    },
+    {
+     "what": "Where the byte is read on the owner's side",
+     "value": "offset 9 of the decrypted report payload",
+     "from": "reference/FindMy.py/findmy/reports/reports.py:196"
+    },
+    {
+     "what": "Ceiling on update rate",
+     "value": "one value per key window = one per 15 min",
+     "from": "DULT 3.5.1 key rotation; PETS section 6.3 four reports per key"
+    },
+    {
+     "what": "Latency from sensing to readable",
+     "value": "median 26 min, hours if the finder is in low-power mode",
+     "from": "PETS 2021 section 6.3, quoted in research/02 section 1.6"
+    },
+    {
+     "what": "Extra current this costs",
+     "value": "0 uA — one register write into a payload that is transmitted anyway",
+     "from": "[derived] the 4.2506 uA baseline does not contain a term for the value of a byte"
+    },
+    {
+     "what": "Extra money this costs",
+     "value": "$0.00",
+     "from": "[derived] no part is added"
+    }
+   ],
+   "arithmetic": [
+    "Channel capacity, if a finder passes in every key window:",
+    "  6 bits per 15 min window  =  6 / 900 s  =  0.0067 bit/s",
+    "                            =  96 windows/day x 6 bits  =  576 bits/day  =  72 bytes/day",
+    "",
+    "With the conservative 3-bit budget that claims nothing untrue about the device:",
+    "                            =  96 x 3  =  288 bits/day  =  36 bytes/day",
+    "",
+    "Adding key-multiplexing (Send My style), k bits per window from 2^k keys:",
+    "  flash cost  =  2^k x 28 bytes per window",
+    "  k = 8  ->  256 keys x 28 B  =  7.2 kB per window, 8 extra bits",
+    "  the nRF54L10 has 1 MB of NVM and the firmware uses 13,164 bytes of it",
+    "",
+    "In a place no stranger walks (a plant room, a workshop, a field):",
+    "  reports per day  =  0.   The channel does not degrade, it stops. See C9."
+   ],
+   "evidence": [
+    {
+     "claim": "The status byte reaches the owner through the network and is usable as a data channel — a vibration sensor on a mailbox, in service since 2022",
+     "source": "github.com/dakhnod/FakeTag README, local copy reference/FakeTag/README.md; hackaday.com/2022/05/30/check-your-mailbox-using-the-airtag-infrastructure/",
+     "date": "read 2026-09-05 (project 2022)",
+     "confidence": "primary, source read locally"
+    },
+    {
+     "claim": "Six bits of the status byte are used as a counter: STATUS_FLAG_COUNTER_MASK 0b00111111, written into the advertisement at offline_finding_adv_template[6]",
+     "source": "reference/FakeTag/main.c:34, :141, :316-317",
+     "date": "read 2026-09-05",
+     "confidence": "primary, source read locally"
+    },
+    {
+     "claim": "The status byte is carried inside the ENCRYPTED report, not merely broadcast: it is read at offset 9 of the decrypted payload, beside latitude at 0:4 and horizontal accuracy at 8:9",
+     "source": "reference/FindMy.py/findmy/reports/reports.py:189-197",
+     "date": "read 2026-09-05",
+     "confidence": "primary, source read locally"
+    },
+    {
+     "claim": "Bits 7:6 are battery level and 5:4 are device type",
+     "source": "FindMy.py findmy/scanner/scanner.py BATTERY_LEVEL / APPLE_DEVICE_TYPE, quoted in research/02 section 1.4",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "Advertisement layout: byte 12 is Status, 13-34 the key, 35 the displaced key bits, 36 the Hint",
+     "source": "PETS 2021 Table 2, transcribed research/02 section 1.3; cross-checked against OpenHaystack ESP32 firmware",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "A finder uploads at most four reports for the same advertisement key; median generation-to-upload 26 min; reports retained seven days",
+     "source": "PETS 2021 sections 6.3-6.4, quoted research/02 section 1.6",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "halo already carries an accelerometer on I2C whose low-power current is under 1 uA, so there is a sensor to report before anything is added",
+     "source": "research/05 section on LIS2DW12TR (LCSC C189624, <1 uA low power); electronics/README.md section 7",
+     "date": "2026-09-03",
+     "confidence": "primary (datasheet figure transcribed by lane E)"
+    }
+   ],
+   "unverified": [
+    "Whether the nRF54L10 has an on-die temperature sensor and what it costs to read. The nRF52 family has a TEMP peripheral; no document in this repository says so for nRF54L. Settle it by opening the nRF54L10 product specification's TEMP chapter — a five-minute job, not a research project.",
+    "Whether the Hint byte (PDU byte 36, 0x00 on iOS reports) survives the round trip into the report. PETS says only what iOS puts there. If it does survive, the budget doubles. Settle it by putting a non-zero value there in the experiment below and looking for it in the fetched report.",
+    "The payload budget in Google's Find Hub frame for the same trick. halo emits the frame byte for byte against Google's Tables 15 and 17 (D19) but this lane did not read the spec for spare bits."
+   ],
+   "cost": {
+    "money": "$0.00 per unit. No part is added. The accelerometer that provides the first sensor is already on the board for DULT.",
+    "current": "0 uA. The status byte is transmitted in every advertisement whether it carries information or not; setting it is one register write. The measured 4.2506 uA baseline is unchanged.",
+    "size": "0 mm. Nothing is placed.",
+    "complexity": "Small on the tag — one byte and a sensor read. Real on the receiving side: the fetch tool must decode the byte per halo's own schema, and that schema has to be published or the data means nothing. Budget the schema, not the firmware."
+   },
+   "breaks": [
+    "Nothing in the hardware, and nothing in the current budget.",
+    "It collides with a decision halo already made. D19 refused to advertise Google's DULT Network ID 0x02 because that would be a false claim about who we are, and advertised 0x00 UNREGISTERED instead. Overwriting status bits 5:4 — which is exactly what FakeTag does to get six bits — makes the tag claim to be an 'Apple Device' or 'AirPods' depending on the sensor value. That is the same kind of false claim. THE DESIGN RULE THAT FALLS OUT: use bits 3, 1 and 0, and the hint byte if it survives; never bits 5:4. The budget is 3 bits, not 6, and the difference is honesty, not capability.",
+    "Bits 7:6 must stay honest too. DULT's Get_Battery_Level opcode and the NFC URL's `b` parameter both report battery, and a tag whose battery bits carry a temperature reading is lying to an anti-stalking scanner.",
+    "Key-multiplexing (the Send My path) does break something real: a key spent carrying data is a key not spent being findable, and the DULT rotation schedule is normative. Any scheme that chooses keys by data must still rotate on DULT's clock."
+   ],
+   "smallest_experiment": "Flash two halos with firmware that writes a 3-bit counter into status bits 3/1/0 and a distinctive non-zero value into the hint byte, incrementing once per key window. Put one in a busy street and one in the workshop. Leave them 48 hours. Fetch with FindMy.py and count: how many distinct counter values arrived, how many were lost, what the latency distribution was, and whether the hint byte came back. That single fixture answers three questions at once — the channel's real capacity at each site, whether the hint byte is free, and the report-density question research/02 section 11 lists as the project's biggest open risk.",
+   "if_it_works": [
+    "halo becomes a sensor platform, not only a tracker, and that is the difference GOAL.md asks for between finding a thing and knowing about it.",
+    "The same fixture measures report density, which is the project's largest standing risk (research/02 section 11 item 1).",
+    "It composes with C9: where the count comes back zero, a private finder turns it into full coverage."
+   ],
+   "value": 5,
+   "effort": 1,
+   "first_move": "Write the 3-bit counter firmware and leave two tags out for 48 hours. Costs one evening and answers the density question too."
+  },
+  {
+   "id": "C8",
+   "slug": "form-factors-the-block-enables",
+   "family": "product",
+   "title": "Form factors the embeddable block enables — and the one rule that decides each",
+   "one_line": "A card, a sticker, a bolt-on asset tag and a solder-down module are four different products, and DULT's own applicability test — not the electronics — is what changes between them.",
+   "verdict": "PLAUSIBLE",
+   "verdict_reason": "The mechanism that makes any of these possible is measured: a KiCad 10 design block carried 9 footprints and 27 routed segments into a host of a different outline with worst pairwise error 0.000000 mm and the host's DRC clean. What is not demonstrated is any one of these four boards existing. The engineering per variant is real but bounded, and the surprising part is that the binding constraint is a compliance threshold rather than a millimetre.",
+   "what_it_is": [
+    "GOAL.md deliverable 2 says anyone should be able to drop halo's circuit into their own board in any outline. D16 proved the mechanism and found its limit: a design block carries schematic AND routed copper, but it carries no design rules, so the antenna keep-out has to travel as a document the integrator reads.",
+    "That makes the interesting question not 'can the circuit move' — it can — but 'what changes when it does'. Four shapes are worth naming, and each is a different product with a different wall.",
+    "THE CARD. Credit-card outline, 85.6 x 54 mm, in a wallet or a passport sleeve. Electrically the easiest of the four: the board is larger than the D37.31 mm antenna keep-out in both dimensions, so the antenna problem that dominates the D26 mm puck simply goes away. The wall is the cell — a CR2032 is 3.2 mm and a card is not. A CR2016 (1.6 mm, about half the capacity) or a thin prismatic cell is the trade, and the battery-life number halves with it.",
+    "THE STICKER. A flexible label with a printed antenna and a thin flat cell, adhered to an asset. This is the one that does not work, and the reason is not electrical. DULT REQUIRES a sound maker at 60 Phon at 25 cm for any accessory small enough to hide, and a sticker cannot carry one. There is no thin-film transducer at that loudness. A sticker is therefore either non-compliant — which docs/ANTI-STALKING.md refuses on principle, not on convenience — or it is not a location tracker at all, and advertises only on a private network with no crowd-finding function. Both of those are honest answers; a compliant crowd-finding sticker is not available.",
+    "THE BOLT-ON ASSET TAG. An IP67 puck with a screw boss or a cable-tie slot, for a pallet, a pump, a length of pipe. This is the one where the enclosure stops fighting the electronics: give up Apple's 7.98 mm and a CR2450 (620 mAh) or CR2477 (1000 mAh) walks in, along with a bigger antenna and a real acoustic cavity for the sounder. It is the shape Leif's own digital twin actually wants, and it is the least like an AirTag.",
+    "THE SOLDER-DOWN MODULE, inside someone else's product. This is the form factor where the rules get EASIER rather than harder, and it is worth reading DULT section 2.1 carefully to see why: the applicability test asks about the accessory's own size, and an accessory larger than 30 cm in one dimension, or 18 x 13 cm in two, or 250 cm3 in volume, is 'easily discoverable' and the anti-stalking requirements become RECOMMENDED rather than REQUIRED. A halo block inside a bicycle, a toolbox, a robot or a machine skid is over that line. The sounder, the button and the whole DULT transport stop being mandatory — which is the largest single simplification available anywhere in this project."
+   ],
+   "why_it_beats": [
+    "Against buying a module: D14 measured that no nRF54L module today is both certified and castellated. The Raytac part is certified but land-grid, so a hobbyist cannot hand-solder it; the Minew part is castellated but uncertified, which is strictly worse than bare silicon because it costs more and carries no grant. Publishing the block is the only route that exists.",
+    "Against re-laying the copper in every host, which was lane C's original assumption: measured wrong. The routed antenna travels.",
+    "Against Apple: there is nothing to compare. An AirTag is one shape and it is not for sale as a circuit."
+   ],
+   "numbers": [
+    {
+     "what": "Design block transfer into a different host outline",
+     "value": "worst pairwise footprint error 0.000000 mm, rotations unchanged, host DRC 0 and 0",
+     "from": "DECISIONS.md D16, lane T5 measurement 2026-09-04"
+    },
+    {
+     "what": "What the block cannot carry",
+     "value": "design rules and the symbol library — so the keep-out ships as a one-page document",
+     "from": "DECISIONS.md D16"
+    },
+    {
+     "what": "The keep-out that has to travel as words",
+     "value": "D37.31 mm, no metal above or below; antenna end on the host outline with 16 x 6 mm clear on every layer",
+     "from": "SPEC.md section 4 (Apple's own callout); research/09 section 4.2 harmonised across five vendors"
+    },
+    {
+     "what": "DULT applicability threshold — above this the sounder becomes RECOMMENDED, not REQUIRED",
+     "value": "30 cm in one dimension, or 18 x 13 cm in two, or 250 cm3",
+     "from": "draft-ietf-dult-accessory-protocol-00 section 2.1, quoted research/02 section 5.1"
+    },
+    {
+     "what": "Proposed module pinout, already worked out",
+     "value": "24 pads: 8 GND, 16 signal, never more than three signals between grounds so a 2-layer host can route it",
+     "from": "research/09 section 6.3"
+    },
+    {
+     "what": "Cell options as the shell grows",
+     "value": "CR2016 ~90 mAh / 1.6 mm; CR2032 235 mAh / 3.2 mm; CR2450 ~620 mAh / 5.0 mm; CR2477 ~1000 mAh / 7.7 mm",
+     "from": "CR2032 figure is the Energizer datasheet used by ce-spice; the others are catalogue nominals and are re-measured in C6"
+    }
+   ],
+   "evidence": [
+    {
+     "claim": "A KiCad 10 design block is a directory holding a schematic, a BOARD FRAGMENT and a JSON descriptor, and the layout is first class",
+     "source": "DECISIONS.md D16; format read out of the KiCad library's own error strings by lane T5",
+     "date": "2026-09-04",
+     "confidence": "primary, measured on this machine"
+    },
+    {
+     "claim": "Block applied into a host of a different outline, offset in both axes: worst pairwise footprint error 0.000000 mm, host DRC clean at 0 and 0",
+     "source": "DECISIONS.md D16",
+     "date": "2026-09-04",
+     "confidence": "primary, measured"
+    },
+    {
+     "claim": "No nRF54L module today is both certified and castellated; certified module route costs +$1.16/unit",
+     "source": "DECISIONS.md D14, from vendor drawings read directly (Raytac AN54LQ, Minew ME54BS11, u-blox NORA-B2)",
+     "date": "2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "DULT is REQUIRED for anything small and not easily discoverable, and the thresholds are 30 cm / 18x13 cm / 250 cm3",
+     "source": "draft-ietf-dult-accessory-protocol-00 section 2.1, archived research/fetched/B-draft-ietf-dult-*.txt",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "DULT requires a sound maker at minimum 60 Phon peak loudness (ISO 532-1:2017) measured 25 cm from the accessory in free space",
+     "source": "draft-ietf-dult-accessory-protocol-00 section 3.13.3",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "At D20 mm, thin and high-frequency are mutually exclusive: every 6.3-7.2 kHz element checked across three manufacturers measures 0.42-0.43 mm; elements in the 0.15-0.30 mm window all land at 3.6-4.2 kHz",
+     "source": "DECISIONS.md D20, nine candidates verified against manufacturer mechanical drawings",
+     "date": "2026-09-04",
+     "confidence": "primary"
+    },
+    {
+     "claim": "Under 47 CFR 15.212 a certified module carries its own radio grant, so soldering it into any host outline does not disturb the grant — but the host must still be tested as an unintentional radiator",
+     "source": "research/06 section 5.1, 47 CFR 15.212 fetched from law.cornell.edu",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    }
+   ],
+   "unverified": [
+    "That a card-outline board with a CR2016 actually meets the 60 Phon sounder requirement. The bender is 0.21 mm and fits, but a card has no acoustic cavity and the shell-as-diaphragm trick that D11a relies on has nowhere to happen. This is a bench measurement, and it is the card's real risk — not the battery.",
+    "Whether a thin-film or electroactive-polymer transducer exists that could make a compliant sticker. This lane found none and did not exhaust the search. A single counterexample would reopen the sticker.",
+    "The CR2450 and CR2477 capacities quoted above are catalogue nominals carried forward, not datasheet figures read in this lane. C6 re-measures them."
+   ],
+   "cost": {
+    "money": "$0 for the block itself — it is a directory in the repository. Per variant: one board spin ($6-30 of PCB) plus the cell and enclosure delta. The bolt-on tag's cell delta is roughly +$0.30-0.60 at volume; the card's is negative.",
+    "current": "Unchanged for the module and the card. The bolt-on tag's larger cell buys 2.6x (CR2450) or 4.3x (CR2477) the life at the same current, or the same life at a much higher ranging duty cycle.",
+    "size": "Card 85.6 x 54 x ~2 mm; bolt-on tag unconstrained; module 15 x 20 mm on the research/09 proposal; sticker refused.",
+    "complexity": "The block is done work. Each variant is a board spin plus its own antenna solve — the D37.31 mm keep-out and the ground rules are the whole integration guide, and D16 says a block that places perfect copper into a host that then floods ground over the antenna is WORSE than no block, because it looks correct."
+   },
+   "breaks": [
+    "Nothing in halo_rev_a. These are additional hosts for a block, not changes to the puck.",
+    "It does break an assumption in the module pin list: research/09 section 6.3 numbers 24 pads against nRF52 functions, and D12 moved the SoC to nRF54L. Every nRF54L GPIO is routed by PSEL so the assignment is still free, but the pin list has to be re-derived against the nRF54L10 package before anyone fabricates a module.",
+    "The sticker breaks docs/ANTI-STALKING.md and is refused here rather than quietly shipped as a 'sensor tag'. If it ever ships it ships without crowd finding, and that has to be stated on the product and not only in a file."
+   ],
+   "smallest_experiment": "Take the halo_rev_a design block, drop it into a 85.6 x 54 mm card outline in ce-pcb, and run the antenna solve on the card's own copper with a CR2016 can in place. Two numbers come out: whether the resonance lands in band without a match (it should, because the card is larger than the keep-out in both axes) and what the realized gain is. That is one afternoon and it settles whether the card is a board spin or a research project. Do the card first, not the module: the card is the variant where the block's value shows up as a number rather than as a claim.",
+   "if_it_works": [
+    "part:halo-core goes onto the triad shelf as a real block with more than one host, which is what makes it reusable rather than merely published.",
+    "The bolt-on asset tag is the shape Leif's own fleet wants, and it is the one where the energy concepts C4, C5 and C6 all get easier at once."
+   ],
+   "value": 4,
+   "effort": 2,
+   "first_move": "Drop the existing design block into a card outline and run one antenna solve on it. The block is already measured to transfer; what is unmeasured is whether the antenna is happier in a bigger space."
+  },
+  {
+   "id": "C11",
+   "slug": "the-tag-you-can-audit",
+   "family": "trust",
+   "title": "The tag you can audit — open debug, reproducible firmware, and why it costs almost no secrecy",
+   "one_line": "Nobody can prove what an AirTag does. A halo whose firmware hash an owner can verify against a published build is a procurement answer no commercial tracker can give — and with pre-generated keys it gives away almost nothing.",
+   "verdict": "PLAUSIBLE",
+   "verdict_reason": "Every component is established: the debug header exists on the board as Tag-Connect pads, the key architecture that makes an open debug port nearly free is documented in research/02 section 9, and reproducible builds are ordinary practice. What has not been done is the analysis of exactly what an attacker gains from a flash dump under each key scheme, and that analysis — not a bench — is the work.",
+   "what_it_is": [
+    "D6 already lists 'a documented debug header' as one of the five things halo offers that nothing on sale does: certified tags from eufy and Motorola ship with debug pads on the board, undocumented. halo's are a header with a pinout.",
+    "The concept is to take that further and make it a stated property: a published, reproducible firmware build, a hash an owner can compute themselves, and a debug port that lets them dump the part and compare. For anyone deploying tags into a facility — which is Leif's use — 'prove this device only does what it says' is a procurement requirement, and no commercial tracker can meet it at any price.",
+    "The obvious objection is that an open debug port leaks the keys. That objection is weaker than it looks, and the reason is architectural. In the OpenHaystack scheme the tag holds a list of PUBLIC keys, 28 bytes each; the private key stays with the owner. A flash dump therefore does not reveal a secret that lets anyone read the tag's location reports. What it does reveal is the tag's FUTURE advertisements, which lets whoever has the dump recognise that tag later — but whoever has the dump is holding the tag.",
+    "The alternative architecture, on-device derivation from a master secret, is where an open port really does cost something: it hands over the master and with it every past and future key. So this concept is also a fork in the firmware design, and it is worth taking the fork deliberately rather than by accident."
+   ],
+   "why_it_beats": [
+    "Against a certified commercial tag: those bind you to a vendor app and, on the certified path, to a per-unit Apple Token burned into flash at the factory. There is no version of them you can audit, and no version whose keys are yours.",
+    "Against 'open source' claimed on a repository page: a published source tree proves nothing about the part on your desk. A reproducible build plus a readable port is the difference between claiming and demonstrating, and it is a difference a purchasing department understands.",
+    "Against Apple: an AirTag's firmware was dumped once, by voltage-glitching APPROTECT, by a researcher. That is the state of the art for auditing an AirTag. It is not a procurement answer."
+   ],
+   "numbers": [
+    {
+     "what": "Debug access already on the board",
+     "value": "SWD on Tag-Connect pads, zero vertical height",
+     "from": "electronics/halo_rev_a/schematic.py header, delta D-8"
+    },
+    {
+     "what": "Storage per pre-generated advertisement key",
+     "value": "28 bytes",
+     "from": "macless-haystack flashing instructions, quoted research/02 section 9"
+    },
+    {
+     "what": "How far 500 keys go",
+     "value": "14 kB of flash; about 10.4 days at 30 min rotation, 5.2 days at 15 min",
+     "from": "research/02 section 9, verified arithmetic on verified parameters"
+    },
+    {
+     "what": "Free NVM on the chosen part",
+     "value": "1 MB total, 13,164 bytes used",
+     "from": "nRF54L10; SPEC.md section 2a measurement"
+    },
+    {
+     "what": "What an AirTag flash dump costs today",
+     "value": "a voltage-glitching attack on APPROTECT",
+     "from": "research/01 section 7.3"
+    }
+   ],
+   "evidence": [
+    {
+     "claim": "Certified commercial tags ship with undocumented debug pads; halo's are documented",
+     "source": "DECISIONS.md D6 point 3, from lane D's FCC exhibit reading",
+     "date": "2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "OpenHaystack-style tags hold public keys only, 28 bytes each, and nRF firmwares are patched at the OFFLINEFINDINGPUBLICKEYHERE! marker",
+     "source": "research/02 section 10.1 item 4",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "The AirTag's nRF flash was dumped by glitching APPROTECT; this is the only known route",
+     "source": "research/01 section 7.3",
+     "date": "2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "halo's firmware occupies 13,164 bytes of flash and 704 bytes of RAM with all three protocol layers resident, so a reproducible build is a small artifact to verify",
+     "source": "SPEC.md section 2a; DECISIONS.md D18",
+     "date": "2026-09-04",
+     "confidence": "primary, measured"
+    },
+    {
+     "claim": "The licence split already commits the firmware to AGPL-3.0-or-later, which obliges source availability anyway",
+     "source": "DECISIONS.md D4",
+     "date": "2026-09-03",
+     "confidence": "primary"
+    }
+   ],
+   "unverified": [
+    "The exact attacker gain from a flash dump under each key scheme. The claim that pre-generated public keys leak 'only future advertisements' is reasoning from the protocol, not a result anyone published. Settle it by writing the threat model down explicitly and having it read by someone who did not write it — this is a paper exercise, not a bench one, and it belongs beside docs/ANTI-STALKING.md.",
+    "Whether the nRF54L10's build is byte-reproducible under Zephyr with the current toolchain. Nothing in this repository has tried. Two builds on two machines and a diff would answer it in an hour."
+   ],
+   "cost": {
+    "money": "$0.00. The pads are already on the board and cost no height.",
+    "current": "0 uA. Leaving APPROTECT open does not draw current.",
+    "size": "0 mm. Tag-Connect needs no connector.",
+    "complexity": "Low in hardware, real in process: a reproducible build needs pinned toolchains and a published recipe, and a threat model needs writing. The cost is discipline, not engineering."
+   },
+   "breaks": [
+    "It forecloses the on-device key-derivation architecture, or at least makes choosing it a decision with a stated cost. Pre-generated keys are flash-hungry and have a bounded lifetime before wrap-around; on-device derivation is unbounded but puts a master secret on a part with an open port. research/02 section 9 calls this the single biggest firmware-architecture question in the project, and this concept is one of the two things that should decide it.",
+    "It sits awkwardly beside DULT's identifier gate. DULT section 3.15.3 requires a physical mechanism before Get_Identifier will answer, precisely so a tag cannot be silently interrogated. An open SWD port bypasses that — but so does a screwdriver, and DULT's threat model assumes the attacker does not have the device in hand."
+   ],
+   "smallest_experiment": "Build the current firmware twice, on two machines, with a pinned toolchain, and diff the two ELF files byte for byte. If they differ, find out where and whether it is a timestamp. That one command answers whether 'verify it yourself' is a claim halo can make at all, and it costs an hour. The threat model is the second half and it is writing, not measuring.",
+   "value": 3,
+   "effort": 1,
+   "first_move": "Build the firmware twice and diff. If it is reproducible, say so in the README with the hash; if it is not, that is a defect worth a line in VERIFICATION-DEBT.md."
+  },
+  {
+   "id": "C12",
+   "slug": "the-flight-recorder",
+   "family": "telemetry",
+   "title": "The flight recorder — an on-tag event log, read at an NFC tap",
+   "one_line": "An AirTag remembers nothing. A halo has 1 MB of NVM and uses 13 kB of it, so it can keep the last several thousand motion and ranging events and hand them over when somebody taps it.",
+   "verdict": "PLAUSIBLE",
+   "verdict_reason": "The storage exists and is measured, the sensor and the ranging that would fill it are already specified, and the NFC peripheral that would read it out is on the die. What is not established is the write energy and the NVM endurance under this write pattern, and those two numbers decide whether the log is a feature or a battery bug.",
+   "what_it_is": [
+    "Find My answers 'which city block, about half an hour ago, if a stranger walked past'. In a workshop, a plant room or a field it answers nothing at all, forever, because nobody walks past. In exactly those places the tag itself still knows things: it felt motion, it ranged to its neighbours, its cell sagged.",
+    "The concept is to write those events down. A record of {timestamp, event type, peer id, range, quality, orientation} is about 16 bytes. The nRF54L10 has 1 MB of non-volatile memory and the whole firmware occupies 13,164 bytes of it, so the free space holds tens of thousands of records with no part added and no BOM line.",
+    "Reading it back has two routes that both already exist on this board. The DULT-mandated NFC tap is the interesting one: a phone taps the tag and gets a URL, and DULT's own format already carries optional parameters. The SWD pads are the other, for a maintenance visit.",
+    "For a digital twin this is the difference between a location and a history. 'This pallet was stationary until 14:32, then moved, and was 2.1 m from sensor 7 when it stopped' is a record no tracker on the market produces, because none of them have anywhere to put it."
+   ],
+   "why_it_beats": [
+    "Against streaming everything to a gateway: no gateway. Against streaming over the crowd network: C3's channel is three bits per fifteen minutes, which is a state, not a history.",
+    "Against a separate data logger: the storage is already bought. D-7 deleted the SPI NOR flash from the board and the reason was a rail mismatch, not a lack of need; the SoC's own NVM is what replaces it, and it costs nothing.",
+    "Against Apple: an AirTag has no log, no readout and no API. This is a capability gap, not a quality gap."
+   ],
+   "numbers": [
+    {
+     "what": "NVM on the part, and how much the firmware uses",
+     "value": "1 MB total, 13,164 bytes used (1.27 %)",
+     "from": "SPEC.md section 2a, measured on nRF54L10"
+    },
+    {
+     "what": "Records that fit, at 16 bytes each, in half the free space",
+     "value": "about 32,000",
+     "from": "[derived] (1,048,576 - 13,164) / 2 / 16"
+    },
+    {
+     "what": "Proposed record shape, already specified for the uplink",
+     "value": "{tag_id, peer_id, t_utc, method, range_mm, sigma_mm, quality, rssi_dbm, n_steps} ~ 16 bytes",
+     "from": "research/08 section 11.3"
+    },
+    {
+     "what": "Motion sampling rate DULT already mandates",
+     "value": "10 s at rest, 0.5 s once moving",
+     "from": "draft-ietf-dult-accessory-protocol-00 Table 17"
+    },
+    {
+     "what": "The NFC readout channel that already has to exist",
+     "value": "the SoC's own NFC-A peripheral on two pins, emulating a read-only Type-4 tag",
+     "from": "SPEC.md section 3; research/01 section 4"
+    }
+   ],
+   "evidence": [
+    {
+     "claim": "The firmware uses 13,164 bytes of flash on a 1 MB part, so the space is free and measured rather than assumed",
+     "source": "SPEC.md section 2a; DECISIONS.md D18",
+     "date": "2026-09-04",
+     "confidence": "primary, measured"
+    },
+    {
+     "claim": "The SPI NOR flash was deleted from halo_rev_a for a rail mismatch (GD25LQ32E is a 1.65-2.0 V part on a raw 3.0 V cell), not because logging was unwanted",
+     "source": "electronics/halo_rev_a/schematic.py delta D-7",
+     "date": "2026-09-04",
+     "confidence": "primary, source read locally"
+    },
+    {
+     "claim": "Tags should report raw ranges with quality metadata rather than solved positions, and the record shape is already drafted",
+     "source": "research/08 section 11.3; DECISIONS.md D12",
+     "date": "2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "DULT's NFC payload is a URL with optional parameters (b battery, bt MAC, fv firmware version) beside the required pid and e",
+     "source": "draft-ietf-dult-accessory-protocol-00 section 3.15.5",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    },
+    {
+     "claim": "Find My cannot supply a history at room scale: mean raw report error ~100 m, median 26 min latency, and zero reports where nobody walks past",
+     "source": "PETS 2021 Tables 5-7; research/02 section 10.4",
+     "date": "fetched 2026-09-03",
+     "confidence": "primary"
+    }
+   ],
+   "unverified": [
+    "The energy of one NVM write on the nRF54L10 and the endurance of the RRAM/flash under a write-every-30-seconds pattern. These are the two numbers that decide the whole concept and neither is in this repository. Settle both by opening the nRF54L10 product specification's non-volatile memory chapter — write current, write time, and the endurance figure — and multiplying out against the 4.2506 uA baseline. If a write costs more than a few microjoules, the log has to batch in RAM and flush rarely, which is a firmware design, not a blocker.",
+    "Whether the DULT URL is the right readout channel or whether a proprietary NDEF record beside it is cleaner. DULT says the URL SHALL be hosted by the network provider, which halo is not — this interacts with the open Network ID question in D19 and should not be resolved casually.",
+    "Whether the NFC field alone can power a readout with the cell dead. Some tag ICs harvest enough from the reader field to answer; whether the nRF54L's NFC-A peripheral does is not established here. If it does, the log survives a flat battery, which changes what the feature is for."
+   ],
+   "cost": {
+    "money": "$0.00. No part. The storage and the NFC peripheral are both already paid for.",
+    "current": "UNKNOWN and load-bearing — see the unverified rows. A RAM ring buffer flushed once an hour is almost certainly free against a 4.2506 uA baseline; a write per event at 0.5 s during motion is almost certainly not. The design lives or dies on the flush policy.",
+    "size": "0 mm.",
+    "complexity": "Moderate. A wear-levelled log in NVM, a flush policy, and a readout format. Zephyr ships NVS and settings subsystems that do most of it."
+   },
+   "breaks": [
+    "It puts a durable record of an asset's movements on a device that can be stolen. That is a privacy consequence and it belongs in docs/ANTI-STALKING.md before a line of it is written: a log that survives the tag changing hands is a surveillance artifact. The mitigation — encrypt the log to the owner's key, the same key that already protects the location reports — is cheap and should be in the design from the start, not retrofitted.",
+    "It competes for NVM with the pre-generated key list (C11). 500 keys is 14 kB; a log is much larger. On a 1 MB part neither is scarce, but on the nRF54L05 fallback (0.5 MB) the arithmetic has to be redone.",
+    "It adds a write pattern to a part whose sleep current is the whole battery budget. Nothing else on this board writes NVM in normal operation."
+   ],
+   "smallest_experiment": "Open the nRF54L10 product specification, read the non-volatile memory chapter's write current, write time and endurance figures, and put them into the existing ce-spice rail_droop study as a sixth scenario: baseline advertising plus one 16-byte NVM write every 30 seconds. The study already computes i_avg_uA and life_months_derated, so the answer comes out in the units the project already uses, and it costs one afternoon. If the derated life stays over 24 months the concept is alive; if it does not, the flush policy is the design problem and the experiment has already told you by how much.",
+   "if_it_works": [
+    "The tag becomes useful in exactly the places Find My is useless, which is where Leif's sensors are.",
+    "It is the natural store for C7's ranging measurements between uplink opportunities, so the two concepts share one mechanism."
+   ],
+   "value": 4,
+   "effort": 2,
+   "first_move": "Read the NVM write current out of the datasheet and add one scenario to the rail_droop study. The answer is a number in the units this project already reports."
+  }
+ ],
+ "rejected": [
+  {
+   "what": "A GNSS receiver on the tag",
+   "why": "A first fix costs tens of milliamps for tens of seconds against a 4.2506 uA budget, and Find My already answers the question GNSS would answer — which city block — for free. The gap in this project is room scale, and GNSS does not close it."
+  },
+  {
+   "what": "A LoRaWAN or NB-IoT backhaul",
+   "why": "It adds a second radio, a second certification regime and a gateway, to buy uplink from places nobody walks past. C9 buys the same thing with hardware halo already has."
+  },
+  {
+   "what": "A USB port for recharging",
+   "why": "A port is a hole, and IP67 and Reese's Law both fight it. The measured life is 64.5 months; the problem this would solve is not the problem halo has."
+  },
+  {
+   "what": "BLE 5.1 angle of arrival",
+   "why": "The tag side is free but the anchor side needs a multi-element switched antenna array in every room. GOAL.md rules out per-room infrastructure. research/08 section 10."
+  },
+  {
+   "what": "Appearing inside Apple's own Find My application",
+   "why": "It needs a per-unit Apple Token burned into flash at the factory under MFi, and D5 refuses MFi on principle because its terms make the specification confidential and publishing an implementation would breach them. This is a commercial wall, not a technical one, and it is not going to move."
+  },
+  {
+   "what": "A display, an e-paper panel or an LED ring on the puck",
+   "why": "Every one of them puts a conductor inside the D37.31 mm antenna keep-out and spends stack height, to deliver something GOAL.md does not ask for. The measured cost of violating that keep-out is in C4."
+  },
+  {
+   "what": "A stealth or silent build target",
+   "why": "SPEC.md section 8 refuses it on principle, not by omission, and this portfolio does not reopen it."
+  }
+ ],
+ "generated_note": "Lane R1, 2026-09-05. Every row in every evidence table names its source and the date it was read."
+}
