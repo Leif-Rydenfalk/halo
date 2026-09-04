@@ -1,6 +1,6 @@
 # Sourcing — every placed part on halo_rev_a, with an order code that was read back
 
-*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `44528cc`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
+*Generated from `spec/bom-resolved.json` by `tools/gen_sourcing.py` at `90895ae`. Prices and stock were read on **2026-09-04** and every one of them carries that date. Nothing on this page is typed by hand.*
 
 ## The count
 
@@ -12,7 +12,7 @@
 | Lines **RESOLVED** — order code fetched, manufacturer part number and package both matched | **22** |
 | Lines **RESOLVED BY REPLACEMENT** — specified part is end-of-life, a buyable equivalent is named | **1** |
 | **Lines that now name a part a factory can buy** | **23** of 26 |
-| Lines with a documented alternate | **23** of the 24 that can have one |
+| Lines with a documented alternate | **23** of the 23 machine-placed lines (LS1 and BT1 carry theirs in prose) |
 | Resolved lines that are a JLCPCB **Basic** part | **2** of 22 |
 | Distinct **Extended** order codes on the board | **20** |
 | Feeder fee those Extended parts cost, per order | **$61.40** |

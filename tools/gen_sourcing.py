@@ -70,10 +70,9 @@ w(f"| Lines **RESOLVED BY REPLACEMENT** — specified part is end-of-life, a "
   f"buyable equivalent is named | **{len(byrep)}** |")
 w(f"| **Lines that now name a part a factory can buy** | "
   f"**{len(resolved)+len(byrep)}** of {len(D['lines'])} |")
-needalt = [l for l in D["lines"] if l["verdict"] not in ("DNP", "NOT AN SMT LINE",
-                                                         "SEE SOUNDER SECTION")]
-w(f"| Lines with a documented alternate | **{len(withalt)}** of the {len(needalt)} "
-  f"that can have one |")
+needalt = [l for l in D["lines"] if l["on_jlc_bom"] and l["verdict"] != "DNP"]
+w(f"| Lines with a documented alternate | **{len([l for l in needalt if l.get('alternate')])}** "
+  f"of the {len(needalt)} machine-placed lines (LS1 and BT1 carry theirs in prose) |")
 w(f"| Resolved lines that are a JLCPCB **Basic** part | **{len(basic)}** of {len(resolved)} |")
 w(f"| Distinct **Extended** order codes on the board | **{cost['extended_part_count']}** |")
 w(f"| Feeder fee those Extended parts cost, per order | **${cost['feeder_fee_total_usd']:.2f}** |")
