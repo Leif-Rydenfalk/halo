@@ -1,0 +1,47 @@
+{
+  "name": "halo-replica-mlb",
+  "revision": "R0",
+  "state": "PROVISIONAL - every dimension below is tagged; none is settled",
+  "lane": "L5 BOARD BUILD",
+  "side_convention": "FRONT = COMPONENT SIDE (Apple FCC caption 'MLB - Front'). O'Flynn's 'frontside' is this project's BACK.",
+  "what_this_is": "A parameterised annular board. NOTHING here is a hard-coded diameter: the outline is a normalised profile r(theta)/r_mean taken from a photograph, multiplied by one scale parameter. Change outer_diameter_mm and the whole board rescales.",
+  "parameters": {
+    "outer_diameter_mm": {
+      "value": 24.984,
+      "state": "PROVISIONAL - IN DISPUTE",
+      "source": "L5 p_outline.py on fcc-BCGA2187-internal-photo-6.jpg, scale = photo6 bottom steel rule (L1 metrology/scale-field.json, 15.8875 px/mm, linear resid sd 0.573 px). 2 x mean kept-ray radius.",
+      "dispute": "O'Flynn's oft-quoted '~26 mm' is his tilde, not a measurement. L1's ruler work suggests nearer 24.6 mm. This lane measures 24.98 mm off photo 6. The three do not agree and the value is NOT settled.",
+      "inherits": "any perspective error between the steel rule plane and the board top face. NOT bounded by the rule's residual."
+    },
+    "thickness_mm": {
+      "value": 0.30,
+      "state": "SETTLED AS-DRAWN (halo lane)",
+      "fabrication_delta": "L4 measured 0.30 mm is below PCBWay's 0.40 mm four-layer floor and JLCPCB's 0.40 mm minimum. The Replica AS DRAWN cannot be ordered at either house. That is a fact about US, not about Apple. The two numbers are never fused."
+    },
+    "layer_count": {
+      "value": 4,
+      "state": "STATED REPLICA CHOICE, NOT APPLE'S FACT",
+      "apple_truth": "CANNOT DETERMINE in {4, 6} (L4)",
+      "why_4": "6 layers need 0.350 mm of dielectric before any copper against a 0.30 mm target, so only 4 is consistent with 0.30 under materials with published thicknesses."
+    },
+    "centre_hole": {
+      "shape": "ROUNDED SQUARE WITH A NOTCH AT TOP CENTRE - not a circle",
+      "state": "PROVISIONAL profile from photo 6",
+      "measured_roundness_rmax_over_rmin": 1.380,
+      "reference": "1.000 = circle, 1.414 = square. 1.380 is a rounded square.",
+      "refusal": "This lane publishes NO 'centre hole diameter'. A circle fitted here returns a small clean residual while being the wrong shape."
+    }
+  },
+  "outline": {
+    "profile_source": "outline/outline-photo6.json",
+    "mode": "normalised-profile-times-scale",
+    "note": "outer and inner profiles are stored as r(theta) in mm in the source file and normalised at load time, so the single scale parameter above controls absolute size and the SHAPE is fixed by the photograph."
+  },
+  "not_on_this_board": {
+    "antennas": "The three antennas are NOT on the PCB (evidence/E01). They live on a moulded carrier soldered to rim pads. Draw the RIM PADS and the feeds; never antennas in copper.",
+    "nfc_coil": "WOUND MAGNET WIRE, ID 9.380 mm / OD 10.834 mm (L1). Not a trace, not copper on this board."
+  },
+  "unpopulated": {
+    "U1": "The Apple U1 UWB module is never sold to anyone. Its footprint is placed UNPOPULATED and that fact is printed ON THE BOARD legend, not only in a document."
+  }
+}

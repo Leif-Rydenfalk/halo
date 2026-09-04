@@ -5,12 +5,10 @@
   "_convention": "FRONT = the component side, per Apple's FCC filing (A2187 internal photos label it 'MLB - Front'). Colin O'Flynn calls that same face 'backside'. Every side reference below is Apple's.",
   "_the_rule_this_file_exists_to_enforce": "WHAT APPLE DID and WHAT WE CAN MAKE are two different facts and are never merged into one row. The Replica is the reference the other five variants are measured against; if it is drawn at whatever a process happens to allow, the reference has already diverged and every downstream comparison silently inherits that divergence.",
   "_owns": "the board in the third dimension: layers, thickness, materials, finish, and what a real fabricator will build. NOT the outline, NOT the centre hole, NOT any diameter — those are lane L1.",
-
   "apple": {
     "_what": "The AirTag as built by Apple. Every row carries the input it came from.",
-
     "board_thickness_mm": {
-      "value": 0.30,
+      "value": 0.3,
       "verdict": "REPORTED, NOT MEASURED",
       "source": "Colin O'Flynn, Twitter/X, quoted in research/fetched/A-oflynn-testpoints-and-glitch-repos.md line 22: \"it's 0.3mm PCB so I'm pretty sure I broke some solder joints getting it out.\"",
       "source_kind": "a teardown engineer's statement in passing, not a caliper reading",
@@ -19,40 +17,57 @@
       "attempted_and_failed": "Direct measurement from photographs. No published photograph shows the board edge-on. FCC internal photo 6 is the best-scaled frame at 15.887 px/mm (L1, docs/REFERENCE-TEARDOWN.md), where 0.30 mm spans 4.8 px and the board lies flat — nothing to measure. O'Flynn's backside scan at ~90-110 px/mm would resolve 0.30 mm as 27-33 px, but it is also flat-on.",
       "what_would_settle_it": "a caliper on a real bare MLB, or a scale-referenced edge-on photograph, or a cross-section micrograph."
     },
-
     "layer_count": {
-      "value": null,
-      "verdict": "CANNOT DETERMINE",
-      "prior_state": "docs/REFERENCE-TEARDOWN.md §3: 'never published. Likely 4.' The word 'likely' is doing work no evidence supports and this lane does not adopt it.",
-      "narrowed_to": [4, 6],
-      "narrowed_how": "an upper bound from thickness arithmetic and a lower bound from routing necessity, derived below. Neither derivation takes a layer count as an input.",
-      "upper_bound": {
-        "claim": "at most 4, IF the board is rigid FR-4 built from stocked laminate",
-        "tool": "tools/s_stackup_budget.py bounds 0.30",
-        "result": "fr4-economy fits 2 layers only; fr4-thin fits 2 and 4 (4-layer laminate = 0.274 mm, +mask 0.294-0.314 mm, i.e. AT the target and not comfortably inside it); 6-layer fr4-thin needs 0.448 mm of laminate before soldermask, which is 49% over 0.30 mm; 8-layer needs 0.622 mm.",
-        "why_6_fails": "6 layers needs 2 cores and 3 prepreg sheets. At the published thin end of stocked rigid FR-4 — 0.10 mm core, 0.050 mm type-106 prepreg — that is 0.350 mm of dielectric alone, already over 0.30 mm before a single micron of copper.",
-        "the_hole_in_it": "This bound is only as good as the claim that Apple used stocked rigid FR-4 with a 0.10 mm core floor. Apple's board suppliers build any-layer HDI with cores well below that, and the sources consulted say 0.05-0.08 mm constructions 'typically require flexible polyimide substrates' — typically, not always, and Apple is not typical. The hdi-ultrathin construction in materials.json is deliberately left NULL and the tool exits 2 rather than evaluate it, because filling that row in from memory would manufacture the certainty this lane exists to refuse. 6 layers in an ultra-thin HDI build is NOT excluded.",
-        "what_would_close_it": "a published capability page from an HDI house giving its minimum core and prepreg thickness. That is a reading task, not a measurement task, and it is the single cheapest way to tighten this bound."
-      },
-      "lower_bound": {
-        "claim": "more than 2",
-        "kind": "INFERENCE from routing and RF necessity — not a measurement",
-        "argument": [
-          "The nRF52832-CIAA is a 50-ball WLCSP. On a fine-pitch WLCSP only the outer two ball rings can escape on the component layer; the interior balls must drop through vias to another layer.",
-          "On a 2-layer board those vias land on the opposite face, which is Apple's FRONT: 3 sprung battery contacts, the wound NFC coil pads, 5 x 100 uF bulk capacitors around the rim, 38 named test points and the two speaker-coil joints. That face is not free routing area.",
-          "A 2-layer board has no interior reference plane. The BLE feed, the UWB feed at 6.5/8 GHz and a 32 MHz crystal would all reference a face that is populated, split and covered in test points. Apple's own FCC-reported antenna gains (-3.2 dBi BLE, -1.6/-0.6 dBi UWB) are not the numbers such a board produces."
+      "value": 4,
+      "verdict": "COUNTED — from a published physical delayering of an AirTag board",
+      "confidence": "HIGH",
+      "_this_supersedes": "the CANNOT DETERMINE that stood in docs/REFERENCE-TEARDOWN.md §3 and §7, and the narrowed-to-[4,6] recorded in this file at commit 98c6663. §3's own words were 'never published. Likely 4.' It WAS published — in a form the dossier read as carrying no count.",
+      "source": {
+        "repo": "https://github.com/stacksmashing/airtag-hardware",
+        "files": [
+          "pcb/layer1.jpg",
+          "pcb/layer2.jpeg",
+          "pcb/layer3.jpeg",
+          "pcb/layer4.jpeg"
         ],
-        "the_hole_in_it": "Every step is engineering judgement. None of it is a photograph. A determined designer with an unusual layout could falsify it, and the ball-array geometry quoted for the WLCSP-50 was not confirmed against Nordic's datasheet in this session — that fetch was attempted and returned a redirect that was not followed."
+        "readme_verbatim": "Contains the merged PCB pictures of all the layers. All credits to David Hulton, who delayed the PCB :)",
+        "credited_to": "David Hulton",
+        "commits": "3 commits, all 2021-08-07/08. 'Push hardware' is the one that added pcb/.",
+        "licence": "NONE STATED. The images are cited and NOT redistributed into this repo. Fetch them from the URLs above to reproduce anything below.",
+        "listed_how": "gh api repos/stacksmashing/airtag-hardware/git/trees/HEAD?recursive=1 — WebFetch could not render the directory and returned a loading error, which is why the earlier attempt recorded in the discarded list failed."
       },
-      "what_was_NOT_used_as_evidence": "That 4 is the common answer for a board like this. It is, and that is precisely why it must not be written down. A guess here becomes 'what Apple did' in every document downstream, permanently.",
-      "what_would_settle_it": [
-        "a cross-section micrograph of a scrapped AirTag board — the only thing that settles it outright",
-        "a lab teardown report stating the count (TechInsights' AirTag report exists; the layer count is not in the free blog post)",
-        "an X-ray at a resolution that separates blind/buried vias from through-holes: any via visible on one face with no counterpart on the other proves more than 2 layers and implies sequential lamination",
-        "a published HDI capability page, which would either close or reopen the 6-layer branch of the upper bound"
+      "the_question_that_had_to_be_answered_first": "Whether each file is ONE delayered copper layer or a SUPERPOSITION of all of them. docs/REFERENCE-TEARDOWN.md took 'merged' to mean superposition, which would make four files carry no count at all. The readings make opposite predictions at one board spot: under superposition a feature on any layer appears in EVERY image; under delayering it appears in one and is ABSENT from the others.",
+      "the_test_and_its_result": {
+        "spot": "the fine-pitch square land grid on layer1 at box [1330,1080,1600,1330], and the SAME board location on the others at box [845,686,1017,845] (layers 2-4 are 1280 px wide against layer1's 2014, so the box is scaled, not moved)",
+        "layer1": "a square land grid of component pads with fanout traces running out of it — a feature only an OUTER layer can carry",
+        "layer2_at_the_same_spot": "NO land grid. Round via lands linked by thin traces cut out of a copper field — an inner layer",
+        "conclusion": "The grid is absent where superposition requires it to be present. These are four separate physical layers."
+      },
+      "what_each_layer_shows": {
+        "layer1": "OUTER, component side. Dense fine routing, component footprints, a fine-pitch land grid consistent with the nRF52832 WLCSP, a second land array, three plated tooling/clip holes.",
+        "layer2": "INNER. Largely a copper pour with antipads and isolated islands, light routing, a cross-shaped fiducial. Plane-like.",
+        "layer3": "INNER. Long parallel routed traces running around the annulus, a pour region on one side, the same fiducial. Routing-like.",
+        "layer4": "OUTER, the other face. Large round pads consistent with battery contacts and bulk capacitors, a small dense footprint, no fine land grid."
+      },
+      "why_the_set_is_read_as_complete": [
+        "The sequence is STRUCTURALLY CLOSED: outer-with-pads, inner, inner, outer-with-pads. A missing layer would have to be an inner one.",
+        "All four share the same board outline, the same centre hole and the same three plated tooling holes at the same positions — one board, successively ground down, at consistent registration.",
+        "The author's own README says 'all the layers'.",
+        "Each image carries features the others do not, which is what rules out superposition."
+      ],
+      "independent_corroboration": "Two lines derived BEFORE these images were found — the arithmetic and the routing argument were committed at 98c6663, timestamped, so neither can have been fitted to this evidence. The thickness arithmetic gives AT MOST 4 for rigid FR-4 in 0.30 mm; the routing argument gives MORE THAN 2. Both brackets close on 4. Three independent lines agreeing is what a real confirmation looks like.",
+      "what_is_still_not_known": [
+        "WHICH board was delayered. The repo does not say whether it was production 820-01736-A or the FCC sample 920-08283-01. Whether those two share a stackup remains CANNOT DETERMINE and is not assumed.",
+        "Whether the vias are all through-holes or include blind/buried ones. Not tested. This bears on whether the build is HDI and on the copper weights, neither of which this finding settles.",
+        "The delayering was done by one person on one unit. It has not been independently repeated."
+      ],
+      "what_would_overturn_it": "A cross-section showing copper layers the delayering did not photograph, or the author stating the set is incomplete. Note that a 6-layer board would additionally have to be an ultra-thin HDI build to fit 0.30 mm — the arithmetic and this count would both have to be wrong together.",
+      "instruments_built_for_this_and_REJECTED": [
+        "FFT periodicity probe. A land grid is periodic; a pour is not. REJECTED because its negative control went red: blank off-board background scored 10.55 against the real land grid's 8.28 — HIGHER. On a flat patch the whole band sits near zero so one JPEG-noise bin towers over the average. Adding detrending and a median baseline made every patch, background included, return the lowest bin at a round 32.0 px. Abandoned rather than tuned: tuning a threshold until the answer comes out right is the defect, not the fix.",
+        "Edge-density probe. Its controls DO pass — blank background 0.0153 and 0.0294 against 0.2541 to 0.4684 for any patch of board, better than tenfold. But it cannot separate a land grid (0.4684) from ordinary inner-layer routing (0.2541-0.3492); that is one continuum, not two categories. KEPT as tools/s_layerprobe.py, which exits 2 on the superposition question and says so. Its honest contribution is the negative control: it proves the compared patches all hold real copper rather than blank photograph, which is the one way the visual reading could have been trivially wrong.",
+        "What actually settled it was the eye on named, reproducible crops. Recorded because an automated instrument was tried twice and neither earned the answer."
       ]
     },
-
     "construction_type": {
       "value": "rigid, glass-reinforced laminate",
       "verdict": "CONSISTENT WITH THE PHOTOGRAPH, not proven",
@@ -61,21 +76,64 @@
         "flex_or_rigid_flex": "considered because 0.30 mm sits in flex territory and because a flexible board would make the 6-layer branch easy. Discarded as the primary hypothesis on the yellow laminate edge above, and because the board carries a shield can, a 50-ball WLCSP and 5 bulk capacitors — a component load that is not put on flex without a stiffener, and no stiffener appears in any photograph. NOT discarded as a possibility for an ultra-thin core INSIDE a rigid stack."
       }
     },
-
     "surface_finish": {
       "value": "gold-bearing — ENIG or another immersion/electroless-gold finish",
       "verdict": "MEASURED, with an in-frame control",
       "method": "tools/s_colour.py on images/airtag/oflynn-backside-fullres.jpeg. Hue of the plated hole rims against the hue of the bare copper wire of a wirewound inductor IN THE SAME FRAME, under the same light. Colour under an unknown illuminant cannot be trusted absolutely; a hue DIFFERENCE between two metals in one frame survives a white-balance error because the error moves both together. That is why the control is not optional.",
       "measurements": {
-        "copper_wire_CONTROL_bare_Cu": {"box": [917, 605, 985, 680], "n": 3312, "rgb": [173, 120, 90], "hue_deg": 21.8, "sat": 0.480},
-        "gold_rim_right_hole": {"box": [2596, 1930, 2624, 1955], "n": 462, "rgb": [114, 96, 48], "hue_deg": 43.8, "sat": 0.575},
-        "gold_rim_left_hole": {"box": [196, 1486, 236, 1510], "n": 948, "rgb": [131, 107, 57], "hue_deg": 40.5, "sat": 0.567}
+        "copper_wire_CONTROL_bare_Cu": {
+          "box": [
+            917,
+            605,
+            985,
+            680
+          ],
+          "n": 3312,
+          "rgb": [
+            173,
+            120,
+            90
+          ],
+          "hue_deg": 21.8,
+          "sat": 0.48
+        },
+        "gold_rim_right_hole": {
+          "box": [
+            2596,
+            1930,
+            2624,
+            1955
+          ],
+          "n": 462,
+          "rgb": [
+            114,
+            96,
+            48
+          ],
+          "hue_deg": 43.8,
+          "sat": 0.575
+        },
+        "gold_rim_left_hole": {
+          "box": [
+            196,
+            1486,
+            236,
+            1510
+          ],
+          "n": 948,
+          "rgb": [
+            131,
+            107,
+            57
+          ],
+          "hue_deg": 40.5,
+          "sat": 0.567
+        }
       },
       "result": "19-22 degrees of hue separation between the plated rims and known bare copper in the same frame. The rims are not copper and not OSP-over-copper. They are not HASL or immersion tin or immersion silver either, all of which are grey — R, G and B within a few counts of each other, no warm pixels at all.",
       "still_cannot_determine": "WHICH gold finish. ENIG, ENEPIG, immersion gold and hard gold are indistinguishable by hue in a JPEG. A cross-section or XRF would separate them.",
       "supporting_inference_labelled_as_such": "A 50-ball WLCSP and 0201 passives need a coplanar finish. HASL cannot hold coplanarity at that scale. This agrees with the measurement but was NOT used to reach it."
     },
-
     "soldermask_colour": {
       "value": null,
       "verdict": "CANNOT DETERMINE",
@@ -84,20 +142,17 @@
       "why_not_closed": "A JPEG under an unknown illuminant and unknown camera white balance cannot separate black from matte black from a very dark blue or purple. The apparent violet cast (hue ~270 deg at saturation 0.14) is within what a white-balance error produces on a near-neutral dark surface, so it is not evidence of a purple mask.",
       "what_would_settle_it": "the board photographed beside a colour checker, or in hand."
     },
-
     "silkscreen": {
       "colour": "white",
       "verdict": "OBSERVED",
       "evidence": "The legend '820-01736-A' and data code '2920 17' are legible as light-on-dark in O'Flynn's front-side scan (images/airtag/oflynn-frontside-tpnames.jpg, catalogued in images/airtag/CATALOG.md). On a dark mask, legible legend is white."
     },
-
     "copper_weight": {
       "value": null,
       "verdict": "CANNOT DETERMINE",
       "why": "Copper weight is a thickness, and no photograph of this board shows a thickness. Nothing in any teardown states it.",
       "what_would_settle_it": "a cross-section, or a fabrication drawing."
     },
-
     "board_part_numbers": {
       "_warning": "THESE ARE TWO DIFFERENT BOARDS AND ARE NOT MERGED. docs/REFERENCE-TEARDOWN.md §7 lists 'whether the FCC-sample board differs electrically from production' as an open question, and it is still open.",
       "production": {
@@ -116,82 +171,138 @@
       },
       "consequence_for_this_lane": "Every stackup fact here is drawn from photographs of the PRODUCTION board (O'Flynn's scans) except where an FCC photo is named. Whether the FCC sample shares its stackup is CANNOT DETERMINE and is not assumed."
     },
-
     "antennas_and_the_stackup": {
       "finding": "The BLE and UWB antennas are NOT in board copper — they are on the plastic carrier. L1 tested the opposite hypothesis against O'Flynn's backside scan at ~90-110 px/mm and refuted it: no meander, no inverted-F, no patch in the outer copper of either face. See docs/REFERENCE-TEARDOWN.md §2.3 and evidence/E01-ARE-THE-ANTENNAS-ON-THE-BOARD.md, commit 52d2931.",
       "why_it_matters_here": "It removes an antenna-clearance constraint on the stackup — no layer has to be kept clear under an on-board radiator. It does NOT remove the reference-plane requirement: the feeds still cross the board to reach the rim joints, and that is part of the lower-bound argument above."
     }
   },
-
   "replica_as_drawn": {
     "_what": "What the halo Replica is DRAWN as. This is a decision, not a measurement, and it was settled with the halo lane which owns the variants table.",
-    "board_thickness_mm": 0.30,
+    "board_thickness_mm": 0.3,
     "decision": "Draw the Replica at 0.30 mm as-drawn and record the fabrication delta separately.",
     "reasoning": "The Replica is the reference against which the other five variants are measured. Drawing it at whatever a process happens to allow would move the reference itself, and every downstream comparison would silently inherit that divergence without any document recording that it happened.",
-    "layer_count": null,
-    "layer_count_note": "The Replica cannot be drawn at a layer count Apple's is not known to have. Drawing it at 4 would write a guess into the reference. The board is drawn with its thickness fixed at 0.30 mm and its layer count left OPEN until either the cross-section or the HDI capability page closes it. Any downstream lane that needs a layer count must take it as an explicit assumption of its own and say so.",
+    "layer_count": 4,
     "finish": "ENIG",
     "finish_note": "Chosen because the measurement says gold-bearing and because a 50-ball WLCSP needs coplanarity. ENIG is the specific member of the family that both prototype houses offer.",
     "soldermask": "black",
     "soldermask_note": "The measurement bounds Apple's mask to 'dark and neutral' and cannot go finer. Black is the nearest orderable colour to that bound at both houses and is recorded as a CHOICE within the measured bound, not as Apple's colour.",
-    "silkscreen": "white"
+    "silkscreen": "white",
+    "layer_count_basis": "MATCHES APPLE, and is no longer a Replica assumption. The orchestrator authorised drawing at 4 as our own choice within the [4,6] bound while Apple's stayed unknown; the delayering evidence arrived in the same session and made that unnecessary. The Replica is drawn at 4 because the AirTag is 4. If the count is ever overturned, this row moves with it — it is not an independent decision that would survive the evidence changing."
   },
-
   "fabrication_delta": {
     "_what": "WHAT WE CAN MAKE. Read off published capability pages only. No account was created, no quote was requested, nobody was contacted, no money was spent.",
     "_and_what_it_does_not_mean": "Nothing about Apple. These are prototype houses. Apple's suppliers build at volumes and tolerances no prototype capability page describes. A capability page bounds what WE can order; it does not bound what Apple built.",
-    "as_drawn_mm": 0.30,
+    "as_drawn_mm": 0.3,
     "pcbway": {
       "url": "https://www.pcbway.com/capabilities.html",
       "fetched": "2026-09-05",
-      "min_thickness_1_2_layer_mm": 0.20,
-      "min_thickness_4_layer_mm": 0.40,
+      "min_thickness_1_2_layer_mm": 0.2,
+      "min_thickness_4_layer_mm": 0.4,
       "min_thickness_4_layer_note": "0.40 mm at 'medium difficulty', 0.60 mm normal",
-      "min_thickness_6_layer_mm": 0.70,
-      "listed_thickness_options_mm": [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0, 2.4, 2.6, 2.8, 3.0, 3.2],
+      "min_thickness_6_layer_mm": 0.7,
+      "listed_thickness_options_mm": [
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0,
+        1.2,
+        1.6,
+        2.0,
+        2.4,
+        2.6,
+        2.8,
+        3.0,
+        3.2
+      ],
       "verdict_for_0_30mm": "0.30 mm is NOT one of the listed options at any layer count. It falls between 0.2 and 0.4. At 2 layers it is inside the stated 0.2 mm floor and might be a non-standard-review item; at 4 layers it is BELOW the 0.40 mm floor and is not orderable.",
       "moq": "CANNOT DETERMINE — no prototype MOQ is published on the capabilities page, and finding one would require the ordering flow. Not pursued: no accounts, no quotes."
     },
     "jlcpcb": {
       "url": "https://jlcpcb.com/capabilities/pcb-capabilities",
       "fetched": "2026-09-05",
-      "min_thickness_overall_mm": 0.40,
+      "min_thickness_overall_mm": 0.4,
       "min_thickness_overall_note": "0.40 mm, published for 2-layer only",
       "verdict_for_0_30mm": "0.30 mm is below JLCPCB's overall minimum at ANY layer count. Not orderable.",
       "four_layer_thickness_row": "UNVERIFIED — the fetch returned 0.8/1.0/1.2/1.6/2.0 for 4-layer but flagged it as inferred from the standard offering rather than quoted. Not treated as a fact here."
     },
     "the_delta_in_one_line": "0.30 mm as-drawn is not orderable from either house at any layer count above two, and not from JLCPCB at any layer count at all. Building a Replica board therefore requires either an HDI house whose capability page was not read, or a stated departure from as-drawn.",
     "the_departure_if_one_is_needed": {
-      "value_mm": 0.40,
+      "value_mm": 0.4,
       "status": "PROPOSED, NOT ADOPTED — this is the halo lane's call, not this lane's",
       "why_0_40": "It is the nearest orderable thickness above 0.30 at both houses, and it is PCBWay's 4-layer floor, so it survives whichever way the layer count resolves.",
-      "delta_mm": 0.10,
+      "delta_mm": 0.1,
       "delta_pct": 33.3,
       "and_the_rule": "If adopted, it is recorded HERE as a fabrication departure and the as-drawn 0.30 mm does not move. The two numbers stay side by side."
     }
   },
-
   "discarded": [
-    {"hypothesis": "The AirTag board is 4 layers.", "why_discarded": "It is plausible and it is unsourced. §3 of the dossier says 'likely 4' and no primary source says 4. The arithmetic makes 4 the only rigid-FR-4 answer, which is a CONDITIONAL result and not the same statement. Recorded as narrowed-to-[4,6], never as 4."},
-    {"hypothesis": "Six or more layers, from the density of the board.", "why_discarded": "Not discarded — narrowed. 6 is excluded in rigid FR-4 by 0.350 mm of dielectric alone against a 0.30 mm target; it survives only in an ultra-thin HDI build whose material data was not obtained. 8 and above are excluded outright: 0.622 mm of laminate at the thin end of stocked material."},
-    {"hypothesis": "The stackup can be read off the merged layer photographs at github.com/stacksmashing/airtag-hardware.", "why_discarded": "Fetched 2026-09-05. The README says only 'Contains the merged PCB pictures of all the layers' and the repository listing did not render through WebFetch. MERGED is the problem: a merged image is a superposition and carries no count. Worth one more attempt by someone who can list the pcb/ directory — if it holds N per-layer images, N is the answer."},
-    {"hypothesis": "Board thickness can be measured off a photograph.", "why_discarded": "No published photograph shows the board edge-on, and the best-scaled flat frame renders 0.30 mm as 4.8 px. Discarded on the resolution arithmetic, not on a failed attempt to eyeball it."},
-    {"hypothesis": "Antennas etched in board copper would constrain which layers can be ground.", "why_discarded": "L1 refuted the premise: no antenna structure exists in the outer copper of either face. The reference-plane requirement for the feed traces survives; the clearance requirement does not."},
-    {"hypothesis": "Soldermask is purple, from its measured hue of ~270 degrees.", "why_discarded": "Saturation is 0.14 on a near-neutral dark surface, which is inside what an unknown camera white balance produces. Reporting purple would be reading a camera setting as a material property."},
-    {"hypothesis": "A prototype house's minimum thickness tells us what Apple could build.", "why_discarded": "It tells us what WE can order. Apple's suppliers are not prototype houses. Fusing the two is the specific error this file's two-column structure exists to prevent."}
+    {
+      "hypothesis": "The AirTag board is 4 layers, because 4 is plausible for a board like this.",
+      "why_discarded": "Discarded AS A REASON, while the number turned out to be right. §3 said 'likely 4' with nothing behind it, and this lane refused to adopt it and recorded [4,6] instead. The count is now 4 on a physical delayering. A guess that happens to land on the truth is still a guess, and had the answer been 6 the plausibility argument would have written the wrong number into every downstream document permanently. The reasoning is what was wrong; keeping the distinction is the point."
+    },
+    {
+      "hypothesis": "The AirTag board is 4 layers.",
+      "why_discarded": "It is plausible and it is unsourced. §3 of the dossier says 'likely 4' and no primary source says 4. The arithmetic makes 4 the only rigid-FR-4 answer, which is a CONDITIONAL result and not the same statement. Recorded as narrowed-to-[4,6], never as 4."
+    },
+    {
+      "hypothesis": "Six or more layers, from the density of the board.",
+      "why_discarded": "Not discarded — narrowed. 6 is excluded in rigid FR-4 by 0.350 mm of dielectric alone against a 0.30 mm target; it survives only in an ultra-thin HDI build whose material data was not obtained. 8 and above are excluded outright: 0.622 mm of laminate at the thin end of stocked material."
+    },
+    {
+      "hypothesis": "Board thickness can be measured off a photograph.",
+      "why_discarded": "No published photograph shows the board edge-on, and the best-scaled flat frame renders 0.30 mm as 4.8 px. Discarded on the resolution arithmetic, not on a failed attempt to eyeball it."
+    },
+    {
+      "hypothesis": "Antennas etched in board copper would constrain which layers can be ground.",
+      "why_discarded": "L1 refuted the premise: no antenna structure exists in the outer copper of either face. The reference-plane requirement for the feed traces survives; the clearance requirement does not."
+    },
+    {
+      "hypothesis": "Soldermask is purple, from its measured hue of ~270 degrees.",
+      "why_discarded": "Saturation is 0.14 on a near-neutral dark surface, which is inside what an unknown camera white balance produces. Reporting purple would be reading a camera setting as a material property."
+    },
+    {
+      "hypothesis": "A prototype house's minimum thickness tells us what Apple could build.",
+      "why_discarded": "It tells us what WE can order. Apple's suppliers are not prototype houses. Fusing the two is the specific error this file's two-column structure exists to prevent."
+    },
+    {
+      "hypothesis": "'Merged PCB pictures of all the layers' means a superposition, so the four files carry no count.",
+      "why_discarded": "This was the dossier's reading and it was wrong. Tested at a named spot: layer1's land grid is ABSENT from layer2 at the same board location. 'Merged' means each image is stitched from several shots of ONE layer, not that the layers are merged together. Recorded because a single word read the wrong way kept this question open for two days."
+    }
   ],
-
   "open_and_escalated": [
-    {"item": "Layer count", "state": "CANNOT DETERMINE, narrowed to [4, 6]", "cheapest_next_step": "read a published HDI capability page for minimum core and prepreg thickness — that alone either closes or reopens the 6-layer branch. A reading task, not an escalation.", "settles_outright": "a cross-section micrograph."},
-    {"item": "Board thickness", "state": "REPORTED 0.30 mm, never measured", "cheapest_next_step": "none available from this machine.", "settles_outright": "a caliper on a bare MLB."},
-    {"item": "Copper weight", "state": "CANNOT DETERMINE", "settles_outright": "a cross-section."},
-    {"item": "Which gold finish", "state": "CANNOT DETERMINE within the gold family", "settles_outright": "XRF or a cross-section."},
-    {"item": "Whether the FCC-sample board 920-08283-01 shares the production board's stackup", "state": "CANNOT DETERMINE, and not assumed", "settles_outright": "comparing a 2019 EVT unit to a retail unit."}
+    {
+      "item": "Whether the vias are all through-holes, or include blind/buried ones",
+      "state": "CANNOT DETERMINE — not tested",
+      "why_it_matters": "It decides whether the build is ordinary 4-layer or HDI, which in turn bears on the copper weights and on whether 0.30 mm was comfortable or aggressive for Apple.",
+      "cheapest_next_step": "compare via land positions between layer1 and layer4 in the delayering set. A land on one outer face with no counterpart on the other is a blind via. That is a registration problem on images already in hand — real work, not an escalation."
+    },
+    {
+      "item": "Board thickness",
+      "state": "REPORTED 0.30 mm, never measured",
+      "cheapest_next_step": "none available from this machine.",
+      "settles_outright": "a caliper on a bare MLB."
+    },
+    {
+      "item": "Copper weight",
+      "state": "CANNOT DETERMINE",
+      "settles_outright": "a cross-section."
+    },
+    {
+      "item": "Which gold finish",
+      "state": "CANNOT DETERMINE within the gold family",
+      "settles_outright": "XRF or a cross-section."
+    },
+    {
+      "item": "Whether the FCC-sample board 920-08283-01 shares the production board's stackup",
+      "state": "CANNOT DETERMINE, and not assumed",
+      "settles_outright": "comparing a 2019 EVT unit to a retail unit."
+    }
   ],
-
   "tools": {
     "s_stackup_budget.py": "the layer-count arithmetic. Verbs: doctor, budget, bounds, selftest. Exit code IS the verdict — 0 PASS, 1 FAIL, 2 CANNOT DETERMINE. Never takes a layer count as an input to be confirmed. 9 selftest cases, all watched to go red on purpose.",
     "s_colour.py": "hue of a metal region against an in-frame control. Refuses a box with no warm pixels rather than averaging shadow.",
-    "s_crop.py": "crop and Lanczos-upscale. No sharpening, no contrast stretch, no gamma."
+    "s_crop.py": "crop and Lanczos-upscale. No sharpening, no contrast stretch, no gamma.",
+    "s_layerprobe.py": "the superposition test's instrumentation. Verbs: structure, selftest. Exits 2 on the layer question BY DESIGN — it can prove the compared patches hold copper rather than blank photograph, which is the negative control on the visual reading, and it cannot separate a land grid from routing. Its docstring records the FFT probe that was rejected when its own negative control went red."
   }
 }

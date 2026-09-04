@@ -71,4 +71,4 @@ Value is what it is worth to the goal in `GOAL.md`; effort is what it costs to f
 
 ---
 
-Generated from `spec/concepts.json` by `tools/gen_concepts.py` on 2026-09-05, commit `9edab53`. The HTML page is `out/concepts/INDEX.html`. Do not edit these files; edit the JSON.
+Generated from `spec/concepts.json` by `tools/gen_concepts.py` on 2026-09-05, commit `cdaa1dc`. The HTML page is `out/concepts/INDEX.html`. Do not edit these files; edit the JSON.
