@@ -684,3 +684,53 @@ oscillator startup**, so the real budget is larger and unmeasured.
 Consequence: the record format and the key schedule are constrained by a
 hardware behaviour, and any concept that assumes a tap can interrupt a running
 tag is wrong. Recorded now so it is not discovered during bring-up.
+
+## D26 — the coil and the antenna can share the annulus (2026-09-05)
+
+The question the whole layout rested on: can the NFC coil and the 2.4 GHz
+antenna both live in the ~5 mm ring around a 20 mm cell, or must the cell move
+off centre, the coil change layer, or the puck grow?
+
+**They can share it.** Keep the Ø25.2 mm coil at a **0.30 mm gap** and shorten
+the antenna's open-end tail by **1.5 mm**. Solved: **2.4321 GHz, in band**, with
+the best buildable matching network at **−6.39 dB** against a −6 dB requirement.
+The cell stays centred and the puck keeps its dimensions.
+
+**The coupling, measured** (antenna's own mode, not the coil's):
+
+| gap | antenna resonance | shift from no coil |
+|---|---|---|
+| no coil | 2.4346 GHz | — |
+| 0.30 mm | 2.3278 GHz | −107 MHz |
+| 0.55 mm | 2.3336 GHz | −101 MHz |
+| 0.80 mm | 2.3534 GHz | −81 MHz |
+| **coil under the antenna arm** | **1.7666 GHz** | **−668 MHz** |
+
+**+51.3 MHz per mm of gap** over 0.30–0.80 mm. The last row is the one to
+remember: the coil cannot go on any layer beneath the arm, and no tuning
+recovers a 668 MHz shift.
+
+**The real cost is headroom, not frequency.** The match goes from −7.79 dB to
+−6.39 dB, clearing the requirement by **0.39 dB**. That is thin. Any later
+change near the annulus — a ground pour, a via, a component moved — can spend
+it, so the match must be re-measured after any such edit rather than assumed.
+
+**Why the earlier alarm was wrong, and it is instructive.** The first reading
+said the coil detuned the antenna to 2.208 GHz. It did not: **the coil was
+welded to the antenna in nineteen places**, 1.39 mm² of shorting copper, because
+nothing in the tool compared passive copper against anything. Cutting the
+crossings gave 1.8131 GHz — also wrong, because that is the **coil's own
+half-wave mode** at 82–126 Ω rather than the antenna's at 7–9 Ω. Read that way, a
+0.5 mm change moved the "resonance" by −25.5, −28.0 and −3.3 percent, which is
+not physics.
+
+**Mode identity is now an assertion**, not an observation: a radiator's mode must
+be an upward reactance zero **and** sit in a stated resistance band, and finding
+none or two candidates is a **failure** rather than a nearest-match guess. It was
+proved to fire both ways, and it immediately caught three more things — including
+one geometry publishing a −34.46 dB "matched" figure with **no reactance zero
+anywhere**, and a mutual-inductance tool printing **−2.70 × 10¹² nH**, a
+divergent integral sitting beside its own claim of no singularity.
+
+Checks in that app went from 91 to 115 across 16 groups, every one broken on
+purpose and restored.
