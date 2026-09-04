@@ -1,5 +1,12 @@
 # REFERENCE-TEARDOWN — the AirTag as the copy target
 
+> **NAMING TRAP — fix your convention before you read anything here.** Apple's
+> FCC filing labels the component side **"MLB - Front"**; Colin O'Flynn calls
+> that same physical side **"backside"**. The two primary sources use *front*
+> for **opposite faces of the board**. This document follows Apple's filing:
+> **front = the component side**. State the convention at the top of any file
+> that mixes the two sources.
+
 *Written 2026-09-03 by research lane A. This is the **reference BOM**: not what halo buys, but
 what halo is copying. Every other BOM in this repo (`docs/BOM.md`, `spec/bom-candidates.json`,
 lane E's substitution map) must map back to a row in §2 here.*
