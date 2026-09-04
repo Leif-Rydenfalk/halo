@@ -120,6 +120,49 @@ Two traps it hit on its own first run, both worth knowing:
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
 
+## The fifth direction: a reader that silently covers less than it claims
+
+*Added 2026-09-05 by lane B1, from a check of its own.*
+
+`check_routed.segments()` pulled a segment's net with
+`re.search(r'\(net "([^"]*)"', blk)`. KiCad 10 writes `(net "GND")`, so it
+worked. But `(net 2 "GND")` and a bare `(net 2)` are both legal Specctra-era
+KiCad forms, and on those the regex did not raise — it returned `None`, the
+segment fell into the `""` bucket or out of the map, and **the check went on
+reporting PASS over copper it could no longer see.**
+
+Coverage fell and confidence did not. That is the shape of it, and it is
+different from every other entry on this page: no wrong number, no dead rule,
+no unreferenced capability, no polluted stream. A **reader** that skips what it
+does not understand, on an input format with more than one legal spelling.
+
+**The rule.** A parser used by a check must be **total or loud**. Count what
+you read against what is there, and refuse when they differ:
+
+```python
+n_blocks = len(re.findall(r"\(segment\b", text))
+if strict and n_read != n_blocks:
+    raise ValueError("read %d of %d ..." % (n_read, n_blocks))
+```
+
+That guard fires on a single dropped segment out of 649. Without it, the only
+symptom is a check that grades less of the board every time the input format
+drifts — and input formats drift.
+
+### And a lesson about fixtures, which cost three attempts
+
+The negative control for the assertion above was placed **on the opposite side
+of the board, twice**, and both times it read as *"the check is broken."*
+KiCad's Y axis points **down**, so an element drawn at a design angle of
+20–104° lives at **256–340°** in board coordinates. The fixture was wrong, the
+check was fine, and the wrong conclusion was one step away both times.
+
+**A negative control is an artifact like any other: measure where you put the
+break, do not assume it.** The third attempt located the arm by reading its own
+segments back — bbox, radius and angle — before placing anything, and the
+assertion fired immediately. The habit that saves this is the same one the rest
+of the page teaches, turned on the test instead of the thing under test.
+
 ## The fourth direction: a channel carrying two kinds of content where the reader expects one
 
 *Added 2026-09-05 by lane B1. The sharpest of the three defects that session,
