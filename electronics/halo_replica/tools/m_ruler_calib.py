@@ -156,12 +156,21 @@ def fit_pitch(pos, pitch0):
 
 
 def comb(img, box, axis, pmin, pmax, angle=None):
+    """Tick positions come back in IMAGE coordinates, not strip coordinates.
+
+    They used not to: band_signal indexes from the strip's own origin, and the
+    origin was never added back, so every reported tick position was short by
+    the strip's x0 (400 px) or y0 (100 px).  That is harmless for a PITCH, and
+    wrong for anything that asks WHERE in the frame a pitch was measured --
+    which is exactly what m_scale_field.py asks.  Caught by noticing a rule
+    that visibly reaches x=2000 reporting its last tick at 1587."""
     d, off, ang = band_signal(img, box, axis, angle)
     p0, snr = fft_pitch(d, pmin, pmax)
     pos = tick_centroids(d, p0)
     if len(pos) < 8:
         return None, ang, snr, p0, len(pos)
-    return fit_pitch(pos + off, p0), ang, snr, p0, len(pos)
+    origin = box[0] if axis == "x" else box[1]
+    return fit_pitch(pos + off + origin, p0), ang, snr, p0, len(pos)
 
 
 def measure_rule(path, name, axis, along, search, verbose=True):

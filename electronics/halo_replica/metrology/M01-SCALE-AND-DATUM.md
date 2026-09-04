@@ -8,6 +8,13 @@ and the scale basis used. A number without those is not a measurement and is not
 
 ---
 
+> **⚠ §3 IS PARTLY SUPERSEDED — read `evidence/E02-THE-COIL-CORRECTION.md` first.**
+> The band geometry below stands. The supporting argument ("~5 turns … agreeing to 1.4 %")
+> is **WITHDRAWN**: the count was an undercount (≥9 measured at full resolution) and the two
+> reads were **not independent** — a solenoid and a flat spiral present the same radial band
+> width from above, so they could not have disagreed. Whether this coil is the NFC antenna or
+> the voice coil is **OPEN**.
+
 ## 1. The datum, measured rather than assumed
 
 Source photograph: `images/airtag/oflynn-frontside-26mm-cropped.jpg`, 788 × 788 px,

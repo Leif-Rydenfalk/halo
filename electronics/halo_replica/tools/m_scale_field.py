@@ -72,6 +72,7 @@ def local_pitch(path, name, axis, along, search):
             out["local_pitch_at"][label] = round(float(np.interp(target, P, Q)), 4)
         else:
             out["local_pitch_at"][label] = None
+    out["tick_pixel_span"] = [round(float(P.min()), 1), round(float(P.max()), 1)]
     out["pitch_range_px_per_mm"] = [round(float(Q.min()), 4), round(float(Q.max()), 4)]
     out["pitch_variation_pct"] = round(100 * (Q.max() - Q.min()) / Q.mean(), 3)
     return out

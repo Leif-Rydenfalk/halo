@@ -473,6 +473,80 @@ def v_perspective(a):
     return EX_PASS
 
 
+def v_turns(a):
+    """Count the turns of a coil across its winding, and say what the count implies.
+
+    Discriminates a FLAT SPIRAL from a SOLENOID wound in depth. Seen from above they can
+    present the same radial band width, so band width alone does NOT establish turn count -
+    a mistake this lane made once, calling two reads independent when both measured the same
+    radial extent. Counting resolved conductors is the read that can disagree.
+
+    Samples along many rays across the band, averages the profiles, and counts intensity
+    peaks. NEGATIVE CONTROL: the same count on a shuffled profile must be far higher (noise
+    produces many spurious peaks) - if the real profile is not much SMOOTHER than shuffled,
+    the peaks are not resolved conductors and the answer is CANNOT DETERMINE."""
+    np = _np()
+    from scipy import ndimage as ndi
+    path, im = _img(a.image)
+    rgb = np.asarray(im.convert("RGB")).astype(float)
+    H, W, _ = rgb.shape
+    cx, cy = (a.centre if a.centre else ((W-1)/2, (H-1)/2))
+    print(f"INPUT  image={os.path.basename(path)}  {W}x{H}  centre=({cx:.1f},{cy:.1f})")
+    print(f"       band r {a.r_min}-{a.r_max} px, {a.n_rays} rays, "
+          f"{'copper chroma R-B' if a.copper else 'luma'}")
+    if a.px_per_mm: print(f"       scale {a.px_per_mm:.4f} px/mm")
+    rs = np.arange(a.r_min, a.r_max, 0.25)
+    prof = np.zeros_like(rs); used = 0
+    for k in range(a.n_rays):
+        th = 2*math.pi*(a.theta0 + a.theta_span*k/max(1,a.n_rays-1))/360.0
+        ys = cy + rs*math.sin(th); xs = cx + rs*math.cos(th)
+        if ys.min() < 0 or ys.max() >= H-1 or xs.min() < 0 or xs.max() >= W-1: continue
+        y0 = ys.astype(int); x0 = xs.astype(int); fy = ys-y0; fx = xs-x0
+        def bil(ch):
+            return (ch[y0,x0]*(1-fy)*(1-fx) + ch[y0+1,x0]*fy*(1-fx)
+                  + ch[y0,x0+1]*(1-fy)*fx + ch[y0+1,x0+1]*fy*fx)
+        v = (bil(rgb[...,0]) - bil(rgb[...,2])) if a.copper else bil(rgb.mean(2))
+        prof += v; used += 1
+    if used < 3: die_cannot(f"only {used} rays fell inside the image")
+    prof /= used
+    sm = ndi.gaussian_filter1d(prof, a.smooth)
+    def npeaks(x):
+        d = np.diff(x)
+        return int(((d[:-1] > 0) & (d[1:] <= 0) & (x[1:-1] > x.mean())).sum())
+    n = npeaks(sm)
+    rng = np.random.default_rng(0)
+    ctrl = int(np.median([npeaks(ndi.gaussian_filter1d(rng.permutation(prof), a.smooth))
+                          for _ in range(21)]))
+    print(f"RESULT {used} rays averaged; {n} intensity peaks across the band")
+    print(f"CONTROL shuffled profile median peaks: {ctrl}")
+    if ctrl <= n:
+        die_cannot(f"shuffled noise yields {ctrl} peaks vs {n} real - the peaks are not "
+                   f"resolved conductors", remedy="use a sharper photograph or a wider band")
+    print(f"CONTROL passed: real profile is smoother than noise ({n} < {ctrl})")
+    band_px = a.r_max - a.r_min
+    print(f"       band width {band_px:.1f} px" + (f" = {band_px/a.px_per_mm:.4f} mm" if a.px_per_mm else ""))
+    if a.px_per_mm and n > 0:
+        per = band_px/a.px_per_mm/n
+        print(f"       -> {n} conductors over {band_px/a.px_per_mm:.4f} mm = {per*1000:.1f} um pitch")
+        print(f"       AWG for that diameter: 40={0.0799}mm 38={0.1007}mm 36={0.1270}mm "
+              f"35={0.1426}mm 34={0.1601}mm")
+        if a.mean_dia_mm:
+            L = n*math.pi*a.mean_dia_mm/1000.0
+            A = math.pi*(per/2000.0)**2
+            R = 1.68e-8*L/A if A > 0 else float('inf')
+            print(f"       IF a FLAT SPIRAL of {n} turns at mean dia {a.mean_dia_mm} mm:")
+            print(f"          conductor length {L*1000:.0f} mm, DC resistance ~{R:.2f} ohm")
+            print(f"       A voice coil for a 4-8 ohm class-D amp needs several ohms.")
+            print(f"       An NFC tag coil is a low-resistance few-turn loop.")
+    if a.json_out:
+        json.dump({"image": os.path.basename(path), "centre_px": [cx, cy],
+                   "r_min_px": a.r_min, "r_max_px": a.r_max, "rays_used": used,
+                   "peaks": n, "shuffle_control_peaks": ctrl, "px_per_mm": a.px_per_mm,
+                   "band_width_px": band_px}, open(a.json_out, "w"), indent=2)
+        print(f"WROTE  {a.json_out}")
+    return EX_PASS
+
+
 def v_doctor(a):
     print("boardmetro doctor\n")
     ok = True
@@ -542,6 +616,15 @@ def main():
     r.add_argument("--r-min", type=float, default=0); r.add_argument("--r-max", type=float, default=400)
     r.add_argument("--bin", type=float, default=2.0); r.add_argument("--copper", action="store_true")
     r.add_argument("--px-per-mm", type=float, default=None); r.add_argument("--json-out")
+    t = sub.add_parser("turns"); t.add_argument("image")
+    t.add_argument("--centre", type=float, nargs=2, default=None)
+    t.add_argument("--r-min", type=float, required=True); t.add_argument("--r-max", type=float, required=True)
+    t.add_argument("--n-rays", type=int, default=64); t.add_argument("--theta0", type=float, default=0)
+    t.add_argument("--theta-span", type=float, default=360)
+    t.add_argument("--copper", action="store_true"); t.add_argument("--smooth", type=float, default=1.5)
+    t.add_argument("--px-per-mm", type=float, default=None)
+    t.add_argument("--mean-dia-mm", type=float, default=None)
+    t.add_argument("--json-out")
     e = sub.add_parser("perspective"); e.add_argument("json_in")
     e.add_argument("--key", default="outer"); e.add_argument("--field", default="r_theta_deg_px")
     e.add_argument("--px-per-mm", type=float, default=None)
@@ -555,7 +638,7 @@ def main():
     a = ap.parse_args()
     return {"doctor": v_doctor, "selftest": v_selftest, "circle": v_circle,
             "scale-ruler": v_scale_ruler, "radial": v_radial,
-            "perspective": v_perspective}[a.verb](a)
+            "perspective": v_perspective, "turns": v_turns}[a.verb](a)
 
 if __name__ == "__main__":
     sys.exit(main())

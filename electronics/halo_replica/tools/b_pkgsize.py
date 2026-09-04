@@ -8,10 +8,12 @@ The method, stated so a reader can attack it:
      bright side or the dark side, as the caller says;
   2. keep the LARGEST connected component, so a neighbouring part cannot join
      the measurement;
-  3. PCA on the component's pixels gives the package's own axes — packages are
-     rotated in these photographs and an axis-aligned box would over-report
-     both dimensions;
-  4. report the extent along each principal axis.
+  3. the MINIMUM-AREA rotated rectangle of the component's convex hull gives
+     the package's own axes and extents. PCA was tried first and is WRONG for
+     a square: the covariance is degenerate, the axes come out arbitrary, and
+     a 150x150 test square came back 206x206. That failure is selftest case 2
+     and it is why rotating calipers are used instead;
+  4. report the two side lengths of that rectangle.
 
 What it does NOT do: it does not know millimetres. It returns PIXELS. A caller
 converts with `--px-per-mm`, and the ONLY honest source of that number in these
@@ -23,6 +25,10 @@ Negative controls, all exercised by --self-test:
   * a component touching the box edge is REFUSED: the box clipped the part, so
     the extent measured is the box's, not the package's
   * a component that fills almost the whole box is refused for the same reason
+  * a box with no bimodal separation (flat, or all one material) is refused:
+    Otsu will always return SOME threshold, and on a flat box it returned 0.5
+    and reported the whole box as a 200x200 part. The separability of the two
+    classes must beat a floor before any extent is reported.
 
 Usage:
   b_pkgsize.py IMG --box X0 Y0 X1 Y1 --pick dark|bright [--px-per-mm F]
@@ -33,6 +39,7 @@ import argparse, json, math, os, sys
 import numpy as np
 from PIL import Image
 from scipy import ndimage
+from scipy.spatial import ConvexHull
 
 
 def otsu(v):
@@ -49,13 +56,54 @@ def otsu(v):
         m0, m1 = s0 / w0, s1 / w1
         between = w0 * w1 * (m0 - m1) ** 2
     between[~np.isfinite(between)] = -1
-    return float(centres[int(np.argmax(between))])
+    k = int(np.argmax(between))
+    var_total = float(((centres - (s0[-1] / total)) ** 2 * hist).sum() / total)
+    eta = float(between[k] / total ** 2 / var_total) if var_total > 1e-9 else 0.0
+    return float(centres[k]), eta
+
+
+def min_area_rect(xs, ys):
+    """Side lengths and angle of the minimum-area rotated rectangle."""
+    pts = np.stack([xs, ys], axis=1).astype(float)
+    if len(pts) < 3:
+        return None
+    try:
+        hull = pts[ConvexHull(pts).vertices]
+    except Exception:
+        return None
+    best = None
+    n = len(hull)
+    for i in range(n):
+        e = hull[(i + 1) % n] - hull[i]
+        L = math.hypot(*e)
+        if L < 1e-9:
+            continue
+        u = e / L
+        v = np.array([-u[1], u[0]])
+        a = hull @ u
+        b = hull @ v
+        w, h = a.max() - a.min() + 1.0, b.max() - b.min() + 1.0
+        if best is None or w * h < best[0]:
+            best = (w * h, w, h, math.degrees(math.atan2(u[1], u[0])))
+    if best is None:
+        return None
+    _, w, h, ang = best
+    return (max(w, h), min(w, h), ang if w >= h else ang + 90.0)
+
+
+MIN_SEPARABILITY = 0.55
+MIN_RECTANGULARITY = 0.60   # see selftest case 6
 
 
 def measure(arr, pick):
     """arr: HxW uint8 luminance of the BOX ONLY. Returns dict or None."""
-    t = otsu(arr.astype(float).ravel())
-    if t is None:
+    if float(arr.std()) < 2.0:
+        return None
+    got = otsu(arr.astype(float).ravel())
+    if got is None:
+        return None
+    t, eta = got
+    if eta < MIN_SEPARABILITY:
         return None
     mask = arr > t if pick == "bright" else arr < t
     if mask.sum() < 25:
@@ -67,23 +115,22 @@ def measure(arr, pick):
     keep = int(np.argmax(sizes)) + 1
     m = lab == keep
     ys, xs = np.nonzero(m)
-    pts = np.stack([xs, ys]).astype(float)
-    c = pts.mean(axis=1, keepdims=True)
-    p = pts - c
-    cov = (p @ p.T) / p.shape[1]
-    w, V = np.linalg.eigh(cov)
-    order = np.argsort(w)[::-1]
-    V = V[:, order]
-    proj = V.T @ p
-    ext = proj.max(axis=1) - proj.min(axis=1) + 1.0
+    rect = min_area_rect(xs, ys)
+    if rect is None:
+        return None
+    long_px, short_px, ang = rect
     H, W = arr.shape
     touches = (xs.min() == 0) or (ys.min() == 0) or (xs.max() == W - 1) or (ys.max() == H - 1)
     fill = float(m.sum()) / (H * W)
-    return {"threshold": round(t, 1), "pixels": int(m.sum()),
-            "long_px": float(ext[0]), "short_px": float(ext[1]),
-            "angle_deg": float(math.degrees(math.atan2(V[1, 0], V[0, 0]))),
+    rect_fill = float(m.sum()) / (long_px * short_px)
+    if rect_fill < MIN_RECTANGULARITY:
+        return None
+    return {"threshold": round(t, 1), "separability": round(eta, 3),
+            "pixels": int(m.sum()),
+            "long_px": float(long_px), "short_px": float(short_px),
+            "angle_deg": round(float(ang), 1),
             "touches_box_edge": bool(touches), "box_fill_fraction": round(fill, 3),
-            "rectangularity": round(float(m.sum()) / (ext[0] * ext[1]), 3),
+            "rectangularity": round(float(m.sum()) / (long_px * short_px), 3),
             "components_found": int(n)}
 
 
@@ -97,10 +144,15 @@ def run(args):
         print(f"  label: {args.label}")
     r = measure(arr, args.pick)
     if r is None:
-        print("  CANNOT DETERMINE — no component of usable size in this box")
+        print("  CANNOT DETERMINE — no component in this box that behaves like a "
+              "package: either the box is flat, the two classes do not separate, "
+              f"or the largest component fills under {MIN_RECTANGULARITY:.0%} of "
+              "its own bounding rectangle (which is what thresholded texture "
+              "looks like, not a part).")
         return 2
-    print(f"  otsu threshold {r['threshold']}, {r['components_found']} components, "
-          f"largest {r['pixels']} px, rectangularity {r['rectangularity']}")
+    print(f"  otsu threshold {r['threshold']} (separability {r['separability']}), "
+          f"{r['components_found']} components, largest {r['pixels']} px, "
+          f"rectangularity {r['rectangularity']}")
     print(f"  oriented extent: {r['long_px']:.1f} x {r['short_px']:.1f} px "
           f"at {r['angle_deg']:.1f} deg")
     if r["touches_box_edge"]:
@@ -169,7 +221,7 @@ def self_test():
             fails += 1
 
     r = measure(np.full((200, 200), 40, np.uint8), "bright")
-    if r is None or r["pixels"] < 25:
+    if r is None:
         print("  PASS  a flat box yields NO component -> CANNOT DETERMINE, "
               "not a zero size")
         passes += 1
@@ -177,13 +229,27 @@ def self_test():
         print(f"  FAIL  a flat box produced a measurement: {r}")
         fails += 1
 
-    big = draw(390.0, 390.0, 0.0)
-    r = measure(big, "bright")
-    if r["touches_box_edge"]:
+    big = draw(430.0, 200.0, 0.0)   # clipped left and right, background above
+    r = measure(big, "bright")     # and below so the box is still separable
+    if r is not None and r["touches_box_edge"]:
         print("  PASS  edge control FIRES on a part that runs out of the box")
         passes += 1
     else:
         print("  FAIL  edge control stayed quiet on a clipped part")
+        fails += 1
+
+    flat2 = np.clip(np.full((200, 200), 40.0) + rng.normal(0, 6, (200, 200)),
+                    0, 255).astype(np.uint8)
+    r = measure(flat2, "bright")
+    if r is None:
+        print("  PASS  a NOISY box with no real object is refused "
+              "(rectangularity floor) - Otsu's separability alone did NOT "
+              "catch this and that is why the second gate exists")
+        passes += 1
+    else:
+        print(f"  FAIL  noise-only box produced a measurement: "
+              f"{r['long_px']:.0f}x{r['short_px']:.0f} px, separability "
+              f"{r['separability']}, rectangularity {r['rectangularity']}")
         fails += 1
 
     r = measure(draw(180.0, 90.0, 0.0), "bright")
