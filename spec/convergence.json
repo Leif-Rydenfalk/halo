@@ -193,14 +193,15 @@
    "unit": "layers",
    "target_value": 4,
    "tolerance": 0,
-   "cite": "research/01 §2 — Apple's layer count unpublished, 4 inferred and marked unverified",
+   "cite": "research/01 §2 corrected 2026-09-05 — COUNTED from stacksmashing/airtag-hardware layer1..layer4, no longer inferred",
    "weight": 3,
    "measure": {
     "from": "file",
     "path": "out/verify/dfm-jlc-4layer.json",
     "pointer": "board_facts.copper_layers"
    },
-   "current_note": "read off the .kicad_pcb stackup by ce-fab's own parser during `fab dfm`, not typed here"
+   "current_note": "halo is 4; Apple is 4, counted rather than assumed",
+   "target_text": null
   },
   {
    "name": "Peer ranging error",

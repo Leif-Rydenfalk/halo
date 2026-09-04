@@ -1,11 +1,24 @@
 # REFERENCE-TEARDOWN — the AirTag as the copy target
 
-> **NAMING TRAP — fix your convention before you read anything here.** Apple's
-> FCC filing labels the component side **"MLB - Front"**; Colin O'Flynn calls
-> that same physical side **"backside"**. The two primary sources use *front*
-> for **opposite faces of the board**. This document follows Apple's filing:
-> **front = the component side**. State the convention at the top of any file
-> that mixes the two sources.
+> **NAMING TRAP — read this before any (F) or (B) tag below.**
+>
+> Three sources use *front* for two different faces. Apple's FCC filing labels
+> the IC side **"MLB - Front"**. Colin O'Flynn calls that same physical side
+> **"backside"**. And **this document's own legend (§2) is a third convention**:
+> `F` = the battery-contact and coil side, `B` = the IC side — i.e. the opposite
+> of Apple's word.
+>
+> **This document keeps its own legend.** Every `(F)` and `(B)` tag in the tables
+> below was written under it, so redefining the header would silently invert the
+> whole document. An earlier edit of mine (commit 391f676) did exactly that for
+> about an hour and propagated into five downstream lane briefs before it was
+> caught — the correction is why this box is now three lines longer than it was.
+>
+> **Do not adopt any of the three words. Name faces by what is on them:** "the
+> side carrying the SoC and the shield can", "the side carrying the battery
+> contacts and the coil". That is unambiguous under every convention and it
+> survives this document changing. House style for the replica lane and
+> recommended everywhere.
 
 *Written 2026-09-03 by research lane A. This is the **reference BOM**: not what halo buys, but
 what halo is copying. Every other BOM in this repo (`docs/BOM.md`, `spec/bom-candidates.json`,
@@ -200,7 +213,7 @@ coil (Catley's own suggested fix) — see `docs/ANTI-STALKING.md`.
 | shape | **donut / annular** — central hole for magnet + voice coil | **SUB** (GOAL.md §2 wants an *embeddable block* in any outline) |
 | outer diameter | **~26 mm** bare board (32 mm assembled puck) | **SUB** |
 | thickness | **0.3 mm** — O'Flynn: *"it's 0.3mm PCB so I'm pretty sure I broke some solder joints getting it out"* | **SUB** — 0.3 mm is exotic; 0.6–0.8 mm is the JLCPCB-friendly answer |
-| layer count | **CANNOT DETERMINE** — never published. Likely 4. stacksmashing hosts merged layer photos but states no count | a cross-section of a scrapped board would settle it |
+| layer count | **4 — COUNTED, 2026-09-05.** Both halves of the old entry were wrong: it *was* published, and it is not merged. stacksmashing/airtag-hardware holds `pcb/layer1..layer4`, credited to David Hulton. The README's "merged PCB pictures of all the layers" had been read as *superposition* — every layer visible in every image — which would make four files carry no count at all. **That reading is falsifiable and false:** `layer1` shows a fine-pitch square land grid with fanout, a feature only an outer layer can have, and `layer2` at the same board location has none — round via lands in a copper field. Superposition requires the grid to appear in every image; it is absent exactly where that reading demands it. Four physical layers: outer-with-pads, inner pour, inner routing, outer-with-pads, sharing one outline, one centre hole and three plated tooling holes at identical positions. Images **cited, not redistributed** — the source repo states no licence | settled; a cross-section would still confirm the stackup thicknesses |
 | Apple board PN | `820-01736-A` (front silkscreen); `920-08283-01` on the NFC side | — |
 | date coding | wk/yr + batch, e.g. `2920 17`; US `2920/3020/3120`, EU `5220`, Asia `1021` | — |
 | populated sides | **2** — ICs on the back, battery contacts/coil/NFC on the front | **1:1** |
