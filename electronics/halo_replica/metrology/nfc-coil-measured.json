@@ -1,0 +1,13 @@
+{
+  "method": "copper chroma R-B>28 radial histogram",
+  "datum": "787.18 px = 26 mm APPROXIMATE (O'Flynn)",
+  "px_per_mm": 30.276153846153843,
+  "coil_inner_r_px": 142.0,
+  "coil_outer_r_px": 164.0,
+  "coil_ID_mm": 9.380319621941615,
+  "coil_OD_mm": 10.833608577453697,
+  "coil_radial_width_mm": 0.7266444777560406,
+  "coil_ID_ratio_of_board_dia": 0.36078152392083135,
+  "coil_OD_ratio_of_board_dia": 0.41667725297898833,
+  "construction": "WOUND ROUND MAGNET WIRE - individual turns resolvable at 2x. NOT an LDS trace."
+}
