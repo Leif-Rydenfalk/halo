@@ -116,6 +116,7 @@ An assertion never seen to fail is not known to work.
 | R1 non-blank, read back off disk | — | not yet fired |
 | R2 annulus, not a filled disc | — | not yet fired |
 | R3 scale | `--break-scale 1.10` → 9.80% | exit 1 FAIL |
+| X3 mis-registration | `--break-rotation 12` → RMS 0.281 → 0.492 mm | residual moved, control real |
 | missing `--scale-basis` | — | exit 2 CANNOT DETERMINE |
 
 **R3 is the one worth copying.** The picture is drawn at `ppm`, and the control measures
@@ -123,9 +124,13 @@ it at the px/mm *the caller asked for*. Those two deliberately do not share the 
 number. Feeding the same wrong scale to both sides cancels and passes a broken build —
 which is exactly what happened the first time it was written.
 
-**Still owed, and it is a real gap:** `p_compare.py --break-rotation` exists and is
-documented as control X3 (rotate our outline, the residual must get worse) but **it has
-not been run, so X3 is a claim, not a control.** Run it before trusting the RMS number.
+**X3 is now run, not claimed.** `p_compare.py --break-rotation 12` destroys the
+alignment on purpose and the residual moves with it: **RMS 0.281 → 0.492 mm, p95
+0.417 → 1.188 mm.** The comparison number therefore depends on the alignment rather
+than describing it, which is the only thing that makes the 0.281 mm figure mean
+anything. Note X1 (panel scale match) correctly does NOT move under rotation — it is
+measuring a different quantity, and a control that moved under every perturbation
+would be measuring none of them.
 
 ## What was discarded, and why
 
