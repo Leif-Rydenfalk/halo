@@ -5,7 +5,7 @@
 
 *L3 — BOM identification, halo Replica, 2026-09-05. Reconstructed bill of materials — Apple AirTag A2187 (1st gen, FCC ID BCGA2187).*
 
-**Status:** FIRST COMPLETE PASS — every line present. Lines whose size is not yet measured say so.
+**Status:** SECOND PASS — every line present; package sizes MEASURED for the eight parts that could be isolated, PENDING for the rest. Halted mid-measurement by a fleet quota stand-down, not by a finished work item; see bom/HANDOFF-L3.md for exactly where it stopped.
 
 **Checked by** `tools/b_bom_check.py` — six rules, each watched failing on
 purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
@@ -38,27 +38,27 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 | ref | function | part | package | size | marking READ | seen? | confidence |
 |---|---|---|---|---|---|---|---|
-| **U1** | MCU (Cortex-M4F) + BLE 5 radio + NFC-A tag peripheral | Nordic Semiconductor nRF52832, variant CIAA | WLCSP-50 | **NOT YET MEASURED** | `N52832 CIAAE0 2102JK` | SEEN | HIGH |
-| **U2** | UWB transceiver (Precision Finding) | Apple U1 (die TMKA75) in a USI system-in-package | shielded SiP, rectangular metal can | **NOT YET MEASURED** | `CANNOT DETERMINE` | SEEN | HIGH that this can is the UWB module (Apple labelled it in a |
+| **U1** | MCU (Cortex-M4F) + BLE 5 radio + NFC-A tag peripheral | Nordic Semiconductor nRF52832, variant CIAA | WLCSP-50 | **MEASURED** — long_mm 3.226 mm, short_mm 2.956 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm | `N52832 CIAAE0 2102JK` | SEEN | HIGH |
+| **U2** | UWB transceiver (Precision Finding) | Apple U1 (die TMKA75) in a USI system-in-package | shielded SiP, rectangular metal can | **MEASURED** — long_mm 6.16 mm, short_mm 3.37 mm, long_px 679.4 mm, short_px 371.8 mm, aspect 1.827 mm | `CANNOT DETERMINE` | SEEN | HIGH that this can is the UWB module (Apple labelled it in a |
 | **U3** | firmware storage — holds the nRF firmware AND the Apple U1 'Rose' firmware, unen | GigaDevice GD25LQ32C-class 32 Mbit (4 MB) SPI NOR | WLCSP-10 (ten pads; centre pads absent) | **NOT YET MEASURED** | `CANNOT DETERMINE` | cited | MEDIUM — and the reason it is not LOW is worth stating: O'Fl |
-| **U4** | 3-axis accelerometer — motion wake, anti-stalk sound trigger | Bosch Sensortec BMA280 (asserted) | metal-lid LGA | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | MEDIUM at best, and only for 'one of these two metal-lid par |
+| **U4** | 3-axis accelerometer — motion wake, anti-stalk sound trigger | Bosch Sensortec BMA280 (asserted) | metal-lid LGA | **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.196, 'short_mm': 1.807, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215} mm, metal_lid_B_mid_left {'long_mm': 1.606, 'short_mm': 1.241, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.293} mm | `NONE VISIBLE` | SEEN | CANNOT DETERMINE which part is the accelerometer. LOW for 'B |
 | **U5** | audio amplifier driving the voice coil | Maxim MAX98357A (asserted; iFixit wrote MAX98357B) | WLCSP | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW |
 | **U6** | main DC-DC buck, 3 V cell to 1.8 V rail | TI TPS62746 (asserted) | CANNOT DETERMINE | **CANNOT DETERMINE** | `NO PACKAGE MARKING WAS READ.` | cited | MEDIUM for 'there is a TPS746-family buck on this board' — a |
 | **U7** | op-amp in the speaker/analog path | TI TLV9001 (asserted) | CANNOT DETERMINE | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW |
 | **U8** | load switch / OVP gating power to the MCU and flash | onsemi FPF2487 (asserted by iFixit only) | CANNOT DETERMINE | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW. Single-source (iFixit) and not corroborated by Catley,  |
 | **U9** | secondary regulator / LDO (function itself inferred, not established) | CANNOT DETERMINE | leadless moulded package, roughly square, with a large round pin-1 dim | **NOT YET MEASURED** | `1A8 / 1950` | SEEN | CANNOT DETERMINE for the part number. HIGH only for 'a part  |
 | **X1** | clock crystal — assigned to 32 MHz (HFXO) by Catley | CANNOT DETERMINE — no manufacturer named anywhere | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **NOT YET MEASURED** | `T320 / RBEV` | SEEN | HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for t |
-| **X2** | clock crystal — assigned to 32.768 kHz (LFXO) by Catley | CANNOT DETERMINE | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **NOT YET MEASURED** | `A048L` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM  |
+| **X2** | clock crystal — assigned to 32.768 kHz (LFXO) by Catley | CANNOT DETERMINE | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **MEASURED** — long_mm 1.626 mm, short_mm 1.046 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm | `A048L` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM  |
 | **C1..C5** | bulk hold-up — keeps the tag alive for seconds after the battery is removed (thi | CANNOT DETERMINE — manufacturer and technology both unnamed | rectangular chip package, roughly 3:1 aspect, DARK body with light met | **NOT YET MEASURED** | `J107S` | SEEN | HIGH for the marking, the count of five and the location. ME |
 | **L1x** | inductor — almost certainly the buck's, given its position | CANNOT DETERMINE | WIREWOUND chip inductor. Individual turns of copper wire are directly  | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | HIGH that a wirewound chip inductor is fitted at this locati |
 | **J1** | coaxial RF connector — a conducted-measurement port. Its position beside the UWB | CANNOT DETERMINE — a U.FL / IPEX MHF-class receptacle by construction | circular RF receptacle: metal outer shell, four solder tabs, a dark di | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | HIGH that a coaxial RF receptacle is fitted at this location |
 | **D1, D2** | CANNOT DETERMINE. RESEARCH-A calls the K11-marked parts 'schottky pairs'; nothin | CANNOT DETERMINE | small two-terminal-looking moulded chip parts, a matched pair placed s | **NOT YET MEASURED** | `K11` | SEEN | HIGH for the marking and the pairing. CANNOT DETERMINE for t |
-| **CT1** | CANNOT DETERMINE. RESEARCH-A §2.1 describes 'a blue tantalum / 6X A75 cap'. | CANNOT DETERMINE | blue-bodied moulded chip package with a printed polarity/pin-1 dot | **NOT YET MEASURED** | `6X A75` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part, the val |
+| **CT1** | CANNOT DETERMINE. RESEARCH-A §2.1 describes 'a blue tantalum / 6X A75 cap'. | CANNOT DETERMINE | blue-bodied moulded chip package with a printed polarity/pin-1 dot | **MEASURED BUT NOT TRUSTED** — long_mm 0.82 mm, short_mm 0.82 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm | `6X A75` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part, the val |
 | **UNK-A** | CANNOT DETERMINE | CANNOT DETERMINE | large matte-black moulded rectangle, roughly 2:1 aspect, no marking of | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | CANNOT DETERMINE |
 | **UNK-B** | CANNOT DETERMINE. Position — between the UWB module and the coaxial connector J1 | CANNOT DETERMINE | pale beige/ivory ceramic-looking square package with a single small da | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | CANNOT DETERMINE |
 | **R/C/L bulk** | decoupling, RF matching networks, pull-ups | CANNOT DETERMINE, individually and collectively | two-terminal chip passives, several distinct sizes present on both sid | **NOT YET MEASURED** | `NONE — chip passives of this size carry no marking` | SEEN | CANNOT DETERMINE for every individual value. This is not a g |
 | **ANT1** | BLE antenna, 2.4 GHz, inverted-F | Apple's own structure | printed onto the plastic carrier, per O'Flynn | **CANNOT DETERMINE** | `n/a` | SEEN | HIGH that Apple labels a Bluetooth antenna at that rim posit |
-| **ANT2** | NFC antenna, 13.56 MHz | wound magnet wire coil (NOT a laser-structured trace) | wound coil | **MEASURED BY THIS LANE** — inner_diameter 9.38 mm, outer_diameter 10.834 mm, radial_band_width 0.727 mm | `n/a` | SEEN | HIGH that the coil is wound magnet wire of about AWG 35: tur |
+| **ANT2** | NFC antenna, 13.56 MHz | wound magnet wire coil (NOT a laser-structured trace) | wound coil | **BAND GEOMETRY MEASURED (M01 §3) AND IT STANDS. The supporting turn-count argument is WITHDRAWN — see evidence/E02-THE-COIL-CORRECTION.md.** — inner_diameter 9.38 mm, outer_diameter 10.834 mm, radial_band_width 0.727 mm | `n/a` | SEEN | HIGH that the conductors are individually resolved, coplanar |
 | **ANT3** | UWB antenna, 6.5 / 8 GHz, one integral patch | Apple's own structure | printed onto the plastic carrier, per O'Flynn | **CANNOT DETERMINE** | `n/a` | SEEN | HIGH for the label. CANNOT DETERMINE for the geometry. |
 | **SPK-COIL** | voice coil — the moving half of the sounder | wound magnet wire, glued to the plastic dome per iFixit and Catley | wound coil | **CANNOT DETERMINE** | `n/a` | cited | LOW for anything geometric. HIGH for the mechanism (coil aga |
 | **SPK-MAGNET** | fixed magnet at the centre of the annular board | rare-earth magnet, grade and dimensions unpublished | disc | **NOT YET MEASURED** | `n/a` | SEEN | MEDIUM |
@@ -74,15 +74,15 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Nordic Semiconductor nRF52832, variant CIAA
 - **package** — WLCSP-50
-- **size** — **NOT YET MEASURED**  
-  Nordic publishes a body size for the CIAA WLCSP; this lane has not yet read that datasheet nor measured the part, so no number is written here.
+- **size** — **MEASURED** — long_mm 3.226 mm, short_mm 2.956 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm  
+  aspect 1.087 measured against 1.0914 published — 0.4 % apart
 - **marking** — `N52832 CIAAE0 2102JK`, read by L3, off IMG-BACK crop [818:1432, 477:1125] at 2x
   - *legibility* — fully legible, three lines, laser-marked on dark blue silicon
 - **locatable in a photograph** — YES — Apple FRONT side, upper-left arc, immediately right of the T320/RBEV crystal and below the A048L crystal
 - **evidence class** — SILICON SEEN
 - **confidence** — HIGH
-- **what the marking establishes** — Nordic nRF52832; CIAA = the WLCSP-50 package variant; 2102 reads as a wk02-2021 date code, consistent with a 2021 retail unit.
-- **what it does NOT establish** — Flash/RAM size. CIAA is an ordering-code fragment; 'E0' is a Nordic build code and this lane did not read Nordic's build-code table. Any statement that this part is 512 kB / 64 kB is CITED, not read.
+- **what the marking establishes** — Nordic nRF52832. Read against Figure 165 of NRF-PS, which gives the marking layout as N52832 / <PP><VV><H><P> / <YY><WW><LL>, the observed 'N52832 CIAAE0 2102JK' decodes as package CI, variant AA, hardware E, production 0, year 21, week 02, lot JK — a wk02-2021 part, consistent with a 2021 retail unit. Table 10 of the same document gives nRF52832-CIAA as 64 kB RAM / 512 kB flash, so the memory size now rests on a datasheet rather than on an inference from the ordering code.
+- **what it does NOT establish** — The build code 'E0' is decoded here only as far as Figure 165's field layout goes — Nordic publishes no table of hardware/production code VALUES in v1.4, so 'hardware revision E' is the field's name, not a looked-up meaning.
 - **what would settle it** — Nordic's nRF52832 PS/ordering-code table for the CIAAE0 build code.
 - **Replica verdict** — 1:1 — catalogue part, buyable.
 
@@ -90,8 +90,8 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Apple U1 (die TMKA75) in a USI system-in-package
 - **package** — shielded SiP, rectangular metal can
-- **size** — **NOT YET MEASURED**  
-  It is the largest part on the board and is measurable; not yet done.
+- **size** — **MEASURED** — long_mm 6.16 mm, short_mm 3.37 mm, long_px 679.4 mm, short_px 371.8 mm, aspect 1.827 mm  
+  aspect 1.827. This part sits at the far rim, where the perspective systematic is largest, so quote the aspect and treat the millimetres as indicative. Noted for whoever picks this up: 6.16 x 3.37 = 20.8 mm^2, which is suspiciously equal to the 20.58 mm^2 that TechInsights report for the U1 DIE. A SiP module must be LARGER than its die, so either the coincidence is meaningless or the measurement captured less than the whole can. Do not repeat this number without re-measuring it.
 - **marking** — `CANNOT DETERMINE`, read by L3, off IMG-BACK crop [700:1600, 2350:2950] at 2.5x
   - *legibility* — The can carries faint embossed characters and a fine cross-hatch texture. Individual glyph shapes are visible but this lane could not resolve them into text at any magnification available. NOT read.
 - **locatable in a photograph** — YES — Apple FRONT side, lower-left, the largest single object on the board. Corroborated by Apple's own arrow 'UWB Module' in FCC-6.
@@ -124,13 +124,13 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Bosch Sensortec BMA280 (asserted)
 - **package** — metal-lid LGA
-- **size** — **NOT YET MEASURED**  
-  Measurable and worth measuring: BMA280 is a 2.0 x 2.0 x 0.95 mm LGA-12. A measured 2.0 x 2.0 would corroborate; anything else would refute.
+- **size** — **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.196, 'short_mm': 1.807, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215} mm, metal_lid_B_mid_left {'long_mm': 1.606, 'short_mm': 1.241, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.293} mm  
+  A BMA280 is a SQUARE 2.0 x 2.0 mm LGA. Neither metal-lid part measures square: 1.215 and 1.293. Perspective in IMG-BACK could stretch a square to about 1.14 on its own, so 1.215 is arguably within reach of it and 1.293 is not comfortably so. Neither part's size CONFIRMS a BMA280, and lid B at 1.61 x 1.24 mm is too small to be one at all. This is a check that could have agreed and did not. It does not refute the accelerometer being on this board — it refutes the idea that anyone here has pointed at it.
 - **marking** — `NONE VISIBLE`, read by L3, off IMG-BACK
   - *legibility* — The metal-lid parts carry a single dark dimple and no readable text at any magnification available.
 - **locatable in a photograph** — AMBIGUOUS, and this is a finding. IMG-BACK contains at least TWO visually identical bare-metal-lid parts with a single dark dimple: one at crop [1705:2450, 545:1100] (beside the 98C0051/TPS746 board legend) and one at crop [440:620, 1570:1780] (mid-left). RESEARCH-A §2.1 says 'a small metal-lid sensor (the BMA280 accelerometer)' as if there were one. This lane cannot say which of the two is the accelerometer, and neither can the literature as written.
 - **evidence class** — SILICON SEEN (a metal-lid part is seen). SILICON CITED (that it is a BMA280).
-- **confidence** — MEDIUM at best, and only for 'one of these two metal-lid parts is the accelerometer'. Any claim about WHICH is CANNOT DETERMINE.
+- **confidence** — CANNOT DETERMINE which part is the accelerometer. LOW for 'BMA280' — it is a teardown assertion that this lane tried to corroborate by size and could not.
 - **what the marking establishes** — nothing — there is no marking.
 - **what it does NOT establish** — the manufacturer, the part, or the function.
 - **what would settle it** — Measuring both parts (a BMA280 is 2.0 x 2.0 mm square; a part that measures 1.5 x 2.0 mm is not one), or a teardown that photographs the lid removed.
@@ -237,8 +237,8 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE
 - **package** — seam-sealed ceramic package with a gold-plated seal ring and a metal lid; visibly a LONGER, narrower outline than X1 in the same photograph at the same scale
-- **size** — **NOT YET MEASURED**  
-  see X1
+- **size** — **MEASURED** — long_mm 1.626 mm, short_mm 1.046 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm  
+  aspect 1.554
 - **marking** — `A048L`, read by L3, off IMG-BACK crop [818:1432, 477:1125] at 2x
   - *legibility* — Single line, fully legible.
 - **locatable in a photograph** — YES — Apple FRONT side, directly above the nRF52832.
@@ -317,7 +317,8 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE
 - **package** — blue-bodied moulded chip package with a printed polarity/pin-1 dot
-- **size** — **NOT YET MEASURED**
+- **size** — **MEASURED BUT NOT TRUSTED** — long_mm 0.82 mm, short_mm 0.82 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm  
+  square to 0.1 %, which for a two-terminal chip part is wrong-looking. The b-r segmentation most likely found only the blue body between two metallised ends rather than the whole package. Recorded as a suspect measurement, not promoted to a size.
 - **marking** — `6X A75`, read by L3, off IMG-BACK crop [720:870, 1400:1550] at 8x
   - *legibility* — two short lines, legible
 - **locatable in a photograph** — YES — Apple FRONT side, mid-left, above the metal-lid part.
@@ -400,18 +401,18 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — wound magnet wire coil (NOT a laser-structured trace)
 - **package** — wound coil
-- **size** — **MEASURED BY THIS LANE** — inner_diameter 9.38 mm, outer_diameter 10.834 mm, radial_band_width 0.727 mm  
+- **size** — **BAND GEOMETRY MEASURED (M01 §3) AND IT STANDS. The supporting turn-count argument is WITHDRAWN — see evidence/E02-THE-COIL-CORRECTION.md.** — inner_diameter 9.38 mm, outer_diameter 10.834 mm, radial_band_width 0.727 mm  
   Quote the RATIOS. The absolute millimetres inherit O'Flynn's '~26 mm', whose tilde is his and whose error is unbounded; the ratios carry only the 0.388 px fit residual.
 - **ratios to the datum** — {'inner': 0.3608, 'outer': 0.4167}
 - **marking** — `n/a`
   - *legibility* — n/a
 - **locatable in a photograph** — YES — Apple BACK side, the annulus around the central magnet well.
 - **evidence class** — SEEN AND MEASURED
-- **confidence** — HIGH that the coil is wound magnet wire of about AWG 35: turns resolve individually at 2x, and band width / countable turns = 0.145 mm/turn against AWG 35's 0.143 mm, two independent reads agreeing to 1.4 % with neither fitted to the other.
+- **confidence** — HIGH that the conductors are individually resolved, coplanar and equally lit at full resolution, which is the direct observation supporting wound wire. CANNOT DETERMINE for the turn count and the wire gauge. OPEN for whether this is the NFC antenna or the voice coil.
 - **what the marking establishes** — n/a
 - **what it does NOT establish** — The turn count to better than 'about five', the wire gauge to better than 'about AWG 35', the inductance, or the tuning network.
 - **what would settle it** — For the electrical values: an LCR measurement on a live unit.
-- **open question** — WHICH COIL IS THIS — and this lane raises it rather than settling it. FCC-5 carries Apple's own arrow reading 'NFC Antenna' and it points at this annulus, which supports the identification. But in IMG-FRONT at 3x, the coil's two fine magnet-wire leads run out past two red lacquer anchor dots and terminate on two round solder pads flanking the central battery-negative dome — and REFTEAR §2.4 states that the two pads at those positions, TP1 and TP38, are the VOICE COIL's two solder joints. Both cannot be true. Nothing in O'Flynn's blog text says what TP1 and TP38 are; the TP1/TP38-is-the-voice-coil claim is an assertion inside this repo, not a quote from him. The measurement in M01 stands either way — it is a measurement of a coil, and the numbers do not change. What is in question is which coil it measured, and therefore whether REFTEAR §2.3's amended ANT2 line describes the NFC antenna or the speaker.
+- **open question** — WHICH COIL IS THIS — and this lane raises it rather than settling it. FCC-5 carries Apple's own arrow reading 'NFC Antenna' and it points at this annulus, which supports the identification. But in IMG-FRONT at 3x, the coil's two fine magnet-wire leads run out past two red lacquer anchor dots and terminate on two round solder pads flanking the central battery-negative dome — and REFTEAR §2.4 states that the two pads at those positions, TP1 and TP38, are the VOICE COIL's two solder joints. Both cannot be true. Nothing in O'Flynn's blog text says what TP1 and TP38 are; the TP1/TP38-is-the-voice-coil claim is an assertion inside this repo, not a quote from him. The measurement in M01 stands either way — it is a measurement of a coil, and the numbers do not change. What is in question is which coil it measured, and therefore whether REFTEAR §2.3's amended ANT2 line describes the NFC antenna or the speaker. — UPDATE 2026-09-05: acted on and recorded in evidence/E02-THE-COIL-CORRECTION.md. The DC resistance argument now favours the NFC loop: at 9 turns of ~111 um wire on a ~10.1 mm mean diameter the conductor is ~286 mm and about 0.50 ohm, and a class-D amplifier into 4-8 ohm needs a hundred-odd turns and a far wider radial band than the 0.727 mm measured. That is an inference from a photograph resting on a lower-bound turn count, not a meter reading, so the question stays OPEN.
   - *what would settle it* — A photograph of the front dome's inner face (if the voice coil is glued there, this coil is not it); or the DC resistance of the pair at TP1/TP38 on a live unit — a five-turn 10 mm coil of AWG 35 is about 0.4 ohm and cannot be a voice coil for a 4-to-8 ohm class-D amplifier, whereas a real voice coil would read several ohms. This lane raises it to the orchestrator as a possible correction to M01 §3 and REFTEAR §2.3.
 - **Replica verdict** — REPRODUCIBLE — winding needs no LDS tooling, subject to the open question above.
 
@@ -527,3 +528,5 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 - **`M01`** — electronics/halo_replica/metrology/M01-SCALE-AND-DATUM.md — this project's scale datum and the wound-coil measurement.
 - **`REFTEAR`** — docs/REFERENCE-TEARDOWN.md — research lane A's reference BOM.
 - **`RESEARCH-A`** — research/01-airtag-hardware.md — research lane A's full evidence file.
+- **`E02`** — electronics/halo_replica/evidence/E02-THE-COIL-CORRECTION.md — the orchestrator's withdrawal of M01 §3's supporting argument, after this lane pointed out that a voice coil is a solenoid and the two 'independent' reads measured the same radial extent.
+- **`NRF-PS`** — nRF52832 Product Specification v1.4, Nordic Semiconductor — Table 132 (WLCSP body 2.956 x 3.226 mm nominal, 0.4 mm pitch, p.541), Table 10 (nRF52832-CIAA = 64 kB RAM / 512 kB flash), Figure 165 (package marking layout N52832 / <PP><VV><H><P> / <YY><WW><LL>). Fetched via the distributor mirror at resources.ampheo.com/static/datasheets/nordic-semiconductor/nrf52832-ciaa-r7.pdf.

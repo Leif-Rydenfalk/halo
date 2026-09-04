@@ -20,9 +20,13 @@
     },
     "layer_count": {
       "value": 4,
-      "state": "COUNTED - confidence HIGH (updated 2026-09-05 from commit e84ffea)",
-      "was": "This lane's brief said 'STATED REPLICA CHOICE, not Apple's fact, CANNOT DETERMINE in {4,6}'. That is now SUPERSEDED: the stackup lane counted 4 from a published delayering (github.com/stacksmashing/airtag-hardware, pcb/layer1..layer4, credited David Hulton), testing 'merged' as delayering rather than superposition at a spot where the two readings predict opposite things.",
-      "note": "The render still carries the old caption until it is re-rendered; see board/HANDOFF.md item 1."
+      "state": "MATCHES APPLE \u2014 COUNTED, no longer a Replica assumption",
+      "apple_truth": "4, COUNTED from a published physical delayering (L4, stackup.json). Supersedes the earlier 'CANNOT DETERMINE in {4,6}'.",
+      "evidence": "stacksmashing/airtag-hardware pcb/layer1..layer4, credited to David Hulton. CITED, NOT REDISTRIBUTED \u2014 the source repo states no licence.",
+      "discriminating_test": "The 'merged layers' README was previously read as SUPERPOSITION, which would make four files carry no count. That reading is falsifiable and false: layer1 carries a fine-pitch square land grid with fanout \u2014 a feature only an OUTER layer can have \u2014 and layer2 at the SAME board location has none, only round via lands in a copper field. Superposition requires the grid present in every image. It is absent exactly where that reading demands it.",
+      "structure": "outer-with-pads / inner pour / inner routing / outer-with-pads; same outline, same centre hole, same three plated tooling holes at the same positions in all four.",
+      "caveat": "Measured by lane L4, not independently re-verified by the orchestrator. If the count is ever overturned this row moves with it \u2014 it is NOT an independent Replica decision that would survive the evidence changing.",
+      "superseded_decision": "The orchestrator authorised drawing 4 as a STATED REPLICA CHOICE within a {4,6} bound while Apple's count was unknown. The delayering evidence arrived in the same session and made that unnecessary. Recorded because the reasoning was right for the state of knowledge it was made in."
     },
     "centre_hole": {
       "shape": "ROUNDED SQUARE WITH A NOTCH AT TOP CENTRE - not a circle",
