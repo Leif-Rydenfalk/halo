@@ -230,17 +230,107 @@ sweep of `NRF54%` returns nothing else.
   a firmware and memory-budget decision. **It also still misses 10,000 by 8,225.** DECISIONS.md D18
   already records that the L05 fallback is not forced by memory; the firmware measures 13,164 bytes.
 
-**Verdict: FAIL, and it is not a sourcing problem this lane can close.** There is no qualified
-in-stock alternate in this channel at either quantity. Authorized-distributor stock and lead time
-are in §4 — a 10,000-board build is a scheduled order, not an off-the-shelf grab, and that is the
-number that decides whether this is a blocker or a schedule.
+**Verdict in this channel: FAIL at both quantities.** There is no qualified in-stock alternate at
+LCSC or JLCPCB — 927 pieces, three order codes, and one of them is a different SoC.
+
+**Verdict overall: PASS, through an authorized distributor — see §4.** 14,956 pieces are on hand
+across authorized channels today and Future Electronics quotes 16 weeks at **$1.8900**, which is
+**21 % below what JLCPCB itself charges**. The real content of this row is not scarcity, it is that
+**JLCPCB cannot be the supplier**: U1 becomes a consigned part above ~900 boards. §4a puts the three
+options side by side with a number on each.
 
 ---
 
-## 4 · U1 through authorized channels
+## 4 · U1 through authorized channels — **the blocker dissolves into a scheduling fact**
 
-*Pending — public distributor stock pages only. This lane reads catalogues; it does not contact
-anyone, open an account, request a quote or place an order.*
+*Read 2026-09-05T07:40Z from `https://www.oemstrade.com/search/NRF54L10-QFAA-R7` and
+`.../NRF54L10-QFAA-R` (Supplyframe's aggregator, which labels each distributor's ECIA / authorized
+status on the row). **Public stock pages only.** No distributor was contacted, no account opened, no
+quote requested, nothing ordered. Nordic's own ordering-information page returned **HTTP 403** and is
+recorded below as the one thing that could not be read.*
+
+### On hand today, authorized channels only
+
+| distributor | status | `-QFAA-R7` (fitted) | `-QFAA-R` (see note) | @1,000 |
+|---|---|--:|--:|--:|
+| Mouser | ECIA member · Authorized | **813** | **8,034** | $2.75 / $2.59 |
+| DigiKey | ECIA member · Authorized | **754** | **1,649** | $2.6907 (T&R @3,000 $2.5356) |
+| Newark / Farnell | ECIA member · Authorized | **423** *(one pool, two storefronts — counted once)* | **1,683** | $2.48 / $2.34 |
+| Verical | Authorized | **1,000** (Americas) | — | $3.3960 |
+| Rutronik | — | **600** (DE; HK 0, US 0, SG 0) | — | €2.0800 |
+| TME | ECIA member · Authorized | **0** | — | — |
+| **Authorized on hand** | | **3,590** | **11,366** | **14,956 combined** |
+
+**Future Electronics** (ECIA member · Authorized) holds none on the shelf and instead quotes the
+thing that actually decides this: **min qty 3,000, package multiple 3,000, lead time 16 weeks, full
+reel, $1.8900.** That is **the cheapest price anywhere for this part — 21 % below the $2.3800
+JLCPCB charges** to supply it during assembly.
+
+Not counted, recorded so nobody counts them: Sierra IC **9,016** ("OEM/CM ONLY"), Win Source
+**8,580**, Axis Part **1,100**, Quest **800**, Unikey **401**. None is an authorized channel, and
+D20's piezo finding on this project is the precedent — broker stock of a part with no traceability
+is not a supply.
+
+### The `-R` / `-R7` question, stated as evidence rather than as fact
+
+`NRF54L10-QFAA-R` is **where nearly all the stock is** (11,366 against 3,590), so whether it is the
+same device matters more than any other number on this page. The evidence that it is the same die in
+a different tape-and-reel quantity:
+
+- Mouser lists both under the **identical description** — *"Wireless SOC, ultra low power 2.4 GHz
+  radio + MCU, 1.0MB NVM"* — at the identical 1-off price of $4.0800.
+- Newark carries both under the identical description with **consecutive house numbers**, `26AM1598`
+  (`-R`) and `26AM1599` (`-R7`), which is how a distributor numbers two packaging options of one item.
+- DigiKey's reel SKUs differ only in **minimum quantity**: `-R7TR-ND` min **1,000**, `-RTR-ND` min
+  **3,000**. Future quotes the same split — package multiple 1,000 for `-R7`, 3,000 for `-R`.
+- LCSC's own page lists `NRF54L10-QFAA-R` as an **associated part** of `-R7`, and stocks it as
+  `C45022043` in the same VFQFN-48.
+
+**What could not be read:** Nordic's ordering-information table
+(`docs.nordicsemi.com/bundle/ps_nrf54L15/…/ordering_info.html`) returned **HTTP 403, 5,925 bytes**.
+So this is four distributors agreeing, **not the manufacturer confirming**. **The board lane should
+read the suffix off Nordic's datasheet before committing a reel.** If `-R` is a different device the
+authorized number drops from 14,956 to 3,590 and the 10,000 answer changes.
+
+### Verdict
+
+| build | route | **verdict** |
+|---|---|---|
+| **1,000** | Mouser holds 8,034 (`-R`) — or 3,590 across five authorized distributors on `-R7` alone | **PASS** |
+| **10,000** | 14,956 authorized on hand today, or Future at 16 weeks for $1.8900 | **PASS** |
+
+**U1 is not a design blocker and it is not a money problem. It is a purchasing-channel fact:**
+
+> **JLCPCB cannot supply this part.** It holds **927**. Every route that builds more than ~900
+> boards makes U1 a **CONSIGNED** part — halo buys the reels from an authorized distributor and
+> ships them to the assembler.
+
+That is the whole decision, and it comes with a discount rather than a premium.
+
+### What this means for the other three rows
+
+Once U1 is consigned, the same door is open for **L3/L4**, whose 3.5 nH has no answer inside
+LCSC/JLCPCB at 20,004 pieces. **This lane has not checked authorized-distributor stock for
+`LQP03HQ3N5B02D`.** If Digi-Key or Mouser hold 20,000, route A in §3 survives and no value change is
+needed. **That is the next measurement, and it is worth taking before anyone re-tunes a match
+network.**
+
+---
+
+## 4a · The one thing for Leif, with a number on every option
+
+The three options, at 10,000 boards, U1 only:
+
+| option | cost of 10,000 U1 | when | what it costs you |
+|---|--:|---|---|
+| **A · consign from Future** | **$18,900** ($1.89) | **16 weeks** | Cheapest by a distance — **$4,900 less than JLCPCB's own price**. You wait 16 weeks and you carry the reels. |
+| **B · consign from stock now** | ~$25,400 ($2.5356, DigiKey T&R) | **now** | +$6,500 against A. Needs 14,956 across ~4 distributors, so several POs and mixed date codes. |
+| **C · nRF54L05 instead** | $20,112 ($2.0112) | now, **but only 1,775 in stock** | **Does not solve 10,000** — short by 8,225. And it is a different SoC: 512 kB / 96 kB against 1 MB / 256 kB. DECISIONS.md D18 already says the L05 fallback is not forced by memory, and firmware measures 13,164 bytes, so it would fit — but it is a firmware and memory-budget decision, not a substitution. |
+| **D · do nothing** | — | — | JLCPCB supplies 927. **The build ceiling is ~900 boards.** |
+
+**A and B both close the row. C does not.** The only genuine product question is A versus B —
+16 weeks against $6,500 — and that is a schedule-versus-cash call that belongs to whoever owns the
+launch date, not to this lane.
 
 ---
 
