@@ -301,3 +301,35 @@ turned a physical law into a tolerance, and an impossible antenna went green.
 `python3 tools/prove_checks.py` does exactly that for the three checkers on this
 page — 25 of 25 assertions seen to fire — and any check added here is expected
 to earn a case in it.
+
+## The mirror defect: a capability declared ABSENT because the probe looked in the wrong place
+
+*Added 2026-09-05, after it was recorded as fact twice.*
+
+Everything else on this page and in `TOOLS-THAT-LIE.md` is a check that
+**passed** while measuring the wrong thing. This is the same defect inverted: a
+check that **failed** while measuring the wrong thing, and it cost more than any
+false pass has.
+
+**Twice** a lane reported that this machine has no Java runtime and therefore no
+autorouter, and twice it was relayed onward as a finding. Both times the
+evidence was `java -version` returning *"Unable to locate a Java Runtime"*, and
+once also a search for the jar under `~/dev/ce-workshop` that found nothing.
+
+Both observations are true and neither answers the question. Apple ships a
+**stub** at `/usr/bin/java` that prints exactly that message whether or not a
+runtime is installed, and Homebrew's `openjdk` is **keg-only**, so it is
+deliberately not on `PATH`. The runtime is at
+`/opt/homebrew/opt/openjdk/bin/java` and answers `openjdk version "26.0.2.1"`.
+The jar is at `~/.local/share/freerouting/freerouting-2.3.0.jar`, outside the
+workshop tree.
+
+**The measurement that settles it in one command:** `ce-pcb/bin/route --doctor`
+exits 0 and prints a row reading **`jar runs → Freerouting v2.3.0`** — a row that
+exists precisely because a path is not a running program.
+
+**The rule.** Before reporting a capability absent, ask **the tool that owns the
+question**, not the environment. A `--doctor` verb exists for this, and where one
+does not exist, write it. "I could not find it" is a statement about the search,
+not about the machine — and a false negative burns a night exactly as surely as
+a false positive burns a factory run.
