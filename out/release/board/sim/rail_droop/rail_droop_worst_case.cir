@@ -1,0 +1,18 @@
+* halo rev A rail: CR2032 at 2.0 V / 140 ohm, 40 uF bulk, nRF54L10 3.7 mA TX pulse
+* why: the top of the IR axis on Energizer Form 2032NA0618's pulse chart, the highest internal resistance that datasheet's own figure admits
+* PULSE(I1 I2 TD TR TF PW PER) — ngspice puts a breakpoint on every corner of a PULSE source, so the end-of-pulse instant, where the droop is deepest, is sampled exactly and not interpolated.
+* const   i_tx_A = 0.0037 A  [nRF54L10 datasheet (Nordic 4503_018 v0.10) Table 86, ITX,0dBm = 3.7 mA, radio-only TX current at 0 dBm. Transcribed in ce-designs/halo/research/fetched/E-nrf54l-datasheet-currents.md. NOT the 4.8 mA on Nordic's product page, which is a whole-device figure.]
+* const   i_sleep_A = 2.4e-06 A  [Table 86, ION_IDLE4 = 2.4 uA, System ON with 192 kB of RAM retained, which is the nRF54L10's whole RAM. research/05 §11.2 notes Nordic publishes no 192 kB + GRTC + LFXO row, so the advertising sleep state is bracketed by 2.0 and 3.1 uA and this uses the retention figure alone.]
+* const   bulk_F = 4e-05 F  [4 x 10 uF 0402 X5R 6.3V (C9-C12). NOT Apple's five 100 uF: D12 deleted the U1 and D11a deleted the class-D amplifier, which were two of the three loads that needed 500 uF, and an 0805 is 1.25 mm tall against a 0.578 mm bottom-face allowance.]
+* const   capacity_mAh = 235 mAh  [Energizer CR2032 Form No. 2032NA0618, Specifications: 'Typical Capacity 235 mAh (to 2.0 volts), Rated at 15K ohms at 21C']
+* const   nrf54l_vdd_min_V = 1.7 V  [nRF54L operating supply range low limit, 1.7 V]
+* const   floor_V = 1.8 V  [the assert floor: nrf54l_vdd_min_V plus 100 mV of margin]
+* const   ocv_V = 2 V  [Energizer Form 2032NA0618 Specifications / TI SWRA349's stated end-of-life threshold — see the point's own why]
+* const   esr_ohm = 140 ohm  [the top of the IR axis on Energizer Form 2032NA0618's pulse chart, the highest internal resistance that datasheet's own figure admits]
+*
+vcell vcell 0 DC 2
+resr vcell vbat 140
+cbulk vbat 0 4e-05
+iload vbat 0 PULSE(2.4e-06 0.0037 0.1 1e-06 1e-06 0.001 2)
+.tran 0.0001 4.2 0 0.0001
+.end

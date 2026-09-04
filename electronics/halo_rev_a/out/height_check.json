@@ -49,7 +49,7 @@
    "body_mm": 0.55,
    "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "straddles the cell's edge"
+   "where": "over the cell"
   },
   {
    "ref": "C11",
@@ -57,7 +57,7 @@
    "body_mm": 0.55,
    "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "straddles the cell's edge"
+   "where": "over the cell"
   },
   {
    "ref": "C12",
@@ -65,7 +65,7 @@
    "body_mm": 0.55,
    "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "straddles the cell's edge"
+   "where": "over the cell"
   },
   {
    "ref": "C13",
@@ -79,33 +79,33 @@
    "ref": "C14",
    "package": "C_0201_0603Metric",
    "body_mm": 0.33,
-   "allow_mm": 0.4,
+   "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
+   "where": "over the cell"
   },
   {
    "ref": "C15",
    "package": "C_0201_0603Metric",
    "body_mm": 0.33,
-   "allow_mm": 0.4,
+   "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
+   "where": "over the cell"
   },
   {
    "ref": "C16",
    "package": "C_0201_0603Metric",
    "body_mm": 0.33,
-   "allow_mm": 0.4,
+   "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
+   "where": "over the cell"
   },
   {
    "ref": "C17",
    "package": "C_0201_0603Metric",
    "body_mm": 0.33,
-   "allow_mm": 0.4,
+   "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "top face inside \u00d821.2"
+   "where": "over the cell"
   },
   {
    "ref": "C18",
@@ -233,7 +233,7 @@
    "body_mm": 0.55,
    "allow_mm": 0.578,
    "verdict": "PASS",
-   "where": "straddles the cell's edge"
+   "where": "over the cell"
   },
   {
    "ref": "J1",

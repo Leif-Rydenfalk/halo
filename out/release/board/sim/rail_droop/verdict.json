@@ -1,0 +1,185 @@
+{
+  "$cespice": 1,
+  "kind": "verdict",
+  "record": {
+    "source": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/sim/rail_droop.py",
+    "example": "sim",
+    "verdict": "PASS",
+    "exit": 0,
+    "why": "6 scenario(s), every assert held",
+    "generated": "2026-09-04T17:27:35+08:00",
+    "ngspice": "ngspice-47  (ngspice-47 : Circuit level simulation program)",
+    "scenarios": [
+      {
+        "circuit": "rail_droop_fresh",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 7 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_min_V",
+            "op": ">",
+            "expect": 1.8,
+            "actual": 2.93693736608344,
+            "verdict": "PASS",
+            "why": "below 1.8 V there is under 100 mV to the nRF54L's 1.7 V minimum; the radio browns out mid-transmission and the tag goes silent"
+          },
+          {
+            "name": "droop_mV",
+            "op": "<",
+            "expect": 400.0,
+            "actual": 62.98991391656372,
+            "verdict": "PASS",
+            "why": "a droop this side of 400 mV means the 40 uF bulk, and not the cell, is carrying the transmission \u2014 which is the design intent (TI SWRA349 section 4)"
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 3.7,
+            "actual": 2.081275046751158,
+            "verdict": "PASS",
+            "why": "the cell must never see the full 3.7 mA edge; if it does, the bulk is too small and every pulse is drawn through the ESR"
+          }
+        ]
+      },
+      {
+        "circuit": "rail_droop_pulse_point",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 7 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_min_V",
+            "op": ">",
+            "expect": 1.8,
+            "actual": 2.8369373660834367,
+            "verdict": "PASS",
+            "why": "below 1.8 V there is under 100 mV to the nRF54L's 1.7 V minimum; the radio browns out mid-transmission and the tag goes silent"
+          },
+          {
+            "name": "droop_mV",
+            "op": "<",
+            "expect": 400.0,
+            "actual": 62.989913916561946,
+            "verdict": "PASS",
+            "why": "a droop this side of 400 mV means the 40 uF bulk, and not the cell, is carrying the transmission \u2014 which is the design intent (TI SWRA349 section 4)"
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 3.7,
+            "actual": 2.0812750467512786,
+            "verdict": "PASS",
+            "why": "the cell must never see the full 3.7 mA edge; if it does, the bulk is too small and every pulse is drawn through the ESR"
+          }
+        ]
+      },
+      {
+        "circuit": "rail_droop_end_of_life",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 7 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_min_V",
+            "op": ">",
+            "expect": 1.8,
+            "actual": 1.9241987208452904,
+            "verdict": "PASS",
+            "why": "below 1.8 V there is under 100 mV to the nRF54L's 1.7 V minimum; the radio browns out mid-transmission and the tag goes silent"
+          },
+          {
+            "name": "droop_mV",
+            "op": "<",
+            "expect": 400.0,
+            "actual": 75.65727915469256,
+            "verdict": "PASS",
+            "why": "a droop this side of 400 mV means the 40 uF bulk, and not the cell, is carrying the transmission \u2014 which is the design intent (TI SWRA349 section 4)"
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 3.7,
+            "actual": 1.2633546525784929,
+            "verdict": "PASS",
+            "why": "the cell must never see the full 3.7 mA edge; if it does, the bulk is too small and every pulse is drawn through the ESR"
+          }
+        ]
+      },
+      {
+        "circuit": "rail_droop_worst_case",
+        "verdict": "PASS",
+        "why": "3 assert(s) evaluated, all held; 7 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_min_V",
+            "op": ">",
+            "expect": 1.8,
+            "actual": 1.9149360620310782,
+            "verdict": "PASS",
+            "why": "below 1.8 V there is under 100 mV to the nRF54L's 1.7 V minimum; the radio browns out mid-transmission and the tag goes silent"
+          },
+          {
+            "name": "droop_mV",
+            "op": "<",
+            "expect": 400.0,
+            "actual": 84.72793796888722,
+            "verdict": "PASS",
+            "why": "a droop this side of 400 mV means the 40 uF bulk, and not the cell, is carrying the transmission \u2014 which is the design intent (TI SWRA349 section 4)"
+          },
+          {
+            "name": "i_peak_mA",
+            "op": "<",
+            "expect": 3.7,
+            "actual": 0.6075995569208696,
+            "verdict": "PASS",
+            "why": "the cell must never see the full 3.7 mA edge; if it does, the bulk is too small and every pulse is drawn through the ESR"
+          }
+        ]
+      },
+      {
+        "circuit": "rail_droop_worst_case_no_bulk",
+        "verdict": "PASS",
+        "why": "2 assert(s) evaluated, all held; 7 measurement(s) read",
+        "asserts": [
+          {
+            "name": "v_min_V",
+            "op": "<",
+            "expect": 1.8,
+            "actual": 1.482,
+            "verdict": "PASS",
+            "why": "THIS ONE IS MEANT TO COLLAPSE. With no bulk the 3.7 mA pulse is drawn straight through 140 ohm, which is 518 mV of IR drop on a 2.0 V cell. A PASS here is the evidence that C9-C12 are load-bearing, not decoration."
+          },
+          {
+            "name": "i_peak_mA",
+            "op": ">",
+            "expect": 3.6,
+            "actual": 3.7,
+            "verdict": "PASS",
+            "why": "with no bulk the cell delivers the whole edge itself \u2014 the mirror image of the assert the other four make"
+          }
+        ]
+      },
+      {
+        "circuit": "rail_droop_holdup",
+        "verdict": "PASS",
+        "why": "2 assert(s) evaluated, all held; 6 measurement(s) read",
+        "asserts": [
+          {
+            "name": "holdup_to_1v7_s",
+            "op": ">",
+            "expect": 0.1,
+            "actual": 4.997600000000003,
+            "verdict": "PASS",
+            "why": "the firmware must detect the removal, count it and commit the count before the rail dies. That budget is about 11 ms (0.24 ms sense collapse + <1 ms sample + <=10 ms NVM write) and 100 ms is it with 10x margin. THE NVM WRITE TIME IS NOT SOURCED - Nordic's RRAM write figure was not fetched - so the 10 ms is a bounded estimate and this assert is only as good as that bound."
+          },
+          {
+            "name": "v_at_1s_V",
+            "op": ">",
+            "expect": 1.7,
+            "actual": 1.9398537111480811,
+            "verdict": "PASS",
+            "why": "a full second of life after the cell leaves, which is roughly a hundred times the detect-and-commit budget"
+          }
+        ]
+      }
+    ]
+  }
+}

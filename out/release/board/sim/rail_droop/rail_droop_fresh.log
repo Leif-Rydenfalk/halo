@@ -1,0 +1,36 @@
+$ /opt/homebrew/bin/ngspice -b -r rail_droop_fresh.raw rail_droop_fresh.cir
+exit 0  0.381 s
+
+
+Note: No compatibility mode selected!
+
+
+Circuit: * halo rev a rail: cr2032 at 3.0 v / 30 ohm, 40 uf bulk, nrf54l10 3.7 ma tx pulse
+
+binary raw file "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/sim/rail_droop/rail_droop_fresh.raw"
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+Using SPARSE 1.3 as Direct Linear Solver
+No. of Data Columns : 4  
+
+Initial Transient Solution
+--------------------------
+
+Node                                   Voltage
+----                                   -------
+vcell                                        3
+vbat                                   2.99993
+vcell#branch                          -2.4e-06
+
+
+No. of Data Rows : 42092
+
+Total analysis time (seconds) = 0.31486
+
+Total elapsed time (seconds) = 0.347 
+
+Total DRAM available = 8192.000 MB.
+DRAM currently available = 2175.891 MB.
+Maximum ngspice program size =    9.938 MB.
+Current ngspice program size =    9.938 MB.
+

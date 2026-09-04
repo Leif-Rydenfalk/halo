@@ -1,0 +1,21 @@
+* halo rev A: the cell is REMOVED at t = 0.5 s and the 40 uF bulk holds the rail up
+* why: SPEC.md §3: the bulk capacitance is 'what keeps the tag alive for seconds after the cell is pulled, which is how the five-removals reset works'. Apple has 500 uF for it; rev A has 40 uF and this measures what that buys.
+* The removal is a PWL resistance: 60 ohm until t = 0.5 s, then 1 Gohm. A behavioural resistor is used rather than a switch so there is no discontinuity for the integrator to trip over.
+* The removal is a voltage-controlled switch: Ron IS the cell's end-of-life ESR, Roff is an open contact, and the control source opens it at t = 0.5 s.
+* const   i_tx_A = 0.0037 A  [nRF54L10 datasheet (Nordic 4503_018 v0.10) Table 86, ITX,0dBm = 3.7 mA, radio-only TX current at 0 dBm. Transcribed in ce-designs/halo/research/fetched/E-nrf54l-datasheet-currents.md. NOT the 4.8 mA on Nordic's product page, which is a whole-device figure.]
+* const   i_sleep_A = 2.4e-06 A  [Table 86, ION_IDLE4 = 2.4 uA, System ON with 192 kB of RAM retained, which is the nRF54L10's whole RAM. research/05 §11.2 notes Nordic publishes no 192 kB + GRTC + LFXO row, so the advertising sleep state is bracketed by 2.0 and 3.1 uA and this uses the retention figure alone.]
+* const   bulk_F = 4e-05 F  [4 x 10 uF 0402 X5R 6.3V (C9-C12). NOT Apple's five 100 uF: D12 deleted the U1 and D11a deleted the class-D amplifier, which were two of the three loads that needed 500 uF, and an 0805 is 1.25 mm tall against a 0.578 mm bottom-face allowance.]
+* const   capacity_mAh = 235 mAh  [Energizer CR2032 Form No. 2032NA0618, Specifications: 'Typical Capacity 235 mAh (to 2.0 volts), Rated at 15K ohms at 21C']
+* const   nrf54l_vdd_min_V = 1.7 V  [nRF54L operating supply range low limit, 1.7 V]
+* const   floor_V = 1.8 V  [the assert floor: nrf54l_vdd_min_V plus 100 mV of margin]
+* const   ocv_V = 2 V  [end-of-life cell, the hardest case to hold up from because it starts lowest]
+* const   esr_ohm = 60 ohm  [TI SWRA349 section 3, end of life]
+*
+vcell vcell 0 DC 2
+SW1 vcell vbat sw_ctl 0 removal_sw
+.model removal_sw SW(Ron=60 Roff=1e9 Vt=0.5 Vh=0.01)
+Vctl sw_ctl 0 PWL(0 1 0.4999 1 0.5 0)
+cbulk vbat 0 4e-05
+iload vbat 0 DC 2.4e-06
+.tran 0.0001 30 0 0.01
+.end

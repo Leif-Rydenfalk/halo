@@ -167,7 +167,14 @@ ANT_SECTOR_ARC = 88.0          # 16 -> 104 deg, inside the 13->107 clear arc
 #: Where the antenna is fed, and where the coil's two halves meet. Both are
 #: angles because everything on a disc is.
 ANT_FEED_DEG = 20.0
-NFC_TIE_DEG = 200.0
+
+#: Where the NFC winding's two halves meet, computed the same way the spiral
+#: is so the net tie lands ON the conductor rather than near it.
+_NFC_A0_PRE = 20.0
+_NFC_A1_PRE = 20.0 + 360.0 * 3 - 40.0
+NFC_TIE_DEG_PRE = (_NFC_A0_PRE + _NFC_A1_PRE) / 2.0
+NFC_TIE_R_PRE = fpg.NFC_R_OUT - (fpg.NFC_W + fpg.NFC_GAP) * \
+    (NFC_TIE_DEG_PRE - _NFC_A0_PRE) / 360.0
 
 
 def at_r(r, deg):
@@ -297,7 +304,14 @@ ANT_CLEAR = sector_polygon(R_ANNULUS_IN - 0.3, R - 0.05,
 # WHAT DOES CROSS HERE IS A REAL COUPLING QUESTION AND IT IS ce-rf's: the NFC
 # coil on B.Cu and BT1's positive contact land both sit under this sector and
 # neither can move. They are in the model, not designed out.
-b.keepout(outline=ANT_CLEAR, layers=["In1.Cu", "In2.Cu", "B.Cu"],
+# F.Cu IS IN THIS LIST, and leaving it out was a real bug. The antenna lives
+# on F.Cu, so the first version excluded that layer entirely - which meant
+# the top-side GND pour filled right up to the element with 0.127 mm of
+# clearance on both sides. That is not an antenna beside a ground plane, it
+# is a coplanar waveguide, and it would have radiated almost nothing. Pours
+# are forbidden on all four layers in this sector; TRACKS are allowed,
+# because the element itself is one.
+b.keepout(outline=ANT_CLEAR, layers=["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
           tracks=False, vias=True, pads=False, pours=True, footprints=False,
           scope="board", name="antenna-ground-clearance",
           why="No ground plane, no inner copper and no bottom copper under "
@@ -309,6 +323,10 @@ b.keepout(outline=ANT_CLEAR, layers=["In1.Cu", "In2.Cu", "B.Cu"],
 # ==========================================================================
 # 4. PLACEMENT
 # ==========================================================================
+C0201 = "Capacitor_SMD:C_0201_0603Metric"
+R0201 = "Resistor_SMD:R_0201_0603Metric"
+L0201 = "Inductor_SMD:L_0201_0603Metric"
+
 # side: actives BOTTOM, passives TOP. See the height paragraph - the top
 # face inside Ø21.2 allows 0.400 mm and every active here is taller, so the
 # bottom's 0.578 mm is the better of two faces that are both too shallow.
@@ -317,20 +335,26 @@ PLACE = [
     ("U1", "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
      0.0, 0.0, 0.0, "bottom"),
     ("U3", "Package_SON:Winbond_USON-8-1EP_3x2mm_P0.5mm_EP0.2x1.6mm",
-     7.9, 197.0, 17.0, "bottom"),
+     7.3, 197.0, 17.0, "bottom"),
     ("U2", "Package_LGA:LGA-12_2x2mm_P0.5mm", 7.6, 262.0, 0.0, "bottom"),
     ("X2", "Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm", 7.4, 330.0, 60.0,
      "bottom"),
-    ("X1", "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm", 7.6, 148.0, 58.0,
+    ("X1", "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm", 7.0, 146.0, 56.0,
      "bottom"),
     ("L1", "Inductor_SMD:L_0603_1608Metric", 7.3, 40.0, 40.0, "bottom"),
     # the CR2032's three lands: its own pads are already at r = 11.6
     ("BT1", "halo:HALO_BATT_CONTACT_3PAD", 0.0, 0.0, 0.0, "bottom"),
     # bulk, 0402, on the bottom where 0.55 mm still fits under 0.578 mm
-    ("C9", "Capacitor_SMD:C_0402_1005Metric", 8.9, 340.0, 70.0, "bottom"),
-    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.9, 300.0, 30.0, "bottom"),
-    ("C11", "Capacitor_SMD:C_0402_1005Metric", 8.9, 170.0, 80.0, "bottom"),
-    ("C12", "Capacitor_SMD:C_0402_1005Metric", 8.9, 235.0, 325.0, "bottom"),
+    ("C9", "Capacitor_SMD:C_0402_1005Metric", 8.5, 352.0, 82.0, "bottom"),
+    ("C10", "Capacitor_SMD:C_0402_1005Metric", 8.5, 296.0, 26.0, "bottom"),
+    ("C11", "Capacitor_SMD:C_0402_1005Metric", 8.5, 172.0, 82.0, "bottom"),
+    ("C12", "Capacitor_SMD:C_0402_1005Metric", 8.5, 235.0, 325.0, "bottom"),
+    # Crystal load capacitors, DNP, beside the crystal each one loads. 0201
+    # at 0.33 mm clears the bottom face's 0.578 mm with room.
+    ("C14", C0201, 8.60, 116.0, 26.0, "bottom"),
+    ("C15", C0201, 8.60, 127.0, 37.0, "bottom"),
+    ("C16", C0201, 8.60, 311.0, 41.0, "bottom"),
+    ("C17", C0201, 8.60, 302.0, 32.0, "bottom"),
     # SWD pads and the UWB stub, top face, out of the bender's circle
     # The Tag-Connect went here first and did not fit - 80 mm2 with two NPTH
     # through the SoC's pads. See footprints.swd_pads().
@@ -344,8 +368,8 @@ PLACE = [
      "top"),
     # KiCad's own net tie, placed where the two halves of the winding
     # meet. See footprints.py for why the coil is not a footprint.
-    ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", fpg.NFC_R_OUT,
-     NFC_TIE_DEG, NFC_TIE_DEG + 90.0, "bottom"),
+    ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", NFC_TIE_R_PRE,
+     NFC_TIE_DEG_PRE, NFC_TIE_DEG_PRE, "bottom"),
     ("LS1", "halo:HALO_PIEZO_LEADS_2", 10.30, 118.0, 28.0, "top"),
 ]
 
@@ -376,10 +400,6 @@ STREET_PITCH = 1.60        # mm between parts along a street. A 0201 land
 MIN_ARC_SEP = 1.58         # mm between neighbouring streets, at the smallest
                            # radius they both occupy
 
-C0201 = "Capacitor_SMD:C_0201_0603Metric"
-R0201 = "Resistor_SMD:R_0201_0603Metric"
-L0201 = "Inductor_SMD:L_0201_0603Metric"
-
 #: (angle, first radius, [(ref, footprint), ...]). The order along a street
 #: is the order of the signal, not alphabetical - the RF ladder runs outward
 #: from the SoC pin to the antenna feed, which is also how the current goes.
@@ -401,9 +421,11 @@ STREETS = [
     (330.0, 4.70, [("C8", C0201)]),
     # -- NFC tuning, at pins 3/4
     (150.0, 4.70, [("C24", C0201), ("C25", C0201)]),
-    # -- crystal load caps, DNP, out near their crystals
-    (160.0, 6.40, [("C14", C0201), ("C15", C0201)]),
-    (285.0, 6.40, [("C16", C0201), ("C17", C0201)]),
+    # -- the crystal load caps are NOT on a street. They belong beside
+    #    their crystals, which are on the BOTTOM face, and every top-side
+    #    ray that was near enough to be useful was already 10 degrees from
+    #    another street - C25/C14 and C16/R8 both came out at 1.111 mm.
+    #    They are in PLACE instead, on the bottom, next to X1 and X2.
     # -- flash straps
     (176.0, 4.70, [("R3", R0201), ("R4", R0201)]),
     # -- the accelerometer's straps and its bus pull-ups
@@ -425,40 +447,48 @@ for ang, r0, items in STREETS:
 
 
 def check_street_separation():
-    """Refuse a layout whose streets cannot clear, BEFORE placing anything.
+    """Refuse a layout whose parts cannot clear, BEFORE placing anything.
 
-    This is the check that would have caught the 70 shorting pads, and it
-    costs nothing to run. It compares every pair of streets whose radius
-    bands overlap and measures their arc separation at the smallest radius
-    they share - the worst case, and the one the eye is worst at.
+    ALL PAIRS, not neighbouring streets. The first version of this compared
+    only streets whose radius BANDS overlapped, and two streets whose bands
+    merely ABUT slipped through it: C25 ended a street at r=6.30 on the 150
+    degree ray and C14 began one at r=6.40 on the 160 degree ray, 1.15 mm
+    apart, and the DRC found them at 0.1209 mm against a 0.127 mm rule. A
+    check with a blind spot is worse than no check, because it is trusted.
+
+    So this measures the distance between every pair of placed passives. It
+    is 34 parts and about 560 comparisons; it costs nothing and it has no
+    blind spot.
     """
-    bands = []
+    pts = []
     for ang, r0, items in STREETS:
-        n = len([1 for _, fp in items if fp])
-        if n:
-            bands.append((ang, r0, r0 + (n - 1) * STREET_PITCH))
+        k = 0
+        for ref, fp in items:
+            if fp is None:
+                continue
+            r = r0 + k * STREET_PITCH
+            a = math.radians(ang)
+            pts.append((ref, r * math.cos(a), r * math.sin(a)))
+            k += 1
     bad = []
-    for i, (a1, lo1, hi1) in enumerate(bands):
-        for a2, lo2, hi2 in bands[i + 1:]:
-            lo, hi = max(lo1, lo2), min(hi1, hi2)
-            if lo > hi:
-                continue                      # the bands do not overlap
-            d = abs(a1 - a2) % 360.0
-            d = min(d, 360.0 - d)
-            sep = math.radians(d) * lo
-            if sep < MIN_ARC_SEP:
-                bad.append((a1, a2, lo, sep))
-    return bad
+    for i2 in range(len(pts)):
+        for j2 in range(i2 + 1, len(pts)):
+            r1, x1, y1 = pts[i2]
+            r2, x2, y2 = pts[j2]
+            d = math.hypot(x1 - x2, y1 - y2)
+            if d < MIN_ARC_SEP:
+                bad.append((r1, r2, d))
+    return sorted(bad, key=lambda t: t[2])
 
 
 _bad = check_street_separation()
 if _bad:
     raise SystemExit(
-        "REFUSED: %d street pairs are closer than %.2f mm at the radius they "
-        "share, which is how 0201 land patterns end up overlapping:\n%s"
+        "REFUSED: %d part pairs are closer than %.2f mm centre to centre, "
+        "which is how 0201 land patterns end up overlapping:\n%s"
         % (len(_bad), MIN_ARC_SEP,
-           "\n".join("  %5.1f deg vs %5.1f deg: %.2f mm at r=%.2f"
-                      % (a1, a2, sep, lo) for a1, a2, lo, sep in _bad)))
+           "\n".join("  %-5s and %-5s are %.3f mm apart"
+                      % (r1, r2, d) for r1, r2, d in _bad)))
 
 placed, skipped = [], []
 for ref, fpid, r, deg, rot, side in PLACE + SMALL:
@@ -551,24 +581,44 @@ if ANT_TAIL_MM > 0.05:
             width=fpg.ANT_W, layer="F.Cu")
 
 # -- AE2: the NFC winding, one half on each net ---------------------------
-# Three turns from NFC_A0 round to NFC_A1, spiralling inward, cut in half at
-# the net tie. The tie is a real part on the board, so the DRC sees a legal
-# junction between two nets rather than a short.
-NFC_A0, NFC_A1 = 20.0, 340.0
-_turn = []
-for _t in range(fpg.NFC_TURNS):
-    _rr = fpg.NFC_R_OUT - _t * (fpg.NFC_W + fpg.NFC_GAP)
-    _turn.append((_rr, NFC_A0 + _t * 4.0, NFC_A1 - _t * 4.0))
-_half = len(_turn) // 2 or 1
-for _i, (_rr, _a0, _a1) in enumerate(_turn):
-    _net = "NFC1" if _i < _half else "NFC2"
-    arc_track(_net, _rr, _a0, _a1, fpg.NFC_W, "B.Cu", steps=120)
-    if _i + 1 < len(_turn):
-        _rn = fpg.NFC_R_OUT - (_i + 1) * (fpg.NFC_W + fpg.NFC_GAP)
-        _nx = "NFC1" if _i + 1 < _half else "NFC2"
-        if _nx == _net:
-            b.track(_net, [at_r(_rr, _a0), at_r(_rn, _a0 + 4.0)],
-                    width=fpg.NFC_W, layer="B.Cu")
+# A TRUE ARCHIMEDEAN SPIRAL, not three concentric arcs joined by radial
+# jumps. The jumps were drawn first and each one cut across the gap between
+# turns at a steep angle, which put 0.44 mm of NFC2 through U3's chip-select
+# land and 0.50 mm of NFC1 through the net tie's own second pad. A spiral has
+# no crossovers to collide with, and it is also what a coil actually is.
+# EXACTLY fpg.NFC_TURNS full turns. The first version subtracted 40 degrees
+# from the total sweep and then divided the pitch by 360, which quietly made
+# 3 "turns" 2.89 turns and put the innermost winding at R9.88 instead of
+# R10.15 - through the crystal load capacitors and U3's chip select, 17
+# clearance violations that read as a placement problem and were an
+# arithmetic one.
+NFC_A0 = 20.0
+NFC_A1 = NFC_A0 + 360.0 * fpg.NFC_TURNS
+NFC_PITCH = fpg.NFC_W + fpg.NFC_GAP
+
+
+def _spiral_pts(n=600):
+    out = []
+    for k in range(n + 1):
+        f = k / float(n)
+        a = NFC_A0 + (NFC_A1 - NFC_A0) * f
+        r = fpg.NFC_R_OUT - NFC_PITCH * (a - NFC_A0) / 360.0
+        out.append((r, a))
+    return out
+
+
+_sp = _spiral_pts()
+_mid = len(_sp) // 2
+# A gap of GAP_PTS points at the midpoint is where the net tie sits: the
+# winding is one conductor, and the tie is how a two-net conductor is
+# declared to KiCad rather than hidden from it.
+GAP_PTS = 8
+NFC_TIE_R, NFC_TIE_DEG_ACTUAL = _sp[_mid]
+
+b.track("NFC1", [at_r(r, a) for r, a in _sp[:_mid - GAP_PTS]],
+        width=fpg.NFC_W, layer="B.Cu")
+b.track("NFC2", [at_r(r, a) for r, a in _sp[_mid + GAP_PTS:]],
+        width=fpg.NFC_W, layer="B.Cu")
 
 # ==========================================================================
 # 7. THE PLANES

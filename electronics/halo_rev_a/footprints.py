@@ -103,9 +103,9 @@ ANT_ARC_MAX_DEG = 84.0     # the three 26 deg keying notches at 0/120/240
                            # leave clear arcs of 94 deg; 5 deg of margin at
                            # each end keeps the element off the routed edge
 
-NFC_W = 0.20
-NFC_GAP = 0.20
-NFC_TURNS = 3
+NFC_W = 0.15
+NFC_GAP = 0.15
+NFC_TURNS = 2
 NFC_R_OUT = 10.75          # INSIDE the contact lands, not outside them. The
                            # outer annulus is oversubscribed: the three
                            # contact lands occupy R11.0-12.2 on the bottom
@@ -113,6 +113,16 @@ NFC_R_OUT = 10.75          # INSIDE the contact lands, not outside them. The
                            # The coil therefore sits between the cell's edge
                            # (R10.0) and the lands, which puts it just
                            # outside the can rather than over it.
+                           #
+                           # THE BAND IS 0.85 mm WIDE AND THAT SETS THE TRACE.
+                           # R10.0 is the cell can's edge and R10.85 is the
+                           # nearest contact land minus clearance. Three
+                           # turns at 0.20/0.20 need 1.20 mm and ran straight
+                           # through the crystal load capacitors and U3's
+                           # pads - 17 clearance violations, measured. At
+                           # 0.15/0.15 three turns need 0.60 mm and the
+                           # winding closes at R10.15, inside the band. 0.15
+                           # is still above the 0.127 mm process minimum.
 
 
 # ==========================================================================
