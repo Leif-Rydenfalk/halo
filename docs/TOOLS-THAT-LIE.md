@@ -388,3 +388,64 @@ record for a tidy, false one.
 Retire it only when someone can say *why* it is dead — and write that reason
 down, because the reason is the thing that makes the removal safe.
 
+
+## The sixth direction: an HONEST sentence under a DISHONEST verdict
+
+*Found 2026-09-05 by lane S2 (availability). The tool is `ce-fab/bin/fab bom cost --live`.*
+
+`--live` promises to ask lcsc.com and jlcpcb.com about the bill of materials. It does — **for the
+lines the local catalogue snapshot could not match.** Every line the snapshot *did* match is graded
+against the snapshot, which was built 2026-09-03. The per-line prose says so, plainly and honestly:
+
+> `` `U1` **FAIL** — needs 1000 but only 212 in stock **as of 2026-09-03** ``
+
+**And the verdict above it does not.** It says `## 1,000 boards — FAIL`, in a report whose header
+says `--live`, on a page whose whole subject is stock. **Nobody reads the footnote. Everybody reads
+the verdict**, and the verdict is the thing that goes into a release pack.
+
+Re-probing all 23 picks against both live endpoints on 2026-09-05 moved four of them:
+
+| line | code | snapshot 09-03 | **live 09-05** | what the tool said |
+|---|---|--:|--:|---|
+| C19 | `C668326` | 5,874 | **29,352** | **FAIL** — it is a PASS, by 5× |
+| X2 | `C843260` | 6,665 | **13,596** | **FAIL** — it is a PASS |
+| L3, L4 | `C3911055` | 18,376 | **8,441** | PASS at 1k — stock had **halved in two days** |
+| U1 | `C44800139` | 212 | **927** | FAIL — correct, but by 4.4× the wrong margin |
+
+and two candidate parts read further out than any of those: `C423341` at **29,417 live against 1,167
+in the snapshot — 25× low**, and `C237447` at **7,693 against 36,092 — a 79 % collapse.**
+
+**Why this belongs on this page rather than in a bug report.** Every other entry here is a tool that
+produced a number it had not derived. This one derives its number correctly — from the wrong
+*epoch*. The snapshot was a true measurement of 2026-09-03. **Stock and price are the most perishable
+numbers in this project**, and a two-day-old truth about them is indistinguishable in the output from
+a live one. That is the same defect wearing a different coat: **a report not derived from the thing
+it claims to have done.**
+
+**It cost a whole lane's premise.** This lane was spawned to find alternates for two parts that had
+already been fixed and four lines, two of which had restocked. Working the handed-down list instead
+of re-measuring would have produced a second source for a screw terminal block.
+
+**The rule.** *A verdict inherits the freshness of its weakest input, and it must say so where the
+verdict is, not in a footnote.* Concretely, for this tool:
+
+- a stock-based PASS/FAIL computed from a snapshot must **carry the snapshot date in the verdict
+  line**, not only in the per-line reason — `## 1,000 boards — FAIL (stock as of 2026-09-03)`;
+- `--live` should mean **live for every line the verdict depends on**, or be renamed to what it does;
+- and the honest third state exists: a line whose stock could not be read live is **CANNOT
+  DETERMINE**, never a snapshot number wearing a live label.
+
+**The fix belongs in `ce-fab`, not in a warning.** Until it lands, `halo/tools/livestock.py` re-reads
+any list of order codes from both endpoints with a per-run cache directory — because
+`resolve_bom.py` caches to `/tmp/halo-sourcing` and will re-serve a stale page forever, **which is
+this same defect one layer down.** Evidence:
+`out/verify/alternates-live-2026-09-05.json`, 50 codes, each with its endpoint and the second it was
+read.
+
+**A second lesson from the same lane, and it is the sharper one.** Having re-measured, this lane then
+wrote that L3/L4 had *no qualified alternate at 10,000 and would force a value change* — a
+conclusion drawn from JLCPCB's catalogue alone. DigiKey holds **398,982** of that exact part.
+**Measuring one channel carefully and then writing a verdict about all of them is the same error as
+reading a stale snapshot: a true number, and a claim wider than the thing that was measured.** The
+question to ask a verdict is not only *when* was this read, but *where did I look, and what did I not
+look at.*
