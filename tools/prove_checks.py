@@ -352,7 +352,13 @@ def main():
     shutil.copytree(FABSET, base / "board")
     good = base / "board"
     pth = next(p for p in good.rglob("*PTH.drl"))
-    holes = "\n".join(f"X{1.0 + 0.5 * i:.3f}Y2.000" for i in range(8))
+    # As many holes as the CURRENT board needs. A fixed 8 was enough when the
+    # board was unrouted; lane B1 has since routed it to 66 vias, and a control
+    # that is already FAIL cannot be shown to go red — the harness said so and
+    # skipped drill_covers_board rather than claiming a proof it could not make.
+    import re as _re
+    _n = max(8, len(_re.findall(r"\(via\b", BOARD.read_text())) + 4)
+    holes = "\n".join(f"X{1.0 + 0.5 * i:.3f}Y2.000" for i in range(_n))
     pth.write_text("M48\n; synthetic, prove_checks.py\n"
                    "; #@! TF.CreationDate,2026-09-04T18:29:08+08:00\n"
                    "FMAT,2\nMETRIC\nT01C0.300\n%\n"

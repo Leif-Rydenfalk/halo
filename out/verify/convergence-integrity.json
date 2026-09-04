@@ -1,12 +1,12 @@
 {
  "$halo": 1,
  "tool": "tools/check_convergence.py",
- "generated": "2026-09-04T10:49:09+00:00",
+ "generated": "2026-09-04T14:12:44+00:00",
  "spec": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/spec/convergence.json",
  "verdict": "FAIL",
  "counts": {
-  "PASS": 37,
-  "FAIL": 17,
+  "PASS": 38,
+  "FAIL": 20,
   "CANNOT DETERMINE": 18
  },
  "checks": [
@@ -66,8 +66,8 @@
    "name": "source_is_fresh",
    "row": "Bluetooth antenna resonant frequency",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
-   "value": -17775.5,
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
+   "value": -23026.9,
    "rule": {
     "gte": 0
    }
@@ -125,9 +125,9 @@
   {
    "name": "source_is_fresh",
    "row": "Bluetooth antenna resonant frequency (round-board variant)",
-   "verdict": "PASS",
-   "why": "halo-round-rim-ifa measurements.json is 5 s newer than its spec",
-   "value": 4.6,
+   "verdict": "FAIL",
+   "why": "halo-round-rim-ifa measurements.json is 5247 s OLDER than its spec",
+   "value": -5246.8,
    "rule": {
     "gte": 0
    }
@@ -150,7 +150,7 @@
   },
   {
    "name": "row_can_change_state",
-   "row": "Board outline diameter",
+   "row": "PCB outline diameter (bare board)",
    "verdict": "PASS",
    "why": "correct value -> MATCH, wrong value -> OPEN",
    "value": "MATCH",
@@ -158,10 +158,10 @@
   },
   {
    "name": "high_weight_measured",
-   "row": "Board outline diameter",
+   "row": "PCB outline diameter (bare board)",
    "verdict": "FAIL",
    "why": "current value is a literal typed into spec/convergence.json (weight 8, state MATCH); no tool produced it and it cannot disagree with its target",
-   "value": 31.87,
+   "value": 26.0,
    "rule": null
   },
   {
@@ -212,8 +212,8 @@
    "name": "source_is_fresh",
    "row": "Antenna realized gain",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
-   "value": -17775.5,
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
+   "value": -23026.9,
    "rule": {
     "gte": 0
    }
@@ -398,8 +398,8 @@
    "name": "source_is_fresh",
    "row": "Antenna radiation efficiency",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
-   "value": -17775.5,
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
+   "value": -23026.9,
    "rule": {
     "gte": 0
    }
@@ -612,11 +612,43 @@
    "name": "source_is_fresh",
    "row": "Implied effective permittivity (physics sanity)",
    "verdict": "FAIL",
-   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 17776 s OLDER than its spec",
-   "value": -17775.5,
+   "why": "halo-rim-ifa-low-loss-laminate measurements.json is 23027 s OLDER than its spec",
+   "value": -23026.9,
    "rule": {
     "gte": 0
    }
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Shell outer diameter",
+   "verdict": "PASS",
+   "why": "correct value -> MATCH, wrong value -> OPEN",
+   "value": "MATCH",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Shell outer diameter",
+   "verdict": "FAIL",
+   "why": "current value is a literal typed into spec/convergence.json (weight 8, state MATCH); no tool produced it and it cannot disagree with its target",
+   "value": 31.874,
+   "rule": null
+  },
+  {
+   "name": "row_can_change_state",
+   "row": "Antenna substrate effective permittivity used for length",
+   "verdict": "FAIL",
+   "why": "the state machine answers 'OPEN' for a correct value AND for a deliberately wrong one (12502.3) \u2014 this row's verdict is not derived from any measurement",
+   "value": "OPEN",
+   "rule": null
+  },
+  {
+   "name": "high_weight_measured",
+   "row": "Antenna substrate effective permittivity used for length",
+   "verdict": "PASS",
+   "why": "current value is a literal typed into spec/convergence.json (weight 5, state OPEN); no tool produced it and it cannot disagree with its target",
+   "value": 1.573,
+   "rule": null
   }
  ],
  "command": "python3 tools/check_convergence.py --quiet --json out/verify/convergence-integrity.json"

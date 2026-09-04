@@ -1,7 +1,7 @@
 {
  "$halo": 1,
  "tool": "tools/prove_checks.py",
- "generated": "2026-09-04T10:51:20+00:00",
+ "generated": "2026-09-04T14:14:14+00:00",
  "target": "tools/check_fabset.py",
  "assertions": 25,
  "proved_to_fire": 25,

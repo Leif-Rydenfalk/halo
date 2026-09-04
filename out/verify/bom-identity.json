@@ -1,7 +1,7 @@
 {
  "$halo": 1,
  "tool": "tools/check_bom_identity.py",
- "generated": "2026-09-04T10:46:34+00:00",
+ "generated": "2026-09-04T14:12:43+00:00",
  "bom": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-BOM.csv",
  "catalogue_snapshot": "2026-09-03",
  "verdict": "FAIL",
@@ -1083,5 +1083,5 @@
    "verdict": "CANNOT DETERMINE"
   }
  ],
- "command": "python3 tools/check_bom_identity.py out/release/board/halo_rev_a-BOM.csv --json out/verify/bom-identity.json"
+ "command": "python3 tools/check_bom_identity.py out/release/board/halo_rev_a-BOM.csv --quiet --json out/verify/bom-identity.json"
 }
