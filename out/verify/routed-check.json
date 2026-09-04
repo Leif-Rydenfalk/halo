@@ -1,15 +1,15 @@
 {
  "$halo": 1,
  "tool": "tools/check_routed.py",
- "generated": "2026-09-04T22:32:17+00:00",
+ "generated": "2026-09-04T22:44:57+00:00",
  "before": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
- "after": "/private/tmp/haloroute1/halo_rev_a-routed.kicad_pcb",
+ "after": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
  "protected_nets": [
   "ANT_FEED",
   "NFC1",
   "NFC2"
  ],
- "interchange_file": "/tmp/haloroute1/halo_rev_a.ses",
+ "interchange_file": "electronics/halo_rev_a/out/halo_rev_a.filtered.ses",
  "drc_before": {
   "violations": 3,
   "errors": 0,
@@ -22,22 +22,19 @@
   "project_borrowed_from": null
  },
  "drc_after": {
-  "violations": 7,
-  "errors": 4,
-  "warnings": 3,
-  "unconnected": 31,
+  "violations": 2,
+  "errors": 0,
+  "warnings": 2,
+  "unconnected": 35,
   "by_type": [
-   "clearance",
-   "hole_clearance",
-   "solder_mask_bridge",
    "track_dangling"
   ],
-  "project": "/tmp/haloroute1/halo_rev_a-routed.kicad_pro",
+  "project": "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pro",
   "project_borrowed_from": null
  },
  "verdict": "FAIL",
  "counts": {
-  "PASS": 7,
+  "PASS": 8,
   "FAIL": 1,
   "CANNOT DETERMINE": 0
  },
@@ -49,7 +46,7 @@
    "rule": {
     "lte": 0.0001
    },
-   "why": "all 235 segment(s) on ANT_FEED, NFC1, NFC2 came back, each within 55 nm of where it was sent \u2014 under the 100 nm the format can carry (halo_rev_a.ses: (resolution um 10) = one step is 0.0001 mm). 25 segment(s) ADDED on those nets ({'ANT_FEED': 9, 'NFC2': 16}) \u2014 the router extending a protected net to reach its pads, which is routing, not rerouting",
+   "why": "all 235 segment(s) on ANT_FEED, NFC1, NFC2 came back, each within 55 nm of where it was sent \u2014 under the 100 nm the format can carry (halo_rev_a.filtered.ses: (resolution um 10) = one step is 0.0001 mm). 10 segment(s) ADDED on those nets ({'ANT_FEED': 5, 'NFC1': 5}) \u2014 the router extending a protected net to reach its pads, which is routing, not rerouting",
    "verdict": "PASS"
   },
   {
@@ -74,12 +71,12 @@
   },
   {
    "name": "copper_actually_added",
-   "value": 339,
+   "value": 298,
    "unit": "segments",
    "rule": {
     "gt": 0
    },
-   "why": "255 segment(s) + 49 via(s) in, 594 + 93 out: +339 segments, +44 vias",
+   "why": "255 segment(s) + 49 via(s) in, 553 + 86 out: +298 segments, +37 vias",
    "verdict": "PASS"
   },
   {
@@ -94,23 +91,23 @@
   },
   {
    "name": "unconnected_improved",
-   "value": 50,
+   "value": 46,
    "unit": "items closed",
    "rule": {
     "gt": 0
    },
-   "why": "unconnected items 81 -> 31",
+   "why": "unconnected items 81 -> 35",
    "verdict": "PASS"
   },
   {
    "name": "no_new_drc_errors",
-   "value": 4,
+   "value": 0,
    "unit": "new errors",
    "rule": {
     "lte": 0
    },
-   "why": "DRC errors 0 -> 4 (warnings 3 -> 3, types ['clearance', 'hole_clearance', 'solder_mask_bridge', 'track_dangling']) \u2014 routing traded ratlines for rule breaches, which is not progress",
-   "verdict": "FAIL"
+   "why": "DRC errors 0 -> 0 (warnings 3 -> 2, types ['track_dangling'])",
+   "verdict": "PASS"
   },
   {
    "name": "same_rules_both_sides",
@@ -119,6 +116,16 @@
    "rule": {},
    "why": "both boards graded with a .kicad_pro beside them",
    "verdict": "PASS"
+  },
+  {
+   "name": "antenna_arm_not_shadowed",
+   "value": -0.1747,
+   "unit": "mm",
+   "rule": {
+    "gte": 0.3
+   },
+   "why": "COPPER IS SHADOWING THE 2.4 GHz ARM at -0.1747 mm, under the 0.3 mm floor: net NFC1 on B.Cu at (22.577, 8.13). The board's own keep-out forbids pours and vias in the antenna sector and ALLOWS TRACKS, so a router walks straight through it. lane T3, 2026-09-05: the \u00d825.2 mm coil at a 0.30 mm gap solves to 2.4321 GHz in band; the same coil under the arm solves to 1.7666 GHz, a 668 MHz shift that is not recoverable by tuning. Closest per net: NFC1 -0.1747, NFC2 -0.0901, XL1 +0.2630, PIEZO_DRV +0.3429, GND +0.4929",
+   "verdict": "FAIL"
   }
  ]
 }

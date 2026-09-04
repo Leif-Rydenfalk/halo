@@ -58,15 +58,29 @@ echo "== 0/3 the tools, asked of the tool that owns them"
 echo "== 1/3 route: export DSN -> dsnfix -> freerouting -> SES -> DRC"
 "$WS/ce-pcb/bin/route" "$BOARD" -o "$OUT" \
   --dsn-filter "$FILTER" --passes "$PASSES" --timeout "$TIMEOUT" \
-  --json > "$VERIFY/route-run.json"
+  --json-out "$VERIFY/route-run.json"
 rc=$?
 if [ ! -f "$OUT" ]; then
   echo "FAIL: no routed board was written (route exit $rc)" >&2
-  sed -n '1,40p' "$VERIFY/route-run.json" >&2
   exit 2
 fi
+# --json-out, NOT `--json > file`. MEASURED 2026-09-05: pcbnew's wxWidgets
+# layer writes "Debug: Adding duplicate image handler" to stdout from C++, so
+# the redirect captured 40 lines of noise and then the JSON. The parse threw
+# "Extra data: line 1 column 2", $SES came back empty, --dsn never reached
+# check_routed, and R1 and R8 reported CANNOT DETERMINE for a reason that had
+# nothing to do with the board. The refusal below is why that cannot recur
+# silently.
 SES="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['ses'])" \
-        "$VERIFY/route-run.json")"
+        "$VERIFY/route-run.json")" || SES=""
+if [ -z "$SES" ] || [ ! -f "$SES" ]; then
+  echo "REFUSED: could not read the SES path out of $VERIFY/route-run.json." >&2
+  echo "  check_routed's protected-copper tolerance comes from that file's" >&2
+  echo "  own (resolution ...); without it R1 and R8 are CANNOT DETERMINE," >&2
+  echo "  and a routed board nobody checked for protected copper is not a" >&2
+  echo "  routed board this lane will publish." >&2
+  exit 2
+fi
 
 echo "== 2/3 check_routed: is this still my board?"
 # --dsn is REQUIRED, not optional. The protected-net match tolerance is one

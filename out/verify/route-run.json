@@ -1,0 +1,59 @@
+06:43:41 AM: Debug: Adding duplicate image handler for 'PNG file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'JPEG file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'TIFF file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'GIF file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'PNM file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'PCX file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'IFF file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'Windows icon file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'Windows cursor file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'Windows animated cursor file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'TGA file'
+06:43:41 AM: Debug: Adding duplicate image handler for 'XPM file'
+{
+  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+  "routed": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+  "ses": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.filtered.ses",
+  "dsn_filter": {
+    "script": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/dsnfix.py",
+    "in": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.dsn",
+    "out": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.filtered.dsn",
+    "bytes_in": 108311,
+    "bytes_out": 108942,
+    "stdout": "{\n  \"before\": {\n    \"keepout\": 0,\n    \"via_keepout\": 4,\n    \"plane\": 4,\n    \"wire\": 249,\n    \"signal_layers\": 4,\n    \"power_layers\": 0\n  },\n  \"after\": {\n    \"keepout\": 8,\n    \"via_keepout\": 4,\n    \"plane\": 4,\n    \"wire\": 249,\n    \"signal_layers\": 2,\n    \"power_layers\": 2\n  },\n  \"plane_layers_retyped\": 2,\n  \"wires_protected\": 298,\n  \"nets_dropped\": [\n    \"GND\",\n    \"VDD\"\n  ],\n  \"nfc\": {\n    \"coil_wires_seen\": 210,\n    \"renamed\": 0\n  },\n  \"fiducial_keepouts\": {\n    \"fiducials\": 2,\n    \"refs\": [\n      \"FID1\",\n      \"FID2\"\n    ],\n    \"keepouts_added\": 8,\n    \"clear_diameter_mm\": 2.0,\n    \"layers\": [\n      \"F.Cu\",\n      \"In1.Cu\",\n      \"In2.Cu\",\n      \"B.Cu\"\n    ],\n    \"why\": \"IPC-7351B clear area, one fiducial diameter of no copper\"\n  }\n}\n"
+  },
+  "before": {
+    "unconnected": 81,
+    "violations": 3,
+    "errors": 0,
+    "warnings": 3,
+    "json": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.drc.json"
+  },
+  "after": {
+    "unconnected": 35,
+    "violations": 2,
+    "errors": 0,
+    "warnings": 2,
+    "json": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.drc.json"
+  },
+  "seconds": 496.33,
+  "passes": 10,
+  "router_settings": [
+    "--router.copper_to_edge_clearance_um=300",
+    "--router.fanout.enabled=false",
+    "--router.hole_clearance_um=200"
+  ],
+  "project_rules": {
+    "min_clearance": 0.127,
+    "min_track_width": 0.127,
+    "min_hole_clearance": 0.2,
+    "min_through_hole_diameter": 0.25,
+    "min_via_diameter": 0.45,
+    "min_copper_edge_clearance": 0.3,
+    "solder_mask_min_width": 0.0,
+    "solder_mask_to_copper_clearance": 0.0
+  },
+  "fanout": false,
+  "improved": 46,
+  "note": "Autorouted copper connects the netlist and clears the rules. It is NOT a layout: nothing here knows about return paths, differential pairs, thermal relief or loop area. On a board where those matter this is a starting point a person edits."
+}
