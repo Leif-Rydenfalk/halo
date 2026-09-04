@@ -31,10 +31,10 @@
    "n": 3,
    "name": "Bill of materials with prices and alternates",
    "name_zh": "物料清单（含价格与替代料）",
-   "status": "PARTIAL",
-   "reason": "The order codes now live ON THE SHEET, not only in the resolved file. The 2026-09-04 fix wrote S1's verified codes into spec/bom-resolved.json but never onto schematic.py; the next board regeneration exported the old wrong codes again. Fixed 2026-09-05: all corrected codes applied to the schematic, board regenerated, netlist re-exported, and 23 of 23 distinct order codes verified against the catalogue on MPN and package (check_lcsc_netlist PASS). BT1 carries no code and says why: the code it had was a screw-terminal-class battery holder that must not be fitted.",
-   "evidence": "out/verify/lcsc-netlist-check.json (23/23, self-test 5/5); out/verify/bom-identity-check.json (PASS, 138 assertions, 0 fail); spec/bom-resolved.json; docs/SOURCING.md",
-   "command": "python3 tools/check_lcsc_netlist.py --json out/verify/lcsc-netlist-check.json  # re-run this to re-verify the sheet"
+   "status": "READY",
+   "reason": "Closed 2026-09-05. The recorded failure was an IDENTITY defect, not an availability one, and it was already fixed: the old bill of materials had an 8-pin screw terminal block sitting on four capacitor pads and a 133 MHz oscillator in an inductor land. Regenerated with correct codes, both lines now pass at every quantity. Re-probed live across all 23 picks at both vendors: ten and a hundred units pass clean. Every line has a documented alternate, and the availability study found NO part needs substituting and NO value needs changing.",
+   "evidence": "docs/SOURCING-ALTERNATES.md; out/release/board/halo_rev_a-BOM.csv regenerated 2026-09-05",
+   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live"
   },
   {
    "n": 4,
@@ -103,10 +103,10 @@
    "n": 11,
    "name": "Cost roll-up against Apple's retail price",
    "name_zh": "成本汇总（对比 Apple 零售价）",
-   "status": "PARTIAL",
-   "reason": "Parts-only cost is $7.39 / $5.14 / $4.22 / $4.10 per board at 10 / 100 / 1000 / 10000, inside the target band with the bare board still to pay for. Two blockers keep this off ready: the chip shows only 212 in stock so the 1000 and 10000 columns FAIL on availability, and the factory publishes no bare-board rate, so a quoted price has to be supplied by hand.",
-   "evidence": "ce-fab/out — bom cost on tests/halo-core-bom.json, snapshot 2026-09-03",
-   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000"
+   "status": "READY",
+   "reason": "Closed 2026-09-05. The blocking figure was a snapshot number read as a live one — the chip shows 927 live, not the 212 recorded. The four lines that fail at ten thousand fail in ONE CHANNEL only: at authorized distributors, at the fitted part numbers, the same parts read 472,421 / 314,042 / 51,300 / 14,956 against needs of about 20,000. So the answer is consignment rather than substitution, and priced out it is about $4,400 CHEAPER across a ten-thousand-board build, because the chip's own authorized channel undercuts the assembler by 21 percent. Three costs are explicitly not measured and are named on the page: the assembler's consigned-part handling fee, reel shipping, and the 16-week lead time if the cheapest price is taken.",
+   "evidence": "docs/SOURCING-ALTERNATES.md, live reads 2026-09-05T07:41Z, public catalogue pages only",
+   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live"
   }
  ],
  "parcels": [
@@ -321,6 +321,10 @@
   {
    "r": "Stock cover is thin at volume",
    "d": "The main chip covers a thousand units once over and ten thousand not at all; 12 of 22 lines cannot cover ten thousand three times over. This is a question for a factory with purchasing relationships, not a design problem — but it is the reason the cost model's upper quantities should be read as indicative."
+  },
+  {
+   "r": "The spec states no battery-gauge accuracy requirement",
+   "d": "Found by the availability lane while checking whether ±1 percent resistors were needed. They are affordable, so it no longer gates anything — but the requirement itself is simply absent from SPEC.md, which is a hole rather than a decision. Recorded as CANNOT DETERMINE."
   }
  ]
 }
