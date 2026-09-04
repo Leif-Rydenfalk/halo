@@ -333,3 +333,52 @@ question**, not the environment. A `--doctor` verb exists for this, and where on
 does not exist, write it. "I could not find it" is a statement about the search,
 not about the machine — and a false negative burns a night exactly as surely as
 a false positive burns a factory run.
+
+---
+
+## The 2.4 GHz element has never been solved with the coil that sits under it
+
+*Opened 2026-09-05 by lane B1. Anchor: `out/verify/routed-check.json` R9.*
+
+`ce-rf/out/halo-rev-a-2g4/model.json` — the case that models **this board's own
+element** — carries `"passive_copper": []`. It solves the arm with **no NFC coil
+present at all**. It returns 2.4927 GHz at a radiation resistance of **2.71 Ω**,
+which lane T3 flagged as suspicious.
+
+Measured on halo_rev_a's copper, in plan view across all layers, with the
+matching network exempted:
+
+| net | closest approach to the arm |
+|---|--:|
+| **NFC1** | **−0.1746 mm** — the coil's copper **overlaps** the arm |
+| **NFC2** | **+0.1473 mm** — inside the 0.30 mm floor |
+| GND | +1.4928 mm |
+| VDD | +10.3810 mm |
+
+Lane T3's own numbers say what that is worth: the Ø25.2 mm coil at a 0.30 mm
+gap solves to **2.4321 GHz**, in band; the same coil **under the arm** solves to
+**1.7666 GHz**, a **668 MHz** shift they state is not recoverable by tuning.
+
+**So the number on the convergence table for this board's antenna is a
+measurement of a board we are not building.** Not because the solver is wrong —
+because the model is missing the largest piece of passive copper within a
+millimetre of the radiator.
+
+**What would settle it**, in order:
+
+1. Re-solve `halo-rev-a-2g4` with the real coil as `passive_copper`, on the
+   Ø26.00 × 0.60 mm outline. Until then this board's resonance is CANNOT
+   DETERMINE, and 2.4927 GHz must not be quoted for it.
+2. If it lands where the overlap predicts, the fix is layout, not tuning: the
+   arm and the coil have to stop sharing the same 3 mm of annulus in plan view.
+   That is lane B1's copper and lane C's floorplan together.
+3. **Do not transfer T3's "shorten the open-end tail by 1.5 mm" to this board
+   without re-solving.** It was solved on the **Ø30 × 1.00 mm study puck**,
+   where the tail is 2.5 mm and the trim removes 60 % of it and 4.7 % of the
+   conductor. **This board's tail is 1.4539 mm**, so 1.5 mm is 103 % of the
+   tail and 6.1 % of the conductor — it would delete the tail entirely and cut
+   0.046 mm into the last meander tooth. Different outline, different
+   thickness, different eps_eff, and `halo-rim-ifa-coil-retuned`'s own
+   `verdict.json` currently reads **CANNOT DETERMINE**. The recommendation may
+   well be right in direction; the number does not transfer, and this project
+   does not carry numbers across geometries without re-solving.
