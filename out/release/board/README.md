@@ -80,6 +80,39 @@ at the top of each file.
 | Manufacturability | `fab dfm` | **21 PASS, 2 FAIL, 5 CANNOT DETERMINE** |
 | Component height | `board.py height_check()` | **46 PASS, 5 FAIL** — see §5 |
 | Assembly files | `fab jlc` | 24 BOM lines, 44 CPL rows, gerber layer check PASS |
+| **The pack read back** | `tools/check_fabset.py` | **10 PASS, 1 FAIL** — see below |
+
+### The pack, checked by reading it back
+
+Lane V1's `check_fabset.py` opens these files as a board house would, rather
+than trusting the exporter's exit code. On this pack:
+
+```
+PASS  job_file_parses        9 files named
+PASS  layer_count            4 declared, 4 named, 4 on disk
+PASS  copper_has_geometry    B_Cu 5591 ops, F_Cu 3335, In1 825, In2 825
+PASS  format_spec_present    11 Gerbers, all carry %FSLA..% and %MO..%
+PASS  apertures_defined      every D-code selected is defined
+FAIL  drill_has_hits         0 holes
+PASS  drill_covers_board     board declares 0 holes; drill files carry 0
+PASS  outline_has_extent     720 points, 25.6138 x 26.0000 mm
+PASS  outline_matches_spec   worst deviation 0.3862 mm against 26.0
+PASS  zip_matches_disk       13 members, every loose file byte-identical
+PASS  export_is_fresh        export is after the board was saved
+```
+
+**The one failure is the unrouted board, not a broken export.** `drill_has_hits`
+says a four-layer board cannot exist without vias, and it is right — but
+`drill_covers_board` passes, because the board itself declares zero holes and
+the drill files faithfully contain zero. The export is correct; the board is
+incomplete. Those two rows together are worth more than either alone.
+
+**One check was run and does not apply**: `--round` measures radius variation,
+and this outline is *deliberately* not round — three 26° keying notches take it
+from R13.000 to R12.600. Measured on the source board: **360 points, radius
+12.6000 to 13.0000 mm**, exactly lane M's `design.py`. The notches are the
+whole reason the board can only be assembled one way round, so roundness is
+not asserted. `fabset-check.json` carries the machine-readable run.
 
 ### The two DFM failures, and what to do about them
 

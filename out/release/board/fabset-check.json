@@ -1,0 +1,127 @@
+{
+ "$halo": 1,
+ "tool": "tools/check_fabset.py",
+ "generated": "2026-09-04T10:44:23+00:00",
+ "fabset": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
+ "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+ "verdict": "FAIL",
+ "counts": {
+  "PASS": 10,
+  "FAIL": 1,
+  "CANNOT DETERMINE": 0
+ },
+ "rows": [
+  {
+   "name": "job_file_parses",
+   "value": 9,
+   "unit": "files",
+   "rule": {
+    "gte": 1
+   },
+   "why": "halo_rev_a-job.gbrjob parses and names 9 file(s)",
+   "verdict": "PASS"
+  },
+  {
+   "name": "layer_count",
+   "value": 4,
+   "unit": "layers",
+   "rule": {
+    "eq": 4
+   },
+   "why": "job declares 4 layers, names 4 copper file(s), 4 copper file(s) on disk",
+   "verdict": "PASS"
+  },
+  {
+   "name": "copper_has_geometry",
+   "value": 825,
+   "unit": "ops",
+   "rule": {
+    "gte": 1
+   },
+   "why": "every copper layer carries metal: halo_rev_a-B_Cu.gbl=5591, halo_rev_a-F_Cu.gtl=3335, halo_rev_a-In1_Cu.g1=825, halo_rev_a-In2_Cu.g2=825",
+   "verdict": "PASS"
+  },
+  {
+   "name": "format_spec_present",
+   "value": 0,
+   "unit": "files",
+   "rule": {
+    "eq": 0
+   },
+   "why": "11 Gerber(s) checked; all carry %FSLA..% and %MO..%",
+   "verdict": "PASS"
+  },
+  {
+   "name": "apertures_defined",
+   "value": 0,
+   "unit": "files",
+   "rule": {
+    "eq": 0
+   },
+   "why": "every D-code selected is defined by an %ADD",
+   "verdict": "PASS"
+  },
+  {
+   "name": "drill_has_hits",
+   "value": 0,
+   "unit": "holes",
+   "rule": {
+    "gte": 1
+   },
+   "why": "4-layer board: it cannot exist without vias. halo_rev_a-NPTH.drl=0, halo_rev_a-PTH.drl=0",
+   "verdict": "FAIL"
+  },
+  {
+   "name": "drill_covers_board",
+   "value": 0,
+   "unit": "holes",
+   "rule": {
+    "gte": 0
+   },
+   "why": "source board has 0 via(s) + 0 thru-hole pad(s) + 0 NPTH pad(s) = 0 hole(s) that must be drilled; the drill file(s) carry 0",
+   "verdict": "PASS"
+  },
+  {
+   "name": "outline_has_extent",
+   "value": 25.6138,
+   "unit": "mm",
+   "rule": {
+    "gt": 0.0
+   },
+   "why": "halo_rev_a-Edge_Cuts.gm1: 720 points, extent 25.6138 x 26.0000 mm",
+   "verdict": "PASS"
+  },
+  {
+   "name": "outline_matches_spec",
+   "value": 0.3862,
+   "unit": "mm",
+   "rule": {
+    "lte": 0.5,
+    "target": 26.0
+   },
+   "why": "outline 25.6138 x 26.0000 mm vs spec 26.0 mm: worst deviation 0.3862 mm, allowed 0.5 mm",
+   "verdict": "PASS"
+  },
+  {
+   "name": "zip_matches_disk",
+   "value": 0,
+   "unit": "files",
+   "rule": {
+    "eq": 0
+   },
+   "why": "13 member(s) in halo_rev_a-gerber-jlc.zip; every loose Gerber/drill has a byte-identical member",
+   "verdict": "PASS"
+  },
+  {
+   "name": "export_is_fresh",
+   "value": 92.0,
+   "unit": "s",
+   "rule": {
+    "gte": 0
+   },
+   "why": "oldest export halo_rev_a-B_Cu.gbl at 2026-09-04T10:39:58+00:00 vs board saved 2026-09-04T10:38:26.023227+00:00: export is at or after the board",
+   "verdict": "PASS"
+  }
+ ],
+ "command": "python3 tools/check_fabset.py out/release/board --board electronics/halo_rev_a/out/halo_rev_a.kicad_pcb --expect-layers 4 --expect-outline-mm 26.0 --outline-tol 0.5 --json out/release/board/fabset-check.json"
+}
