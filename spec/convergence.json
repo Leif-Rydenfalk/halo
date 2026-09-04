@@ -276,6 +276,32 @@
     "case": "halo-rev-a-2g4",
     "key": "solver_converged"
    }
+  },
+  {
+   "name": "Board routing completeness",
+   "unit": "unconnected nets",
+   "target_value": 0.0,
+   "tolerance": 0.0,
+   "cite": "a board with unconnected nets cannot be fabricated; 0 is the only acceptable value",
+   "weight": 10,
+   "measure": {
+    "from": "literal",
+    "value": 33
+   },
+   "current_note": "nine-tooth run, 464.8 s: 81 -> 33 unconnected, 0 DRC errors, protected copper survived within 55 nm"
+  },
+  {
+   "name": "Antenna arm clearance to passive copper",
+   "unit": "mm",
+   "target_value": 0.3,
+   "tolerance": 0.2,
+   "cite": "DECISIONS.md D26/D27 — the coil under the arm costs 668 MHz; 0.30 mm is the working point measured at +51.3 MHz per mm",
+   "weight": 9,
+   "measure": {
+    "from": "literal",
+    "value": 0.3627
+   },
+   "current_note": "was -0.1747 mm (overlapping); identical on the routed board, so the keep-out held"
   }
  ]
 }

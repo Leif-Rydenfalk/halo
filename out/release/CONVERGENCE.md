@@ -1,9 +1,10 @@
 # Convergence against the real AirTag
 
-Generated 2026-09-05. **0 open · 10 cannot determine · 2 measured but Apple's value unknown · 1 divergent by decision · 10 match**
+Generated 2026-09-05. **1 open · 10 cannot determine · 2 measured but Apple's value unknown · 1 divergent by decision · 11 match**
 
 | parameter | target | current | delta | state |
 |---|---|---|---|---|
+| Board routing completeness | 0 unconnected nets | 33 unconnected nets | +33 unconnected nets | **OPEN** |
 | Bluetooth antenna resonant frequency | 2.44 GHz | — | source case FAILED | **CANNOT DETERMINE** |
 | Sounder output at 25 cm | 60 Phon | — | — | **CANNOT DETERMINE** |
 | Solver convergence on the antenna case | 1.0 | — | source case FAILED | **CANNOT DETERMINE** |
@@ -19,6 +20,7 @@ Generated 2026-09-05. **0 open · 10 cannot determine · 2 measured but Apple's 
 | PCB thickness (deliberate divergence) | 0.30 mm — Apple's, deliberately NOT matched (DECISIONS.md D17) | 0.6 mm | +0.3 mm  (by decision D17)  (100.0%) | **DIVERGENT** |
 | Find My advertisement byte layout | PASS | PASS | 0 | **MATCH** |
 | Overall stack height | 7.98 mm | 7.98 mm | +0 mm  (0.0%) | **MATCH** |
+| Antenna arm clearance to passive copper | 0.3 mm | 0.3627 mm | +0.0627 mm  (20.9%) | **MATCH** |
 | PCB outline diameter (bare board) | 26 mm | 26 mm | +0 mm  (0.0%) | **MATCH** |
 | Coin cell survives the transmit pulse | PASS | PASS | 0 | **MATCH** |
 | Shell outer diameter | 31.87 mm | 31.87 mm | +0.004 mm  (0.0%) | **MATCH** |
