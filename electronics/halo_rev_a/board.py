@@ -224,6 +224,23 @@ def outline_polygon(segments=360):
     return pts
 
 
+#: 360 steps, not 180, and the reason is 1.7 um. A ring drawn as chords sits
+#: INSIDE the circle it approximates by r(1-cos(pi/steps)); at 180 steps and
+#: r 9.74 that is 0.0015 mm, so a band asked for 0.30 mm was drawn at 0.2983
+#: and every report of it would have been a number nobody asked for. At 360 it
+#: is 0.0004 mm. The cost is 360 more points in one zone outline.
+def annulus_polygon(r_in, r_out, steps=360):
+    """A full ring, as one polygon with a bridge so it is simply connected.
+
+    KiCad zones have no holes, so a ring is drawn as an outer circle walked
+    forwards and an inner circle walked back, meeting at a seam. The seam is
+    zero-width and the fill closes over it.
+    """
+    pts = [at_r(r_out, 360.0 * i / steps) for i in range(steps + 1)]
+    pts += [at_r(r_in, 360.0 - 360.0 * i / steps) for i in range(steps + 1)]
+    return pts
+
+
 def sector_polygon(r_in, r_out, mid_deg, arc_deg, steps=48):
     """An annular sector, for keep-outs and for clearing the antenna's ground."""
     a0, a1 = mid_deg - arc_deg / 2.0, mid_deg + arc_deg / 2.0
@@ -328,6 +345,53 @@ b.keepout(outline=ANT_CLEAR, layers=["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
               "the 2.4 GHz element. An inverted-F over its own ground plane "
               "is a short circuit. F.Cu is deliberately NOT in this list - "
               "the antenna itself lives there.")
+
+# 4c. THE NFC COIL'S OWN CLEARANCE, and it is the bigger of the two.
+#     ce-rf refused to solve the 2026-09-05 re-run and its reason was a fact
+#     about this board: the closest approach of the coil to the ground shape is
+#     0.1492 mm, against a 0.1500 mm mesh cell. The solver cannot separate two
+#     conductors closer than one cell and would have merged them into a short,
+#     so it answered CANNOT DETERMINE instead of answering wrongly.
+#
+#     THAT 0.1492 mm WAS NEVER A DECISION. It is the 0.127 mm netclass
+#     clearance plus fill rounding - the pour simply filled as close to the
+#     coil as the rules let it, and nobody chose the number.
+#
+#     AND THE COPLANAR GAP IS THE SMALLER PROBLEM. Measured on the shipped
+#     board by sampling the coil's own ring every 2 degrees:
+#
+#         In1.Cu  133 of 180 points -> 74 % of the coil has GROUND PLANE
+#         In2.Cu  133 of 180 points -> 74 % has the VDD PLANE
+#         F.Cu    101 of 180 points -> 56 %
+#         B.Cu      0 of 180 points -> 0 %, the coil's own layer is clear
+#
+#     A 13.56 MHz loop with a solid plane one dielectric away is loaded by the
+#     eddy currents it induces in that plane; clearing the ground under an NFC
+#     antenna is the first line of every vendor's antenna note, and it had
+#     never been done here. B.Cu being clear is the coil's own fill clearance,
+#     not a decision either - it is what made this look fine.
+#
+#     THE BAND: the coil's copper grown by 0.30 mm, the same working point D26
+#     set for coil-to-antenna. Measured before writing it: ZERO of the board's
+#     49 vias fall inside it, so nothing is orphaned by the cut.
+NFC_CLEAR_GAP = 0.30
+_coil_in = fpg.NFC_R_OUT - fpg.NFC_TURNS * (fpg.NFC_W + fpg.NFC_GAP) - fpg.NFC_W / 2.0
+_coil_out = fpg.NFC_R_OUT + fpg.NFC_W / 2.0
+NFC_CLEAR_R_IN = _coil_in - NFC_CLEAR_GAP
+NFC_CLEAR_R_OUT = _coil_out + NFC_CLEAR_GAP
+NFC_CLEAR = annulus_polygon(NFC_CLEAR_R_IN, NFC_CLEAR_R_OUT)
+b.keepout(outline=NFC_CLEAR, layers=["F.Cu", "In1.Cu", "In2.Cu", "B.Cu"],
+          tracks=False, vias=True, pads=False, pours=True, footprints=False,
+          scope="board", name="nfc-coil-clearance",
+          why="No plane copper and no vias within %.2f mm of the NFC winding, "
+              "on any layer. A 13.56 MHz loop with a solid plane one "
+              "dielectric away is loaded by the eddy currents it induces in "
+              "it; 74%% of this coil's ring had ground on In1 and VDD on In2 "
+              "until this existed. TRACKS are allowed because the winding "
+              "itself is one, and because the two tie stubs and the coil's "
+              "own escape have to cross this band."
+              % NFC_CLEAR_GAP)
+
 
 # 4b. THE ARM'S SHADOW. The rule above allows TRACKS, and it has to: the
 #     antenna is itself a track in that sector, and cepcb's keepout() -- like
@@ -1130,6 +1194,16 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
         if origin is not None and origin in served:
             continue
         if math.hypot(x - CX, y - CY) > R - 0.9:
+            continue
+        # THE NFC COIL'S CLEARANCE BAND IS AN OBSTACLE FOR VIAS TOO, and the
+        # via's COPPER is what has to clear it, not its centre. Measured
+        # 2026-09-05: with only the keep-out declared and the search unaware
+        # of it, `stitch()` put a GND via centre at r 9.5389 -- outside the
+        # band -- whose 0.45 mm pad reaches r 9.7639 and intrudes 0.0208 mm.
+        # A point-in-polygon test on the centre said it was fine; the
+        # keep-out check, which knows a via has a diameter, said it was not.
+        _r = math.hypot(x - CX, y - CY)
+        if (NFC_CLEAR_R_IN - VIA_D / 2.0) <= _r <= (NFC_CLEAR_R_OUT + VIA_D / 2.0):
             continue
         # TWO CLEARANCES, NOT ONE, BECAUSE THE FAB HAS TWO RULES. Against
         # copper (a pad, a track) the rule is FAB_RULES["min_clearance"] =
