@@ -89,12 +89,14 @@ def gallery_files():
 PACK = [("out/release/INDEX.html", "Factory handoff pack"),
         ("out/release/CONVERGENCE.html", "Convergence vs the real AirTag"),
         ("out/release/TEST-PLAN.html", "Production test plan"),
-        ("out/release/README.md", "Pack readiness table")]
+        ("out/release/README.md", "Pack readiness table"),
+        ("out/concepts/INDEX.html", "Concept portfolio"),
+        ("docs/concepts/README.md", "Concept portfolio index")]
 
 def nav_html(cur):
     groups = tree()                      # <- walk once, not once per group
-    order = {".": 0, "research": 1, "docs": 2, "spec": 3, "electronics": 4,
-             "hardware": 5, "firmware": 6, "images/airtag": 7}
+    order = {".": 0, "research": 1, "docs": 2, "docs/concepts": 3, "spec": 4,
+             "electronics": 5, "hardware": 6, "firmware": 7, "images/airtag": 8}
     out = []
     have = [(rel, label) for rel, label in PACK if os.path.exists(os.path.join(ROOT, rel))]
     if have:
