@@ -52,25 +52,36 @@ CHOICES = [
       pick="C76941", pick_mpn="GRM033R71A103KA01D", alt="C285200", alt_mpn="0201X103K100NT",
       why="X7R rather than X5R at no cost premium; 330k stock."),
  dict(refs="C7", value="2.2nF", fp="0201", function="SoC decoupling",
-      pick="C526940", pick_mpn="CC0201JRX7R7BB222", alt="C161479", alt_mpn="GRM033R71A222KA01D",
-      why="16 V X7R +/-5%, deepest 0201 2.2nF stock."),
+      pick="C161479", pick_mpn="GRM033R71A222KA01D", alt="C2184294", alt_mpn="GCM033R71A222KA03D",
+      why="THE SNAPSHOT'S FIRST CHOICE WAS WRONG BY A DAY. YAGEO C526940 held "
+          "29,573 in the 2026-09-03 catalogue snapshot and 600 when the live "
+          "page was read on 2026-09-04 - a 49x collapse overnight. Both parts "
+          "here are Murata, which is a real weakness in this line: it has two "
+          "order codes and one manufacturer."),
  dict(refs="C9,C10,C11,C12", value="10uF", fp="0402", function="bulk rail capacitance (4 x 10 uF replaces Apple's 5 x 100 uF)",
       pick="C15525", pick_mpn="CL05A106MQ5NUNC", alt="C7472949", alt_mpn="HGC0402R5106M100NTEJ",
       why="THE ONLY JLCPCB BASIC PART ON THIS BOARD. No feeder fee, ~10 M in "
           "stock. 6.3 V X5R at 3.0 V is inside spec but derates hard - the "
           "10 V alternate is there if the measured rail droop needs it."),
  dict(refs="C13", value="100pF", fp="0201", function="battery-sense divider settling cap",
-      pick="C76922", pick_mpn="GRM0335C1H101JA01D", alt="C20069263", alt_mpn="CGA0201C0G101J500ET",
+      pick="C76922", pick_mpn="GRM0335C1H101JA01D", alt="C272870", alt_mpn="CC0201JRNPO9BN101",
       why="C0G, so the ADC settling time and the 0.24 ms cell-removal collapse "
-          "do not move with temperature."),
+          "do not move with temperature. Deepest line on the board: 826 k and "
+          "1.2 M, two manufacturers."),
  dict(refs="C18", value="1.5pF", fp="0201", function="2.4 GHz match, Nordic reference network",
-      pick="C435397", pick_mpn="GJM0335C1E1R5WB01D", alt="C22374840", alt_mpn="CGA0201C0G1R5C500ET",
+      pick="C435397", pick_mpn="GJM0335C1E1R5WB01D", alt="C88913", alt_mpn="GRM0335C1H1R5WA01D",
       why="Murata GJM03 is the high-Q RF series the Nordic reference network "
-          "assumes; a general-purpose C0G would lower the match Q."),
+          "assumes; a general-purpose C0G would lower the match Q. The GRM "
+          "alternate is that general-purpose C0G, 5x cheaper and deeper "
+          "stocked - acceptable only once ce-rf has measured S11 with it."),
  dict(refs="C19", value="2.0pF", fp="0201", function="2.4 GHz match, Nordic reference network",
-      pick="C668326", pick_mpn="GJM0335C1E2R0WB01D", alt="C161383", alt_mpn="GRM0335C1E2R0BA01D",
-      why="Same GJM03 high-Q family as C18. The GRM alternate is 4x cheaper and "
-          "5x deeper stocked if RF measurement shows the Q does not matter here."),
+      pick="C668326", pick_mpn="GJM0335C1E2R0WB01D", alt="C577359", alt_mpn="CQ0201BRNPO8BN2R0",
+      why="Same GJM03 high-Q family as C18. THE MOST EXPENSIVE PASSIVE ON THE "
+          "BOARD at $0.064/1k - 40x a plain C0G - because 2.0 pF in the GJM "
+          "high-Q series is a thin line. The YAGEO CQ series alternate is the "
+          "deepest non-Murata 2 pF that survived the live stock check; the "
+          "snapshot's two better-looking candidates (C161383, C1855389) read "
+          "200 and ZERO on the live page."),
  dict(refs="C20,C21", value="0.5pF", fp="0201", function="antenna tuning pi, shunt legs (values are placeholders until ce-rf's S11)",
       pick="C237424", pick_mpn="GJM0335C1HR50WB01D", alt="C85922", alt_mpn="GRM0335C1HR50WA01D",
       why="THE SCHEMATIC ASKED FOR GJM0335C1ER50WB01 (25 V), which is C464955 "
@@ -137,9 +148,17 @@ CHOICES = [
  dict(refs="U2", value="LIS2DW12TR", fp="LGA-12", function="3-axis accelerometer: motion wake, DULT unwanted-tracking detection",
       pick="C189624", pick_mpn="LIS2DW12TR", alt="C110926", alt_mpn="LIS2DH12TR",
       why="50 nA in the lowest-power mode, the deciding number for a coin cell. "
-          "The LIS2DH12 is pin-compatible in the same LGA-12 2x2 land pattern "
-          "at 500 nA - a 10x sleep-current penalty, so it is a second source "
-          "for a build, not a design equal."),
+          "PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, "
+          "not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give "
+          "1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only "
+          "at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be "
+          "tied to VDD, VDDIO or GND'), which the board ties to GND either "
+          "way. The cost is 500 nA against 50 nA - a build second source, not "
+          "a design equal. REJECTED as an alternate on evidence: Silan "
+          "SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the "
+          "price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, "
+          "3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It "
+          "would short VDDIO to the SDO net on this land pattern."),
  dict(refs="X1", value="32.768kHz", fp="SMD3215-2P", function="LFXO: the rotation clock the anti-stalking timing depends on",
       pick="C32346", pick_mpn="Q13FC13500004", alt="C95361", alt_mpn="Q13FC13500049",
       why="JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED "
@@ -269,6 +288,141 @@ def resolve(code, want_mpn):
                                 f"not the {want_mpn!r} this line asks for")
     return rec
 
+# --------------------------------------------------------------------------
+# The cost model. Every RATE here is lane E's, quoted from
+# research/05-components-and-cost-model.md sections 10.3 and 11.6, and this
+# lane does not re-derive any of them. What this lane replaces is the three
+# INPUTS that section had to assume: the component prices, the solder-joint
+# count, and how many order codes are JLCPCB Extended parts. All three are now
+# read off the board and off the vendor.
+# --------------------------------------------------------------------------
+COST_MODEL = {
+ "source": "research/05-components-and-cost-model.md sections 10.3 and 11.6 (lane E, 2026-09-03)",
+ "assembly_setup_usd": 8.18,
+ "stencil_usd": 1.53,
+ "feeder_fee_per_extended_part_usd": 3.07,
+ "per_joint_usd": 0.0016,
+ "fee_source": "https://jlcpcb.com/help/article/pcb-assembly-price",
+ "fee_staleness": "the fee table is the archived 2024-08-29 revision; ce-fab's "
+                  "data/jlc-pricing.json records that the $8 Economic setup fee "
+                  "still held on 2026-09-03 and the per-joint rate had moved "
+                  "0.0017 -> 0.0016",
+ "pcb_usd_per_unit": {"10": 6.211, "100": 0.692, "1000": 0.140, "10000": 0.085},
+ "enclosure_usd_per_unit": {"10": 1.20, "100": 1.20, "1000": 0.90, "10000": 0.30},
+ "tooling_usd_per_unit": {"10": 0.0, "100": 0.0, "1000": 0.0, "10000": 0.40},
+ "labour_usd_per_unit": {"10": 0.30, "100": 0.30, "1000": 0.15, "10000": 0.08},
+ "d15_baseline_usd_per_unit": {"10": 19.25, "100": 9.28, "1000": 7.17, "10000": 6.75},
+ "d15_baseline_bom_usd": {"10": 8.21, "100": 6.57, "1000": 5.74, "10000": 5.67},
+ "d15_assumed_joints": 131,
+ "d15_assumed_extended_parts": 7,
+}
+
+# The sounder. D11a specifies a bare Murata 7BB-20-3, Diameter 20.0 x 0.22 mm,
+# bonded to the inside of the shell and driven anti-phase from two GPIO. It is
+# in NEITHER the LCSC nor the JLCPCB catalogue. Filled in by the sourcing pass;
+# a null price is a null price and is never replaced by a plausible one.
+SOUNDER = {
+ "specified": "Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
+ "verdict": "PENDING",
+ "usd_per_unit": {"10": None, "100": None, "1000": None, "10000": None},
+}
+
+# Parts the product needs that the pick-and-place machine never touches.
+# Priced here so the roll-up is comparable with D15's, which also carried them.
+OFF_MACHINE = {
+ "BT1": {"what": "CR2032 lithium coin cell",
+         "usd_per_unit": {"10": 0.39, "100": 0.39, "1000": 0.39, "10000": 0.39},
+         "basis": "lane E carried the qty-1 $0.39 upper bound at every volume; "
+                  "this lane did not re-price it and does not pretend to",
+         "verdict": "CARRIED FORWARD, NOT RE-MEASURED"},
+}
+
+
+def snapshot_joints(codes):
+    """Solder joints per part, from JLCPCB's own catalogue, via ce-fab's
+    snapshot. Never guessed from a footprint name."""
+    import sqlite3
+    db = pathlib.Path.home() / "dev/ce-workshop/ce-fab/data/jlcparts-slim.sqlite3"
+    if not db.exists():
+        return {}
+    con = sqlite3.connect(str(db))
+    out = {}
+    for c in codes:
+        r = con.execute("select joints from parts where lcsc=?", (c,)).fetchone()
+        if r and r[0] is not None:
+            out[c] = r[0]
+    return out
+
+
+def cost(lines, sounder):
+    codes = [l["part"]["lcsc"] for l in lines if l.get("part") and l["on_jlc_bom"]]
+    joints_by_code = snapshot_joints(codes)
+    joints, extended, basic, unknown_joints = 0, [], [], []
+    bom = {str(q): 0.0 for q in LADDER_QTYS}
+    incomplete = {str(q): [] for q in LADDER_QTYS}
+    for l in lines:
+        p = l.get("part")
+        if not p:
+            # DNP is not a gap; BT1 and LS1 are priced below, off the machine.
+            if l["verdict"] not in ("DNP",) and l["refs"][0] not in OFF_MACHINE \
+               and l["refs"][0] != "LS1":
+                for q in LADDER_QTYS:
+                    incomplete[str(q)].append(",".join(l["refs"]))
+            continue
+        if l["on_jlc_bom"]:
+            j = joints_by_code.get(p["lcsc"])
+            if j is None:
+                unknown_joints.append(p["lcsc"])
+            else:
+                joints += j * l["qty"]
+            (basic if p.get("library_type") == "basic" else extended).append(p["lcsc"])
+        for q in LADDER_QTYS:
+            # price the LINE at the per-unit quantity, i.e. a 1000-unit build of
+            # a 4-off part buys 4000 pieces and gets the 4000-piece price.
+            unit = jlc_at(p.get("jlcpcb_ladder"), q * l["qty"]) or at(p.get("price_ladder_lcsc"), q * l["qty"])
+            if unit is None:
+                incomplete[str(q)].append(",".join(l["refs"]))
+            else:
+                bom[str(q)] += unit * l["qty"]
+    # off-machine lines
+    for ref, d in OFF_MACHINE.items():
+        for q in LADDER_QTYS:
+            bom[str(q)] += d["usd_per_unit"][str(q)]
+    for q in LADDER_QTYS:
+        if sounder.get("usd_per_unit", {}).get(str(q)) is not None:
+            bom[str(q)] += sounder["usd_per_unit"][str(q)]
+        else:
+            incomplete[str(q)].append("LS1")
+    m = COST_MODEL
+    rows = {}
+    for q in LADDER_QTYS:
+        k = str(q)
+        asm = (m["assembly_setup_usd"] + m["stencil_usd"]
+               + m["feeder_fee_per_extended_part_usd"] * len(set(extended))) / q               + m["per_joint_usd"] * joints
+        tot = bom[k] + m["pcb_usd_per_unit"][k] + asm + m["enclosure_usd_per_unit"][k]               + m["tooling_usd_per_unit"][k] + m["labour_usd_per_unit"][k]
+        rows[k] = {"bom": round(bom[k], 4), "pcb": m["pcb_usd_per_unit"][k],
+                   "assembly": round(asm, 4),
+                   "enclosure": m["enclosure_usd_per_unit"][k],
+                   "tooling": m["tooling_usd_per_unit"][k],
+                   "labour": m["labour_usd_per_unit"][k],
+                   "total": round(tot, 4),
+                   "d15_total": m["d15_baseline_usd_per_unit"][k],
+                   "delta_vs_d15": round(tot - m["d15_baseline_usd_per_unit"][k], 4),
+                   "bom_lines_not_priced": sorted(set(incomplete[k]))}
+    return {"model": m, "off_machine": OFF_MACHINE, "sounder": sounder,
+            "joints_measured": joints,
+            "joints_source": "JLCPCB's own solder-joint count per order code, "
+                             "ce-fab data/jlcparts-slim.sqlite3 column `joints`, "
+                             "multiplied by the quantity placed",
+            "joints_unknown_for": unknown_joints,
+            "extended_parts": sorted(set(extended)),
+            "extended_part_count": len(set(extended)),
+            "basic_parts": sorted(set(basic)),
+            "basic_part_count": len(set(basic)),
+            "feeder_fee_total_usd": round(len(set(extended)) * m["feeder_fee_per_extended_part_usd"], 2),
+            "per_unit": rows}
+
+
 def placed_bom():
     """What is actually on the board, read back from the release pack's own CSV."""
     rows = []
@@ -313,7 +467,8 @@ def main():
                          "the one that belongs in a PCBA quote.",
            "ladder_note": "A price at a quantity the vendor's ladder does not "
                           "reach is null. Nothing here is extrapolated.",
-           "lines": lines}
+           "lines": lines,
+           "cost": cost(lines, SOUNDER)}
     OUT.write_text(json.dumps(doc, indent=1, ensure_ascii=False) + "\n")
     res = sum(1 for l in lines if l["verdict"] == "RESOLVED")
     print(f"{res}/{len(lines)} lines RESOLVED; wrote {OUT}")

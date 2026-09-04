@@ -1,0 +1,4408 @@
+{
+ "schema": "halo/bom-resolved/1",
+ "generated": "2026-09-04",
+ "lane": "S1",
+ "board": "halo_rev_a",
+ "placed_refs_in_release_bom": 42,
+ "refs_covered": 42,
+ "refs_not_covered": [],
+ "endpoints": {
+  "lcsc": "GET https://www.lcsc.com/product-detail/<code>.html, __NEXT_DATA__ application/json blob",
+  "jlcpcb": "POST https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList {currentPage,pageSize,keyword}"
+ },
+ "price_note": "Two channels, never mixed. price_usd is LCSC RETAIL (you buy the reel). jlcpcb_price_usd is what JLCPCB charges when IT supplies the part during assembly. They differ by up to 2x and the assembly number is the one that belongs in a PCBA quote.",
+ "ladder_note": "A price at a quantity the vendor's ladder does not reach is null. Nothing here is extrapolated.",
+ "lines": [
+  {
+   "refs": [
+    "C1",
+    "C2",
+    "C3",
+    "C4"
+   ],
+   "qty": 4,
+   "value": "100nF",
+   "footprint": "0201",
+   "function": "SoC supply decoupling, one per VDD pin",
+   "why": "Deepest 0201 100nF stock in the catalogue and the cheapest. 10 V X5R against a 3.0 V cell leaves margin for X5R DC-bias derating.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C5142565",
+    "expected_mpn": "TCC0201X5R104K100ZT",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C5142565.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "TCC0201X5R104K100ZT",
+    "manufacturer": "CCTC",
+    "package": "0201",
+    "stock": 5981500,
+    "min_packet": 15000,
+    "split": 50,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0432613d484f4f946fa8f7c93b61cf7a.pdf?productCode=C5142565",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0013,
+     "1000": 0.001,
+     "10000": 0.0008
+    },
+    "price_ladder_lcsc": [
+     [
+      50,
+      0.0013
+     ],
+     [
+      500,
+      0.001
+     ],
+     [
+      1500,
+      0.0008
+     ],
+     [
+      15000,
+      0.0007
+     ],
+     [
+      30000,
+      0.0006
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 6131303,
+    "jlcpcb_price_usd": {
+     "10": 0.0013,
+     "100": 0.0013,
+     "1000": 0.001,
+     "10000": 0.0008
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      499,
+      0.0013
+     ],
+     [
+      500,
+      1499,
+      0.001
+     ],
+     [
+      1500,
+      14999,
+      0.0008
+     ],
+     [
+      15000,
+      29999,
+      0.0007
+     ],
+     [
+      30000,
+      30099,
+      0.0006
+     ],
+     [
+      30100,
+      -1,
+      0.0006
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C190183",
+    "expected_mpn": "CC0201KRX5R6BB104",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C190183.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CC0201KRX5R6BB104",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 3151700,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/5b3aae1e7925073bc9bd92db48d7aba2.pdf?productCode=C190183",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0036,
+     "1000": 0.0029,
+     "10000": 0.0025
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0036
+     ],
+     [
+      1000,
+      0.0029
+     ],
+     [
+      3000,
+      0.0025
+     ],
+     [
+      15000,
+      0.0023
+     ],
+     [
+      45000,
+      0.0021
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 3271519,
+    "jlcpcb_price_usd": {
+     "10": 0.0035,
+     "100": 0.0035,
+     "1000": 0.0029,
+     "10000": 0.0025
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0035
+     ],
+     [
+      1000,
+      2999,
+      0.0029
+     ],
+     [
+      3000,
+      14999,
+      0.0025
+     ],
+     [
+      15000,
+      44999,
+      0.0023
+     ],
+     [
+      45000,
+      45199,
+      0.0021
+     ],
+     [
+      45200,
+      -1,
+      0.0021
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C5",
+    "C8"
+   ],
+   "qty": 2,
+   "value": "2.2uF",
+   "footprint": "0201",
+   "function": "SoC DEC/DCDC reservoir",
+   "why": "10 V X5R at 2.2 uF in 0201 is a stretched dielectric; the Murata part is the deepest-stocked one and Murata publishes its DC-bias curve.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C335106",
+    "expected_mpn": "GRM033R61A225KE47D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C335106.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM033R61A225KE47D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 59700,
+    "min_packet": 15000,
+    "split": 50,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/a4d1e2744bd5d44ba57842651a3fd598.pdf?productCode=C335106",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0234,
+     "1000": 0.019,
+     "10000": 0.0166
+    },
+    "price_ladder_lcsc": [
+     [
+      50,
+      0.0234
+     ],
+     [
+      500,
+      0.019
+     ],
+     [
+      1500,
+      0.0166
+     ],
+     [
+      15000,
+      0.0151
+     ],
+     [
+      30000,
+      0.0138
+     ],
+     [
+      45000,
+      0.0131
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 97325,
+    "jlcpcb_price_usd": {
+     "10": 0.0233,
+     "100": 0.0233,
+     "1000": 0.0189,
+     "10000": 0.0165
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      499,
+      0.0233
+     ],
+     [
+      500,
+      1499,
+      0.0189
+     ],
+     [
+      1500,
+      14999,
+      0.0165
+     ],
+     [
+      15000,
+      29999,
+      0.0149
+     ],
+     [
+      30000,
+      44999,
+      0.0137
+     ],
+     [
+      45000,
+      -1,
+      0.013
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C318539",
+    "expected_mpn": "CL03A225MP3CRNC",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C318539.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CL03A225MP3CRNC",
+    "manufacturer": "Samsung Electro-Mechanics",
+    "package": "0201",
+    "stock": 312440,
+    "min_packet": 10000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/e5e1a6cb60bd6713d2271da395963f60.pdf?productCode=C318539",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0213,
+     "1000": 0.0151,
+     "10000": 0.0126
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0213
+     ],
+     [
+      200,
+      0.0173
+     ],
+     [
+      600,
+      0.0151
+     ],
+     [
+      2000,
+      0.0138
+     ],
+     [
+      10000,
+      0.0126
+     ],
+     [
+      20000,
+      0.012
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 352745,
+    "jlcpcb_price_usd": {
+     "10": 0.0212,
+     "100": 0.0212,
+     "1000": 0.0149,
+     "10000": 0.0125
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0212
+     ],
+     [
+      200,
+      599,
+      0.0171
+     ],
+     [
+      600,
+      1999,
+      0.0149
+     ],
+     [
+      2000,
+      9999,
+      0.0136
+     ],
+     [
+      10000,
+      19999,
+      0.0125
+     ],
+     [
+      20000,
+      -1,
+      0.0119
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C6"
+   ],
+   "qty": 1,
+   "value": "10nF",
+   "footprint": "0201",
+   "function": "SoC decoupling",
+   "why": "X7R rather than X5R at no cost premium; 330k stock.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C76941",
+    "expected_mpn": "GRM033R71A103KA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C76941.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM033R71A103KA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 242700,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/58a7d404c3534585b4a0e91caba788f7.pdf?productCode=C76941",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0048,
+     "1000": 0.0039,
+     "10000": 0.0034
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0048
+     ],
+     [
+      1000,
+      0.0039
+     ],
+     [
+      3000,
+      0.0034
+     ],
+     [
+      15000,
+      0.0031
+     ],
+     [
+      45000,
+      0.0029
+     ],
+     [
+      105000,
+      0.0027
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 368495,
+    "jlcpcb_price_usd": {
+     "10": 0.0047,
+     "100": 0.0047,
+     "1000": 0.0039,
+     "10000": 0.0034
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0047
+     ],
+     [
+      1000,
+      2999,
+      0.0039
+     ],
+     [
+      3000,
+      14999,
+      0.0034
+     ],
+     [
+      15000,
+      44999,
+      0.0031
+     ],
+     [
+      45000,
+      104999,
+      0.0028
+     ],
+     [
+      105000,
+      -1,
+      0.0027
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C285200",
+    "expected_mpn": "0201X103K100NT",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C285200.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201X103K100NT",
+    "manufacturer": "FH",
+    "package": "0201",
+    "stock": 14000,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/09fe2daf22580a99fa7fea93ccb20fb7.pdf?productCode=C285200",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.001,
+     "1000": 0.0008,
+     "10000": 0.0007
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.001
+     ],
+     [
+      1000,
+      0.0008
+     ],
+     [
+      3000,
+      0.0007
+     ],
+     [
+      15000,
+      0.0006
+     ],
+     [
+      45000,
+      0.0005
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 14016,
+    "jlcpcb_price_usd": {
+     "10": 0.001,
+     "100": 0.001,
+     "1000": 0.0008,
+     "10000": 0.0007
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.001
+     ],
+     [
+      1000,
+      2999,
+      0.0008
+     ],
+     [
+      3000,
+      14999,
+      0.0007
+     ],
+     [
+      15000,
+      44999,
+      0.0006
+     ],
+     [
+      45000,
+      45199,
+      0.0005
+     ],
+     [
+      45200,
+      -1,
+      0.0005
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C7"
+   ],
+   "qty": 1,
+   "value": "2.2nF",
+   "footprint": "0201",
+   "function": "SoC decoupling",
+   "why": "THE SNAPSHOT'S FIRST CHOICE WAS WRONG BY A DAY. YAGEO C526940 held 29,573 in the 2026-09-03 catalogue snapshot and 600 when the live page was read on 2026-09-04 - a 49x collapse overnight. Both parts here are Murata, which is a real weakness in this line: it has two order codes and one manufacturer.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C161479",
+    "expected_mpn": "GRM033R71A222KA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C161479.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM033R71A222KA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 11600,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/a4d1e2744bd5d44ba57842651a3fd598.pdf?productCode=C161479",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0029,
+     "1000": 0.0022,
+     "10000": 0.0019
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0029
+     ],
+     [
+      1000,
+      0.0022
+     ],
+     [
+      3000,
+      0.0019
+     ],
+     [
+      15000,
+      0.0018
+     ],
+     [
+      45000,
+      0.0016
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 11619,
+    "jlcpcb_price_usd": {
+     "10": 0.0028,
+     "100": 0.0028,
+     "1000": 0.0022,
+     "10000": 0.0019
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0028
+     ],
+     [
+      1000,
+      2999,
+      0.0022
+     ],
+     [
+      3000,
+      14999,
+      0.0019
+     ],
+     [
+      15000,
+      44999,
+      0.0018
+     ],
+     [
+      45000,
+      45199,
+      0.0016
+     ],
+     [
+      45200,
+      -1,
+      0.0016
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C2184294",
+    "expected_mpn": "GCM033R71A222KA03D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C2184294.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GCM033R71A222KA03D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 12000,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/e24d88067dc9621df8f575e43a84d279.pdf?productCode=C2184294",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0071,
+     "1000": 0.0056,
+     "10000": 0.0048
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0071
+     ],
+     [
+      1000,
+      0.0056
+     ],
+     [
+      3000,
+      0.0048
+     ],
+     [
+      15000,
+      0.0042
+     ],
+     [
+      45000,
+      0.0038
+     ],
+     [
+      105000,
+      0.0036
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 12030,
+    "jlcpcb_price_usd": {
+     "10": 0.007,
+     "100": 0.007,
+     "1000": 0.0056,
+     "10000": 0.0047
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.007
+     ],
+     [
+      1000,
+      2999,
+      0.0056
+     ],
+     [
+      3000,
+      14999,
+      0.0047
+     ],
+     [
+      15000,
+      44999,
+      0.0042
+     ],
+     [
+      45000,
+      104999,
+      0.0038
+     ],
+     [
+      105000,
+      -1,
+      0.0036
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C9",
+    "C10",
+    "C11",
+    "C12"
+   ],
+   "qty": 4,
+   "value": "10uF",
+   "footprint": "0402",
+   "function": "bulk rail capacitance (4 x 10 uF replaces Apple's 5 x 100 uF)",
+   "why": "THE ONLY JLCPCB BASIC PART ON THIS BOARD. No feeder fee, ~10 M in stock. 6.3 V X5R at 3.0 V is inside spec but derates hard - the 10 V alternate is there if the measured rail droop needs it.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C15525",
+    "expected_mpn": "CL05A106MQ5NUNC",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C15525.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CL05A106MQ5NUNC",
+    "manufacturer": "Samsung Electro-Mechanics",
+    "package": "0402",
+    "stock": 5742500,
+    "min_packet": 10000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/65bc266350d348ca20afaa6e412e395a.pdf?productCode=C15525",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0258,
+     "1000": 0.0193,
+     "10000": 0.0143
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0258
+     ],
+     [
+      1000,
+      0.0193
+     ],
+     [
+      3000,
+      0.0165
+     ],
+     [
+      10000,
+      0.0143
+     ],
+     [
+      50000,
+      0.0134
+     ],
+     [
+      100000,
+      0.0128
+     ]
+    ],
+    "library_type": "basic",
+    "jlcpcb_stock": 9770076,
+    "jlcpcb_price_usd": {
+     "10": 0.0256,
+     "100": 0.0256,
+     "1000": 0.0192,
+     "10000": 0.0142
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0256
+     ],
+     [
+      1000,
+      2999,
+      0.0192
+     ],
+     [
+      3000,
+      9999,
+      0.0163
+     ],
+     [
+      10000,
+      49999,
+      0.0142
+     ],
+     [
+      50000,
+      99999,
+      0.0133
+     ],
+     [
+      100000,
+      -1,
+      0.0127
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C7472949",
+    "expected_mpn": "HGC0402R5106M100NTEJ",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C7472949.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "HGC0402R5106M100NTEJ",
+    "manufacturer": "Chinocera",
+    "package": "0402",
+    "stock": 1998760,
+    "min_packet": 10000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/3025399970486160f9625970e5fd5973.pdf?productCode=C7472949",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0303,
+     "1000": 0.0202,
+     "10000": 0.017
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0303
+     ],
+     [
+      200,
+      0.0234
+     ],
+     [
+      600,
+      0.0202
+     ],
+     [
+      2000,
+      0.0179
+     ],
+     [
+      10000,
+      0.017
+     ],
+     [
+      20000,
+      0.0164
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1998826,
+    "jlcpcb_price_usd": {
+     "10": 0.0301,
+     "100": 0.0301,
+     "1000": 0.02,
+     "10000": 0.0168
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0301
+     ],
+     [
+      200,
+      599,
+      0.0231
+     ],
+     [
+      600,
+      1999,
+      0.02
+     ],
+     [
+      2000,
+      9999,
+      0.0178
+     ],
+     [
+      10000,
+      19999,
+      0.0168
+     ],
+     [
+      20000,
+      -1,
+      0.0162
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C13"
+   ],
+   "qty": 1,
+   "value": "100pF",
+   "footprint": "0201",
+   "function": "battery-sense divider settling cap",
+   "why": "C0G, so the ADC settling time and the 0.24 ms cell-removal collapse do not move with temperature. Deepest line on the board: 826 k and 1.2 M, two manufacturers.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C76922",
+    "expected_mpn": "GRM0335C1H101JA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C76922.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM0335C1H101JA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 825900,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/fbf10c963bae4a138de5637c5c931495.pdf?productCode=C76922",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0067,
+     "1000": 0.0054,
+     "10000": 0.0047
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0067
+     ],
+     [
+      1000,
+      0.0054
+     ],
+     [
+      3000,
+      0.0047
+     ],
+     [
+      15000,
+      0.0041
+     ],
+     [
+      45000,
+      0.0037
+     ],
+     [
+      105000,
+      0.0035
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 873602,
+    "jlcpcb_price_usd": {
+     "10": 0.0066,
+     "100": 0.0066,
+     "1000": 0.0054,
+     "10000": 0.0047
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0066
+     ],
+     [
+      1000,
+      2999,
+      0.0054
+     ],
+     [
+      3000,
+      14999,
+      0.0047
+     ],
+     [
+      15000,
+      44999,
+      0.004
+     ],
+     [
+      45000,
+      104999,
+      0.0037
+     ],
+     [
+      105000,
+      -1,
+      0.0035
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C272870",
+    "expected_mpn": "CC0201JRNPO9BN101",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C272870.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CC0201JRNPO9BN101",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 1215200,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/4eca2bb4b507f1633db47e922d632b95.pdf?productCode=C272870",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0035,
+     "1000": 0.0028,
+     "10000": 0.0024
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0035
+     ],
+     [
+      1000,
+      0.0028
+     ],
+     [
+      3000,
+      0.0024
+     ],
+     [
+      15000,
+      0.002
+     ],
+     [
+      45000,
+      0.0018
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1251817,
+    "jlcpcb_price_usd": {
+     "10": 0.0034,
+     "100": 0.0034,
+     "1000": 0.0027,
+     "10000": 0.0024
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0034
+     ],
+     [
+      1000,
+      2999,
+      0.0027
+     ],
+     [
+      3000,
+      14999,
+      0.0024
+     ],
+     [
+      15000,
+      44999,
+      0.002
+     ],
+     [
+      45000,
+      45199,
+      0.0018
+     ],
+     [
+      45200,
+      -1,
+      0.0018
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C18"
+   ],
+   "qty": 1,
+   "value": "1.5pF",
+   "footprint": "0201",
+   "function": "2.4 GHz match, Nordic reference network",
+   "why": "Murata GJM03 is the high-Q RF series the Nordic reference network assumes; a general-purpose C0G would lower the match Q. The GRM alternate is that general-purpose C0G, 5x cheaper and deeper stocked - acceptable only once ce-rf has measured S11 with it.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C435397",
+    "expected_mpn": "GJM0335C1E1R5WB01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C435397.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GJM0335C1E1R5WB01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 53420,
+    "min_packet": 15000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f7493dd88fc4c7f1a8836b203c0b89c6.pdf?productCode=C435397",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0339,
+     "1000": 0.0246,
+     "10000": 0.0226
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0339
+     ],
+     [
+      200,
+      0.0279
+     ],
+     [
+      600,
+      0.0246
+     ],
+     [
+      2000,
+      0.0226
+     ],
+     [
+      15000,
+      0.0187
+     ],
+     [
+      30000,
+      0.0178
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 57341,
+    "jlcpcb_price_usd": {
+     "10": 0.0337,
+     "100": 0.0337,
+     "1000": 0.0244,
+     "10000": 0.0225
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0337
+     ],
+     [
+      200,
+      599,
+      0.0277
+     ],
+     [
+      600,
+      1999,
+      0.0244
+     ],
+     [
+      2000,
+      14999,
+      0.0225
+     ],
+     [
+      15000,
+      29999,
+      0.0186
+     ],
+     [
+      30000,
+      -1,
+      0.0176
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C88913",
+    "expected_mpn": "GRM0335C1H1R5WA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C88913.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM0335C1H1R5WA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 86150,
+    "min_packet": 15000,
+    "split": 50,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/bb7c7daf22f40d74dc9493dcdcae707d.pdf?productCode=C88913",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0213,
+     "1000": 0.0173,
+     "10000": 0.0151
+    },
+    "price_ladder_lcsc": [
+     [
+      50,
+      0.0213
+     ],
+     [
+      500,
+      0.0173
+     ],
+     [
+      1500,
+      0.0151
+     ],
+     [
+      15000,
+      0.0138
+     ],
+     [
+      30000,
+      0.0126
+     ],
+     [
+      45000,
+      0.012
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 86159,
+    "jlcpcb_price_usd": {
+     "10": 0.0212,
+     "100": 0.0212,
+     "1000": 0.0171,
+     "10000": 0.0149
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      499,
+      0.0212
+     ],
+     [
+      500,
+      1499,
+      0.0171
+     ],
+     [
+      1500,
+      14999,
+      0.0149
+     ],
+     [
+      15000,
+      29999,
+      0.0136
+     ],
+     [
+      30000,
+      44999,
+      0.0125
+     ],
+     [
+      45000,
+      -1,
+      0.0119
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C19"
+   ],
+   "qty": 1,
+   "value": "2.0pF",
+   "footprint": "0201",
+   "function": "2.4 GHz match, Nordic reference network",
+   "why": "Same GJM03 high-Q family as C18. THE MOST EXPENSIVE PASSIVE ON THE BOARD at $0.064/1k - 40x a plain C0G - because 2.0 pF in the GJM high-Q series is a thin line. The YAGEO CQ series alternate is the deepest non-Murata 2 pF that survived the live stock check; the snapshot's two better-looking candidates (C161383, C1855389) read 200 and ZERO on the live page.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C668326",
+    "expected_mpn": "GJM0335C1E2R0WB01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C668326.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GJM0335C1E2R0WB01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 25165,
+    "min_packet": 15000,
+    "split": 5,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/4aeb9678e7868d7812716d71d111f969.pdf?productCode=C668326",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": 0.0958,
+     "100": 0.0788,
+     "1000": 0.064,
+     "10000": 0.0564
+    },
+    "price_ladder_lcsc": [
+     [
+      5,
+      0.0958
+     ],
+     [
+      50,
+      0.0788
+     ],
+     [
+      150,
+      0.0704
+     ],
+     [
+      500,
+      0.064
+     ],
+     [
+      2500,
+      0.059
+     ],
+     [
+      5000,
+      0.0564
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 29352,
+    "jlcpcb_price_usd": {
+     "10": 0.0949,
+     "100": 0.0782,
+     "1000": 0.0636,
+     "10000": 0.0559
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      49,
+      0.0949
+     ],
+     [
+      50,
+      149,
+      0.0782
+     ],
+     [
+      150,
+      499,
+      0.0697
+     ],
+     [
+      500,
+      2499,
+      0.0636
+     ],
+     [
+      2500,
+      4999,
+      0.0585
+     ],
+     [
+      5000,
+      -1,
+      0.0559
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C577359",
+    "expected_mpn": "CQ0201BRNPO8BN2R0",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C577359.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CQ0201BRNPO8BN2R0",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 5800,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d9e1f96faa5392c23fe073d37a19d097.pdf?productCode=C577359",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0092,
+     "1000": 0.0077,
+     "10000": 0.0068
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0092
+     ],
+     [
+      1000,
+      0.0077
+     ],
+     [
+      3000,
+      0.0068
+     ],
+     [
+      15000,
+      0.0063
+     ],
+     [
+      45000,
+      0.0058
+     ],
+     [
+      105000,
+      0.0056
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 5854,
+    "jlcpcb_price_usd": {
+     "10": 0.0092,
+     "100": 0.0092,
+     "1000": 0.0077,
+     "10000": 0.0068
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0092
+     ],
+     [
+      1000,
+      2999,
+      0.0077
+     ],
+     [
+      3000,
+      14999,
+      0.0068
+     ],
+     [
+      15000,
+      44999,
+      0.0063
+     ],
+     [
+      45000,
+      104999,
+      0.0058
+     ],
+     [
+      105000,
+      -1,
+      0.0056
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C20",
+    "C21"
+   ],
+   "qty": 2,
+   "value": "0.5pF",
+   "footprint": "0201",
+   "function": "antenna tuning pi, shunt legs (values are placeholders until ce-rf's S11)",
+   "why": "THE SCHEMATIC ASKED FOR GJM0335C1ER50WB01 (25 V), which is C464955 with 329 pieces in stock - not orderable. The 50 V 1H variant is the same 0.5 pF part with 25x the stock.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C237424",
+    "expected_mpn": "GJM0335C1HR50WB01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C237424.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GJM0335C1HR50WB01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 13100,
+    "min_packet": 15000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/1bbf3c01064d6a4835f8edd560c28a07.pdf?productCode=C237424",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0259,
+     "1000": 0.0183,
+     "10000": 0.0167
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0259
+     ],
+     [
+      200,
+      0.021
+     ],
+     [
+      600,
+      0.0183
+     ],
+     [
+      2000,
+      0.0167
+     ],
+     [
+      15000,
+      0.0152
+     ],
+     [
+      30000,
+      0.0145
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 13101,
+    "jlcpcb_price_usd": {
+     "10": 0.0257,
+     "100": 0.0257,
+     "1000": 0.0181,
+     "10000": 0.0165
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0257
+     ],
+     [
+      200,
+      599,
+      0.0208
+     ],
+     [
+      600,
+      1999,
+      0.0181
+     ],
+     [
+      2000,
+      14999,
+      0.0165
+     ],
+     [
+      15000,
+      29999,
+      0.0151
+     ],
+     [
+      30000,
+      -1,
+      0.0144
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C85922",
+    "expected_mpn": "GRM0335C1HR50WA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C85922.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM0335C1HR50WA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 132200,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/a4d1e2744bd5d44ba57842651a3fd598.pdf?productCode=C85922",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0063,
+     "1000": 0.0053,
+     "10000": 0.0048
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0063
+     ],
+     [
+      1000,
+      0.0053
+     ],
+     [
+      3000,
+      0.0048
+     ],
+     [
+      15000,
+      0.0044
+     ],
+     [
+      45000,
+      0.0041
+     ],
+     [
+      105000,
+      0.004
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 135053,
+    "jlcpcb_price_usd": {
+     "10": 0.0063,
+     "100": 0.0063,
+     "1000": 0.0053,
+     "10000": 0.0047
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0063
+     ],
+     [
+      1000,
+      2999,
+      0.0053
+     ],
+     [
+      3000,
+      14999,
+      0.0047
+     ],
+     [
+      15000,
+      44999,
+      0.0044
+     ],
+     [
+      45000,
+      104999,
+      0.0041
+     ],
+     [
+      105000,
+      -1,
+      0.0039
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C22"
+   ],
+   "qty": 1,
+   "value": "0.3pF",
+   "footprint": "0201",
+   "function": "2.4 GHz match, series trim into the pi",
+   "why": "GJM03 high-Q, 50 V. At 0.3 pF the parasitics of a cheap C0G are a large fraction of the value, so the RF series earns its price here.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C3904589",
+    "expected_mpn": "GJM0335C1HR30WB01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C3904589.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GJM0335C1HR30WB01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 23660,
+    "min_packet": 15000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/55d59134d700e77e75eb700274d60200.pdf?productCode=C3904589",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0311,
+     "1000": 0.0222,
+     "10000": 0.0203
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0311
+     ],
+     [
+      200,
+      0.0254
+     ],
+     [
+      600,
+      0.0222
+     ],
+     [
+      2000,
+      0.0203
+     ],
+     [
+      15000,
+      0.018
+     ],
+     [
+      30000,
+      0.0171
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 24048,
+    "jlcpcb_price_usd": {
+     "10": 0.0309,
+     "100": 0.0309,
+     "1000": 0.022,
+     "10000": 0.02
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0309
+     ],
+     [
+      200,
+      599,
+      0.0252
+     ],
+     [
+      600,
+      1999,
+      0.022
+     ],
+     [
+      2000,
+      14999,
+      0.02
+     ],
+     [
+      15000,
+      29999,
+      0.0178
+     ],
+     [
+      30000,
+      -1,
+      0.0169
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C723329",
+    "expected_mpn": "0201CG0R3B500NT",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C723329.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201CG0R3B500NT",
+    "manufacturer": "FH",
+    "package": "0201",
+    "stock": 14200,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/09fe2daf22580a99fa7fea93ccb20fb7.pdf?productCode=C723329",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0018,
+     "1000": 0.0015,
+     "10000": 0.0013
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0018
+     ],
+     [
+      1000,
+      0.0015
+     ],
+     [
+      3000,
+      0.0013
+     ],
+     [
+      15000,
+      0.0011
+     ],
+     [
+      45000,
+      0.0009
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 15169,
+    "jlcpcb_price_usd": {
+     "10": 0.0018,
+     "100": 0.0018,
+     "1000": 0.0015,
+     "10000": 0.0013
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0018
+     ],
+     [
+      1000,
+      2999,
+      0.0015
+     ],
+     [
+      3000,
+      14999,
+      0.0013
+     ],
+     [
+      15000,
+      44999,
+      0.0011
+     ],
+     [
+      45000,
+      45199,
+      0.0009
+     ],
+     [
+      45200,
+      -1,
+      0.0009
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C23"
+   ],
+   "qty": 1,
+   "value": "3.9pF",
+   "footprint": "0201",
+   "function": "2.4 GHz shunt at ANT (Nordic Table 82; node placement CANNOT DETERMINE)",
+   "why": "GJM03 high-Q. Alternate is 28x cheaper and adequate if this ends up being a DNP once ce-rf measures the real feed.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C1852416",
+    "expected_mpn": "GJM0335C1E3R9WB01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C1852416.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GJM0335C1E3R9WB01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 13800,
+    "min_packet": 15000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/44eb2aa2e9bd53c8ebdc6432b5170afa.pdf?productCode=C1852416",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0243,
+     "1000": 0.0172,
+     "10000": 0.0157
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0243
+     ],
+     [
+      200,
+      0.0197
+     ],
+     [
+      600,
+      0.0172
+     ],
+     [
+      2000,
+      0.0157
+     ],
+     [
+      15000,
+      0.0143
+     ],
+     [
+      30000,
+      0.0136
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 13804,
+    "jlcpcb_price_usd": {
+     "10": 0.0243,
+     "100": 0.0243,
+     "1000": 0.0171,
+     "10000": 0.0156
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0243
+     ],
+     [
+      200,
+      599,
+      0.0197
+     ],
+     [
+      600,
+      1999,
+      0.0171
+     ],
+     [
+      2000,
+      14999,
+      0.0156
+     ],
+     [
+      15000,
+      29999,
+      0.0143
+     ],
+     [
+      30000,
+      -1,
+      0.0136
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C285100",
+    "expected_mpn": "0201CG3R9C250NT",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C285100.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201CG3R9C250NT",
+    "manufacturer": "FH",
+    "package": "0201",
+    "stock": 14300,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/09fe2daf22580a99fa7fea93ccb20fb7.pdf?productCode=C285100",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0015,
+     "1000": 0.0011,
+     "10000": 0.001
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0015
+     ],
+     [
+      1000,
+      0.0011
+     ],
+     [
+      3000,
+      0.001
+     ],
+     [
+      15000,
+      0.0008
+     ],
+     [
+      45000,
+      0.0007
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 14364,
+    "jlcpcb_price_usd": {
+     "10": 0.0014,
+     "100": 0.0014,
+     "1000": 0.0011,
+     "10000": 0.001
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0014
+     ],
+     [
+      1000,
+      2999,
+      0.0011
+     ],
+     [
+      3000,
+      14999,
+      0.001
+     ],
+     [
+      15000,
+      44999,
+      0.0008
+     ],
+     [
+      45000,
+      45199,
+      0.0007
+     ],
+     [
+      45200,
+      -1,
+      0.0007
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C24",
+    "C25"
+   ],
+   "qty": 2,
+   "value": "1.1nF",
+   "footprint": "0201",
+   "function": "NFC antenna tuning, series pair across the coil - MUST BE MATCHED TO EACH OTHER",
+   "why": "NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, at LCSC or JLCPCB. The nearest 0201 C0G is 1.0 nF, which the schematic's own note says lands the NFC tank 5.3 % high at 14.28 MHz. The nearest true 1.1 nF C0G is 0603 (C710889), three sizes too big. This is a BOARD CHANGE, not a sourcing choice - see docs/SOURCING.md.",
+   "verdict": "CANNOT DETERMINE",
+   "on_jlc_bom": true,
+   "part": null,
+   "alternate": {
+    "lcsc": "C161371",
+    "expected_mpn": "GRM0335C1E102JA01D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C161371.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "GRM0335C1E102JA01D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 139150,
+    "min_packet": 15000,
+    "split": 50,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/7aaee6e6d98f42c891adef4509cd7519.pdf?productCode=C161371",
+    "category": "Ceramic Capacitors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0158,
+     "1000": 0.013,
+     "10000": 0.0115
+    },
+    "price_ladder_lcsc": [
+     [
+      50,
+      0.0158
+     ],
+     [
+      500,
+      0.013
+     ],
+     [
+      1500,
+      0.0115
+     ],
+     [
+      15000,
+      0.0081
+     ],
+     [
+      30000,
+      0.0073
+     ],
+     [
+      45000,
+      0.0069
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 150716,
+    "jlcpcb_price_usd": {
+     "10": 0.0156,
+     "100": 0.0156,
+     "1000": 0.0129,
+     "10000": 0.0114
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      499,
+      0.0156
+     ],
+     [
+      500,
+      1499,
+      0.0129
+     ],
+     [
+      1500,
+      14999,
+      0.0114
+     ],
+     [
+      15000,
+      29999,
+      0.008
+     ],
+     [
+      30000,
+      44999,
+      0.0072
+     ],
+     [
+      45000,
+      -1,
+      0.0068
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "C14",
+    "C15",
+    "C16",
+    "C17"
+   ],
+   "qty": 4,
+   "value": "DNP",
+   "footprint": "0201",
+   "function": "crystal load capacitors, deliberately NOT FITTED (D-3: the nRF54L has on-die CAPVALUE load caps)",
+   "why": "Not a sourcing gap. These four pads are the four parts jlc.md counts as CANNOT DETERMINE, and the right answer is that they carry no order code because nothing is placed on them.",
+   "verdict": "DNP",
+   "on_jlc_bom": true,
+   "part": null,
+   "alternate": null
+  },
+  {
+   "refs": [
+    "R1",
+    "R2"
+   ],
+   "qty": 2,
+   "value": "4.7M",
+   "footprint": "0201",
+   "function": "battery-sense divider (4.7 M keeps the divider current in the nanoamps)",
+   "why": "THINNEST STOCK ON THE BOARD AFTER THE SoC. 4.7 M in 0201 is a rare value: seven parts exist in the whole catalogue and only two carry four figures of stock. Both pick and alternate are UNI-ROYAL, so this line has ONE manufacturer, not two.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C778408",
+    "expected_mpn": "0201WMF4704TEE",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C778408.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201WMF4704TEE",
+    "manufacturer": "UNI-ROYAL",
+    "package": "0201",
+    "stock": 10100,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C778408",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0019,
+     "1000": 0.0015,
+     "10000": 0.0013
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0019
+     ],
+     [
+      1000,
+      0.0015
+     ],
+     [
+      3000,
+      0.0013
+     ],
+     [
+      15000,
+      0.0011
+     ],
+     [
+      45000,
+      0.001
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 10112,
+    "jlcpcb_price_usd": {
+     "10": 0.0019,
+     "100": 0.0019,
+     "1000": 0.0015,
+     "10000": 0.0013
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0019
+     ],
+     [
+      1000,
+      2999,
+      0.0015
+     ],
+     [
+      3000,
+      14999,
+      0.0013
+     ],
+     [
+      15000,
+      44999,
+      0.0011
+     ],
+     [
+      45000,
+      45199,
+      0.001
+     ],
+     [
+      45200,
+      -1,
+      0.001
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C423341",
+    "expected_mpn": "0201WMJ0475TEE",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C423341.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201WMJ0475TEE",
+    "manufacturer": "UNI-ROYAL",
+    "package": "0201",
+    "stock": 29000,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C423341",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0011,
+     "1000": 0.0009,
+     "10000": 0.0007
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0011
+     ],
+     [
+      1000,
+      0.0009
+     ],
+     [
+      3000,
+      0.0007
+     ],
+     [
+      45000,
+      0.0006
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 29417,
+    "jlcpcb_price_usd": {
+     "10": 0.0011,
+     "100": 0.0011,
+     "1000": 0.0008,
+     "10000": 0.0007
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0011
+     ],
+     [
+      1000,
+      2999,
+      0.0008
+     ],
+     [
+      3000,
+      14999,
+      0.0007
+     ],
+     [
+      15000,
+      44999,
+      0.0007
+     ],
+     [
+      45000,
+      45199,
+      0.0006
+     ],
+     [
+      45200,
+      -1,
+      0.0006
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "R5",
+    "R6",
+    "R7",
+    "R8",
+    "R10"
+   ],
+   "qty": 5,
+   "value": "10k",
+   "footprint": "0201",
+   "function": "I2C/SWD pull-ups and strapping",
+   "why": "The exact MPN the schematic named - it was simply carrying the 0402 part's order code. Half a million in stock.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C473048",
+    "expected_mpn": "0201WMF1002TEE",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C473048.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201WMF1002TEE",
+    "manufacturer": "UNI-ROYAL",
+    "package": "0201",
+    "stock": 700,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C473048",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0012,
+     "1000": 0.001,
+     "10000": 0.0009
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0012
+     ],
+     [
+      1000,
+      0.001
+     ],
+     [
+      3000,
+      0.0009
+     ],
+     [
+      45000,
+      0.0008
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 644258,
+    "jlcpcb_price_usd": {
+     "10": 0.0012,
+     "100": 0.0012,
+     "1000": 0.001,
+     "10000": 0.0009
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0012
+     ],
+     [
+      1000,
+      2999,
+      0.001
+     ],
+     [
+      3000,
+      14999,
+      0.0009
+     ],
+     [
+      15000,
+      44999,
+      0.0009
+     ],
+     [
+      45000,
+      45199,
+      0.0008
+     ],
+     [
+      45200,
+      -1,
+      0.0008
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C138117",
+    "expected_mpn": "RC0201JR-0710KL",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C138117.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "RC0201JR-0710KL",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 631100,
+    "min_packet": 10000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C138117",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0022,
+     "1000": 0.0019,
+     "10000": 0.0016
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0022
+     ],
+     [
+      1000,
+      0.0019
+     ],
+     [
+      3000,
+      0.0017
+     ],
+     [
+      10000,
+      0.0016
+     ],
+     [
+      50000,
+      0.0015
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 935086,
+    "jlcpcb_price_usd": {
+     "10": 0.0022,
+     "100": 0.0022,
+     "1000": 0.0019,
+     "10000": 0.0016
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0022
+     ],
+     [
+      1000,
+      2999,
+      0.0019
+     ],
+     [
+      3000,
+      9999,
+      0.0017
+     ],
+     [
+      10000,
+      49999,
+      0.0016
+     ],
+     [
+      50000,
+      50199,
+      0.0015
+     ],
+     [
+      50200,
+      -1,
+      0.0015
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "R9"
+   ],
+   "qty": 1,
+   "value": "100R",
+   "footprint": "0201",
+   "function": "piezo drive series resistor (D11a: limits GPIO current into a 40 nF bender)",
+   "why": "Again the schematic's own MPN under its real order code.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C270366",
+    "expected_mpn": "0201WMF1000TEE",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C270366.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201WMF1000TEE",
+    "manufacturer": "UNI-ROYAL",
+    "package": "0201",
+    "stock": 713400,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/0a975aaa49b7c97f38a963127be4a823.pdf?productCode=C270366",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.002,
+     "1000": 0.0016,
+     "10000": 0.0014
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.002
+     ],
+     [
+      1000,
+      0.0016
+     ],
+     [
+      3000,
+      0.0014
+     ],
+     [
+      15000,
+      0.0012
+     ],
+     [
+      45000,
+      0.0011
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 793687,
+    "jlcpcb_price_usd": {
+     "10": 0.002,
+     "100": 0.002,
+     "1000": 0.0016,
+     "10000": 0.0013
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.002
+     ],
+     [
+      1000,
+      2999,
+      0.0016
+     ],
+     [
+      3000,
+      14999,
+      0.0013
+     ],
+     [
+      15000,
+      44999,
+      0.0012
+     ],
+     [
+      45000,
+      45199,
+      0.0011
+     ],
+     [
+      45200,
+      -1,
+      0.0011
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C77623",
+    "expected_mpn": "RC0201FR-07100RL",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C77623.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "RC0201FR-07100RL",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 1815200,
+    "min_packet": 10000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C77623",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0033,
+     "1000": 0.0027,
+     "10000": 0.0023
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0033
+     ],
+     [
+      1000,
+      0.0027
+     ],
+     [
+      3000,
+      0.0024
+     ],
+     [
+      10000,
+      0.0023
+     ],
+     [
+      50000,
+      0.0021
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 2067195,
+    "jlcpcb_price_usd": {
+     "10": 0.0032,
+     "100": 0.0032,
+     "1000": 0.0027,
+     "10000": 0.0023
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0032
+     ],
+     [
+      1000,
+      2999,
+      0.0027
+     ],
+     [
+      3000,
+      9999,
+      0.0024
+     ],
+     [
+      10000,
+      49999,
+      0.0023
+     ],
+     [
+      50000,
+      50199,
+      0.0021
+     ],
+     [
+      50200,
+      -1,
+      0.0021
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "L1"
+   ],
+   "qty": 1,
+   "value": "4.7uH",
+   "footprint": "0603",
+   "function": "SoC DC-DC inductor",
+   "why": "The schematic's own TDK part under its real order code. The alternate is AEC-Q200 with 700 mA rating vs the TDK's 350 mA.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C76799",
+    "expected_mpn": "MLZ1608M4R7WT000",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C76799.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "MLZ1608M4R7WT000",
+    "manufacturer": "TDK",
+    "package": "0603",
+    "stock": 18790,
+    "min_packet": 4000,
+    "split": 10,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/e509de56baff45f8205b34b96f35b973.pdf?productCode=C76799",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": 0.0606,
+     "100": 0.0507,
+     "1000": 0.042,
+     "10000": 0.0372
+    },
+    "price_ladder_lcsc": [
+     [
+      10,
+      0.0606
+     ],
+     [
+      100,
+      0.0507
+     ],
+     [
+      300,
+      0.0457
+     ],
+     [
+      1000,
+      0.042
+     ],
+     [
+      4000,
+      0.0386
+     ],
+     [
+      8000,
+      0.0372
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 19481,
+    "jlcpcb_price_usd": {
+     "10": 0.06,
+     "100": 0.0502,
+     "1000": 0.0416,
+     "10000": 0.0368
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      99,
+      0.06
+     ],
+     [
+      100,
+      299,
+      0.0502
+     ],
+     [
+      300,
+      999,
+      0.0454
+     ],
+     [
+      1000,
+      3999,
+      0.0416
+     ],
+     [
+      4000,
+      7999,
+      0.0382
+     ],
+     [
+      8000,
+      -1,
+      0.0368
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C394952",
+    "expected_mpn": "CMH160808B4R7MT",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C394952.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "CMH160808B4R7MT",
+    "manufacturer": "FH",
+    "package": "0603",
+    "stock": 49800,
+    "min_packet": 4000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d286f068235a06893e31ac478b5041c4.pdf?productCode=C394952",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0364,
+     "1000": 0.0271,
+     "10000": 0.0222
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0364
+     ],
+     [
+      200,
+      0.0304
+     ],
+     [
+      600,
+      0.0271
+     ],
+     [
+      4000,
+      0.0239
+     ],
+     [
+      8000,
+      0.0222
+     ],
+     [
+      20000,
+      0.0212
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 56261,
+    "jlcpcb_price_usd": {
+     "10": 0.0361,
+     "100": 0.0361,
+     "1000": 0.0269,
+     "10000": 0.022
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0361
+     ],
+     [
+      200,
+      599,
+      0.0301
+     ],
+     [
+      600,
+      3999,
+      0.0269
+     ],
+     [
+      4000,
+      7999,
+      0.0238
+     ],
+     [
+      8000,
+      19999,
+      0.022
+     ],
+     [
+      20000,
+      -1,
+      0.021
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "L2"
+   ],
+   "qty": 1,
+   "value": "2.7nH",
+   "footprint": "0201",
+   "function": "2.4 GHz match, Nordic reference network",
+   "why": "The schematic's own Murata high-Q part under its real order code. The TDK MLG0603 is the standard second source for LQP03 and is Q=14 vs Q=20 - acceptable, measurably worse.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C7216765",
+    "expected_mpn": "LQP03HQ2N7B02D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C7216765.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "LQP03HQ2N7B02D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 13770,
+    "min_packet": 15000,
+    "split": 10,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/ac186320274d922facfc49f3dd9954de.pdf?productCode=C7216765",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": 0.0506,
+     "100": 0.0419,
+     "1000": 0.0342,
+     "10000": 0.0315
+    },
+    "price_ladder_lcsc": [
+     [
+      10,
+      0.0506
+     ],
+     [
+      100,
+      0.0419
+     ],
+     [
+      300,
+      0.0375
+     ],
+     [
+      1000,
+      0.0342
+     ],
+     [
+      5000,
+      0.0315
+     ],
+     [
+      15000,
+      0.0302
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 14930,
+    "jlcpcb_price_usd": {
+     "10": 0.0502,
+     "100": 0.0415,
+     "1000": 0.0338,
+     "10000": 0.0312
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      99,
+      0.0502
+     ],
+     [
+      100,
+      299,
+      0.0415
+     ],
+     [
+      300,
+      999,
+      0.0371
+     ],
+     [
+      1000,
+      4999,
+      0.0338
+     ],
+     [
+      5000,
+      14999,
+      0.0312
+     ],
+     [
+      15000,
+      -1,
+      0.0299
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C76752",
+    "expected_mpn": "MLG0603P2N7CT000",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C76752.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "MLG0603P2N7CT000",
+    "manufacturer": "TDK",
+    "package": "0201",
+    "stock": 8700,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d0574c5bb27de1a8c633eb940da510dd.pdf?productCode=C76752",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0045,
+     "1000": 0.0035,
+     "10000": 0.003
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0045
+     ],
+     [
+      1000,
+      0.0035
+     ],
+     [
+      3000,
+      0.003
+     ],
+     [
+      15000,
+      0.0027
+     ],
+     [
+      45000,
+      0.0024
+     ],
+     [
+      105000,
+      0.0022
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 8781,
+    "jlcpcb_price_usd": {
+     "10": 0.0045,
+     "100": 0.0045,
+     "1000": 0.0035,
+     "10000": 0.003
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0045
+     ],
+     [
+      1000,
+      2999,
+      0.0035
+     ],
+     [
+      3000,
+      14999,
+      0.003
+     ],
+     [
+      15000,
+      44999,
+      0.0027
+     ],
+     [
+      45000,
+      104999,
+      0.0024
+     ],
+     [
+      105000,
+      -1,
+      0.0022
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "L3",
+    "L4"
+   ],
+   "qty": 2,
+   "value": "3.5nH",
+   "footprint": "0201",
+   "function": "2.4 GHz match, Nordic reference network",
+   "why": "3.5 nH is a rare value: THREE parts exist in 0201 across the whole catalogue and the alternate holds only ~1.6 k. Both are Murata. If ce-rf's S11 permits 3.3 nH or 3.6 nH the sourcing risk vanishes.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C3911055",
+    "expected_mpn": "LQP03HQ3N5B02D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C3911055.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "LQP03HQ3N5B02D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 7240,
+    "min_packet": 15000,
+    "split": 20,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/ac186320274d922facfc49f3dd9954de.pdf?productCode=C3911055",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0434,
+     "1000": 0.0309,
+     "10000": 0.0282
+    },
+    "price_ladder_lcsc": [
+     [
+      20,
+      0.0434
+     ],
+     [
+      200,
+      0.0354
+     ],
+     [
+      600,
+      0.0309
+     ],
+     [
+      2000,
+      0.0282
+     ],
+     [
+      15000,
+      0.0259
+     ],
+     [
+      30000,
+      0.0246
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 7257,
+    "jlcpcb_price_usd": {
+     "10": 0.0431,
+     "100": 0.0431,
+     "1000": 0.0306,
+     "10000": 0.028
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      199,
+      0.0431
+     ],
+     [
+      200,
+      599,
+      0.0351
+     ],
+     [
+      600,
+      1999,
+      0.0306
+     ],
+     [
+      2000,
+      14999,
+      0.028
+     ],
+     [
+      15000,
+      29999,
+      0.0257
+     ],
+     [
+      30000,
+      -1,
+      0.0244
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C206424",
+    "expected_mpn": "LQP03TN3N5B02D",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C206424.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "LQP03TN3N5B02D",
+    "manufacturer": "muRata",
+    "package": "0201",
+    "stock": 9450,
+    "min_packet": 15000,
+    "split": 50,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/21cc2e6abe84f1c64c93eab152a87fc9.pdf?productCode=C206424",
+    "category": "Fixed Inductors",
+    "price_usd": {
+     "10": null,
+     "100": 0.0143,
+     "1000": 0.0116,
+     "10000": 0.0101
+    },
+    "price_ladder_lcsc": [
+     [
+      50,
+      0.0143
+     ],
+     [
+      500,
+      0.0116
+     ],
+     [
+      1500,
+      0.0101
+     ],
+     [
+      15000,
+      0.0092
+     ],
+     [
+      30000,
+      0.0084
+     ],
+     [
+      45000,
+      0.008
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 9454,
+    "jlcpcb_price_usd": {
+     "10": 0.0142,
+     "100": 0.0142,
+     "1000": 0.0115,
+     "10000": 0.01
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      499,
+      0.0142
+     ],
+     [
+      500,
+      1499,
+      0.0115
+     ],
+     [
+      1500,
+      14999,
+      0.01
+     ],
+     [
+      15000,
+      29999,
+      0.0091
+     ],
+     [
+      30000,
+      44999,
+      0.0084
+     ],
+     [
+      45000,
+      -1,
+      0.0079
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "L10"
+   ],
+   "qty": 1,
+   "value": "0R",
+   "footprint": "0201",
+   "function": "antenna pi series element, fitted as a jumper so the board works untuned",
+   "why": "Sits in an inductor footprint on purpose; a 0 ohm 0201 resistor is the same land pattern. Both options carry 500k+.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C473473",
+    "expected_mpn": "0201WMF0000TEE",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C473473.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "0201WMF0000TEE",
+    "manufacturer": "UNI-ROYAL",
+    "package": "0201",
+    "stock": 4145500,
+    "min_packet": 15000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/f42da6c80a0747bae77c2f98f4e46d1d.pdf?productCode=C473473",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0009,
+     "1000": 0.0007,
+     "10000": 0.0006
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0009
+     ],
+     [
+      1000,
+      0.0007
+     ],
+     [
+      3000,
+      0.0006
+     ],
+     [
+      15000,
+      0.0005
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 4475080,
+    "jlcpcb_price_usd": {
+     "10": 0.0009,
+     "100": 0.0009,
+     "1000": 0.0007,
+     "10000": 0.0006
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0009
+     ],
+     [
+      1000,
+      2999,
+      0.0007
+     ],
+     [
+      3000,
+      14999,
+      0.0006
+     ],
+     [
+      15000,
+      44999,
+      0.0005
+     ],
+     [
+      45000,
+      45199,
+      0.0005
+     ],
+     [
+      45200,
+      -1,
+      0.0005
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C106228",
+    "expected_mpn": "RC0201JR-070RL",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C106228.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "RC0201JR-070RL",
+    "manufacturer": "YAGEO",
+    "package": "0201",
+    "stock": 1020600,
+    "min_packet": 10000,
+    "split": 100,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/b426be3ce22c6de3e0c3a2248e49159e.pdf?productCode=C106228",
+    "category": "Chip Resistor - Surface Mount",
+    "price_usd": {
+     "10": null,
+     "100": 0.0025,
+     "1000": 0.002,
+     "10000": 0.0017
+    },
+    "price_ladder_lcsc": [
+     [
+      100,
+      0.0025
+     ],
+     [
+      1000,
+      0.002
+     ],
+     [
+      3000,
+      0.0018
+     ],
+     [
+      10000,
+      0.0017
+     ],
+     [
+      50000,
+      0.0015
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1200608,
+    "jlcpcb_price_usd": {
+     "10": 0.0025,
+     "100": 0.0025,
+     "1000": 0.002,
+     "10000": 0.0017
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      999,
+      0.0025
+     ],
+     [
+      1000,
+      2999,
+      0.002
+     ],
+     [
+      3000,
+      9999,
+      0.0018
+     ],
+     [
+      10000,
+      49999,
+      0.0017
+     ],
+     [
+      50000,
+      50199,
+      0.0015
+     ],
+     [
+      50200,
+      -1,
+      0.0015
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "U1"
+   ],
+   "qty": 1,
+   "value": "nRF54L10-QFAA-R7",
+   "footprint": "QFN-48",
+   "function": "the SoC: BLE + Channel Sounding + NFC-A (D12)",
+   "why": "D12. THE SINGLE LARGEST SUPPLY RISK ON THE BOARD - lane T6 measured 212 pieces. D18 says the L05 fallback is not forced by memory, so the alternate is a real second source, at 512 kB/96 kB and a 3,000-piece minimum packet.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C44800139",
+    "expected_mpn": "NRF54L10-QFAA-R7",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C44800139.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "NRF54L10-QFAA-R7",
+    "manufacturer": "NORDIC",
+    "package": "VFQFN-48",
+    "stock": 671,
+    "min_packet": 1000,
+    "split": 1,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf?productCode=C44800139",
+    "category": "RF Transceiver ICs",
+    "price_usd": {
+     "10": 3.258,
+     "100": 2.6172,
+     "1000": 2.4009,
+     "10000": 2.4009
+    },
+    "price_ladder_lcsc": [
+     [
+      1,
+      3.7939
+     ],
+     [
+      10,
+      3.258
+     ],
+     [
+      30,
+      2.9401
+     ],
+     [
+      100,
+      2.6172
+     ],
+     [
+      500,
+      2.4681
+     ],
+     [
+      1000,
+      2.4009
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1003,
+    "jlcpcb_price_usd": {
+     "10": 3.2296,
+     "100": 2.5944,
+     "1000": 2.38,
+     "10000": 2.38
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      9,
+      3.7608
+     ],
+     [
+      10,
+      29,
+      3.2296
+     ],
+     [
+      30,
+      99,
+      2.9144
+     ],
+     [
+      100,
+      499,
+      2.5944
+     ],
+     [
+      500,
+      999,
+      2.4466
+     ],
+     [
+      1000,
+      -1,
+      2.38
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C45022042",
+    "expected_mpn": "NRF54L05-QFAA-R",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C45022042.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "NRF54L05-QFAA-R",
+    "manufacturer": "NORDIC",
+    "package": "VFQFN-48",
+    "stock": 1775,
+    "min_packet": 3000,
+    "split": 1,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf?productCode=C45022042",
+    "category": "RF Transceiver ICs",
+    "price_usd": {
+     "10": 2.7827,
+     "100": 2.219,
+     "1000": 2.0289,
+     "10000": 2.0289
+    },
+    "price_ladder_lcsc": [
+     [
+      1,
+      3.2564
+     ],
+     [
+      10,
+      2.7827
+     ],
+     [
+      30,
+      2.5025
+     ],
+     [
+      100,
+      2.219
+     ],
+     [
+      500,
+      2.0879
+     ],
+     [
+      1000,
+      2.0289
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1775,
+    "jlcpcb_price_usd": {
+     "10": 2.7585,
+     "100": 2.1996,
+     "1000": 2.0112,
+     "10000": 2.0112
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      9,
+      3.228
+     ],
+     [
+      10,
+      29,
+      2.7585
+     ],
+     [
+      30,
+      99,
+      2.4807
+     ],
+     [
+      100,
+      499,
+      2.1996
+     ],
+     [
+      500,
+      999,
+      2.0697
+     ],
+     [
+      1000,
+      -1,
+      2.0112
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "U2"
+   ],
+   "qty": 1,
+   "value": "LIS2DW12TR",
+   "footprint": "LGA-12",
+   "function": "3-axis accelerometer: motion wake, DULT unwanted-tracking detection",
+   "why": "50 nA in the lowest-power mode, the deciding number for a coin cell. PIN COMPATIBILITY WITH THE ALTERNATE IS READ OFF BOTH DATASHEETS, not assumed: LIS2DW12 Table 2 and LIS2DH12 Table 2 both give 1=SCL/SPC, 2=CS, 3=SDO/SA0, 4=SDA/SDI/SDO, 6=GND, and differ only at pin 5 (LIS2DH12 'Res, connect to GND' vs LIS2DW12 'NC, can be tied to VDD, VDDIO or GND'), which the board ties to GND either way. The cost is 500 nA against 50 nA - a build second source, not a design equal. REJECTED as an alternate on evidence: Silan SC7A20HTR (C19274408) has 106 k in stock and is a tenth of the price, but its own datasheet v0.7 p.5 gives pin 1 = SDO, 2 = SDx, 3 = VDDIO - a DIFFERENT PINOUT in the same LGA-12 2x2 body. It would short VDDIO to the SDO net on this land pattern.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C189624",
+    "expected_mpn": "LIS2DW12TR",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C189624.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "LIS2DW12TR",
+    "manufacturer": "ST",
+    "package": "LGA-12(2x2)",
+    "stock": 14160,
+    "min_packet": 10000,
+    "split": 1,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/faa0f1ff935ff2be849a090ec963fd19.pdf?productCode=C189624",
+    "category": "Accelerometers",
+    "price_usd": {
+     "10": 1.0472,
+     "100": 0.8031,
+     "1000": 0.7408,
+     "10000": 0.7408
+    },
+    "price_ladder_lcsc": [
+     [
+      1,
+      1.1947
+     ],
+     [
+      10,
+      1.0472
+     ],
+     [
+      30,
+      0.9079
+     ],
+     [
+      100,
+      0.8031
+     ],
+     [
+      500,
+      0.7605
+     ],
+     [
+      1000,
+      0.7408
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 14160,
+    "jlcpcb_price_usd": {
+     "10": 1.0381,
+     "100": 0.7961,
+     "1000": 0.7343,
+     "10000": 0.7343
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      9,
+      1.1843
+     ],
+     [
+      10,
+      29,
+      1.0381
+     ],
+     [
+      30,
+      99,
+      0.9
+     ],
+     [
+      100,
+      499,
+      0.7961
+     ],
+     [
+      500,
+      999,
+      0.7538
+     ],
+     [
+      1000,
+      -1,
+      0.7343
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C110926",
+    "expected_mpn": "LIS2DH12TR",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C110926.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "LIS2DH12TR",
+    "manufacturer": "ST",
+    "package": "LGA-12(2x2)",
+    "stock": 297,
+    "min_packet": 8000,
+    "split": 1,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/80fd3cb5c04ce9b30e9bec7b53c4a455.pdf?productCode=C110926",
+    "category": "Accelerometers",
+    "price_usd": {
+     "10": 0.8473,
+     "100": 0.6507,
+     "1000": 0.5999,
+     "10000": 0.5999
+    },
+    "price_ladder_lcsc": [
+     [
+      1,
+      0.9669
+     ],
+     [
+      10,
+      0.8473
+     ],
+     [
+      30,
+      0.7359
+     ],
+     [
+      100,
+      0.6507
+     ],
+     [
+      500,
+      0.6162
+     ],
+     [
+      1000,
+      0.5999
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 1362,
+    "jlcpcb_price_usd": {
+     "10": 0.8399,
+     "100": 0.645,
+     "1000": 0.5946,
+     "10000": 0.5946
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      9,
+      0.9585
+     ],
+     [
+      10,
+      29,
+      0.8399
+     ],
+     [
+      30,
+      99,
+      0.7295
+     ],
+     [
+      100,
+      499,
+      0.645
+     ],
+     [
+      500,
+      999,
+      0.6109
+     ],
+     [
+      1000,
+      -1,
+      0.5946
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "X1"
+   ],
+   "qty": 1,
+   "value": "32.768kHz",
+   "footprint": "SMD3215-2P",
+   "function": "LFXO: the rotation clock the anti-stalking timing depends on",
+   "why": "JLCPCB BASIC, so no feeder fee. CL 12.5 pF: THIS MUST BE CHECKED AGAINST THE nRF54L's on-die CAPVALUE RANGE, because D-3 deleted the external load capacitors. The alternate is the same Epson FC-135 body at CL 6 pF if the internal caps cannot reach 12.5 pF.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C32346",
+    "expected_mpn": "Q13FC13500004",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C32346.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "Q13FC13500004",
+    "manufacturer": "EPSON",
+    "package": "SMD3215-2P",
+    "stock": 657450,
+    "min_packet": 3000,
+    "split": 5,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/d4d1bd2e87b2e72a8e8e7fe7d590f4c0.pdf?productCode=C32346",
+    "category": "Crystals",
+    "price_usd": {
+     "10": 0.1731,
+     "100": 0.1364,
+     "1000": 0.1026,
+     "10000": 0.0812
+    },
+    "price_ladder_lcsc": [
+     [
+      5,
+      0.1731
+     ],
+     [
+      50,
+      0.1364
+     ],
+     [
+      150,
+      0.1186
+     ],
+     [
+      500,
+      0.1026
+     ],
+     [
+      3000,
+      0.0839
+     ],
+     [
+      6000,
+      0.0812
+     ]
+    ],
+    "library_type": "basic",
+    "jlcpcb_stock": 778128,
+    "jlcpcb_price_usd": {
+     "10": 0.1731,
+     "100": 0.1365,
+     "1000": 0.1026,
+     "10000": 0.0813
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      49,
+      0.1731
+     ],
+     [
+      50,
+      149,
+      0.1365
+     ],
+     [
+      150,
+      499,
+      0.1186
+     ],
+     [
+      500,
+      2999,
+      0.1026
+     ],
+     [
+      3000,
+      5999,
+      0.0839
+     ],
+     [
+      6000,
+      -1,
+      0.0813
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C95361",
+    "expected_mpn": "Q13FC13500049",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C95361.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "Q13FC13500049",
+    "manufacturer": "EPSON",
+    "package": "SMD3215-2P",
+    "stock": 134315,
+    "min_packet": 3000,
+    "split": 5,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/87f4fb5292528ca7f0dcfb918a7643ad.pdf?productCode=C95361",
+    "category": "Crystals",
+    "price_usd": {
+     "10": 0.2034,
+     "100": 0.1628,
+     "1000": 0.1252,
+     "10000": 0.0973
+    },
+    "price_ladder_lcsc": [
+     [
+      5,
+      0.2034
+     ],
+     [
+      50,
+      0.1628
+     ],
+     [
+      150,
+      0.1429
+     ],
+     [
+      500,
+      0.1252
+     ],
+     [
+      3000,
+      0.1002
+     ],
+     [
+      6000,
+      0.0973
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 135159,
+    "jlcpcb_price_usd": {
+     "10": 0.2017,
+     "100": 0.1614,
+     "1000": 0.1242,
+     "10000": 0.0964
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      49,
+      0.2017
+     ],
+     [
+      50,
+      149,
+      0.1614
+     ],
+     [
+      150,
+      499,
+      0.1417
+     ],
+     [
+      500,
+      2999,
+      0.1242
+     ],
+     [
+      3000,
+      5999,
+      0.0993
+     ],
+     [
+      6000,
+      -1,
+      0.0964
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "X2"
+   ],
+   "qty": 1,
+   "value": "32MHz",
+   "footprint": "SMD2016-4P",
+   "function": "HFXO: the radio reference",
+   "why": "CL 8 pF +/-10 ppm, which is what the schematic specified and what the vendor record confirms. The YXC alternate is the same 8 pF / +/-10 ppm at a third of the price with 60 k stock.",
+   "verdict": "RESOLVED",
+   "on_jlc_bom": true,
+   "part": {
+    "lcsc": "C843260",
+    "expected_mpn": "NX2016SA-32MHZ-STD-CZS-5",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C843260.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "NX2016SA-32MHZ-STD-CZS-5",
+    "manufacturer": "NDK",
+    "package": "SMD2016-4P",
+    "stock": 12840,
+    "min_packet": 3000,
+    "split": 5,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/7d295f64f7c44230fecd37b1086251f1.pdf?productCode=C843260",
+    "category": "Crystals",
+    "price_usd": {
+     "10": 0.3534,
+     "100": 0.2922,
+     "1000": 0.2333,
+     "10000": 0.21
+    },
+    "price_ladder_lcsc": [
+     [
+      5,
+      0.3534
+     ],
+     [
+      50,
+      0.2922
+     ],
+     [
+      150,
+      0.266
+     ],
+     [
+      500,
+      0.2333
+     ],
+     [
+      3000,
+      0.2187
+     ],
+     [
+      6000,
+      0.21
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 13631,
+    "jlcpcb_price_usd": {
+     "10": 0.3518,
+     "100": 0.2908,
+     "1000": 0.2322,
+     "10000": 0.209
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      49,
+      0.3518
+     ],
+     [
+      50,
+      149,
+      0.2908
+     ],
+     [
+      150,
+      499,
+      0.2647
+     ],
+     [
+      500,
+      2999,
+      0.2322
+     ],
+     [
+      3000,
+      5999,
+      0.2177
+     ],
+     [
+      6000,
+      -1,
+      0.209
+     ]
+    ],
+    "mpn_check": "MATCH"
+   },
+   "alternate": {
+    "lcsc": "C718072",
+    "expected_mpn": "X201632MKB4SI",
+    "fetched": "2026-09-04",
+    "lcsc_source": "https://www.lcsc.com/product-detail/C718072.html",
+    "jlcpcb_source": "https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/smtGood/selectSmtComponentList",
+    "mpn": "X201632MKB4SI",
+    "manufacturer": "YXC Crystal Oscillators",
+    "package": "SMD2016-4P",
+    "stock": 34405,
+    "min_packet": 3000,
+    "split": 5,
+    "datasheet": "https://datasheet.lcsc.com/datasheet/pdf/03f32cc3dfdcdfc9fffa8449db791193.pdf?productCode=C718072",
+    "category": "Crystals",
+    "price_usd": {
+     "10": 0.1104,
+     "100": 0.0873,
+     "1000": 0.0672,
+     "10000": 0.053
+    },
+    "price_ladder_lcsc": [
+     [
+      5,
+      0.1104
+     ],
+     [
+      50,
+      0.0873
+     ],
+     [
+      150,
+      0.0758
+     ],
+     [
+      500,
+      0.0672
+     ],
+     [
+      3000,
+      0.0565
+     ],
+     [
+      6000,
+      0.053
+     ]
+    ],
+    "library_type": "extended",
+    "jlcpcb_stock": 41673,
+    "jlcpcb_price_usd": {
+     "10": 0.1095,
+     "100": 0.0866,
+     "1000": 0.0667,
+     "10000": 0.0525
+    },
+    "jlcpcb_ladder": [
+     [
+      1,
+      49,
+      0.1095
+     ],
+     [
+      50,
+      149,
+      0.0866
+     ],
+     [
+      150,
+      499,
+      0.0751
+     ],
+     [
+      500,
+      2999,
+      0.0667
+     ],
+     [
+      3000,
+      5999,
+      0.0559
+     ],
+     [
+      6000,
+      -1,
+      0.0525
+     ]
+    ],
+    "mpn_check": "MATCH"
+   }
+  },
+  {
+   "refs": [
+    "LS1"
+   ],
+   "qty": 1,
+   "value": "7BB-20-3",
+   "footprint": "bonded to shell, no land pattern",
+   "function": "sounder: bare Ø20 x 0.22 mm piezo bender (D11a)",
+   "why": "Hand-assembled, not placed by the machine. Resolved separately - see the sounder section of docs/SOURCING.md.",
+   "verdict": "SEE SOUNDER SECTION",
+   "on_jlc_bom": false,
+   "part": null,
+   "alternate": null
+  },
+  {
+   "refs": [
+    "BT1"
+   ],
+   "qty": 1,
+   "value": "CR2032",
+   "footprint": "halo:HALO_BATT_CONTACT_3PAD",
+   "function": "the cell. The CONTACTS are three sprung C5191 fingers on halo's own land pattern - there is no bought holder",
+   "why": "The schematic carried C7498149 here, which is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER. No holder is fitted - lane M's design puts three stamped fingers on halo's own three-pad footprint. The order code was wrong AND the part it named must not be ordered.",
+   "verdict": "NOT AN SMT LINE",
+   "on_jlc_bom": false,
+   "part": null,
+   "alternate": null
+  }
+ ],
+ "cost": {
+  "model": {
+   "source": "research/05-components-and-cost-model.md sections 10.3 and 11.6 (lane E, 2026-09-03)",
+   "assembly_setup_usd": 8.18,
+   "stencil_usd": 1.53,
+   "feeder_fee_per_extended_part_usd": 3.07,
+   "per_joint_usd": 0.0016,
+   "fee_source": "https://jlcpcb.com/help/article/pcb-assembly-price",
+   "fee_staleness": "the fee table is the archived 2024-08-29 revision; ce-fab's data/jlc-pricing.json records that the $8 Economic setup fee still held on 2026-09-03 and the per-joint rate had moved 0.0017 -> 0.0016",
+   "pcb_usd_per_unit": {
+    "10": 6.211,
+    "100": 0.692,
+    "1000": 0.14,
+    "10000": 0.085
+   },
+   "enclosure_usd_per_unit": {
+    "10": 1.2,
+    "100": 1.2,
+    "1000": 0.9,
+    "10000": 0.3
+   },
+   "tooling_usd_per_unit": {
+    "10": 0.0,
+    "100": 0.0,
+    "1000": 0.0,
+    "10000": 0.4
+   },
+   "labour_usd_per_unit": {
+    "10": 0.3,
+    "100": 0.3,
+    "1000": 0.15,
+    "10000": 0.08
+   },
+   "d15_baseline_usd_per_unit": {
+    "10": 19.25,
+    "100": 9.28,
+    "1000": 7.17,
+    "10000": 6.75
+   },
+   "d15_baseline_bom_usd": {
+    "10": 8.21,
+    "100": 6.57,
+    "1000": 5.74,
+    "10000": 5.67
+   },
+   "d15_assumed_joints": 131,
+   "d15_assumed_extended_parts": 7
+  },
+  "off_machine": {
+   "BT1": {
+    "what": "CR2032 lithium coin cell",
+    "usd_per_unit": {
+     "10": 0.39,
+     "100": 0.39,
+     "1000": 0.39,
+     "10000": 0.39
+    },
+    "basis": "lane E carried the qty-1 $0.39 upper bound at every volume; this lane did not re-price it and does not pretend to",
+    "verdict": "CARRIED FORWARD, NOT RE-MEASURED"
+   }
+  },
+  "sounder": {
+   "specified": "Murata 7BB-20-3, 20.0 mm brass disc, 0.22 mm total, ~3.6 kHz",
+   "verdict": "PENDING",
+   "usd_per_unit": {
+    "10": null,
+    "100": null,
+    "1000": null,
+    "10000": null
+   }
+  },
+  "joints_measured": 131,
+  "joints_source": "JLCPCB's own solder-joint count per order code, ce-fab data/jlcparts-slim.sqlite3 column `joints`, multiplied by the quantity placed",
+  "joints_unknown_for": [],
+  "extended_parts": [
+   "C161479",
+   "C1852416",
+   "C189624",
+   "C237424",
+   "C270366",
+   "C335106",
+   "C3904589",
+   "C3911055",
+   "C435397",
+   "C44800139",
+   "C473048",
+   "C473473",
+   "C5142565",
+   "C668326",
+   "C7216765",
+   "C76799",
+   "C76922",
+   "C76941",
+   "C778408",
+   "C843260"
+  ],
+  "extended_part_count": 20,
+  "basic_parts": [
+   "C15525",
+   "C32346"
+  ],
+  "basic_part_count": 2,
+  "feeder_fee_total_usd": 61.4,
+  "per_unit": {
+   "10": {
+    "bom": 5.7952,
+    "pcb": 6.211,
+    "assembly": 7.3206,
+    "enclosure": 1.2,
+    "tooling": 0.0,
+    "labour": 0.3,
+    "total": 20.8268,
+    "d15_total": 19.25,
+    "delta_vs_d15": 1.5768,
+    "bom_lines_not_priced": [
+     "C24,C25",
+     "LS1"
+    ]
+   },
+   "100": {
+    "bom": 4.7594,
+    "pcb": 0.692,
+    "assembly": 0.9207,
+    "enclosure": 1.2,
+    "tooling": 0.0,
+    "labour": 0.3,
+    "total": 7.8721,
+    "d15_total": 9.28,
+    "delta_vs_d15": -1.4079,
+    "bom_lines_not_priced": [
+     "C24,C25",
+     "LS1"
+    ]
+   },
+   "1000": {
+    "bom": 4.2533,
+    "pcb": 0.14,
+    "assembly": 0.2807,
+    "enclosure": 0.9,
+    "tooling": 0.0,
+    "labour": 0.15,
+    "total": 5.724,
+    "d15_total": 7.17,
+    "delta_vs_d15": -1.446,
+    "bom_lines_not_priced": [
+     "C24,C25",
+     "LS1"
+    ]
+   },
+   "10000": {
+    "bom": 4.1653,
+    "pcb": 0.085,
+    "assembly": 0.2167,
+    "enclosure": 0.3,
+    "tooling": 0.4,
+    "labour": 0.08,
+    "total": 5.247,
+    "d15_total": 6.75,
+    "delta_vs_d15": -1.503,
+    "bom_lines_not_priced": [
+     "C24,C25",
+     "LS1"
+    ]
+   }
+  }
+ }
+}
