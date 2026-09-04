@@ -4,8 +4,12 @@
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
 
 The method, stated so a reader can attack it:
-  1. inside a caller-given box, threshold luminance (Otsu) and keep either the
-     bright side or the dark side, as the caller says;
+  1. inside a caller-given box, build a CHANNEL (luminance by default, or a
+     colour difference such as blue-minus-red), threshold it (Otsu) and keep
+     either the bright side or the dark side, as the caller says. The colour
+     channels exist because the thing this tool most needs to isolate — a
+     dark blue silicon package on a dark maroon PCB — has almost NO luminance
+     contrast at all, and a luminance threshold merges the two;
   2. keep the LARGEST connected component, so a neighbouring part cannot join
      the measurement;
   3. the MINIMUM-AREA rotated rectangle of the component's convex hull gives
@@ -134,12 +138,23 @@ def measure(arr, pick):
             "components_found": int(n)}
 
 
+def channel(rgb, name):
+    r, g, b = (rgb[..., i].astype(float) for i in range(3))
+    if name == "lum":
+        return np.clip(0.299 * r + 0.587 * g + 0.114 * b, 0, 255).astype(np.uint8)
+    if name == "b-r":
+        return np.clip((b - r) + 128, 0, 255).astype(np.uint8)
+    if name == "r-b":
+        return np.clip((r - b) + 128, 0, 255).astype(np.uint8)
+    raise ValueError(name)
+
+
 def run(args):
-    im = Image.open(args.image).convert("L")
+    im = Image.open(args.image).convert("RGB")
     x0, y0, x1, y1 = args.box
-    arr = np.asarray(im.crop((x0, y0, x1, y1)))
+    arr = channel(np.asarray(im.crop((x0, y0, x1, y1))), args.channel)
     print(f"b_pkgsize  input: {args.image}  box [{x0}:{x1},{y0}:{y1}] "
-          f"({x1-x0}x{y1-y0} px)  pick={args.pick}")
+          f"({x1-x0}x{y1-y0} px)  channel={args.channel} pick={args.pick}")
     if args.label:
         print(f"  label: {args.label}")
     r = measure(arr, args.pick)
@@ -182,6 +197,7 @@ def run(args):
     print(f"  aspect (long/short): {r['aspect']}")
     if args.json_out:
         r["input"] = {"image": args.image, "box": args.box, "pick": args.pick,
+                      "channel": args.channel,
                       "label": args.label, "ruler_note": args.ruler_note}
         json.dump(r, open(args.json_out, "w"), indent=2)
         print(f"  wrote {args.json_out}")
@@ -282,6 +298,31 @@ def self_test():
         print(f"  FAIL  --pick dark: {r}")
         fails += 1
 
+    # colour control: a blue part on a red ground at EQUAL luminance
+    size = 300
+    rgb = np.zeros((size, size, 3), float)
+    rgb[..., 0] = 120.0                      # red ground: R high
+    rgb[..., 2] = 40.0                       # 0.299R+0.114B = 40.44
+    yy, xx = np.mgrid[0:size, 0:size]
+    m = (np.abs(xx - 150) <= 60) & (np.abs(yy - 150) <= 35)
+    rgb[m, 0] = 60.0                         # blue part, chosen so that
+    rgb[m, 2] = 197.4                        # 0.299R+0.114B = 40.44 EXACTLY,
+                                             # i.e. identical luminance
+    rgb[..., 1] = 80.0
+    rgb += rng.normal(0, 2, rgb.shape)
+    rgb = np.clip(rgb, 0, 255).astype(np.uint8)
+    lum_r = measure(channel(rgb, "lum"), "dark")
+    bmr = measure(channel(rgb, "b-r"), "bright")
+    lum_failed = lum_r is None or abs(lum_r["long_px"] - 121) / 121 > 0.05
+    if lum_failed and bmr is not None and abs(bmr["long_px"] - 121) / 121 < 0.05:
+        print(f"  PASS  colour channel earns its keep: luminance CANNOT find a "
+              f"blue part on an equal-luminance red ground, b-r recovers it at "
+              f"{bmr['long_px']:.0f}x{bmr['short_px']:.0f} px (true 121x71)")
+        passes += 1
+    else:
+        print(f"  FAIL  colour control: lum={lum_r}, b-r={bmr}")
+        fails += 1
+
     print(f"\n{passes}/{passes+fails} passed, {fails} failed")
     return 1 if fails else 0
 
@@ -294,6 +335,7 @@ def main():
     p.add_argument("--box", nargs=4, type=int, required=True,
                    metavar=("X0", "Y0", "X1", "Y1"))
     p.add_argument("--pick", choices=["dark", "bright"], required=True)
+    p.add_argument("--channel", choices=["lum", "b-r", "r-b"], default="lum")
     p.add_argument("--px-per-mm", type=float)
     p.add_argument("--ruler-note")
     p.add_argument("--label")
