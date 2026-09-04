@@ -67,17 +67,31 @@ CR2032. Only the U1 is unobtainable. Everything else on this page is buyable tod
 
 ### 2.3 Antennas — all three on one part
 
-All three are **laser-direct-structured (LDS) onto a single plastic carrier** and soldered to the
+**CORRECTED 2026-09-05 — ANT2 is not LDS.** The replica lane measured the front
+photograph and the NFC coil is **wound magnet wire**, not a structured trace:
+individual turns resolve at 2x, the copper band measures 0.727 mm radially, and
+about 5 turns are countable, giving **0.145 mm per turn against AWG 35 magnet
+wire at 0.143 mm — 1.4 % apart, with neither number fitted to the other**.
+Inner diameter 9.380 mm, outer 10.834 mm (ratios to the datum 0.3608 and 0.4167,
+which are the figures to quote since the datum itself is approximate). Method:
+`electronics/halo_replica/metrology/M01-SCALE-AND-DATUM.md` §3, commit 4abdc99.
+Confidence HIGH for this unit. **Whether ANT1 and ANT3 share one carrier is
+still CANNOT DETERMINE** — the front photograph shows only the coil.
+
+The original claim, now superseded for ANT2 and unverified for the rest:
+all three are **laser-direct-structured (LDS) onto a single plastic carrier** and soldered to the
 board edge (6 tear-off joints). The NFC coil has an extra return trace on the far side of the
 plastic with a via at each end.
 
 | # | band | Apple's implementation | measured gain (FCC) | verdict |
 |---|---|---|---|---|
 | ANT1 | BLE 2.4 GHz | LDS trace, **IFA** (inverted-F) | **−3.2 dBi** max | **SUB** — LDS needs tooling; a PCB IFA or chip antenna is the open-hardware answer (lane I) |
-| ANT2 | NFC 13.56 MHz | LDS coil, behind the white cover | — | **SUB** — a normal PCB spiral coil works |
+| ANT2 | NFC 13.56 MHz | **wound magnet wire, ~AWG 35, ~5 turns, ID 9.380 / OD 10.834 mm** (measured 2026-09-05) — NOT LDS | — | **REPRODUCIBLE** — winding needs no LDS tooling; a PCB spiral is an alternative, not a necessity |
 | ANT3 | UWB 6.5 / 8 GHz | LDS trace, **1 integral patch** | **−1.6 dBi @6.5 GHz, −0.6 dBi @8 GHz** | **GAP/SUB** — only if a UWB chip is fitted |
 
-**Copy note:** LDS is the single most expensive process choice in the AirTag and the least
+**Copy note, revised:** the LDS gap is **two antennas, not three** — the BLE
+inverted-F and the UWB patch. The NFC coil is wound and can be reproduced
+exactly. LDS remains the single most expensive process choice in the AirTag and the least
 reproducible in open hardware. Replacing one LDS carrier with printed-on-PCB antennas is the
 biggest cost lever halo has, and it is a *manufacturing* substitution, not a functional one.
 
