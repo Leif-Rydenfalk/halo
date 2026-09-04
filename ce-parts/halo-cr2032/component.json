@@ -3,13 +3,21 @@
   "kind": "part",
   "record": {
     "slug": "halo-cr2032",
-    "title": "halo-cr2032",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new part` — nothing measured yet",
-    "sector": null,
-    "subsector": null,
-    "lifecycle": "unknown",
-    "origin": null,
-    "origin_why": null
+    "title": "CR2032 lithium coin cell — Ø20.0 x 3.2 mm, 3.0 g, 220 mAh at 3 V. 40 % of halo's entire height budget in one part",
+    "verdict": "PASS",
+    "why": "dimensions and mass are the Maxell datasheet (research/07 §2.2); the model is a plain cylinder and its measured mass is 3.0 g.",
+    "sector": "electrical",
+    "subsector": "cell",
+    "lifecycle": "prototype",
+    "origin": "generated",
+    "origin_why": "modelled parametrically in ce-cad from Apple's own published dimensional callouts (transcribed in research/fetched/G-apple-airtag-dimensional-drawing.md) and the CC BY 4.0 DXF ordinate table (research/fetched/G-airtag-profile-from-dxf.md); every halo-specific dimension is lane M's own engineering, argued in docs/MECHANICAL.md. Nothing physical has been built or measured. Admitted to the shelf through the TRIAD.md 'generated' door: evidence/ledger.jsonl + a computed trust.json.",
+    "material": "CR2032",
+    "process": "bought",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's drawing datum); +z toward the crown apex at z=7.980; +x through the 6 o'clock bayonet ledge. Every halo part is BUILT in this frame, so its placement in the assembly is the identity.",
+    "source_of_dimensions": "design.py at the repo root — the ONE parametric source; cad/part.py imports it",
+    "note": "Positive face DOWN onto the door's inner dome, negative face UP to the fingers, which is the AirTag's own orientation seen from the steel side (Apple support 102600 + Catley)."
   }
 }

@@ -3,6 +3,79 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-battery-door",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "tabs-0-120-240",
+        "frame": {
+          "origin_mm": [
+            13.03,
+            0,
+            1.89
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:bayonet-3-tab"
+        ],
+        "note": "three 45 deg tabs, Ø25.55..26.60, z 1.890..2.190"
+      },
+      {
+        "name": "seal-bore",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            1.695
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:radial-seal"
+        ],
+        "note": "Ø24.95 bore; 0.40 mm radial gap onto the carrier's Ø24.15 land"
+      },
+      {
+        "name": "cell-seat",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            0.82
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:resting"
+        ],
+        "note": "the inner dome; the cell's positive can rests on it at its Ø19.60 contact circle"
+      }
+    ]
   }
 }

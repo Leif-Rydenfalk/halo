@@ -3,6 +3,31 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-shell-top-fdm",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "bore-bond-land",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            3.745
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:adhesive-bonded"
+        ],
+        "note": "the same bore, clearances opened 0.200 mm for FDM"
+      }
+    ]
   }
 }

@@ -3,8 +3,11 @@
   "kind": "assembly",
   "record": {
     "slug": "halo-puck",
-    "title": "halo-puck",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new assembly` — nothing measured yet"
+    "title": "halo puck — the Ø31.874 x 7.98 mm enclosure: PC crown as the diaphragm, LDS carrier, stamped stainless press-and-twist door, sprung contacts, a Ø20 x 0.22 mm bender, and a CR2032",
+    "verdict": "PASS",
+    "why": "design.py builds all ten solids, check() finds no interference across 45 pairs, and eight measured checks read the finished solids: the assembly's bounding box is 31.874 x 31.874 x 7.980 mm (SPEC.md §4 to 0.001 mm), every stepped diameter §4 lists is present on a solid, the annulus out to Apple's Ø37.31 antenna keep-out is empty of halo material, and the bayonet passes five kernel probes including the two that must FAIL for the mechanism to be a mechanism. What is NOT measured, and says so: the sounder's SPL, the IP67 rating and the contacts' real spring rate — all three are physical tests, listed in docs/MECHANICAL.md.",
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's own drawing datum); +z toward the crown apex at z = 7.980; +x through the 6 o'clock bayonet ledge. Every part is BUILT in this frame, so every placement in the assembly is the identity — a concentric product has one datum and no transform to get wrong.",
+    "lifecycle": "prototype",
+    "source_of_geometry": "design.py at the repo root"
   }
 }

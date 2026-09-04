@@ -3,6 +3,127 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-carrier",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "outer-wall-bond-land",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            3.745
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:adhesive-bonded"
+        ],
+        "note": "Ø27.60, z 2.290..4.900"
+      },
+      {
+        "name": "feet-0-120-240",
+        "frame": {
+          "origin_mm": [
+            13.15,
+            0,
+            1.89
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:bayonet-3-tab"
+        ],
+        "note": "three 60 deg feet, R12.90..13.40, bearing face z=1.890, each with a 0.25 mm square detent ridge and a 12 deg closing cam"
+      },
+      {
+        "name": "seal-land",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            1.695
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:radial-seal"
+        ],
+        "note": "Ø24.15 x 0.39 mm tall; the MIP LSR bead sits here"
+      },
+      {
+        "name": "pcb-seat",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            4.6
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:solder-smt"
+        ],
+        "note": "annular land plus three spokes; Ø26.20 locating rim with three anti-rotation ribs at 0/120/240 deg"
+      },
+      {
+        "name": "contact-roots",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            4.27
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:insert-moulded"
+        ],
+        "note": "three spokes at 90/210/330 deg, 4.20 mm wide, that the C5191 fingers are insert-moulded into"
+      }
+    ]
   }
 }

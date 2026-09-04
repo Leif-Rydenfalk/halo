@@ -2,6 +2,93 @@
   "$triad": 1,
   "kind": "joints",
   "record": {
-    "rows": []
+    "rows": [
+      {
+        "connection": "connection:adhesive-bonded",
+        "a": {
+          "ref": "part:halo-carrier",
+          "interface": "outer-wall-bond-land"
+        },
+        "b": {
+          "ref": "part:halo-shell-top",
+          "interface": "bore-bond-land"
+        },
+        "params": {
+          "gap_mm": 0.15,
+          "bond_h_mm": 2.31,
+          "adhesive": "structural, 2-part epoxy or UV-cure acrylic"
+        },
+        "why": "the same bead is the structural joint AND the parting-line seal. iFixit's drilling advice for an AirTag is to aim between the three clips so you 'only go through glue' — a continuous adhesive bead on the parting line is what they found."
+      },
+      {
+        "connection": "connection:bayonet-3-tab",
+        "a": {
+          "ref": "part:halo-battery-door",
+          "interface": "tabs-0-120-240"
+        },
+        "b": {
+          "ref": "part:halo-carrier",
+          "interface": "feet-0-120-240"
+        },
+        "params": {
+          "tabs": 3,
+          "tab_arc_deg": 45.0,
+          "foot_arc_deg": 60.0,
+          "detent_h_mm": 0.25,
+          "open_press_N": 2.907,
+          "open_torque_Nmm": 13.4
+        },
+        "why": "D3 + D13: the only Reese's-Law-compliant scheme that costs ZERO vertical height. A square detent ridge means twist alone cannot open it at any torque; the press is not a preference, it is a geometric precondition."
+      },
+      {
+        "connection": "connection:sprung-contact",
+        "a": {
+          "ref": "part:halo-battery-contact",
+          "interface": "dimple"
+        },
+        "b": {
+          "ref": "part:halo-cr2032",
+          "interface": "can-rim / negative-face"
+        },
+        "params": {
+          "n": 3,
+          "k_N_per_mm": 1.491,
+          "deflection_mm": 0.4,
+          "force_N_each": 0.596
+        },
+        "why": "no coin-cell retainer under 2 mm exists (lane G). The cell is clamped between the fingers and the door, which is what Apple does and the single biggest height saving in the design."
+      },
+      {
+        "connection": "connection:solder-smt",
+        "a": {
+          "ref": "part:halo-pcb-blank",
+          "interface": "edge-pads"
+        },
+        "b": {
+          "ref": "part:halo-carrier",
+          "interface": "lds-antenna-feeds"
+        },
+        "params": {
+          "feeds": 4
+        },
+        "why": "Catley: the AirTag's board 'nests inside a gilded plastic antenna frame' and is soldered to it at four points around its edge. halo does the same, and the three board notches key the angle so the feeds land right."
+      },
+      {
+        "connection": "connection:adhesive-bonded",
+        "a": {
+          "ref": "part:halo-piezo-7bb-20-3",
+          "interface": "brass-face"
+        },
+        "b": {
+          "ref": "part:halo-shell-top",
+          "interface": "flat-internal-land"
+        },
+        "params": {
+          "bond_t_mm": 0.05,
+          "bond": "thin, STIFF, filled epoxy — the bond IS the acoustic coupling"
+        },
+        "why": "D11a. Full-face bonding is the point: the bender strains the crown in-plane and a curved cap turns in-plane strain into axial motion. A thick or compliant bond line would decouple it."
+      }
+    ]
   }
 }

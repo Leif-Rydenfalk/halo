@@ -1,0 +1,24 @@
+{
+  "$triad": 1,
+  "kind": "connection",
+  "record": {
+    "slug": "solder-smt",
+    "title": "Reflow-soldered surface-mount joint — a board's edge pads onto a carrier's LDS antenna feeds",
+    "verdict": "CANNOT DETERMINE",
+    "why": "halo's mechanical lane owns the board OUTLINE and the four feed positions around its rim, and those are measured. Whether an LDS surface takes reflow solder reliably at this pitch is a process question nobody here has tested, and the pad geometry itself is the electronics lane's. Nothing is claimed.",
+    "joins": {
+      "a": "pads on a board's underside",
+      "b": "laser-direct-structured feed pads on a moulded carrier"
+    },
+    "dof_left": [],
+    "detachable": false,
+    "standard": "IPC-A-610 / J-STD-001 — NOT fetched, CANNOT DETERMINE",
+    "adds_parts": [],
+    "adds_parts_why": "this joint consumes no part; it joins two. No fastener, and deliberately so — a screw would cost 1.5-2.5 mm of a 7.98 mm budget and put metal inside Apple's Ø37.31 antenna keep-out (DECISIONS.md D13).",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "holds_by": "adhesive",
+    "standard_why": "Both are paid IPC documents and no copy is on this disk, so no acceptance figure — fillet height, wetting angle, void fraction — is recorded here and compat.py grades none. This is halo's own local record of the same connection KIND that ce-workshop/ce-connections/solder-smt describes; it exists because ce-designs/halo is its own triad root and a dangling ref is a FAIL."
+  }
+}

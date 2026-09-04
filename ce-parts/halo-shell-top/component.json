@@ -3,13 +3,21 @@
   "kind": "part",
   "record": {
     "slug": "halo-shell-top",
-    "title": "halo-shell-top",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new part` — nothing measured yet",
-    "sector": null,
-    "subsector": null,
-    "lifecycle": "unknown",
-    "origin": null,
-    "origin_why": null
+    "title": "halo top shell — the Ø31.874 x 7.98 mm PC crown that IS the loudspeaker diaphragm. Apple's revolved profile outside; inside, a FLAT land at z=6.550 over Ø21.20 with a 0.800 mm acoustic surround out to the Ø25.75 speaker keep-out, a stiffener step, and a Ø27.90 bore at 1 deg draft down to the Ø28.94 parting face at z=2.290",
+    "verdict": "PASS",
+    "why": "cad/part.py builds one valid closed solid; the built assembly measures 31.874 x 31.874 x 7.980 mm, which is SPEC.md §4's envelope to 0.001 mm, and the material outside Ø31.864 lives at the z Apple's drawing gives for the maximum diameter. Every number is read off the solid by design.py's measured-check suite (out/mech/verdicts.json).",
+    "sector": "structural",
+    "subsector": "enclosure",
+    "lifecycle": "prototype",
+    "origin": "generated",
+    "origin_why": "modelled parametrically in ce-cad from Apple's own published dimensional callouts (transcribed in research/fetched/G-apple-airtag-dimensional-drawing.md) and the CC BY 4.0 DXF ordinate table (research/fetched/G-airtag-profile-from-dxf.md); every halo-specific dimension is lane M's own engineering, argued in docs/MECHANICAL.md. Nothing physical has been built or measured. Admitted to the shelf through the TRIAD.md 'generated' door: evidence/ledger.jsonl + a computed trust.json.",
+    "material": "PC",
+    "process": "injection moulding, single-cavity aluminium prototype tool ($1,500-3,000, research/07 §6.3)",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's drawing datum); +z toward the crown apex at z=7.980; +x through the 6 o'clock bayonet ledge. Every halo part is BUILT in this frame, so its placement in the assembly is the identity.",
+    "source_of_dimensions": "design.py at the repo root — the ONE parametric source; cad/part.py imports it",
+    "note": "The whole part is a STRAIGHT PULL: there is no undercut anywhere, because every undercut in halo — the three bayonet feet — is on part:halo-carrier, which nobody sees. That is the tooling decision the shell's cosmetic finish is worth."
   }
 }

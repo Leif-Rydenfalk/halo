@@ -3,6 +3,79 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-shell-top",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "bore-bond-land",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            3.745
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:adhesive-bonded"
+        ],
+        "note": "the Ø27.90 bore, z 2.290..5.000 at 1 deg draft; the carrier's Ø27.60 wall bonds into it with a 0.15 mm radial gap"
+      },
+      {
+        "name": "flat-internal-land",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            6.55
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:adhesive-bonded"
+        ],
+        "note": "Ø21.20 FLAT land at z=6.550. Flat on purpose: conforming a 7BB-20-3 to the crown's R91.2 inner cap strains its PZT to 0.138 %, past the ~0.1 % tensile limit of hard PZT"
+      },
+      {
+        "name": "parting-face",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            2.29
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:adhesive-bonded"
+        ],
+        "note": "the Ø27.90..Ø28.94 annulus at z=2.290 — 0.52 mm of land, the parting line and the adhesive bead iFixit finds on the real product"
+      }
+    ]
   }
 }

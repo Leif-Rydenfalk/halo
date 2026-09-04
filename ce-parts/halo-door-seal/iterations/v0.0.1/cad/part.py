@@ -7,13 +7,25 @@ in halo is typed twice. This file resolves that file and calls `door_seal()`.
 import importlib.util
 import os
 
-_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                     *[".."] * 4))
-_DESIGN = os.path.join(_ROOT, "design.py")
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
+
+def _design_path():
+    """Walk up until design.py is found. The folder may be reached through
+    `current/` (a symlink) or through `iterations/vX.Y.Z/`, so a fixed number
+    of `..` is wrong for one of them."""
+    d = _HERE
+    for _ in range(8):
+        p = os.path.join(d, "design.py")
+        if os.path.isfile(p):
+            return p
+        d = os.path.dirname(d)
+    raise FileNotFoundError("design.py not found above %s" % _HERE)
 
 
 def _design():
-    spec = importlib.util.spec_from_file_location("halo_design", _DESIGN)
+    path = _design_path()
+    spec = importlib.util.spec_from_file_location("halo_design", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

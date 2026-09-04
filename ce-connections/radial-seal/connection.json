@@ -1,0 +1,26 @@
+{
+  "$triad": 1,
+  "kind": "connection",
+  "record": {
+    "slug": "radial-seal",
+    "title": "Radial elastomer seal — a bead or ring squeezed between a land and a bore, indifferent to which way the axial load runs",
+    "verdict": "CANNOT DETERMINE",
+    "why": "The GEOMETRY is measured and it is in the conventional band: a 0.500 mm free radial section compressed into the measured 0.400 mm gap between the carrier's Ø24.15 land and the door's Ø24.95 bore — 20.0 percent squeeze, and the modelled bead touches the bore at 0.000 mm. RADIAL was chosen because the contact springs push the door OUTWARD, so an axial face seal at this interface would be unloaded exactly when it is needed. Whether it seals to IP67 is CANNOT DETERMINE, and nobody has published how the AirTag seals its own door either (research/07 section 6.2).",
+    "joins": {
+      "a": "a moulded-in-place elastomer bead on a cylindrical land",
+      "b": "the bore it is compressed into"
+    },
+    "dof_left": [
+      "rz — the seal does not resist rotation"
+    ],
+    "detachable": true,
+    "standard": "IEC 60529 (IP67) is the ACCEPTANCE standard — NOT tested",
+    "adds_parts": [],
+    "adds_parts_why": "this joint consumes no part; it joins two. No fastener, and deliberately so — a screw would cost 1.5-2.5 mm of a 7.98 mm budget and put metal inside Apple's Ø37.31 antenna keep-out (DECISIONS.md D13).",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "holds_by": "preload",
+    "standard_why": "IP67 is a test result, not a design property. No puck has been built and none has been immersed."
+  }
+}

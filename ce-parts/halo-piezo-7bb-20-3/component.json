@@ -3,13 +3,21 @@
   "kind": "part",
   "record": {
     "slug": "halo-piezo-7bb-20-3",
-    "title": "halo-piezo-7bb-20-3",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new part` — nothing measured yet",
-    "sector": null,
-    "subsector": null,
-    "lifecycle": "unknown",
-    "origin": null,
-    "origin_why": null
+    "title": "Murata 7BB-20-3 piezo bender — Ø20.0 x 0.22 mm: a brass shim Ø20.0 x 0.12 and a PZT disc Ø14.0 x 0.10, 3.6 kHz free resonance, 500 ohm. Bonded full-face to the shell's flat land and driven anti-phase from two SoC pins",
+    "verdict": "PASS",
+    "why": "dimensions are the vendor's datasheet, modelled as two coaxial discs. Its ACOUSTIC output in this enclosure is CANNOT DETERMINE and is lane G's open item 6: build the shell, bond one in, measure dB(A) at 10 cm against a reference AirTag.",
+    "sector": "electrical",
+    "subsector": "sounder",
+    "lifecycle": "prototype",
+    "origin": "generated",
+    "origin_why": "modelled parametrically in ce-cad from Apple's own published dimensional callouts (transcribed in research/fetched/G-apple-airtag-dimensional-drawing.md) and the CC BY 4.0 DXF ordinate table (research/fetched/G-airtag-profile-from-dxf.md); every halo-specific dimension is lane M's own engineering, argued in docs/MECHANICAL.md. Nothing physical has been built or measured. Admitted to the shelf through the TRIAD.md 'generated' door: evidence/ledger.jsonl + a computed trust.json.",
+    "material": "BRASS",
+    "process": "bought — Murata catalogue part",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's drawing datum); +z toward the crown apex at z=7.980; +x through the 6 o'clock bayonet ledge. Every halo part is BUILT in this frame, so its placement in the assembly is the identity.",
+    "source_of_dimensions": "design.py at the repo root — the ONE parametric source; cad/part.py imports it",
+    "note": "DECISIONS.md D11a. It is the reason halo's stack closes: Apple spends 3.30 mm on a magnet and a voice coil to make the shell radiate; this does the same job in 0.22 mm."
   }
 }

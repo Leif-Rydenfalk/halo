@@ -3,6 +3,31 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-door-seal",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "bore-face",
+        "frame": {
+          "origin_mm": [
+            0,
+            0,
+            1.695
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:radial-seal"
+        ],
+        "note": "seals against the door's Ø24.95 bore at 20 % squeeze"
+      }
+    ]
   }
 }

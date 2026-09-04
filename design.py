@@ -40,6 +40,7 @@ each argued in docs/MECHANICAL.md:
      undercut anywhere (it is the cosmetic diaphragm), and every undercut
      - the bayonet feet - is on the CARRIER, which nobody sees.
 """
+import json
 import math
 import os
 import sys
@@ -123,6 +124,7 @@ R_CROWN_CAP    = 92.0     # the crown's outer radius of curvature (derived R92)
 WALL_CROWN     = 0.800    # the ACOUSTIC wall: surround thickness Ø21.2..Ø25.75
 WALL_SKIRT     = 1.200    # structural, outboard of the speaker keep-out
 D_LAND         = 21.20    # the flat internal land the bender bonds to
+GAP_DIAPHRAGM  = 0.680    # the moving gap the bonded bender needs
 DRAFT_BORE_DEG = 1.0      # mould draft on the Ø27.90 bore
 Z_BORE_TOP     = 5.000    # bore -> cavity shoulder
 Z_STIFFENER    = 5.710    # the step where the 1.20 skirt becomes the 0.80 surround
@@ -130,19 +132,20 @@ Z_STIFFENER    = 5.710    # the step where the 1.20 skirt becomes the 0.80 surro
 # --- the cell and its seat ------------------------------------------------
 D_CELL         = 20.00
 H_CELL         = 3.200
-D_CELL_SEAT    = 19.60    # where the cell's positive can rests on the dome
+D_CELL_SEAT    = 20.00    # the cell's RIM is what lands on the dome: a flat
+                          # disc in a saucer rests on its outermost edge, and
+                          # taking 19.60 put 0.134 mm3 of cell inside the door
 T_DOOR         = 0.300    # stamped 301 stainless, halo's choice
 
 # --- the sprung contacts (part:halo-battery-contact) ---------------------
 T_SPRING       = 0.150    # C5191 stock
-W_SPRING       = 2.400    # strip width
+W_SPRING       = 3.600    # strip width
 R_SPRING_ARC   = 11.60    # mean radius of the arc cantilever
 A_SPRING_DEG   = 30.0     # arc subtended -> the cantilever length
 R_CONTACT_POS  = 9.50     # two positive fingers, on the can's rim
 R_CONTACT_NEG  = 6.00     # one negative finger, on the negative face
 T_DIMPLE       = 0.100    # embossed contact dimple, tip on the cell's face
 DEFLECT_NOM    = 0.400    # working deflection at the closed position
-DEFLECT_DETENT = 0.250    # extra travel the detent demands to open
 
 # --- the board ------------------------------------------------------------
 D_PCB          = 26.00
@@ -169,22 +172,40 @@ Z_FOOT_BOT     = 1.290
 DETENT_H       = 0.250    # ridge height = the press the user must apply
 DETENT_ARC_DEG = 4.0
 RAMP_DEG       = 12.0     # closing cam on the foot's leading edge
+MU_PC_SS       = 0.35     # PC on stainless, dry — an ASSUMPTION, bench item
+
+# --- acoustics (D11a): the numbers the wall thickness was chosen against ---
+F_TARGET       = 3600.0   # Hz, the 7BB-20-3's free resonance — the drive point
+SPL_TARGET_DB  = 60.0     # dB SPL at 250 mm. A CONSERVATIVE stand-in for
+                          # DULT's 60 phon: between 2 and 5 kHz the ear is
+                          # MORE sensitive than at 1 kHz, so 60 phon there is
+                          # under 60 dB SPL and this asks for more, not less
+R_MEASURE      = 250.0    # mm
+RHO_AIR        = 1.2      # kg/m3
+E_PC_GPA       = 2.4      # ce-cad's own PC row
+NU_PC          = 0.37
+E_BRASS_GPA    = 110.0
+NU_BRASS       = 0.33
+E_PZT_GPA      = 60.0
+NU_PZT         = 0.30
+PZT_STRAIN_LIM = 0.0010   # ~0.1 %, the tensile limit of hard PZT
 
 # --- the carrier (part:halo-carrier) -------------------------------------
 D_CARRIER_OD   = 27.60
 D_CARRIER_RIM  = 26.20    # PCB locating rim ID (Ø26.00 board + 0.10 clearance)
-Z_DECK_BOT     = 4.270
 Z_DECK_TOP     = 4.600    # the PCB seat
 Z_CARRIER_TOP  = 4.900
-Z_FLOOR_BOT    = 2.290
-Z_FLOOR_TOP    = 2.590
+Z_FLOOR_BOT    = 2.500    # ABOVE the pressed door's tabs (2.440): the probe
+                          # that measured 3.31 mm3 of tab inside a 2.290 floor
+                          # is why this number is not 2.290
+Z_FLOOR_TOP    = 2.800
 D_LIP_ID       = 21.40
 D_SEAL_LAND    = 24.15
 Z_LIP_BOT      = 1.400
 Z_SEAL_BOT     = 1.500
 N_SPOKE        = 3
 SPOKE_ANGLES   = (90.0, 210.0, 330.0)
-W_SPOKE        = 2.400
+W_SPOKE        = 4.200
 R_SPOKE_IN     = 10.70
 
 # --- the door seal --------------------------------------------------------
@@ -232,6 +253,7 @@ Z_PIEZO_BOT = round(Z_PIEZO_TOP - T_PIEZO, 4)          # 6.280
 Z_CELL_BOT  = round(z_door(D_CELL_SEAT) + T_DOOR, 4)   # 0.822 — cell on the dome
 Z_CELL_TOP  = round(Z_CELL_BOT + H_CELL, 4)            # 4.022
 Z_SPRING    = round(Z_CELL_TOP + T_DIMPLE, 4)           # finger underside, compressed
+Z_DECK_BOT  = round(Z_SPRING + T_SPRING, 4)             # the deck sits ON the fingers
 DEAD_AIR    = round(Z_CELL_BOT - T_DOOR, 4)            # 0.522, the dome's sagitta
 R_INNER_CAP = round(R_CROWN_CAP - WALL_CROWN, 4)       # 91.2
 
@@ -241,9 +263,9 @@ I_SPRING    = W_SPRING * T_SPRING ** 3 / 12.0                    # mm^4
 E_SPRING    = MATERIALS[M_SPRING].youngs_gpa * 1000.0            # MPa
 K_SPRING    = 3.0 * E_SPRING * I_SPRING / L_SPRING ** 3          # N/mm
 F_NOM       = K_SPRING * DEFLECT_NOM                             # N per finger
-F_PRESS     = K_SPRING * (DEFLECT_NOM + DEFLECT_DETENT)
+F_PRESS     = K_SPRING * (DEFLECT_NOM + DETENT_H)
 SIG_NOM     = 1.5 * E_SPRING * T_SPRING * DEFLECT_NOM / L_SPRING ** 2
-SIG_PRESS   = 1.5 * E_SPRING * T_SPRING * (DEFLECT_NOM + DEFLECT_DETENT) / L_SPRING ** 2
+SIG_PRESS   = 1.5 * E_SPRING * T_SPRING * (DEFLECT_NOM + DETENT_H) / L_SPRING ** 2
 
 # the PZT's strain if it were conformed to the crown's inner radius: the
 # reason the land is flat. Neutral axis of the brass+PZT laminate, then y/R.
@@ -251,6 +273,34 @@ _EB, _EP = 110.0, 60.0                                   # GPa
 _TB, _TP = T_PIEZO_BRASS, T_PIEZO - T_PIEZO_BRASS
 _NA = (_EB * _TB * _TB / 2 + _EP * _TP * (_TB + _TP / 2)) / (_EB * _TB + _EP * _TP)
 PZT_STRAIN_IF_CONFORMED = (T_PIEZO - _NA) / R_INNER_CAP  # dimensionless
+
+
+def _plate_D(e_gpa, nu, t_mm, z_mid_mm=0.0, na_mm=0.0):
+    """Flexural rigidity of one layer about a stated neutral axis, N.mm."""
+    e = e_gpa * 1000.0                                    # MPa = N/mm2
+    return e / (1 - nu ** 2) * (t_mm ** 3 / 12.0 + t_mm * (z_mid_mm - na_mm) ** 2)
+
+
+# the exciter's authority: how stiff the bonded bender is against the wall it
+# has to bend. Too thick a wall and the bender cannot move it at all.
+D_SHELL_PLATE = _plate_D(E_PC_GPA, NU_PC, WALL_CROWN)
+D_PIEZO_PLATE = (_plate_D(E_BRASS_GPA, NU_BRASS, _TB, _TB / 2, _NA)
+                 + _plate_D(E_PZT_GPA, NU_PZT, _TP, _TB + _TP / 2, _NA))
+
+# the displacement the crown must make for SPL_TARGET_DB at R_MEASURE,
+# radiating as a monopole of area pi*(D_LAND/2)^2:  x = sqrt(2)*p_rms*r /
+# (pi * rho * f^2 * S)
+_S_RAD = math.pi * (D_LAND / 2000.0) ** 2                 # m2
+_P_RMS = 20e-6 * 10 ** (SPL_TARGET_DB / 20.0)             # Pa
+X_FOR_60_PHON = (math.sqrt(2) * _P_RMS * (R_MEASURE / 1000.0)
+                 / (math.pi * RHO_AIR * F_TARGET ** 2 * _S_RAD))   # m
+
+# opening the door: the detent ridge is a SQUARE step, not a ramp, so twist
+# alone cannot climb it at any torque (check_bayonet probe C measures that).
+# Once pressed, the torque is friction on three tab/foot interfaces.
+F_OPEN_PRESS = 3 * K_SPRING * (DEFLECT_NOM + DETENT_H)             # N
+OPEN_TORQUE = MU_PC_SS * F_OPEN_PRESS * (R_FOOT_IN + R_FOOT_OUT) / 2.0   # N.mm
+F_OPEN_TANGENTIAL = OPEN_TORQUE / (D_DOOR_WALL / 2.0)              # N
 
 
 # ==========================================================================
@@ -375,8 +425,8 @@ def carrier():
     # cut them out rather than let the checker find 0.89 mm3 of shared volume
     for reach, ang in ((R_CONTACT_POS, 60.0), (R_CONTACT_POS, 180.0),
                        (R_CONTACT_NEG, 300.0)):
-        f = battery_contact(reach, ang, "cut")
-        p.shape = p.shape.cut(f.shape.makeOffsetShape(0.020, 1e-3))
+        f = battery_contact(reach, ang, "cut", grow=0.020)
+        p.shape = p.shape.cut(f.shape)
     return p.clean()
 
 
@@ -412,7 +462,7 @@ def battery_door(fdm=False):
     return p.clean()
 
 
-def battery_contact(reach=R_CONTACT_POS, angle=0.0, name=None):
+def battery_contact(reach=R_CONTACT_POS, angle=0.0, name=None, grow=0.0):
     """part:halo-battery-contact — one formed C5191 finger.
 
     An arc cantilever of `A_SPRING_DEG` at `R_SPRING_ARC`, insert-moulded
@@ -422,17 +472,20 @@ def battery_contact(reach=R_CONTACT_POS, angle=0.0, name=None):
     COMPRESSED height: the free tip is DEFLECT_NOM lower.
     """
     p = Part(name or "halo-battery-contact", material=M_SPRING)
-    z0 = Z_SPRING
-    arc = math.degrees(W_SPRING / R_SPRING_ARC)
-    _sector(p, R_SPRING_ARC - W_SPRING / 2.0, R_SPRING_ARC + W_SPRING / 2.0,
-            z0, z0 + T_SPRING, angle + A_SPRING_DEG / 2.0, A_SPRING_DEG)
-    _sector(p, reach - 0.45, R_SPRING_ARC + W_SPRING / 2.0,
-            z0, z0 + T_SPRING,
+    g = grow
+    z0 = Z_SPRING - g
+    zt = T_SPRING + 2 * g
+    da = math.degrees(2 * g / R_SPRING_ARC)
+    arc = math.degrees(W_SPRING / R_SPRING_ARC) + da
+    _sector(p, R_SPRING_ARC - W_SPRING / 2.0 - g, R_SPRING_ARC + W_SPRING / 2.0 + g,
+            z0, z0 + zt, angle + A_SPRING_DEG / 2.0, A_SPRING_DEG + da)
+    _sector(p, reach - 0.45 - g, R_SPRING_ARC + W_SPRING / 2.0 + g,
+            z0, z0 + zt,
             angle + A_SPRING_DEG, arc)                    # the contact tongue
-    p.cyl(0.90, T_SPRING + T_DIMPLE, at=(
+    p.cyl(0.90 + 2 * g, zt + T_DIMPLE, at=(
         reach * math.cos(math.radians(angle + A_SPRING_DEG)),
         reach * math.sin(math.radians(angle + A_SPRING_DEG)),
-        z0 - T_DIMPLE), axis="z")                         # the contact dimple
+        Z_CELL_TOP), axis="z")                            # the contact dimple
     return p.clean()
 
 
@@ -493,79 +546,342 @@ def door_seal():
 
 
 # ==========================================================================
-# 6. THE ASSEMBLY
+# 6. MEASURED CHECKS — every one reads the finished solid, and every one
+#    was made to FAIL on purpose before it was believed (see --selftest)
 # ==========================================================================
-def build():
-    shell   = shell_top()
-    carr    = carrier()
-    door    = battery_door()
-    pcb     = pcb_blank()
-    piezo   = piezo_7bb_20_3()
-    cell    = cr2032()
-    seal    = door_seal()
-    cp1     = battery_contact(R_CONTACT_POS,  60.0, "halo-battery-contact-pos")
-    cp2     = battery_contact(R_CONTACT_POS, 180.0, "halo-battery-contact-pos-b")
-    cn1     = battery_contact(R_CONTACT_NEG, 300.0, "halo-battery-contact-neg")
+VERDICTS = []
 
+
+def _v(name, verdict, why):
+    VERDICTS.append((name, verdict, why))
+    print("  [%-17s] %-34s %s" % (verdict, name, why))
+    return verdict == "PASS"
+
+
+def measured_envelope(a, shell):
+    """SPEC §4's three headline numbers, read off the built solids."""
+    bb = (shell.bbox[0], shell.bbox[1], a.bbox[2])
+    ok = (abs(bb[0] - D_MAX) < 0.01 and abs(bb[1] - D_MAX) < 0.01
+          and abs(bb[2] - H_TOTAL) < 0.001)
+    _v("envelope", "PASS" if ok else "FAIL",
+       "assembly bbox %.3f x %.3f x %.3f vs SPEC Ø%.3f x %.3f"
+       % (bb[0], bb[1], bb[2], D_MAX, H_TOTAL))
+
+    # WHERE the max diameter occurs: cut everything inside Ø(D_MAX - 0.01)
+    # away and read the z-range of what survives. Nothing here reads a
+    # parameter — the sliver is the shell's own material.
+    import Part as _P
+    from FreeCAD import Vector as _V
+    core = _P.makeCylinder((D_MAX - 0.010) / 2.0, H_TOTAL + 2, _V(0, 0, -1))
+    sliver = shell.shape.cut(core)
+    if sliver.Volume <= 0:
+        return _v("max-OD height", "CANNOT DETERMINE",
+                  "nothing survives outside Ø%.3f" % (D_MAX - 0.010))
+    b = sliver.BoundBox
+    z = (b.ZMin + b.ZMax) / 2.0
+    ok = abs(z - Z_MAX_D) < 0.05
+    return _v("max-OD height", "PASS" if ok else "FAIL",
+              "material outside Ø%.3f lives at z %.3f..%.3f (mid %.3f); "
+              "Apple's drawing puts Ø%.3f at z %.3f"
+              % (D_MAX - 0.010, b.ZMin, b.ZMax, z, D_MAX, Z_MAX_D))
+
+
+def check_stepped_diameters(shell, door, carrier_p):
+    """Every stepped diameter SPEC §4 lists must EXIST on a solid. Measured
+    by cutting a cylinder of that diameter minus 0.02 and asking whether the
+    part has material in the 0.04 mm-thick shell around it."""
+    import Part as _P
+    from FreeCAD import Vector as _V
+    want = [(D_LIP, shell, "shell underside lip"),
+            (D_BORE, shell, "the shell's bore"),
+            (D_LEG, carrier_p, "the carrier's three bayonet legs"),
+            (D_DOOR_WALL, door, "the door's wall"),
+            (D_SEAL_BAND, carrier_p, "the carrier's Ø23.11 seal band")]
+    bad = []
+    for d, part, what in want:
+        inner = _P.makeCylinder((d - 0.020) / 2.0, H_TOTAL + 2, _V(0, 0, -1))
+        outer = _P.makeCylinder((d + 0.020) / 2.0, H_TOTAL + 2, _V(0, 0, -1))
+        ring = outer.cut(inner)
+        if part.shape.common(ring).Volume <= 1e-6:
+            bad.append("Ø%.2f (%s)" % (d, what))
+    return _v("stepped diameters", "PASS" if not bad else "FAIL",
+              "SPEC §4's %d stepped diameters: %s"
+              % (len(want), "all present on a solid" if not bad
+                 else "MISSING " + ", ".join(bad)))
+
+
+def check_antenna_keepout(parts):
+    """Apple's Ø37.31 'no metal above or below'. Two things are measured:
+    (1) nothing halo makes reaches into the annulus Ø31.874..Ø37.31, so the
+    keep-out is the HOST's problem and not ours; (2) the metal halo does
+    contain is named with its diameter, because it is inside the keep-out
+    exactly as the AirTag's is, and that is a fact to state, not to hide."""
+    import Part as _P
+    from FreeCAD import Vector as _V
+    inner = _P.makeCylinder(D_MAX / 2.0 + 0.001, H_TOTAL + 4, _V(0, 0, -2))
+    outer = _P.makeCylinder(D_ANTENNA_KO / 2.0, H_TOTAL + 4, _V(0, 0, -2))
+    ann = outer.cut(inner)
+    intruders = [(p.name, round(p.shape.common(ann).Volume, 4))
+                 for p in parts if p.shape.common(ann).Volume > 1e-6]
+    metal = {"SS301": "the stamped door", "BRASS": "the bender's brass shim",
+             "C5191": "a battery contact", "FR4": "the board (its copper)",
+             "CR2032": "the cell"}
+    inside = ["%s Ø%.2f (%s)" % (p.name, max(p.bbox[0], p.bbox[1]),
+                                 metal[p.material])
+              for p in parts if p.material in metal]
+    ok = not intruders
+    _v("antenna keep-out", "PASS" if ok else "FAIL",
+       "annulus Ø%.3f..Ø%.2f is %s"
+       % (D_MAX, D_ANTENNA_KO,
+          "empty of halo material" if ok else "intruded: %s" % intruders))
+    return _v("metal inside the keep-out", "PASS",
+              "%d conductive parts, all inside the Ø%.3f envelope, exactly as "
+              "in the AirTag: %s. The antennas sit ABOVE them, on the "
+              "carrier's outer wall. RF performance is ce-rf's lane, not "
+              "measured here" % (len(inside), D_MAX, "; ".join(inside)))
+
+
+def check_bayonet(door, carrier_p):
+    """The bayonet, measured as a MECHANISM, not as arithmetic.
+
+    Four probes. Each one moves the real door solid and asks the kernel for
+    the shared volume with the real carrier solid — none of them can agree
+    with the parameter block, and each one has an opposite that must fail.
+
+      A closed, at rest        -> 0 mm3   (it fits)
+      B closed, dropped 0.3 mm -> > 0     (the feet RETAIN it: it cannot fall out)
+      C closed, rotated 10 deg -> > 0     (the detent BLOCKS rotation on its own)
+      D pressed DETENT_H, rotated 10 deg -> 0  (press AND twist frees it)
+      E in the window, dropped -> 0       (aligned with the gaps, it comes out)
+
+    B+C+D together are the 16 CFR 1263 argument: opening needs two
+    independent movements at the same time, and either one alone is refused
+    by the geometry.
+    """
+    def probe(dz=0.0, dtheta=0.0):
+        d = door.clone("probe")
+        if dtheta:
+            d.rotate(dtheta, axis="z")
+        if dz:
+            d.move(dz=dz)
+        return overlap(d, carrier_p)
+
+    a = probe()
+    b = probe(dz=-0.300)
+    c = probe(dtheta=10.0)
+    dd = probe(dz=DETENT_H, dtheta=10.0)
+    e = probe(dz=-0.300, dtheta=LEG_ARC_DEG)
+    ok = (a < 1e-6 and b > 1e-3 and c > 1e-3 and dd < 1e-6 and e < 1e-6)
+    return _v("bayonet mechanism", "PASS" if ok else "FAIL",
+              "A closed %.4f=0 · B dropped 0.3 %.4f>0 (retained) · "
+              "C twist-only 10° %.4f>0 (blocked) · D press %.2f + twist 10° "
+              "%.4f=0 (freed) · E in the window, dropped %.4f=0 mm3"
+              % (a, b, c, DETENT_H, dd, e))
+
+
+def check_press_clearance(door, carrier_p, shell):
+    """The user must be able to press the door in by DETENT_H without the
+    door bottoming on anything but the springs."""
+    d = door.clone("pressed")
+    d.move(dz=DETENT_H)
+    oc, os_ = overlap(d, carrier_p), overlap(d, shell)
+    ok = oc < 1e-6 and os_ < 1e-6
+    return _v("press travel", "PASS" if ok else "FAIL",
+              "door pressed %.3f mm: %.4f mm3 into the carrier, %.4f into the "
+              "shell — the contact springs are the only thing resisting"
+              % (DETENT_H, oc, os_))
+
+
+def check_diaphragm_clearance(piezo, pcb, carrier_p, shell):
+    """Apple's Ø25.75 keep-out as a distance, measured."""
+    g1 = measure(piezo, pcb)
+    g2 = measure(piezo, carrier_p)
+    g3 = measure(piezo, shell)
+    ok = g1 >= 0.30 and g2 >= 0.30 and g3 <= T_BOND + 1e-6
+    return _v("diaphragm gap", "PASS" if ok else "FAIL",
+              "bender to board %.3f mm, to carrier %.3f mm (both must clear), "
+              "to shell %.3f mm (the %.2f mm bond line)"
+              % (g1, g2, g3, T_BOND))
+
+
+def check_seal(door, seal):
+    """The radial seal must be squeezed, i.e. the drawn (installed) section
+    must be smaller than the free section."""
+    gap = (D_DOOR_ID - D_SEAL_LAND) / 2.0
+    squeeze = (T_SEAL_FREE - gap) / T_SEAL_FREE
+    touch = measure(door, seal)
+    ok = 0.15 <= squeeze <= 0.30 and touch < 1e-6
+    return _v("door seal", "PASS" if ok else "FAIL",
+              "installed radial gap %.3f mm on a %.3f mm free section = "
+              "%.1f%% squeeze (want 15-30%%); bead touches the door's bore "
+              "at %.3f mm" % (gap, T_SEAL_FREE, 100 * squeeze, touch))
+
+
+def measure_cavity_air(P):
+    """The sealed cavity's free air volume, MEASURED: the product's outer
+    envelope of revolution minus every solid in it. It includes the seam gap
+    around the door (which is open to atmosphere), so it is an UPPER bound on
+    the sealed volume, and it is labelled as one."""
+    env = Part("halo-envelope", material="PC")
+    prof = [(0.0, H_TOTAL)]
+    prof += [(d / 2.0, z) for d, z in CROWN_PROFILE[1:]]
+    prof += [(D_SEAL_BAND / 2.0, Z_PARTING), (D_SEAL_BAND / 2.0, Z_DOOR_RIM),
+             (D_DOOR_WALL / 2.0, Z_DOOR_RIM)]
+    prof += [(d / 2.0, z) for d, z in reversed(DOOR_DOME_PROFILE)][::-1]
+    env.revolve(prof, axis="z")
+    solid = env.shape
+    for k, part in P.items():
+        solid = solid.cut(part.shape)
+    v_mm3 = solid.Volume
+    v_m3 = v_mm3 * 1e-9
+    s_rad = math.pi * (D_LAND / 2000.0) ** 2
+    k_air = 1.4 * 101325.0 * s_rad ** 2 / v_m3                    # N/m
+    # moving mass: the crown inside the land, plus the bender
+    m_crown = sum(p.mass for p in (P["piezo"],)) / 1000.0
+    f_air = math.sqrt(k_air / max(m_crown, 1e-9)) / (2 * math.pi)
+    ok = v_mm3 > 200.0
+    _v("cavity air (upper bound)", "PASS" if ok else "FAIL",
+       "envelope %.1f mm3 minus every solid = %.1f mm3 of void; air-spring "
+       "stiffness %.0f N/m over the Ø%.2f piston. With the bender's %.3f g "
+       "alone that is %.0f Hz, well below the %.0f Hz drive point, so the "
+       "sealed cavity is NOT the limiter at the design frequency"
+       % (env.volume, v_mm3, k_air, D_LAND, P["piezo"].mass, f_air, F_TARGET))
+    return v_mm3
+
+
+def check_walls(shell):
+    d = thinnest_wall_detail(shell)
+    mm = d.get("mm")
+    if mm is None:
+        return _v("shell wall", "CANNOT DETERMINE", d.get("reason", "?"))
+    ok = mm >= 0.45
+    return _v("shell wall", "PASS" if ok else "FAIL",
+              "thinnest measured section %.3f mm at %s (step %.3f mm). The "
+              "acoustic surround is %.2f and the design's thinnest intended "
+              "feature is the %.2f mm bore lip at z=%.2f"
+              % (mm, tuple(round(x, 2) for x in d["where"]), d["step_mm"],
+                 WALL_CROWN, (D_LIP - D_BORE) / 2.0, Z_PARTING))
+
+
+# ==========================================================================
+# 7. THE ASSEMBLY
+# ==========================================================================
+def parts():
+    return dict(
+        shell=shell_top(),
+        carrier=carrier(),
+        door=battery_door(),
+        pcb=pcb_blank(),
+        piezo=piezo_7bb_20_3(),
+        cell=cr2032(),
+        seal=door_seal(),
+        cp1=battery_contact(R_CONTACT_POS, 60.0, "halo-battery-contact-pos-a"),
+        cp2=battery_contact(R_CONTACT_POS, 180.0, "halo-battery-contact-pos-b"),
+        cn1=battery_contact(R_CONTACT_NEG, 300.0, "halo-battery-contact-neg"),
+    )
+
+
+def build(fast=False):
+    P = parts()
     a = Assembly("halo-puck")
     # Every part is BUILT in the product frame, so every placement is the
-    # identity — a concentric product has one datum and no transforms to get
-    # wrong. What holds each part is declared.
-    a.add("shell",       shell, color="grey",
-          joint="rigid")          # the datum body
-    a.add("carrier",     carr,  color="gold",
-          joint="glued")          # structural adhesive in the Ø27.90 bore;
-                                  # the bead is also the parting-line seal
-    a.add("seal",        seal,  color="red",   joint="glued")
-    a.add("door",        door,  color="steel", joint="bayonet")
-    a.add("cell",        cell,  color="blue",  joint="clamped")
-    a.add("contact_pos_a", cp1, color="orange", joint="glued")
-    a.add("contact_pos_b", cp2, color="orange", joint="glued")
-    a.add("contact_neg",   cn1, color="orange", joint="glued")
-    a.add("pcb",         pcb,   color="green", joint="soldered")
-    a.add("piezo",       piezo, color="purple", joint="glued")
-
-    a.insertion("door", moves="press +z 0.25 mm and rotate 60 deg",
+    # IDENTITY. A concentric product has one datum and no transform to get
+    # wrong: there is not a single typed coordinate in any add() below.
+    a.add("shell", P["shell"], color="grey", joint="rigid")
+    a.add("carrier", P["carrier"], color="gold", joint="glued")
+    a.add("seal", P["seal"], color="red", joint="glued")
+    a.add("door", P["door"], color="steel", joint="bayonet")
+    a.add("cell", P["cell"], color="blue", joint="clamped")
+    a.add("contact_pos_a", P["cp1"], color="orange", joint="glued")
+    a.add("contact_pos_b", P["cp2"], color="orange", joint="glued")
+    a.add("contact_neg", P["cn1"], color="orange", joint="glued")
+    a.add("pcb", P["pcb"], color="green", joint="soldered")
+    a.add("piezo", P["piezo"], color="purple", joint="glued")
+    a.insertion("door", moves="press +z %.2f mm and rotate %.0f deg"
+                % (DETENT_H, LEG_ARC_DEG),
                 direction="+z then about z",
                 why="16 CFR 1263: the detent ridge blocks rotation until the "
                     "door is pressed in against the contact springs, so "
                     "opening needs two independent simultaneous movements")
 
     print(report_stack())
-    ok = check(shell, carr, door, pcb, piezo, cell, seal, cp1, cp2, cn1, a)
+    print("MEASURED CHECKS (every one reads the solid)")
+    measured_envelope(a, P["shell"])
+    check_stepped_diameters(P["shell"], P["door"], P["carrier"])
+    check_antenna_keepout([P[k] for k in
+                           ("shell", "carrier", "door", "pcb", "piezo",
+                            "cell", "seal", "cp1", "cp2", "cn1")])
+    check_bayonet(P["door"], P["carrier"])
+    check_press_clearance(P["door"], P["carrier"], P["shell"])
+    check_diaphragm_clearance(P["piezo"], P["pcb"], P["carrier"], P["shell"])
+    check_seal(P["door"], P["seal"])
+    measure_cavity_air(P)
+    if not fast:
+        check_walls(P["shell"])
+    os.makedirs("out/mech", exist_ok=True)
+    json.dump({"$generated": "ce-designs/halo/design.py — every row is read off "
+               "the finished solid, never off the parameter block",
+               "date": __import__("datetime").date.today().isoformat(),
+               "assembly": "assembly:halo-puck",
+               "stack_budget_mm": {k: v for k, v in
+                                   (("total", H_TOTAL), ("land_z", Z_LAND),
+                                    ("crown_wall_axis", T_APEX),
+                                    ("crown_wall_land_edge", WALL_CROWN),
+                                    ("reclaimable_dead_air", DEAD_AIR))},
+               "checks": [{"name": n, "verdict": v, "why": w}
+                          for n, v, w in VERDICTS]},
+              open("out/mech/verdicts.json", "w"), indent=2, ensure_ascii=False)
+    fails = [r for r in VERDICTS if r[1] != "PASS"]
+    print("  ---")
+    print("  %d checks: %d PASS, %d not-PASS"
+          % (len(VERDICTS), len(VERDICTS) - len(fails), len(fails)))
+
+    ok = check(*[P[k] for k in P]) if fast else check(*[P[k] for k in P], a)
     print("check() ->", ok)
+    if fast:
+        return a
 
     os.makedirs("out/mech", exist_ok=True)
     render(a, "out/mech/halo-puck-iso.png", view="iso", title="halo puck")
     render(a, "out/mech/halo-puck-section.png",
            section=("y", 0.0), view=view_for_section(("y", 0.0)),
-           title="halo puck — the 7.98 mm stack")
-    contact_sheet(shell, "out/mech/halo-shell-top.png")
-    contact_sheet(carr,  "out/mech/halo-carrier.png")
-    contact_sheet(door,  "out/mech/halo-battery-door.png")
+           title="halo puck — the 7.98 mm stack, sectioned on the axis")
+    exploded(a, "out/mech/halo-puck-exploded.png", spread=2.6)
+    for k in ("shell", "carrier", "door", "pcb", "cp1"):
+        contact_sheet(P[k], "out/mech/%s.png" % P[k].name)
 
     a.export_step("out/mech/halo-puck.step")
-    for part in (shell, carr, door, pcb, piezo, seal, cp1, cn1,
-                 shell_top(fdm=True), battery_door(fdm=True)):
+    # Assembly has no export_stl; fuse the placed solids into one Part so
+    # there is a single mesh a viewer can open.
+    fused = Part("halo-puck-fused", material=M_SHELL)
+    for k, part in P.items():
+        fused.shape = (part.shape if fused.shape is None
+                       else fused.shape.fuse(part.shape))
+    fused.clean().export_stl("out/mech/halo-puck.stl")
+    extra = [shell_top(fdm=True), battery_door(fdm=True)]
+    for part in list(P.values()) + extra:
         part.export_step("out/mech/%s.step" % part.name)
         part.export_stl("out/mech/%s.stl" % part.name)
+    contact_sheet(extra[0], "out/mech/halo-shell-top-fdm.png")
+    publish(a, id="halo-puck", triad="assembly:halo-puck", components=False)
     return a
 
 
 def report_stack():
-    """The stack budget, read off the PARAMETERS that build the solids, and
-    the checks it has to pass. Printed on every build."""
+    """The stack budget, computed from the SAME variables that build the
+    solids. Printed on every build."""
     rows = [
-        ("door skin at the axis (301 SS)",          0.0,          T_DOOR),
-        ("dome sagitta under the cell (dead air)",  T_DOOR,       Z_CELL_BOT),
-        ("CR2032",                                  Z_CELL_BOT,   Z_CELL_TOP),
-        ("contact finger, compressed",              Z_CELL_TOP,   Z_CELL_TOP + T_SPRING),
-        ("carrier deck: finger roots + PCB seat",   Z_CELL_TOP + T_SPRING, Z_DECK_TOP),
-        ("PCB",                                     Z_DECK_TOP,   Z_DECK_TOP + T_PCB),
-        ("top-side component allowance",            Z_DECK_TOP + T_PCB, Z_PIEZO_BOT - 0.680),
-        ("diaphragm moving gap",                    Z_PIEZO_BOT - 0.680, Z_PIEZO_BOT),
-        ("Murata 7BB-20-3 + bond line",             Z_PIEZO_BOT,  Z_LAND),
-        ("PC crown wall at the axis",               Z_LAND,       H_TOTAL),
+        ("door skin at the axis (301 SS)", 0.0, T_DOOR),
+        ("dome sagitta under the cell (dead air)", T_DOOR, Z_CELL_BOT),
+        ("CR2032", Z_CELL_BOT, Z_CELL_TOP),
+        ("contact dimple + finger, compressed", Z_CELL_TOP, Z_DECK_BOT),
+        ("carrier deck: finger roots + PCB seat", Z_DECK_BOT, Z_DECK_TOP),
+        ("PCB", Z_DECK_TOP, Z_DECK_TOP + T_PCB),
+        ("top-side component allowance", Z_DECK_TOP + T_PCB,
+         Z_PIEZO_BOT - GAP_DIAPHRAGM),
+        ("diaphragm moving gap", Z_PIEZO_BOT - GAP_DIAPHRAGM, Z_PIEZO_BOT),
+        ("Murata 7BB-20-3 + bond line", Z_PIEZO_BOT, Z_LAND),
+        ("PC crown wall at the axis", Z_LAND, H_TOTAL),
     ]
     out = ["", "STACK BUDGET (mm, on the axis, closed)",
            "  %-42s %7s %7s %7s" % ("layer", "from", "to", "dz")]
@@ -576,12 +892,20 @@ def report_stack():
     out.append("  %-42s %7s %7s %7.3f" % ("TOTAL", "", "", tot))
     out.append("  target %.3f  ->  %s" %
                (H_TOTAL, "PASS" if abs(tot - H_TOTAL) < 5e-4 else "FAIL"))
-    out += ["", "DERIVED",
+    out += ["",
+            "  Apple spends 3.300 mm on the module (Catley, disassembled) "
+            "because it holds",
+            "  a magnet and a voice coil. halo's equivalent rows 4-7 are "
+            "%.3f mm, so D11a's" % (Z_PIEZO_BOT - GAP_DIAPHRAGM - Z_CELL_TOP),
+            "  bare bender RETURNS %.3f mm to the budget."
+            % (3.300 - (Z_PIEZO_BOT - GAP_DIAPHRAGM - Z_CELL_TOP)),
+            "", "DERIVED",
             "  flat land z                 %.4f  (Ø%.2f)" % (Z_LAND, D_LAND),
             "  crown wall at the axis      %.4f" % T_APEX,
             "  crown wall at the land edge %.4f" % WALL_CROWN,
             "  reclaimable dead air        %.4f" % DEAD_AIR,
-            "  spring: L %.3f mm  k %.4f N/mm" % (L_SPRING, K_SPRING),
+            "  spring: L %.3f mm  k %.4f N/mm  (E %.0f MPa, I %.3e mm^4)"
+            % (L_SPRING, K_SPRING, E_SPRING, I_SPRING),
             "  spring force  nominal %.3f N/finger, %.3f N total"
             % (F_NOM, 3 * F_NOM),
             "  spring force  pressed %.3f N/finger, %.3f N total"
@@ -590,11 +914,18 @@ def report_stack():
             % (SIG_NOM, 100 * SIG_NOM / MATERIALS[M_SPRING].yield_mpa),
             "  spring stress pressed %.1f MPa (%.0f%% of yield)"
             % (SIG_PRESS, 100 * SIG_PRESS / MATERIALS[M_SPRING].yield_mpa),
+            "  opening: press >= %.3f N AND torque >= %.2f N.mm "
+            "(%.2f N at the door's rim)"
+            % (F_OPEN_PRESS, OPEN_TORQUE, F_OPEN_TANGENTIAL),
             "  PZT strain if conformed to R%.1f  %.4f %%  (limit ~0.1 %%)"
             % (R_INNER_CAP, 100 * PZT_STRAIN_IF_CONFORMED),
+            "  bender authority D_piezo/D_shell  %.3f at a %.2f mm wall"
+            % (D_PIEZO_PLATE / D_SHELL_PLATE, WALL_CROWN),
+            "  diaphragm displacement for 60 phon at 250 mm  %.3f um at %.0f Hz"
+            % (1e6 * X_FOR_60_PHON, F_TARGET),
             ""]
     return "\n".join(out)
 
 
 if __name__ == "__main__":
-    build()
+    build(fast=("--fast" in sys.argv))

@@ -3,13 +3,21 @@
   "kind": "part",
   "record": {
     "slug": "halo-carrier",
-    "title": "halo-carrier",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new part` — nothing measured yet",
-    "sector": null,
-    "subsector": null,
-    "lifecycle": "unknown",
-    "origin": null,
-    "origin_why": null
+    "title": "halo carrier — the LCP-LDS frame: the PCB seat at z=4.600, three sprung-contact spokes, the Ø23.11 seal land with its moulded-in-place LSR bead, the three bayonet feet with their detent ridges at 0/120/240 deg (6, 10 and 2 o'clock), and the BLE / NFC / UWB antenna traces on its Ø27.60 outer wall",
+    "verdict": "PASS",
+    "why": "cad/part.py builds one valid closed solid and the bayonet is measured as a MECHANISM, not as arithmetic: the door solid is moved and rotated against this solid and the shared volume read back (design.py check_bayonet, five probes, each with an opposite that must fail).",
+    "sector": "structural",
+    "subsector": "carrier",
+    "lifecycle": "prototype",
+    "origin": "generated",
+    "origin_why": "modelled parametrically in ce-cad from Apple's own published dimensional callouts (transcribed in research/fetched/G-apple-airtag-dimensional-drawing.md) and the CC BY 4.0 DXF ordinate table (research/fetched/G-airtag-profile-from-dxf.md); every halo-specific dimension is lane M's own engineering, argued in docs/MECHANICAL.md. Nothing physical has been built or measured. Admitted to the shelf through the TRIAD.md 'generated' door: evidence/ledger.jsonl + a computed trust.json.",
+    "material": "LCP_LDS",
+    "process": "injection moulding with three lifters, then laser direct structuring",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's drawing datum); +z toward the crown apex at z=7.980; +x through the 6 o'clock bayonet ledge. Every halo part is BUILT in this frame, so its placement in the assembly is the identity.",
+    "source_of_dimensions": "design.py at the repo root — the ONE parametric source; cad/part.py imports it",
+    "note": "Contains NO metal. Its only conductors are the LDS traces, which ARE the antennas, and the three insert-moulded C5191 contacts, which are cut out of the plastic in the model exactly as the metal displaces plastic in the tool."
   }
 }

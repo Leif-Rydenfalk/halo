@@ -56,7 +56,7 @@
           "size": [
             20.0,
             20.0,
-            0.522
+            0.542
           ]
         },
         "constraints": {
@@ -65,7 +65,7 @@
           ],
           "interfaces_to_siblings": [],
           "mass_budget_g": null,
-          "notes": null
+          "notes": "0.542 mm is READ OFF Apple's own ordinate table at the cell's Ø20.00 RIM. Seating the cell on a smaller circle (19.60) put 0.134 mm3 of cell inside the door — the interference check measured it"
         },
         "state": "sketch",
         "fill": {
@@ -80,7 +80,7 @@
           "origin": [
             -10.0,
             -10.0,
-            0.822
+            0.842
           ],
           "size": [
             20.0,
@@ -110,12 +110,12 @@
           "origin": [
             -11.5,
             -11.5,
-            4.022
+            4.042
           ],
           "size": [
             23.0,
             23.0,
-            0.15
+            0.25
           ]
         },
         "constraints": {
@@ -131,7 +131,7 @@
             }
           ],
           "mass_budget_g": null,
-          "notes": null
+          "notes": "the slab is the 0.100 mm embossed contact dimple plus the 0.150 mm C5191 stock, measured off the built finger; the free tip sits DEFLECT_NOM=0.400 mm lower and the door's detent asks for 0.250 mm more"
         },
         "state": "sketch",
         "fill": {
@@ -146,12 +146,12 @@
           "origin": [
             -13.7,
             -13.7,
-            4.172
+            4.292
           ],
           "size": [
             27.4,
             27.4,
-            0.428
+            0.308
           ]
         },
         "constraints": {

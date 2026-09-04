@@ -1,0 +1,26 @@
+{
+  "$triad": 1,
+  "kind": "connection",
+  "record": {
+    "slug": "bayonet-3-tab",
+    "title": "Press-and-twist bayonet, three tabs — the coin-cell door of 16 CFR 1263 / ANSI-UL 4200A",
+    "verdict": "PASS",
+    "why": "MEASURED as a mechanism, not argued: design.py moves and rotates the real door solid against the real carrier solid and reads the shared volume out of the kernel. Five probes and TWO OF THEM MUST BE NON-ZERO — closed 0.0000 mm3, dropped 0.3 mm 3.7114 mm3 (retained), twisted 10 deg with no press 0.2735 mm3 (blocked), pressed 0.250 and twisted 10 deg 0.0000 (freed), rotated into the entry windows and dropped 0.0000 (comes out). The detent is a SQUARE step, not a ramp, so rotation alone is refused at any torque rather than merely resisted. Forces are CALCULATED (2.908 N press, 13.38 N.mm torque) and the abuse tests are CANNOT DETERMINE.",
+    "joins": {
+      "a": "three outward tabs on a stamped cover rim, at 0/120/240 deg",
+      "b": "three inward feet on a moulded carrier, at the same angles, each with a square detent ridge"
+    },
+    "dof_left": [
+      "rz within the entry windows, once pressed"
+    ],
+    "detachable": true,
+    "standard": "16 CFR 1263 (Reese's Law) / ANSI-UL 4200A — READ, not fetched as a document",
+    "adds_parts": [],
+    "adds_parts_why": "this joint consumes no part; it joins two. No fastener, and deliberately so — a screw would cost 1.5-2.5 mm of a 7.98 mm budget and put metal inside Apple's Ø37.31 antenna keep-out (DECISIONS.md D13).",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "holds_by": "form",
+    "standard_why": "Lane F owns the legal reading (research/06). The requirement this folder implements is the one CPSC business guidance states: a tool, or at least two independent and simultaneous hand movements. The standard ALSO requires abuse tests — drop, torque, compression — with the cell retained, and NONE of those has been run, so this folder does not claim compliance, only that the two-movement geometry is present and measured."
+  }
+}

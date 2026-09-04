@@ -3,13 +3,21 @@
   "kind": "part",
   "record": {
     "slug": "halo-door-seal",
-    "title": "halo-door-seal",
-    "verdict": "CANNOT DETERMINE",
-    "why": "created by `bin/triad new part` — nothing measured yet",
-    "sector": null,
-    "subsector": null,
-    "lifecycle": "unknown",
-    "origin": null,
-    "origin_why": null
+    "title": "halo door seal — a moulded-in-place LSR 70 Shore A bead on the carrier's Ø24.15 seal land, free radial section 0.50 mm, squeezed 20 % by the door's Ø24.95 bore",
+    "verdict": "PASS",
+    "why": "the squeeze is computed from the modelled gap and checked; the ring is drawn INSTALLED, so its section here is the compressed one.",
+    "sector": "structural",
+    "subsector": "seal",
+    "lifecycle": "prototype",
+    "origin": "generated",
+    "origin_why": "modelled parametrically in ce-cad from Apple's own published dimensional callouts (transcribed in research/fetched/G-apple-airtag-dimensional-drawing.md) and the CC BY 4.0 DXF ordinate table (research/fetched/G-airtag-profile-from-dxf.md); every halo-specific dimension is lane M's own engineering, argued in docs/MECHANICAL.md. Nothing physical has been built or measured. Admitted to the shelf through the TRIAD.md 'generated' door: evidence/ledger.jsonl + a computed trust.json.",
+    "material": "LSR70",
+    "process": "liquid silicone, moulded in place on the carrier",
+    "used_by": [
+      "assembly:halo-puck"
+    ],
+    "frame": "origin on the axis at the lowest point of the battery door's outer face (Apple's drawing datum); +z toward the crown apex at z=7.980; +x through the 6 o'clock bayonet ledge. Every halo part is BUILT in this frame, so its placement in the assembly is the identity.",
+    "source_of_dimensions": "design.py at the repo root — the ONE parametric source; cad/part.py imports it",
+    "note": "RADIAL on purpose. The contact springs push the door OUTWARD, so an axial face seal at this interface would be unloaded exactly when it is needed. Nobody has published how the AirTag seals its door (lane G open item 5) — this is halo's design, not a copy, and IP67 is CANNOT DETERMINE until a puck is tested to IEC 60529."
   }
 }

@@ -8,10 +8,12 @@
     "shape": "iterations",
     "tier": "T0",
     "tier_name": "untested",
-    "computed_at": "2026-09-03T23:23:53+0800",
+    "computed_at": "2026-09-04T12:07:01+0800",
     "computed_by": "bin/triad",
-    "ledger_lines": 0,
-    "counts": {},
+    "ledger_lines": 1,
+    "counts": {
+      "use/PASS": 1
+    },
     "unresolved_fails": [],
     "own_environment": {
       "declared_in": "ce-parts/halo-door-seal/iterations/v0.0.1/evidence/environment.json",
@@ -20,7 +22,7 @@
     },
     "not_this_folders_evidence": [],
     "counted_on_their_own_word": [],
-    "why": "no evidence: ce-parts/halo-door-seal/iterations/v0.0.1/evidence/ledger.jsonl has no ledger entries",
+    "why": "1 ledger entry; T0 from the ledger",
     "notes": [
       "T4 not earned: no standard stated and no sourced offers"
     ]

@@ -3,6 +3,55 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-pcb-blank",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "edge-pads",
+        "frame": {
+          "origin_mm": [
+            13.0,
+            0,
+            4.6
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:solder-smt"
+        ],
+        "note": "four LDS antenna feeds around the rim"
+      },
+      {
+        "name": "notches-0-120-240",
+        "frame": {
+          "origin_mm": [
+            12.6,
+            0,
+            4.9
+          ],
+          "z_axis": [
+            0,
+            0,
+            1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:keyed"
+        ],
+        "note": "three 26 deg notches to R12.60 that key on the carrier's ribs — the board goes in one way round only"
+      }
+    ]
   }
 }

@@ -3,6 +3,31 @@
   "kind": "interfaces",
   "record": {
     "slug": "halo-battery-door-fdm",
-    "interfaces": []
+    "interfaces": [
+      {
+        "name": "tabs-0-120-240",
+        "frame": {
+          "origin_mm": [
+            13.03,
+            0,
+            1.89
+          ],
+          "z_axis": [
+            0,
+            0,
+            -1
+          ],
+          "x_axis": [
+            1,
+            0,
+            0
+          ]
+        },
+        "accepts": [
+          "connection:bayonet-3-tab"
+        ],
+        "note": "the same three tabs, printed"
+      }
+    ]
   }
 }
