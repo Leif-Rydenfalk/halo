@@ -87,6 +87,8 @@ def gallery_files():
 # The generated HTML pages live outside the markdown tree and are what Leif and
 # the factory actually read, so they get pinned to the top of the nav.
 PACK = [("out/release/INDEX.html", "Factory handoff pack"),
+        ("out/comparison/INDEX.html", "AirTag comparison — every row"),
+        ("docs/COMPARISON.md", "AirTag comparison (markdown)"),
         ("out/release/CONVERGENCE.html", "Convergence vs the real AirTag"),
         ("out/release/TEST-PLAN.html", "Production test plan"),
         ("out/release/README.md", "Pack readiness table"),
@@ -170,6 +172,11 @@ class H(BaseHTTPRequestHandler):
                 # rewrite relative image links to /raw/
                 base = os.path.dirname(rel)
                 txt = txt.replace("](images/", "](/raw/images/")
+                # A doc under docs/ reaching a generated picture writes it as
+                # `../out/...` so the link also works on GitHub. Relative to
+                # /d/docs/<name>.md that would resolve to /d/out/..., which is
+                # not a markdown route -- send it at the raw file instead.
+                txt = txt.replace("](../out/", "](/raw/out/")
                 payload = {"kind": "md", "text": txt}
             return self._send(200, SHELL % dict(
                 title=os.path.basename(rel), marker=MARKER, nav=nav_html(rel),
