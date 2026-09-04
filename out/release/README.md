@@ -4,7 +4,7 @@ Generated 2026-09-05 from `spec/release-pack.json` by `tools/gen_release_pack.py
 
 | # | artifact | status |
 |---|---|---|
-| 1 | Gerbers, drill and netlist | **READY** |
+| 1 | Gerbers, drill and netlist | **PARTIAL** |
 | 2 | Schematic, ERC-clean, plus a reusable design block | **PARTIAL** |
 | 3 | Bill of materials with prices and alternates | **PARTIAL** |
 | 4 | Pick-and-place file in factory format | **READY** |
