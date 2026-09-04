@@ -14,20 +14,20 @@
       "inherits": "any perspective error between the steel rule plane and the board top face. NOT bounded by the rule's residual."
     },
     "thickness_mm": {
-      "value": 0.30,
+      "value": 0.3,
       "state": "SETTLED AS-DRAWN (halo lane)",
       "fabrication_delta": "L4 measured 0.30 mm is below PCBWay's 0.40 mm four-layer floor and JLCPCB's 0.40 mm minimum. The Replica AS DRAWN cannot be ordered at either house. That is a fact about US, not about Apple. The two numbers are never fused."
     },
     "layer_count": {
       "value": 4,
-      "state": "STATED REPLICA CHOICE, NOT APPLE'S FACT",
-      "apple_truth": "CANNOT DETERMINE in {4, 6} (L4)",
-      "why_4": "6 layers need 0.350 mm of dielectric before any copper against a 0.30 mm target, so only 4 is consistent with 0.30 under materials with published thicknesses."
+      "state": "COUNTED - confidence HIGH (updated 2026-09-05 from commit e84ffea)",
+      "was": "This lane's brief said 'STATED REPLICA CHOICE, not Apple's fact, CANNOT DETERMINE in {4,6}'. That is now SUPERSEDED: the stackup lane counted 4 from a published delayering (github.com/stacksmashing/airtag-hardware, pcb/layer1..layer4, credited David Hulton), testing 'merged' as delayering rather than superposition at a spot where the two readings predict opposite things.",
+      "note": "The render still carries the old caption until it is re-rendered; see board/HANDOFF.md item 1."
     },
     "centre_hole": {
       "shape": "ROUNDED SQUARE WITH A NOTCH AT TOP CENTRE - not a circle",
       "state": "PROVISIONAL profile from photo 6",
-      "measured_roundness_rmax_over_rmin": 1.380,
+      "measured_roundness_rmax_over_rmin": 1.38,
       "reference": "1.000 = circle, 1.414 = square. 1.380 is a rounded square.",
       "refusal": "This lane publishes NO 'centre hole diameter'. A circle fitted here returns a small clean residual while being the wrong shape."
     }
