@@ -240,9 +240,11 @@ def build():
             ("C3", "100nF", C0201, "at VDD pin 36"),
             ("C4", "100nF", C0201, "at VDD pins 47/48")]:
         s.part(ref, "Device:C", value=val, group="power", footprint=fp,
-               fields=P("C1546", "CL03A104KA3NNNC", "Samsung", "$0.0029",
+               fields=P("C5142565", "TCC0201X5R104K100ZT", "CCTC", "$0.0005",
                         "in stock",
-                        {"Note": "0201 X7R 16V, " + note,
+                        {"Note": "0201 X5R 10V, " + note
+                                 + ". Code re-verified 2026-09-05: C1546 is "
+                                 "a 100 pF 0402, not this line (S1).",
                          "Tol": "10%"}))
         s.net("VDD", ref + ".1")
         s.net("GND", ref + ".2")
@@ -251,28 +253,37 @@ def build():
     # the datasheet says "Must be connected to DECA", not because it is tidy.
     s.part("L1", "Device:L", value="4.7uH", group="power",
            footprint="Inductor_SMD:L_0603_1608Metric",
-           fields=P("C1046", "MLZ1608M4R7WT000", "TDK", "$0.0180", "in stock",
+           fields=P("C76799", "MLZ1608M4R7WT000", "TDK", "$0.0301", "in stock",
                     {"Note": "0603 multilayer, >=120 mA Isat, DCC->DECD. "
+                             "Code re-verified 2026-09-05: C1046 is a 10 uH "
+                             "0805, not this line (S1). "
                              "0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it "
                              "is one of the parts X-5's height delta binds."}))
     s.net("DCC", "U1.46", "L1.1")
     s.net("DECD", "U1.45", "L1.2")
 
     for ref, val, note in [
-            ("C5", "2.2uF", "0201 X6T 6.3V, DECD reservoir (Table 82)"),
+            ("C5", "2.2uF", "0201 X5R 10V, DECD reservoir (Table 82)"),
             ("C6", "10nF", "0201 X7R - Table 82 lists it, Figure 175's "
                            "extraction does not place its node. Wired to "
                            "DECD. CANNOT DETERMINE against the source."),
             ("C7", "2.2nF", "0201 X7R - same, CANNOT DETERMINE")]:
+        # One code per VALUE, per S1: C2827888 is a 3.5 mm screw terminal
+        # block and was serving all three of these lines at once.
+        code, mpn = {"C5": ("C335106", "GRM033R61A225KE47D"),
+                     "C6": ("C76941", "GRM033R71A103KA01D"),
+                     "C7": ("C161479", "GRM033R71A222KA01D")}[ref]
         s.part(ref, "Device:C", value=val, group="power", footprint=C0201,
-               fields=P("C2827888", "CL03A225MQ3CSNC", "Samsung", "$0.0091",
-                        "in stock", {"Note": note}))
+               fields=P(code, mpn, "muRata", "$0.0301", "in stock",
+                        {"Note": note + " Code re-verified 2026-09-05 (S1)."}))
         s.net("DECD", ref + ".1")
         s.net("GND", ref + ".2")
 
     s.part("C8", "Device:C", value="2.2uF", group="power", footprint=C0201,
-           fields=P("C2827888", "CL03A225MQ3CSNC", "Samsung", "$0.0091",
-                    "in stock", {"Note": "0201 X6T, on the DECA=DECRF node"}))
+           fields=P("C335106", "GRM033R61A225KE47D", "muRata", "$0.0301",
+                    "in stock", {"Note": "0201 X5R 10V, on the DECA=DECRF "
+                                         "node. Code re-verified 2026-09-05 "
+                                         "(S1)."}))
     s.net("DECA", "U1.43", "U1.33", "C8.1")
     s.net("GND", "C8.2")
 
@@ -307,12 +318,17 @@ def build():
              "R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.")
     s.part("BT1", cell_id, value="CR2032", group="battery",
            footprint="halo:HALO_BATT_CONTACT_3PAD",
-           fields=P("C7498149", "CR2032", "Panasonic", "$0.39", "in stock",
-                    {"Note": "THE FOOTPRINT IS halo's OWN, drawn by the "
-                             "layout: three pads at the radii lane M fixed "
-                             "(R_CONTACT_POS 9.50 x2, R_CONTACT_NEG 6.00 x1, "
-                             "design.py). Pad 1 = P+ current finger, pad 3 = "
-                             "P+ SENSE finger, pad 2 = negative."}))
+           fields={"MPN": "CR2032", "Manufacturer": "Panasonic",
+                   "LCSC Part #": "NO ORDER CODE - NOT AN SMT LINE",
+                   "Note": "THE CELL IS BOUGHT, THE HOLDER IS NOT: no part "
+                           "is fitted on BT1 - the contacts are three "
+                           "stamped C5191 fingers on halo's OWN land "
+                           "pattern. S1 2026-09-05: the code this line "
+                           "carried, C7498149, is a Lian Xin BS-CR2032-8 "
+                           "SMD BATTERY HOLDER, which must not be ordered "
+                           "and cannot be fitted on this footprint. "
+                           "Pad 1 = P+ current finger, pad 3 = P+ SENSE "
+                           "finger, pad 2 = negative."})
     # The current finger IS the rail. The sense finger deliberately is not,
     # and that separation is the whole mechanism (D-5).
     s.net("VDD", "BT1.1")
@@ -338,19 +354,23 @@ def build():
     # exactly nothing the rest of the time. On a 2.4 uA sleep budget a
     # permanently-on divider would have been a 13 % battery-life tax.
     s.part("R1", "Device:R", value="4.7M", group="battery", footprint=R0201,
-           fields=P("C25765", "0201WMF4704TEE", "UNI-ROYAL", "$0.0012",
-                    "in stock", {"Note": "sense divider, high leg"}))
+           fields=P("C778408", "0201WMF4704TEE", "UNI-ROYAL", "$0.0015",
+                    "in stock",
+                    {"Note": "sense divider, high leg. Code re-verified "
+                             "2026-09-05: C25765 is 20 k 0402 (S1)."}))
     s.part("R2", "Device:R", value="4.7M", group="battery", footprint=R0201,
-           fields=P("C25765", "0201WMF4704TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C778408", "0201WMF4704TEE", "UNI-ROYAL", "$0.0015",
                     "in stock",
                     {"Note": "sense divider, low leg - returns to a GPIO, "
                              "not to GND, so the divider is OFF when idle"}))
     s.part("C13", "Device:C", value="100pF", group="battery", footprint=C0201,
-           fields=P("C1523", "CL03C101JB3NNNC", "Samsung", "$0.0029",
+           fields=P("C76922", "GRM0335C1H101JA01D", "muRata", "$0.0033",
                     "in stock",
                     {"Note": "settles the divider inside the ADC's "
                              "acquisition window; also sets the ~0.24 ms "
-                             "collapse time when the cell leaves"}))
+                             "collapse time when the cell leaves. Code "
+                             "re-verified 2026-09-05: C1523 is a 1 nF 0402 "
+                             "(S1)."}))
     s.net("VBAT_SNS_HI", "BT1.3", "R1.1")
     s.net("VBAT_SNS", "R1.2", "R2.1", "C13.1", "U1.5")      # P1.04/AIN0
     s.net("SNS_EN", "R2.2", "C13.2", "U1.6")                # P1.05/AIN1
@@ -360,29 +380,46 @@ def build():
     # =====================================================================
     s.part("X1", "Device:Crystal", value="32.768kHz", group="clocks",
            footprint="Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm",
-           fields=P("C32346", "FC-135 32.768kHz", "Epson", "$0.1375",
-                    "444,985",
-                    {"Note": "Epson 32.768 kHz. CHANGED from X321532768KGD2SI "
-                             "(C620155) on the factory lane's find: C32346 is "
-                             "a JLCPCB BASIC part with 444,985 in stock at "
-                             "$0.1375/100, so it avoids the $3.07 "
-                             "extended-part feeder fee as well as being "
-                             "deeper stock. OPEN: its package is assumed to "
-                             "be the 3215 land pattern drawn here and that "
-                             "has NOT been confirmed against Epson's "
-                             "drawing - confirm before ordering. Still "
-                             "0.9 mm tall, which X-5's height delta binds."}))
+           fields=P("C95361", "Q13FC13500049", "Epson", "TBC",
+                    "134,310",
+                    {"Note": "Epson FC-135 32.768 kHz, CL = 6 pF. CHANGED "
+                             "from C32346 (Q13FC13500004, CL 12.5 pF), which "
+                             "was BOUGHT ON PRICE AND NEVER CHECKED AGAINST "
+                             "THE SoC. D-3 deletes the external load "
+                             "capacitors, so the whole load is the nRF54L's "
+                             "on-die caps, and Nordic's own numbers refuse "
+                             "12.5 pF twice over. Datasheet 4503_018 v1.0 "
+                             "(Sept 2025) Sec 5.5.2: OSCILLATORS.XOSC32KI."
+                             "INTCAP holds 3-18 pF in 0.65 pF steps, and with "
+                             "internal caps CL = (C_INT + C_pcb)/2, so the "
+                             "highest CL reachable is about (18+2)/2 = 10 pF "
+                             "- 12.5 pF needs C_INT ~= 23 pF, 5 pF above the "
+                             "hardware maximum. Sec 11.9.2 refuses it again "
+                             "at the part level: CL_LFXO min 6 pF, MAX 9 pF, "
+                             "which holds whether the caps are internal or "
+                             "external. Nordic's own reference BOM (Sec 10.3) "
+                             "is a CL 9 pF 2012 crystal with NO external load "
+                             "capacitors. A 12.5 pF crystal here does not "
+                             "start, or starts far off frequency, and the "
+                             "board looks simply dead. OPEN: 6 pF is inside "
+                             "the 6-9 pF window but at its edge; a 9 pF part "
+                             "in this body would centre it. Package still "
+                             "assumed to be the 3215 land pattern and NOT "
+                             "confirmed against Epson's drawing. Still 0.9 mm "
+                             "tall, which X-5's height delta binds."}))
     s.net("XL1", "U1.1", "X1.1")
     s.net("XL2", "U1.2", "X1.2")
 
     s.part("X2", "Device:Crystal_GND24", value="32MHz", group="clocks",
            footprint="Crystal:Crystal_SMD_2016-4Pin_2.0x1.6mm",
-           fields=P("C843260", "NX2016SA-32MHZ", "NDK", "$0.2333", "in stock",
+           fields=P("C843260", "NX2016SA-32MHZ-STD-CZS-5", "NDK", "$0.2333",
+                    "in stock",
                     {"Note": "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's "
                              "BOM says a 2-pad 2016 and KiCad ships no 2-pin "
                              "2016 land pattern, so the 4-pad symbol is used "
                              "and the can is grounded - better RF practice "
-                             "anyway. Recorded as a substitution."}))
+                             "anyway. Recorded as a substitution. MPN "
+                             "completed to the orderable suffix 2026-09-05."}))
     s.net("XC1", "U1.34", "X2.1")
     s.net("XC2", "U1.35", "X2.3")
     s.net("GND", "X2.2", "X2.4")
@@ -416,9 +453,15 @@ def build():
     for ref, val, note in [("L2", "2.7nH", "0201 LQP03HQ2N7B02, Nordic ref"),
                            ("L3", "3.5nH", "0201 LQP03HQ3N5B02, Nordic ref"),
                            ("L4", "3.5nH", "0201, = L3, Nordic ref")]:
+        # One code per VALUE, per S1: C1046539 is not in the catalogue as an
+        # inductor at all (2026-09-04 audit: a 33 MHz MEMS oscillator).
+        code, mpn = {"L2": ("C7216765", "LQP03HQ2N7B02D"),
+                     "L3": ("C3911055", "LQP03HQ3N5B02D"),
+                     "L4": ("C3911055", "LQP03HQ3N5B02D")}[ref]
         s.part(ref, "Device:L", value=val, group="rf", footprint=L0201,
-               fields=P("C1046539", "LQP03HQ2N7B02D", "Murata", "$0.0304",
-                        "in stock", {"Note": note, "Tol": "+/-0.1nH"}))
+               fields=P(code, mpn, "Murata", "$0.0168",
+                        "in stock", {"Note": note + " Code re-verified "
+                                     "2026-09-05 (S1).", "Tol": "+/-0.1nH"}))
     for ref, val, note in [
             ("C18", "1.5pF", "0201 NP0 high-Q. LAYOUT RULE: its ground "
                              "connects ONLY to pin 32 (VSS_PA), on the top "
@@ -430,9 +473,16 @@ def build():
             ("C23", "3.9pF", "0201 C0G - Table 82 lists it, Figure 175's "
                              "extraction does not place its node. Wired as a "
                              "shunt at ANT. CANNOT DETERMINE.")]:
+        # One code per VALUE, per S1: C1568 is a 4 pF 0402 and was serving
+        # six different capacitor values at once (2026-09-04 audit).
+        code, mpn = {"C18": ("C435397", "GJM0335C1E1R5WB01D"),
+                     "C19": ("C668326", "GJM0335C1E2R0WB01D"),
+                     "C22": ("C3904589", "GJM0335C1HR30WB01D"),
+                     "C23": ("C1852416", "GJM0335C1E3R9WB01D")}[ref]
         s.part(ref, "Device:C", value=val, group="rf", footprint=C0201,
-               fields=P("C1568", "GJM0335C1E1R5WB01", "Murata", "$0.0091",
-                        "in stock", {"Note": note, "Tol": "+/-0.05pF"}))
+               fields=P(code, mpn, "Murata", "$0.0262",
+                        "in stock", {"Note": note + " Code re-verified "
+                                     "2026-09-05 (S1).", "Tol": "+/-0.05pF"}))
 
     s.net("RF_ANT", "U1.31", "L2.1", "C23.1")
     s.net("RF_A", "L2.2", "C18.1", "L3.1")
@@ -447,18 +497,21 @@ def build():
     # ce-rf's measured S11 replaces. A pi with unmeasured values is a tuning
     # mechanism, not a match, and X-3 says so on the sheet.
     s.part("C20", "Device:C", value="0.5pF", group="rf", footprint=C0201,
-           fields=P("C1568", "GJM0335C1ER50WB01", "Murata", "$0.0091",
+           fields=P("C237424", "GJM0335C1HR50WB01D", "Murata", "$0.0223",
                     "in stock",
                     {"Note": "PI SHUNT, source side. PLACEHOLDER - value "
-                             "comes from ce-rf S11 on the real copper."}))
+                             "comes from ce-rf S11 on the real copper. Code "
+                             "re-verified 2026-09-05: C1568 is 4 pF 0402 "
+                             "(S1)."}))
     s.part("L10", "Device:L", value="0R", group="rf", footprint=L0201,
-           fields=P("C25076", "0201WMJ0000TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C473473", "0201WMF0000TEE", "UNI-ROYAL", "$0.0010",
                     "in stock",
                     {"Note": "PI SERIES, fitted as a 0 ohm jumper so the "
                              "board works untuned. Replaced by an inductor "
-                             "if ce-rf's S11 asks for one."}))
+                             "if ce-rf's S11 asks for one. Code re-verified "
+                             "2026-09-05: C25076 is 100 R 0402 (S1)."}))
     s.part("C21", "Device:C", value="0.5pF", group="rf", footprint=C0201,
-           fields=P("C1568", "GJM0335C1ER50WB01", "Murata", "$0.0091",
+           fields=P("C237424", "GJM0335C1HR50WB01D", "Murata", "$0.0223",
                     "in stock",
                     {"Note": "PI SHUNT, antenna side. PLACEHOLDER, as C20."}))
     s.net("ANT_FEED", "L10.2", "C21.1", "AE1.1")
@@ -484,20 +537,33 @@ def build():
     # topology puts C24 and C25 in series across it, so each is twice that:
     # 1.109 nF. See sim/halo-rev-a-nfc.json and out/release/board/sim.
     for ref in ("C24", "C25"):
-        s.part(ref, "Device:C", value="1.1nF", group="nfc", footprint=C0201,
-               fields=P("C1546", "0201 C0G 1.1nF", "TBC", "TBC",
-                        "TBC",
-                        {"Note": "NFC tuning, MEASURED not assumed: ce-rf "
-                                 "gives the 2-turn coil L = 0.2449 uH and "
-                                 "C_external = 554.6 pF across it, so each "
-                                 "series capacitor is 1.109 nF. The two must "
-                                 "be MATCHED to each other - a mismatch "
-                                 "unbalances the tag antenna. OPEN: a 1.1 nF "
-                                 "C0G in 0201 has NOT been confirmed to "
-                                 "exist at LCSC, and an X7R here would drift "
-                                 "the tuning with temperature. If only 1.0 nF "
-                                 "C0G is buyable the tank lands 5.3 % high "
-                                 "(14.28 MHz) and needs a bench trim."}))
+        s.part(ref, "Device:C", value="1.0nF", group="nfc", footprint=C0201,
+               fields=P("C161371", "GRM0335C1E102JA01D", "muRata", "TBC",
+                        "139,150",
+                        {"Note": "NFC tuning. 1.109 nF was the arithmetic; "
+                                 "1.0 nF is what exists. Lane S1 searched the "
+                                 "catalogue: NO 1.1 nF CAPACITOR EXISTS IN "
+                                 "0201 IN ANY DIELECTRIC, none in 0402 "
+                                 "either, and the smallest 1.1 nF anywhere is "
+                                 "0603 - three sizes too big for this board. "
+                                 "1.2 nF C0G does not exist in 0201 either, "
+                                 "so there is not even a bracketing pair. "
+                                 "THE FIX IS IN COPPER, NOT IN THE BOM: the "
+                                 "tank tunes on L*C, so dropping each "
+                                 "capacitor 1.109 -> 1.0 nF drops the series "
+                                 "capacitance 554.6 -> 500 pF and the coil "
+                                 "must rise by the same ratio, 554.6/500 = "
+                                 "1.1092, from ce-rf's measured 0.2449 uH to "
+                                 "0.2716 uH. footprints.py NFC_TURNS is 2.106 "
+                                 "for that reason and the etched coil costs "
+                                 "nothing to lengthen. The two capacitors "
+                                 "must be MATCHED to each other - a mismatch "
+                                 "unbalances the tag antenna. OPEN, and it is "
+                                 "the whole tuning: the coil at 2.106 turns "
+                                 "has NOT been re-solved by ce-rf, so its "
+                                 "inductance is a TARGET, not a measurement, "
+                                 "and the resonant frequency is CANNOT "
+                                 "DETERMINE until that run exists."}))
         s.net("GND", ref + ".2")
     s.net("NFC1", "U1.3", "AE2.1", "C24.1")
     s.net("NFC2", "U1.4", "AE2.2", "C25.1")
@@ -558,13 +624,15 @@ def build():
     # are straps, and both are done through a resistor rather than a via to
     # the plane so the mode can be changed on a bring-up board.
     s.part("R5", "Device:R", value="10k", group="accel", footprint=R0201,
-           fields=P("C25744", "0201WMF1002TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C473048", "0201WMF1002TEE", "UNI-ROYAL", "$0.0010",
                     "in stock",
                     {"Note": "CS strapped HIGH = I2C mode (DS11811 §5). "
                              "Through a resistor, not a via, so SPI can be "
-                             "selected on a bring-up board by moving it."}))
+                             "selected on a bring-up board by moving it. "
+                             "Code re-verified 2026-09-05: C25744 is 0402 "
+                             "under an 0201 land (S1)."}))
     s.part("R6", "Device:R", value="10k", group="accel", footprint=R0201,
-           fields=P("C25744", "0201WMF1002TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C473048", "0201WMF1002TEE", "UNI-ROYAL", "$0.0010",
                     "in stock", {"Note": "SA0 strapped LOW = address 0x18"}))
     s.net("VDD", "R5.1")
     s.net("ACC_CS", "R5.2", "U2.2")
@@ -576,7 +644,7 @@ def build():
     # down - microseconds per 10-second sample.
     for ref, net in (("R7", "I2C_SCL"), ("R8", "I2C_SDA")):
         s.part(ref, "Device:R", value="10k", group="accel", footprint=R0201,
-               fields=P("C25744", "0201WMF1002TEE", "UNI-ROYAL", "$0.0012",
+               fields=P("C473048", "0201WMF1002TEE", "UNI-ROYAL", "$0.0010",
                         "in stock", {"Note": "I2C bus pull-up"}))
         s.net("VDD", ref + ".1")
         s.net(net, ref + ".2")
@@ -606,7 +674,7 @@ def build():
                            "LCSC or JLCPCB, Digi-Key 403, Mouser captcha. "
                            "One rep quote closes it."})
     s.part("R9", "Device:R", value="100R", group="sounder", footprint=R0201,
-           fields=P("C25076", "0201WMF1000TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C270366", "0201WMF1000TEE", "UNI-ROYAL", "$0.0012",
                     "in stock",
                     {"Note": "series damping on one leg, and it EARNS ITS "
                              "PLACE - measured, not argued. A bender is a "
@@ -635,7 +703,7 @@ def build():
                            "interface that fits SPEC.md §4's 1.5 mm budget.",
                    "LCSC Part #": "n/a"})
     s.part("R10", "Device:R", value="10k", group="debug", footprint=R0201,
-           fields=P("C25744", "0201WMF1002TEE", "UNI-ROYAL", "$0.0012",
+           fields=P("C473048", "0201WMF1002TEE", "UNI-ROYAL", "$0.0010",
                     "in stock",
                     {"Note": "nRESET pull-up. Table 82 says 1k; 10k is used "
                              "because 1k across a coin cell is 3 mA if "

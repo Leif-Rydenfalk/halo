@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_sch")
-		(date "2026-09-04T22:20:52")
+		(date "2026-09-05T03:20:15")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -12,7 +12,7 @@
 				(title "halo revision A - open Find My tag, nRF54L10, CR2032, Ø26 mm")
 				(company "Leif-Rydenfalk/halo - CERN-OHL-S")
 				(rev "A")
-				(date "2026-09-04")
+				(date "2026-09-05")
 				(source "halo_rev_a.kicad_sch")
 				(comment
 					(number "1")
@@ -171,19 +171,13 @@
 			(description "CR2032 on three sprung C5191 fingers: two on the positive can rim, one on the negative face. One positive finger carries current, the other is sense only - halo rev A D-5.  [pinout: Adam Catley AirTag teardown (2 positive + 1 negative carrier-side contacts, fetched 2026-09-03) and lane M's ce-designs/halo/design.py R_CONTACT_POS = 9.50 / R_CONTACT_NEG = 6.00, A_SPRING_DEG = 30.]")
 			(fields
 				(field
-					(name "LCSC Part #") "C7498149")
+					(name "LCSC Part #") "NO ORDER CODE - NOT AN SMT LINE")
 				(field
 					(name "MPN") "CR2032")
 				(field
 					(name "Manufacturer") "Panasonic")
 				(field
-					(name "Note") "THE FOOTPRINT IS halo's OWN, drawn by the layout: three pads at the radii lane M fixed (R_CONTACT_POS 9.50 x2, R_CONTACT_NEG 6.00 x1, design.py). Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
-				(field
-					(name "Price@1k") "$0.39")
-				(field
-					(name "Priced") "2026-09-03")
-				(field
-					(name "Stock") "in stock")
+					(name "Note") "THE CELL IS BOUGHT, THE HOLDER IS NOT: no part is fitted on BT1 - the contacts are three stamped C5191 fingers on halo's OWN land pattern. S1 2026-09-05: the code this line carried, C7498149, is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER, which must not be ordered and cannot be fitted on this footprint. Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
 				(field
 					(name "Footprint") "halo:HALO_BATT_CONTACT_3PAD")
 				(field
@@ -198,7 +192,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C7498149")
+				(value "NO ORDER CODE - NOT AN SMT LINE")
 			)
 			(property
 				(name "MPN")
@@ -210,19 +204,7 @@
 			)
 			(property
 				(name "Note")
-				(value "THE FOOTPRINT IS halo's OWN, drawn by the layout: three pads at the radii lane M fixed (R_CONTACT_POS 9.50 x2, R_CONTACT_NEG 6.00 x1, design.py). Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
-			)
-			(property
-				(name "Price@1k")
-				(value "$0.39")
-			)
-			(property
-				(name "Priced")
-				(value "2026-09-03")
-			)
-			(property
-				(name "Stock")
-				(value "in stock")
+				(value "THE CELL IS BOUGHT, THE HOLDER IS NOT: no part is fitted on BT1 - the contacts are three stamped C5191 fingers on halo's OWN land pattern. S1 2026-09-05: the code this line carried, C7498149, is a Lian Xin BS-CR2032-8 SMD BATTERY HOLDER, which must not be ordered and cannot be fitted on this footprint. Pad 1 = P+ current finger, pad 3 = P+ SENSE finger, pad 2 = negative.")
 			)
 			(property
 				(name "Sheetname")
@@ -266,15 +248,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C5142565")
 				(field
-					(name "MPN") "CL03A104KA3NNNC")
+					(name "MPN") "TCC0201X5R104K100ZT")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "CCTC")
 				(field
-					(name "Note") "0201 X7R 16V, at VDD pin 10")
+					(name "Note") "0201 X5R 10V, at VDD pin 10. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "$0.0005")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -295,23 +277,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C5142565")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A104KA3NNNC")
+				(value "TCC0201X5R104K100ZT")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "CCTC")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R 16V, at VDD pin 10")
+				(value "0201 X5R 10V, at VDD pin 10. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "$0.0005")
 			)
 			(property
 				(name "Priced")
@@ -368,15 +350,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C5142565")
 				(field
-					(name "MPN") "CL03A104KA3NNNC")
+					(name "MPN") "TCC0201X5R104K100ZT")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "CCTC")
 				(field
-					(name "Note") "0201 X7R 16V, at VDD pin 22")
+					(name "Note") "0201 X5R 10V, at VDD pin 22. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "$0.0005")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -397,23 +379,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C5142565")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A104KA3NNNC")
+				(value "TCC0201X5R104K100ZT")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "CCTC")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R 16V, at VDD pin 22")
+				(value "0201 X5R 10V, at VDD pin 22. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "$0.0005")
 			)
 			(property
 				(name "Priced")
@@ -470,15 +452,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C5142565")
 				(field
-					(name "MPN") "CL03A104KA3NNNC")
+					(name "MPN") "TCC0201X5R104K100ZT")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "CCTC")
 				(field
-					(name "Note") "0201 X7R 16V, at VDD pin 36")
+					(name "Note") "0201 X5R 10V, at VDD pin 36. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "$0.0005")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -499,23 +481,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C5142565")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A104KA3NNNC")
+				(value "TCC0201X5R104K100ZT")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "CCTC")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R 16V, at VDD pin 36")
+				(value "0201 X5R 10V, at VDD pin 36. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "$0.0005")
 			)
 			(property
 				(name "Priced")
@@ -572,15 +554,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C5142565")
 				(field
-					(name "MPN") "CL03A104KA3NNNC")
+					(name "MPN") "TCC0201X5R104K100ZT")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "CCTC")
 				(field
-					(name "Note") "0201 X7R 16V, at VDD pins 47/48")
+					(name "Note") "0201 X5R 10V, at VDD pins 47/48. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "$0.0005")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -601,23 +583,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C5142565")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A104KA3NNNC")
+				(value "TCC0201X5R104K100ZT")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "CCTC")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R 16V, at VDD pins 47/48")
+				(value "0201 X5R 10V, at VDD pins 47/48. Code re-verified 2026-09-05: C1546 is a 100 pF 0402, not this line (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "$0.0005")
 			)
 			(property
 				(name "Priced")
@@ -674,15 +656,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C2827888")
+					(name "LCSC Part #") "C335106")
 				(field
-					(name "MPN") "CL03A225MQ3CSNC")
+					(name "MPN") "GRM033R61A225KE47D")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "0201 X6T 6.3V, DECD reservoir (Table 82)")
+					(name "Note") "0201 X5R 10V, DECD reservoir (Table 82) Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0301")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -701,23 +683,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C2827888")
+				(value "C335106")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A225MQ3CSNC")
+				(value "GRM033R61A225KE47D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "0201 X6T 6.3V, DECD reservoir (Table 82)")
+				(value "0201 X5R 10V, DECD reservoir (Table 82) Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0301")
 			)
 			(property
 				(name "Priced")
@@ -770,15 +752,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C2827888")
+					(name "LCSC Part #") "C76941")
 				(field
-					(name "MPN") "CL03A225MQ3CSNC")
+					(name "MPN") "GRM033R71A103KA01D")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source.")
+					(name "Note") "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source. Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0301")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -797,23 +779,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C2827888")
+				(value "C76941")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A225MQ3CSNC")
+				(value "GRM033R71A103KA01D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source.")
+				(value "0201 X7R - Table 82 lists it, Figure 175's extraction does not place its node. Wired to DECD. CANNOT DETERMINE against the source. Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0301")
 			)
 			(property
 				(name "Priced")
@@ -866,15 +848,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C2827888")
+					(name "LCSC Part #") "C161479")
 				(field
-					(name "MPN") "CL03A225MQ3CSNC")
+					(name "MPN") "GRM033R71A222KA01D")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "0201 X7R - same, CANNOT DETERMINE")
+					(name "Note") "0201 X7R - same, CANNOT DETERMINE Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0301")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -893,23 +875,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C2827888")
+				(value "C161479")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A225MQ3CSNC")
+				(value "GRM033R71A222KA01D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "0201 X7R - same, CANNOT DETERMINE")
+				(value "0201 X7R - same, CANNOT DETERMINE Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0301")
 			)
 			(property
 				(name "Priced")
@@ -962,15 +944,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C2827888")
+					(name "LCSC Part #") "C335106")
 				(field
-					(name "MPN") "CL03A225MQ3CSNC")
+					(name "MPN") "GRM033R61A225KE47D")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "0201 X6T, on the DECA=DECRF node")
+					(name "Note") "0201 X5R 10V, on the DECA=DECRF node. Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0301")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -989,23 +971,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C2827888")
+				(value "C335106")
 			)
 			(property
 				(name "MPN")
-				(value "CL03A225MQ3CSNC")
+				(value "GRM033R61A225KE47D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "0201 X6T, on the DECA=DECRF node")
+				(value "0201 X5R 10V, on the DECA=DECRF node. Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0301")
 			)
 			(property
 				(name "Priced")
@@ -1442,15 +1424,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1523")
+					(name "LCSC Part #") "C76922")
 				(field
-					(name "MPN") "CL03C101JB3NNNC")
+					(name "MPN") "GRM0335C1H101JA01D")
 				(field
-					(name "Manufacturer") "Samsung")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves")
+					(name "Note") "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves. Code re-verified 2026-09-05: C1523 is a 1 nF 0402 (S1).")
 				(field
-					(name "Price@1k") "$0.0029")
+					(name "Price@1k") "$0.0033")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -1469,23 +1451,23 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1523")
+				(value "C76922")
 			)
 			(property
 				(name "MPN")
-				(value "CL03C101JB3NNNC")
+				(value "GRM0335C1H101JA01D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "Samsung")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves")
+				(value "settles the divider inside the ADC's acquisition window; also sets the ~0.24 ms collapse time when the cell leaves. Code re-verified 2026-09-05: C1523 is a 1 nF 0402 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0029")
+				(value "$0.0033")
 			)
 			(property
 				(name "Priced")
@@ -1802,15 +1784,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C435397")
 				(field
-					(name "MPN") "GJM0335C1E1R5WB01")
+					(name "MPN") "GJM0335C1E1R5WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175.")
+					(name "Note") "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175. Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0262")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -1831,11 +1813,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C435397")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1E1R5WB01")
+				(value "GJM0335C1E1R5WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -1843,11 +1825,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175.")
+				(value "0201 NP0 high-Q. LAYOUT RULE: its ground connects ONLY to pin 32 (VSS_PA), on the top layer. Nordic's words, Figure 175. Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0262")
 			)
 			(property
 				(name "Priced")
@@ -1904,15 +1886,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C668326")
 				(field
-					(name "MPN") "GJM0335C1E1R5WB01")
+					(name "MPN") "GJM0335C1E2R0WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175.")
+					(name "Note") "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175. Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0262")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -1933,11 +1915,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C668326")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1E1R5WB01")
+				(value "GJM0335C1E2R0WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -1945,11 +1927,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175.")
+				(value "0201 NP0. LAYOUT RULE: its ground MUST be isolated from every ground layer except the bottom. Nordic's words, Figure 175. Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0262")
 			)
 			(property
 				(name "Priced")
@@ -2006,15 +1988,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C237424")
 				(field
-					(name "MPN") "GJM0335C1ER50WB01")
+					(name "MPN") "GJM0335C1HR50WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper.")
+					(name "Note") "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper. Code re-verified 2026-09-05: C1568 is 4 pF 0402 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0223")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -2033,11 +2015,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C237424")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1ER50WB01")
+				(value "GJM0335C1HR50WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -2045,11 +2027,11 @@
 			)
 			(property
 				(name "Note")
-				(value "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper.")
+				(value "PI SHUNT, source side. PLACEHOLDER - value comes from ce-rf S11 on the real copper. Code re-verified 2026-09-05: C1568 is 4 pF 0402 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0223")
 			)
 			(property
 				(name "Priced")
@@ -2102,15 +2084,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C237424")
 				(field
-					(name "MPN") "GJM0335C1ER50WB01")
+					(name "MPN") "GJM0335C1HR50WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
 					(name "Note") "PI SHUNT, antenna side. PLACEHOLDER, as C20.")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0223")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -2129,11 +2111,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C237424")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1ER50WB01")
+				(value "GJM0335C1HR50WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -2145,7 +2127,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0223")
 			)
 			(property
 				(name "Priced")
@@ -2198,15 +2180,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C3904589")
 				(field
-					(name "MPN") "GJM0335C1E1R5WB01")
+					(name "MPN") "GJM0335C1HR30WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 C0G, series trim into the pi")
+					(name "Note") "0201 C0G, series trim into the pi Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0262")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -2227,11 +2209,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C3904589")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1E1R5WB01")
+				(value "GJM0335C1HR30WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -2239,11 +2221,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 C0G, series trim into the pi")
+				(value "0201 C0G, series trim into the pi Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0262")
 			)
 			(property
 				(name "Priced")
@@ -2300,15 +2282,15 @@
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1568")
+					(name "LCSC Part #") "C1852416")
 				(field
-					(name "MPN") "GJM0335C1E1R5WB01")
+					(name "MPN") "GJM0335C1E3R9WB01D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE.")
+					(name "Note") "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE. Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0091")
+					(name "Price@1k") "$0.0262")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -2329,11 +2311,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1568")
+				(value "C1852416")
 			)
 			(property
 				(name "MPN")
-				(value "GJM0335C1E1R5WB01")
+				(value "GJM0335C1E3R9WB01D")
 			)
 			(property
 				(name "Manufacturer")
@@ -2341,11 +2323,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE.")
+				(value "0201 C0G - Table 82 lists it, Figure 175's extraction does not place its node. Wired as a shunt at ANT. CANNOT DETERMINE. Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0091")
+				(value "$0.0262")
 			)
 			(property
 				(name "Priced")
@@ -2396,25 +2378,25 @@
 		)
 		(comp
 			(ref "C24")
-			(value "1.1nF")
+			(value "1.0nF")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C161371")
 				(field
-					(name "MPN") "0201 C0G 1.1nF")
+					(name "MPN") "GRM0335C1E102JA01D")
 				(field
-					(name "Manufacturer") "TBC")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
+					(name "Note") "NFC tuning. 1.109 nF was the arithmetic; 1.0 nF is what exists. Lane S1 searched the catalogue: NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, none in 0402 either, and the smallest 1.1 nF anywhere is 0603 - three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is not even a bracketing pair. THE FIX IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so dropping each capacitor 1.109 -> 1.0 nF drops the series capacitance 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. footprints.py NFC_TURNS is 2.106 for that reason and the etched coil costs nothing to lengthen. The two capacitors must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN, and it is the whole tuning: the coil at 2.106 turns has NOT been re-solved by ce-rf, so its inductance is a TARGET, not a measurement, and the resonant frequency is CANNOT DETERMINE until that run exists.")
 				(field
 					(name "Price@1k") "TBC")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "TBC")
+					(name "Stock") "139,150")
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
 				(field
@@ -2429,19 +2411,19 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C161371")
 			)
 			(property
 				(name "MPN")
-				(value "0201 C0G 1.1nF")
+				(value "GRM0335C1E102JA01D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "TBC")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
+				(value "NFC tuning. 1.109 nF was the arithmetic; 1.0 nF is what exists. Lane S1 searched the catalogue: NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, none in 0402 either, and the smallest 1.1 nF anywhere is 0603 - three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is not even a bracketing pair. THE FIX IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so dropping each capacitor 1.109 -> 1.0 nF drops the series capacitance 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. footprints.py NFC_TURNS is 2.106 for that reason and the etched coil costs nothing to lengthen. The two capacitors must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN, and it is the whole tuning: the coil at 2.106 turns has NOT been re-solved by ce-rf, so its inductance is a TARGET, not a measurement, and the resonant frequency is CANNOT DETERMINE until that run exists.")
 			)
 			(property
 				(name "Price@1k")
@@ -2453,7 +2435,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "TBC")
+				(value "139,150")
 			)
 			(property
 				(name "Sheetname")
@@ -2492,25 +2474,25 @@
 		)
 		(comp
 			(ref "C25")
-			(value "1.1nF")
+			(value "1.0nF")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1546")
+					(name "LCSC Part #") "C161371")
 				(field
-					(name "MPN") "0201 C0G 1.1nF")
+					(name "MPN") "GRM0335C1E102JA01D")
 				(field
-					(name "Manufacturer") "TBC")
+					(name "Manufacturer") "muRata")
 				(field
-					(name "Note") "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
+					(name "Note") "NFC tuning. 1.109 nF was the arithmetic; 1.0 nF is what exists. Lane S1 searched the catalogue: NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, none in 0402 either, and the smallest 1.1 nF anywhere is 0603 - three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is not even a bracketing pair. THE FIX IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so dropping each capacitor 1.109 -> 1.0 nF drops the series capacitance 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. footprints.py NFC_TURNS is 2.106 for that reason and the etched coil costs nothing to lengthen. The two capacitors must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN, and it is the whole tuning: the coil at 2.106 turns has NOT been re-solved by ce-rf, so its inductance is a TARGET, not a measurement, and the resonant frequency is CANNOT DETERMINE until that run exists.")
 				(field
 					(name "Price@1k") "TBC")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "TBC")
+					(name "Stock") "139,150")
 				(field
 					(name "Footprint") "Capacitor_SMD:C_0201_0603Metric")
 				(field
@@ -2525,19 +2507,19 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1546")
+				(value "C161371")
 			)
 			(property
 				(name "MPN")
-				(value "0201 C0G 1.1nF")
+				(value "GRM0335C1E102JA01D")
 			)
 			(property
 				(name "Manufacturer")
-				(value "TBC")
+				(value "muRata")
 			)
 			(property
 				(name "Note")
-				(value "NFC tuning, MEASURED not assumed: ce-rf gives the 2-turn coil L = 0.2449 uH and C_external = 554.6 pF across it, so each series capacitor is 1.109 nF. The two must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN: a 1.1 nF C0G in 0201 has NOT been confirmed to exist at LCSC, and an X7R here would drift the tuning with temperature. If only 1.0 nF C0G is buyable the tank lands 5.3 % high (14.28 MHz) and needs a bench trim.")
+				(value "NFC tuning. 1.109 nF was the arithmetic; 1.0 nF is what exists. Lane S1 searched the catalogue: NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, none in 0402 either, and the smallest 1.1 nF anywhere is 0603 - three sizes too big for this board. 1.2 nF C0G does not exist in 0201 either, so there is not even a bracketing pair. THE FIX IS IN COPPER, NOT IN THE BOM: the tank tunes on L*C, so dropping each capacitor 1.109 -> 1.0 nF drops the series capacitance 554.6 -> 500 pF and the coil must rise by the same ratio, 554.6/500 = 1.1092, from ce-rf's measured 0.2449 uH to 0.2716 uH. footprints.py NFC_TURNS is 2.106 for that reason and the etched coil costs nothing to lengthen. The two capacitors must be MATCHED to each other - a mismatch unbalances the tag antenna. OPEN, and it is the whole tuning: the coil at 2.106 turns has NOT been re-solved by ce-rf, so its inductance is a TARGET, not a measurement, and the resonant frequency is CANNOT DETERMINE until that run exists.")
 			)
 			(property
 				(name "Price@1k")
@@ -2549,7 +2531,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "TBC")
+				(value "139,150")
 			)
 			(property
 				(name "Sheetname")
@@ -2880,15 +2862,15 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1046")
+					(name "LCSC Part #") "C76799")
 				(field
 					(name "MPN") "MLZ1608M4R7WT000")
 				(field
 					(name "Manufacturer") "TDK")
 				(field
-					(name "Note") "0603 multilayer, >=120 mA Isat, DCC->DECD. 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
+					(name "Note") "0603 multilayer, >=120 mA Isat, DCC->DECD. Code re-verified 2026-09-05: C1046 is a 10 uH 0805, not this line (S1). 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
 				(field
-					(name "Price@1k") "$0.0180")
+					(name "Price@1k") "$0.0301")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -2907,7 +2889,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1046")
+				(value "C76799")
 			)
 			(property
 				(name "MPN")
@@ -2919,11 +2901,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0603 multilayer, >=120 mA Isat, DCC->DECD. 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
+				(value "0603 multilayer, >=120 mA Isat, DCC->DECD. Code re-verified 2026-09-05: C1046 is a 10 uH 0805, not this line (S1). 0603 is 0.9 mm tall: BOTTOM FACE ONLY, and it is one of the parts X-5's height delta binds.")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0180")
+				(value "$0.0301")
 			)
 			(property
 				(name "Priced")
@@ -2976,15 +2958,15 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1046539")
+					(name "LCSC Part #") "C7216765")
 				(field
 					(name "MPN") "LQP03HQ2N7B02D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 LQP03HQ2N7B02, Nordic ref")
+					(name "Note") "0201 LQP03HQ2N7B02, Nordic ref Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0304")
+					(name "Price@1k") "$0.0168")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3005,7 +2987,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1046539")
+				(value "C7216765")
 			)
 			(property
 				(name "MPN")
@@ -3017,11 +2999,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 LQP03HQ2N7B02, Nordic ref")
+				(value "0201 LQP03HQ2N7B02, Nordic ref Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0304")
+				(value "$0.0168")
 			)
 			(property
 				(name "Priced")
@@ -3078,15 +3060,15 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1046539")
+					(name "LCSC Part #") "C3911055")
 				(field
-					(name "MPN") "LQP03HQ2N7B02D")
+					(name "MPN") "LQP03HQ3N5B02D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201 LQP03HQ3N5B02, Nordic ref")
+					(name "Note") "0201 LQP03HQ3N5B02, Nordic ref Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0304")
+					(name "Price@1k") "$0.0168")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3107,11 +3089,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1046539")
+				(value "C3911055")
 			)
 			(property
 				(name "MPN")
-				(value "LQP03HQ2N7B02D")
+				(value "LQP03HQ3N5B02D")
 			)
 			(property
 				(name "Manufacturer")
@@ -3119,11 +3101,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201 LQP03HQ3N5B02, Nordic ref")
+				(value "0201 LQP03HQ3N5B02, Nordic ref Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0304")
+				(value "$0.0168")
 			)
 			(property
 				(name "Priced")
@@ -3180,15 +3162,15 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC Part #") "C1046539")
+					(name "LCSC Part #") "C3911055")
 				(field
-					(name "MPN") "LQP03HQ2N7B02D")
+					(name "MPN") "LQP03HQ3N5B02D")
 				(field
 					(name "Manufacturer") "Murata")
 				(field
-					(name "Note") "0201, = L3, Nordic ref")
+					(name "Note") "0201, = L3, Nordic ref Code re-verified 2026-09-05 (S1).")
 				(field
-					(name "Price@1k") "$0.0304")
+					(name "Price@1k") "$0.0168")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3209,11 +3191,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C1046539")
+				(value "C3911055")
 			)
 			(property
 				(name "MPN")
-				(value "LQP03HQ2N7B02D")
+				(value "LQP03HQ3N5B02D")
 			)
 			(property
 				(name "Manufacturer")
@@ -3221,11 +3203,11 @@
 			)
 			(property
 				(name "Note")
-				(value "0201, = L3, Nordic ref")
+				(value "0201, = L3, Nordic ref Code re-verified 2026-09-05 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0304")
+				(value "$0.0168")
 			)
 			(property
 				(name "Priced")
@@ -3282,15 +3264,15 @@
 			(description "Inductor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25076")
+					(name "LCSC Part #") "C473473")
 				(field
-					(name "MPN") "0201WMJ0000TEE")
+					(name "MPN") "0201WMF0000TEE")
 				(field
 					(name "Manufacturer") "UNI-ROYAL")
 				(field
-					(name "Note") "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one.")
+					(name "Note") "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one. Code re-verified 2026-09-05: C25076 is 100 R 0402 (S1).")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3309,11 +3291,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25076")
+				(value "C473473")
 			)
 			(property
 				(name "MPN")
-				(value "0201WMJ0000TEE")
+				(value "0201WMF0000TEE")
 			)
 			(property
 				(name "Manufacturer")
@@ -3321,11 +3303,11 @@
 			)
 			(property
 				(name "Note")
-				(value "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one.")
+				(value "PI SERIES, fitted as a 0 ohm jumper so the board works untuned. Replaced by an inductor if ce-rf's S11 asks for one. Code re-verified 2026-09-05: C25076 is 100 R 0402 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -3456,15 +3438,15 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25765")
+					(name "LCSC Part #") "C778408")
 				(field
 					(name "MPN") "0201WMF4704TEE")
 				(field
 					(name "Manufacturer") "UNI-ROYAL")
 				(field
-					(name "Note") "sense divider, high leg")
+					(name "Note") "sense divider, high leg. Code re-verified 2026-09-05: C25765 is 20 k 0402 (S1).")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0015")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3483,7 +3465,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25765")
+				(value "C778408")
 			)
 			(property
 				(name "MPN")
@@ -3495,11 +3477,11 @@
 			)
 			(property
 				(name "Note")
-				(value "sense divider, high leg")
+				(value "sense divider, high leg. Code re-verified 2026-09-05: C25765 is 20 k 0402 (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0015")
 			)
 			(property
 				(name "Priced")
@@ -3552,7 +3534,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25765")
+					(name "LCSC Part #") "C778408")
 				(field
 					(name "MPN") "0201WMF4704TEE")
 				(field
@@ -3560,7 +3542,7 @@
 				(field
 					(name "Note") "sense divider, low leg - returns to a GPIO, not to GND, so the divider is OFF when idle")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0015")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3579,7 +3561,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25765")
+				(value "C778408")
 			)
 			(property
 				(name "MPN")
@@ -3595,7 +3577,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0015")
 			)
 			(property
 				(name "Priced")
@@ -3648,15 +3630,15 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25744")
+					(name "LCSC Part #") "C473048")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
 					(name "Manufacturer") "UNI-ROYAL")
 				(field
-					(name "Note") "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it.")
+					(name "Note") "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it. Code re-verified 2026-09-05: C25744 is 0402 under an 0201 land (S1).")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3675,7 +3657,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25744")
+				(value "C473048")
 			)
 			(property
 				(name "MPN")
@@ -3687,11 +3669,11 @@
 			)
 			(property
 				(name "Note")
-				(value "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it.")
+				(value "CS strapped HIGH = I2C mode (DS11811 §5). Through a resistor, not a via, so SPI can be selected on a bring-up board by moving it. Code re-verified 2026-09-05: C25744 is 0402 under an 0201 land (S1).")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -3744,7 +3726,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25744")
+					(name "LCSC Part #") "C473048")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3752,7 +3734,7 @@
 				(field
 					(name "Note") "SA0 strapped LOW = address 0x18")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3771,7 +3753,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25744")
+				(value "C473048")
 			)
 			(property
 				(name "MPN")
@@ -3787,7 +3769,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -3840,7 +3822,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25744")
+					(name "LCSC Part #") "C473048")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3848,7 +3830,7 @@
 				(field
 					(name "Note") "I2C bus pull-up")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3867,7 +3849,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25744")
+				(value "C473048")
 			)
 			(property
 				(name "MPN")
@@ -3883,7 +3865,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -3936,7 +3918,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25744")
+					(name "LCSC Part #") "C473048")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -3944,7 +3926,7 @@
 				(field
 					(name "Note") "I2C bus pull-up")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -3963,7 +3945,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25744")
+				(value "C473048")
 			)
 			(property
 				(name "MPN")
@@ -3979,7 +3961,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -4032,7 +4014,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25076")
+					(name "LCSC Part #") "C270366")
 				(field
 					(name "MPN") "0201WMF1000TEE")
 				(field
@@ -4059,7 +4041,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25076")
+				(value "C270366")
 			)
 			(property
 				(name "MPN")
@@ -4128,7 +4110,7 @@
 			(description "Resistor")
 			(fields
 				(field
-					(name "LCSC Part #") "C25744")
+					(name "LCSC Part #") "C473048")
 				(field
 					(name "MPN") "0201WMF1002TEE")
 				(field
@@ -4136,7 +4118,7 @@
 				(field
 					(name "Note") "nRESET pull-up. Table 82 says 1k; 10k is used because 1k across a coin cell is 3 mA if anything ever holds reset low, and the nRESET input's leakage is nanoamps.")
 				(field
-					(name "Price@1k") "$0.0012")
+					(name "Price@1k") "$0.0010")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
@@ -4155,7 +4137,7 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C25744")
+				(value "C473048")
 			)
 			(property
 				(name "MPN")
@@ -4171,7 +4153,7 @@
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.0012")
+				(value "$0.0010")
 			)
 			(property
 				(name "Priced")
@@ -5272,19 +5254,19 @@
 			(description "Two pin crystal")
 			(fields
 				(field
-					(name "LCSC Part #") "C32346")
+					(name "LCSC Part #") "C95361")
 				(field
-					(name "MPN") "FC-135 32.768kHz")
+					(name "MPN") "Q13FC13500049")
 				(field
 					(name "Manufacturer") "Epson")
 				(field
-					(name "Note") "Epson 32.768 kHz. CHANGED from X321532768KGD2SI (C620155) on the factory lane's find: C32346 is a JLCPCB BASIC part with 444,985 in stock at $0.1375/100, so it avoids the $3.07 extended-part feeder fee as well as being deeper stock. OPEN: its package is assumed to be the 3215 land pattern drawn here and that has NOT been confirmed against Epson's drawing - confirm before ordering. Still 0.9 mm tall, which X-5's height delta binds.")
+					(name "Note") "Epson FC-135 32.768 kHz, CL = 6 pF. CHANGED from C32346 (Q13FC13500004, CL 12.5 pF), which was BOUGHT ON PRICE AND NEVER CHECKED AGAINST THE SoC. D-3 deletes the external load capacitors, so the whole load is the nRF54L's on-die caps, and Nordic's own numbers refuse 12.5 pF twice over. Datasheet 4503_018 v1.0 (Sept 2025) Sec 5.5.2: OSCILLATORS.XOSC32KI.INTCAP holds 3-18 pF in 0.65 pF steps, and with internal caps CL = (C_INT + C_pcb)/2, so the highest CL reachable is about (18+2)/2 = 10 pF - 12.5 pF needs C_INT ~= 23 pF, 5 pF above the hardware maximum. Sec 11.9.2 refuses it again at the part level: CL_LFXO min 6 pF, MAX 9 pF, which holds whether the caps are internal or external. Nordic's own reference BOM (Sec 10.3) is a CL 9 pF 2012 crystal with NO external load capacitors. A 12.5 pF crystal here does not start, or starts far off frequency, and the board looks simply dead. OPEN: 6 pF is inside the 6-9 pF window but at its edge; a 9 pF part in this body would centre it. Package still assumed to be the 3215 land pattern and NOT confirmed against Epson's drawing. Still 0.9 mm tall, which X-5's height delta binds.")
 				(field
-					(name "Price@1k") "$0.1375")
+					(name "Price@1k") "TBC")
 				(field
 					(name "Priced") "2026-09-03")
 				(field
-					(name "Stock") "444,985")
+					(name "Stock") "134,310")
 				(field
 					(name "Footprint") "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
 				(field
@@ -5299,11 +5281,11 @@
 			)
 			(property
 				(name "LCSC Part #")
-				(value "C32346")
+				(value "C95361")
 			)
 			(property
 				(name "MPN")
-				(value "FC-135 32.768kHz")
+				(value "Q13FC13500049")
 			)
 			(property
 				(name "Manufacturer")
@@ -5311,11 +5293,11 @@
 			)
 			(property
 				(name "Note")
-				(value "Epson 32.768 kHz. CHANGED from X321532768KGD2SI (C620155) on the factory lane's find: C32346 is a JLCPCB BASIC part with 444,985 in stock at $0.1375/100, so it avoids the $3.07 extended-part feeder fee as well as being deeper stock. OPEN: its package is assumed to be the 3215 land pattern drawn here and that has NOT been confirmed against Epson's drawing - confirm before ordering. Still 0.9 mm tall, which X-5's height delta binds.")
+				(value "Epson FC-135 32.768 kHz, CL = 6 pF. CHANGED from C32346 (Q13FC13500004, CL 12.5 pF), which was BOUGHT ON PRICE AND NEVER CHECKED AGAINST THE SoC. D-3 deletes the external load capacitors, so the whole load is the nRF54L's on-die caps, and Nordic's own numbers refuse 12.5 pF twice over. Datasheet 4503_018 v1.0 (Sept 2025) Sec 5.5.2: OSCILLATORS.XOSC32KI.INTCAP holds 3-18 pF in 0.65 pF steps, and with internal caps CL = (C_INT + C_pcb)/2, so the highest CL reachable is about (18+2)/2 = 10 pF - 12.5 pF needs C_INT ~= 23 pF, 5 pF above the hardware maximum. Sec 11.9.2 refuses it again at the part level: CL_LFXO min 6 pF, MAX 9 pF, which holds whether the caps are internal or external. Nordic's own reference BOM (Sec 10.3) is a CL 9 pF 2012 crystal with NO external load capacitors. A 12.5 pF crystal here does not start, or starts far off frequency, and the board looks simply dead. OPEN: 6 pF is inside the 6-9 pF window but at its edge; a 9 pF part in this body would centre it. Package still assumed to be the 3215 land pattern and NOT confirmed against Epson's drawing. Still 0.9 mm tall, which X-5's height delta binds.")
 			)
 			(property
 				(name "Price@1k")
-				(value "$0.1375")
+				(value "TBC")
 			)
 			(property
 				(name "Priced")
@@ -5323,7 +5305,7 @@
 			)
 			(property
 				(name "Stock")
-				(value "444,985")
+				(value "134,310")
 			)
 			(property
 				(name "Sheetname")
@@ -5370,11 +5352,11 @@
 				(field
 					(name "LCSC Part #") "C843260")
 				(field
-					(name "MPN") "NX2016SA-32MHZ")
+					(name "MPN") "NX2016SA-32MHZ-STD-CZS-5")
 				(field
 					(name "Manufacturer") "NDK")
 				(field
-					(name "Note") "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution.")
+					(name "Note") "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution. MPN completed to the orderable suffix 2026-09-05.")
 				(field
 					(name "Price@1k") "$0.2333")
 				(field
@@ -5399,7 +5381,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "NX2016SA-32MHZ")
+				(value "NX2016SA-32MHZ-STD-CZS-5")
 			)
 			(property
 				(name "Manufacturer")
@@ -5407,7 +5389,7 @@
 			)
 			(property
 				(name "Note")
-				(value "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution.")
+				(value "CL 8 pF, +/-10 ppm, 2.0x1.6x0.5 mm. Nordic's BOM says a 2-pad 2016 and KiCad ships no 2-pin 2016 land pattern, so the 4-pad symbol is used and the can is grounded - better RF practice anyway. Recorded as a substitution. MPN completed to the orderable suffix 2026-09-05.")
 			)
 			(property
 				(name "Price@1k")

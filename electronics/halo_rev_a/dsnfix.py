@@ -112,6 +112,46 @@ def _drop_nets_from_network(s, nets):
     return s, dropped
 
 
+def renet_nfc(text, hints):
+    """Put the outer half of the NFC winding back on NFC1 in the DSN.
+
+    KiCad merges NFC1 into NFC2 through the AE2 net tie — correctly, because a
+    coil IS a DC short between its own terminals — so the .kicad_pcb, and
+    therefore the Specctra export, label every winding segment NFC2 while the
+    PADS keep their own nets. Handed that, freerouting sees one six-pin net
+    and joins it by the shortest path it can find: a 2 mm trace across the
+    feed, the coil bypassed, the DRC clean, and no NFC antenna. The winding is
+    a spiral, so RADIUS separates the halves exactly; `board.py` computes the
+    split and writes it to `out/dsn_hints.json`.
+    """
+    n = hints["nfc"]
+    cx, cy = hints["dsn_centre_um"]
+    rsplit, w = n["split_radius_um"], n["width_um"]
+    out, moved, seen = [], 0, 0
+    pat = re.compile(r'\(wire \(path (\S+) ([\d.]+)\s+([-\d.]+) ([-\d.]+)\s+'
+                     r'([-\d.]+) ([-\d.]+)\)\(net "?([^")]+)"?\)')
+    for line in text.split("\n"):
+        m = pat.search(line)
+        if m and m.group(1) == n["layer"] and abs(float(m.group(2)) - w) < 1.0:
+            seen += 1
+            r0 = ((float(m.group(3)) - cx) ** 2
+                  + (float(m.group(4)) - cy) ** 2) ** 0.5
+            r1 = ((float(m.group(5)) - cx) ** 2
+                  + (float(m.group(6)) - cy) ** 2) ** 0.5
+            r = min(r0, r1)      # BOTH ends outside, or it is not outer half
+            # ONE DIRECTION ONLY. This restores outer-half copper that the
+            # merge relabelled; it never moves anything the other way. The
+            # two stubs that close the winding onto the tie cross the split
+            # radius by construction, and a symmetric rule renamed them - 3
+            # wires, each of which is the join the coil depends on.
+            want = n["outer_half_net"]
+            if r > rsplit and m.group(7) == n["inner_half_net"]:
+                line = (line[:m.start(7)] + want + line[m.end(7):])
+                moved += 1
+        out.append(line)
+    return "\n".join(out), {"coil_wires_seen": seen, "renamed": moved}
+
+
 def report(s):
     return {
         "keepout": s.count("(keepout"),
@@ -123,29 +163,39 @@ def report(s):
     }
 
 
-def fix(text, drop_plane_nets=True, protect=PROTECT_NETS):
+def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None):
     before = report(text)
     s, n_lay = _layers_to_power(text)
+    nfc = {}
+    if hints:
+        s, nfc = renet_nfc(s, hints)
     s, n_prot = _protect_wires(s, set(protect) | set(PLANE_NETS))
-    dropped = []
-    if drop_plane_nets:
-        s, dropped = _drop_nets_from_network(s, PLANE_NETS)
+    s, dropped = _drop_nets_from_network(s, drop) if drop else (s, [])
     return s, {
         "before": before,
         "after": report(s),
         "plane_layers_retyped": n_lay,
         "wires_protected": n_prot,
         "nets_dropped": dropped,
+        "nfc": nfc,
     }
 
 
 if __name__ == "__main__":
-    src, dst = sys.argv[1], sys.argv[2]
-    keep = "--keep-planes-in-network" in sys.argv
-    txt = open(src).read()
-    out, stats = fix(txt, drop_plane_nets=not keep)
-    open(dst, "w").write(out)
     import json
+    import os
+    src, dst = sys.argv[1], sys.argv[2]
+    drop = PLANE_NETS
+    for a in sys.argv[3:]:
+        if a.startswith("--drop="):
+            drop = tuple(x for x in a.split("=", 1)[1].split(",") if x)
+    hints = None
+    hp = os.path.join(os.path.dirname(os.path.abspath(src)), "dsn_hints.json")
+    if os.path.exists(hp):
+        hints = json.load(open(hp))
+    txt = open(src).read()
+    out, stats = fix(txt, drop=drop, hints=hints)
+    open(dst, "w").write(out)
     print(json.dumps(stats, indent=2))
     if stats["plane_layers_retyped"] != len(PLANE_LAYERS):
         sys.exit("REFUSED: retyped %d of %d plane layers — the exporter's "

@@ -338,6 +338,7 @@ R0201 = "Resistor_SMD:R_0201_0603Metric"
 L0201 = "Inductor_SMD:L_0201_0603Metric"
 TP = "halo:HALO_TP_D0.8"        # ours, not KiCad's - see footprints.py
 FID = "Fiducial:Fiducial_0.5mm_Mask1mm"
+MARK = "halo:HALO_SERIAL_MARK_1X8"   # the laser-marked serial land
 
 # side: actives BOTTOM, passives TOP. See the height paragraph - the top
 # face inside Ø21.2 allows 0.400 mm and every active here is taller, so the
@@ -382,7 +383,7 @@ PLACE = [
     # spiral's TANGENT puts them along the conductor. Rotated to the radius
     # instead they sit 0.5 mm off it on either side and the stubs that close
     # the winding have to jump the gap sideways.
-    ("AE2", "NetTie:NetTie-2_SMD_Pad0.5mm", NFC_TIE_R_PRE,
+    ("AE2", "halo:HALO_NFC_TIE_2", NFC_TIE_R_PRE,
      NFC_TIE_DEG_PRE, NFC_TIE_DEG_PRE + 90.0, "bottom"),
     ("LS1", "halo:HALO_PIEZO_LEADS_2", 10.30, 118.0, 28.0, "top"),
 ]
@@ -618,6 +619,10 @@ TEST_ACCESS = [
     ("TP9", TP, 0.78, 282.0),    # I2C_SCL
     ("TP10", TP, 0.78, 152.0),   # NFC1
     ("TP11", TP, 0.78, 138.0),   # NFC2
+    # The serial mark goes LAST because it is the largest and the placer is
+    # first-fit: ask for the 1.41 mm circumradius before the 0.78 mm ones and
+    # it takes the only hole three probe pads could have shared.
+    ("M1", MARK, 1.415, 300.0),  # serial DataMatrix, probed face
 ]
 
 _tp_placed, _tp_failed = auto_place(TEST_ACCESS)
@@ -652,6 +657,13 @@ for name, pins in sorted(nets.items()):
 # is GND per the GD25LQ32E datasheet's own land-pattern note.
 # (U3's exposed pad was bonded here when the flash existed. The flash is
 # deleted - schematic block 6 - so there is nothing left to bond.)
+
+
+# M1's land is copper on the top face and the top face is poured GND. Left on
+# no net it is a 3.2 mm2 isolated island - which the filler reports, correctly,
+# as isolated copper, and which is an antenna nobody designed.
+if "M1" in b.refs:
+    b.net("GND", "M1.1")
 
 
 # ==========================================================================
@@ -772,7 +784,7 @@ _mid = len(_sp) // 2
 # conductor that has to be continuous, and a coil with a 5 mm hole in it is
 # not a coil. The tie's two pads sit 1.0 mm apart, so the gap is sized from
 # that and the stubs below actually close it.
-NFC_GAP_MM = 1.6
+NFC_GAP_MM = 0.70   # the tie is 0.60 mm long end to end
 _arc_per_seg = math.radians((NFC_A1 - NFC_A0) / NFC_SEGS) * fpg.NFC_R_OUT
 GAP_PTS = max(1, int(round(NFC_GAP_MM / (2.0 * _arc_per_seg))))
 NFC_TIE_R, NFC_TIE_DEG_ACTUAL = _sp[_mid]
@@ -820,11 +832,58 @@ def _pad_xy(ref, num):
 NFC_TIE_STUBS = []
 _tie_pads = {1: _pad_xy("AE2", 1), 2: _pad_xy("AE2", 2)}
 _e1, _e2 = _nfc1_pts[-1], _nfc2_pts[0]
-if (math.dist(_e1, _tie_pads[1]) + math.dist(_e2, _tie_pads[2])
-        <= math.dist(_e1, _tie_pads[2]) + math.dist(_e2, _tie_pads[1])):
-    _assign = (("NFC1", _e1, 1), ("NFC2", _e2, 2))
-else:
-    _assign = (("NFC1", _e1, 2), ("NFC2", _e2, 1))
+
+
+def _crosses(a, b, c, d):
+    """Do segments ab and cd intersect? Orientation test, no tolerance."""
+    def o(p, q, r):
+        return ((q[1] - p[1]) * (r[0] - q[0])
+                - (q[0] - p[0]) * (r[1] - q[1]))
+    return (o(a, b, c) * o(a, b, d) < 0) and (o(c, d, a) * o(c, d, b) < 0)
+
+
+# THE PAD NUMBERS ARE NOT INTERCHANGEABLE, AND ASSIGNING BY DISTANCE SHORTED
+# THE COIL. AE2 pad 1 is on NFC1 and pad 2 on NFC2 — the schematic says so and
+# the net tie is the whole reason those are two nets. A "nearest pad" rule
+# therefore ran NFC2's stub onto NFC1's pad, and KiCad reported it exactly:
+# "Items shorting two nets (nets NFC1 and NFC2)", twice. What is free to
+# change is not which pad each half goes to, it is WHICH WAY ROUND THE TIE
+# SITS — so the part is turned, not the netlist.
+#
+# AND THE TURN IS SEARCHED, NOT DERIVED. The tie is placed at an angle on a
+# disc, rotated to the winding's tangent, and FLIPPED to the bottom face:
+# three sign conventions, and getting any one of them wrong puts the pad axis
+# across the gap instead of along it. `NFC_TIE_DEG_PRE + 90` looked right and
+# produced a pad axis at +50.9 deg against a gap running at +129.0 deg — the
+# mirror, exactly. So the orientation is swept in 2 deg steps and the one that
+# actually minimises pad-1-to-NFC1-end plus pad-2-to-NFC2-end is kept, read
+# back off the placed footprint each time. A measurement beats a convention.
+_fp_ae2 = b.refs["AE2"]
+_o0 = _fp_ae2.GetOrientationDegrees()
+_best_tie = None
+for _k in range(180):
+    _fp_ae2.SetOrientationDegrees(_o0 + _k * 2.0)
+    _pp = {1: _pad_xy("AE2", 1), 2: _pad_xy("AE2", 2)}
+    _cost = math.dist(_e1, _pp[1]) + math.dist(_e2, _pp[2])
+    if _best_tie is None or _cost < _best_tie[0]:
+        _best_tie = (_cost, _o0 + _k * 2.0, _pp)
+NFC_TIE_ROT = _best_tie[1] % 360.0
+_fp_ae2.SetOrientationDegrees(_best_tie[1])
+_tie_pads = _best_tie[2]
+
+
+def _crosses(a, b_, c, d):
+    """Do segments ab and cd intersect? Orientation test, no tolerance."""
+    def o(p, q, r):
+        return ((q[1] - p[1]) * (r[0] - q[0])
+                - (q[0] - p[0]) * (r[1] - q[1]))
+    return (o(a, b_, c) * o(a, b_, d) < 0) and (o(c, d, a) * o(c, d, b_) < 0)
+
+
+if _crosses(_e1, _tie_pads[1], _e2, _tie_pads[2]):
+    raise SystemExit("the two tie stubs cross at every orientation - the net "
+                     "tie is not aligned with the winding's gap")
+_assign = (("NFC1", _e1, 1), ("NFC2", _e2, 2))
 for _net, _end, _padnum in _assign:
     _pxy = _tie_pads[_padnum]
     b.track(_net, [_end, _pxy], width=fpg.NFC_W, layer="B.Cu")
@@ -915,11 +974,22 @@ def _obstacles():
             # because the clearance was never what was wrong. Sampled as discs
             # of radius min(w,h)/2 along the long axis, which is what a
             # rounded rectangle actually is.
-            w, h = sz.x / 1e6, sz.y / 1e6
-            rr = min(min(w, h) / 2.0, 0.15)
-            th = -math.radians(pad.GetOrientationDegrees())
-            ct, st = math.cos(th), math.sin(th)
-            px, py = pos.x / 1e6, 26.0 - pos.y / 1e6
+            # KiCad's OWN BOUNDING BOX, not a rotation this file works out
+            # for itself. `GetOrientationDegrees()` is the pad's angle in
+            # KiCad's frame, this file works in a Y-flipped one, and the
+            # footprint may be FLIPPED on top of that - three sign
+            # conventions to get right for a number KiCad will hand over
+            # correctly if asked. It was got wrong: a GND via landed 0.064 mm
+            # from X1 pad 1 against a 0.127 mm rule, on a pad this model
+            # thought it was clearing by 0.29 mm. A bounding box is
+            # conservative for a rotated pad and exact for the axis-aligned
+            # ones, which is every pad on this board that matters.
+            bb = pad.GetBoundingBox()
+            w, h = bb.GetWidth() / 1e6, bb.GetHeight() / 1e6
+            rr = min(max(min(w, h) / 2.0, 0.02), 0.15)
+            ct, st = 1.0, 0.0
+            px = (bb.GetX() + bb.GetWidth() / 2) / 1e6
+            py = 26.0 - (bb.GetY() + bb.GetHeight() / 2) / 1e6
             # COVERED, NOT APPROXIMATED. A capsule along the long axis leaves
             # the four corners of the rectangle sticking out - by 0.026 mm on
             # a QFN land and by 0.16 mm on the 3215 crystal's, which is
@@ -1256,7 +1326,7 @@ for _z in b._pcb.Zones():
 import schematic as sch_mod                                       # noqa: E402
 
 _sch = sch_mod.build()
-_fielded, _valued = 0, 0
+_fielded, _valued, _dnp, _nobom = 0, 0, 0, 0
 for _ref, _part in _sch.parts.items():
     if _ref not in b.refs:
         continue
@@ -1264,6 +1334,20 @@ for _ref, _part in _sch.parts.items():
     if _part.value:
         _fp.SetValue(str(_part.value))
         _valued += 1
+    # DNP AND EXCLUDE-FROM-BOM, CARRIED ACROSS. They were not, and the
+    # consequence was in the fabrication report: C14-C17 are the crystal load
+    # capacitors D-3 deliberately does NOT fit, the schematic says so with
+    # dnp=True and in_bom=False, and the BOARD said nothing at all - so every
+    # tool reading the .kicad_pcb counted four 0201 capacitors of unknown
+    # value and filed them as UNDETERMINED. A part that is deliberately not
+    # fitted is a decision, and a decision that does not reach the file the
+    # factory reads is not a decision, it is a note in a Python source.
+    if getattr(_part, "dnp", False):
+        _fp.SetDNP(True)
+        _dnp += 1
+    if not getattr(_part, "in_bom", True):
+        _fp.SetExcludedFromBOM(True)
+        _nobom += 1
     for _k, _v in (_part.fields or {}).items():
         if _v in (None, ""):
             continue
@@ -1526,6 +1610,11 @@ def report():
     print("\n--- schematic fields carried onto the board ---")
     print("  %d values and %d fields copied across %d parts"
           % (_valued, _fielded, len(_sch.parts)))
+    _dnp_refs = sorted(r for r in b.refs if b.refs[r].IsDNP())
+    print("  marked DO NOT POPULATE on the board: %d  %s"
+          % (_dnp, ", ".join(_dnp_refs) or "none"))
+    print("  excluded from the BOM: %d   (read back off the .kicad_pcb, not "
+          "off the schematic that asked for it)" % _nobom)
     _missing = [r for r in sorted(b.refs)
                 if r in _sch.parts
                 and not (_sch.parts[r].fields or {}).get("LCSC Part #")]

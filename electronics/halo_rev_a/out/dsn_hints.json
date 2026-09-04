@@ -21,11 +21,11 @@
  "nfc": {
   "layer": "B.Cu",
   "width_um": 150.0,
-  "split_radius_um": 10450.0,
+  "split_radius_um": 10434.06936167581,
   "outer_half_net": "NFC1",
   "inner_half_net": "NFC2",
   "why": "KiCad merges NFC1 into NFC2 through the AE2 net tie - correct, because a coil is a DC short between its own terminals - so every winding segment exports as NFC2 while the pads keep their own nets. The winding is a spiral, so radius separates the halves exactly.",
-  "segments_outer": 103,
-  "segments_inner": 103
+  "segments_outer": 108,
+  "segments_inner": 108
  }
 }

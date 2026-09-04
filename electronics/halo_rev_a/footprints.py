@@ -121,7 +121,31 @@ ANT_TOOTH_MAX = 1.05       # the deepest a tooth may reach inward. The
 
 NFC_W = 0.15
 NFC_GAP = 0.15
-NFC_TURNS = 2
+# 2.106, NOT 2, AND THE 0.106 IS A SOURCING FACT RATHER THAN AN RF ONE.
+# The NFC tank is L * C and lane S1 measured that the C half cannot be bought:
+# NO 1.1 nF CAPACITOR EXISTS IN 0201 IN ANY DIELECTRIC, none in 0402 either,
+# and the smallest 1.1 nF in the whole LCSC catalogue is 0603 - three sizes
+# too big for a Ø26 mm board. 1.2 nF C0G does not exist in 0201 either, so
+# there is not even a bracketing pair to interpolate between. The only part in
+# the neighbourhood is 1.0 nF C0G (C161371, 139,150 in stock).
+#
+# So the tuning moves into the copper, where it is free. Each series capacitor
+# drops 1.109 -> 1.0 nF, the series capacitance across the coil drops
+# 554.6 -> 500 pF, and L must rise by exactly that ratio, 554.6/500 = 1.1092:
+# ce-rf's measured 0.2449 uH -> a TARGET of 0.2716 uH.
+#
+# Turns, on the N-squared scaling a planar spiral obeys to first order:
+#     N' = 2 * sqrt(1.1092) = 2.1064
+# which at a 0.30 mm pitch moves the innermost turn from R10.150 to R10.118,
+# still outside the Ø20.0 cell can at R10.0 with 0.043 mm of copper edge to
+# spare. THE RESULTING INDUCTANCE IS NOT MEASURED. N-squared is the first term
+# of Wheeler's expression and the mean diameter moves too; ce-rf owns the
+# solve and until it re-runs on 2.106 turns the tank's resonant frequency is
+# CANNOT DETERMINE, not 13.56 MHz. The number here is what to solve, not what
+# was found.
+NFC_TURNS_TARGET_UH = 0.2716
+NFC_TURNS_MEASURED_UH = 0.2449          # ce-rf, on the 2.000-turn winding
+NFC_TURNS = 2.0 * (NFC_TURNS_TARGET_UH / NFC_TURNS_MEASURED_UH) ** 0.5
 NFC_R_OUT = 10.75          # INSIDE the contact lands, not outside them. The
                            # outer annulus is oversubscribed: the three
                            # contact lands occupy R11.0-12.2 on the bottom
@@ -504,6 +528,83 @@ def test_pad():
     return "".join(body)
 
 
+def nfc_tie():
+    """AE2 — a net tie AS WIDE AS THE CONDUCTOR IT JOINS, and not one micron more.
+
+    KiCad's `NetTie:NetTie-2_SMD_Pad0.5mm` is two Ø0.50 mm pads. Put one of
+    those on this winding and it reaches 0.325 mm from its own centre, while
+    the spiral's turn-to-turn pitch is 0.30 mm — so the tie ALWAYS touches the
+    neighbouring turn, which is the other half of the coil, which is the other
+    net. Measured, twice: "Items shorting two nets (nets NFC1 and NFC2)" with
+    0.013 mm and 0.031 mm of air. There is no place on a 0.30 mm pitch spiral
+    where a 0.50 mm pad is legal, so moving it was never going to work.
+
+    A net tie is not a component. It is the declaration that two named nets
+    are one conductor here, and its copper should be the conductor: two
+    0.15 x 0.30 mm rectangles butted at the origin, 0.15 mm being NFC_W. Total
+    length 0.60 mm, total width 0.15 mm — narrower than the 0.50 mm pad by a
+    factor of three and exactly as wide as the trace on either side of it.
+
+    `net_tie_pad_groups "1, 2"` is what makes KiCad's DRC allow the two nets to
+    touch HERE and nowhere else. Without it this footprint is a short.
+    """
+    body = ['(footprint "HALO_NFC_TIE_2"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo NFC coil net tie: two 0.15 x 0.30 mm pads butted, '
+            'the width of the winding. KiCad NetTie-2_SMD_Pad0.5mm is 0.50 mm '
+            'and shorts the neighbouring turn on a 0.30 mm pitch spiral.")\n',
+            '  (tags "halo net tie nfc coil")\n',
+            '  (attr smd exclude_from_pos_files exclude_from_bom)\n',
+            '  (pad "1" smd rect (at -0.15 0) (size 0.30 %.2f) '
+            '(layers "F.Cu"))\n' % NFC_W,
+            '  (pad "2" smd rect (at 0.15 0) (size 0.30 %.2f) '
+            '(layers "F.Cu"))\n' % NFC_W,
+            '  (net_tie_pad_groups "1, 2")\n']
+    body.extend(_courtyard([(-0.32, -0.10), (0.32, -0.10), (0.32, 0.10),
+                            (-0.32, 0.10), (-0.32, -0.10)]))
+    body.append(')\n')
+    return "".join(body)
+
+
+def serial_mark():
+    """M1 — the land a factory laser-marks the serial into, on the probed face.
+
+    ASKED FOR BY THE PRODUCTION LANE, and it is not decoration: a Find My tag
+    ships with a per-unit identity, and a unit that cannot be identified after
+    the shell is bonded cannot be RMA'd, recalled, or matched to its own test
+    record. The mark has to be machine-readable, so it needs a KNOWN, FLAT,
+    UNIFORM patch of board with nothing in it - a DataMatrix laid over a
+    silkscreen legend or a via tent does not decode.
+
+    WHAT IT IS, PHYSICALLY. A 1.8 x 1.8 mm copper land with the solder mask
+    OPENED over it, on F.Cu, the same face as the probe pads and the two
+    fiducials - one fixture, one side, one setup. Bare plated copper under a
+    fiber laser gives the contrast a DataMatrix reader needs; marking the
+    solder mask instead is the other common choice and it is greener, lower
+    contrast and not what this land is for. At 1.8 mm a 12x12 ECC200 symbol
+    has 0.15 mm cells, which is inside what a 20 W fiber marker holds.
+
+    ON A NET, NOT FLOATING. It is tied to GND in board.py. An isolated 3.2 mm2
+    island of copper on the top face is an antenna nobody designed, and the
+    zone filler would report it as isolated copper - correctly.
+    """
+    body = ['(footprint "HALO_SERIAL_MARK_1X8"\n',
+            '  (version 20240108)\n  (generator "halo/footprints.py")\n',
+            '  (layer "F.Cu")\n',
+            '  (descr "halo serial mark land: 1.8 x 1.8 mm bare copper, mask '
+            'opened, for a laser-marked ECC200 DataMatrix. Probed face, same '
+            'side as the fiducials.")\n',
+            '  (tags "halo serial mark datamatrix laser traceability")\n',
+            '  (attr smd exclude_from_pos_files exclude_from_bom)\n',
+            '  (pad "1" smd rect (at 0 0) (size 1.80 1.80) '
+            '(layers "F.Cu" "F.Mask"))\n']
+    body.extend(_courtyard([(-1.0, -1.0), (1.0, -1.0), (1.0, 1.0),
+                            (-1.0, 1.0), (-1.0, -1.0)]))
+    body.append(')\n')
+    return "".join(body)
+
+
 def swd_pads():
     """J1 — six SWD lands, because a Tag-Connect does not fit a Ø26 mm board.
 
@@ -626,6 +727,8 @@ PATTERNS = [
     ("HALO_PIEZO_LEADS_2", piezo_pads),
     ("HALO_SWD_PADS_1x06_P1.27", swd_pads),
     ("HALO_TP_D0.8", test_pad),
+    ("HALO_NFC_TIE_2", nfc_tie),
+    ("HALO_SERIAL_MARK_1X8", serial_mark),
     ("HALO_UWB_LANDS_1x08_P1.00", uwb_lands),
 ]
 
@@ -661,10 +764,19 @@ if __name__ == "__main__":
               "by that much"
               % (_want - ANT_ARC_MAX_DEG,
                  math.radians(_want - ANT_ARC_MAX_DEG) * ANT_R))
-    print("  NFC coil: %d turns, %.2f/%.2f mm, outer R%.2f, inner R%.2f, "
-          "NET TIE 1-2"
-          % (NFC_TURNS, NFC_W, NFC_GAP, NFC_R_OUT,
-             NFC_R_OUT - (NFC_TURNS - 1) * (NFC_W + NFC_GAP)))
+    # %d TRUNCATED 2.106 TO "2" and (NFC_TURNS - 1) is one turn's worth of
+    # pitch short of the innermost radius, so this line reported R10.42 for a
+    # winding that ends at R10.118 - a report that disagreed with the copper
+    # by 0.3 mm and read as agreement.
+    _r_in = NFC_R_OUT - NFC_TURNS * (NFC_W + NFC_GAP)
+    print("  NFC coil: %.3f turns, %.2f/%.2f mm, outer R%.3f, inner R%.3f "
+          "(copper edge R%.3f vs the Ø20.0 cell can at R10.000), NET TIE 1-2"
+          % (NFC_TURNS, NFC_W, NFC_GAP, NFC_R_OUT, _r_in, _r_in - NFC_W / 2))
+    print("  turns raised from 2.000 for the 1.0 nF capacitor S1 could "
+          "actually buy: L target %.4f uH from ce-rf's measured %.4f uH, "
+          "N-squared -> %.4f turns. THE INDUCTANCE AT THIS LENGTH IS NOT "
+          "MEASURED." % (NFC_TURNS_TARGET_UH, NFC_TURNS_MEASURED_UH,
+                         NFC_TURNS))
     print("  NEITHER IS TUNED. ce-rf owns S11 and the coil's inductance.")
 
     print("\n--- contact lands, and where the flip puts them ---")

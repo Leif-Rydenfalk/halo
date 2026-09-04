@@ -1,0 +1,13 @@
+(footprint "HALO_SERIAL_MARK_1X8"
+  (version 20240108)
+  (generator "halo/footprints.py")
+  (layer "F.Cu")
+  (descr "halo serial mark land: 1.8 x 1.8 mm bare copper, mask opened, for a laser-marked ECC200 DataMatrix. Probed face, same side as the fiducials.")
+  (tags "halo serial mark datamatrix laser traceability")
+  (attr smd exclude_from_pos_files exclude_from_bom)
+  (pad "1" smd rect (at 0 0) (size 1.80 1.80) (layers "F.Cu" "F.Mask"))
+  (fp_line (start -1.000 -1.000) (end 1.000 -1.000) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start 1.000 -1.000) (end 1.000 1.000) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start 1.000 1.000) (end -1.000 1.000) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+  (fp_line (start -1.000 1.000) (end -1.000 -1.000) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
+)
