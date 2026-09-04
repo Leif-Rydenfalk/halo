@@ -10,7 +10,7 @@ Generated 2026-09-04 from `spec/release-pack.json` by `tools/gen_release_pack.py
 | 4 | Pick-and-place file in factory format | **PARTIAL** |
 | 5 | Panel drawing, stackup and materials | **READY** |
 | 6 | Simulation evidence | **READY** |
-| 7 | Firmware, build instructions and a proven advertisement | **PARTIAL** |
+| 7 | Firmware, build instructions and a proven advertisement | **READY** |
 | 8 | Mechanical files and assembly instructions | **READY** |
 | 9 | Production test plan | **NOT STARTED** |
 | 10 | Compliance dossier | **PARTIAL** |

@@ -378,3 +378,42 @@ out to be halo's own choices rather than measurements of Apple. A seventh is
 added: Apple's plan-view callouts Ø27.90 and Ø27.84, which the redistributable
 half-section omits, are read here as the shell's bore and the carrier's leg
 circle and should be confirmed against a real part.
+
+## D18 — the memory budget was never the constraint (2026-09-04)
+
+D8 budgeted the chip for DULT, Find My and Google Find Hub together, over a
+quoted 116.7 KB flash and 21.5 KB RAM. **Measured, halo's firmware on an
+nRF54L10 uses 13,164 bytes of flash — 1.27 percent — and 704 bytes of RAM.**
+
+The two numbers answer different questions and both are right. The quoted figure
+is a full stack including the Bluetooth link layer and connection handling.
+halo's is the protocol layers only: no link layer, no connection established, the
+DULT opcodes graded as a pure function. **The expensive part of DULT is the
+transport, and it is not written yet.** When it is, this row must be re-measured
+rather than assumed still fine.
+
+Consequence: the nRF54L05 fallback in D12 is not forced by memory, and the
+choice between L05 and L10 comes down to the L05's 0.9 µA lower sleep current
+against its 3,000-piece minimum packet (D15). That is a sourcing question for the
+factory, not a firmware one.
+
+## D19 — halo implements the Google Find Hub tag, and it appears to be the first open one (2026-09-04)
+
+Lane B found no open-source implementation of the Google network's *tag* side
+anywhere, and lane D found no shipping product that advertises both networks at
+once. Lane T4 wrote it from Google's published specification, byte for byte
+against its Tables 15 and 17, with the specification archived locally, and
+verified it against a reference implementation using independent cryptography.
+Cost: **2,888 bytes of flash and 116 of RAM.** Both networks now transmit in the
+**same advertising event** on all three channels, so the interval is one event
+period rather than three.
+
+That makes decision D7 real rather than planned, and it is the sharpest edge in
+D6's list of what halo offers that nothing on sale does.
+
+**One row cannot be closed and is left open on purpose:** the DULT Network ID.
+The draft points at a registry it subsequently removed, so halo advertises `0x00`
+meaning UNREGISTERED rather than borrowing Google's `0x02`, which would be a
+false claim about who we are. `check-dult` therefore reports 16 rows passing and
+one CANNOT DETERMINE, and its overall verdict is deliberately exit 2 rather than
+a pass.

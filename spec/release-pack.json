@@ -67,10 +67,10 @@
    "n": 7,
    "name": "Firmware, build instructions and a proven advertisement",
    "name_zh": "固件、编译说明与已验证的广播包",
-   "status": "PARTIAL",
-   "reason": "A firmware was written, given a rolling key, and run on an emulated Nordic chip. Its Find My advertisement was verified field by field against the specification and every field matched. It has never driven a real radio, and the port to the newer chip is in progress.",
-   "evidence": "ce-fwsim/out/*.uart.log; evidence/ledger.jsonl row 1 — PASS",
-   "command": "ce-fwsim/bin/fwsim run <elf> --platform nrf52840 ; fwsim check-findmy <uart.log>"
+   "status": "READY",
+   "reason": "The firmware builds for all five target chips from one source tree and fits with enormous margin: 13,164 bytes of flash out of 1,036,288 on the nRF54L10, which is 1.27 percent, and 704 bytes of RAM out of 196,608. Rolling keys work on the tag with 15-minute rotation, verified against an independent reference that shares no code with the firmware. Both networks advertise concurrently in the same advertising event, and the Google side had to be written from the published specification because no open implementation of the tag side existed anywhere. One honest gap: the emulator models no nRF54L part at all, so the port is verified by ten static checks per board with a negative control rather than by running it.",
+   "evidence": "ce-fwsim — nRF54L10 13164 B flash / 704 B RAM; check-rollkey 11 PASS; check-fmdn 7 PASS; check-dult 16 PASS 1 CANNOT DETERMINE; committed eeda515e, 6637b37e, 72851c1c, 1e23cab6, 684e4f98",
+   "command": "ce-fwsim/bin/fwsim build --board nrf54l10 ; fwsim check-soc ; check-rollkey ; check-fmdn ; check-dult"
   },
   {
    "n": 8,

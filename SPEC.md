@@ -49,10 +49,18 @@ from. The part that implements each is section 3.
 
 ## 2a. Budget floors (from lane B)
 
-A Find My stack alone measures **116.7 KB flash / 21.5 KB RAM** (Goodix FMNA
-figures, lane D). DULT adds a connectable advertisement set and a GATT service;
-Google Find Hub adds a second beacon. The SoC is chosen with headroom over
-those three together, not over the first (DECISIONS.md D8).
+**Measured 2026-09-04, so this section is no longer an estimate.** halo's own
+firmware on an nRF54L10 uses **13,164 bytes of flash (1.27%) and 704 bytes of
+RAM (0.36%)** with all three protocol layers resident. Per object: DULT 605
+bytes, the two elliptic curves sharing one engine 2,766, SHA-256 1,034, AES 736,
+rolling keys 383, Find Hub 334, Find My 94.
+
+The 116.7 KB / 21.5 KB Goodix figure quoted earlier measures a **different
+question** — a full stack including the LE link layer and connection handling.
+halo's number covers the protocol layers only; no link layer is present and no
+connection is ever established, with the DULT opcodes graded as a pure function.
+The expensive part of DULT is the transport, and it is not yet written. Both
+numbers are correct and they are not comparable.
 
 ## 3. Component map — one row per function
 
