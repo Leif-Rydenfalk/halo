@@ -53,14 +53,47 @@ holder that must not be fitted. Anchor: `out/verify/lcsc-netlist-check.json`.
   wherever the sheet puts it; crystal package sizes (2016/3215) added to its
   package rules, which took X1/X2 from CANNOT DETERMINE to PASS.
 
-**Pack state** (`out/release/`, regenerated 2026-09-05): INDEX 6 READY ·
-5 PARTIAL · 0 NOT STARTED. Artifact 1 (gerbers/drill/netlist) is READY with
-the gate; artifact 4 (CPL) READY with rotations verified; artifact 3 (BOM)
-still PARTIAL only for sourcing reasons (SoC stock 212 against 1k MOQ; the
-NFC re-tune is a board change, not a purchase). The board itself is part-
-routed: 50 vias, 9 DRC violations, 80 unconnected — lane B1's list, stated
-in `out/release/board/README.md` §5.1. **Do not fabricate until that list
-is empty.**
+**Pack state** (`out/release/`, regenerated 2026-09-05 06:2x): INDEX
+**5 READY · 6 PARTIAL · 0 NOT STARTED.** Artifact 1 (gerbers/drill/netlist)
+was **downgraded READY -> PARTIAL** by lane B1: its own reason text ended in
+"do not fabricate" while its badge said READY, and that contradiction is
+resolved the wrong way by a reader in a hurry. The FILES are verified and
+complete for the board that exists — `check_fabset` **15 PASS / 0 FAIL /
+0 CANNOT DETERMINE**, gate exit 0 — and the BOARD is not. It returns to
+READY when `out/verify/drc.json` reads 0 unconnected, written into the row so
+the condition is not a matter of taste. Artifact 4 (CPL) READY with rotations
+verified; artifact 3 (BOM) PARTIAL for sourcing reasons only.
+
+**The board, measured 2026-09-05 06:06:** 49 vias, 255 track segments,
+**3 DRC violations — all `track_dangling` warnings, 0 errors** — and **81
+unconnected items** across 38 nets, VDD alone accounting for 28. Each of the
+three warnings is named with its net, layer and free end in
+`out/release/board/README.md` §5.1; one of them (`ANT_FEED`) is the antenna's
+open tip and is correct. **The board is part-routed and there is no
+autorouter on this machine** — freerouting is a Java program and
+`java -version` answers *"Unable to locate a Java Runtime"* (measured
+2026-09-05; installing one is lane T1's item). **Do not fabricate.**
+
+**The drill blocker is closed by measurement, and it was not closed before.**
+The 02:27 pack carried **50 PTH holes against a board with 49 vias, 0
+thru-hole pads and 0 NPTH pads** — one hole from a revision that no longer
+existed. `drill_covers_board` asked `>= board holes` and could not see it.
+Four exact assertions replace that question (class from each file's own
+`TF.FileFunction` and never its filename; PTH == vias + thru-hole pads; NPTH
+== np_thru_hole pads; every hole DIAMETER matched per class), all four proved
+to fire on artifacts broken on purpose. Now: **49 == 49, 0 == 0, 0.25 mm x49
+on both sides.**
+
+**`fab dfm`: 26 PASS / 2 FAIL / 0 CANNOT DETERMINE** (was 20/4/4). The four
+CANNOT DETERMINEs were a defect in `fab dfm` itself, fixed in `ce-fab` and
+proved: its liveness probe passed `--all-track-errors`, which made KiCad
+attribute all 499 clearance violations to one rule and report a rule that
+fires 258 times as dead. The two remaining FAILs are real and **decided**:
+0201 packages below JLCPCB's Economic PCBA floor and 0.15/0.20 mm pads below
+its published 0.25 mm SMD-pad line. D22 settles the first (an 0402 body is
+0.55 mm against 0.400 mm of gap under the piezo bender — 0402 costs the
+sounder); the second is two questions for the board house, an etch one and an
+assembly one, and neither is waved through here.
 
 ## Interruption and recovery, 2026-09-03 18:47
 

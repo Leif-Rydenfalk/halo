@@ -44,6 +44,18 @@ purpose and watching the check go red:
 | `fab dfm` on halo_rev_a: **21 PASS / 2 FAIL / 5 CD** | **10 live DRC violations vote zero.** Any violation whose type is not in `CONSTRAINT_MAP` goes to a counter that never enters `rows`, and the verdict is `worst(*rows)`. Also: `smt_sides` is a **hardcoded `PASS`** while measuring 2 sides; three via rows report `PASS, measured 0` because the board has no vias; `castellated_hole_min` reports PASS on a loop that never ran; and **11 of 52 rules produce no row at all**, so the counts read as full coverage of a set they cover 28 of | Adding the violation counts by hand and finding they did not reach the verdict |
 | Two keep-out regions on halo_rev_a, both **PASS** | Both declare `tracks/vias/pads/copperpour/footprints **allowed**`. `forbids == []`, so every hit loop `continue`s and zero hits reads as clean. Separately, if the board outline cannot be read at all, `outline_error` is recorded and the region is **still graded PASS** | Reading what the region actually forbids. The original keep-out bug's alarm was rewired; the sprinkler was not |
 
+Five more, found 2026-09-05 by lane B1 while trying to make a fabrication
+package pass its own gate. Every one was found by **running the tool and
+counting the result**, and every one is now negative-tested:
+
+| what reported success | what was actually true | how it was caught |
+|---|---|---|
+| `check_fabset`'s `drill_covers_board`, **PASS** — 50 drill hits against a board needing 49 | The rule was `total_hits **>=** board holes`. **The 50th hole belonged to a board revision that no longer existed** — the pack was cut at 02:27 and the board rewritten at 03:31. A `>=` rule passes a drill program cut from a *different* board as long as that board had at least as many holes, and it added the PTH and NPTH totals together, so swapping the two files was invisible. The handover into the session said 50 "looked plausible, a PTH file also carries through-hole pads": halo_rev_a has **0** through-hole pads | Counting per file class and per hole DIAMETER instead of in total. Now four exact assertions: class read from each file's own `TF.FileFunction` and never its filename, PTH == vias + thru-hole pads, NPTH == np_thru_hole pads, and the multiset of diameters equal per class |
+| `fab dfm`, **CANNOT DETERMINE** on four rules: *"this rule never fired even at 40× its limit, so either the board has no items it matches, or the condition is one KiCad cannot evaluate"* | One of the four, `jlc_smd_pad_to_pad`, **fires 258 times.** The probe reads the rule's NAME out of the violation description, and `kicad-cli pcb drc --all-track-errors` changes ATTRIBUTION: with the flag all 499 clearance violations name `jlc_pad_to_track`; without it, 241 name that and **258 name `jlc_smd_pad_to_pad`**. Same board, same `.kicad_dru`, same project. For the other three, "the board has no items it matches" was a **number nobody counted** — 0 plated through-hole pads, measured in one line | Running the same provocation file by hand without the flag the tool passes, and comparing the two attributions. The probe now runs both ways and unions; a rule that cannot fire is CANNOT DETERMINE only if the board really carries items it governs, and a vacuous PASS is labelled `vacuous` with the count |
+| `check_convergence`'s `high_weight_measured`, **PASS** on two weight-10 antenna rows | It compared the `from` field to the string `"literal"` and passed **everything else**, so a row naming a source that produced **no value at all** scored better than one that honestly typed its number in. Both rows had `current: null` | Listing the rows that were PASS and asking what number they had passed on. There wasn't one |
+| `prove_checks.py` reporting **FIRED** for `drill_has_hits` and `drill_npth_count_exact` | `_gerber(d, r"PTH\.drl$")` also matches `halo_rev_a-**N**PTH.drl`, and rglob order on this machine handed it the NPTH file — so two mutations were being applied to the wrong artifact. They had reported FIRED for months; they reported SILENT the moment a new assertion made the difference visible | Adding checks that could tell the two files apart, and watching the prover's control go red for a reason no mutation explained |
+| The pack README, in prose: *"the 0.16 mm item is U3's unnumbered paste-relief aperture, which carries no copper — the narrowest real copper pad is 0.200 mm"* | The narrowest paste-relief aperture is **0.318 mm**, the *widest* of the three kinds. The 0.15 mm pads are the NFC net tie's, real copper. The exoneration was backwards, and it had been read and re-read by three sessions | Measuring all 254 pads and grouping them by kind instead of trusting the sentence. `fab dfm` now reports the three numbers separately, and the verdict still rests on the worst |
+
 ## Why they are one defect
 
 In every case the tool's report describes its *intent*, not its *effect*. The
@@ -107,6 +119,28 @@ Two traps it hit on its own first run, both worth knowing:
   check's state-machine test first passed its target a *string* while the row
   really produces a *number*, and the broken row looked fine. The check that
   hunts decorations was briefly a decoration itself.
+
+## 7 · `>=` is not `==`, and a tool's own flags can blind its own probe
+
+*Added 2026-09-05, from the drill-count and liveness incidents above.*
+
+Two habits, both cheap, both of which would have caught something here.
+
+**Ask whether the check's comparison is the claim.** "At least as many holes as
+the board needs" is not "the drill program for this board". `>=`, `<=`, "contains"
+and "not empty" are all weaker than the sentence a reader will infer from a
+green row, and the gap between them is exactly where a stale artifact lives. If
+the true relation is equality, write equality — and if you cannot write
+equality, say in the row why you could not.
+
+**A probe that reads a tool's own output is bound by that tool's flags.** The
+liveness probe here decided whether a rule was alive by looking for the rule's
+name in a violation description; a flag on the same command changed which rule
+got named, and the probe went blind without erroring. Whenever a check works by
+parsing another tool's report, run that tool **two different ways** and require
+the answers to agree — or take the union, if one way can hide what the other
+shows. Two readings that agree are worth more than one that passes, and this is
+the case where the two readings come from the same tool.
 
 ---
 
