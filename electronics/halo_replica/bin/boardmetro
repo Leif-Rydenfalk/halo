@@ -408,6 +408,71 @@ def v_selftest(a):
     print(f"synthetic inputs kept at {tmp}")
     return EX_PASS if nfail == 0 else EX_FAIL
 
+def v_perspective(a):
+    """Is an r(theta) outline a CIRCLE IN PERSPECTIVE, or a genuinely irregular one?
+
+    A projected circle is an ellipse: its r(theta) carries a pure cos(2*theta) term, and its
+    max and min sit exactly 90 deg apart. If it IS one, the MAJOR axis is the unforeshortened
+    true diameter, because tilting a circle shortens one axis and leaves the perpendicular
+    one alone - which recovers a true diameter from a tilted photograph.
+
+    Reports the fraction of variance the cos(2theta) term explains OVER AND ABOVE a centre
+    offset, so a mis-centred profile cannot masquerade as perspective.
+    NEGATIVE CONTROL: the same fit on shuffled radii. If the real fit does not beat the
+    shuffled best by a wide margin, the ellipse is not distinguishable from chance and the
+    major-axis trick is NOT available - say so rather than using it anyway."""
+    np = _np()
+    d = json.load(open(a.json_in))
+    node = d[a.key] if a.key in d else d
+    prof = node[a.field]
+    th = np.radians(np.array([q[0] for q in prof], float))
+    r = np.array([q[1] for q in prof], float)
+    pxmm = a.px_per_mm or d.get("px_per_mm")
+    print(f"INPUT  {a.json_in} key={a.key} field={a.field}  n={len(r)}"
+          + (f"  scale {pxmm} px/mm" if pxmm else "  NO SCALE - px only"))
+    if len(r) < 40: die_cannot(f"only {len(r)} samples")
+    A = np.stack([np.ones_like(th), np.cos(2*th), np.sin(2*th), np.cos(th), np.sin(th)], 1)
+    A0 = np.stack([np.ones_like(th), np.cos(th), np.sin(th)], 1)
+    def frac(rr):
+        c, *_ = np.linalg.lstsq(A, rr, rcond=None)
+        c0, *_ = np.linalg.lstsq(A0, rr, rcond=None)
+        return 1 - ((rr - A @ c)**2).sum() / ((rr - A0 @ c0)**2).sum(), c
+    f2, coef = frac(r)
+    r0 = coef[0]; e = math.hypot(coef[1], coef[2]) / r0
+    phi = math.degrees(math.atan2(coef[2], coef[1])) / 2 % 180
+    amaj, amin = r0*(1+e), r0*(1-e)
+    rng = np.random.default_rng(0)
+    cmax = max(frac(rng.permutation(r))[0] for _ in range(a.control_trials))
+    print(f"RESULT cos(2theta) explains {f2*100:.1f}% of variance beyond a centre offset")
+    print(f"CONTROL shuffled best over {a.control_trials} trials: {cmax*100:.1f}%")
+    print(f"       ellipticity e={e:.4f}  major axis phi={phi:.1f} deg  "
+          f"axis ratio {amin/amaj:.4f}  implied tilt {math.degrees(math.acos(min(1,amin/amaj))):.1f} deg")
+    if pxmm:
+        print(f"       major-axis diameter {2*amaj/pxmm:.3f} mm   mean-radius diameter {2*r0/pxmm:.3f} mm")
+    resid = r - A @ coef
+    print(f"       residual after ellipse sd {resid.std():.2f} px (was {r.std():.2f} about the mean)")
+    # ABSOLUTE FLOOR. Beating a shuffled control only says the term is not noise; it does not
+    # say the term EXPLAINS the outline. Observed live: 7.5% explained beat a 1.4% control by
+    # 5.4x and "passed", while the residual barely moved (8.58 -> 8.25 px). An ellipse that
+    # explains 7% of the variance is not a description of the shape, and a true diameter must
+    # not be read off it. So both gates must pass.
+    if f2 < a.min_explained:
+        print(f"VERDICT NOT usable - the cos(2theta) term explains only {f2*100:.1f}% of the "
+              f"variance (floor {a.min_explained*100:.0f}%).")
+        print("        Whatever dominates this outline, it is not perspective. The major-axis")
+        print("        diameter above must NOT be used as a true diameter.")
+        return EX_CANNOT
+    if f2 <= a.margin * cmax:
+        print(f"VERDICT NOT a projected circle - {f2*100:.1f}% does not beat {a.margin}x the "
+              f"shuffled control ({a.margin*cmax*100:.1f}%).")
+        print("        So the spread in r(theta) is NOT perspective. It is either a genuinely")
+        print("        irregular outline or contamination in the edge detector - and the")
+        print("        major-axis diameter above must NOT be used as a true diameter.")
+        return EX_CANNOT
+    print(f"VERDICT projected circle - major-axis diameter is the unforeshortened one")
+    return EX_PASS
+
+
 def v_doctor(a):
     print("boardmetro doctor\n")
     ok = True
@@ -477,9 +542,20 @@ def main():
     r.add_argument("--r-min", type=float, default=0); r.add_argument("--r-max", type=float, default=400)
     r.add_argument("--bin", type=float, default=2.0); r.add_argument("--copper", action="store_true")
     r.add_argument("--px-per-mm", type=float, default=None); r.add_argument("--json-out")
+    e = sub.add_parser("perspective"); e.add_argument("json_in")
+    e.add_argument("--key", default="outer"); e.add_argument("--field", default="r_theta_deg_px")
+    e.add_argument("--px-per-mm", type=float, default=None)
+    e.add_argument("--control-trials", type=int, default=200)
+    e.add_argument("--margin", type=float, default=5.0,
+                   help="real fit must beat this multiple of the shuffled control")
+    e.add_argument("--min-explained", type=float, default=0.30,
+                   help="absolute floor: fraction of variance the cos(2theta) term must "
+                        "explain. Beating a noise control is not the same as describing "
+                        "the shape")
     a = ap.parse_args()
     return {"doctor": v_doctor, "selftest": v_selftest, "circle": v_circle,
-            "scale-ruler": v_scale_ruler, "radial": v_radial}[a.verb](a)
+            "scale-ruler": v_scale_ruler, "radial": v_radial,
+            "perspective": v_perspective}[a.verb](a)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -1,0 +1,25 @@
+{
+  "note": "cos(2theta) test for a projected circle",
+  "px_per_mm": 15.8875,
+  "source": "images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+  "outer": {
+    "frac2": 0.005999151471434816,
+    "ctrl": 0.03139695138258913,
+    "semi_major_px": 180.17623825341562,
+    "semi_minor_px": 176.8627918000806,
+    "r0_px": 178.5195150267481,
+    "phi_deg": 90.18423473116387,
+    "major_dia_mm": 22.68150914283753,
+    "mean_dia_mm": 22.472952324374273
+  },
+  "inner": {
+    "frac2": 0.04995986918193707,
+    "ctrl": 0.01841133485288371,
+    "semi_major_px": 126.35454466671574,
+    "semi_minor_px": 111.46445486091453,
+    "r0_px": 118.90949976381513,
+    "phi_deg": 175.10060799533565,
+    "major_dia_mm": 15.906158258595216,
+    "mean_dia_mm": 14.96893781448499
+  }
+}
