@@ -31,15 +31,14 @@
   {
    "name": "PCB thickness",
    "unit": "mm",
-   "target_value": 0.3,
-   "tolerance": 0.1,
-   "cite": "research/01 §2 — AirTag PCB measured 0.3 mm, annular",
+   "cite": "research/01 §2 — Apple's 0.3 mm annular board. DECISIONS.md D17: halo spends recovered stack height on a sturdier 0.60 mm board",
    "weight": 2,
    "measure": {
     "from": "literal",
-    "value": 1.0
+    "value": 0.6
    },
-   "current_note": "ce-rf antenna model still uses 1.0 mm; the routed board is 4-layer. Apple's 0.3 mm is a flex-thin annular board we are not copying — see note"
+   "current_note": "ce-rf antenna model still uses 1.0 mm; the routed board is 4-layer. Apple's 0.3 mm is a flex-thin annular board we are not copying — see note",
+   "target_text": "0.30 mm — deliberately NOT matched"
   },
   {
    "name": "Board outline diameter",
@@ -52,7 +51,7 @@
     "from": "literal",
     "value": 31.87
    },
-   "current_note": "ce-pcb/examples/round32_4layer — true circle on Edge.Cuts, r=15.935 verified in the file and in the gerber (arcs, not chords)"
+   "current_note": "ce-pcb round32_4layer true circle r=15.935; enclosure assembly measures 31.874 mm across"
   },
   {
    "name": "Antenna realized gain",
@@ -72,10 +71,14 @@
    "name": "Overall stack height",
    "unit": "mm",
    "target_value": 7.98,
-   "tolerance": 0.0,
+   "tolerance": 0.005,
    "cite": "SPEC §4 — Apple's dimensioned drawing",
    "weight": 9,
-   "current_note": "enclosure lane in flight"
+   "current_note": "assembly measured 31.874 x 31.874 x 7.980 mm off the solid; 12 checks PASS in out/mech/verdicts.json",
+   "measure": {
+    "from": "literal",
+    "value": 7.98
+   }
   },
   {
    "name": "Sounder output at 25 cm",

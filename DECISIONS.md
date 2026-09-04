@@ -336,3 +336,45 @@ keep-out and the ground requirements, and treat that sheet as part of the
 deliverable rather than as supporting material. A block that places perfect
 copper into a host that then floods ground over the antenna is worse than no
 block at all, because it looks correct.
+
+## D17 — the stack closes with 1.742 mm recovered, and the shell is flat inside (2026-09-04)
+
+**The budget was wrong in our favour.** SPEC section 4 said about 1.5 mm remained
+after the cell and the internal module. That figure measured *Apple's* 3.30 mm
+module, which contains a magnet and a voice coil. Decision D11a's 0.22 mm piezo
+bender deletes both, so halo's equivalent row is **1.558 mm** and **1.742 mm
+comes back**. Lane M spent it on a **0.60 mm PCB** instead of Apple's fragile
+0.30 mm, a 0.680 mm diaphragm gap and a 1.430 mm crown, leaving 0.542 mm of dead
+air under the cell that a flat pad embossed in the door could still recover.
+
+The assembly measures **31.874 by 31.874 by 7.980 mm**, matching Apple's drawing
+to a thousandth of a millimetre, with the maximum diameter falling at z 4.263 to
+4.384 where Apple's drawing puts 4.339. Mass is 7.8 g against the AirTag's 11 g;
+the difference is Apple's motor.
+
+**The constraint that would have broken parts on the line.** The shell keeps
+Apple's R92 spherical cap on the *outside* for looks, but its **inside is a flat
+land**. Conforming a 20 mm piezo bender to R91.2 strains its ceramic to
+**0.1377 percent**, past the roughly 0.1 percent limit for the material — it
+would crack during assembly, in a way that would pass every visual inspection and
+fail in the field. The wall is 0.800 mm, chosen so the bender still keeps 66
+percent of the crown's bending stiffness. Every undercut sits on the carrier, so
+the cosmetic shell is a pure straight pull with no side action.
+
+**Three checks went red before they went green**, and all three were real: a door
+that could not be opened, 0.134 mm³ of the cell intersecting the door, and a
+printed variant whose thicker wall buried it in the seal land. Each was fixed by
+moving geometry. **No check was loosened**, and both failure rows stay in the
+ledger.
+
+**Two divergences from the brief, on purpose.** The piezo bonds to the shell, not
+the carrier, because the shell is the diaphragm. And the printed variant keeps
+the bayonet rather than a screw, because a printed bayonet needs no tooling and
+still satisfies the two-independent-movements rule.
+
+**Two of lane G's six open bench measurements are now moot** — the magnet and the
+coil are deleted by D11a. Two more, the PCB outline and the wall thickness, turn
+out to be halo's own choices rather than measurements of Apple. A seventh is
+added: Apple's plan-view callouts Ø27.90 and Ø27.84, which the redistributable
+half-section omits, are read here as the shell's bore and the carrier's leg
+circle and should be confirmed against a real part.

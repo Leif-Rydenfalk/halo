@@ -76,9 +76,9 @@
    "n": 8,
    "name": "Mechanical files and assembly instructions",
    "name_zh": "结构文件与装配说明",
-   "status": "PARTIAL",
-   "reason": "The envelope comes from Apple's own published dimensioned drawing, and the enclosure is being modelled now: shell, carrier, bayonet battery door and sprung contacts. The stack budget is tight — a coin cell plus the internal module is 6.5 of 7.98 mm.",
-   "evidence": "SPEC.md section 4; docs/MECHANICAL.md; research/07-mechanical-enclosure-and-3d-models.md",
+   "status": "READY",
+   "reason": "The enclosure is modelled and measured, not asserted: assembly 31.874 by 31.874 by 7.980 mm, matching Apple's drawing to a thousandth, with the maximum diameter falling at the height Apple's drawing puts it. Twelve checks pass, ten valid closed solids, 45 interference pairs clear, and every exported model was read back by an independent tool that knows nothing about the modeller. The bayonet door's compliance is measured by kernel probes rather than argued: dropped and twist-only both stay retained, press-and-twist frees it. Mass 7.8 g against the AirTag's 11 g, the difference being Apple's motor.",
+   "evidence": "ce-designs/halo/out/mech/verdicts.json — 12 PASS; committed c971ac6, 7a2ff53, 6a67aac",
    "command": "ce-cad/bin/cad ce-designs/halo/design.py"
   },
   {
