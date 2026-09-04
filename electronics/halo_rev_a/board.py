@@ -811,12 +811,25 @@ def _pad_xy(ref, num):
     raise SystemExit("no pad %s on %s" % (num, ref))
 
 
+# EACH END TO ITS NEAREST PAD, NOT TO A PAD NUMBER. Assigning NFC1 to pad 1
+# and NFC2 to pad 2 crossed the two stubs over each other - each one ran past
+# the OTHER net's pad at 0.043 mm and 0.068 mm against a 0.127 mm rule, four
+# clearance violations that read as a spacing problem and were a topology
+# one. Which pad is which is decided by geometry here, and the assignment is
+# printed so the swap is visible rather than assumed.
 NFC_TIE_STUBS = []
-for _net, _end, _padnum in (("NFC1", _nfc1_pts[-1], 1),
-                            ("NFC2", _nfc2_pts[0], 2)):
-    _pxy = _pad_xy("AE2", _padnum)
+_tie_pads = {1: _pad_xy("AE2", 1), 2: _pad_xy("AE2", 2)}
+_e1, _e2 = _nfc1_pts[-1], _nfc2_pts[0]
+if (math.dist(_e1, _tie_pads[1]) + math.dist(_e2, _tie_pads[2])
+        <= math.dist(_e1, _tie_pads[2]) + math.dist(_e2, _tie_pads[1])):
+    _assign = (("NFC1", _e1, 1), ("NFC2", _e2, 2))
+else:
+    _assign = (("NFC1", _e1, 2), ("NFC2", _e2, 1))
+for _net, _end, _padnum in _assign:
+    _pxy = _tie_pads[_padnum]
     b.track(_net, [_end, _pxy], width=fpg.NFC_W, layer="B.Cu")
-    NFC_TIE_STUBS.append((_net, round(math.dist(_end, _pxy), 4)))
+    NFC_TIE_STUBS.append(("%s->pad%d" % (_net, _padnum),
+                          round(math.dist(_end, _pxy), 4)))
 
 # WHICH COIL COPPER IS WHICH, FOR THE Specctra EXPORT. KiCad merges NFC1 into
 # NFC2 the moment a net tie joins them - correctly, because a coil IS a DC
@@ -852,6 +865,9 @@ NFC_SPLIT_R = 0.5 * (math.hypot(_nfc1_pts[-1][0] - CX, _nfc1_pts[-1][1] - CY)
 import pcbnew as _pcbnew                                          # noqa: E402
 
 VIA_D, VIA_DRILL = 0.45, 0.25
+
+#: What the stitch actually covered, per net. Filled by `stitch()`.
+STITCH_REPORT = {}
 
 #: Nets this file draws itself and the autorouter must not touch. GND and VDD
 #: are poured and stitched below; NFC1/NFC2 are the winding, which a router
@@ -889,9 +905,46 @@ def _obstacles():
         for pad in fp.Pads():
             pos = pad.GetPosition()
             sz = pad.GetSize()
-            out.append((pos.x / 1e6, 26.0 - pos.y / 1e6,
-                        math.hypot(sz.x, sz.y) / 2e6, pad.GetNetname()))
+            # A PAD IS A CAPSULE, NOT A DISC, AND THE DIFFERENCE IS A QFN-48.
+            # This used hypot(w, h)/2 - the pad's DIAGONAL - as one radius, so
+            # a 0.25 x 0.60 mm QFN land became a disc 0.65 mm across and its
+            # neighbour 0.40 mm away was permanently inside it. Every escape
+            # from every fine-pitch pin was refused for a collision with
+            # copper that is not there: 16 of 24 VDD pads unreachable, and the
+            # number did not move when the clearance rule was corrected,
+            # because the clearance was never what was wrong. Sampled as discs
+            # of radius min(w,h)/2 along the long axis, which is what a
+            # rounded rectangle actually is.
+            w, h = sz.x / 1e6, sz.y / 1e6
+            rr = min(min(w, h) / 2.0, 0.15)
+            th = -math.radians(pad.GetOrientationDegrees())
+            ct, st = math.cos(th), math.sin(th)
+            px, py = pos.x / 1e6, 26.0 - pos.y / 1e6
+            # COVERED, NOT APPROXIMATED. A capsule along the long axis leaves
+            # the four corners of the rectangle sticking out - by 0.026 mm on
+            # a QFN land and by 0.16 mm on the 3215 crystal's, which is
+            # exactly where the DRC then found vias 0.064 mm from X1 pad 1.
+            # A grid of discs on a pitch of rr*sqrt(2) COVERS the rectangle
+            # with no gap, because that is the condition for discs of radius
+            # rr on a square lattice to overlap at the cell corners.
+            step = rr * 1.41421356
+            nx = max(1, int(math.ceil(w / step)))
+            ny = max(1, int(math.ceil(h / step)))
+            for ix in range(nx):
+                for iy in range(ny):
+                    u = (-0.5 + (ix + 0.5) / nx) * w
+                    v = (-0.5 + (iy + 0.5) / ny) * h
+                    out.append((px + u * ct - v * st, py + u * st + v * ct,
+                                rr, pad.GetNetname(), "pad"))
     for t in b._pcb.GetTracks():
+        if t.Type() == _pcbnew.PCB_VIA_T:
+            # VIAS WERE NOT IN THIS LIST AT ALL, so the VDD stitch could not
+            # see the 40 GND vias the GND stitch had just placed and the only
+            # thing keeping their drills apart was luck.
+            pos = t.GetPosition()
+            out.append((pos.x / 1e6, 26.0 - pos.y / 1e6,
+                        t.GetWidth() / 2e6, t.GetNetname(), "via"))
+            continue
         if t.Type() != _pcbnew.PCB_TRACE_T:
             continue
         w = t.GetWidth() / 2e6
@@ -902,7 +955,7 @@ def _obstacles():
         for k in range(n + 1):
             f = k / float(n)
             out.append((a[0] + (z[0] - a[0]) * f,
-                        a[1] + (z[1] - a[1]) * f, w, nn))
+                        a[1] + (z[1] - a[1]) * f, w, nn, "track"))
     return out
 
 
@@ -918,6 +971,12 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
     obs = [o for o in all_obs if o[3] != net]
     own = [o for o in all_obs if o[3] == net]
     placed = []
+    # ONE VIA PER PAD BEFORE ANY PAD GETS TWO. The candidate list is
+    # pad-major and 120 positions deep, so without this the first few pads
+    # took a via each from three different rings and the `want` budget ran
+    # out before the far side of the QFN was reached. A plane stitch is
+    # coverage, not a count.
+    served = set()
     cands = []          # (x, y, origin_pad_xy_or_None, layer)
     if pads_of_net:
         for ref, fp in b.refs.items():
@@ -931,9 +990,10 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
                 # already occupied, and a search that only looks in one place
                 # reports "does not fit" when it means "did not look".
                 lay = "B.Cu" if fp.IsFlipped() else "F.Cu"
-                for dist in (0.58, 0.72, 0.88, 1.05, 1.25):
-                    for k in range(24):
-                        a = math.radians(k * 15.0)
+                for dist in (0.58, 0.72, 0.88, 1.05, 1.25, 1.45, 1.70,
+                             1.95):
+                    for k in range(36):
+                        a = math.radians(k * 10.0)
                         cands.append((px + dist * math.cos(a),
                                       py + dist * math.sin(a)),)
                         cands[-1] = (cands[-1][0], cands[-1][1],
@@ -948,14 +1008,23 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
     for x, y, origin, lay in cands:
         if len(placed) >= want:
             break
+        if origin is not None and origin in served:
+            continue
         if math.hypot(x - CX, y - CY) > R - 0.9:
             continue
-        # 0.30 mm, not 0.15. JLCPCB's via-hole-to-track is 0.20 mm and its
-        # hole-to-hole is 0.20 mm edge to edge; 0.30 covers both with margin
-        # for the fact that this model treats every obstacle as a disc.
-        clear = VIA_D / 2.0 + 0.30
-        if any(math.hypot(x - ox, y - oy) < (clear + orr)
-               for ox, oy, orr, _ in obs):
+        # TWO CLEARANCES, NOT ONE, BECAUSE THE FAB HAS TWO RULES. Against
+        # copper (a pad, a track) the rule is FAB_RULES["min_clearance"] =
+        # 0.127 mm and nothing more; against another DRILL it is hole-to-hole
+        # 0.20 mm edge to edge, which on a 0.25 mm drill inside a 0.45 mm pad
+        # is the binding one. A single 0.30 mm number for both was applying
+        # the DRILL rule to every 0201 land on the board, and beside a QFN-48
+        # on 0.40 mm pitch that forbids every position there is: 17 of 24 VDD
+        # pads came back "does not fit" when the truth was "was not allowed
+        # to look". 0.033 mm of margin on top, for the fact that this model
+        # treats every obstacle as a disc.
+        if any(math.hypot(x - ox, y - oy)
+               < (VIA_D / 2.0 + (0.30 if kind == "via" else 0.16) + orr)
+               for ox, oy, orr, _, kind in obs):
             continue
         # ...AND NOT DRILLED INTO ITS OWN NET'S PADS EITHER. Clearance does
         # not apply between copper of one net, but a hole through a land is
@@ -964,7 +1033,7 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
         # edge to edge, no more, because on the same net that is all that is
         # needed.
         if any(math.hypot(x - ox, y - oy) < (VIA_D / 2.0 + orr + 0.05)
-               for ox, oy, orr, _ in own):
+               for ox, oy, orr, _, _k in own):
             continue
         if any(math.hypot(x - vx, y - vy) < VIA_D + 0.45
                for vx, vy in placed):
@@ -981,8 +1050,9 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
             for k in range(1, steps):
                 f = k / float(steps)
                 sx, sy = ox0 + (x - ox0) * f, oy0 + (y - oy0) * f
-                if any(math.hypot(sx - bx, sy - by) < (0.10 + 0.14 + br)
-                       for bx, by, br, _ in obs):
+                if any(math.hypot(sx - bx, sy - by)
+                       < (0.10 + (0.30 if bk == "via" else 0.16) + br)
+                       for bx, by, br, _, bk in obs):
                     hit = True
                     break
             if hit:
@@ -997,16 +1067,104 @@ def stitch(net, layers, want, pads_of_net=True, ring_r=None):
         if origin is not None:
             b.track(net, [origin, (x, y)], width=0.20, layer=lay)
         placed.append((x, y))
-        obs.append((x, y, VIA_D / 2.0, net))
-        own.append((x, y, VIA_D / 2.0, net))
+        if origin is not None:
+            served.add(origin)
+        obs.append((x, y, VIA_D / 2.0, net, "via"))
+        own.append((x, y, VIA_D / 2.0, net, "via"))
         if origin is not None:
             # the stub is copper too, and the NEXT via must clear it
             steps = max(2, int(math.hypot(x - ox0, y - oy0) / 0.2))
             for k in range(steps + 1):
                 f = k / float(steps)
                 own.append((ox0 + (x - ox0) * f, oy0 + (y - oy0) * f,
-                            0.10, net))
+                            0.10, net, "track"))
+    # AND SAY WHICH PADS WERE NOT REACHED, BY NAME. A count of vias placed
+    # cannot distinguish 26 vias covering 26 pads from 26 vias covering 9;
+    # the second is what the ring-heavy version was doing and it read as a
+    # success. A VDD pad with no via is a pin fed by nothing.
+    missed = []
+    if pads_of_net:
+        for ref, fp in sorted(b.refs.items()):
+            for pad in fp.Pads():
+                if pad.GetNetname() != net:
+                    continue
+                px = pad.GetPosition().x / 1e6
+                py = 26.0 - pad.GetPosition().y / 1e6
+                if (px, py) not in served:
+                    missed.append("%s.%s" % (ref, pad.GetNumber()))
+    STITCH_REPORT[net] = {"vias": len(placed), "pads_served": len(served),
+                          "pads_missed": missed, "_served": sorted(served)}
     return placed
+
+
+def link_orphans(net, layer_for, max_mm=2.6, width=0.20):
+    """Join pads of `net` that no via could reach to ones that were.
+
+    WHY THIS EXISTS AND WHY IT IS NOT THE ROUTER'S JOB. F.Cu and B.Cu are both
+    poured GND, so a GND pad is joined to its plane by the fill and needs
+    nothing; a VDD pad has NO surface copper of its own net anywhere near it
+    and is an island until something reaches the In2 plane. `stitch()` gets a
+    via next to 7 of the 24 VDD pads and cannot fit one beside the other 17 -
+    measured, by name, in STITCH_REPORT. Those 17 are not a routing problem
+    either: a VDD pin and its own decoupling capacitor are placed 0.5 mm apart
+    on purpose, so the copper that joins them is a fanout, and handing it to
+    an autorouter is how VDD's 24 pins became 24 ratlines and the router
+    thrashed.
+
+    Nearest-anchor, straight line, and the line is CHECKED against every
+    foreign obstacle at 0.1 mm intervals. A pad that still cannot be reached
+    is REPORTED BY NAME rather than left to look connected.
+    """
+    all_obs = _obstacles()
+    obs = [o for o in all_obs if o[3] != net]
+    served = set(STITCH_REPORT.get(net, {}).get("_served", ()))
+    pads = []
+    for ref, fp in sorted(b.refs.items()):
+        for pad in fp.Pads():
+            if pad.GetNetname() != net:
+                continue
+            px = pad.GetPosition().x / 1e6
+            py = 26.0 - pad.GetPosition().y / 1e6
+            lay = "B.Cu" if fp.IsFlipped() else "F.Cu"
+            pads.append(("%s.%s" % (ref, pad.GetNumber()), px, py, lay))
+    anchors = {p[0]: (p[1], p[2], p[3]) for p in pads if (p[1], p[2]) in served}
+    linked, still = [], []
+    changed = True
+    while changed:
+        changed = False
+        for name, px, py, lay in pads:
+            if name in anchors:
+                continue
+            best = None
+            for aname, (ax, ay, alay) in anchors.items():
+                if alay != lay:
+                    continue
+                d = math.hypot(ax - px, ay - py)
+                if d < max_mm and (best is None or d < best[0]):
+                    best = (d, ax, ay)
+            if best is None:
+                continue
+            d, ax, ay = best
+            steps = max(2, int(d / 0.1))
+            clash = False
+            for k in range(steps + 1):
+                f = k / float(steps)
+                sx, sy = px + (ax - px) * f, py + (ay - py) * f
+                if any(math.hypot(sx - bx, sy - by)
+                       < (width / 2.0 + (0.25 if bk == "via" else 0.16) + br)
+                       for bx, by, br, _, bk in obs):
+                    clash = True
+                    break
+            if clash:
+                continue
+            b.track(net, [(px, py), (ax, ay)], width=width, layer=lay)
+            anchors[name] = (px, py, lay)
+            linked.append((name, round(d, 3)))
+            changed = True
+    still = [p[0] for p in pads if p[0] not in anchors]
+    STITCH_REPORT.setdefault(net, {})["linked"] = linked
+    STITCH_REPORT[net]["orphans"] = still
+    return linked, still
 
 
 # ==========================================================================
@@ -1043,10 +1201,18 @@ b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
 
 
 # -- stitch the planes now that both nets exist ---------------------------
-VIAS_VDD = stitch("VDD", ("F.Cu", "B.Cu"), want=26, pads_of_net=True,
-                  ring_r=(4.3, 6.1, 7.9))
+# NO RING VIAS ON VDD. F.Cu and B.Cu are both poured GND, so a VDD via that
+# is not attached to a VDD pad reaches the In2 plane and NOTHING ELSE - KiCad
+# calls it a dangling via and it is right. Measured: 10 of them, all VDD, all
+# from the ring. GND keeps its rings because both outer pours ARE GND, so a
+# ring via there joins three real planes.
+VIAS_VDD = stitch("VDD", ("F.Cu", "B.Cu"), want=40, pads_of_net=True,
+                  ring_r=None)
 VIAS_GND = stitch("GND", ("F.Cu", "B.Cu"), want=40, pads_of_net=True,
                   ring_r=(5.2, 7.0, 8.8))
+
+# and the VDD pads no via could sit beside
+VDD_LINKED, VDD_ORPHANS = link_orphans("VDD", None)
 
 
 # SOLID PAD CONNECTIONS, not thermal spokes. KiCad's default is four spokes
@@ -1345,6 +1511,17 @@ def report():
     print("  VDD vias %d   GND vias %d   (a plane nobody stitched is not a "
           "plane, and the router was being asked to route 63 pins that the "
           "copper should already join)" % (len(VIAS_VDD), len(VIAS_GND)))
+    print("    VDD pads linked to a served neighbour: %d   still orphaned: "
+          "%d%s" % (len(VDD_LINKED), len(VDD_ORPHANS),
+                    "" if not VDD_ORPHANS else "   " + ", ".join(VDD_ORPHANS)))
+    for _net in ("VDD", "GND"):
+        _r = STITCH_REPORT.get(_net, {})
+        _npad = sum(1 for fp in b.refs.values() for pd in fp.Pads()
+                    if pd.GetNetname() == _net)
+        print("    %-4s %d vias, %d of %d pads reached%s"
+              % (_net, _r.get("vias", 0), _r.get("pads_served", 0), _npad,
+                 "" if not _r.get("pads_missed")
+                 else "   NOT REACHED: " + ", ".join(_r["pads_missed"])))
 
     print("\n--- schematic fields carried onto the board ---")
     print("  %d values and %d fields copied across %d parts"
