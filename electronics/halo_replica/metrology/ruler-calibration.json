@@ -1,0 +1,346 @@
+{
+  "photo6_bottom": {
+    "name": "photo6_bottom",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+    "rule_edge_px": 1131,
+    "tick_band_xyxy": [
+      400,
+      1141,
+      2000,
+      1171
+    ],
+    "band_offset_from_edge": 10,
+    "band_depth": 30,
+    "projection_axis": "x",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 15.8862,
+    "fft_peak_over_median": 82.0,
+    "px_per_mm": 15.887545712881764,
+    "px_per_mm_stderr": 0.0021874733471741762,
+    "n_ticks": 93,
+    "span_mm": 97,
+    "coverage": 0.949,
+    "resid_sd_px": 0.5726471298110254,
+    "resid_max_px": 1.1193723531512205,
+    "split_half_px_per_mm": [
+      15.9059,
+      15.8528
+    ],
+    "split_half_delta_pct": 0.334,
+    "five_mm_comb": {
+      "box": [
+        400,
+        1177,
+        2000,
+        1199
+      ],
+      "pitch_px": 79.44138163332356,
+      "n": 17,
+      "sd_px": 0.768237385621487,
+      "implied_mm_pitch_px": 15.888276326664712,
+      "ratio_to_mm": 1.0000459865731406
+    }
+  },
+  "photo6_right": {
+    "name": "photo6_right",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+    "rule_edge_px": 1523,
+    "tick_band_xyxy": [
+      1547,
+      100,
+      1577,
+      900
+    ],
+    "band_offset_from_edge": 24,
+    "band_depth": 30,
+    "projection_axis": "y",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 15.5805,
+    "fft_peak_over_median": 50.5,
+    "px_per_mm": 15.565130838466686,
+    "px_per_mm_stderr": 0.008188932253086256,
+    "n_ticks": 50,
+    "span_mm": 49,
+    "coverage": 1.0,
+    "resid_sd_px": 0.8356122256631293,
+    "resid_max_px": 1.6274431467519435,
+    "split_half_px_per_mm": [
+      15.4614,
+      15.6704
+    ],
+    "split_half_delta_pct": 1.343,
+    "five_mm_comb": {
+      "box": [
+        1583,
+        100,
+        1605,
+        900
+      ],
+      "pitch_px": 77.84367841861005,
+      "n": 9,
+      "sd_px": 1.0755928010595457,
+      "implied_mm_pitch_px": 15.56873568372201,
+      "ratio_to_mm": 1.0002315974913887
+    }
+  },
+  "photo7_bottom": {
+    "name": "photo7_bottom",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-7.jpg",
+    "rule_edge_px": 1113,
+    "tick_band_xyxy": [
+      400,
+      1127,
+      2000,
+      1157
+    ],
+    "band_offset_from_edge": 14,
+    "band_depth": 30,
+    "projection_axis": "x",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 15.2649,
+    "fft_peak_over_median": 94.5,
+    "px_per_mm": 15.258466846203588,
+    "px_per_mm_stderr": 0.002005848883199102,
+    "n_ticks": 99,
+    "span_mm": 99,
+    "coverage": 0.99,
+    "resid_sd_px": 0.5737842058228746,
+    "resid_max_px": 1.6538600475015954,
+    "split_half_px_per_mm": [
+      15.2251,
+      15.2645
+    ],
+    "split_half_delta_pct": 0.259,
+    "five_mm_comb": {
+      "box": [
+        400,
+        1163,
+        2000,
+        1185
+      ],
+      "pitch_px": 76.27781263867631,
+      "n": 20,
+      "sd_px": 0.7101071073306799,
+      "implied_mm_pitch_px": 15.255562527735261,
+      "ratio_to_mm": 0.999809658565464
+    }
+  },
+  "photo7_right": {
+    "name": "photo7_right",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-7.jpg",
+    "rule_edge_px": 1557,
+    "tick_band_xyxy": [
+      1577,
+      100,
+      1607,
+      900
+    ],
+    "band_offset_from_edge": 20,
+    "band_depth": 30,
+    "projection_axis": "y",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 15.0211,
+    "fft_peak_over_median": 56.2,
+    "px_per_mm": 15.00739547128201,
+    "px_per_mm_stderr": 0.008258651826022995,
+    "n_ticks": 52,
+    "span_mm": 51,
+    "coverage": 1.0,
+    "resid_sd_px": 0.8938059241784084,
+    "resid_max_px": 1.9184047372826605,
+    "split_half_px_per_mm": [
+      14.8986,
+      15.1117
+    ],
+    "split_half_delta_pct": 1.42,
+    "five_mm_comb": {
+      "box": [
+        1613,
+        100,
+        1635,
+        900
+      ],
+      "pitch_px": 74.99139804707492,
+      "n": 10,
+      "sd_px": 1.0484381149936426,
+      "implied_mm_pitch_px": 14.998279609414984,
+      "ratio_to_mm": 0.9993925753549662
+    }
+  },
+  "photo1_bottom": {
+    "name": "photo1_bottom",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-1.jpg",
+    "rule_edge_px": 1150,
+    "tick_band_xyxy": [
+      400,
+      1160,
+      2000,
+      1190
+    ],
+    "band_offset_from_edge": 10,
+    "band_depth": 30,
+    "projection_axis": "x",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 13.7763,
+    "fft_peak_over_median": 74.5,
+    "px_per_mm": 13.768636459625693,
+    "px_per_mm_stderr": 0.0020830297650567763,
+    "n_ticks": 94,
+    "span_mm": 99,
+    "coverage": 0.94,
+    "resid_sd_px": 0.5579866567817521,
+    "resid_max_px": 1.264056109442322,
+    "split_half_px_per_mm": [
+      13.7978,
+      13.7366
+    ],
+    "split_half_delta_pct": 0.445,
+    "five_mm_comb": {
+      "box": [
+        400,
+        1196,
+        2000,
+        1218
+      ],
+      "pitch_px": 68.9469897163584,
+      "n": 21,
+      "sd_px": 1.3692017414598672,
+      "implied_mm_pitch_px": 13.78939794327168,
+      "ratio_to_mm": 1.001507882331476
+    }
+  },
+  "photo1_right": {
+    "name": "photo1_right",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-1.jpg",
+    "rule_edge_px": 1485,
+    "tick_band_xyxy": [
+      1509,
+      100,
+      1539,
+      900
+    ],
+    "band_offset_from_edge": 24,
+    "band_depth": 30,
+    "projection_axis": "y",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 16.5994,
+    "fft_peak_over_median": 7.8,
+    "px_per_mm": 16.63211181012446,
+    "px_per_mm_stderr": 0.02816016283383842,
+    "n_ticks": 10,
+    "span_mm": 40,
+    "coverage": 0.2439,
+    "resid_sd_px": 1.0694931778383312,
+    "resid_max_px": 1.6884493976836268,
+    "split_half_px_per_mm": [
+      16.6822,
+      16.6027
+    ],
+    "split_half_delta_pct": 0.478,
+    "five_mm_comb": {
+      "box": [
+        1545,
+        100,
+        1567,
+        900
+      ],
+      "pitch_px": 72.6302740037448,
+      "n": 9,
+      "sd_px": 21.66359166613348,
+      "implied_mm_pitch_px": 14.52605480074896,
+      "ratio_to_mm": 0.8733740469389173
+    }
+  },
+  "photo8_bottom": {
+    "name": "photo8_bottom",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-8.jpg",
+    "rule_edge_px": 1188,
+    "tick_band_xyxy": [
+      400,
+      1198,
+      2000,
+      1228
+    ],
+    "band_offset_from_edge": 10,
+    "band_depth": 30,
+    "projection_axis": "x",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 14.5259,
+    "fft_peak_over_median": 74.4,
+    "px_per_mm": 14.514525313830868,
+    "px_per_mm_stderr": 0.003237089144756143,
+    "n_ticks": 100,
+    "span_mm": 102,
+    "coverage": 0.9709,
+    "resid_sd_px": 0.9434552262943207,
+    "resid_max_px": 2.725082677049272,
+    "split_half_px_per_mm": [
+      14.4483,
+      14.5547
+    ],
+    "split_half_delta_pct": 0.734,
+    "five_mm_comb": {
+      "box": [
+        400,
+        1234,
+        2000,
+        1256
+      ],
+      "pitch_px": 72.55071263280539,
+      "n": 19,
+      "sd_px": 1.4919678045474691,
+      "implied_mm_pitch_px": 14.510142526561078,
+      "ratio_to_mm": 0.9996980412948391
+    }
+  },
+  "photo8_right": {
+    "name": "photo8_right",
+    "verdict": "MEASURED",
+    "image": "images/airtag/fcc-BCGA2187-internal-photo-8.jpg",
+    "rule_edge_px": 1556,
+    "tick_band_xyxy": [
+      1560,
+      100,
+      1590,
+      900
+    ],
+    "band_offset_from_edge": 4,
+    "band_depth": 30,
+    "projection_axis": "y",
+    "deskew_angle_deg": 0.01,
+    "fft_pitch_px": 14.0323,
+    "fft_peak_over_median": 55.7,
+    "px_per_mm": 14.045012223222052,
+    "px_per_mm_stderr": 0.012157766848744797,
+    "n_ticks": 55,
+    "span_mm": 54,
+    "coverage": 1.0,
+    "resid_sd_px": 1.4313156693103553,
+    "resid_max_px": 3.0190653504976126,
+    "split_half_px_per_mm": [
+      13.8767,
+      14.2097
+    ],
+    "split_half_delta_pct": 2.371,
+    "five_mm_comb": {
+      "box": [
+        1596,
+        100,
+        1618,
+        900
+      ],
+      "pitch_px": 69.14546493477373,
+      "n": 11,
+      "sd_px": 7.044464860815347,
+      "implied_mm_pitch_px": 13.829092986954745,
+      "ratio_to_mm": 0.9846266252506134
+    }
+  }
+}

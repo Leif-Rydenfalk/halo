@@ -1,0 +1,17 @@
+{
+  "$schema_version": "halo-replica-bom/1",
+  "document": "Reconstructed bill of materials for Apple AirTag A2187 (1st gen, FCC ID BCGA2187)",
+  "lane": "L3 — BOM identification, halo Replica",
+  "written": "2026-09-05",
+  "status": "SKELETON — every line present; size_mm fields PENDING measurement",
+  "designator_note": "The board carries NO visible RefDes silkscreen. Designators here are this document's own, inherited from docs/REFERENCE-TEARDOWN.md §2 where a line exists there. COLLISION WARNING: U1 in this file is the NORDIC MCU. Apple's UWB chip — universally called 'the U1' in the press — is U2 here. Never write 'U1' about the UWB part; write 'Apple U1'.",
+  "side_convention": "Follows Apple's FCC filing: FRONT = the component side (O'Flynn calls that same side 'backside'). BACK = the battery-contact / NFC-coil side (O'Flynn's 'frontside').",
+  "confidence_scale": {
+    "HIGH": "the part is locatable in a photograph AND its own package marking was read there",
+    "MEDIUM": "locatable in a photograph, marking not decisive; or marking read but PN inferred",
+    "LOW": "not locatable in any photograph available here — rests on a teardown's assertion only",
+    "CANNOT DETERMINE": "the public record does not contain it"
+  },
+  "evidence_class_rule": "Every line states SILICON SEEN or SILICON CITED. A line that is SILICON CITED cannot be HIGH confidence no matter how good the literature is.",
+  "lines": []
+}

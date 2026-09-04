@@ -14,5 +14,20 @@
 
 > "first step is recreating it exactly."
 
+## 2026-09-05 — on tools (relayed to this lane by the halo lane, session halo-cb)
+> "Tell halo replica orchestration to always manage its own tools and create any tools
+> that might be missing."
+
+Relay path: Leif -> halo-cb -> this lane, 2026-09-05, received before any tool work was
+committed. Recorded verbatim as relayed; the wording is Leif's, the framing sentence
+around it is not and is therefore not quoted.
+
+## 2026-09-05 — supervision (relayed to this lane by the halo lane, session halo-cb)
+> "tell it to tell the agents its supervising"
+
+Context of the relay: it applies to the tools instruction immediately above. Every lane
+this session supervises manages its own tools and builds what is missing, and every brief
+written from here on carries that rule. Relay path: Leif -> halo-cb -> this lane.
+
 ---
 Further words of Leif's go here verbatim, dated, BEFORE they are acted on.

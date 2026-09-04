@@ -1,0 +1,485 @@
+#!/usr/bin/env python3
+"""boardmetro - measure a printed circuit board off a photograph, or refuse.
+
+Built for the halo Replica lane because no instrument for this existed in the workshop.
+Leif, 2026-09-05: "always manage its own tools and create any tools that might be missing."
+
+THREE VERDICTS, and they are the exit code:
+    0  PASS              a number, with the input it came from
+    1  FAIL              the measurement ran and the answer is wrong / out of tolerance
+    2  CANNOT DETERMINE  the photograph does not support the measurement. NEVER a default.
+
+WHY THE NEGATIVE CONTROLS EXIST. Measuring this project's first board edge produced
+394 px, which was the CROP FRAME and not the board - O'Flynn's marker circle is inscribed
+tangent to the square frame, so a ray-cast for "outermost dark" finds the frame every time.
+It was caught only because the number landed exactly on the search cap and a human noticed.
+Every measurement verb here therefore carries a control that fails when the answer is an
+artifact of the search itself, so the next one is caught without anybody having to notice.
+
+VERBS
+    doctor              dependencies, catalogue, and a canary measurement with a known answer
+    selftest            synthetic ground truth + deliberate breaks. Run before trusting output.
+    scale-ruler IMG     px/mm from a ruler's tick pitch (periodic signal, not two picked ticks)
+    circle IMG          fit a circle; refuses when the fit is really the frame
+    radial IMG          radial luma/chroma profile about a centre
+
+Every verb prints the INPUT it used - filename, region, method, basis - because three
+antenna results in this project were correct computations on the wrong board, and the
+input line is the only thing that catches that.
+"""
+import sys, os, json, argparse, math
+
+EX_PASS, EX_FAIL, EX_CANNOT = 0, 1, 2
+HALO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+IMGDIR = os.path.abspath(os.path.join(HALO, "..", "..", "images", "airtag"))
+
+def _np():
+    import numpy as np; return np
+def _img(path):
+    from PIL import Image
+    if not os.path.exists(path):
+        p2 = os.path.join(IMGDIR, path)
+        if os.path.exists(p2): path = p2
+        else: die_cannot(f"no such image: {path}")
+    return path, Image.open(path)
+
+def die_cannot(why, **extra):
+    print(f"CANNOT DETERMINE: {why}")
+    for k, v in extra.items(): print(f"  {k}: {v}")
+    sys.exit(EX_CANNOT)
+def die_fail(why, **extra):
+    print(f"FAIL: {why}")
+    for k, v in extra.items(): print(f"  {k}: {v}")
+    sys.exit(EX_FAIL)
+
+# ---------------------------------------------------------------- circle fitting
+def kasa(x, y, w):
+    np = _np()
+    A = np.stack([x, y, np.ones_like(x)], 1) * w[:, None]
+    b = (x * x + y * y) * w
+    sol, *_ = np.linalg.lstsq(A, b, rcond=None)
+    cx, cy = sol[0] / 2, sol[1] / 2
+    return cx, cy, math.sqrt(max(sol[2] + cx * cx + cy * cy, 1e-12))
+
+def shape_evidence(xs, ys, cx, cy, r, keep):
+    """Residual over INLIERS cannot test shape - IRLS chose the inliers to make it small.
+    That is a check that can agree with what it checks. Found by this tool's own selftest:
+    a SQUARE fitted as a circle gave residual sd 1.15 px, under the 2.0 px threshold.
+    So shape is judged on evidence IRLS could not manufacture: how much of the candidate
+    set survived, and whether the survivors go all the way round."""
+    np = _np()
+    frac = float(keep.mean()) if len(keep) else 0.0
+    th = np.degrees(np.arctan2(ys[keep] - cy, xs[keep] - cx)) % 360 if keep.sum() else np.array([])
+    counts = np.histogram(th, bins=36, range=(0, 360))[0] if len(th) else np.zeros(36)
+    occupied = int((counts > 0).sum())
+    expected = counts.sum() / 36.0 if counts.sum() else 0.0
+    # a thin full ring is near-uniform in angle; a square's survivors bunch and leave gaps
+    uniformity = float(counts.min() / expected) if expected > 0 else 0.0
+    return frac, occupied, uniformity
+
+
+def fit_circle(xs, ys, iters=30, band=2.0):
+    np = _np()
+    x = xs.astype(float); y = ys.astype(float); w = np.ones_like(x)
+    cx, cy, r = kasa(x, y, w)
+    for i in range(iters):
+        d = np.abs(np.hypot(x - cx, y - cy) - r)
+        bw = max(band, 3.0 * 1.4826 * np.median(d)) if i < 8 else band
+        w = (d < bw).astype(float)
+        if w.sum() < 20: break
+        cx, cy, r = kasa(x, y, w)
+    keep = w > 0
+    res = np.hypot(x[keep] - cx, y[keep] - cy) - r if keep.sum() else np.array([0.0])
+    return cx, cy, r, keep, res
+
+def frame_control(cx, cy, r, W, H, tol=1.5):
+    """NEGATIVE CONTROL. A circle inscribed tangent to the image frame is the CROP, not the
+    board. This is the exact failure that produced 394 px. Returns a reason, or None."""
+    hits = []
+    if abs((cx - r) - 0) < tol: hits.append("tangent to left edge")
+    if abs((cy - r) - 0) < tol: hits.append("tangent to top edge")
+    if abs((cx + r) - (W - 1)) < tol: hits.append("tangent to right edge")
+    if abs((cy + r) - (H - 1)) < tol: hits.append("tangent to bottom edge")
+    if len(hits) >= 3:
+        return ("the fitted circle is inscribed in the image frame (" + ", ".join(hits) +
+                ") - this is the CROP BOUNDARY, not a board feature")
+    return None
+
+# ---------------------------------------------------------------- verbs
+def v_circle(a):
+    np = _np()
+    path, im = _img(a.image)
+    arr = np.asarray(im.convert("L")).astype(float)
+    H, W = arr.shape
+    from scipy import ndimage as ndi
+    med = ndi.median_filter(arr, size=a.ground_window)
+    cand = (arr < a.dark) & (med > a.ground)
+    ys, xs = np.nonzero(cand)
+    print(f"INPUT  image={os.path.basename(path)}  {W}x{H}")
+    print(f"       method=dark(<{a.dark}) on bright ground(median{a.ground_window}>{a.ground}), Kasa+IRLS band {a.band}px")
+    if len(ys) < a.min_pixels:
+        die_cannot(f"only {len(ys)} candidate pixels, need {a.min_pixels}",
+                   hint="loosen --dark / --ground, or this image has no such feature")
+    cx, cy, r, keep, res = fit_circle(xs, ys, band=a.band)
+    if keep.sum() < a.min_pixels:
+        die_cannot(f"fit collapsed to {int(keep.sum())} inliers")
+    sd = float(res.std())
+    frac, occ36, unif = shape_evidence(xs, ys, cx, cy, r, keep)
+    th = np.degrees(np.arctan2(ys[keep] - cy, xs[keep] - cx)) % 360
+    occupied = int((np.histogram(th, bins=12, range=(0, 360))[0] > 0).sum())
+    print(f"RESULT centre=({cx:.2f},{cy:.2f}) px  r={r:.2f} px  inliers={int(keep.sum())}/{len(xs)}")
+    print(f"       residual sd={sd:.3f} px  p95|res|={float(np.percentile(np.abs(res),95)):.3f} px")
+    print(f"       angular coverage {occupied}/12 of 30deg bins")
+    print(f"SHAPE  inlier fraction {frac:.3f} (need >={a.min_inlier_frac})  "
+          f"36-bin coverage {occ36}/36  angular uniformity {unif:.3f}"
+          + (f" (need >={a.min_uniformity})" if a.min_uniformity > 0 else " (diagnostic only)"))
+    if frac < a.min_inlier_frac:
+        die_fail(f"inlier fraction {frac:.3f} below --min-inlier-frac {a.min_inlier_frac}",
+                 meaning="most candidate pixels are NOT on the fitted circle - the feature "
+                         "is some other shape and IRLS merely carved a circle out of it")
+    if a.min_uniformity > 0 and unif < a.min_uniformity:
+        die_fail(f"angular uniformity {unif:.3f} below --min-uniformity {a.min_uniformity}",
+                 meaning="survivors bunch in angle and leave gaps. Only meaningful when the "
+                         "feature is EXPECTED to be a complete ring - a circle clipped by the "
+                         "crop legitimately occupies few bins, so this is opt-in, not default")
+    if sd > a.max_residual:
+        die_fail(f"residual sd {sd:.3f} px exceeds --max-residual {a.max_residual}",
+                 meaning="the inliers are not on one circle; this is not a circular feature")
+    if occupied < a.min_arcs:
+        die_cannot(f"only {occupied}/12 angular bins occupied (need {a.min_arcs})",
+                   meaning="too little arc to constrain a centre; radius would be unreliable")
+    ctrl = frame_control(cx, cy, r, W, H)
+    if ctrl:
+        if a.expect_frame:
+            print(f"CONTROL fired as expected: {ctrl}")
+        else:
+            die_fail("NEGATIVE CONTROL FIRED: " + ctrl,
+                     remedy="if you meant to measure the crop marker, pass --expect-frame")
+    else:
+        print("CONTROL passed: not inscribed in the frame")
+    if a.mm is not None:
+        pxmm = 2 * r / a.mm
+        print(f"SCALE  {2*r:.2f} px = {a.mm} mm  ->  {pxmm:.4f} px/mm  ({1/pxmm:.6f} mm/px)")
+        print(f"       NOTE any absolute mm derived from this inherits whatever error is in "
+              f"the {a.mm} mm figure. Ratios do not.")
+    if a.json_out:
+        json.dump({"image": os.path.basename(path), "image_w": W, "image_h": H,
+                   "cx_px": cx, "cy_px": cy, "r_px": r, "inliers": int(keep.sum()),
+                   "residual_sd_px": sd, "angular_bins_occupied": occupied,
+                   "method": f"dark<{a.dark} on median{a.ground_window}>{a.ground}, Kasa+IRLS",
+                   "frame_control": ctrl or "passed"},
+                  open(a.json_out, "w"), indent=2)
+        print(f"WROTE  {a.json_out}")
+    return EX_PASS
+
+def v_scale_ruler(a):
+    """px/mm from a ruler's tick pitch, via autocorrelation of a strip. A pitch averaged
+    over many ticks beats two hand-picked ones and yields a residual."""
+    np = _np()
+    path, im = _img(a.image)
+    arr = np.asarray(im.convert("L")).astype(float)
+    H, W = arr.shape
+    x0, y0, x1, y1 = a.region
+    if not (0 <= x0 < x1 <= W and 0 <= y0 < y1 <= H):
+        die_cannot(f"region {a.region} outside image {W}x{H}")
+    strip = arr[y0:y1, x0:x1]
+    sig = strip.mean(axis=0 if a.axis == "x" else 1)
+    print(f"INPUT  image={os.path.basename(path)}  {W}x{H}  region={a.region}  axis={a.axis}")
+    print(f"       strip {strip.shape}, collapsed to {len(sig)} samples")
+    sig = sig - sig.mean()
+    if sig.std() < 1.0:
+        die_cannot(f"strip has almost no contrast (sd {sig.std():.2f}) - no ticks here")
+    ac = np.correlate(sig, sig, mode="full")[len(sig) - 1:]
+    ac = ac / ac[0]
+    lo, hi = a.min_pitch, min(a.max_pitch, len(ac) - 1)
+    if hi <= lo: die_cannot(f"pitch search range [{lo},{hi}] is empty")
+    seg = ac[lo:hi]
+    k = int(np.argmax(seg)) + lo
+    peak = float(ac[k])
+    # parabolic refinement on the autocorrelation peak
+    if 1 <= k < len(ac) - 1:
+        d = ac[k-1] - 2*ac[k] + ac[k+1]
+        k_ref = k + (0.5*(ac[k-1]-ac[k+1])/d) if abs(d) > 1e-9 else float(k)
+    else: k_ref = float(k)
+    print(f"RESULT tick pitch {k_ref:.3f} px  (autocorrelation peak {peak:.3f} at lag {k})")
+    if peak < a.min_peak:
+        die_cannot(f"autocorrelation peak {peak:.3f} below --min-peak {a.min_peak}",
+                   meaning="no convincing periodicity - this strip is probably not on the ticks")
+    # NEGATIVE CONTROL: the peak must beat a shuffled version of the same signal
+    rng = np.random.default_rng(0)
+    ctrl_peaks = []
+    for _ in range(a.control_trials):
+        s2 = rng.permutation(sig)
+        a2 = np.correlate(s2, s2, mode="full")[len(s2)-1:]
+        a2 = a2 / a2[0]
+        ctrl_peaks.append(float(a2[lo:hi].max()))
+    cmax = max(ctrl_peaks)
+    print(f"CONTROL shuffled-signal best peak over {a.control_trials} trials: {cmax:.3f}")
+    if peak <= cmax:
+        die_fail(f"peak {peak:.3f} does not beat shuffled control {cmax:.3f}",
+                 meaning="the periodicity is not distinguishable from chance")
+    print(f"CONTROL passed: {peak:.3f} > {cmax:.3f}")
+    pxmm = k_ref / a.pitch_mm
+    print(f"SCALE  {k_ref:.3f} px = {a.pitch_mm} mm  ->  {pxmm:.4f} px/mm  ({1/pxmm:.6f} mm/px)")
+    print(f"       basis is a RULER IN THE PHOTOGRAPH, so this does not inherit any")
+    print(f"       assumed board dimension. Perspective error is NOT bounded by this verb.")
+    if a.json_out:
+        json.dump({"image": os.path.basename(path), "region": list(a.region), "axis": a.axis,
+                   "tick_pitch_px": k_ref, "pitch_mm": a.pitch_mm, "px_per_mm": pxmm,
+                   "mm_per_px": 1/pxmm, "autocorr_peak": peak, "shuffle_control_peak": cmax,
+                   "method": "autocorrelation of collapsed strip, parabolic peak refinement",
+                   "caveat": "perspective/parallax not bounded by this measurement"},
+                  open(a.json_out, "w"), indent=2)
+        print(f"WROTE  {a.json_out}")
+    return EX_PASS
+
+def v_radial(a):
+    np = _np()
+    path, im = _img(a.image)
+    rgb = np.asarray(im.convert("RGB")).astype(float)
+    lum = rgb.mean(2); H, W, _ = rgb.shape
+    cx, cy = (a.centre if a.centre else ((W-1)/2, (H-1)/2))
+    ys, xs = np.mgrid[0:H, 0:W]
+    rad = np.hypot(ys - cy, xs - cx)
+    if a.copper:
+        sel = (rgb[...,0] - rgb[...,2] > 28) & (rgb[...,0] > 90) & (lum < 250)
+        what = "copper-chroma fraction (R-B>28, R>90, not blown)"
+    else:
+        sel = None; what = "mean luma"
+    print(f"INPUT  image={os.path.basename(path)}  {W}x{H}  centre=({cx:.2f},{cy:.2f})  {what}")
+    if a.px_per_mm: print(f"       scale {a.px_per_mm:.4f} px/mm")
+    rows = []
+    for r0 in np.arange(a.r_min, a.r_max, a.bin):
+        m = (rad >= r0) & (rad < r0 + a.bin)
+        n = int(m.sum())
+        if n < 20: continue
+        val = float(sel[m].mean()) if sel is not None else float(lum[m].mean())
+        rows.append((float(r0 + a.bin/2), val, n))
+    if not rows: die_cannot("no radial bin had enough pixels")
+    for r, v, n in rows:
+        mm = f" {r/a.px_per_mm:7.3f} mm" if a.px_per_mm else ""
+        bar = "#" * int(v * 60) if sel is not None else "#" * int(v / 255 * 60)
+        print(f"  r={r:6.1f} px{mm}  {v:7.3f}  {bar}")
+    if a.json_out:
+        json.dump({"image": os.path.basename(path), "centre_px": [cx, cy],
+                   "quantity": what, "px_per_mm": a.px_per_mm,
+                   "bins": [{"r_px": r, "value": v, "n": n} for r, v, n in rows]},
+                  open(a.json_out, "w"), indent=2)
+        print(f"WROTE  {a.json_out}")
+    return EX_PASS
+
+# ---------------------------------------------------------------- doctor / selftest
+def _synth(kind, W=600, H=600, **kw):
+    np = _np(); from PIL import Image
+    a = np.full((H, W), 240, dtype=np.uint8)
+    if kind == "circle":
+        cx, cy, r = kw["cx"], kw["cy"], kw["r"]
+        ys, xs = np.mgrid[0:H, 0:W]
+        d = np.abs(np.hypot(ys - cy, xs - cx) - r)
+        a[d < kw.get("w", 1.2)] = 30
+    elif kind == "inscribed":
+        cx, cy, r = (W-1)/2, (H-1)/2, (W-1)/2
+        ys, xs = np.mgrid[0:H, 0:W]
+        d = np.abs(np.hypot(ys - cy, xs - cx) - r)
+        a[d < 1.2] = 30
+    elif kind == "ruler":
+        pitch = kw["pitch"]
+        for i in range(int(W / pitch)):
+            x = int(round(i * pitch))
+            if 0 <= x < W: a[H//3:2*H//3, x:x+2] = 20
+    elif kind == "noise":
+        rng = np.random.default_rng(kw.get("seed", 1))
+        a = rng.integers(0, 255, (H, W), dtype=np.uint8)
+    elif kind == "blank":
+        pass
+    return Image.fromarray(a)
+
+def v_selftest(a):
+    """Ground truth we generate, plus DELIBERATE BREAKS. A check never seen to go red is
+    not known to work, so every control here is fired on purpose at least once."""
+    np = _np()
+    import tempfile
+    tmp = tempfile.mkdtemp(prefix="boardmetro-selftest-")
+    results = []
+    def rec(name, ok, detail):
+        results.append((name, ok, detail))
+        print(f"  {'PASS' if ok else 'FAIL'}  {name}: {detail}")
+
+    print("boardmetro selftest - synthetic ground truth and deliberate breaks\n")
+
+    # 1 POSITIVE: a circle we drew, recovered
+    for r_true, cx_t, cy_t in ((180.0, 300.0, 300.0), (95.5, 250.0, 330.0), (240.0, 300.0, 300.0)):
+        p = os.path.join(tmp, f"c{r_true}.png")
+        _synth("circle", cx=cx_t, cy=cy_t, r=r_true).save(p)
+        arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+        ys, xs = np.nonzero(arr < 100)
+        cx, cy, r, keep, res = fit_circle(xs, ys)
+        err = abs(r - r_true)
+        rec(f"recover drawn circle r={r_true}", err < 1.0,
+            f"got r={r:.3f} (err {err:.3f} px), centre err "
+            f"{math.hypot(cx-cx_t, cy-cy_t):.3f} px, res sd {res.std():.3f}")
+
+    # 2 NEGATIVE CONTROL fired on purpose: inscribed circle = the frame
+    p = os.path.join(tmp, "inscribed.png"); _synth("inscribed").save(p)
+    arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+    ys, xs = np.nonzero(arr < 100)
+    cx, cy, r, keep, res = fit_circle(xs, ys)
+    ctrl = frame_control(cx, cy, r, arr.shape[1], arr.shape[0])
+    rec("frame control FIRES on an inscribed circle", ctrl is not None,
+        ctrl or "control did NOT fire - the 394 px defect would ship again")
+
+    # 3 the same control must NOT fire on a legitimate inner circle
+    p = os.path.join(tmp, "inner.png"); _synth("circle", cx=300, cy=300, r=180).save(p)
+    arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+    ys, xs = np.nonzero(arr < 100)
+    cx, cy, r, keep, res = fit_circle(xs, ys)
+    ctrl2 = frame_control(cx, cy, r, arr.shape[1], arr.shape[0])
+    rec("frame control STAYS QUIET on an inner circle", ctrl2 is None,
+        ctrl2 or "quiet, as it should be")
+
+    # 4 POSITIVE: ruler pitch recovered by autocorrelation
+    for pitch_true in (12.0, 30.0, 7.5):
+        p = os.path.join(tmp, f"r{pitch_true}.png"); _synth("ruler", pitch=pitch_true).save(p)
+        arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+        sig = arr[arr.shape[0]//3:2*arr.shape[0]//3, :].mean(0); sig = sig - sig.mean()
+        ac = np.correlate(sig, sig, mode="full")[len(sig)-1:]; ac = ac/ac[0]
+        lo = max(3, int(pitch_true*0.5)); hi = int(pitch_true*2)
+        k = int(np.argmax(ac[lo:hi])) + lo
+        rec(f"recover ruler pitch {pitch_true} px", abs(k - pitch_true) <= 1.0,
+            f"got {k} px (peak {ac[k]:.3f})")
+
+    # 5 NEGATIVE CONTROL: pure noise must NOT yield a confident pitch
+    p = os.path.join(tmp, "noise.png"); _synth("noise").save(p)
+    arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+    sig = arr[200:400, :].mean(0); sig = sig - sig.mean()
+    ac = np.correlate(sig, sig, mode="full")[len(sig)-1:]; ac = ac/ac[0]
+    npk = float(ac[6:120].max())
+    rec("noise gives NO convincing periodicity", npk < 0.5,
+        f"best peak {npk:.3f} (must stay under the --min-peak default 0.5)")
+
+    # 6 NEGATIVE CONTROL: a blank image must be CANNOT DETERMINE, not a number
+    p = os.path.join(tmp, "blank.png"); _synth("blank").save(p)
+    arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+    ys, xs = np.nonzero(arr < 100)
+    rec("blank image yields no candidates (-> CANNOT DETERMINE)", len(ys) == 0,
+        f"{len(ys)} candidate pixels")
+
+    # 7 DELIBERATE BREAK: feed the circle fitter a SQUARE and require it to be rejected
+    from PIL import Image as _I
+    a2 = np.full((600, 600), 240, dtype=np.uint8)
+    a2[150:450, 150:158] = 30; a2[150:450, 442:450] = 30
+    a2[150:158, 150:450] = 30; a2[442:450, 150:450] = 30
+    p = os.path.join(tmp, "square.png"); _I.fromarray(a2).save(p)
+    ys, xs = np.nonzero(a2 < 100)
+    cx, cy, r, keep, res = fit_circle(xs, ys)
+    frac, occ36, unif = shape_evidence(xs, ys, cx, cy, r, keep)
+    rec("a SQUARE is rejected by INLIER FRACTION (the default gate)", frac < 0.85,
+        f"inlier frac {frac:.3f}, uniformity {unif:.3f}, residual sd {res.std():.3f} px "
+        f"- note the residual ALONE would have passed it, which is why it is not the test")
+
+    # 8 the shape evidence must NOT reject a genuine full ring
+    p = os.path.join(tmp, "ring.png"); _synth("circle", cx=300, cy=300, r=200).save(p)
+    arr = np.asarray(__import__("PIL.Image", fromlist=["Image"]).open(p).convert("L")).astype(float)
+    ys, xs = np.nonzero(arr < 100)
+    cx, cy, r, keep, res = fit_circle(xs, ys)
+    frac, occ36, unif = shape_evidence(xs, ys, cx, cy, r, keep)
+    rec("shape evidence ACCEPTS a genuine ring", frac >= 0.85 and unif >= 0.15,
+        f"inlier frac {frac:.3f}, uniformity {unif:.3f}, 36-bin coverage {occ36}/36")
+
+    # 9 a circle CLIPPED by the crop must still be accepted - angular completeness is not
+    #   circularity, and gating on it rejected the real O'Flynn marker circle on first try
+    p = os.path.join(tmp, "clipped.png")
+    im9 = _synth("circle", cx=300, cy=300, r=280)
+    a9 = np.asarray(im9).copy(); a9[:, :] = np.where(a9 < 100, a9, 240)
+    a9[100:500, :] = 240   # erase the left/right arcs, leaving top and bottom only
+    _I.fromarray(a9).save(p)
+    ys, xs = np.nonzero(a9 < 100)
+    if len(ys) > 50:
+        cx, cy, r, keep, res = fit_circle(xs, ys)
+        frac, occ36, unif = shape_evidence(xs, ys, cx, cy, r, keep)
+        rec("a CLIPPED circle is still accepted", frac >= 0.85 and abs(r - 280) < 2.0,
+            f"r={r:.2f} (true 280), inlier frac {frac:.3f}, uniformity {unif:.3f} "
+            f"- uniformity is low and that is CORRECT, which is why it is not a default gate")
+    else:
+        rec("a CLIPPED circle is still accepted", False, "synthetic clip left no pixels")
+
+    nfail = sum(1 for _, ok, _ in results if not ok)
+    print(f"\n{len(results)-nfail}/{len(results)} passed, {nfail} failed")
+    print(f"synthetic inputs kept at {tmp}")
+    return EX_PASS if nfail == 0 else EX_FAIL
+
+def v_doctor(a):
+    print("boardmetro doctor\n")
+    ok = True
+    for mod in ("numpy", "PIL", "scipy"):
+        try:
+            m = __import__(mod)
+            print(f"  PASS  {mod} {getattr(m,'__version__','?')}")
+        except Exception as e:
+            print(f"  FAIL  {mod}: {e}"); ok = False
+    print(f"\n  image catalogue: {IMGDIR}")
+    if not os.path.isdir(IMGDIR):
+        print("  FAIL  catalogue directory missing"); ok = False
+    else:
+        imgs = sorted(f for f in os.listdir(IMGDIR) if f.lower().endswith((".jpg", ".jpeg", ".png")))
+        print(f"  PASS  {len(imgs)} images present")
+    # CANARY: a measurement whose answer is known, so a 'doctor' pass is a measurement
+    canary = os.path.join(IMGDIR, "oflynn-frontside-26mm-cropped.jpg")
+    if os.path.exists(canary):
+        np = _np(); from PIL import Image
+        from scipy import ndimage as ndi
+        arr = np.asarray(Image.open(canary).convert("L")).astype(float)
+        med = ndi.median_filter(arr, size=15)
+        ys, xs = np.nonzero((arr < 190) & (med > 225))
+        cx, cy, r, keep, res = fit_circle(xs, ys)
+        want_r, want_c = 393.59, 393.50
+        good = abs(r - want_r) < 0.5 and abs(cx - want_c) < 0.5 and res.std() < 1.0
+        print(f"\n  CANARY  O'Flynn marker circle: r={r:.2f} (expect {want_r}), "
+              f"centre=({cx:.2f},{cy:.2f}) (expect {want_c}), res sd={res.std():.3f}")
+        print(f"  {'PASS' if good else 'FAIL'}  canary - a doctor pass is a MEASUREMENT, not a ping")
+        ctrl = frame_control(cx, cy, r, arr.shape[1], arr.shape[0])
+        print(f"  {'PASS' if ctrl else 'FAIL'}  frame control fires on this known-inscribed circle")
+        ok = ok and good and bool(ctrl)
+    else:
+        print(f"\n  CANNOT DETERMINE: canary image absent"); return EX_CANNOT
+    print()
+    return EX_PASS if ok else EX_FAIL
+
+def main():
+    ap = argparse.ArgumentParser(prog="boardmetro", description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="verb", required=True)
+    sub.add_parser("doctor")
+    sub.add_parser("selftest")
+    c = sub.add_parser("circle"); c.add_argument("image")
+    c.add_argument("--dark", type=float, default=190); c.add_argument("--ground", type=float, default=225)
+    c.add_argument("--ground-window", type=int, default=15); c.add_argument("--band", type=float, default=2.0)
+    c.add_argument("--min-pixels", type=int, default=100); c.add_argument("--min-arcs", type=int, default=3)
+    c.add_argument("--max-residual", type=float, default=2.0)
+    c.add_argument("--min-inlier-frac", type=float, default=0.85,
+                   help="fraction of candidates that must lie on the circle (shape test)")
+    c.add_argument("--min-uniformity", type=float, default=0.0,
+                   help="OPT-IN. min/expected occupancy over 36 angular bins. Use ONLY when a "
+                        "complete ring is expected; a clipped circle legitimately fails it. "
+                        "Angular completeness is not circularity - inlier fraction is the shape test")
+    c.add_argument("--mm", type=float, default=None, help="known diameter in mm, to emit a scale")
+    c.add_argument("--expect-frame", action="store_true", help="you MEAN to measure the crop marker")
+    c.add_argument("--json-out")
+    s = sub.add_parser("scale-ruler"); s.add_argument("image")
+    s.add_argument("--region", type=int, nargs=4, required=True, metavar=("X0","Y0","X1","Y1"))
+    s.add_argument("--axis", choices=["x","y"], default="x")
+    s.add_argument("--pitch-mm", type=float, default=1.0, help="mm per tick (1.0 for mm ticks)")
+    s.add_argument("--min-pitch", type=int, default=3); s.add_argument("--max-pitch", type=int, default=400)
+    s.add_argument("--min-peak", type=float, default=0.5)
+    s.add_argument("--control-trials", type=int, default=8); s.add_argument("--json-out")
+    r = sub.add_parser("radial"); r.add_argument("image")
+    r.add_argument("--centre", type=float, nargs=2, default=None)
+    r.add_argument("--r-min", type=float, default=0); r.add_argument("--r-max", type=float, default=400)
+    r.add_argument("--bin", type=float, default=2.0); r.add_argument("--copper", action="store_true")
+    r.add_argument("--px-per-mm", type=float, default=None); r.add_argument("--json-out")
+    a = ap.parse_args()
+    return {"doctor": v_doctor, "selftest": v_selftest, "circle": v_circle,
+            "scale-ruler": v_scale_ruler, "radial": v_radial}[a.verb](a)
+
+if __name__ == "__main__":
+    sys.exit(main())

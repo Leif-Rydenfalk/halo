@@ -1,0 +1,13 @@
+{
+  "image": "oflynn-frontside-26mm-cropped.jpg",
+  "image_w": 788,
+  "image_h": 788,
+  "cx_px": 393.5037966375913,
+  "cy_px": 393.50800217678574,
+  "r_px": 393.59219398693915,
+  "inliers": 391,
+  "residual_sd_px": 0.3877209402359156,
+  "angular_bins_occupied": 4,
+  "method": "dark<190 on median15>225, Kasa+IRLS",
+  "frame_control": "the fitted circle is inscribed in the image frame (tangent to left edge, tangent to top edge, tangent to right edge, tangent to bottom edge) - this is the CROP BOUNDARY, not a board feature"
+}
