@@ -1551,3 +1551,70 @@ And a length chosen by a CONSTRAINT (`--max-reach`) was reporting a
 back-computed frequency in a field called `measured_GHz` — no solve ever
 produced 2.5565 GHz; provenance is now explicit and the value is null unless
 it was genuinely measured.
+
+## D29 · The antenna is 45.9 MHz out, and that is smaller than the model's own uncertainty
+
+**2026-09-05, re-graded on disk and verified by reading the verdicts back.**
+With the specs corrected to grade `f_series_res_near_R_GHz` (D28a) and all six
+cases re-graded from existing `raw.json` — **no re-solve, `rf antenna --regrade`** —
+`mode_identified` is **1.0 on all six**, including all three loaded cases that
+had never identified a mode before.
+
+**The board as drawn, loaded with its NFC winding:**
+
+| row | value | verdict |
+|---|---|---|
+| mode identified | **2.5294 GHz / 7.19 Ω** | PASS |
+| in 2.400–2.4835 GHz | **+45.9 MHz above the upper edge (+1.85%)** | FAIL |
+| gain | **−3.391 dBi** vs Apple's filed −3.2 | FAIL by 0.19 dB |
+| s11 with best network | −4.95 dB vs −6 required | FAIL |
+| solver converged | yes | PASS |
+
+**The shipping geometry is the closest point in the reachable set.** Both
+retunes moved away from the band, not toward it:
+
+| geometry | antenna mode | vs band edge |
+|---|---|---|
+| **meander9 — as drawn** | **2.5294 GHz** | **+45.9 MHz** |
+| rt2 — longest legal conductor | 2.5778 GHz | +94.3 MHz |
+| rt1 — 15.4% shorter | 2.7225 GHz | +239.0 MHz |
+
+rt2 *is* the boundary of what the geometry allows, so this measures the set
+rather than extrapolating past it.
+
+**Why length cannot close it.** The conductor is an **8.3% lever**: +23.69% of
+length buys −1.584% of frequency where f ∝ 1/L predicts −19.15%. The element is
+an 84° arc at R11.900 whose **17.44631 mm backbone no tooth depth can change**;
+removing 53% of the teeth moved it 1.1%. Closing 45.9 MHz needs **+3.96 mm**
+against **+1.15 mm** of headroom — short by 3.4×. The pour lever is already at
+maximum and pushes the wrong way.
+
+**And here is the honest stopping point.** Closing the gap needs
+`eps_eff × 1.0373` — a **+3.73%** shift. The board declares `epsilon_r = 4.3`,
+which its own spec calls *"a GENERIC FR-4 figure, NOT fab-quoted"* and *"the
+largest single uncertainty in every frequency here."* Ordinary FR-4 Dk spread is
+**±5%**. **The miss is smaller than the model's dominant uncertainty**, so
+whether this element is in band is **CANNOT DETERMINE** — not FAIL — until a
+fabricator states the actual Dk of the laminate they will run.
+
+That is not a deferral. It makes the antenna question **depend on the factory
+step**, which the project is already driving toward: the quote that closes the
+board also supplies the material figure that closes the antenna. Simulating
+harder cannot answer it; asking the fab can.
+
+**On Apple:** gain is **−3.391 dBi** against their filed **−3.2 dBi**. halo does
+not beat it. This supersedes the withdrawn +0.521 dBi (C-5) and is measured
+3.6% off the antenna's real resonance rather than the 16% the earlier reading
+implied, so it is far better conditioned than the retracted figure — but it is
+still a miss, and it is recorded as one.
+
+**C-7 is CLOSED, root cause found.** The fabricated `measured 2.5565 GHz` came
+from `--max-reach` back-computing a frequency into a field named `measured_GHz`
+for a length chosen by a *constraint*. Provenance is now explicit and the field
+is null unless genuinely measured (ce-rf 87f2a63c).
+
+**One process note worth keeping.** The lane reported `mode_identified 0.0 → 1.0`
+from its own analysis file while the graded verdicts still said 0.0; the specs
+were correctly fixed and committed, but nothing had re-graded. Running
+`--regrade` and reading the verdicts back is what made it true. **A rule proven
+correct in a scratch file has not been applied.**
