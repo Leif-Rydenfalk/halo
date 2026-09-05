@@ -213,6 +213,11 @@
  ],
  "questions": [
   {
+   "q": "Upload the bundle at cart.jlcpcb.com/quote and send back the price and their DFM verdict",
+   "why": "This is the one step no agent here can take. JLCPCB's ordering API is real and our transport is proven — a signed request reached their gateway and got a genuine authentication error, so the code path is whole — but API access needs an approved application, and their published criterion is a review of the applicant's PREVIOUS ORDERS. halo has never been ordered, so an application now likely fails for want of history. The browser quote is free and non-binding, and their own manufacturability verdict outranks our transcription of their rules.",
+   "zh": "请在 cart.jlcpcb.com/quote 上传文件包，并回传报价与他们的 DFM 意见。"
+  },
+  {
    "q": "Can you measure sound pressure against a calibrated meter?",
    "why": "The anti-stalking standard mandates 60 Phon at 25 cm. We chose a bare piezo bender bonded to the shell because every housed buzzer is 3.5 mm tall and we have 1.5 mm. Whether that reaches the required loudness is a measurement, not a simulation, and it is the single largest open risk in the product.",
    "zh": "能否用校准声级计测量声压？防跟踪标准要求 25 cm 处 60 Phon。"
@@ -286,6 +291,10 @@
   }
  ],
  "risks": [
+  {
+   "r": "The submission tool refuses halo today, on three gates, and that is correct",
+   "d": "Run against the real package it exits 1 and sends nothing: the artifacts are 6,461 s older than the board, the board has 83 unconnected items, and two manufacturability rules fail. One gate PASSES — identity — because it is a genuine four-layer export of the WRONG REVISION, which is exactly why freshness is a separate gate from identity. Proven on a board that IS ready: ce-pcb's routed example passes all six gates with 28 rules clean and zero unconnected, and the bundle stages."
+  },
   {
    "r": "A physical law had been turned into a tolerance",
    "d": "The antenna's sanity check required an implied permittivity above 1, because a dielectric cannot speed a wave up. To admit a failing case, that floor had been widened to 0.64. The verification lane found it, and the number it was admitting came from a run that hit its timestep limit without converging and shows no reactance zero-crossing anywhere in the sweep — meaning there is no resonance at all, and the 2.425 GHz figure was not a resonance. Both the floor and the convergence table have been corrected. This is the exact prohibition the project runs on: a row closed by weakening its check is worse than an open row, because it stops anyone looking."
