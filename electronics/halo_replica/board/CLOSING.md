@@ -1,168 +1,107 @@
-# halo Replica — the board, closed
+# halo Replica — what it is, what it is not, and what would close each gap
 
-*Lane L5b BOARD BUILD, 2026-09-05. **The side carrying the SoC and the shield can.***
-Three sources use "front" for two different faces; the word is not used here.
+*Rewritten 2026-09-05 after the board existed. The previous version described a lane that had
+measured a board and never drawn one.*
 
-**The deliverable is `board/out/compare-front.png`** — ours | Apple's | overlay at one
-shared 48 px/mm — and, equally, **the list of what is absent and why.** A board that
-looks complete when it is not is the one failure this lane could not have recovered from.
-
----
-
-## 1 · What the Replica is
-
-A parameterised annular board. **One number** — `board.json`
-`parameters.outer_diameter_mm.value` — scales the fitted shape, the hole and every
-component position together. No diameter is hard-coded in any tool.
-
-Everything is in **one frame**: board centre in `oflynn-backside-fullres.jpeg` at
-`origin_px (1522.56, 1738.80)`, `106.313 px/mm`, `+x right, +y DOWN`. Every millimetre
-inherits that scale, which came from M02 at the board and was transferred by
-`c_register`'s homography.
-
-**Registration in the comparison is by construction, not by alignment.** The photo crop
-is taken about the stated origin at the stated scale. Nothing was fitted to make the
-panels agree.
+**Open the deliverable:** `pcb/out/compare-real.png` — our board beside Apple's, one shared scale.
+**Open the board:** `ce-pcb/bin/pcb --open ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb`
+**Check it yourself:** `python3 tools/k_threeway.py deliverable` · `check` · `python3 bin/boardmetro selftest`
 
 ---
 
-## 2 · What is measured
+## 1 · What exists
 
-| | value | how it is known |
-|---|---|---|
-| outer outline | circle **D 25.1593 mm** + **4 straight chords** | fit to 1194 measured rays; resid sd **0.2771 mm**, 55.8 % within ±0.15 mm, against a plain circle's 0.5629 mm / 43.6 % |
-| centre hole | superellipse + **7 straight facets** — a routed pocket | resid **0.3342 → 0.1987 mm**, earned against a fabrication floor of −0.31 % |
-| thickness | **0.30 mm as-drawn** | below PCBWay's and JLCPCB's 0.40 mm floors — **a fact about us, not about Apple** |
-| layers | **4, COUNTED** | published delayering; not a Replica choice |
-| components | **34 to measured size, 63 as position only** | L1's 100-row handoff, one drawing rule per flag |
-| component positions | **4.23× enrichment** over 4000 random annulus positions | X5; collapses to 1.44× under a 12° rotation |
-| ours vs Apple's | X1 **0.97 %**, X4 RMS **0.413 mm** over 654 rays | measured off the finished panels |
-| where it disagrees | ≤0.15 mm **51 %** of perimeter · 0.15–0.40 mm 26 % · >0.40 mm 12 % · no ray 9 % | X6, **drawn onto the overlay in colour** |
+**8 of 8 artifacts exist and open. 6 rows are green. That is the correct ending, not a shortfall.**
 
-**The outer diameter is a BOUND, 24.95–26.34 mm, and if it moves it moves DOWN.** The
-25.1593 mm drawn value is a **shape result** that inherits the same registration scale
-as everything else. It is not a fourth opinion on the OD and must never be quoted as one.
-
-**No centre-hole diameter is published.**
-
----
-
-## 3 · What is refused, and each for a different reason
-
-| refused | reason |
+| | |
 |---|---|
-| 3 handoff rows | flagged `do_not_draw_as_component`: 2 merged pad runs (7.30 and 14.48 mm long sides) and D001, an edge-bright strip at 4.1 : 1 that an IC body cannot be |
-| rim pads | count **CANNOT DETERMINE and CLOSED**. The withdrawn 15- and 13-pad angle sets failed a positive control |
-| the three antennas | **not on this PCB at all** — a moulded carrier. Never in copper |
-| the NFC / voice coil | wound magnet wire, not a trace. Which of the two it is remains **OPEN** |
-| the U1 footprint | size **CANNOT DETERMINE** — an independent remeasure swings **6.735 → 7.891 mm on operator padding alone**. **U1 is UNPOPULATED and the legend says so ON THE BOARD** |
-| copper, traces, vias | not measured |
-| part colour sampled from Apple's photograph | it **is** a measurement — and it makes the comparison **circular**. Two panels forced to agree on colour because we copied it |
-| a flat across 115–118.5° | it sits on a **13.75° hole in the ray data**. Later re-measurement showed the excursion was largely the detector — the refusal was right |
-| the re-extracted whole-circle profile | **more data, not taken.** 1428 rays against 1194, 246 of them new — and the refit was worse (0.4914 vs 0.2771 mm). N4 fired and the tool refused to write it |
+| schematic, netlist | 68 parts, 52 nets, 198 pin connections, **ERC PASS** — 0 errors, 5 warnings printed |
+| footprints | 45, in three evidence classes; **Class C carries a position with no pad, no mask, no paste — it cannot become copper by accident** |
+| board | **151 footprints, 107 on the SoC side, 44 on the other.** Annulus of 3 true arcs + 4 measured chords; centre pocket of a superellipse + **7 measured facets and 14 step walls**; Ø **25.1593 mm as drawn**, 0.30 mm, 4 layers |
+| DRC | **33 errors, 0 unconnected** — the route is complete |
+| gerbers, drill | **exist, open, are current — and are REFUSED**, because the board they came from has 33 errors |
 
----
+**The refusal is the third leg of the artifact check doing its job. A green fabrication set cut
+from this board would be the only dishonest artifact in the directory.**
 
-## 4 · What is absent and named
+## 2 · The number that matters most
 
-**The board is knowingly incomplete in the dark regions, and the picture says so.**
+**13 MEASURED · 21 INFERRED · 18 CHOSEN nets.**
 
-- **Every neutral-black IC package, including the largest one.** M08 CANNOT DETERMINE.
-- **Two gold-ringed round parts** and **the large silver clip** beside the hole — drawn
-  as magenta `?` absence markers from `position_eyeballed_mm`, `measured: false`,
-  `do_not_draw_as_measured: true`. All three fields are honoured.
-- **The grey rim material.** A large visual feature on Apple's board with no geometry
-  behind it — `m_rim_step`'s verdict is CANNOT DETERMINE.
+**Nobody has traced Apple's copper.** Every net says which of the three it is, and `check()` opens
+the file each MEASURED claim points at and compares the value. **CHOSEN nets are ours, not Apple's,
+and none may be cited as a finding about the AirTag.**
 
-**Nothing in these gaps was filled by eye.** An eyeballed position among measured ones
-is invisible in a render, which is exactly why it must not happen.
+Six of those MEASURED were being called our own choices this morning. They changed when the anchor
+requirement forced a file open that had been cited all afternoon without being read past its title —
+three of four flash-bus pins were wrong, and the fourth was right by luck. **A choice that happens
+to match a measurement is still a choice until somebody checks.**
 
----
+## 3 · The 33 DRC errors, classified rather than cleared
 
-## 5 · The five open gaps, each with what would close it
+| class | n | |
+|---|---|---|
+| **BOUND-LIMITED** | **19** | copper against an outline whose diameter is a **bound, not a number** — and the recorded expectation is it moves **DOWN**, so **these get worse as it resolves.** They cannot be waited out |
+| **MEASUREMENT-LIMITED** | **14** | the two features are inside our resolution floor (0.0606 mm — two genuine pixels, derived and labelled as derived) |
+| **GENUINELY-TOUCHING** | **0** | **empty BY METHOD**, stated: per-pair contiguity evidence does not exist in this evidence base |
+| **OUR-ERROR** | **0** | every one of our own defects was fixed at the cause. 570 → 33, no rule ever suppressed |
 
-1. **The 82.75–101.0° outward excursion is REAL** — a second independent extractor moves
-   it only 0.119 mm — and the model has no feature there. **Board, or the grey rim
-   material lapping over it, and this lane cannot separate them.** *Would close it:* a
-   source that images the rim in section, or an X-ray. Optical cannot do it.
-2. **The dark packages are a METHOD gap, not a source gap.** A link-only source with
-   **1.9× more genuine resolution** was measured and the packages still do not separate
-   by luma (61, 73 against a soldermask range 52–145) or texture (9.94, 4.22 against
-   5.17–14.59) — but they are **unmistakable to the eye** by their straight boundaries.
-   *Would close it:* a boundary-based detector — line detection and rectangle assembly —
-   with the same sweep-stability admission rule, plus **mirror-aware** registration,
-   since that source is flipped and carries no scale of its own.
-3. **The hole facet side walls are not measured.** Each facet ends in a radial step at
-   the ±0.30 mm crossing, which is the right *kind* of geometry for a pocket wall but is
-   not where the wall is. *Would close it:* a perpendicular-edge detector.
-4. **The pocket hypothesis is neither established nor refuted.** Two nulls, the second
-   from a pre-registered test that **my own negative control showed had almost no power**
-   — chance scores 2.61 of a possible 3. *Would close it:* the properly powered design
-   in `HANDOFF.md`, pre-registered before extraction.
-5. **D004 is a candidate 15th rim-suspect** — a blue-body row outside the fitted outline
-   that L1's bright-row-only test could never have flagged. Reported, never drawn as a
-   confirmed part, and unchased.
+**The governing rule: DO NOT MOVE A MEASURED POSITION TO SATISFY A DESIGN RULE.** Nudging a pad to
+clear a violation would be falsifying a measurement to satisfy a manufacturing constraint, and it
+would be invisible in every render afterwards.
 
----
+## 4 · What it is not
 
-## 6 · The lane's own defects, kept because the fix is the lesson
+**It is not buildable, and that is stated on the board's own face.** 0.30 mm four-layer is below
+PCBWay's and JLCPCB's floors. **Every passive value is CANNOT DETERMINE** — a 100 nF and a 1 µF
+0402 are visually identical. The copper has no connectivity: the schematic's nodes are *identified
+parts* and the board's placements are *metrology rows*, and no row-to-refdes map exists that was
+not built by eye.
 
-**Nine, and every one was found by a control rather than by inspection.**
+**And on buildability the board Leif rejected is nearer than this one.** `halo_rev_a` has 0 errors
+and 28 unconnected — clean rules, incomplete route. Finishing a route is ordinary work; **19 of our
+33 are against an edge whose position is a bound.** Its remaining work is known. Ours is partly
+unknowable.
 
-1. **R3 fired at 1.42 % on a correct render** — it averaged over chorded arcs, comparing
-   a chord-shortened mean against a circle diameter.
-2. **X3 never reached X4.** Panel 1 is rendered by a subprocess that knows nothing about
-   the break, so X4 sat unchanged at 0.413 mm under a 12° rotation. *A control severed
-   from its subject by a process boundary.*
-3. **R5 could not fire** — `--break-drop` truncated the input rows, so the accounting
-   identity balanced.
-4. **H3 returned −3836 %, then −221 %.** The first was a broken synthetic generator. The
-   second was **not** the control failing: it exposed near-tangential facets whose
-   `d/cos(θ−n)` diverges inside their own arc.
-5. **The H3 EARNED test inverted on a negative floor** — `gain > 2 × floor` passes on any
-   positive gain once the floor goes below zero, because multiplying by a negative flips
-   the inequality. *A threshold that silently inverts.*
-6. **The near-tangential guard went into the hole facets and not the outer chords.**
-   Latent, not active — it changed nothing on the published profile, which is why nothing
-   went red until a second profile was fitted. *A fix applied in one place and not the
-   other. Latent defects are the ones that survive.*
-7. **E2 caught the gradient-peak estimator at 4.21 px of bias** — 40 µm, larger than the
-   thing being measured, because a boxcar smoother turns a step into a ramp.
-8. **E1's first version straddled the centre hole** and fired 72 of 72 — **correctly.**
-   It was shown genuine background and asked to find nothing. *The control was wrong,
-   not the finder.*
-9. **The pre-registered pocket statistic was saturated before either photograph was
-   touched.** Fixing the procedure honestly did not make the procedure able to
-   discriminate.
+## 5 · The six open gaps, each with what would close it
 
-**And one judgement corrected without a test:** L1's *three* disagreeing hole exponents
-are **two**. n = 2.00 (pinned) and n = 2.449 come from the same photograph and the same
-boundary points. Routed to L1, not edited.
+1. **The dark IC bodies — including the largest.** CANNOT DETERMINE at a *measured* limit: the
+   photograph needs a boundary step of **100–160 luma** and they present **1–26**. A source with
+   1.9× more genuine resolution was fetched, measured and deleted without helping.
+   **What would close it: RAKING ILLUMINATION.** Every method tried — intensity, texture, colour,
+   boundary — reads a flat-lit photograph, and flat light destroys the one property that separates
+   a package trivially: its **height**. This is the top of the list from *both ends of the board
+   independently* — the rim needs it too, because a solder joint is a dome and a gold pad is flat.
+2. **The rim joint count.** CANNOT DETERMINE by **three instruments for three different reasons**:
+   signal-to-noise, instrument mismatch, and finally — under a blind pre-registered protocol — that
+   the rim is populated with round bright things that are not joints. The dossier's "6" turns out to
+   be a single unsourced parenthesis, and it is **a sum of two morphology classes**, so no
+   round-feature count could ever have reached it.
+3. **U1's WLCSP land.** 10 of 50 ball designators are sourced. A 0.40 mm grid in the measured body
+   gives 56 positions for a 50-ball part and **which six are depopulated is CANNOT DETERMINE**, so
+   the part is **not landed** — body and grid go on the fabrication layer as documentation, zero
+   copper. *What would close it: a published CIAA ball map.*
+4. **U2, the UWB module.** Never sold to anyone. Footprint absent, legend printed on the board.
+   No measured centre exists and its own remeasure swings 6.735 → 7.891 mm on padding alone, so
+   **no keep-out was drawn rather than invent a coordinate.**
+5. **The outer diameter.** A bound, 24.95–26.34 mm, with a **signed and falsifiable** expectation
+   recorded before the confirming measurement: *if it moves, it moves down.* *What would close it:
+   a caliper on a real board.*
+6. **The two-boards assumption, under every millimetre here.** The FCC photographs are
+   `920-08283-01` (2019 engineering) and O'Flynn's is `820-01736-A` (2020 production). Every scale
+   is transferred between them, and **a uniform dimensional difference is absorbed into the fitted
+   scale while leaving the held-out residual completely unchanged.** *What would close it: a caliper
+   on one board of each part number.*
 
----
+## 6 · What this lane got wrong, kept because the corrections are the record
 
-## 7 · What would have to be true for this to be wrong
+`E04` retracted by `E05` — four "independent" methods that all applied a scalar scale to an
+anisotropic projection and so could not disagree. `E02` withdrawing this lane's own first finding,
+whose "two independent reads" both measured the same radial extent. A cross-validation reported at
+0.23 % that rests on the smallest of three segmentations and is really ~1.8 %. A DRC headline
+relayed without its severity split. `E07` holds **32 distinct ways a check passed here without
+being able to fail**, every one a dated defect in our own work — and its closing line is the one
+worth carrying:
 
-Every millimetre here rests on **one scale**, transferred from FCC photo 6 by a
-homography fitted on 80 interior landmarks (NCC 0.6861 against a null-control max of
-0.2027). **If that scale is wrong, everything scales with it** — which is why the board
-is parameterised by one number and why the OD is published as a bound with a signed
-direction rather than as a figure.
-
-The strongest thing that is *not* scale-dependent: **two independent edge extractors,
-never tuned to each other, agree to a median 0.0158 mm across 1182 shared rays.**
-
----
-
-## 8 · Reproduce it
-
-```bash
-python3 tools/p_fit.py --selftest                 # and --selftest-break N1|N1b|N2
-python3 tools/p_fit.py --px-per-mm 106.31295578013115 \
-  --scale-basis "M02 m_scale_at photo6 at the board, transferred by c_register"
-python3 tools/p_render.py                        # and --break-scale 1.10, --break-drop 5
-python3 tools/p_compare.py && open board/out/compare-front.png   # and --break-rotation 12
-```
-
-Every one of those breaks has been watched going red. `board/HANDOFF.md` carries the
-control table, the numbers with their inputs, and the next lane's first three jobs.
+> **The lesson is not installed by writing it down. It is installed by having a mechanism that
+> re-runs it against new ground.**
