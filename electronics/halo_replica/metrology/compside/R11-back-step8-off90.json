@@ -1968,7 +1968,54 @@
   "z": 8.488431752328138,
   "k": 4,
   "trials": 400,
-  "n": 192
+  "n": 192,
+  "residual_rms_px": 1.4194582076988838,
+  "power_sweep": [
+   {
+    "frac": 1.0,
+    "amp_px": 1.4194582076988838,
+    "z": 12.663123003604612
+   },
+   {
+    "frac": 0.7,
+    "amp_px": 0.9936207453892185,
+    "z": 10.942233168027023
+   },
+   {
+    "frac": 0.5,
+    "amp_px": 0.7097291038494419,
+    "z": 10.111746748892463
+   },
+   {
+    "frac": 0.35,
+    "amp_px": 0.49681037269460926,
+    "z": 9.493258236323845
+   },
+   {
+    "frac": 0.25,
+    "amp_px": 0.35486455192472094,
+    "z": 8.802071670574955
+   },
+   {
+    "frac": 0.18,
+    "amp_px": 0.25550247738579906,
+    "z": 8.416356174949156
+   },
+   {
+    "frac": 0.12,
+    "amp_px": 0.17033498492386603,
+    "z": 8.913788422242831
+   },
+   {
+    "frac": 0.08,
+    "amp_px": 0.1135566566159107,
+    "z": 8.158447700857314
+   }
+  ],
+  "detection_limit_frac": 0.08,
+  "detection_limit_px": 0.1135566566159107,
+  "powered": true,
+  "power_note": "detection_limit_* is the SMALLEST smooth radial warp, injected into the real residuals, that this landmark set can still distinguish from its permutation null at z>3. A low observed z bounds any coherent component BELOW that amplitude - it never means there is none."
  },
  "landmarks_kept": 192,
  "landmarks_discarded": {

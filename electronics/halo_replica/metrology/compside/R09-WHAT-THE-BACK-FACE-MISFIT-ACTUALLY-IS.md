@@ -1,5 +1,17 @@
 # R09 — the back face's misfit is landmark COVERAGE, not a warped board and not a different layout
 
+> **⚠ REFUTED THE SAME DAY — read [R11](R11-R09-WAS-WRONG-A-NULL-WITHOUT-A-DETECTION-LIMIT.md) first.**
+> Two of this file's three conclusions are wrong. **Test 1's "a smooth geometric cause is
+> RULED OUT" is refuted**: the z = +1.4 below came from 58 landmarks, a set that cannot see a
+> coherent field smaller than 0.84 px; the same face at 192 landmarks reads **z = +8.5**, and
+> the FRONT at 274 reads **z = +11.1**. Both faces carry a smooth coherent misfit. **The
+> "it is COVERAGE" conclusion is refuted too**: tripling the landmarks changed the hold-out
+> error by under 10 %. What survives is only the narrow claim that no *localised* defect
+> exists — and even there the reasoning below is wrong, because a smooth global warp moves
+> the failing fold exactly as coverage would. Numbers revised again, upward: FRONT 0.181 mm
+> RMS / 0.288 mm p95, BACK 1.026 / 1.703.
+
+
 *halo Replica, lane L2, 2026-09-05. Follows [R08](R08-THE-HOLDOUT-WAS-OPTIMISTIC.md),
 which measured the failure; this one names it and rules two causes out.*
 
