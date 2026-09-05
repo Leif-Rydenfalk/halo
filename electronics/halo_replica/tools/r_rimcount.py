@@ -168,7 +168,10 @@ def crop_eval(c, a, cx, cy, floor, paste=None, shape="disc", size_mm=1.4,
         elif shape == "square":
             aa = math.sqrt(math.pi) * s / 2.0          # EQUAL AREA to the disc
             m = (np.abs(xx - cx) <= aa / 2) & (np.abs(yy - cy) <= aa / 2)
-        elif shape == "rect21":
+        elif shape == "annulus":
+            rr = np.hypot(xx - cx, yy - cy)
+            m = (rr <= s / 2) & (rr >= 0.62 * s / 2)   # a gold ring pad: bright ring,
+        elif shape == "rect21":                        # dark centre, same outer size
             A = math.pi * (s / 2) ** 2
             w = math.sqrt(A * 2.0); h = A / w
             m = (np.abs(xx - cx) <= w / 2) & (np.abs(yy - cy) <= h / 2)

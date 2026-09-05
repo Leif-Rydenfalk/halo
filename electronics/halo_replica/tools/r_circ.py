@@ -337,6 +337,43 @@ def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140, bg=None,
                 sigma_px=float(sigma))
 
 
+def annularity(lum, cx, cy, r_px, sigma=3.0, bg=None, min_denom=8.0):
+    """BRIGHT RING AROUND A DARK CENTRE, or a filled bright blob?  A POLARITY test.
+
+    Registered in R03 and run as a SECOND PASS, downstream of the answer, and labelled
+    as weaker evidence for that reason.  Every shape statistic in R02 is blind to this
+    by construction: an annulus and a disc of the same outer diameter have the SAME
+    half-max radius profile.
+
+        annularity = (ring - core) / (ring - surround)
+
+    0 = filled, 1 = the centre is down at the surround.  The denominator is guarded:
+    a candidate that is not brighter than its surround by at least `min_denom` luma is
+    UNMEASURED and is named, never scored 0."""
+    Ls = ndimage.gaussian_filter(lum, sigma) if sigma > 0 else lum
+    H, W = lum.shape
+    R = 1.9 * r_px
+    if cx - R < 1 or cy - R < 1 or cx + R > W - 2 or cy + R > H - 2:
+        return None
+    yy, xx = np.mgrid[max(0, int(cy - R)):int(cy + R) + 1,
+                      max(0, int(cx - R)):int(cx + R) + 1]
+    rho = np.hypot(xx - cx, yy - cy)
+    V = Ls[yy, xx]
+    B = bg[yy, xx] if bg is not None else np.zeros(V.shape, bool)
+    mc = rho <= 0.35 * r_px
+    mr = (rho >= 0.70 * r_px) & (rho <= 1.05 * r_px)
+    ms = (rho >= 1.35 * r_px) & (rho <= 1.85 * r_px) & ~B
+    if mc.sum() < 8 or mr.sum() < 24 or ms.sum() < 24:
+        return None
+    core = float(np.median(V[mc])); ring = float(np.median(V[mr]))
+    sur = float(np.median(V[ms]))
+    denom = ring - sur
+    if not np.isfinite(denom) or denom < min_denom:
+        return None                      # not brighter than its surround -- UNMEASURED
+    return dict(annularity=float((ring - core) / denom), core=core, ring=ring,
+                surround=sur, denom=float(denom))
+
+
 def _fit_circle(x, y, iters=30, band=2.0):
     """Kasa + IRLS, the same fit bin/boardmetro uses; kept here so the engine has no
     import-time dependency on a CLI script.  boardmetro `circles` calls INTO this."""
@@ -611,6 +648,26 @@ def selftest(verbose=True):
            f"from core {p_no['core_p90']:.0f} against surround {p_no['surround_median']:.0f}, "
            f"i.e. nothing measured at all; excluded: REFUSES (None)")
           if p_no else "the un-excluded profile refused, so this case tests nothing")
+
+    # 14 the R03 POLARITY statistic, with its inversion break.  An annulus and a disc
+    #    of the same outer diameter share a half-max radius profile, so every shape
+    #    statistic above is blind to the difference by construction.
+    La, Ma, ta = synth("ring", ppm=ppm, contrast=120.0, size_mm=1.4)
+    a_disc = annularity(L, t["cx"], t["cy"], radii[6])
+    a_ring = annularity(La, ta["cx"], ta["cy"], radii[6])
+    check("14 POLARITY separates a filled DISC from an ANNULUS of the same outer size",
+          a_disc and a_ring and a_disc["annularity"] < 0.35 < a_ring["annularity"],
+          f"disc {a_disc['annularity']:.3f} vs annulus {a_ring['annularity']:.3f}"
+          if a_disc and a_ring else "one of the two was UNMEASURED")
+    check("15 BREAK inverting the statistic flips both, so case 14 tests the polarity "
+          "and not the size",
+          a_disc and a_ring and (1 - a_disc["annularity"]) > (1 - a_ring["annularity"]),
+          f"inverted: disc {1-a_disc['annularity']:.3f} > annulus "
+          f"{1-a_ring['annularity']:.3f}" if a_disc and a_ring else "unmeasured")
+    Lz, Mz, tz = synth("disc", ppm=ppm, contrast=0.0)
+    a_z = annularity(Lz, tz["cx"], tz["cy"], radii[6])
+    check("16 BREAK a ZERO-contrast paste returns UNMEASURED, not a polarity",
+          a_z is None, "returned None -- the denominator guard, E07 sec.25")
 
     print(f"\n  {len(P)}/{len(P)+len(F)} passed, {len(F)} failed")
     if F:
