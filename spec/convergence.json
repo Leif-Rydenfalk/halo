@@ -287,9 +287,9 @@
    "weight": 10,
    "measure": {
     "from": "literal",
-    "value": 33
+    "value": 28
    },
-   "current_note": "nine-tooth run, 464.8 s: 81 -> 33 unconnected, 0 DRC errors, protected copper survived within 55 nm"
+   "current_note": "planes-cleared run, 1155 s: 83 -> 28 unconnected, 0 DRC errors, check_routed 9 PASS / 0 FAIL. Better than both earlier geometries (33 and 35) even though clearing the planes RAISED the unrouted count from 81 to 83 — the pour was in the router's way, not carrying those nets usefully"
   },
   {
    "name": "Antenna arm clearance to passive copper",

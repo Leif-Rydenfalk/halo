@@ -4,7 +4,7 @@ Generated 2026-09-05. **1 open · 10 cannot determine · 2 measured but Apple's 
 
 | parameter | target | current | delta | state |
 |---|---|---|---|---|
-| Board routing completeness | 0 unconnected nets | 33 unconnected nets | +33 unconnected nets | **OPEN** |
+| Board routing completeness | 0 unconnected nets | 28 unconnected nets | +28 unconnected nets | **OPEN** |
 | Bluetooth antenna resonant frequency | 2.44 GHz | — | source case FAILED | **CANNOT DETERMINE** |
 | Sounder output at 25 cm | 60 Phon | — | — | **CANNOT DETERMINE** |
 | Solver convergence on the antenna case | 1.0 | — | source case FAILED | **CANNOT DETERMINE** |
