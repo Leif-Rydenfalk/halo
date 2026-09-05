@@ -86,7 +86,9 @@ def gallery_files():
 
 # The generated HTML pages live outside the markdown tree and are what Leif and
 # the factory actually read, so they get pinned to the top of the nav.
-PACK = [("out/release/INDEX.html", "Factory handoff pack"),
+PACK = [("out/gallery/STATE.html", "halo — where it stands"),
+        ("out/gallery/INDEX.html", "The gallery — every render and plot"),
+        ("out/release/INDEX.html", "Factory handoff pack"),
         ("out/comparison/INDEX.html", "AirTag comparison — every row"),
         ("docs/COMPARISON.md", "AirTag comparison (markdown)"),
         ("out/release/CONVERGENCE.html", "Convergence vs the real AirTag"),

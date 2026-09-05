@@ -1,0 +1,91 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>halo — where it stands</title><style>
+:root{--ink:#16181d;--dim:#5c6370;--line:#dfe3e8;--bg:#fff;--panel:#f7f8fa;
+ --ok:#0a7d33;--part:#a86500;--bad:#a11;--cd:#7a4fb5;--link:#0b5fa5}
+@media(prefers-color-scheme:dark){:root{--ink:#e8eaed;--dim:#9aa2ad;
+ --line:#2c313a;--bg:#14161a;--panel:#1b1e24;--ok:#4ec26f;--part:#e0a233;
+ --bad:#f0736a;--cd:#b78ef0;--link:#7bb7ec}}
+*{box-sizing:border-box}
+body{margin:0;padding:2.5rem 1.5rem 6rem;background:var(--bg);color:var(--ink);
+ font:16px/1.65 -apple-system,"Helvetica Neue","PingFang SC","Microsoft YaHei",sans-serif}
+main{max-width:60rem;margin:0 auto}
+h1{font-size:2.1rem;margin:0 0 .2rem;letter-spacing:-.02em}
+h2{font-size:1.2rem;margin:3rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+.sub{color:var(--dim);margin:0 0 1.6rem}
+.what{font-size:1.06rem;line-height:1.7}
+.what b{font-weight:650}
+blockquote{margin:1.4rem 0;padding:.8rem 1.1rem;border-left:3px solid var(--line);
+ background:rgba(127,127,127,.06)}
+.pics{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.6rem 0}
+@media(max-width:44rem){.pics{grid-template-columns:1fr}}
+.pics figure{margin:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;
+ background:var(--panel)}
+.pics img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain;background:#fff}
+.pics figcaption{padding:.6rem .75rem;font-size:.8rem;line-height:1.5;color:var(--dim)}
+.pics figcaption b{color:var(--ink);font-weight:600}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:.55rem .7rem;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--dim);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+td.k{width:15rem;font-weight:600}
+.badge{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;
+ padding:.12rem .4rem;border-radius:3px;border:1px solid currentColor;white-space:nowrap}
+.PASS{color:var(--ok)} .PARTIAL{color:var(--part)} .FAIL{color:var(--bad)} .CD{color:var(--cd)}
+code,.mono{font:.85em ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--dim);word-break:break-word}
+a{color:var(--link)}
+ul{padding-left:1.2rem} li{margin:.35rem 0}
+.meta{color:var(--dim);font-size:.8rem;margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line)}
+.cond{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.7rem;margin:1.4rem 0}
+.cond div{padding:.75rem .85rem;border:1px solid var(--line);border-radius:6px;background:var(--panel)}
+.cond b{display:block;font-size:.86rem;margin-bottom:.2rem}
+.cond span{font-size:.78rem;color:var(--dim);display:block;margin-top:.3rem}
+</style><main>
+<h1>halo — where it stands</h1>
+<p class="sub">generated 2026-09-05 18:25 · commit <span class="mono">73f983f</span> · <a href="INDEX.html">the full gallery →</a></p>
+<h2>What halo is</h2>
+<p class="what">An <b>open copy of the Apple AirTag</b>: a Ø31.874 × 7.980 mm puck that a factory could build. Inside it is a Ø26.00 mm four-layer 0.60 mm board carrying a Nordic nRF54L10, an NFC coil wound in bottom copper, a piezo sounder, a CR2032 on three sprung contacts, and a 2.4 GHz antenna etched into the board's own top copper. It advertises on Apple's Find My network. It does <b>not</b> do precision finding — that needs Apple's U1, which nobody else can buy — and it is not a visual replica of the AirTag; it is a function-for-function one, on a board redrawn rather than copied so no licence follows it.</p>
+<p class="what">Nothing has been moulded, stamped or printed. Every picture on this site is a render of a solid or a plot of a solve, and every one of them says how old it is.</p>
+<div class="pics">
+<figure><a href="img/out-render-halo_rev_a-routed-top.png" target="_blank" rel="noopener"><img src="img/out-render-halo_rev_a-routed-top.png" alt="halo rev A, routed"></a><figcaption><b>The board, today.</b> the routed board from directly above — the nine-tooth meander antenna runs along the top arc, outside the component field<br>Rendered 2026-09-05 18:02:06 from <span class="mono">electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb</span> (written 2026-09-05 08:15:40).</figcaption></figure>
+<figure><a href="img/out-render-halo-puck-hero.png" target="_blank" rel="noopener"><img src="img/out-render-halo-puck-hero.png" alt="the halo puck"></a><figcaption><b>The product.</b> The assembled puck, rendered from the same solids <span class="mono">design.py</span> builds and measures — not a mock-up and not a photograph, because no physical unit exists.</figcaption></figure>
+</div>
+<h2>The four conditions Leif set</h2>
+<blockquote>“dont stop until its fully manufacturable and youve tested it out wiht the jlcpcb api and sent it and gotten feedback back or a real quota … and you have simulated it properly and you have shown me renders of the latest design + the documents in the browser” — Leif, 2026-09-05</blockquote>
+<div class="cond">
+<div><b>Manufacturable</b><span class="badge FAIL">FAIL</span><span>28 rules checked against JLC&#x27;s 4-layer capability, 2 FAIL: smd_pad_min (narrowest side of any of 254 SMD pads. Solderable lands: 0.2 mm over 175; net-tie pads (copper join, nothing soldered …</span></div>
+<div><b>A factory has answered</b><span class="badge FAIL">FAIL</span><span>REFUSED, and nothing was sent. 3 of 7 gates FAIL: G3-fresh — 3 of 3 artifact(s) are older than halo_rev_a.kicad_pcb, the worst by 6,461 s (1.8 h). They were exported from ; G5-routed — 83 un…</span></div>
+<div><b>Simulated honestly</b><span class="badge FAIL">FAIL</span><span>latest solve halo-rev-a-2g4-rt1-passive: -11.806 dBi at 2.3730 GHz. Best ever measured on this element: -3.391 dBi at 2.0669 GHz (halo-rev-a-2g4-meander9-passive). Apple&#x27;s filed figure is −3…</span></div>
+<div><b>Leif can see it</b><span class="badge PARTIAL">PARTIAL</span><span>72 images published, 63 current, 4 labelled STALE, 1 refused outright. Every one names the file whose timestamp governs it.</span></div>
+</div>
+<h2>What is measured</h2>
+<p>Every row is read out of a file at the moment this page is built. A row whose file could not be read says so and is never rendered as a pass.</p>
+<table><tr><th>what</th><th>verdict</th><th>what the file says</th></tr>
+<tr><td class="k">The enclosure</td><td><span class="badge PASS">PASS</span></td><td>12 kernel checks on the finished solids, 0 not passing</td></tr>
+<tr><td class="k">The stack</td><td><span class="badge PASS">PASS</span></td><td>7.980 mm tall, Ø31.874 mm across, 10 parts — read off the finished solids, not off the parameters that made them</td></tr>
+<tr><td class="k">Board routing</td><td><span class="badge FAIL">FAIL</span></td><td>28 unconnected item(s) and 3 DRC violation(s) on the ROUTED board (KiCad 10.0.6, 2026-09-05T15:03:23); the unrouted source board it derives from still reports 83</td></tr>
+<tr><td class="k">The autorouter, audited</td><td><span class="badge PASS">PASS</span></td><td>9 rows, 0 FAIL — the autorouter was checked against the copper it was told not to touch: the antenna feed and both NFC nets came back unchanged</td></tr>
+<tr><td class="k">Manufacturability (JLC 4-layer)</td><td><span class="badge FAIL">FAIL</span></td><td>28 rules checked against JLC&#x27;s 4-layer capability, 2 FAIL: smd_pad_min (narrowest side of any of 254 SMD pads. Solderable lands: 0.2 mm over 175; net-tie pads (copper join, nothing soldered to); smt_min_package (3 footprint(s) smaller than the Economic 0402 floor: [&#x27;C_0201_0603Metric&#x27;, &#x27;L_0201_0603Metric&#x27;, &#x27;R_0201_0603Metric&#x27;])</td></tr>
+<tr><td class="k">The gerber pack</td><td><span class="badge PASS">PASS</span></td><td>15 PASS / 0 FAIL / 0 CANNOT DETERMINE — the gerber pack provably describes a board with the right layer count, hole count and outline</td></tr>
+<tr><td class="k">The 2.4 GHz antenna</td><td><span class="badge FAIL">FAIL</span></td><td>latest solve halo-rev-a-2g4-rt1-passive: -11.806 dBi at 2.3730 GHz. Best ever measured on this element: -3.391 dBi at 2.0669 GHz (halo-rev-a-2g4-meander9-passive). Apple&#x27;s filed figure is −3.2 dBi, the band is 2.400–2.4835 GHz, and 0 of 2 solves of the element as it ships land inside it.</td></tr>
+<tr><td class="k">Convergence against the real AirTag</td><td><span class="badge FAIL">FAIL</span></td><td>1 open · 10 cannot determine · 2 measured but Apple&#x27;s value unknown · 1 divergent by decision · 11 match</td></tr>
+<tr><td class="k">The release pack</td><td><span class="badge PARTIAL">PARTIAL</span></td><td>7 ready · 4 partial of the eleven artifacts a factory needs</td></tr>
+<tr><td class="k">A factory quote</td><td><span class="badge FAIL">FAIL</span></td><td>REFUSED, and nothing was sent. 3 of 7 gates FAIL: G3-fresh — 3 of 3 artifact(s) are older than halo_rev_a.kicad_pcb, the worst by 6,461 s (1.8 h). They were exported from ; G5-routed — 83 unconnected item(s). `fab dfm` is right not to FAIL on this — there is no copper to measure against a capab; G6-dfm — 2 rule(s) FAIL: smd_pad_min, smt_min_package</td></tr>
+<tr><td class="k">The factory&#x27;s own API</td><td><span class="badge CD">CANNOT DETERMINE</span></td><td>transport reaches JLCPCB; no approved app, so no quote. the gateway parsed our JOP Authorization header and answered 401 &#x27;application not exists&#x27; — the header shape is right and the wall is the missing approved app</td></tr>
+<tr><td class="k">What you can look at</td><td><span class="badge PARTIAL">PARTIAL</span></td><td>72 images published, 63 current, 4 labelled STALE, 1 refused outright. Every one names the file whose timestamp governs it.</td></tr>
+</table>
+<h2>What is open</h2>
+<p>The things that would stop this shipping, in the order they matter. None of them is hidden anywhere else on this site.</p>
+<ul>
+<li><b>The antenna does not meet its own spec, and does not beat Apple.</b> latest solve halo-rev-a-2g4-rt1-passive: -11.806 dBi at 2.3730 GHz. Best ever measured on this element: -3.391 dBi at 2.0669 GHz (halo-rev-a-2g4-meander9-passive). Apple&#x27;s filed figure is −3.2 dBi, the band is 2.400–2.4835 GHz, and 0 of 2 solves of the element as it ships land inside it. The one figure that beats Apple, +0.521 dBi, is a Ø30 × 1.0 mm study puck — a different antenna on a different board, quoted once and withdrawn.</li>
+<li><b>The board is not finished routing.</b> 28 unconnected item(s) and 3 DRC violation(s) on the ROUTED board (KiCad 10.0.6, 2026-09-05T15:03:23); the unrouted source board it derives from still reports 83</li>
+<li><b>Three artifacts describe three different boards.</b> The source <span class="mono">.kicad_pcb</span>, the routed one derived from it, and <span class="mono">board.py</span> which generates them, were last written at three different times — and the gerber pack is older than all three. Every picture on this site names which of them it came from, but that does not make them agree.</li>
+<li><b>Nothing has been sent to a factory.</b> REFUSED, and nothing was sent. 3 of 7 gates FAIL: G3-fresh — 3 of 3 artifact(s) are older than halo_rev_a.kicad_pcb, the worst by 6,461 s (1.8 h). They were exported from ; G5-routed — 83 unconnected item(s). `fab dfm` is right not to FAIL on this — there is no copper to measure against a capab; G6-dfm — 2 rule(s) FAIL: smd_pad_min, smt_min_package The transport itself was proven — a POST with deliberately invalid credentials reached JLCPCB's gateway and came back 401 — but API access needs an approved application, and this account has no order history to be approved on.</li>
+<li><b>C-1</b> — About 16 µA of the power budget is unexplained <span class="mono">CONCERNS.md</span></li>
+<li><b>C-2</b> — The antenna match clears by 0.39 dB <span class="mono">CONCERNS.md</span></li>
+<li><b>C-3</b> — The mandated sound level cannot be tested on a production line <span class="mono">CONCERNS.md</span></li>
+<li><b>C-5</b> — I quoted a beat-Apple antenna number the board&#x27;s own source withdraws <span class="mono">CONCERNS.md</span></li>
+</ul>
+<h2>Where to look</h2>
+<ul><li><a href="INDEX.html">The gallery</a> — every render, plot and photograph, each with its command, its verdict and its age.</li><li><a href="/raw/out/release/INDEX.html">The factory handoff pack</a> — the eleven artifacts, the work breakdown and what we need from a factory.</li><li><a href="/raw/out/release/CONVERGENCE.html">Convergence against the real AirTag</a> — every parameter with a target, and the state of each.</li><li><a href="/raw/out/comparison/INDEX.html">The comparison</a> — halo against the AirTag, row by row, including the rows where halo diverges on purpose.</li><li><a href="/d/docs/THE-DRIFT.md">THE-DRIFT.md</a> — how this project spent a day building the wrong thing while every step was right, and how Leif caught it by looking at pictures.</li><li><a href="/d/docs/TOOLS-THAT-LIE.md">TOOLS-THAT-LIE.md</a> and <a href="/d/CONCERNS.md">CONCERNS.md</a> — every instrument that reported a success it had not earned, and every open worry.</li></ul>
+<p class="meta">Regenerate with <code>python3 tools/gen_state_page.py</code>; <code>--self-test</code> breaks its readers on purpose. Nothing on this page is typed: every verdict and every number is read out of the file named beside it, at the moment the page is built. 0 file(s) could not be read.</p>
+</main></html>
