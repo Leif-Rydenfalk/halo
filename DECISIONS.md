@@ -1472,3 +1472,82 @@ been the lowest zero, unidentified, reported as the antenna's.
 the three finished passive runs from their existing `raw.json` (no re-solve
 needed — the data is on disk), and only then retune, against the identified
 mode and a target that is 85–147 MHz away rather than 1.3 GHz.
+
+## D26k — the element was never 16 % below the band. It is 1.85 % ABOVE it, and the conductor cannot close that
+
+*Lane T3, 2026-09-05. Six converged solves. Run log: `ce-rf/out/_t3d/README.md`.*
+
+**D26i's headline number was the NFC coil, not the antenna.** `f_series_res_GHz`
+is `series[0]`, the lowest upward reactance zero. On a bare board that is the
+antenna; on a board carrying the winding it is the winding. Pair each loaded
+case against its **own bare twin** — the same spec with the `passive_copper`
+groups removed — and the antenna is the zero beside the twin:
+
+| conductor / coil gap | bare | the antenna | the coil's zeros |
+|---|---|---|---|
+| 24.49100 mm / 0.3670 mm **(SHIPS)** | 2.6763 GHz | **2.5294 GHz / 7.19 Ω** | 2.0669, 3.1005 |
+| 20.73079 mm / 0.5848 mm | 2.7058 GHz | **2.7225 GHz / 4.70 Ω** | 2.3730 |
+| 25.64121 mm / 0.3004 mm | 2.6630 GHz | **2.5778 GHz / 8.76 Ω** | 1.3542, 2.3167, 3.1705 |
+
+So **"the element resonates at 2.0669 GHz, 16 % below the BLE band, and the
+NFC winding pulls it down 22.8 %" is withdrawn.** The winding costs the
+antenna **85–147 MHz**, which is the same size as the rim IFA's measured
+−3.3 to −4.4 % in `ce-rf/out/coupling-delta.json`. The shipping element's
+antenna mode is **2.5294 GHz — 45.9 MHz, 1.85 %, above the band's upper edge
+of 2.4835.**
+
+**The rule that names it, stated before it was applied:**
+`mode_select.within_GHz = [f_bare × 0.90, f_bare × 1.05]` from the case's own
+bare twin. The −10 % is 1.8× the largest pull ever measured at legal
+clearance; the +5 % is 8× the only measured upward pull. Its DOMAIN is stated:
+a coil BESIDE the arm at ≥ 0.30 mm plan clearance — a coil UNDER the arm pulls
+−27.44 % and D26/D27 forbid it. Graded on all seven cases **without
+re-solving** (`ce-rf/tools/mode_select_verdict.py`, exit 0): `mode_identified`
+goes **0.0 → 1.0 on all three loaded cases**, the three bare cases are
+unchanged, and `meander4-bare` is out of domain with its RESISTANCE failure
+intact — the distinction cerf keeps on purpose.
+
+**Every spec asserted the BLE band on the wrong row.** All seven graded
+`f_series_res_GHz` against 2.400–2.4835 GHz, i.e. they demanded **the coil**
+resonate in the BLE allocation. The assert now sits on
+`f_series_res_near_R_GHz`, matching the rim-IFA generation that already did
+this.
+
+**THE RETUNE ITSELF: the board is already at the best point of the knob.**
+Both retunes moved the antenna AWAY from the band — 2.5294 → 2.7225 shortening,
+2.5294 → 2.5778 lengthening to the boundary. Measured on three converged bare
+solves, the conductor is an **8.3 % lever**: +23.69 % of length buys −1.584 %
+of frequency where f ∝ 1/L predicts −19.15 %. The reason is geometry — the
+element is an **84° arc at R11.900, 17.44631 mm of backbone that no tooth
+depth can change**, with teeth hung off it whose antiparallel currents nearly
+cancel. Removing 53 % of the teeth moved the resonance 1.1 %.
+
+**What would close the remaining 45.9 MHz, with numbers:**
+
+- **conductor**: +3.96 mm at the measured −11.6 MHz/mm. Reachable headroom is
+  **+1.15021 mm** — bounded by the 0.30 mm coil clearance, NOT by
+  `ANT_TOOTH_MAX`. **Short by 3.4×.**
+- **ground pour**: 14.2 % of authority (D26j) but in the wrong direction, and
+  the as-built R9.74310 is already the largest the coil clearance permits.
+  **Exhausted.**
+- **permittivity**: `eps_eff × 1.0373`, **+3.73 %**. The board declares
+  `epsilon_r 4.3` as a GENERIC FR-4 figure, NOT fab-quoted, and its own spec
+  calls it *"the largest single uncertainty in every frequency here"*.
+  Ordinary FR-4 Dk spreads ±5 %.
+
+**So whether this element is in band is CANNOT DETERMINE, and the blocker is
+not simulation.** The miss is smaller than the model's own dominant
+uncertainty. **The next move is to get `epsilon_r` fab-quoted**, not to run a
+seventh solve. Gain against Apple's filed −3.2 dBi stands where D26i left it —
+−3.391 dBi at 2.4418 GHz — but it was measured 3.6 % off the antenna's real
+resonance, not 16 % off, so it is a far better-conditioned number than D26i
+implied.
+
+**Two defects found by doing this.** `ce-rf/tools/emit_rev_a_meander.py` still
+carries the pre-D26b pours (R9.90 / R9.87 against the measured R9.74310) and
+re-running it silently rewrote them back, under a diff headlined something
+else; it now REFUSES, naming every differing field, and was watched going red.
+And a length chosen by a CONSTRAINT (`--max-reach`) was reporting a
+back-computed frequency in a field called `measured_GHz` — no solve ever
+produced 2.5565 GHz; provenance is now explicit and the value is null unless
+it was genuinely measured.
