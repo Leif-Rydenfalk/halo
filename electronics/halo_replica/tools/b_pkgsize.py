@@ -37,6 +37,7 @@ Negative controls, all exercised by --self-test:
 Usage:
   b_pkgsize.py IMG --box X0 Y0 X1 Y1 --pick dark|bright [--px-per-mm F]
                [--label NAME] [--ruler-note TEXT] [--json-out F]
+               [--pad-sweep [--pads 0,20,40,60]] [--overlay-png F]
   b_pkgsize.py --self-test
 """
 import argparse, json, math, os, sys
@@ -149,6 +150,106 @@ def channel(rgb, name):
     raise ValueError(name)
 
 
+PAD_TOL = 0.05          # 5 % — an axis that moves more than this with the box
+                        # is reporting the box, not the part (E07 section 11)
+
+
+def pad_sweep(im, box, pick, chan, pads):
+    """Re-measure the SAME part with the box grown by each pad, and report how
+    much the answer moves.
+
+    E07 section 11: L1's third dark-package attempt padded its ROI 0/20/40/60 px
+    and got 3.35 / 3.98 / 4.09 / 4.50 mm for one package -- a 34 % swing driven
+    entirely by the operator's choice of box. A single run cannot see that. The
+    general test is to sweep the arbitrary parameter and watch whether the answer
+    moves with it, so this is not optional on any real photograph.
+
+    Returns (rows, summary). An axis whose spread exceeds PAD_TOL is
+    ROI-DEPENDENT and its millimetres are CANNOT DETERMINE, no matter how
+    confident the single run looked.
+    """
+    W, H = im.size
+    x0, y0, x1, y1 = box
+    rows = []
+    for pad in pads:
+        bx = (max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad))
+        arr = channel(np.asarray(im.crop(bx)), chan)
+        r = measure(arr, pick)
+        rows.append({"pad": pad, "box": list(bx),
+                     "clamped": bx != (x0 - pad, y0 - pad, x1 + pad, y1 + pad),
+                     "result": None if r is None else
+                     {k: r[k] for k in ("long_px", "short_px", "angle_deg",
+                                        "threshold", "separability",
+                                        "rectangularity", "pixels",
+                                        "touches_box_edge")}})
+    ok = [r for r in rows if r["result"] is not None and
+          not r["result"]["touches_box_edge"]]
+    summary = {"n_pads": len(rows), "n_usable": len(ok),
+               "pads": list(pads)}
+    if len(ok) < 2:
+        summary["verdict"] = "CANNOT DETERMINE"
+        summary["reason"] = (f"only {len(ok)} of {len(rows)} paddings produced an "
+                             "unclipped measurement, so the sweep has nothing to "
+                             "compare and box-dependence is UNTESTED")
+        return rows, summary
+    for axis in ("long_px", "short_px"):
+        v = np.array([r["result"][axis] for r in ok], float)
+        med = float(np.median(v))
+        spread = float(v.max() - v.min()) / med if med > 0 else float("inf")
+        summary[axis] = {"min": float(v.min()), "max": float(v.max()),
+                         "median": med, "spread_frac": round(spread, 4),
+                         "stable": bool(spread <= PAD_TOL)}
+    a = np.array([r["result"]["long_px"] / r["result"]["short_px"] for r in ok])
+    summary["aspect"] = {"min": round(float(a.min()), 3),
+                         "max": round(float(a.max()), 3),
+                         "median": round(float(np.median(a)), 3),
+                         "spread_frac": round(float(a.max() - a.min()) /
+                                              float(np.median(a)), 4)}
+    both = summary["long_px"]["stable"] and summary["short_px"]["stable"]
+    summary["verdict"] = "STABLE" if both else "ROI-DEPENDENT"
+    summary["tolerance"] = PAD_TOL
+    return rows, summary
+
+
+def overlay(im, box, pick, chan, out_png, scale=2.0):
+    """Draw the kept component and its min-area rectangle back onto the crop.
+
+    Leif's rule: LOOK at it. A rectangularity of 0.97 is not a picture of what
+    was actually segmented, and every wrong answer in this project so far was
+    caught by drawing the thing back onto the photograph.
+    """
+    from PIL import ImageDraw
+    x0, y0, x1, y1 = box
+    crop = im.crop(box)
+    arr = channel(np.asarray(crop), chan)
+    if float(arr.std()) < 2.0:
+        return None
+    got = otsu(arr.astype(float).ravel())
+    if got is None:
+        return None
+    t, _ = got
+    mask = arr > t if pick == "bright" else arr < t
+    lab, n = ndimage.label(mask)
+    if n == 0:
+        return None
+    sizes = ndimage.sum(mask, lab, range(1, n + 1))
+    m = lab == (int(np.argmax(sizes)) + 1)
+    edge = m & ~ndimage.binary_erosion(m)
+    big = crop.resize((int(crop.width * scale), int(crop.height * scale)),
+                      Image.NEAREST)
+    px = big.load()
+    ys, xs = np.nonzero(edge)
+    for yy, xx in zip(ys, xs):
+        for dy in range(int(scale)):
+            for dx in range(int(scale)):
+                px[int(xx * scale) + dx, int(yy * scale) + dy] = (0, 255, 0)
+    d = ImageDraw.Draw(big)
+    d.text((3, 3), f"box {x0},{y0},{x1},{y1}  {chan}/{pick}  thr {t:.0f}",
+           fill=(255, 255, 0))
+    big.save(out_png)
+    return out_png
+
+
 def run(args):
     im = Image.open(args.image).convert("RGB")
     x0, y0, x1, y1 = args.box
@@ -179,6 +280,41 @@ def run(args):
         print(f"  FAIL — the component fills {r['box_fill_fraction']:.0%} of the "
               "box; there is no background left to define an edge against.")
         return 1
+    sweep = None
+    if getattr(args, "pad_sweep", False):
+        pads = [int(v) for v in args.pads.split(",")]
+        rows, sweep = pad_sweep(im, (x0, y0, x1, y1), args.pick, args.channel, pads)
+        print("  --- ROI padding sweep (E07 s11: does the answer track the box?) ---")
+        for row in rows:
+            rr = row["result"]
+            if rr is None:
+                print(f"    pad {row['pad']:>3}: CANNOT DETERMINE (no package-like "
+                      "component in this box)")
+            elif rr["touches_box_edge"]:
+                print(f"    pad {row['pad']:>3}: {rr['long_px']:7.1f} x "
+                      f"{rr['short_px']:6.1f} px  CLIPPED (touches box edge) - "
+                      "excluded from the spread")
+            else:
+                print(f"    pad {row['pad']:>3}: {rr['long_px']:7.1f} x "
+                      f"{rr['short_px']:6.1f} px  thr {rr['threshold']:5.1f}  "
+                      f"rect {rr['rectangularity']:.3f}  {rr['pixels']:>7} px")
+        if sweep["n_usable"] < 2:
+            print(f"    SWEEP CANNOT DETERMINE - {sweep['reason']}")
+        else:
+            for axis, name in (("long_px", "long "), ("short_px", "short")):
+                a = sweep[axis]
+                print(f"    {name} spread {a['spread_frac']*100:5.2f}% "
+                      f"({a['min']:.1f}-{a['max']:.1f} px, median {a['median']:.1f})"
+                      f"  {'STABLE' if a['stable'] else 'ROI-DEPENDENT'}")
+            print(f"    aspect {sweep['aspect']['min']}-{sweep['aspect']['max']} "
+                  f"(spread {sweep['aspect']['spread_frac']*100:.2f}%)")
+            print(f"    SWEEP VERDICT: {sweep['verdict']} "
+                  f"(tolerance {sweep['tolerance']*100:.0f}%)")
+        r["pad_sweep"] = {"rows": rows, "summary": sweep}
+    if args.overlay_png:
+        got = overlay(im, (x0, y0, x1, y1), args.pick, args.channel,
+                      args.overlay_png)
+        print(f"  overlay: {got or 'NOT WRITTEN - nothing segmented'}")
     if args.px_per_mm:
         f = args.px_per_mm
         r["px_per_mm"] = f
@@ -201,6 +337,12 @@ def run(args):
                       "label": args.label, "ruler_note": args.ruler_note}
         json.dump(r, open(args.json_out, "w"), indent=2)
         print(f"  wrote {args.json_out}")
+    if sweep is not None and sweep["verdict"] != "STABLE":
+        print("  CANNOT DETERMINE — the extent moves with the box, so it is a "
+              "measurement of the operator's ROI and not of the part. The "
+              "single-run number above is NOT a size. Aspect may still be usable "
+              "if its own spread is small; the sweep prints it.")
+        return 2
     return 0
 
 
@@ -323,6 +465,96 @@ def self_test():
         print(f"  FAIL  colour control: lum={lum_r}, b-r={bmr}")
         fails += 1
 
+    # ---- ROI-padding sweep (E07 s11). Three cases, and case 12 is the one that
+    # ---- matters: a single run that LOOKS confident and is 30 % wrong.
+    import tempfile
+    from scipy import ndimage as _nd
+
+    def _soft_scene(seed=11, S=700):
+        r2 = np.random.default_rng(seed)
+        yy, xx = np.mgrid[0:S, 0:S]
+        c = (S - 1) / 2
+        img = np.full((S, S), 70.0)
+        img[(np.abs(xx - c) <= 70) & (np.abs(yy - c) <= 45)] = 170.0
+        img = _nd.gaussian_filter(img, 18.0)      # soft edges, as a photograph has
+        img[np.hypot(xx - c, yy - c) > 160] = 245.0   # bright surround that only
+        img += r2.normal(0, 3, (S, S))                # enters as the box grows
+        return np.clip(img, 0, 255).astype(np.uint8), c
+
+    # 11: a HARD-edged part with clear margin must NOT move with the box
+    hard = draw(180.0, 90.0, 0.0, size=500)
+    him = Image.fromarray(np.stack([hard] * 3, -1))
+    _, sm = pad_sweep(him, (140, 180, 360, 320), "bright", "lum", [0, 20, 40, 60])
+    if sm["verdict"] == "STABLE" and sm["long_px"]["spread_frac"] < 0.02:
+        print(f"  PASS  pad sweep STAYS QUIET on a hard-edged part with margin: "
+              f"long spread {sm['long_px']['spread_frac']*100:.2f}%, "
+              f"short {sm['short_px']['spread_frac']*100:.2f}% -> STABLE")
+        passes += 1
+    else:
+        print(f"  FAIL  pad sweep fired on a part that does not move: {sm}")
+        fails += 1
+
+    # 12: THE ONE THAT MATTERS. A soft-edged part whose Otsu threshold is dragged
+    # by a bright surround entering the box. It never touches the box edge, so the
+    # existing clip control cannot see it; separability 0.83 and rectangularity
+    # 0.86 at pad 0 make the single run look like a measurement. It is 30 % wrong.
+    soft, c = _soft_scene()
+    sim = Image.fromarray(np.stack([soft] * 3, -1))
+    box = (int(c) - 120, int(c) - 95, int(c) + 120, int(c) + 95)
+    single = measure(channel(np.asarray(sim.crop(box)), "lum"), "bright")
+    rows, sm = pad_sweep(sim, box, "bright", "lum", [0, 20, 40, 60])
+    looked_fine = (single is not None and not single["touches_box_edge"]
+                   and single["rectangularity"] > 0.8
+                   and single["separability"] > 0.7)
+    caught = sm["verdict"] == "ROI-DEPENDENT" and sm["long_px"]["spread_frac"] > 0.15
+    if looked_fine and caught:
+        print(f"  PASS  pad sweep CATCHES a box-dependent extent the clip control "
+              f"cannot see: single run {single['long_px']:.0f}x"
+              f"{single['short_px']:.0f} px, rect {single['rectangularity']:.2f}, "
+              f"sep {single['separability']:.2f}, edge NOT touched — sweep says "
+              f"long moves {sm['long_px']['spread_frac']*100:.0f}%, short "
+              f"{sm['short_px']['spread_frac']*100:.0f}% -> ROI-DEPENDENT")
+        passes += 1
+    else:
+        print(f"  FAIL  box-dependence control: looked_fine={looked_fine} "
+              f"caught={caught} summary={sm}")
+        fails += 1
+
+    # 12b: the break must reach the EXIT CODE, not just the summary dict (E07 s14:
+    # a break in one place and a check in another are not connected by intention).
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tf:
+        sim.save(tf.name)
+        ns = argparse.Namespace(image=tf.name, box=list(box), pick="bright",
+                                channel="lum", px_per_mm=None, ruler_note=None,
+                                label="selftest-softbox", json_out=None,
+                                pad_sweep=True, pads="0,20,40,60",
+                                overlay_png=None)
+        import io, contextlib
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            code = run(ns)
+    if code == 2:
+        print("  PASS  the sweep verdict reaches the EXIT CODE: run() returns 2 "
+              "(CANNOT DETERMINE) on the box-dependent scene, so a caller reading "
+              "$? cannot miss it")
+        passes += 1
+    else:
+        print(f"  FAIL  run() returned {code} on a ROI-DEPENDENT scene; the sweep "
+              "found it and the exit code did not carry it")
+        fails += 1
+
+    # 13: one padding is not a sweep. A single point must be CANNOT DETERMINE,
+    # never STABLE — otherwise a sweep that silently collapsed to one box would
+    # report the strongest possible verdict from no comparison at all.
+    _, sm1 = pad_sweep(him, (140, 180, 360, 320), "bright", "lum", [0])
+    if sm1["verdict"] == "CANNOT DETERMINE" and sm1["n_usable"] == 1:
+        print("  PASS  a sweep with one usable padding reports CANNOT DETERMINE, "
+              "not STABLE")
+        passes += 1
+    else:
+        print(f"  FAIL  single-point sweep did not refuse: {sm1}")
+        fails += 1
+
     print(f"\n{passes}/{passes+fails} passed, {fails} failed")
     return 1 if fails else 0
 
@@ -340,6 +572,15 @@ def main():
     p.add_argument("--ruler-note")
     p.add_argument("--label")
     p.add_argument("--json-out")
+    p.add_argument("--pad-sweep", action="store_true",
+                   help="re-measure with the box grown by each --pads value and "
+                        "report how much the answer moves (E07 s11). An axis that "
+                        "moves more than 5%% is reporting the BOX, not the part.")
+    p.add_argument("--pads", default="0,20,40,60",
+                   help="paddings in px for --pad-sweep (default 0,20,40,60)")
+    p.add_argument("--overlay-png",
+                   help="write the kept component outlined in green on the crop, "
+                        "so the segmentation can be LOOKED at")
     sys.exit(run(p.parse_args()))
 
 
