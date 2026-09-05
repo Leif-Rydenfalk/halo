@@ -27,12 +27,24 @@ CONTROLS
                      overlaying; X4 and X5 must both get worse.  A comparison whose
                      numbers do not move when the alignment is destroyed measures nothing.
   X4 outline residual  RMS radial disagreement, ours vs the photograph's own silhouette
-  X5 COMPONENT LANDING -- the one that tests the components rather than the outline.
-                     For every drawn marker, the photograph's luma at that position is
-                     compared against the SAME statistic at randomly drawn positions
-                     inside the annulus.  Bright-metal markers must separate from
-                     random.  If they do not, the positions are decoration.  The random
-                     draw IS the negative control and it is reported, always.
+  X5 REGISTRATION ROUND-TRIP -- and it is NOT what its first name claimed.
+                     For every drawn marker the photograph's luma at that position is
+                     compared against the same statistic at random annulus positions.
+                     **THE MARKERS WERE EXTRACTED FROM THIS SAME PHOTOGRAPH**
+                     (metrology/components-front.json source: oflynn-backside-fullres),
+                     so bright-metal markers landing on bright pixels is CLOSE TO A
+                     TAUTOLOGY.  What it genuinely tests is the geometry pipeline --
+                     k-scaling, the crop about the stated origin, the resample to the
+                     montage scale, the coordinate mapping -- and X3 proves it depends
+                     on the alignment.  It does NOT test that the markers are components,
+                     and it was mislabelled as if it did.  Corrected 2026-09-05.
+  X5B CROSS-SOURCE  -- the version that CAN fail on the substance.  The same markers
+                     are pushed through c_register's homography into FCC PHOTO 6 -- an
+                     image they were NEVER extracted from, taken by different people
+                     with a different camera -- and the same enrichment is measured
+                     there against the same random control.  If the markers are real
+                     features of the board rather than of one photograph, they land on
+                     bright things in a photograph that never saw them.
 """
 import argparse, json, math, os, subprocess, sys
 import numpy as np
@@ -136,6 +148,10 @@ def main():
     ap.add_argument("--px-per-mm", type=float, default=48.0,
                     help="the ONE shared scale of the montage")
     ap.add_argument("--margin-mm", type=float, default=1.0)
+    ap.add_argument("--register-fit", default=os.path.join(
+        REPL, "metrology", "c_register-fit-boardscale.json"))
+    ap.add_argument("--photo6", default=os.path.join(
+        ROOT, "images", "airtag", "fcc-BCGA2187-internal-photo-6.jpg"))
     ap.add_argument("--break-rotation", type=float, default=0.0)
     ap.add_argument("--out", default=os.path.join(BOARD_DIR, "out", "compare-front.png"))
     a = ap.parse_args()
@@ -263,7 +279,8 @@ def main():
     thr = float(np.percentile(ctrl, 90))
     frac_h = float((hit_ok > thr).mean())
     frac_c = 0.10
-    say(f"X5 component landing: median luma under our {len(hit_ok)} markers "
+    say(f"X5 registration round-trip (NOT a component-reality test - the markers were "
+        f"extracted from THIS image): median luma under our {len(hit_ok)} markers "
         f"{med_h:.1f} vs {len(ctrl)} RANDOM annulus positions {med_c:.1f}")
     say(f"   fraction above the random-90th-percentile ({thr:.1f}): "
         f"markers {frac_h*100:.1f}%  |  random 10.0% by construction  "
@@ -272,6 +289,62 @@ def main():
     if not x5:
         say("X5 FIRED: our markers are not landing on anything brighter than a random "
             "spot on the annulus. The positions would be decoration.")
+
+    # ---- X5B: the same statistic on a photograph the markers were NEVER taken from
+    x5b = None
+    try:
+        reg = json.load(open(a.register_fit))
+        Hm = np.array(reg["H_target_to_source_cropframe"], float)
+        Hinv = np.linalg.inv(Hm)
+        crop_ox, crop_oy = reg["target"]["crop_origin"]
+        # H's SOURCE frame is the O'Flynn image divided by pre_average, NOT full res.
+        # Verified numerically: H(fcc6 board centre) x 6.58 = (1522.559, 1738.801),
+        # which is the stated origin to 3 decimals. Omitting it put every marker on the
+        # paper background and X5B returned a flat 0.00x -- a null that was mine, not
+        # the board's.
+        pre_avg = float(reg["source"].get("pre_average", 1.0))
+        ph6 = Image.open(a.photo6).convert("L")
+        L6 = np.asarray(ph6).astype(float)
+        ppm6 = reg["target"]["px_per_mm"]
+
+        def to_photo6(x_mm, y_mm):
+            """oflynn frame mm -> oflynn px -> fcc6 crop px (H inverse) -> fcc6 full px"""
+            v = Hinv @ np.array([(ox + x_mm * ppm_ph) / pre_avg,
+                                 (oy + y_mm * ppm_ph) / pre_avg, 1.0])
+            u = v[:2] / v[2]
+            return u[0] + crop_ox, u[1] + crop_oy
+
+        def luma6(x_mm, y_mm, rad_mm=0.18):
+            px, py = to_photo6(x_mm, y_mm)
+            rr = max(1, int(rad_mm * ppm6))
+            x0, x1_, y0, y1_ = int(px - rr), int(px + rr + 1), int(py - rr), int(py + rr + 1)
+            if x0 < 0 or y0 < 0 or x1_ > L6.shape[1] or y1_ > L6.shape[0]:
+                return np.nan
+            return float(np.median(L6[y0:y1_, x0:x1_]))
+
+        h6 = np.array([luma6(x, y) for x, y in cpts])
+        h6 = h6[np.isfinite(h6)]
+        c6 = []
+        rng6 = np.random.default_rng(17)
+        while len(c6) < 4000:
+            t = rng6.uniform(0, 2 * math.pi)
+            rr = math.sqrt(rng6.uniform((inner_r + 0.4) ** 2, (Rmax - 0.4) ** 2))
+            v6 = luma6(rr * math.cos(t), rr * math.sin(t))
+            if np.isfinite(v6):
+                c6.append(v6)
+        c6 = np.array(c6)
+        thr6 = float(np.percentile(c6, 90))
+        f6 = float((h6 > thr6).mean())
+        x5b = dict(n_markers=int(len(h6)), n_random=int(len(c6)),
+                   marker_median=float(np.median(h6)), random_median=float(np.median(c6)),
+                   frac_above_random_p90=f6, enrichment=f6 / 0.10,
+                   photo=os.path.basename(a.photo6))
+        say(f"X5B cross-source (FCC photo 6 - the markers were NEVER extracted from it): "
+            f"median luma under {len(h6)} markers {np.median(h6):.1f} vs {len(c6)} random "
+            f"{np.median(c6):.1f}; {f6*100:.1f}% above the random 90th percentile vs 10% "
+            f"by construction -> enrichment {f6/0.10:.2f}x")
+    except Exception as e:
+        say(f"X5B CANNOT DETERMINE: {e}")
 
     # ---- panel 3
     ov = ph.copy()
@@ -367,9 +440,15 @@ def main():
     lines = [
         (f"X4 outline residual   RMS {rms:.3f} mm   p95 {p95:.3f} mm   over "
          f"{good.sum()} rays", INK),
-        (f"X5 component landing  median luma under our markers {med_h:.1f} vs random "
-         f"annulus {med_c:.1f};  {frac_h*100:.1f}% of markers above the random 90th "
-         f"percentile vs 10% by construction  ->  {frac_h/frac_c:.2f}x enrichment", INK),
+        (f"X5 registration round-trip  {frac_h/frac_c:.2f}x enrichment - but THE MARKERS "
+         f"WERE EXTRACTED FROM THIS PHOTOGRAPH, so this tests the geometry pipeline, "
+         f"NOT that the markers are components. It was mislabelled and is corrected here.",
+         INK),
+        ((f"X5B cross-source  the SAME markers on FCC PHOTO 6, which they were NEVER "
+          f"extracted from: {x5b['frac_above_random_p90']*100:.1f}% above that image's "
+          f"own random 90th percentile vs 10% by construction -> "
+          f"{x5b['enrichment']:.2f}x. THIS one can fail on the substance."
+          if x5b else "X5B cross-source: CANNOT DETERMINE"), INK),
         (f"X1 scale match        OURS {od:.3f} mm   APPLE'S {pd:.3f} mm   "
          f"delta {abs(od-pd)/pd*100:.2f}%   (registration is by construction, "
          f"nothing was fitted to make these agree)", INK),
@@ -439,7 +518,7 @@ def main():
                           rms_mm=rms, p95_mm=p95, ours_dia_mm=od, apple_dia_mm=pd,
                           rays=int(good.sum()), rotation_deg=a.break_rotation,
                           x5_marker_median_luma=med_h, x5_random_median_luma=med_c,
-                          x5_enrichment=frac_h / frac_c)))
+                          x5_enrichment=frac_h / frac_c, x5b=x5b)))
     sys.exit(code)
 
 

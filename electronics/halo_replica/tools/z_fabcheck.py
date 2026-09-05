@@ -80,8 +80,23 @@ def check(root):
     else:
         t = open(drl[0], errors="ignore").read()
         hits = len(re.findall(r"^X-?[\d.]+Y-?[\d.]+", t, re.M))
-        if hits == 0: ok = False; out.append(f"F3 FAIL  drill file has no hits ({os.path.basename(drl[0])})")
-        else: out.append(f"F3 PASS  drill {os.path.basename(drl[0])}: {hits} hits")
+        tools = len(re.findall(r"^T\d+C", t, re.M))
+        # A drill file with no hits is NOT the same failure as a missing drill file.
+        # A board of only SMD pads with no vias legitimately has no holes; the export
+        # succeeded and there was nothing to drill. Conflating the two would have called
+        # a correct hole-free board broken. But it must be NAMED, not silently passed:
+        # a board that SHOULD have vias and has none is a real defect, and only the
+        # design knows which this is.
+        if hits == 0 and tools == 0:
+            out.append(f"F3 NOTE  {os.path.basename(drl[0])} declares no tools and no hits "
+                       f"— legitimate ONLY if this board has no vias and no through-holes. "
+                       f"Check that against the design; the file cannot tell you.")
+        elif hits == 0:
+            ok = False
+            out.append(f"F3 FAIL  {os.path.basename(drl[0])} declares {tools} tool(s) and 0 hits "
+                       f"— tools without hits means the export lost them")
+        else:
+            out.append(f"F3 PASS  drill {os.path.basename(drl[0])}: {hits} hits, {tools} tool(s)")
 
     # F4 outline
     op = found.get("outline")

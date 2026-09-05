@@ -554,9 +554,78 @@ def v_limit(a, ctx):
     return out
 
 
+def v_stepaudit(a, ctx):
+    """AUDIT MY OWN HEADLINE.  M11 reports the dark packages presenting "1-26 luma
+    on most of their sides", and that number came from `side_steps` at a ROUGH,
+    HAND-PLACED seed outline.
+
+    On the rim, that same construction was measured to be DILUTED: a bad outline
+    puts the inside band partly outside and vice versa, and the step reads low.
+    A low step makes the gap to the detection limit look BIGGER, which flatters
+    the conclusion I published.  So the check has to be run hardest here, because
+    this is the result I am pleased with.
+
+    The test: sweep the outline -- position, size, angle -- and take the LARGEST
+    per-side step obtainable anywhere in that neighbourhood.  That is an upper
+    bound on what a perfect outline could recover.  If it stays near the published
+    band the headline stands; if it is far above, the headline understated what the
+    packages present and must be corrected."""
+    lum, board, outer, origin, ppm, spath, f, rid = ctx
+    print("d_darkpkg stepaudit -- is my own published step number diluted?\n")
+    print(f"  run_id   {rid['run_utc']} git {rid['git_rev']} image sha {rid['image_sha256_12']}")
+    print(f"  SOURCE   {f['source']['path']}")
+    print(f"  M11 published: the packages present 1-26 luma on most of their sides,")
+    print(f"  the nRF 75 on its best one, against a needed 100-160.\n")
+    rows = []
+    for name, (cx, cy, th, lo, sh) in SEEDS.items():
+        seed = side_steps(lum, cx, cy, th, sh * ppm, lo * ppm)
+        seed_best = max(abs(v) for v in seed.values())
+        best = {k: 0.0 for k in seed}
+        for dx in range(-24, 25, 8):
+            for dy in range(-24, 25, 8):
+                for dth in (-8, -4, 0, 4, 8):
+                    for fs in (0.85, 0.925, 1.0, 1.075, 1.15):
+                        st = side_steps(lum, cx + dx, cy + dy, th + dth,
+                                        sh * ppm * fs, lo * ppm * fs)
+                        for k, v in st.items():
+                            if abs(v) > abs(best[k]):
+                                best[k] = v
+        bb = max(abs(v) for v in best.values())
+        # the number M11 actually leans on is the MEDIAN side, not the best one
+        seed_med = float(np.median([abs(v) for v in seed.values()]))
+        best_med = float(np.median([abs(v) for v in best.values()]))
+        rows.append(dict(name=name, seed_side_step=seed, seed_largest=seed_best,
+                         swept_side_step=best, swept_largest=round(bb, 1),
+                         seed_median_side=round(seed_med, 1),
+                         swept_median_side=round(best_med, 1),
+                         inflation_largest=round(bb / seed_best, 2) if seed_best else None))
+        print(f"  {name:24s} seed: largest {seed_best:5.0f}  median side {seed_med:5.0f}")
+        print(f"  {'':24s} SWEPT: largest {bb:5.0f}  median side {best_med:5.0f}   "
+              f"x{bb/seed_best if seed_best else float('nan'):.2f} on the largest")
+    sw_med = [r["swept_median_side"] for r in rows]
+    sw_big = [r["swept_largest"] for r in rows]
+    print(f"\n  SWEPT median side across the five: {min(sw_med):.0f}-{max(sw_med):.0f} luma")
+    print(f"  SWEPT largest side across the five: {min(sw_big):.0f}-{max(sw_big):.0f} luma")
+    print(f"\n  A swept maximum is an UPPER BOUND and is itself optimistic: sweeping")
+    print(f"  4275 outlines per package and keeping the best takes the maximum of a")
+    print(f"  noisy field, so some of this rise is selection, not signal. It bounds")
+    print(f"  the dilution; it does not measure the step.")
+    out = dict(**rid, verb="stepaudit", source=f["source"]["path"], px_per_mm=ppm,
+               published_claim="packages present 1-26 luma on most sides, nRF 75 on its best",
+               swept_median_side_range=[min(sw_med), max(sw_med)],
+               swept_largest_range=[min(sw_big), max(sw_big)],
+               caveat="a swept maximum is an upper bound taken over 4275 outlines per "
+                      "package; part of the rise is selection over a noisy field",
+               rows=rows)
+    if a.json:
+        json.dump(out, open(a.json, "w"), indent=2, default=float)
+        print(f"  wrote {a.json}")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("verb", choices=["bar", "control", "run", "probe", "limit"])
+    ap.add_argument("verb", choices=["bar", "control", "run", "probe", "limit", "stepaudit"])
     ap.add_argument("--fit", default=os.path.join(HERE, "..", "metrology",
                                                   "c_register-fit-boardscale.json"))
     ap.add_argument("--down", type=int, default=DEFAULTS["down"])
@@ -588,6 +657,8 @@ def main():
         v_probe(a, ctx); sys.exit(0)
     if a.verb == "limit":
         v_limit(a, ctx); sys.exit(0)
+    if a.verb == "stepaudit":
+        v_stepaudit(a, ctx); sys.exit(0)
     print("run: not yet wired"); sys.exit(2)
 
 

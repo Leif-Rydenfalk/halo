@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T17:05:40",
+    "date": "2026-09-05T17:10:00",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -3419,121 +3419,6 @@
             "description": "Front solder mask aperture bridges items with different nets",
             "items": [
                 {
-                    "description": "Pad 40 [unconnected-(U1-P0.28/AIN4-Pad40)] of U1 on F.Cu",
-                    "pos": {
-                        "x": 1.095498,
-                        "y": 30.315276
-                    },
-                    "uuid": "93d1c9ca-a187-4ec8-9712-b618d26e4fc8"
-                },
-                {
-                    "description": "PTH pad 4 [GND] of J3",
-                    "pos": {
-                        "x": 0.165099,
-                        "y": 30.120276
-                    },
-                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Pad 41 [unconnected-(U1-P0.29/AIN5-Pad41)] of U1 on F.Cu",
-                    "pos": {
-                        "x": 0.695498,
-                        "y": 30.315276
-                    },
-                    "uuid": "1ad7afdf-9dbe-4cda-97de-0178264982a5"
-                },
-                {
-                    "description": "PTH pad 4 [GND] of J3",
-                    "pos": {
-                        "x": 0.165099,
-                        "y": 30.120276
-                    },
-                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Pad 42 [unconnected-(U1-P0.30/AIN6-Pad42)] of U1 on F.Cu",
-                    "pos": {
-                        "x": 0.295498,
-                        "y": 30.315276
-                    },
-                    "uuid": "d52c63f6-96ee-41ca-842d-ca74c3e90a35"
-                },
-                {
-                    "description": "PTH pad 4 [GND] of J3",
-                    "pos": {
-                        "x": 0.165099,
-                        "y": 30.120276
-                    },
-                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Pad 43 [unconnected-(U1-P0.31/AIN7-Pad43)] of U1 on F.Cu",
-                    "pos": {
-                        "x": -0.104502,
-                        "y": 30.315276
-                    },
-                    "uuid": "9e0b63e9-d8d5-4661-b6ba-89aa2c5312c1"
-                },
-                {
-                    "description": "PTH pad 4 [GND] of J3",
-                    "pos": {
-                        "x": 0.165099,
-                        "y": 30.120276
-                    },
-                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Pad 44 [unconnected-(U1-NC-Pad44)] of U1 on F.Cu",
-                    "pos": {
-                        "x": -0.504502,
-                        "y": 30.315276
-                    },
-                    "uuid": "c5d4d91f-8d00-46b7-a91a-a4470d93452b"
-                },
-                {
-                    "description": "PTH pad 4 [GND] of J3",
-                    "pos": {
-                        "x": 0.165099,
-                        "y": 30.120276
-                    },
-                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
                     "description": "Pad 49 [GND] of U1 on F.Cu",
                     "pos": {
                         "x": 0.095498,
@@ -3548,6 +3433,121 @@
                         "y": 32.660276
                     },
                     "uuid": "86fda020-001e-4d46-b7c7-1f1fa5fbc684"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "PTH pad 4 [GND] of J3",
+                    "pos": {
+                        "x": 0.165099,
+                        "y": 30.120276
+                    },
+                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
+                },
+                {
+                    "description": "Pad 41 [unconnected-(U1-P0.29/AIN5-Pad41)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 0.695498,
+                        "y": 30.315276
+                    },
+                    "uuid": "1ad7afdf-9dbe-4cda-97de-0178264982a5"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "PTH pad 4 [GND] of J3",
+                    "pos": {
+                        "x": 0.165099,
+                        "y": 30.120276
+                    },
+                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
+                },
+                {
+                    "description": "Pad 42 [unconnected-(U1-P0.30/AIN6-Pad42)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 0.295498,
+                        "y": 30.315276
+                    },
+                    "uuid": "d52c63f6-96ee-41ca-842d-ca74c3e90a35"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "PTH pad 4 [GND] of J3",
+                    "pos": {
+                        "x": 0.165099,
+                        "y": 30.120276
+                    },
+                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
+                },
+                {
+                    "description": "Pad 43 [unconnected-(U1-P0.31/AIN7-Pad43)] of U1 on F.Cu",
+                    "pos": {
+                        "x": -0.104502,
+                        "y": 30.315276
+                    },
+                    "uuid": "9e0b63e9-d8d5-4661-b6ba-89aa2c5312c1"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "PTH pad 4 [GND] of J3",
+                    "pos": {
+                        "x": 0.165099,
+                        "y": 30.120276
+                    },
+                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
+                },
+                {
+                    "description": "Pad 44 [unconnected-(U1-NC-Pad44)] of U1 on F.Cu",
+                    "pos": {
+                        "x": -0.504502,
+                        "y": 30.315276
+                    },
+                    "uuid": "c5d4d91f-8d00-46b7-a91a-a4470d93452b"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 40 [unconnected-(U1-P0.28/AIN4-Pad40)] of U1 on F.Cu",
+                    "pos": {
+                        "x": 1.095498,
+                        "y": 30.315276
+                    },
+                    "uuid": "93d1c9ca-a187-4ec8-9712-b618d26e4fc8"
+                },
+                {
+                    "description": "PTH pad 4 [GND] of J3",
+                    "pos": {
+                        "x": 0.165099,
+                        "y": 30.120276
+                    },
+                    "uuid": "28677124-29a4-4347-a68e-df5ae96b5935"
                 }
             ],
             "severity": "error",
