@@ -363,11 +363,60 @@ Not counted, recorded so nobody counts them: Sierra IC **9,016** ("OEM/CM ONLY")
 D20's piezo finding on this project is the precedent — broker stock of a part with no traceability
 is not a supply.
 
-### The `-R` / `-R7` question, stated as evidence rather than as fact
+### The `-R` / `-R7` question — **SETTLED by the manufacturer, 2026-09-05T09:34Z**
 
 `NRF54L10-QFAA-R` is **where nearly all the stock is** (11,366 against 3,590), so whether it is the
-same device matters more than any other number on this page. The evidence that it is the same die in
-a different tape-and-reel quantity:
+same device matters more than any other number on this page.
+
+**It is the same device. Nordic's own datasheet says so, and the suffix is not part of the device
+identity at all — it is the shipping container.**
+
+Nordic Semiconductor, *nRF54L15, nRF54L10, and nRF54L05 Wireless SoCs* **datasheet v1.0, document
+`4503_018`**, chapter 14 *Ordering information*, p. 926–929. Fetched as PDF 2026-09-05T09:34Z,
+13,174,442 bytes, `sha256 ade0d340ba95e31f8299e6721b08d53a702962335d9b87fa202f8d2767603554`, from
+`https://datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf` (LCSC's mirror of
+Nordic's own document — Nordic's `docs.nordicsemi.com` page still returns HTTP 403). Chapter 14 is
+extracted verbatim to `out/verify/sourcing-evidence-2026-09-05/nrf54l-datasheet-v1.0-chapter14-ordering.txt`.
+
+**The order code, Figure 203 and Table 99:**
+
+```
+nRF54L<DD>-<PP><VV>-<CC>
+       │     │   │     └── Container code
+       │     │   └──────── Function variant code
+       │     └──────────── Package variant code
+       └────────────────── Device code
+```
+
+| field | our part | Nordic's table |
+|---|---|---|
+| `<DD>` device | **10** | Table 100 — `10` = nRF54L10 |
+| `<PP>` package | **QF** | Table 101 — `QF` = **QFN48, 6×6 mm, 48 pins, 0.4 mm pitch** |
+| `<VV>` function | **AA** | Table 102 — `AA` = Reserved |
+| `<CC>` container | **R7** *or* **R** | **Table 109 — `R7` = 7″ Reel · `R` = 13″ Reel** |
+
+**`NRF54L10-QFAA-R7` and `NRF54L10-QFAA-R` are identical in device, package and function variant.
+They differ in one field, and that field is the diameter of the reel the parts arrive on.**
+
+Nordic's Table 111 lists both as nRF54L10 order codes with minimum order quantities of **1,000**
+(`-R7`) and **3,000** (`-R`) — **which is exactly what LCSC's `minPacketNumber` returned for
+`C44800139` and `C45022043` in this lane's live probe.** Two independent sources, the manufacturer's
+table and the vendor's API, agree to the piece.
+
+**Two things this settles beyond the stock number:**
+
+1. **U1's authorized total stands at 14,956**, not 3,590. The §4 verdict, the §4b arithmetic and the
+   §4a options are all unaffected.
+2. **`QF` = QFN48 6×6 mm, 0.4 mm pitch is the manufacturer's own package definition**, and halo's
+   land pattern is `QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm`. The fitted part's package is now confirmed
+   against Nordic rather than against a distributor's description string.
+
+**Buy the 13″ reel unless there is a feeder reason not to** — it is where 11,366 of the 14,956 pieces
+are, and at 10,000 boards its 3,000-piece MOQ is not a constraint.
+
+*The distributor evidence that preceded this is kept below, because it was right and because it is
+how the question got asked. It was four distributors agreeing, which is not the same as the
+manufacturer confirming — and this is what the manufacturer confirming looks like:*
 
 - Mouser lists both under the **identical description** — *"Wireless SOC, ultra low power 2.4 GHz
   radio + MCU, 1.0MB NVM"* — at the identical 1-off price of $4.0800.
@@ -378,11 +427,11 @@ a different tape-and-reel quantity:
 - LCSC's own page lists `NRF54L10-QFAA-R` as an **associated part** of `-R7`, and stocks it as
   `C45022043` in the same VFQFN-48.
 
-**What could not be read:** Nordic's ordering-information table
-(`docs.nordicsemi.com/bundle/ps_nrf54L15/…/ordering_info.html`) returned **HTTP 403, 5,925 bytes**.
-So this is four distributors agreeing, **not the manufacturer confirming**. **The board lane should
-read the suffix off Nordic's datasheet before committing a reel.** If `-R` is a different device the
-authorized number drops from 14,956 to 3,590 and the 10,000 answer changes.
+**~~What could not be read~~ — RESOLVED above.** Nordic's *HTML* ordering-information page
+(`docs.nordicsemi.com/bundle/ps_nrf54L15/…/ordering_info.html`) does return **HTTP 403, 5,925
+bytes**, and that failed fetch is still committed. But the same chapter exists in the PDF datasheet,
+which fetched cleanly, and it settles the question outright. **The board lane no longer needs to
+check this before committing a reel — it is checked.**
 
 ### Verdict
 
@@ -506,6 +555,9 @@ Raw results and raw pages:
 | `out/verify/bom-cost-live-2026-09-05.md` / `.json` | today's `fab bom cost --qty 10,100,1000,10000 --live` run |
 | `out/verify/sourcing-evidence-2026-09-05/` | the five distributor pages as fetched, including the one that **failed** — see its README |
 
-**The failed fetch is committed on purpose.** Nordic's ordering-information page returned HTTP 403,
-and 11,366 of U1's 14,956 authorized pieces hang on the `-R` / `-R7` reading that page would have
-settled. A missing measurement is kept visible, not rounded away.
+**The failed fetch is committed on purpose, and it is kept even though the question it left open is
+now closed.** Nordic's *HTML* ordering page returned HTTP 403 while 11,366 of U1's 14,956 authorized
+pieces hung on the `-R` / `-R7` reading. The answer came from the *PDF* datasheet instead
+(`nrf54l-datasheet-v1.0-chapter14-ordering.txt`, chapter 14 verbatim): **`R7` = 7″ reel, `R` = 13″
+reel, same device.** Both files stay — the 403 is the record of what was not known when §4 was first
+written, and deleting it would make this page look like it had always been certain.

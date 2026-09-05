@@ -1,0 +1,172 @@
+14 Ordering information
+    This chapter contains information on device marking, ordering codes, and container sizes.
+
+
+
+    14.1 Device marking
+    The nRF54L15/10/05 package is marked as shown in the following figure.
+                                         N         5      4         L    <D   D>
+
+                                        <P         P>    <V         V>   <H> <P>
+
+                                        <Y         Y>    <W     W>       <L    L>
+
+                                                 Figure 202: Device marking
+
+    See the inner box label and outer box label for more information regarding the box label format.
+
+
+
+    14.2 Order code
+    The following are the order codes and definitions for the device.
+            n       R   F    5      4        L      <D    D>        -    <P   P>    <V   V>     -   <C     C>
+
+                                                   Figure 203: Order code
+
+
+     Abbreviation                Definition and implemented codes
+     N54L/nRF54L                 nRF54L series product
+     <DD>                        Device code
+     <PP>                        Package variant code
+     <VV>                        Function variant code
+     <H><P><F>                   Build code
+                                    H - Hardware version code
+                                    P - Production configuration code (production site, etc.)
+                                    F - Firmware version code (only visible on shipping container label)
+
+     <YY><WW><LL>                Tracking code
+                                    YY - Year code
+                                    WW - Assembly week number
+                                    LL - Wafer lot code
+
+     <CC>                        Container code
+
+                                                   Table 99: Abbreviations
+
+
+
+    4503_018 v1.0                                             926
+                                                                                       Ordering information
+
+
+
+
+14.3 Code ranges and values
+Defined here are the code ranges and values.
+
+
+<DD>                      Device
+           15                                                    nRF54L15
+           10                                                    nRF54L10
+           05                                                    nRF54L05
+
+                                               Table 100: Device codes
+
+
+<PP>                      Package                Size (mm)            Pin/Ball count   Pitch (mm)
+           CA                     CSP47                2.4x2.2                  47             0.3
+           QD                     QFN40                  5x5                    40             0.4
+           QF                     QFN48                  6x6                    48             0.4
+           QG                     QFN52                  6x6                    52             0.4
+
+                                           Table 101: Package variant codes
+
+
+<VV>                   Description
+         AA            Reserved
+
+                                           Table 102: Function variant codes
+
+
+<H>                    Description
+      [A . . Z]        Hardware version/revision identifier (incremental)
+
+                                          Table 103: Hardware version codes
+
+
+<P>                    Description
+      [0 . . 9]        Production device identifier (incremental)
+      [A . . Z]        Engineering device identifier (incremental)
+
+                                     Table 104: Production configuration codes
+
+
+<F>                    Description
+  [A . . N, P . . Z]   Version of preprogrammed firmware
+         [0]           Delivered with preprogrammed firmware to enable debug access
+
+                                          Table 105: Production version codes
+
+
+
+
+4503_018 v1.0                                            927
+                                                                                    Ordering information
+
+
+<YY>              Description
+    [16 . . 99]   Production year: 2016 to 2099
+
+                                          Table 106: Year codes
+
+
+<WW>              Description
+     [1 . . 52]   Week of production
+
+                                         Table 107: Week codes
+
+
+<LL>              Description
+    [AA . . ZZ]   Wafer production lot identifier
+
+                                           Table 108: Lot codes
+
+
+<CC>              Description
+        R7        7" Reel
+         R        13" Reel
+
+                                       Table 109: Container codes
+
+
+
+14.4 Product options
+Defined here are the product options for the device.
+The following table lists the ordering code, as well as the minimum ordering quantity (MOQ).
+
+
+Order code                   MOQ
+    nRF54L15-CAAA-R7                                              1500
+    nRF54L15-CAAA-R                                               7000
+   nRF54L15-QDAA-R7                                               1500
+    nRF54L15-QDAA-R                                               4000
+    nRF54L15-QFAA-R7                                              1000
+    nRF54L15-QFAA-R                                               3000
+   nRF54L15-QGAA-R7                                               1000
+    nRF54L15-QGAA-R                                               3000
+
+                                    Table 110: nRF54L15 order codes
+
+
+
+
+4503_018 v1.0                                       928
+                                                                                  Ordering information
+
+
+Order code                MOQ
+   nRF54L10-QDAA-R7                                           1500
+    nRF54L10-QDAA-R                                           4000
+    nRF54L10-QFAA-R7                                          1000
+    nRF54L10-QFAA-R                                           3000
+   nRF54L10-QGAA-R7                                           1000
+    nRF54L10-QGAA-R                                           3000
+
+                                   Table 111: nRF54L10 order codes
+
+
+Order code                MOQ
+   nRF54L05-QDAA-R7                                           1500
+    nRF54L05-QDAA-R                                           4000
+    nRF54L05-QFAA-R7                                          1000
+    nRF54L05-QFAA-R                                           3000
