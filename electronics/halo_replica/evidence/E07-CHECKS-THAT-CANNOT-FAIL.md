@@ -924,3 +924,36 @@ And a bias pre-registered **with its direction and mechanism**: optimism, biased
 because being told the joints are unmistakable and that the prior failure was instrumental primes a
 lane to believe a matched instrument and admit bright non-joint metal. **That framing came from my
 own brief — the bias was induced, and naming its source is part of controlling for it.**
+
+---
+
+# CLOSING SYNTHESIS — one sentence for all thirty-two
+
+*Added after the catalogue was closed. This is **not** a thirty-third entry; it is a statement
+about the other thirty-two, and it came from the comparison lane rather than from me.*
+
+> **Each one was checking something ADJACENT to the property it was supposed to test.**
+
+That is sharper than the formulation this document had been using — *check the assumption the
+method shares with its own control* — because it **names what goes wrong** rather than what to do
+about it, and it covers cases the earlier version does not.
+
+Five instances from a single day, all found by a deliberate break and none by inspection:
+
+| the check | what it actually tested | what it was supposed to test |
+|---|---|---|
+| a null permuting profile **increments** | that increments are large — which a two-peak profile guarantees | that the peaks are not chance |
+| a contrast-to-noise estimator | the **signal**, since a 3.5 mm part fills two thirds of the window | the noise floor beside it |
+| an area-symmetry gate | that two areas **agree** | that two features are **one symmetric pair** |
+| a "GND is between the tabs in **x**" rule | position in **one coordinate** | being **with** the tabs |
+| an anti-gaming guard | a path resolved against the **search root** | that rev_a's board had not been copied in |
+
+**Adjacency is what makes these survive review.** A check testing something *unrelated* is obvious.
+A check testing something *next to* the target passes, correlates, and reads as evidence — and the
+tighter the correlation, the longer it lives.
+
+The practical form: **name the property, then ask what else would satisfy your check.** If anything
+else would, the check is adjacent and not on target. Two lanes independently refused a number for
+exactly this reason on the same day — a capacitor matching EIA 3216 to 0.25 %, and a package fit
+agreeing with its datasheet to 4.6 % — because in both cases **the agreement was with something
+adjacent to the measurement rather than produced by it.**
