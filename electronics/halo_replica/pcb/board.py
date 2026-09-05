@@ -95,7 +95,7 @@ DARKPKG = os.path.join(REPLICA, "metrology", "darkpkg",
                        "HANDOFF-darkpackages.json")
 BOARDJSON = os.path.join(REPLICA, "board", "board.json")
 STACKUP = os.path.join(REPLICA, "board", "stackup", "stackup.json")
-SCHDIR = os.path.join(REPLICA, "schematic", "out")
+SCHDIR = os.path.join(REPLICA, "out", "schematic")   # lane L11
 
 # ---------------------------------------------------------------------------
 # THE SoC, AND WHY IT IS THE ONE ROW THAT GETS A NAMED PACKAGE
@@ -122,10 +122,31 @@ SCHDIR = os.path.join(REPLICA, "schematic", "out")
 # two methods that reached opposite verdicts. handoff D001..D004 and darkpkg
 # D001..D004 are NOT the same parts as each other. Always write the file with
 # the id.
+# WHAT IS LANDED THERE, AND THE COPPER THAT IS REFUSED
+# ---------------------------------------------------
+# NO SOLDERABLE LAND PATTERN. An earlier build of this file placed
+# REPL_WLCSP_8x7_P0.4_GRID56 here -- 56 lands for a 50-ball part, the
+# over-draw stated on the footprint. Lane L11 stopped it and was right:
+#
+#   "IF YOU LAND THE QFN-48 PATTERN YOU HAVE BUILT A QFN BOARD, NOT A
+#    REPLICA OF APPLE'S WLCSP LAND ... the board would build, DRC would
+#    pass, and the picture would look right."
+#
+# The same sentence convicts an over-drawn WLCSP grid. Six lands that do not
+# exist on the part are six lands a fabricator would make, and a labelled
+# defect in copper is still a defect in copper. Checked before refusing: the
+# installed KiCad libraries hold no nRF52832 WLCSP-50 pattern (179 footprints
+# in Package_CSP, the nearest Nordic entries are AQFN and LGA), and no ball
+# map exists anywhere in this repo.
+#
+# So the board carries the MEASURED BODY and the grid geometry ON F.Fab
+# ONLY -- documentation a reader can measure, zero copper, nothing a fab can
+# build from. The solderable grid stays in the library, where it is a drawing
+# and not an instruction.
 SOC_ROW = "D000"
-SOC_FP = "REPL_WLCSP_8x7_P0.4_GRID56"
-SOC_VALUE = ("U1 nRF52832-CIAA WLCSP-50 - 56 LANDS DRAWN, 6 UNKNOWN; "
-             "A1 CORNER CANNOT DETERMINE; body measured %sx%s mm here")
+SOC_FP = "REPL_U1_WLCSP50_NO_LANDS"
+SOC_VALUE = ("U1 nRF52832-CIAA WLCSP-50 - NO LANDS DRAWN. Ball map CANNOT "
+             "DETERMINE; body measured %sx%s mm; A1 corner unknown")
 
 # The board's origin sits here in cepcb's +Y-UP frame. Any value larger than
 # the outer radius keeps every coordinate positive; nothing depends on it.
@@ -299,6 +320,26 @@ def read_netlist():
     return nets, "READ from %s — %d nets" % (path, len(nets))
 
 
+BIND_VERDICT = """CANNOT DETERMINE — the netlist is READ (65 nets from lane
+L11) and NOT ONE PAD ON THIS BOARD CAN BE ATTACHED TO IT, because the two
+sides name different objects. The schematic's nodes are IDENTIFIED PARTS
+(U1, U3, C1..C5, X1, X2). This board's placements are METROLOGY ROWS -- the
+producing lane's own words for its handoff are "A LIST OF METAL AND BLUE. It
+is NOT a list of components." There is no row-to-refdes map anywhere in this
+repo and building one by eye is the contamination this whole lane exists to
+prevent.
+
+ONE row IS identified: handoff D000 is the nRF52832, M08's positive control.
+It still cannot bind, for a second and independent reason -- L11 drew U1 with
+KiCad's QFN-48 symbol because no WLCSP-50 ball map is sourced, so the sheet's
+pin NUMBERS are a different package's. Binding by number would attach signals
+to the wrong balls; binding by name needs the ball map that does not exist.
+
+SO THE COPPER ON THIS BOARD HAS NO CONNECTIVITY, and that is stated rather
+than repaired. What would close it: a published nRF52832-CIAA ball map, and
+a row-to-refdes assignment produced by measurement rather than by eye."""
+
+
 # ---------------------------------------------------------------------------
 def main():
     bj = json.load(open(BOARDJSON))
@@ -412,10 +453,10 @@ def main():
     b.place("LGND", "%s:REPL_LEGEND_BOARD" % LIBID,
             at=to_board(0, -17.5), anchor="origin", value="board legend")
     # Silkscreen that is PHYSICALLY PRINTED, in the annulus, radial.
-    silk = [("REPL_SILK_REPLICA", 0.0, 9.6),
-            ("REPL_SILK_U2_DNP", 90.0, 9.6),
-            ("REPL_SILK_THICKNESS", 180.0, 9.6),
-            ("REPL_SILK_INCOMPLETE", 270.0, 9.6)]
+    silk = [("REPL_SILK_REPLICA", 0.0, 9.3),
+            ("REPL_SILK_U2_DNP", 90.0, 9.3),
+            ("REPL_SILK_THICKNESS", 180.0, 9.3),
+            ("REPL_SILK_INCOMPLETE", 270.0, 9.3)]
     for i, (fp, ang, r) in enumerate(silk):
         px = r * math.cos(math.radians(ang))
         py = r * math.sin(math.radians(ang))
@@ -450,6 +491,9 @@ def main():
                       "pocket_segments": n_pocket,
                       "radial_step_walls_also_on_Dwgs_User": len(walls)},
         "netlist": net_verdict,
+        "netlist_binding": BIND_VERDICT,
+        "nets_read": 0 if nets is None else len(nets),
+        "pads_on_a_net": 0,
         "orientation": {
             "source": "components-front.json angle_deg and "
                       "dark-packages-front.json angle_deg, keyed on the "
@@ -471,9 +515,18 @@ def main():
                               "(B-R = +43 vs a board median of +1); measured "
                               "3.283 x 3.030 mm against the datasheet body "
                               "3.226 x 2.956 mm.",
+            "copper": "NONE. The land pattern is REFUSED, not drawn. Body "
+                      "and grid geometry are on F.Fab only.",
+            "why_refused": "The part is a WLCSP-50; a 0.40 mm grid inside "
+                           "the measured body is 8x7 = 56 positions and no "
+                           "ball map in this repo or in KiCad's 179 "
+                           "Package_CSP footprints says which 6 are "
+                           "depopulated. Six lands that do not exist on the "
+                           "part are six lands a fabricator would make.",
+            "raised_by": "lane L11, 2026-09-05 - 'the board would build, DRC "
+                         "would pass, and the picture would look right'",
             "cannot_determine": [
-                "which 6 of the 56 grid positions are depopulated — the grid "
-                "is OVER-DRAWN by six lands and the footprint says so",
+                "which 6 of the 56 grid positions are depopulated",
                 "where ball A1 is — the angle is a long side modulo 180 deg",
                 "the ~2 % between the colour-segmented body and the "
                 "datasheet body (M08 raises this itself)",
@@ -519,12 +572,16 @@ def main():
           % (layers, thick, stack["apple"]["surface_finish"]["value"]))
     print("       %s" % bj["parameters"]["thickness_mm"]["fabrication_delta"])
     print("NETS   %s" % net_verdict)
+    print("BIND   " + BIND_VERDICT.split("\n")[0].strip())
+    print("       0 pads attached. Full verdict in out/board-report.json.")
     print("ROT    measured long-side bearings applied to %d CLASS B rows "
           "(rot = 90 - angle); %d duplicate position keys"
           % (placed["metal"], angle_dupes))
     for r, a in soc_placed:
-        print("SoC    handoff:%s -> %s at rot %.2f deg. 56 lands drawn / 50 "
-              "balls; A1 corner CANNOT DETERMINE." % (r, SOC_FP, a))
+        print("SoC    handoff:%s -> %s at rot %.2f deg. NO COPPER: the "
+              "WLCSP-50 ball map is CANNOT DETERMINE, so the land pattern "
+              "is REFUSED and only the body + grid are on F.Fab."
+              % (r, SOC_FP, a))
     print("PLACED %d of %d handoff rows + %d eyeballed absences:"
           % (sum(placed[k] for k in ("metal", "pos_only", "rim_suspect",
                                      "not_drawn")),

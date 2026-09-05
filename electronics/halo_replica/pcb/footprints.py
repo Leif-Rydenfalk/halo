@@ -260,6 +260,43 @@ def wlcsp_nrf():
     return name, "\n".join(o)
 
 
+def wlcsp_nrf_no_lands():
+    """CLASS C — the SoC as DOCUMENTATION. Zero copper. This is what lands.
+
+    Same body and same grid as wlcsp_nrf(), drawn entirely on F.Fab. A
+    reader can measure the pattern; a fabricator gets nothing, because the
+    six depopulated positions of the WLCSP-50 are CANNOT DETERMINE and six
+    lands that do not exist on the part are six lands a board house would
+    make. The solderable version stays in this library as a drawing.
+    """
+    ncols = int(math.floor(NRF_BODY_SHORT / NRF_PITCH))
+    nrows = int(math.floor(NRF_BODY_LONG / NRF_PITCH))
+    name = "REPL_U1_WLCSP50_NO_LANDS"
+    descr = ("CLASS C [LAND PATTERN REFUSED] nRF52832-CIAA, WLCSP-50. NO "
+             "COPPER, NO MASK, NO PASTE. Body %s x %s mm MEASURED "
+             "(bom.json U1); %s mm pitch from nRF52832 PS v1.4 Table 132; "
+             "%d grid positions shown on F.Fab for %d balls, and WHICH %d "
+             "ARE DEPOPULATED IS CANNOT DETERMINE -- no ball map exists in "
+             "this repo and KiCad's 179 Package_CSP footprints hold no "
+             "nRF52832 WLCSP. The A1 corner is unknown too: the placement "
+             "angle is a min-area-rect long side, modulo 180 deg."
+             % (_fmt(NRF_BODY_LONG), _fmt(NRF_BODY_SHORT), _fmt(NRF_PITCH),
+                nrows * ncols, NRF_BALLS, nrows * ncols - NRF_BALLS))
+    o = _head(name, descr, "halo replica wlcsp nrf52832 refused no copper",
+              "smd board_only exclude_from_pos_files exclude_from_bom")
+    x0 = -(ncols - 1) * NRF_PITCH / 2.0
+    y0 = -(nrows - 1) * NRF_PITCH / 2.0
+    for r in range(nrows):
+        for c in range(ncols):
+            o.append(_circle(x0 + c * NRF_PITCH, y0 + r * NRF_PITCH,
+                             NRF_BALL_D / 2.0, "F.Fab", 0.03))
+    o += _rect(0, 0, NRF_BODY_SHORT, NRF_BODY_LONG, "F.Fab", 0.06)
+    o.append(_fp_text("U1 WLCSP-50 - NO LANDS, BALL MAP CANNOT DETERMINE",
+                      0, NRF_BODY_LONG / 2.0 + 0.45, "F.Fab", 0.30))
+    o.append(")")
+    return name, "\n".join(o)
+
+
 def metal_land(w_mm, l_mm):
     """CLASS B — one MEASURED bright-metal region, drawn as the land it is."""
     name = "REPL_METAL_%sx%s" % (_fmt(round(w_mm, 2)), _fmt(round(l_mm, 2)))
@@ -472,7 +509,8 @@ def classify(row):
     return "metal"
 
 
-PATTERNS_STATIC = [chip("0201"), chip("0402"), wlcsp_nrf(), pos_marker(),
+PATTERNS_STATIC = [chip("0201"), chip("0402"), wlcsp_nrf(),
+                   wlcsp_nrf_no_lands(), pos_marker(),
                    rim_suspect_marker(), not_drawn_marker(),
                    eyeballed_marker(), uwb_module()]
 
@@ -519,7 +557,7 @@ def main():
     # said more and would have printed as nothing -- is gone.
     for nm, lines, tag in (
             ("REPL_SILK_U2_DNP", ["U2 UWB", "DNP"], "silk uwb dnp"),
-            ("REPL_SILK_THICKNESS", ["0.30mm 4L"], "silk thickness"),
+            ("REPL_SILK_THICKNESS", ["0.30mm"], "silk thickness"),
             ("REPL_SILK_INCOMPLETE", ["PARTIAL"], "silk incomplete"),
             ("REPL_SILK_REPLICA", ["REPLICA"], "silk replica")):
         pats.append(legend(nm, lines, layer="F.SilkS", size=SILK_MIN_H,
