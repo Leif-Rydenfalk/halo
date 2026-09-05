@@ -125,6 +125,88 @@ def _drop_nets_from_network(s, nets):
     return s, dropped
 
 
+def thin_to_clusters(s, hints):
+    """Leave the router ONE PIN PER CLUSTER the board's copper already joins.
+
+    THE DEFECT THIS REPLACES, AND IT WAS THIS FILE'S. `_drop_nets_from_network`
+    deleted GND and VDD outright, on the claim in the header above that "the
+    pours join them and board.py's `stitch()` already put the vias in". That is
+    true for GND, whose pours are on both outer layers and touch every GND pad
+    there. It is FALSE FOR VDD, whose plane is on In2 and whose pads are on
+    F.Cu and B.Cu: `stitch()` reached 9 of 24 pads and `link_orphans()` 0 of
+    the remaining 15, both saying so by name in the build report, while KiCad's
+    DRC reported 15 VDD ratlines. Fifteen pins were removed from the routing
+    problem on the grounds that they were already connected, by a file that had
+    never asked whether they were. The autoroute then finished at 28
+    unconnected and the number looked like the router's fault.
+
+    So the answer is not a better claim, it is a MEASUREMENT taken where it is
+    knowable. `board.py:plane_join_report()` runs KiCad's own connectivity
+    after the zones are filled and writes the resulting clusters into
+    `dsn_hints.json`. A net in one piece disappears from the problem exactly as
+    before; a net in fifteen pieces arrives as fifteen pins.
+
+    `router_skip_pins` is a pin no path can reach on this revision, with the
+    reason, so freerouting is not sent looking for one. It is NOT a way to make
+    anything green: the pin keeps its net, KiCad's DRC still counts it
+    unconnected, and the release gate still fails on it.
+    """
+    clusters = (hints or {}).get("plane_clusters") or {}
+    skip = set((hints or {}).get("router_skip_pins") or {})
+    if not clusters:
+        return s, {"ok": False, "nets": {}, "dropped": [],
+                   "why": "dsn_hints.json carries no plane_clusters; the "
+                          "board that wrote it did not measure them"}
+    stats, dropped = {}, []
+    for net, groups in sorted(clusters.items()):
+        keep = []
+        for g in groups:
+            live = [pin for pin in g if pin not in skip]
+            if live:
+                keep.append(live[0])
+        i = s.find("(net %s\n" % net)
+        if i < 0:
+            i = s.find('(net "%s"' % net)
+        if i < 0:
+            stats[net] = {"found": False}
+            continue
+        depth, j = 0, i
+        while j < len(s):
+            if s[j] == "(":
+                depth += 1
+            elif s[j] == ")":
+                depth -= 1
+                if depth == 0:
+                    j += 1
+                    break
+            j += 1
+        block = s[i:j]
+        m = re.search(r"\(pins([^)]*)\)", block)
+        n_before = len(m.group(1).split()) if m else 0
+        if len(keep) < 2:
+            s = s[:i] + s[j:]
+            dropped.append(net)
+            stats[net] = {"clusters": len(groups), "pins_before": n_before,
+                          "pins_after": 0, "dropped": True}
+        else:
+            s = (s[:i] + "(net %s\n      (pins %s)\n    )" % (net, " ".join(keep))
+                 + s[j:])
+            stats[net] = {"clusters": len(groups), "pins_before": n_before,
+                          "pins_after": len(keep), "dropped": False}
+    # and out of the (class ...) membership list, for the nets that went away
+    k = s.find("(class ")
+    if k >= 0 and dropped:
+        end = s.find("(circuit", k)
+        head = s[k:end]
+        for name in dropped:
+            head = re.sub(r'(?<![\w"])' + re.escape(name) + r'(?![\w"])',
+                          "", head)
+        head = re.sub(r"[ \t]+\n", "\n", head)
+        s = s[:k] + head + s[end:]
+    return s, {"ok": True, "nets": stats, "dropped": dropped,
+               "skipped_pins": sorted(skip)}
+
+
 def renet_nfc(text, hints):
     """Put the outer half of the NFC winding back on NFC1 in the DSN.
 
@@ -250,7 +332,11 @@ def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None,
     if hints:
         s, nfc = renet_nfc(s, hints)
     s, n_prot = _protect_wires(s, set(protect) | set(PLANE_NETS))
-    s, dropped = _drop_nets_from_network(s, drop) if drop else (s, [])
+    thin = {"ok": False, "why": "not requested", "nets": {}, "dropped": []}
+    dropped = []
+    if drop:
+        s, thin = thin_to_clusters(s, hints)
+        dropped = thin["dropped"]
     fid = {"fiducials": 0, "keepouts_added": 0, "why": "not requested"}
     if fiducials:
         s, fid = fiducial_keepouts(s)
@@ -260,6 +346,7 @@ def fix(text, drop=PLANE_NETS, protect=PROTECT_NETS, hints=None,
         "plane_layers_retyped": n_lay,
         "wires_protected": n_prot,
         "nets_dropped": dropped,
+        "cluster_thinning": thin,
         "nfc": nfc,
         "fiducial_keepouts": fid,
     }
@@ -281,6 +368,15 @@ if __name__ == "__main__":
     out, stats = fix(txt, drop=drop, hints=hints)
     open(dst, "w").write(out)
     print(json.dumps(stats, indent=2))
+    t = stats["cluster_thinning"]
+    if not t["ok"]:
+        sys.exit("REFUSED: %s. This filter used to delete GND and VDD from "
+                 "the routing problem outright on the claim that the pours "
+                 "joined them; that claim was false for 15 of VDD's 24 pins "
+                 "for a day, and the board's own DRC had been saying so. It "
+                 "will not fall back to guessing again — rebuild the board so "
+                 "`plane_join_report()` writes the clusters."
+                 % t.get("why", "no cluster measurement"))
     if stats["plane_layers_retyped"] != len(PLANE_LAYERS):
         sys.exit("REFUSED: retyped %d of %d plane layers — the exporter's "
                  "layer block is not the shape this expects, and a fix that "

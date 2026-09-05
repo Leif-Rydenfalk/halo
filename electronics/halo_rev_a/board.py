@@ -641,6 +641,53 @@ for ref, fpid, r, deg, rot, side in PLACE + SMALL:
             anchor="origin" if ref in ANCHOR_ORIGIN else "center")
     placed.append(ref)
 
+
+# ---------------------------------------------------------------------------
+# THE QFN'S LANDS ARE WIDENED TO THE FAB'S OWN MINIMUM, AND THE TWO NUMBERS
+# THAT DECIDE IT ARE THE FAB'S, NOT A PREFERENCE
+# ---------------------------------------------------------------------------
+# `fab dfm` FAILED `smd_pad_min` at 0.2000 mm against JLCPCB's published
+# "Minimum SMD pad: 0.25mm x 0.25mm". The 0.20 mm is not ours either: KiCad's
+# `QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm` is IPC-nominal from ST's STM32WB06
+# land pattern, and it puts 48 lands at 0.20 x 0.85.
+#
+# READ THE FAB'S TWO LINES TOGETHER AND THE ANSWER IS FORCED (both from the
+# Traces table, https://jlcpcb.com/capabilities/pcb-capabilities, re-read
+# 2026-09-05):
+#
+#   "Minimum SMD pad: 0.25mm x 0.25mm"
+#   "SMD pad to pad clearance (different nets) 0.15mm"
+#
+# On a 0.40 mm pitch those two meet EXACTLY at a 0.25 mm land: 0.40 - 0.25 =
+# 0.15. So 0.25 is not a number nudged until the check went green, it is the
+# only width on this pitch that satisfies both published lines at once, and
+# the fab's own assembly page names 0.40 mm as its minimum IC pin spacing on
+# the cheaper service. The resulting 0.15 mm mask dam clears their soldermask
+# bridge minimum of 0.10 mm as well.
+#
+# The LENGTH is untouched at 0.85 mm — this widens the land toward its
+# neighbours, which is where the fab's clearance line governs, and does not
+# change the toe or heel the joint is inspected on.
+import pcbnew as _pcbnew                                          # noqa: E402
+
+QFN_LAND_MIN = 0.25
+QFN_LANDS_WIDENED = []
+for _pad in b.refs["U1"].Pads():
+    _w, _h = _pad.GetSizeX() / 1e6, _pad.GetSizeY() / 1e6
+    if not _pad.GetNumber() or min(_w, _h) >= QFN_LAND_MIN:
+        continue
+    _nw = max(_w, QFN_LAND_MIN) if _w < _h else _w
+    _nh = max(_h, QFN_LAND_MIN) if _h < _w else _h
+    _pad.SetSize(_pcbnew.VECTOR2I(int(round(_nw * 1e6)), int(round(_nh * 1e6))))
+    QFN_LANDS_WIDENED.append((_pad.GetNumber(), _w, _h, _nw, _nh))
+if len(QFN_LANDS_WIDENED) != 48:
+    raise SystemExit(
+        "expected to widen 48 QFN lands and widened %d. Either the footprint "
+        "changed under this code or it was already wide, and either way a "
+        "silent 0 here would leave the board failing smd_pad_min with a line "
+        "in the file that says it does not."
+        % len(QFN_LANDS_WIDENED))
+
 # ---------------------------------------------------------------------------
 # TEST ACCESS, PLACED BY SEARCH RATHER THAN BY HAND
 # ---------------------------------------------------------------------------
@@ -2248,6 +2295,21 @@ def plane_join_report():
                     "cluster count derived from it would call every net one "
                     "piece." % (name, net))
             groups.setdefault(key, []).append(name)
+        # EACH CLUSTER'S PINS ARE ORDERED INNERMOST FIRST, and that decides
+        # something. dsnfix keeps the FIRST pin of each cluster as the router's
+        # anchor, so alphabetical order made BT1-1 -- the cell's positive
+        # contact, out at r 11.600 in the annulus -- the anchor for VDD's main
+        # cluster, and the router would have been asked to reach fourteen
+        # central pads FROM THE ANNULUS, dragging power copper back and forth
+        # across the NFC coil's clearance band to do it. The anchor should be
+        # the pin the plane most surrounds, which is the innermost one.
+        _pos = {name: pad.GetPosition() for name, pad in pads}
+
+        def _r_of(name):
+            p = _pos[name]
+            return math.hypot(p.x / 1e6 - CX, 26.0 - p.y / 1e6 - CY)
+        groups = {k: sorted(v, key=lambda n: (round(_r_of(n), 4), n))
+                  for k, v in groups.items()}
         clusters = sorted(groups.values(), key=lambda g: (-len(g), g[0]))
         out[net] = clusters
     PLANE_JOIN.clear()
