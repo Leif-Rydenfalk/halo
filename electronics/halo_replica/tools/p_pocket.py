@@ -329,39 +329,76 @@ def main():
             "and committed before the second photograph was extracted.")
     say(f"A ({os.path.basename(a.a)}): {len(an)} facets at "
         f"{[round(x,1) for x in sorted(an)]}")
-    say(f"B ({os.path.basename(a.b)}): {len(bn)} facets, rotated by "
-        f"{a.rotation_deg:+.2f} deg -> {[round(x,1) for x in sorted(bn)]}")
+    if a.free_rotation:
+        say(f"B ({os.path.basename(a.b)}): raw normals {[round(x,1) for x in raw]}; "
+            f"CH3 threshold-stable {stable}")
+    else:
+        say(f"B ({os.path.basename(a.b)}): {len(bn)} facets, rotated by "
+            f"{a.rotation_deg:+.2f} deg -> {[round(x,1) for x in sorted(bn)]}")
 
     rng = np.random.default_rng(5)
     N = 20000
 
     SCAN = np.arange(0, 360, 0.25)
+    NB = len(SCAN)                       # 1440 rotation bins, the pre-registered grid
+
+    # The rotation scan is a circular cross-correlation and it is done that way, because
+    # the pure-Python triple loop is 20000 x 1440 x m x 7 and does not finish. STATISTIC
+    # CHANGE, and it is applied IDENTICALLY to the real set and to every random set:
+    # this counts B facets that land within tol of ANY A facet, without the one-to-one
+    # constraint the registered test used. Charging both sides the same statistic is
+    # what keeps the p-value meaningful; using the fast one for the null and the strict
+    # one for the real set would be exactly the rigged comparison this lane keeps
+    # finding elsewhere.
+    _cov = np.zeros(NB, bool)
+    for _x in an:
+        d_ = np.abs(((SCAN - _x + 180) % 360) - 180)
+        _cov |= d_ <= a.tol_deg
 
     def best_over_rotation(anorm, bset):
-        best, bth = -1, 0.0
-        for th_ in SCAN:
-            k = len(match(anorm, [(x + th_) % 360 for x in bset], a.tol_deg))
-            if k > best:
-                best, bth = k, float(th_)
-        return best, bth
+        idx = np.rint(np.asarray(bset, float) % 360 / 0.25).astype(int) % NB
+        k = np.arange(NB)
+        hits = _cov[(idx[:, None] + k[None, :]) % NB].sum(axis=0)
+        j = int(np.argmax(hits))
+        return int(hits[j]), float(SCAN[j])
+
+    def best_over_rotation_many(bsets):
+        idx = np.rint(np.asarray(bsets, float) % 360 / 0.25).astype(int) % NB
+        k = np.arange(NB)
+        out = np.empty(len(bsets), int)
+        step = 500
+        for s0 in range(0, len(bsets), step):
+            blk = idx[s0:s0 + step]
+            h = _cov[(blk[:, :, None] + k[None, None, :]) % NB].sum(axis=1)
+            out[s0:s0 + step] = h.max(axis=1)
+        return out
 
     def run(label, bset):
         if a.free_rotation:
             k, bth = best_over_rotation(an, bset)
-            pr = match(an, [(x + bth) % 360 for x in bset], a.tol_deg)
+            bset = [(x + bth) % 360 for x in bset]      # report the ROTATED normals
+            pr = match(an, bset, a.tol_deg)
             say(f"\n{label}: best rotation {bth:.2f} deg gives {k} matches")
         else:
             pr = match(an, bset, a.tol_deg)
             bth = None
         er = [q[2] for q in pr]
-        cnt = np.zeros(N, int)
-        for t in range(N):
-            rb = list(rng.uniform(0, 360, len(bset)))
-            if a.free_rotation:
-                cnt[t] = best_over_rotation(an, rb)[0]
-            else:
-                cnt[t] = len(match(an, rb, a.tol_deg))
-        pv = float((cnt >= len(pr)).mean())
+        if a.free_rotation:
+            k_real, _ = best_over_rotation(an, bset)
+            cnt = best_over_rotation_many(rng.uniform(0, 360, (N, len(bset))))
+            pv = float((cnt >= k_real).mean())
+            say(f"   POWER: chance already scores {cnt.mean():.2f} of a possible "
+                f"{len(bset)}. With {len(an)} A facets and a {a.tol_deg} deg tolerance, "
+                f"{(_cov.mean()*100):.0f}% of the circle counts as a match, so a free "
+                f"rotation makes almost any set match. THE TEST HAS LITTLE POWER AND "
+                f"THE NULL CONTROL IS WHAT SAYS SO.")
+            say(f"   statistic (same for real and random): {k_real} of {len(bset)} B "
+                f"facets within {a.tol_deg} deg of an A facet at the best rotation")
+        else:
+            cnt = np.zeros(N, int)
+            for t in range(N):
+                cnt[t] = len(match(an, list(rng.uniform(0, 360, len(bset))), a.tol_deg))
+            pv = float((cnt >= len(pr)).mean())
         say(f"\n{label}: {len(bset)} B facets -> {len(pr)} pairs, mean |err| "
             f"{np.mean(er) if er else float('nan'):.2f} deg")
         for i, j, e in pr:
@@ -414,13 +451,13 @@ def main():
                f"chance does this well only {p_val*100:.2f}% of the time, on the WEAKER "
                f"of the two runs.")
     else:
-        why = (f"on the weaker run, {len(pairs)} pairs matched but chance matches this "
-               f"well {p_val*100:.1f}% of the time, so the agreement is not "
-               f"distinguishable from coincidence. The stronger run reaches "
-               f"{(r_stb or r_raw)['p_at_least_as_good']*100:.2f}% but its facet set was "
-               f"chosen after the null, so it is a HYPOTHESIS needing a pre-registered "
-               f"replication on FCC photo 7, not a result. L1's PARTIALLY DETERMINED "
-               f"stands.")
+        extra = ("" if r_stb is None else
+                 f" The stronger run reaches "
+                 f"{r_stb['p_at_least_as_good']*100:.2f}% but its facet set was chosen "
+                 f"AFTER the null, so it is a hypothesis and not a result.")
+        why = (f"{len(pairs)} pairs matched but chance matches this well "
+               f"{p_val*100:.1f}% of the time, so the agreement is not distinguishable "
+               f"from coincidence.{extra} L1's PARTIALLY DETERMINED stands.")
     say(f"\nVERDICT: {verdict} -- {why}")
 
     out = dict(tool="p_pocket.py", verb="compare", A=os.path.relpath(a.a, REPL),
