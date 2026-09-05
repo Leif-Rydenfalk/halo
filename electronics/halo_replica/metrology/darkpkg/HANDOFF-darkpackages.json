@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-05T05:32:41Z",
-  "git_rev": "379abf5",
+  "generated_utc": "2026-09-05T09:46:32Z",
+  "git_rev": "13766b6",
   "producer": "L7 DARK-PACKAGE DETECTOR lane",
   "side": "FRONT = the COMPONENT side (Apple's FCC caption). O'Flynn's backside-fullres.jpeg IS this side.",
   "source_image": "images/airtag/oflynn-backside-fullres.jpeg",
@@ -1242,7 +1242,7 @@
     {
       "what": "every neutral-black IC package on this face, and the nRF52832 as well",
       "verdict": "CANNOT DETERMINE",
-      "why": "the packages present 1 to 26 luma of boundary step on most of their sides (the nRF reaches 75 on ONE side and 1-10 on the other three), against the 100-140 luma this photograph is measured to need across 5 automatically-chosen sites. This is not 'we could not see them'; it is 'at the boundary contrast they actually present, they could not have been seen by any boundary method on this source'.",
+      "why": "WITHDRAWN BY M13 AND REPLACED: the earlier wording compared the packages' per-side luma step with the limit as though both were measured the same way. They are not -- see M13. What stands is the boundary EVIDENCE: 1 of 20 boundaries clears a null measured on this image, against the 100-140 luma this photograph is measured to need across 5 automatically-chosen sites. The honest form is 'the boundaries these packages present are not distinguishable from the board's own straight structures on this source', which is what the |z| evidence says. The stronger claim about their contrast is withdrawn.",
       "instruction": "DO NOT place any of these by hand from the transferred frame. The seed positions in `rows` are eyeballed and are published so the measurement can be checked, not so it can be drawn."
     },
     {
@@ -1269,6 +1269,7 @@
     "sides_examined": 20
   },
   "what_would_close_it": [
+    "SEE ALSO metrology/darkpkg/M13-CORRECTION-MY-OWN-HEADLINE-WAS-NOT-A-MEASUREMENT.md before quoting any luma step from this file.",
     "a photograph of THIS face with more genuine resolution AND more boundary contrast. M10 already showed that resolution alone does not do it: a source with 1.9x more genuine resolution left the packages inside the soldermask range on both luma and local texture. The missing quantity is CONTRAST AT THE BOUNDARY, and the number it has to reach is in `detection_limit`.",
     "oblique or raking illumination, which converts a package's HEIGHT into a boundary step. Every method tried on this project so far -- intensity, texture, colour, boundary -- reads a flat-lit photograph, and a 0.5 mm tall body under raking light has a shadow edge that none of them needs to infer.",
     "an X-ray or a die-level teardown image, where package outlines are geometry rather than reflectance."
@@ -1325,7 +1326,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "1 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 75 luma, against the 100 luma this photograph needs (see `excluded`)."
+      "why": "1 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step at the seed outline: 75 luma -- RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step at a hand-placed outline is not well defined on this photograph (1-130 luma depending where the outline is put) and a NO-PACKAGE control spans the same range. It is not comparable with the 100 luma limit, which is measured with a control."
     },
     {
       "id": "D001",
@@ -1378,7 +1379,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 8 luma, against the 100 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step at the seed outline: 8 luma -- RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step at a hand-placed outline is not well defined on this photograph (1-130 luma depending where the outline is put) and a NO-PACKAGE control spans the same range. It is not comparable with the 100 luma limit, which is measured with a control."
     },
     {
       "id": "D002",
@@ -1431,7 +1432,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 20 luma, against the 100 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step at the seed outline: 20 luma -- RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step at a hand-placed outline is not well defined on this photograph (1-130 luma depending where the outline is put) and a NO-PACKAGE control spans the same range. It is not comparable with the 100 luma limit, which is measured with a control."
     },
     {
       "id": "D003",
@@ -1484,7 +1485,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 145 luma, against the 100 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step at the seed outline: 145 luma -- RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step at a hand-placed outline is not well defined on this photograph (1-130 luma depending where the outline is put) and a NO-PACKAGE control spans the same range. It is not comparable with the 100 luma limit, which is measured with a control."
     },
     {
       "id": "D004",
@@ -1537,7 +1538,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 6 luma, against the 100 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step at the seed outline: 6 luma -- RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step at a hand-placed outline is not well defined on this photograph (1-130 luma depending where the outline is put) and a NO-PACKAGE control spans the same range. It is not comparable with the 100 luma limit, which is measured with a control."
     }
   ]
 }

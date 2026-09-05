@@ -73,8 +73,12 @@ def main():
                  f"sides of its axis, so no dimension exists. The seed position is "
                  f"EYEBALLED off a native tile and is present only so the reader can "
                  f"check the measurement; it is not a position and must not be drawn. "
-                 f"Largest boundary step on any side: {best:.0f} luma, against the "
-                 f"{need3:.0f} luma this photograph needs (see `excluded`).")))
+                 f"Largest boundary step at the seed outline: {best:.0f} luma -- "
+                 f"RECORDED, NOT COMPARED: M13 withdrew that quantity. A per-side step "
+                 f"at a hand-placed outline is not well defined on this photograph "
+                 f"(1-130 luma depending where the outline is put) and a NO-PACKAGE "
+                 f"control spans the same range. It is not comparable with the "
+                 f"{need3:.0f} luma limit, which is measured with a control.")))
 
     out = dict(
         generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
@@ -145,13 +149,15 @@ def main():
         excluded=[dict(
             what="every neutral-black IC package on this face, and the nRF52832 as well",
             verdict="CANNOT DETERMINE",
-            why="the packages present 1 to 26 luma of boundary step on most of their sides "
-                "(the nRF reaches 75 on ONE side and 1-10 on the other three), against the "
+            why="WITHDRAWN BY M13 AND REPLACED: the earlier wording compared the packages' "
+                "per-side luma step with the limit as though both were measured the same "
+                "way. They are not -- see M13. What stands is the boundary EVIDENCE: 1 of "
+                "20 boundaries clears a null measured on this image, against the "
                 f"{need3:.0f}-{n3['max']:.0f} luma this photograph is measured to need "
-                f"across {n3['n_sites']} automatically-chosen sites. This is not 'we "
-                "could not see them'; it is 'at the boundary contrast they actually "
-                "present, they could not have been seen by any boundary method on this "
-                "source'.",
+                f"across {n3['n_sites']} automatically-chosen sites. The honest form is "
+                "'the boundaries these packages present are not distinguishable from the "
+                "board's own straight structures on this source', which is what the "
+                "|z| evidence says. The stronger claim about their contrast is withdrawn.",
             instruction="DO NOT place any of these by hand from the transferred frame. The "
                         "seed positions in `rows` are eyeballed and are published so the "
                         "measurement can be checked, not so it can be drawn.",
@@ -176,6 +182,8 @@ def main():
                     sides_supported_total=sum(r["n_sides_supported"] for r in rows),
                     sides_examined=4 * len(rows)),
         what_would_close_it=[
+            "SEE ALSO metrology/darkpkg/M13-CORRECTION-MY-OWN-HEADLINE-WAS-NOT-A-"
+            "MEASUREMENT.md before quoting any luma step from this file.",
             "a photograph of THIS face with more genuine resolution AND more boundary "
             "contrast. M10 already showed that resolution alone does not do it: a source "
             "with 1.9x more genuine resolution left the packages inside the soldermask "
