@@ -1,0 +1,60 @@
+{
+  "tool": "m_pad_registration.py",
+  "front": "rim-pads-photo6.json",
+  "back": "rim-pads-photo7.json",
+  "front_run": "2026-09-05T00:10:48Z",
+  "back_run": "2026-09-05T00:12:08Z",
+  "feature_set": "edge_features",
+  "tol_deg": 4.0,
+  "n_front": 15,
+  "n_back": 13,
+  "best_axis_deg": 24.5,
+  "n_matched": 8,
+  "matched_pairs": [
+    [
+      19.04,
+      15.17,
+      3.87
+    ],
+    [
+      79.45,
+      76.97,
+      2.48
+    ],
+    [
+      101.71,
+      101.2,
+      0.51
+    ],
+    [
+      105.19,
+      103.95,
+      1.24
+    ],
+    [
+      147.54,
+      144.89,
+      2.65
+    ],
+    [
+      153.11,
+      156.19,
+      3.08
+    ],
+    [
+      162.89,
+      164.52,
+      1.63
+    ],
+    [
+      173.93,
+      174.78,
+      0.85
+    ]
+  ],
+  "null_mean": 7.4465,
+  "null_p99": 9.0,
+  "null_max": 10,
+  "p_value": 0.4295,
+  "verdict": "CANNOT DETERMINE"
+}
