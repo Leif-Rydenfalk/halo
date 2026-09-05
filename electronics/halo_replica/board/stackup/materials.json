@@ -222,5 +222,20 @@
     },
     "_the_delta_in_one_line": "0.30 mm is BELOW the published minimum of both houses at every layer count above two, and below JLCPCB's overall minimum at any layer count. PCBWay lists 0.2 mm for 1-2 layer, so a 2-layer 0.30 mm is inside their envelope while 0.30 mm is not one of their listed thickness options.",
     "_what_this_does_NOT_tell_us": "NOTHING about Apple. These are prototype houses. Apple's board suppliers build any-layer HDI at volumes and tolerances no prototype capability page describes. A capability page bounds what WE can order; it does not bound what Apple built. Fusing those two is the error this file exists to prevent."
+  },
+  "core_stock_series": {
+    "mm": [
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.7,
+      1.0,
+      1.5
+    ],
+    "source": "allpcb, 'Standard FR-4 cores come in thicknesses like 0.1mm, 0.2mm, 0.3mm, 0.4mm, 0.5mm, 0.7mm, 1.0mm, and 1.5mm' — https://www.allpcb.com/allelectrohub/the-definitive-guide-to-pcb-core-thickness-choosing-whats-right-for-your-design , fetched 2026-09-05",
+    "kind": "published",
+    "_caveat": "One vendor's stocked series. A different house stocks a different series, and a fab-quoted stackup beats this list. Used to answer 'is this dielectric height made of a material that exists', not to specify a build."
   }
 }

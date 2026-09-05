@@ -1,0 +1,917 @@
+{
+  "tool": "p_provenance.py",
+  "dir": "tools",
+  "what_this_is": "CANDIDATE FINDER for E07 entry 33, not a verdict",
+  "n_tools": 63,
+  "n_with_provenance": 19,
+  "n_unresolved": 35,
+  "unresolved": [
+    ".json",
+    "CANNOT DETERMINE \u2014 no bom.json",
+    "HANDOFF-darkpackages.json",
+    "bom.json",
+    "bound.json",
+    "broken.json",
+    "c-clearance-class.json",
+    "c.drc.json",
+    "d-bar.json",
+    "d-limit.json",
+    "d-probe.json",
+    "d.json",
+    "deliverable.json",
+    "does-not-exist.json",
+    "drc-classification.json",
+    "electronics/halo_rev_a/out/drc.json",
+    "fab-manifest.json",
+    "halo_replica.drc.json",
+    "halo_replica.erc.json",
+    "https://schemas.kicad.org/drc.v1.json",
+    "https://schemas.kicad.org/erc.v1.json",
+    "materials.json",
+    "netlist.json",
+    "out/a/v.json",
+    "out/b/v.json",
+    "out/verify/dfm-jlc-4layer.json",
+    "pcb/out/board-report.json",
+    "r-seeds-WITHHELD.json",
+    "render-check.json",
+    "rows.json",
+    "spec/release-pack.json",
+    "threeway.json",
+    "v.json",
+    "x.drc.json",
+    "x.erc.json"
+  ],
+  "unparseable": [],
+  "candidates": [
+    {
+      "tool": "c_register.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "oflynn-backside-fullres.jpeg",
+        "oflynn-frontside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "ruler-calibration.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-1.jpg",
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "fcc-BCGA2187-internal-photo-8.jpg"
+      ],
+      "overlap": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg"
+      ]
+    },
+    {
+      "tool": "calib_fit.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [
+        "drawn-circle-fit.json"
+      ],
+      "input_provenance": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "overlap": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ]
+    },
+    {
+      "tool": "k_backface.py",
+      "samples": [
+        " annotation positions from oflynn-frontside-tpnames.jpg",
+        "airtag. USE THE CONTACT POSITIONS; do not take their extents as pad dimensions.",
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-back.json",
+        "backface-caps.json",
+        "backface-cnr-floor.json",
+        "backface-coil.json",
+        "backface-contacts.json",
+        "backface-pads.json",
+        "c_register-fit-back.json"
+      ],
+      "input_provenance": [
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg",
+        "oflynn-frontside-tpnames.jpg upper band"
+      ],
+      "overlap": [
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg"
+      ]
+    },
+    {
+      "tool": "m_handoff.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "components-front.json",
+        "dark-packages-front.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_compare.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "board.json",
+        "c_register-fit-boardscale.json",
+        "outline-fit-oflynn.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_compare_real.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "board-report.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_fit.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "hole-oflynn-front.json",
+        "outline-fit-oflynn.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_pocket.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "outline-fit-oflynn.json",
+        "pocket-cross-photograph.json",
+        "pocket-photo6.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "overlap": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ]
+    }
+  ],
+  "all_rows": [
+    {
+      "tool": "b_bom_check.py",
+      "samples": [
+        "nope.jpg \u2014 x",
+        "oflynn-backside-fullres.jpeg \u2014 real"
+      ],
+      "input_jsons": [
+        "bom.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "b_bom_render.py",
+      "samples": [],
+      "input_jsons": [
+        "CANNOT DETERMINE \u2014 no bom.json",
+        "bom.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "b_crop.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "b_padcount.py",
+      "samples": [
+        "oflynn-airtag-tests.jpeg` shows an AirTag board\nwith chips PULLED OFF, so land patterns that are hidden under a package in\nevery other photograph are bare. A pad count is a COUNTABLE integer \u2014 the\nstrongest kind of evidence available from a photograph, because unlike a\nlength it cannot be off by 4 %; it is either right or it is a different number.\n\nTwo INDEPENDENT routes to the same integer, which is the point:\n  A. blob count \u2014 threshold, label, filter by area, count connected components\n  B. lattice prediction \u2014 from the pad CENTROIDS alone, find the two lattice\n     vectors and predict how many cells the array's extent spans\nRoute A knows nothing about periodicity; route B knows nothing about how many\nblobs there were. They can disagree, and when they do the answer is CANNOT\nDETERMINE. (Contrast the coil measurement this project got wrong: a turn count\nand a band width taken from above are the SAME radial extent twice, so they\ncould not have disagreed. Two routes are only worth something if each could\nhave refuted the other.)\n\nTHE CONTROL THAT MATTERS \u2014 `--sweep`. E07 family 11: \"a result that tracks a\nparameter of the SEARCH rather than a property of the SUBJECT.\" So the count is\nre-run across a grid of threshold offsets and box paddings. If the count moves,\nthe count is a property of the operator and the verdict is CANNOT DETERMINE.\n\nUsage:\n  b_padcount.py IMG --box X0 Y0 X1 Y1 [--sweep] [--label NAME] [--json-out F]\n  b_padcount.py --self-test\n"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "b_pkgsize.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "c_register.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "oflynn-backside-fullres.jpeg",
+        "oflynn-frontside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "ruler-calibration.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-1.jpg",
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "fcc-BCGA2187-internal-photo-8.jpg"
+      ],
+      "overlap": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg"
+      ]
+    },
+    {
+      "tool": "calib_edge.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "calib_fit.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [
+        "drawn-circle-fit.json"
+      ],
+      "input_provenance": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "overlap": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ]
+    },
+    {
+      "tool": "calib_probe.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "d_darkpkg.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "d_draw.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-darkpackages.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "d_handoff.py",
+      "samples": [],
+      "input_jsons": [
+        "HANDOFF-darkpackages.json",
+        "HANDOFF-positions-front.json",
+        "d-bar.json",
+        "d-limit.json",
+        "d-probe.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "d_rect.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "d_rim.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "r-seeds-WITHHELD.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "f_backface_handedness.py",
+      "samples": [],
+      "input_jsons": [
+        "backface-handedness.json",
+        "outline-fit-oflynn.json",
+        "outline-fit-photo6.json",
+        "outline-fit-photo7.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "f_drc_classify.py",
+      "samples": [],
+      "input_jsons": [
+        "HANDOFF-positions-back.json",
+        "HANDOFF-positions-front.json",
+        "drc-classification.json",
+        "halo_replica.drc.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg",
+        "oflynn-frontside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "f_fab.py",
+      "samples": [],
+      "input_jsons": [
+        "board.json",
+        "drc-classification.json",
+        "fab-manifest.json",
+        "halo_replica.drc.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "f_placement_check.py",
+      "samples": [],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "components-front.json",
+        "dark-packages-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "f_render.py",
+      "samples": [],
+      "input_jsons": [
+        "render-check.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "g_netlist.py",
+      "samples": [],
+      "input_jsons": [
+        "netlist.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "g_package.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "k_backface.py",
+      "samples": [
+        " annotation positions from oflynn-frontside-tpnames.jpg",
+        "airtag. USE THE CONTACT POSITIONS; do not take their extents as pad dimensions.",
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-back.json",
+        "backface-caps.json",
+        "backface-cnr-floor.json",
+        "backface-coil.json",
+        "backface-contacts.json",
+        "backface-pads.json",
+        "c_register-fit-back.json"
+      ],
+      "input_provenance": [
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg",
+        "oflynn-frontside-tpnames.jpg upper band"
+      ],
+      "overlap": [
+        "oflynn-frontside-fullres.jpeg",
+        "oflynn-frontside-tpnames.jpg"
+      ]
+    },
+    {
+      "tool": "k_evidence.py",
+      "samples": [],
+      "input_jsons": [
+        "d.json",
+        "release-pack.json",
+        "v.json",
+        "v.json",
+        "v.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "k_threeway.py",
+      "samples": [],
+      "input_jsons": [
+        "board.json",
+        "bound.json",
+        "c-clearance-class.json",
+        "c.drc.json",
+        "deliverable.json",
+        "dfm-jlc-4layer.json",
+        "does-not-exist.json",
+        "drc.json",
+        "drc.v1.json",
+        "erc.v1.json",
+        "rows.json",
+        "threeway.json",
+        "x.drc.json",
+        "x.erc.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_aspect_control.py",
+      "samples": [
+        ".jpg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_board_outline.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_components.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "outline-raw-photo6.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "m_dark_packages.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "outline-raw-photo6.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "m_handoff.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "components-front.json",
+        "dark-packages-front.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "m_outline_fit.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_overlay.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_overlay_all.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "components-front.json",
+        "dark-packages-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "m_pad_registration.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_resolution_probe.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_rim_pads.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_rim_step.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_rim_unwrap.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_ruler_calib.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-1.jpg",
+        "fcc-BCGA2187-internal-photo-2.jpg",
+        "fcc-BCGA2187-internal-photo-3.jpg",
+        "fcc-BCGA2187-internal-photo-4.jpg",
+        "fcc-BCGA2187-internal-photo-5.jpg",
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "fcc-BCGA2187-internal-photo-8.jpg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_scale_at.py",
+      "samples": [],
+      "input_jsons": [
+        "scale-field.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-1.jpg",
+        "fcc-BCGA2187-internal-photo-2.jpg",
+        "fcc-BCGA2187-internal-photo-3.jpg",
+        "fcc-BCGA2187-internal-photo-4.jpg",
+        "fcc-BCGA2187-internal-photo-5.jpg",
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "fcc-BCGA2187-internal-photo-7.jpg",
+        "fcc-BCGA2187-internal-photo-8.jpg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "m_scale_field.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_selftest.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "m_silhouette.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "measure_coil.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [
+        "nfc-coil-measured.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "measure_outline.py",
+      "samples": [
+        "oflynn-frontside-26mm-cropped.jpg"
+      ],
+      "input_jsons": [
+        "outline-measured.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "p_compare.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg",
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "board.json",
+        "c_register-fit-boardscale.json",
+        "outline-fit-oflynn.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_compare_real.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "board-report.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_dark.py",
+      "samples": [
+        "B       the identical tool, identical physical parameters, on BOTH sources.\n               If the new source is no better, that is a clean negative and it ends\n               the question rather than leaving it open.\n",
+        "CATALOG.md. Measured, not copied into the repository. Numbers derived from it cite the URL and the retrieval time."
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "p_fit.py",
+      "samples": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "input_jsons": [
+        "hole-oflynn-front.json",
+        "outline-fit-oflynn.json",
+        "outline-raw-oflynn-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": [
+        "oflynn-backside-fullres.jpeg"
+      ]
+    },
+    {
+      "tool": "p_outline.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "p_pocket.py",
+      "samples": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "outline-fit-oflynn.json",
+        "pocket-cross-photograph.json",
+        "pocket-photo6.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "overlap": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ]
+    },
+    {
+      "tool": "p_provenance.py",
+      "samples": [
+        ".jpeg",
+        ".jpg",
+        "airtag",
+        "fcc-BCGA2187-internal-photo-6.jpg\"\nFIT = \"components-front.json\"\n",
+        "oflynn-backside-fullres.jpeg\"\nFIT = \"components-front.json\"\n"
+      ],
+      "input_jsons": [
+        ".json",
+        "components-front.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "p_render.py",
+      "samples": [],
+      "input_jsons": [
+        "HANDOFF-positions-front.json",
+        "board.json",
+        "components-front.json",
+        "dark-packages-front.json",
+        "outline-fit-oflynn.json"
+      ],
+      "input_provenance": [
+        "oflynn-backside-fullres.jpeg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "r_circ.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "r_frame.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json",
+        "outline-raw-photo6.json"
+      ],
+      "input_provenance": [
+        "fcc-BCGA2187-internal-photo-6.jpg"
+      ],
+      "overlap": []
+    },
+    {
+      "tool": "r_rimcount.py",
+      "samples": [],
+      "input_jsons": [
+        "c_register-fit-boardscale.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_colour.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_crop.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_fabchain.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_layerprobe.py",
+      "samples": [
+        "layer1.jpg",
+        "layer2.jpeg",
+        "layer3.jpeg",
+        "layer4.jpeg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_register.py",
+      "samples": [
+        "layer1.jpg",
+        "layer2.jpeg",
+        "layer3.jpeg",
+        "layer4.jpeg"
+      ],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "s_stackup_budget.py",
+      "samples": [],
+      "input_jsons": [
+        "materials.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "x_schematic_check.py",
+      "samples": [],
+      "input_jsons": [
+        "bom.json",
+        "broken.json",
+        "halo_replica.erc.json"
+      ],
+      "input_provenance": [],
+      "overlap": []
+    },
+    {
+      "tool": "z_fabcheck.py",
+      "samples": [],
+      "input_jsons": [],
+      "input_provenance": [],
+      "overlap": []
+    }
+  ]
+}

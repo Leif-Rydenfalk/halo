@@ -97,15 +97,46 @@ bar_mm = 5.0
 d.line([(GAP, y+8), (GAP + bar_mm*SHARED, y+8)], fill=INK, width=3)
 d.text((GAP + bar_mm*SHARED + 10, y), f"5 mm  (both panels, {SHARED:.2f} px/mm)", font=f2, fill=INK)
 y += 30
-for txt, col in [
+
+# ---- WITHDRAWN-CLAIM GUARD.
+# A caption that hardcodes a number goes on asserting it after its own lane retracts
+# it. Measured here on 2026-09-05: this file printed "1-26 presented" for two hours
+# after metrology/darkpkg/M13 withdrew it, and the rendered deliverable carried it.
+# The guard reads the registry and REFUSES to render rather than warning, because a
+# warning on a picture nobody re-reads is not a control.
+def _withdrawn_guard(lines):
+    reg = os.path.join(R, "metrology", "WITHDRAWN-CLAIMS.json")
+    if not os.path.exists(reg):
+        die(2, "CANNOT DETERMINE: the withdrawn-claims registry is missing, so no "
+               "caption can be cleared for publication", registry=reg)
+    import json as _j
+    claims = _j.load(open(reg))["claims"]
+    bad = []
+    for txt, _ in lines:
+        for c in claims:
+            for tok in [c["token"]] + c.get("also_written", []):
+                if tok in txt:
+                    bad.append((tok, c["status"], c["withdrawn_by"], txt[:70]))
+    if bad:
+        for tok, st, by, where in bad:
+            print(f"WITHDRAWN-CLAIM GUARD FIRED: '{tok}' is {st} ({by})", file=sys.stderr)
+            print(f"   in caption: {where}...", file=sys.stderr)
+        die(1, "a caption asserts a number this project has withdrawn")
+    print(f"  withdrawn-claim guard: {len(claims)} registered tokens, none present "
+          f"in {len(lines)} caption lines")
+
+
+CAPTIONS = [
  ("REGISTRATION IS BY CONSTRUCTION: Apple's panel is cropped about a stated origin at a stated px/mm; ours is scaled from a MEASURED extent against a KNOWN drawn diameter. Nothing was fitted to make them agree.", INK),
  (f"outer diameter {D_DRAWN:.4f} mm AS DRAWN — the bound is 24.95–26.34 mm and IF IT MOVES IT MOVES DOWN. thickness 0.30 mm as-drawn, below both fab floors. 4 layers, COUNTED.", PROV),
  ("DRC 33 errors, 0 unconnected. Classified: 19 BOUND-LIMITED (copper against an outline that is a bound — these get WORSE as it resolves), 14 MEASUREMENT-LIMITED, 0 GENUINELY-TOUCHING (empty BY METHOD), 0 OUR-ERROR.", PROV),
  ("NETS: 13 MEASURED / 21 INFERRED / 18 CHOSEN. Nobody has traced Apple's copper. CHOSEN nets are ours, not Apple's, and none may be cited as a finding about the AirTag.", PROV),
- ("KNOWINGLY INCOMPLETE: every neutral-black IC body is CANNOT DETERMINE at a measured contrast limit (100–160 luma needed, 1–26 presented) — INCLUDING THE LARGEST. The dark areas SHOULD look sparse.", RED),
+ ("KNOWINGLY INCOMPLETE: every neutral-black IC body is CANNOT DETERMINE — INCLUDING THE LARGEST. This photograph needs a boundary step of 100–160 luma (measured, controlled, site-swept). What the packages actually present is CANNOT DETERMINE: outline-dependent over 1–130 luma (M13). The dark areas SHOULD look sparse.", RED),
  ("U1 UWB is never sold to anyone: footprint UNPOPULATED, no land pattern. U1's WLCSP is NOT LANDED — 10 of 50 balls sourced, which six of 56 grid positions are depopulated is CANNOT DETERMINE.", RED),
  ("Rim joint count: CANNOT DETERMINE by three instruments for three different reasons. Antennas are NOT on this board — Apple's are on a moulded carrier.", RED),
-]:
+]
+_withdrawn_guard(CAPTIONS)
+for txt, col in CAPTIONS:
     d.text((GAP, y), txt, font=f3, fill=col); y += 19
 out.save(os.path.join(R, "pcb/out/compare-real.png"))
 print(f"\nWROTE  pcb/out/compare-real.png  {out.size}")

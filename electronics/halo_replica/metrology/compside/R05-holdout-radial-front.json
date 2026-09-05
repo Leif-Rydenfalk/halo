@@ -1,0 +1,55 @@
+{
+ "tool": "c_register.py",
+ "verb": "validate",
+ "side_convention": "FRONT = component side (Apple FCC 'MLB - Front')",
+ "source": "oflynn-backside-fullres.jpeg",
+ "target": "fcc-BCGA2187-internal-photo-6.jpg",
+ "scale_basis": "metrology/scale-at-board-photo6.json - m_scale_at AT THE BOARD (952,678), bottom-rule and right-rule routes 0.228% apart, halfrange 0.0179 px/mm (lane L1, M02). THE SCALE IS TAKEN AT THE BOARD, not at either rule.",
+ "px_per_mm": 15.685,
+ "model": "homography",
+ "ncc": 0.6860564010523944,
+ "split": "radial",
+ "folds_k": 2,
+ "folds": [
+  {
+   "sector": [
+    118.99644742596313,
+    162.41282837971244
+   ],
+   "n_held": 40,
+   "n_fit": 40,
+   "rms_source_px": 8.597114381628316,
+   "p95_source_px": 15.667970229505807,
+   "rms_target_px": 1.2637543104292446,
+   "p95_target_px": 2.3031524339757334,
+   "rms_mm": 0.08057088367416286,
+   "p95_mm": 0.14683789824518542
+  },
+  {
+   "sector": [
+    162.41282837971244,
+    185.1791416439767
+   ],
+   "n_held": 40,
+   "n_fit": 40,
+   "rms_source_px": 7.497172538626422,
+   "p95_source_px": 12.266570382466531,
+   "rms_target_px": 1.097148350414935,
+   "p95_target_px": 1.795109741843767,
+   "rms_mm": 0.06994889068632038,
+   "p95_mm": 0.11444754490556372
+  }
+ ],
+ "worst_holdout_rms_mm": 0.08057088367416286,
+ "worst_holdout_p95_mm": 0.14683789824518542,
+ "tolerance_mm": 0.2,
+ "landmarks_kept": 80,
+ "landmarks_discarded": {
+  "no_texture": 179,
+  "ambiguous": 124,
+  "low_peak": 19,
+  "on_boundary": 46
+ },
+ "verdict": "PASS",
+ "why": []
+}

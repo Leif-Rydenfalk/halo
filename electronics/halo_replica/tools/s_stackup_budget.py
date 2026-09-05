@@ -15,7 +15,7 @@ Verbs
   doctor    — is the material table usable? Every row must carry a source.
   budget    — minimum buildable thickness for one (construction, layer count)
   bounds    — for a target thickness, the layer counts each construction can build
-  selftest  — 9 deliberate breaks, each of which MUST go red
+  selftest  — 14 deliberate breaks, each of which MUST go red
 
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
 
@@ -102,6 +102,73 @@ def with_mask(m, laminate_mm):
     sm = m["soldermask_per_side"]
     return (round(laminate_mm + 2 * sm["mm_low"], 4),
             round(laminate_mm + 2 * sm["mm_high"], 4))
+
+
+
+def stock(m):
+    """(cores, prepregs) available from the sourced tables."""
+    cores = m["core_stock_series"]["mm"]
+    # Only NAMED GLASS STYLES are stock. hdi_laser_blind_min is a PROCESS
+    # minimum -- the thinnest sheet that may be laser-drilled -- not a sheet
+    # anyone orders by name, and letting it into the stock list would invent a
+    # "1x hdi_laser_blind_min" stackup that no fabricator could quote.
+    STYLES = ("106", "1080", "2116", "7628")
+    pregs = {k: v["mm"] for k, v in m["prepreg"].items()
+             if k in STYLES and isinstance(v, dict) and v.get("mm") and v.get("source")}
+    return cores, pregs
+
+
+def solve(m, target, layers=4, tol=0.030):
+    """Every stackup of SOURCED materials that reaches `target` within `tol`.
+
+    This answers a question a thickness budget cannot: not "does N layers fit"
+    but "is this dielectric height made of a material that actually exists".
+    A set of heights that sums correctly can still be unbuildable, and an
+    impedance computed from an unbuildable height is a number about nothing.
+    """
+    if layers != 4:
+        raise CannotDetermine(f"solve is implemented for 4 layers only, not {layers}")
+    cores, pregs = stock(m)
+    outers = [("1oz", _row(m, "outer_finished_copper", "economy")),
+              ("thin", _row(m, "outer_finished_copper", "thin"))]
+    inners = [("0.5oz", _row(m, "copper_foil", "0.5oz")),
+              ("0.33oz", _row(m, "copper_foil", "0.33oz"))]
+    out = []
+    for on, ov in outers:
+        for inm, iv in inners:
+            for pn, pv in pregs.items():
+                for plies in (1, 2):
+                    for c in cores:
+                        t = 2 * ov + 2 * iv + 2 * pv * plies + c
+                        if abs(t - target) <= tol:
+                            out.append({"total_mm": round(t, 4), "outer": on, "inner": inm,
+                                        "prepreg": f"{plies}x{pn}", "h_mm": round(pv * plies, 4),
+                                        "core_mm": c, "off_um": round((t - target) * 1000)})
+    out.sort(key=lambda r: (abs(r["off_um"]), r["h_mm"]))
+    return out
+
+
+def cmd_solve(m, target, layers):
+    try:
+        rows = solve(m, target, layers)
+    except CannotDetermine as e:
+        print(f"CANNOT DETERMINE — {e}")
+        return CANNOT
+    print(f"Stackups of SOURCED materials reaching {target:.3f} mm, {layers} layers\n")
+    if not rows:
+        print("  NONE — no combination of the sourced materials reaches this thickness.")
+        print("  That is a finding, not an error: the target may need a core or prepreg")
+        print("  outside the stocked series, which is a question for the fabricator.")
+        return FAIL
+    print(f"{'total':>8}{'outer':>7}{'inner':>8}{'prepreg':>10}{'h (L1-L2)':>11}{'core':>8}{'off':>7}")
+    for r in rows:
+        print(f"{r['total_mm']:8.4f}{r['outer']:>7}{r['inner']:>8}{r['prepreg']:>10}"
+              f"{r['h_mm']:11.3f}{r['core_mm']:8.3f}{r['off_um']:+6d}um")
+    hs = sorted({r["h_mm"] for r in rows})
+    print(f"\n  h (the outer dielectric, which sets microstrip impedance) ranges {min(hs):.3f}"
+          f" to {max(hs):.3f} mm across stackups that ALL hit the target thickness.")
+    print("  A single assumed h is therefore not a property of the board thickness.")
+    return PASS
 
 
 def cmd_doctor(m):
@@ -202,7 +269,7 @@ def cmd_selftest():
         else:
             n_fail += 1
 
-    print("s_stackup_budget selftest — 9 deliberate breaks\n")
+    print("s_stackup_budget selftest — 14 deliberate breaks\n")
 
     # 1. The null-row refusal actually fires.
     check("hdi-ultrathin has null cores -> CannotDetermine, not a default",
@@ -262,6 +329,31 @@ def cmd_selftest():
                    if budget(m, "fr4-economy", n)["laminate_mm"] <= 1.6],
           [2, 4, 6, 8])
 
+    # 10. solve must find real stackups for an ordinary thickness.
+    check("solve finds stackups for 0.60 mm 4-layer",
+          lambda: len(solve(m, 0.60)) > 0, True)
+
+    # 11. NEGATIVE CONTROL: an impossible thickness must return NOTHING. A
+    #     solver that always finds a stackup is a random number generator.
+    check("solve finds nothing for 0.010 mm", lambda: solve(m, 0.010), [])
+
+    # 12. Every stackup solve returns must actually sum to the target within
+    #     tolerance. Checking the OUTPUT rather than trusting the loop.
+    check("every solve row really sums to the target",
+          lambda: [r for r in solve(m, 0.60) if abs(r["total_mm"] - 0.60) > 0.030], [])
+
+    # 13. solve refuses a layer count it does not implement rather than
+    #     silently answering for 4.
+    check("solve refuses 6 layers", lambda: ("raised", "CannotDetermine")
+          if _try_raises(lambda: solve(m, 0.60, 6)) else "no refusal",
+          ("raised", "CannotDetermine"))
+
+    # 14. NEGATIVE CONTROL on the stock list itself: no solve row may name a
+    #     prepreg that is a process minimum rather than an orderable style.
+    check("no solve row names a non-stock prepreg",
+          lambda: sorted({r["prepreg"].split("x")[1] for r in solve(m, 0.60)}
+                         - {"106", "1080", "2116", "7628"}), [])
+
     print(f"\n{n_pass} ok, {n_fail} red")
     return PASS if n_fail == 0 else FAIL
 
@@ -294,6 +386,9 @@ def main(argv):
     if verb == "bounds":
         target = float(argv[2]) if len(argv) > 2 else 0.30
         return cmd_bounds(m, target)
+    if verb == "solve":
+        return cmd_solve(m, float(argv[2]) if len(argv) > 2 else 0.60,
+                         int(argv[3]) if len(argv) > 3 else 4)
     if verb == "budget":
         return cmd_budget(m, argv[2], int(argv[3]))
     print(f"unknown verb {verb!r}")

@@ -1,0 +1,37 @@
+{
+  "what_this_is": "A registry of numbers this project has PUBLICLY WITHDRAWN. It exists so a hardcoded caption cannot go on asserting a retracted figure after its own lane has retracted it. tools/p_compare_real.py refuses to render if any caption literal contains a withdrawn token.",
+  "why": "Measured 2026-09-05: tools/p_compare_real.py's caption asserted 'a measured contrast limit (100-160 luma needed, 1-26 presented)' and the rendered deliverable pcb/out/compare-real.png carried it. The '1-26' had been WITHDRAWN by its own lane in commit 13766b6 / metrology/darkpkg/M13 two hours earlier - as 'a comparison between a measured quantity and an unmeasured one, presented as a ratio'. The caption predates the retraction and nothing connected the two.",
+  "rule": "A caption reads from the source of truth or it is guarded. board/HANDOFF.md already carried this rule for p_render.py after a caption asserted a superseded layer-count line; this is the same defect in a different tool, so the rule now has teeth instead of a comment.",
+  "claims": [
+    {
+      "token": "1-26",
+      "also_written": [
+        "1\u201326"
+      ],
+      "what": "the luma boundary step the neutral-black packages were said to present",
+      "status": "WITHDRAWN",
+      "withdrawn_by": "metrology/darkpkg/M13-CORRECTION-MY-OWN-HEADLINE-WAS-NOT-A-MEASUREMENT.md, commit 13766b6",
+      "why": "diluted by hand-placed outlines by up to 16x; not a measurement, and it was paired as a ratio with a figure that IS measured"
+    },
+    {
+      "token": "44-130",
+      "also_written": [
+        "44\u2013130"
+      ],
+      "what": "the swept alternative to the above",
+      "status": "ALSO WITHDRAWN",
+      "withdrawn_by": "same",
+      "why": "a no-package control reaches 98 median / 181 p99 over the identical sweep, so the rise is almost entirely selection"
+    }
+  ],
+  "still_standing": [
+    {
+      "token": "100-160",
+      "what": "the detection limit this photograph needs",
+      "status": "STANDS",
+      "why": "measured, controlled, site-swept at code-chosen sites"
+    }
+  ],
+  "known_limitation": "Matching is plain SUBSTRING matching, so a token like '1-26' would also fire inside '51-267'. That is the safe direction - the guard REFUSES to render and a human looks - but it means a false positive is possible and it is stated here rather than discovered. It does NOT catch the same number written differently (spelled out, rounded, or reconstructed from two fields), so this guard reduces the failure mode and does not eliminate it.",
+  "how_to_add": "when a lane withdraws a number, add its token here in the SAME commit as the retraction. The defect this exists for is a two-hour gap between a retraction and the caption that still asserted it."
+}
