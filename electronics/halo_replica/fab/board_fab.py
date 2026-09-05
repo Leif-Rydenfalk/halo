@@ -104,10 +104,15 @@ for g in sorted(by_group):
 # rather than converging on a bad answer.
 BACK_SIDE = {"BT1"}
 b = Board("halo_replica_fab", diameter=D_BOARD, layers=4)
+# `at=` is in the board's own frame - origin at the corner of the bounding box,
+# NOT at the disc centre. `coords` is centred on (0,0). Add the centre, or every
+# part is placed hypot(15,15) = 21.21 mm away from where it was meant to go.
+BCX, BCY, _BR = b.round
 for ref, (x, y) in sorted(coords.items()):
     side = "bottom" if ref in BACK_SIDE else "top"
     if ref in BACK_SIDE: x, y = 0.0, 0.0            # centred on the back
-    b.place(ref, fp_of[ref], at=(x, y), rot=0.0, value=val_of.get(ref, ""), side=side)
+    b.place(ref, fp_of[ref], at=(BCX + x, BCY + y), rot=0.0,
+            value=val_of.get(ref, ""), side=side)
 
 # ---------------------------------------------------------------------------
 # COURTYARD-AWARE RELAXATION. A fixed centre-to-centre minimum is the wrong
@@ -159,9 +164,18 @@ for it in range(3000):
     if not any_push: break
 print(f"RELAX      {it+1} iterations, {moved} pushes, courtyard clearance {CLEAR} mm")
 
-# apply, then REFUSE if any overlap survives - the check that makes this a measurement
+# THE FRAME HANDOFF. Everything above is in a frame centred on (0,0): the rings
+# are radii, R_KEEP is a radius, and `math.hypot(*pos[r])` is a distance from the
+# centre. The BOARD is not centred there. `Board(diameter=d)` puts the disc at
+# (d/2, d/2), so a part handed its ring coordinate raw lands off the copper.
+# MEASURED 2026-09-05: without this translation 33 of 45 footprints sat outside
+# Edge.Cuts, and freerouting reported 106 of 111 nets unrouted with an identical
+# score on four consecutive passes - it was being asked to route parts that were
+# not on the board.
+CX, CY, _R = b.round          # ce-pcb's own centre, not a typed-in 15.0
 for r, (x, y) in pos.items():
-    b.component(r).SetPosition(_pn.VECTOR2I(int(x*1e6), int(b._y(y)*1e6)))
+    b.component(r).SetPosition(_pn.VECTOR2I(int((CX + x)*1e6),
+                                            int(b._y(CY + y)*1e6)))
 sz = boxes(); bad = []
 for i, r1 in enumerate(sorted(pos)):
     w1, h1 = sz.get(r1, (1,1))
@@ -175,6 +189,30 @@ if bad:
 outside = [(r, round(math.hypot(*p),2)) for r, p in pos.items() if math.hypot(*p) > R_KEEP]
 if outside:
     print(f"PLACEMENT  REFUSED: outside the keep-in: {outside[:5]}"); raise SystemExit(1)
+
+# THE SAME QUESTION ASKED OF THE ARTIFACT. The check above measures `pos`, which
+# is the intermediate we just computed - it agrees with itself by construction
+# and stayed green through the whole frame bug. This one reads every footprint
+# POSITION BACK OUT OF THE BOARD and compares it to the REAL Edge.Cuts circle,
+# so it can fail on a bad frame handoff. It is the check that would have caught
+# what the one above could not.
+_eb = b._pcb.GetBoardEdgesBoundingBox()
+_ecx = (_eb.GetLeft() + _eb.GetRight()) / 2e6
+_ecy = (_eb.GetTop() + _eb.GetBottom()) / 2e6
+_er  = min(_eb.GetWidth(), _eb.GetHeight()) / 2e6
+_off = []
+for _fp in b._pcb.GetFootprints():
+    _p = _fp.GetPosition()
+    _d = math.hypot(_p.x/1e6 - _ecx, _p.y/1e6 - _ecy)
+    if _d > _er:
+        _off.append((_fp.GetReference(), round(_d, 2)))
+if _off:
+    print(f"PLACEMENT  REFUSED: {len(_off)} of {len(list(b._pcb.GetFootprints()))} "
+          f"footprints read back OUTSIDE the Ø{2*_er:.2f} mm Edge.Cuts circle at "
+          f"({_ecx:.2f},{_ecy:.2f}): {sorted(_off)[:6]}")
+    raise SystemExit(1)
+print(f"ONBOARD    45/45 footprints read back inside Edge.Cuts "
+      f"(Ø{2*_er:.2f} mm at {_ecx:.2f},{_ecy:.2f}) - measured from the board")
 placed = sorted(set(pos) | BACK_SIDE)
 print(f"PLACED     {len(placed)} parts on a Ø{D_BOARD} mm disc, NO courtyard overlaps")
 

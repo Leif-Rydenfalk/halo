@@ -18,12 +18,35 @@ Each zip contains the gerbers, the Excellon drill, and an `ORDER-SETTINGS.txt` n
 to choose. Upload **one** of them — they differ only in the thickness you should select at order
 time; the copper is identical.
 
-**Which one:** JLCPCB's capability page lists FR4 thicknesses generally as
-`0.4/0.6/0.8/1.0/1.2/1.6/2.0` **and lists four-layer as `0.8/1.0/1.2/1.6`**. Those two statements
-do not agree about whether 0.4 mm is orderable at four layers, and the page does not resolve it.
-So: **try 0.4 first — it is 0.10 mm from Apple.** If the order form refuses it, use the 0.8 zip.
-**PCBWay documents 0.40 mm at four layers** ("medium difficulty"), so if 0.4 matters more than the
-vendor does, it is orderable there.
+**Which one: use the 0.8 mm zip at JLCPCB.** This was an open question in an earlier revision of
+this file, which told you to *"try 0.4 first"*. **That advice was wrong and is withdrawn.**
+
+**MEASURED 2026-09-05, in JLCPCB's live quote configurator**, not read off a capability page:
+
+| layers selected | PCB Thickness offered |
+|---|---|
+| **4** | 0.8 · 1.0 · 1.2 · 1.6 · 2.0 — **0.4 and 0.6 are greyed out** |
+| **2** | **0.4** · 0.8 · 1.0 · 1.2 · 1.6 · 2.0 — 0.6 greyed |
+
+Both controls were run, because a greyed button and an unselected button look similar:
+
+- **Negative control** — clicking `0.4mm` while 4 layers is selected changes nothing; the
+  selection stays on 1.6 mm. It is genuinely disabled, not merely unstyled.
+- **Positive control** — switching 4 → 2 layers **re-enables** `0.4mm` in the same page without a
+  reload. The disable tracks the layer count, so it is a real constraint and not static styling.
+
+**This board is 4 layers, so 0.4 mm is not orderable at JLCPCB. Order the 0.8 mm zip.**
+
+Two further things the configurator did that a capability table does not tell you. Selecting
+0.4 mm (at 2 layers) **forces the rest of the order**: `Surface Finish` jumps to **ENIG** with
+**HASL greyed out** — you cannot hot-air-level a board that thin — `Material Type` collapses to
+**FR4 TG135 alone**, and `Panel by JLCPCB` is refused. And it is not a small surcharge: the same
+5-off order went from **$4.10 at 1.6 mm to ~$66** at 0.4 mm, the jump being an **engineering fee
+$33 + via covering $16 + surface finish $16**. Thin is a different product, not a checkbox.
+
+**If 0.4 mm matters more than the vendor does, PCBWay documents 0.40 mm at four layers**
+("medium difficulty"). **That is a documentation claim only — it has NOT been put through
+PCBWay's order form, so it is not the same grade of evidence as the table above.**
 
 Settings: **4 layers · ENIG preferred · min trace/space 0.09 mm · min via 0.25 mm pad / 0.15 mm
 drill** — all inside JLC's published four-layer capability.
