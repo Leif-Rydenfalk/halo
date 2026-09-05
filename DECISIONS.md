@@ -923,3 +923,46 @@ when the pours were cut back. The retune path exists
 (`ce-rf/tools/retune_for_board.py`, reporting quarter-wave target, tooth depth,
 arm inner radius and resulting coil gap, each absolute and as a fraction) and it
 is the next thing to try. **It is a hypothesis, not a conclusion.**
+
+## D26d — the control changes the reading: the surroundings pull 604 MHz, and the floor is common
+
+`halo-rev-a-2g4-meander9-bare` — same board, same mesh, **no passive copper** —
+completed. Read against case one, the two together say more than either alone:
+
+| | with coil + contact | **bare** |
+|---|---|---|
+| series resonance | 2.0701 GHz | **2.6744 GHz** |
+| mode identified | **no** | **yes** |
+| worst in-band match | −4.81 dB FAIL | **−6.35 dB PASS** |
+| solver converged | no, floored | no, floored at −35.34 dB |
+
+**I was too quick when I said case two flooring eliminates the surroundings.**
+That is true only of the *floor*. It is emphatically false of the *tuning*: the
+coil and the battery contact pull the resonance **604 MHz downward** and destroy
+mode identity altogether. On the bare board a clean radiator mode exists and
+matches at −6.35 dB. Add the real surroundings and there is no identifiable mode
+at all. The surroundings are doing something large; they are simply not what
+makes the solver floor.
+
+**Two separate problems, now separated.** The floor is common to both cases, so
+it belongs to something shared — the port, the feed, or the board model — and
+neither the mesh (D26b, refuted) nor the passive copper (this case) explains it.
+The detuning belongs to the surroundings and is a genuine RF result.
+
+**And it gives the first actionable retune direction this project has had.** The
+target is 2.44 GHz. The real board, with its real surroundings, sits at
+**2.0701 GHz** — about **18 % low**, so the element must get **shorter**, not
+longer. Bare it sits at 2.6744 GHz, above the band, which is consistent: the
+surroundings load it heavily downward and the element was drawn for a lighter
+load than it actually has. `ce-rf/tools/retune_for_board.py` converts that into
+the four numbers that can be acted on, each absolute and as a fraction.
+
+**A defect found in the log while reading this.** `solver.log` carries
+`[sim] convergence: OK -- openEMS ran to its energy end-criteria with a complete
+excitation` on one line, and on the next openEMS's own
+`Warning: Max. number of timesteps was reached before the end-criteria of -40dB
+was reached...`. The wrapper's summary asserts the opposite of the solver it
+wraps. The `solver_converged` assertion correctly reads 0.0 and the case FAILS,
+so nothing was published wrongly — but a log line that contradicts the tool
+beneath it is the eighth direction in `docs/TOOLS-THAT-LIE.md` and it should be
+made to read from the same source the assertion does.
