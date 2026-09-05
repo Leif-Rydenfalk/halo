@@ -127,12 +127,22 @@ Apple's UWB module. **Nobody may carry a designator between them.**
 ## Rebuild it yourself
 
 ```bash
-ce-pcb/bin/sch  all .../schematic/schematic_fab.py -o .../out/schematic-fab
-ce-pcb/bin/pcb  .../fab/board_fab.py
-ce-pcb/bin/route .../fab/out/halo_replica_fab.kicad_pcb
-python3 tools/g_package.py .../fab/out/halo_replica_fab-routed.kicad_pcb fab/out
-python3 tools/z_fabcheck.py fab/out/halo_replica_jlc_0.4mm.zip
+bin/halo all          # sheet -> board -> DRC -> route -> pack, one verdict per stage
+bin/halo status       # what exists, and is anything stale?
+bin/halo doctor       # is everything reachable?
 ```
+
+Exit code **is** the verdict: `0 PASS · 1 FAIL · 2 CANNOT DETERMINE`, and CANNOT
+DETERMINE is not a pass. Individual stages are `bin/halo build|route|pack`.
+The stages, what each answers, and the four traps the pipeline exists to
+prevent: **`WORKFLOW.md`**.
+
+**Do not run the underlying commands by hand.** `bin/sch all` used to refresh the
+sheet, the PDF, the SVG and the BOM and **not the netlist** — and the *board* is
+built from the netlist. A schematic edit landed, every command exited 0, and the
+board was built from the previous part. That is fixed in `ce-pcb` and the
+pipeline checks stage freshness besides, but the hand-run sequence is what
+produced it.
 
 `z_fabcheck` refuses a package whose copper layers exist and contain **nothing** — a valid gerber
 header with no apertures opens fine, passes every existence test, and would waste the order.

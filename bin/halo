@@ -5,6 +5,7 @@
     bin/halo build   [variant]      sheet -> netlist -> board -> DRC
     bin/halo route   [variant]      autoroute, then KiCad's OWN DRC on the result
     bin/halo pack    [variant]      gerbers + drill + CPL + BOM, then verify the zip
+    bin/halo render  [variant]      draw both faces and READ THE PNGs BACK
     bin/halo all     [variant]      build -> route -> pack, stopping at the first
                                     stage that is not PASS
     bin/halo status  [variant]      what exists, how fresh it is, and what is stale
@@ -179,6 +180,36 @@ def stage_pack(v, board=None):
 
 # ----------------------------------------------------------------- verbs ----
 
+def stage_render(v, board=None):
+    """LOOK AT IT. Numbers and pictures must both pass, and they catch different
+    things: this board's DRC was clean at 0 errors while the silkscreen was
+    printing reference designators on top of each other, which is obvious in one
+    render and invisible in every count. A render is also the only check that
+    can tell 'drew nothing' from 'still loading'."""
+    b = board if board and os.path.exists(board) else v["board"]
+    if not os.path.exists(b):
+        return say("render", CD, "no board to render")
+    outs = []
+    for side, tag in (("top", "top"), ("bottom", "bottom")):
+        o = os.path.join(v["packdir"], "render-%s.png" % tag)
+        c, log = run(PCB, "--cli", "pcb", "render", "-o", o, "--side", side,
+                     "--width", "1100", "--height", "1100", "--quality", "high", b)
+        if c != 0 or not os.path.exists(o):
+            return say("render", CD, "kicad-cli render failed for %s: %s"
+                       % (side, log[-200:]))
+        # READ IT BACK. A render that wrote a file is not a render that DREW.
+        n = os.path.getsize(o)
+        if n < 20000:
+            return say("render", FAIL,
+                       "%s is %d bytes - too small to be a drawn board. A blank "
+                       "PNG and a real one are the same to a file-exists check."
+                       % (os.path.basename(o), n))
+        outs.append("%s %d KB" % (os.path.basename(o), n // 1024))
+    print("          " + " · ".join(outs))
+    print("          open: " + os.path.join(v["packdir"], "render-top.png"))
+    return say("render", PASS, "both faces drawn and read back")
+
+
 def cmd_status(v):
     print("%-26s %-8s %s" % ("artifact", "exists", "age"))
     now = time.time()
@@ -265,8 +296,11 @@ def main(argv):
         return stage_drc(v, v["routed"])
     if cmd == "pack":
         return stage_pack(v, v["routed"])
+    if cmd == "render":
+        return stage_render(v, v["routed"])
     if cmd == "all":
-        for fn in (stage_sheet, stage_board, stage_drc, stage_route):
+        for fn in (stage_sheet, stage_board, stage_drc, stage_route,
+                   lambda vv: stage_render(vv, vv["routed"])):
             r = fn(v)
             if r:
                 print("\nstopped at the first stage that was not PASS.")
