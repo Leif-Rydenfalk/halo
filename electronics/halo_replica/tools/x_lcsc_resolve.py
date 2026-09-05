@@ -2,7 +2,7 @@
 """x_lcsc_resolve — fill the fab BOM's order codes FROM WHAT IS ALREADY ON DISK.
 
     tools/x_lcsc_resolve.py                 report: what resolves, what does not
-    tools/x_lcsc_resolve.py --self-test     six deliberate breaks
+    tools/x_lcsc_resolve.py --self-test     the refusals, broken on purpose
 
 Exit 0 when every line resolved, 1 when any did not (which is the normal
 answer and not a failure), 2 when the inputs are missing.
