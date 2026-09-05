@@ -185,6 +185,53 @@ this table.**
 
 ---
 
+## 4b · The coil, re-measured in the new frame — and L1's threshold does not transfer
+
+§4 item 4 called this "the cheapest real result on this face". It was cheap and it is a
+result; it is not the one expected.
+
+M01 measured the wound coil at **ID 9.380 / OD 10.834 mm, band width 0.727 mm**, in
+`oflynn-frontside-26mm-cropped.jpg` at **30.2762 px/mm** on a datum of *"787.18 px =
+26 mm APPROXIMATE"* — O'Flynn's own tilde, which E04→E05 later retracted as a figure.
+`k_backface coil` reproduces **L1's exact copper criterion** (R−B > 28, R > 90, luma < 250)
+in the registered full-resolution frame at **69.557 px/mm**, whose scale comes from two
+FCC steel rulers instead.
+
+**The design point, stated before the numbers:** the 26 mm crop is *a crop of this same
+photograph*. The two measurements share every pixel and **cannot disagree about the coil**.
+What they do not share is the **scale**. So this was built as a comparison of **two
+independent scale routes** on one object — a teardown page's tilde against an FCC
+exhibit's rulers — and that is the only claim it could have supported.
+
+**It supports nothing, and the control is what says so.**
+
+| | band width | verdict |
+|---|---|---|
+| M01, 26 mm crop, 30.2762 px/mm | **0.727 mm** | the winding |
+| here, full frame, 69.557 px/mm | **2.732 mm** | **not the winding** |
+
+The band runs r 3.818 → 6.549 mm. Peak copper fraction inside it is **0.314**; the peak in
+a control annulus at r 9–11 mm, where there is no coil, is **0.230**. **Separation 1.37×
+against a 2.00× floor.**
+
+**L1's 0.25 threshold was set in a tight 26 mm crop at 12 genuine px/mm, where the frame
+holds little but the coil. In the full frame the whole board's gold pads and traces are in
+view, and the same criterion fires on all of them.** A threshold is not a property of a
+material; it is a property of a material *and a field of view*, and this one did not
+travel. The 18.6 % / 20.9 % difference against M01 is therefore **not** a measurement of
+the two scale routes and must never be quoted as one — it is this detector failing.
+
+*What would do it:* the winding's turns are individually resolvable at this scale — M01
+resolved them at a third of it — so a **radial periodicity test at the ~0.145 mm turn
+pitch of AWG 35** separates a wound coil from a field of pads in a way a colour threshold
+cannot. That also re-opens the honest version of the scale comparison.
+
+**And it leaves THREE-WAY row 7 exactly where it was.** The 2.1× radial difference between
+`halo_rev_a`'s etched coil at R10.043–10.825 and Apple's wound coil at R4.690–5.417 still
+rests on M01's numbers alone. This attempt did not confirm them and did not overturn them.
+
+---
+
 ## 5 · Status
 
 | # | quantity | verdict |
@@ -194,3 +241,5 @@ this table.**
 | 3 | the five capacitors' body size | **CANNOT DETERMINE** — the method's answer moves with the window |
 | 4 | a null population on this face | **THERE IS NONE.** No bare soldermask exists on this annulus |
 | 5 | can the refiner separate a part from ordinary board here | **NO** — 3 of 6 control seeds admitted |
+| 6 | the coil, re-measured at 69.557 px/mm | **CANNOT DETERMINE** — L1's copper threshold does not transfer out of the 26 mm crop; separation 1.37× against a 2.00× floor |
+| 7 | do the two scale routes (O'Flynn's tilde vs the FCC rulers) agree | **NOT TESTED.** The instrument that would have tested it failed first |

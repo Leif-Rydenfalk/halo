@@ -463,6 +463,146 @@ def cmd_caps(args):
     print(f"  VERDICT: {V[verdict]}")
     return verdict
 
+def cmd_coil(args):
+    """Re-measure the wound coil in the REGISTERED frame, and compare the two SCALES.
+
+    M01 measured this coil in `oflynn-frontside-26mm-cropped.jpg` at 30.2762 px/mm on a
+    datum of "787.18 px = 26 mm APPROXIMATE" - O'Flynn's own tilde, which E04/E05 later
+    retracted as a figure. This tool measures the SAME COIL in the full-resolution frame
+    at 69.557 px/mm, transferred from the FCC steel rulers through photo 7.
+
+    WHAT THIS CAN AND CANNOT TEST, stated first because it is the whole design.
+    The 26 mm crop is a CROP OF THE SAME PHOTOGRAPH. The two measurements therefore
+    share every pixel and CANNOT disagree about anything the photograph itself gets
+    wrong - they are not two opinions about the coil. What they DO NOT share is the
+    SCALE: one comes from a tilde on a teardown page, the other from two steel rulers in
+    an FCC exhibit. So this is a comparison of TWO INDEPENDENT SCALE ROUTES on one
+    object, and that is the only claim made from it.
+
+    Method reproduced from tools/measure_coil.py (L1), which is a hardcoded one-off with
+    no CLI and no frame argument. Generalising it is the P11 fix and it is L1's file, so
+    it is routed rather than edited here.
+    """
+    fit = json.load(open(FIT))
+    ppm = fit["transferred_scale"]["source_px_per_mm_mean"]
+    rgb = np.asarray(Image.open(IMG).convert("RGB")).astype(float)
+    lum = rgb.mean(2)
+    R, G, B = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    # L1's copper criterion, unchanged so the two runs differ only in frame and scale
+    copper = (R - B > 28) & (R > 90) & (lum < 250)
+    H, W = lum.shape
+    cx0, cy0 = 1174.0, 1172.0
+    ys, xs = np.mgrid[0:H, 0:W]
+
+    # centre the coil on ITSELF: copper pixels inside a generous central disc
+    near = np.hypot(ys - cy0, xs - cx0) < 7.0 * ppm
+    m = copper & near
+    if m.sum() < 500:
+        print("CANNOT DETERMINE: too few copper pixels near the centre"); return CANNOT
+    cx = float(xs[m].mean()); cy = float(ys[m].mean())
+    for _ in range(4):
+        rad = np.hypot(ys - cy, xs - cx)
+        mm = copper & (rad < 7.0 * ppm)
+        cx = float(xs[mm].mean()); cy = float(ys[mm].mean())
+    rad = np.hypot(ys - cy, xs - cx)
+
+    print("k_backface coil")
+    print(f"  INPUT   {os.path.relpath(IMG, REPO)}")
+    print(f"  SCALE   {ppm:.4f} px/mm  [FCC steel rulers -> photo 7 -> registration]")
+    print(f"  CENTRE  ({cx:.1f}, {cy:.1f}) px, from the copper's own centroid, 4 iterations")
+    print(f"  CRITERION  R-B>28, R>90, luma<250 - tools/measure_coil.py's, unchanged")
+    print()
+    step = 2.0
+    rows = []
+    for r0 in np.arange(1.0 * ppm, 7.0 * ppm, step):
+        sel = (rad >= r0) & (rad < r0 + step)
+        n = int(sel.sum())
+        frac = float(copper[sel].mean()) if n else 0.0
+        rows.append((r0 + step / 2, frac, n))
+    fr = np.array([r[1] for r in rows]); rr = np.array([r[0] for r in rows])
+    band = fr > 0.25
+    print("  radial copper fraction (2 px bins):")
+    for r0, f, n in rows:
+        if f > 0.02:
+            print(f"    r={r0:6.1f} px  {r0/ppm:6.3f} mm  frac={f:5.3f} " + "#" * int(f * 50))
+    if band.sum() < 2:
+        print("  CANNOT DETERMINE: no radial band exceeds the 0.25 copper fraction")
+        return CANNOT
+    r_in = float(rr[band].min() - step / 2); r_out = float(rr[band].max() + step / 2)
+    ID = 2 * r_in / ppm; OD = 2 * r_out / ppm
+    print()
+    print(f"  BAND FOUND (copper fraction > 0.25, L1's threshold) - see the control below")
+    print(f"    inner r {r_in:7.2f} px = {r_in/ppm:6.3f} mm   ->  ID {ID:6.3f} mm")
+    print(f"    outer r {r_out:7.2f} px = {r_out/ppm:6.3f} mm   ->  OD {OD:6.3f} mm")
+    print(f"    radial width          {(r_out-r_in)/ppm:6.3f} mm")
+
+    # NEGATIVE CONTROL: the same band-finder on an annulus that holds no coil.
+    ctrl = []
+    for r0 in np.arange(9.0 * ppm, 11.0 * ppm, step):
+        sel = (rad >= r0) & (rad < r0 + step)
+        ctrl.append(float(copper[sel].mean()) if sel.sum() else 0.0)
+    cmax = max(ctrl) if ctrl else 0.0
+    bmax = float(fr.max())
+    sep = bmax / cmax if cmax > 0 else float("inf")
+    print()
+    print(f"  NEGATIVE CONTROL  same finder at r 9-11 mm, where there is no coil:")
+    print(f"    peak copper fraction in the coil band  {bmax:.3f}")
+    print(f"    peak copper fraction in the control    {cmax:.3f}")
+    print(f"    SEPARATION {sep:.2f}x  (floor 2.00x)")
+    print(f"    A control that merely sits under the threshold has not separated anything.")
+    print(f"    L1's 0.25 threshold was set in a TIGHT 26 mm CROP at 12 genuine px/mm, where")
+    print(f"    the frame holds little but the coil. In the full frame the WHOLE BOARD's gold")
+    print(f"    pads and traces are in view and the same criterion fires on all of them.")
+    ok_sep = sep >= 2.0
+
+    M01 = dict(ID=9.380, OD=10.834, width=0.727, ppm=30.2762,
+               datum='787.18 px = 26 mm APPROXIMATE (O\'Flynn\'s tilde; retracted as a figure by E04/E05)')
+    dID = 100 * (ID - M01["ID"]) / M01["ID"]; dOD = 100 * (OD - M01["OD"]) / M01["OD"]
+    print()
+    print(f"  AGAINST M01, WHICH IS THE SAME PHOTOGRAPH AT A DIFFERENT SCALE")
+    print(f"    M01  ID {M01['ID']:.3f}  OD {M01['OD']:.3f} mm   at {M01['ppm']:.4f} px/mm")
+    print(f"    here ID {ID:.3f}  OD {OD:.3f} mm   at {ppm:.4f} px/mm")
+    print(f"    difference  ID {dID:+.2f}%   OD {dOD:+.2f}%")
+    print()
+    if ok_sep:
+        print(f"    The two measurements share every pixel and cannot disagree about the coil.")
+        print(f"    What they do not share is the SCALE - a teardown page's tilde against two")
+        print(f"    FCC steel rulers - so this difference measures THE TWO SCALE ROUTES.")
+    else:
+        print(f"    *** THIS DIFFERENCE IS NOT A SCALE COMPARISON AND MUST NOT BE READ AS ONE.")
+        print(f"    The band measured here is {(r_out-r_in)/ppm:.3f} mm wide against M01's 0.727 mm")
+        print(f"    - it is not the winding, it is every gold feature the criterion caught")
+        print(f"    across the board. The scales cannot be compared until the coil is isolated.")
+        print(f"    WHAT WOULD DO IT: the winding's turns are individually resolvable at this")
+        print(f"    scale (M01 saw them at a third of it), so a periodicity test along the")
+        print(f"    radius - the turn pitch is ~0.145 mm, AWG 35 - separates a WOUND coil from")
+        print(f"    a field of pads in a way a colour threshold never can. ***")
+    out = dict(tool="k_backface.py", verb="coil", image=os.path.relpath(IMG, REPO),
+               px_per_mm=ppm, scale_basis="FCC steel rulers -> photo 7 -> c_register",
+               centre_px=[cx, cy], ID_mm=ID, OD_mm=OD, width_mm=(r_out - r_in) / ppm,
+               inner_r_px=r_in, outer_r_px=r_out,
+               negative_control=dict(region="r 9-11 mm", max_copper_fraction=cmax,
+                                     threshold=0.25, fired=bool(cmax > 0.25)),
+               vs_M01=dict(M01_ID_mm=M01["ID"], M01_OD_mm=M01["OD"], M01_px_per_mm=M01["ppm"],
+                           M01_datum=M01["datum"], delta_ID_pct=dID, delta_OD_pct=dOD,
+                           what_this_compares="TWO SCALE ROUTES on one object. The 26 mm crop "
+                                              "is a crop of this same photograph, so the two "
+                                              "measurements share every pixel and cannot "
+                                              "disagree about the coil itself."),
+               band_peak_fraction=bmax, control_peak_fraction=cmax, separation=sep,
+               verdict=("MEASURED" if ok_sep else
+                        "CANNOT DETERMINE - the copper criterion does not separate the coil "
+                        "from the board's other gold in the full frame; band %.3f mm wide "
+                        "against M01's 0.727 mm, control separation %.2fx below the 2.00x "
+                        "floor" % ((r_out - r_in) / ppm, sep)),
+               do_not_quote=("ID_mm and OD_mm are NOT the coil's. They are the extent of "
+                             "everything the colour criterion caught. Recorded so the next "
+                             "attempt can see what this one did." if not ok_sep else None))
+    p2 = os.path.join(LANE, "metrology", "backface-coil.json")
+    json.dump(out, open(p2, "w"), indent=2)
+    print(f"\n  wrote {os.path.relpath(p2, REPO)}")
+    return PASS if ok_sep else CANNOT
+
 def cmd_calibrate(args):
     """Measure what z THIS PHOTOGRAPH's own board throws, and set the floor from it.
 
@@ -677,12 +817,13 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("caps"); sub.add_parser("selftest"); sub.add_parser("controls")
+    sub.add_parser("coil")
     c = sub.add_parser("calibrate")
     c.add_argument("--n", type=int, default=120)
     c.add_argument("--margin", type=float, default=1.0)
     a = p.parse_args()
     return {"caps": cmd_caps, "selftest": cmd_selftest, "controls": cmd_controls,
-            "calibrate": cmd_calibrate}[a.cmd](a)
+            "calibrate": cmd_calibrate, "coil": cmd_coil}[a.cmd](a)
 
 if __name__ == "__main__":
     sys.exit(main())
