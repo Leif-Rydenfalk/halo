@@ -225,6 +225,94 @@ def build_mask(tgt, r_frac_lo=0.0, r_frac_hi=0.985, sector=None):
     return m
 
 
+def radial_structure(lm, tgt, trials=400, seed=13):
+    """IS THE COHERENT MISFIT RADIAL, AND ABOUT WHAT?
+
+    R11 established that the registration misfit is a smooth spatially coherent
+    field on both faces, and R17 bounded lens distortion in the TARGET frames to
+    under ~0.2 px of bow. Two candidates remain and they make DIFFERENT geometric
+    predictions, which is what makes this worth measuring:
+
+      * A BOARD THAT IS NOT FLAT displaces features RADIALLY ABOUT THE BOARD'S OWN
+        CENTRE, growing with distance from it - a dome or a bow projects that way.
+      * OPTICS displace features RADIALLY ABOUT THE IMAGE CENTRE, which for this
+        crop is somewhere else entirely.
+      * A DIFFERENCE BETWEEN TWO PHYSICAL BOARDS has no reason to be radial about
+        anything.
+
+    So decompose each landmark's residual into radial and tangential components
+    about each candidate centre, and ask whether the radial part grows with radius.
+
+    The residual field in TARGET pixels is exactly the measured local shift (dx,dy):
+    the intensity fit produced H, and these are what it left behind.
+
+    CONTROL: the same statistic with the residual VECTORS PERMUTED among positions,
+    which destroys any relationship to geometry and keeps the vectors themselves.
+    """
+    if len(lm) < 40:
+        return None
+    P = np.array([[l['tx'], l['ty']] for l in lm])
+    D = np.array([[l['dx'], l['dy']] for l in lm])
+    ny, nx = tgt.img.shape
+    centres = {
+        'board centre': (tgt.cx, tgt.cy),
+        'target image centre': (tgt.full_size[0]/2.0 - tgt.ox, tgt.full_size[1]/2.0 - tgt.oy),
+        'crop centre': (nx/2.0, ny/2.0),
+    }
+    rng = np.random.default_rng(seed)
+    out = {}
+    for name, (cx, cy) in centres.items():
+        d = P - np.array([cx, cy])
+        r = np.hypot(d[:, 0], d[:, 1])
+        good = r > 1e-6
+        u = d[good]/r[good][:, None]
+        tvec = np.column_stack([-u[:, 1], u[:, 0]])
+        Dg = D[good]; rg = r[good]
+        pr = (Dg*u).sum(axis=1)
+        pt = (Dg*tvec).sum(axis=1)
+
+        def corr(vals, rr):
+            if vals.std() == 0 or rr.std() == 0:
+                return 0.0
+            return float(np.corrcoef(vals, rr)[0, 1])
+
+        c_obs = corr(pr, rg)
+        null = np.empty(trials)
+        for k in range(trials):
+            q = rng.permutation(len(Dg))
+            Dp = Dg[q]
+            null[k] = corr((Dp*u).sum(axis=1), rg)
+        m, sd = float(null.mean()), float(null.std())
+
+        # DETECTION LIMIT, for the same reason the coherence statistic has one: a
+        # confident negative from an untested check is the mistake this lane made
+        # four times on 2026-09-05. Inject a DOME about THIS centre into the real
+        # residuals, sweep its amplitude down, and report the smallest one still
+        # separable from the null. "No dome" then means "no dome bigger than THIS".
+        rms = float(np.sqrt((Dg*Dg).sum(axis=1).mean()))
+        Rn = max(rg.max(), 1e-9)
+        limit = None
+        sweep = []
+        for f in (1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.12, 0.08):
+            inj = Dg + u*(rms*f*(rg/Rn))[:, None]
+            ci = corr((inj*u).sum(axis=1), rg)
+            zi = (ci-m)/sd if sd > 0 else float('nan')
+            sweep.append(dict(frac=f, amp_px=rms*f, z=float(zi)))
+            if zi > 3.0:
+                limit = f
+        out[name] = dict(centre=[float(cx+tgt.ox), float(cy+tgt.oy)],
+                         residual_rms_px=rms, dome_sweep=sweep,
+                         detection_limit_frac=limit,
+                         detection_limit_px=(rms*limit if limit is not None else None),
+                         radial_vs_radius_corr=c_obs, null_mean=m, null_sd=sd,
+                         z=float((c_obs-m)/sd) if sd > 0 else float('nan'),
+                         radial_rms_px=float(np.sqrt((pr**2).mean())),
+                         tangential_rms_px=float(np.sqrt((pt**2).mean())),
+                         radial_over_tangential=float(np.sqrt((pr**2).mean() /
+                                                              max((pt**2).mean(), 1e-12))),
+                         n=int(good.sum()))
+    return out
+
 def register(src, tgt, model='homography', quiet=True):
     """Coarse similarity sweep -> refine similarity -> affine -> homography."""
     mask = build_mask(tgt)
@@ -829,6 +917,37 @@ def run_validate(a):
                   % ('the full residual RMS' if coh['detection_limit_px'] is None
                      else '%.2f px' % coh['detection_limit_px']))
 
+    rs = radial_structure(lm, tgt)
+    if rs:
+        print("  RADIAL STRUCTURE  is the coherent field radial, and about WHAT centre?")
+        print("    %-22s %9s %8s %10s %10s" % ('centre', 'corr(r)', 'z', 'radial px', 'tang px'))
+        for nm, v in rs.items():
+            lim = ('%.3f px' % v['detection_limit_px']
+                   if v['detection_limit_px'] is not None else 'NONE')
+            print("    %-22s %+9.3f %+8.1f %10.3f %10.3f   detects a dome >= %s"
+                  % (nm, v['radial_vs_radius_corr'], v['z'],
+                     v['radial_rms_px'], v['tangential_rms_px'], lim))
+        best = max(rs.items(), key=lambda kv: abs(kv[1]['z']))
+        if abs(best[1]['z']) > 3.0:
+            print("    -> the radial component about the %s grows with radius (z=%+.1f). "
+                  "A BOARD\n       that is not flat predicts this about the BOARD centre; "
+                  "optics predict it\n       about the IMAGE centre; a difference between "
+                  "two boards predicts neither."
+                  % (best[0], best[1]['z']))
+        else:
+            lims = [v['detection_limit_px'] for v in rs.values()
+                    if v['detection_limit_px'] is not None]
+            print("    -> no centre shows a radial component growing with radius above its "
+                  "own null.")
+            if lims:
+                print("       A dome of %.3f px or more WOULD have been seen, so one is "
+                      "BOUNDED\n       below that, not excluded." % min(lims))
+            else:
+                print("       And no injected dome was detectable either, so this is "
+                      "absence of POWER,\n       not absence of a dome.")
+            print("       Either way it cannot exclude a UNIFORM radial term, which the "
+                  "homography\n       absorbs before these residuals are formed.")
+
     verdict = PASS; why = []
     if not ok:
         verdict = CANNOT; why.append('no fold had enough landmarks')
@@ -853,7 +972,7 @@ def run_validate(a):
                worst_holdout_rms_mm=worst,
                worst_holdout_p95_mm=(max(f['p95_mm'] for f in ok) if ok else None),
                tolerance_mm=a.tol_mm,
-               residual_coherence=coh,
+               residual_coherence=coh, radial_structure=rs,
                landmarks_kept=len(lm), landmarks_discarded=disc,
                verdict=V[verdict], why=why)
     if a.json_out:
@@ -1019,6 +1138,41 @@ def run_selftest(a):
             and cq['detection_limit_px'] < cf['detection_limit_px'],
             "DETECTION LIMIT TIGHTENS as the data get quieter: %.2f px at 40%% noise "
             "vs %.2f px at full noise" % (cq['detection_limit_px'], cf['detection_limit_px']))
+    # RADIAL STRUCTURE, both directions, on a stub frame. A statistic that names a
+    # centre must be shown to name the RIGHT one, and to name none when there is none.
+    class _T:
+        pass
+    st = _T(); st.cx, st.cy = 300.0, 300.0
+    st.img = np.zeros((600, 600)); st.full_size = (600, 600); st.ox = st.oy = 0.0
+    rr = np.random.default_rng(21)
+    pts = rr.uniform(60, 540, size=(200, 2))
+    d0 = pts - np.array([st.cx, st.cy])
+    rad = np.hypot(d0[:, 0], d0[:, 1])
+    u0 = d0/np.maximum(rad, 1e-9)[:, None]
+    # a DOME about the board centre: radial displacement growing with radius
+    Ddome = u0*(0.004*rad)[:, None] + rr.normal(0, 0.15, (200, 2))
+    lm_d = [dict(tx=float(p[0]), ty=float(p[1]), dx=float(v[0]), dy=float(v[1]),
+                 r=0.0, theta_deg=0.0) for p, v in zip(pts, Ddome)]
+    rd = radial_structure(lm_d, st, trials=200)
+    zb = rd['board centre']['z']
+    rec(rd is not None and zb > 5.0,
+        "RADIAL STRUCTURE finds a synthetic DOME about the board centre: corr %+.3f, "
+        "z=%+.1f, radial %.3f px vs tangential %.3f px"
+        % (rd['board centre']['radial_vs_radius_corr'], zb,
+           rd['board centre']['radial_rms_px'], rd['board centre']['tangential_rms_px']))
+    Drand = rr.normal(0, 0.6, (200, 2))
+    lm_r = [dict(tx=float(p[0]), ty=float(p[1]), dx=float(v[0]), dy=float(v[1]),
+                 r=0.0, theta_deg=0.0) for p, v in zip(pts, Drand)]
+    rr2 = radial_structure(lm_r, st, trials=200)
+    rec(rr2 is not None and abs(rr2['board centre']['z']) < 3.0,
+        "RADIAL STRUCTURE stays at its null for a field with NO radial structure: "
+        "z=%+.1f" % rr2['board centre']['z'])
+    lim = rr2['board centre']['detection_limit_px']
+    rec(lim is not None and lim < rr2['board centre']['residual_rms_px'],
+        "and that null carries a DETECTION LIMIT rather than a bare 'no': a dome of "
+        "%.3f px WOULD have been seen against a residual RMS of %.3f px"
+        % (lim or -1, rr2['board centre']['residual_rms_px']))
+
     ok = sum(1 for r in results if r)
     print("\n%d/%d passed, %d failed" % (ok, len(results), len(results)-ok))
     print("synthetic inputs kept at %s" % tmp)
