@@ -126,3 +126,52 @@ would get the 83.
 Fresh reports now sit in `out/verify/`. The row cannot move until routing reaches
 zero, the source and routed files stop diverging, and the package passes a
 freshness gate against the board it was actually cut from.
+
+### C-7 · A retune scaled from a number that was never measured
+**Raised 2026-09-05 from the finished rt2 solve, confirmed by searching every
+verdict on disk.** The rt2 spec states its premise in its own `why`:
+
+> *"The law is f ~ 1/L at fixed eps_eff: measured 2.5565 GHz, target 2.4418 GHz,
+> so scale 1.04696."*
+
+**There is no measurement of 2.5565 GHz.** Every `verdict.json` under
+`ce-rf/out/` was searched for any row between 2.55 and 2.56 GHz; none exists.
+But `2.6763 × (24.491 / 25.641) = 2.5563`. The premise is the 1/L law's **own
+output**, written into the spec in the grammar of an observation and then used
+as the basis for scaling. The loop fed its prediction back to itself as
+evidence.
+
+This is worse than a wrong number, because a wrong measurement can be
+contradicted by a better one. A prediction wearing the word *measured* agrees
+with the model by construction, so no amount of further solving can dislodge it.
+
+**And the law it was steering by does not hold.** All three bare cases converged,
+so the comparison is like-for-like:
+
+| case | conductor | 1/L predicts | measured | law short by |
+|---|---|---|---|---|
+| meander9-bare | 24.491 mm | — | 2.6763 GHz | baseline |
+| rt1-bare | 20.731 mm (−15.4%) | 3.1617 GHz | **2.7058 GHz** | 16× |
+| rt2-bare | 25.641 mm (+4.7%) | 2.5563 GHz | **2.6630 GHz** | 9× |
+
+Shortening the conductor 15% moved the resonance 1.1%. Whatever sits at
+~2.67 GHz in the bare case **does not move when the conductor moves**, so it is
+not the conductor's mode, and no length change will tune it. Three solves were
+spent scaling the wrong resonator.
+
+**A third defect, structural:** rt1 and rt2 both scale from the *same*
+24.49100 mm baseline — rt2 did not start from rt1's result. That is two
+independent guesses from one point, not the iterate → simulate → fix loop the
+project was asked for. A loop that never reads its own previous output cannot
+converge; it can only sample.
+
+**Not a near miss, before anyone reads one into the table:** rt1-passive lands at
+2.3730 GHz, 1.1% below the band, which looks tantalising. Its `mode_identified`
+is **0** and its `gain_dBi` is **−11.81** against a −3.2 target. It is an
+unidentified zero over a dead radiator — exactly what D26 exists to refuse.
+
+**What settles it:** identify the ~2.67 GHz mode before proposing any geometry.
+Sweep a structural parameter that is *not* the conductor — the pour radius, the
+feed tab, the board diameter — and see which one moves that zero. Whichever
+moves it, owns it. One solve answers this; three more length guesses answer
+nothing.
