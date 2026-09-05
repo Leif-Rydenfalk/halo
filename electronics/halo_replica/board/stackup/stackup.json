@@ -224,16 +224,35 @@
       "min_thickness_overall_mm": 0.4,
       "min_thickness_overall_note": "0.40 mm, published for 2-layer only",
       "verdict_for_0_30mm": "0.30 mm is below JLCPCB's overall minimum at ANY layer count. Not orderable.",
-      "four_layer_thickness_row": "UNVERIFIED — the fetch returned 0.8/1.0/1.2/1.6/2.0 for 4-layer but flagged it as inferred from the standard offering rather than quoted. Not treated as a fact here."
+      "four_layer_thickness_row": {
+        "state": "MEASURED 2026-09-05, no longer unverified",
+        "offered_mm": [
+          0.8,
+          1.0,
+          1.2,
+          1.6,
+          2.0
+        ],
+        "thinnest_orderable_at_4_layers_mm": 0.8,
+        "not_offered_at_4_layers_mm": [
+          0.4,
+          0.6
+        ],
+        "method": "JLCPCB's live quote configurator, by ce-workshop-9a. At 4 layers the Thickness row offers 0.8/1.0/1.2/1.6/2.0 and GREYS OUT 0.4 and 0.6.",
+        "negative_control": "clicking 0.4 at 4 layers does nothing — the selection stays on 1.6",
+        "positive_control": "switching 4 -> 2 layers RE-ENABLES 0.4 in the same page with no reload, so the disable tracks layer count and is a real constraint rather than styling",
+        "why_this_row_matters": "it is the row this lane had recorded as UNVERIFIED and then reasoned past — see the correction below"
+      }
     },
     "the_delta_in_one_line": "0.30 mm as-drawn is not orderable from either house at any layer count above two, and not from JLCPCB at any layer count at all. Building a Replica board therefore requires either an HDI house whose capability page was not read, or a stated departure from as-drawn.",
     "the_departure_if_one_is_needed": {
-      "value_mm": 0.4,
-      "status": "PROPOSED, NOT ADOPTED — this is the halo lane's call, not this lane's",
-      "why_0_40": "It is the nearest orderable thickness above 0.30 at both houses, and it is PCBWay's 4-layer floor, so it survives whichever way the layer count resolves.",
-      "delta_mm": 0.1,
-      "delta_pct": 33.3,
-      "and_the_rule": "If adopted, it is recorded HERE as a fabrication departure and the as-drawn 0.30 mm does not move. The two numbers stay side by side."
+      "value_mm": 0.8,
+      "status": "SUPERSEDES this lane's earlier proposal of 0.40 mm, WHICH WAS WRONG",
+      "the_error_and_it_was_mine": "This lane proposed 0.40 mm as 'the nearest orderable thickness above 0.30 AT BOTH HOUSES'. That claim was unsupported for JLCPCB at 4 layers, and the row that would have caught it is the one THIS FILE had already marked UNVERIFIED — recorded as a caveat and then reasoned past in the very next field. 0.4 and 0.6 are not offered at 4 layers. PCBWay's 0.40 four-layer floor stands; the 'both houses' half did not.",
+      "why_0_80": "the thinnest thickness JLCPCB offers at 4 layers, measured in the live configurator with both controls (see the jlcpcb row above)",
+      "delta_vs_as_drawn_mm": 0.5,
+      "delta_vs_as_drawn_x": 2.67,
+      "and_the_rule": "0.80 mm is a fact about US, not about Apple. The as-drawn 0.30 mm does not move, and the two numbers stay side by side. Collapsing them is the failure THE-DRIFT.md is about."
     }
   },
   "discarded": [
@@ -304,5 +323,28 @@
     "s_colour.py": "hue of a metal region against an in-frame control. Refuses a box with no warm pixels rather than averaging shadow.",
     "s_crop.py": "crop and Lanczos-upscale. No sharpening, no contrast stretch, no gamma.",
     "s_layerprobe.py": "the superposition test's instrumentation. Verbs: structure, selftest. Exits 2 on the layer question BY DESIGN — it can prove the compared patches hold copper rather than blank photograph, which is the negative control on the visual reading, and it cannot separate a land grid from routing. Its docstring records the FFT probe that was rejected when its own negative control went red."
+  },
+  "fab_as_ordered": {
+    "_what": "What the FAB BRANCH is ordered as. A DIFFERENT KIND OF OBJECT from replica_as_drawn, and the distinction is the point:",
+    "_pcb_branch": "pcb/ is a TRANSCRIPTION. It must equal Apple: 0.30 mm. Measured against replica_as_drawn.",
+    "_fab_branch": "fab/ is a BUILDABLE DEPARTURE. Every departure is enumerated in fab/README.md. Measuring it against as-drawn would fail forever, and a permanent expected-red is a check people learn to ignore.",
+    "board_thickness_mm": 0.8,
+    "layer_count": 4,
+    "finish": "ENIG",
+    "_why_this_is_not_a_tautology": "A lane inventing the spec it is then measured against agrees with itself. So this row does NOT record 'whatever the board says' — it records the VENDOR'S OFFER LIST, which is external and can contradict us. s_stackup_budget.py verify --spec as-ordered checks THREE things separately: (1) the SPEC ITSELF must be orderable at its own layer count, which is the guard against inventing a convenient number; (2) the BOARD must be orderable; (3) the board must equal the spec. Setting either the board or the spec to 0.5 mm makes it fail harder, not pass.",
+    "vendor_offer": {
+      "vendor": "JLCPCB",
+      "at_layers": 4,
+      "thickness_options_mm": [
+        0.8,
+        1.0,
+        1.2,
+        1.6,
+        2.0
+      ],
+      "source": "live quote configurator, measured 2026-09-05 by ce-workshop-9a with a negative control (0.4 at 4 layers does nothing) and a positive control (4 -> 2 layers re-enables 0.4 in the same page)",
+      "kind": "measured"
+    },
+    "_apples_number_is_untouched": "Apple's board is 0.30 mm reported and 4 layers COUNTED. Nothing here changes either."
   }
 }

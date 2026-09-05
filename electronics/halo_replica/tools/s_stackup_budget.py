@@ -15,7 +15,7 @@ Verbs
   doctor    — is the material table usable? Every row must carry a source.
   budget    — minimum buildable thickness for one (construction, layer count)
   bounds    — for a target thickness, the layer counts each construction can build
-  selftest  — 17 deliberate breaks, each of which MUST go red
+  selftest  — 25 deliberate breaks, each of which MUST go red
 
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
 
@@ -188,61 +188,119 @@ def read_board_stackup(path):
     return {"declared_thickness_mm": thickness, "copper_layers": len(cu), "layer_names": cu}
 
 
-def cmd_verify(path, spec_path=None):
+LAST_ROWS = {}   # name -> verdict, from the most recent cmd_verify. Exists so a
+                 # test can assert WHICH row fired. Asserting only the exit code
+                 # lets a case pass through a row it was not testing.
+
+
+def cmd_verify(path, which="as-drawn", spec_path=None):
     """Does the board DECLARE the stackup this lane established?
 
     KiCad defaults a new board to 1.6 mm. That default is silent, survives
-    routing, survives export, and is what a fabricator quotes from. It already
-    bit halo_rev_a once -- lane B1: 'this board carried that default until
-    ce-fab's DFM report printed the thickness it had measured; a fab quoting
-    from an uncorrected file would have built a board nearly three times too
-    thick for its enclosure.' This is the check that makes that loud.
+    routing, survives export, and is what a fabricator quotes from. It bit
+    halo_rev_a once -- lane B1: "a fab quoting from an uncorrected file would
+    have built a board nearly three times too thick for its enclosure" -- and
+    then bit both Replica boards. This is the check that makes it loud.
+
+    TWO SPECS, BECAUSE THERE ARE TWO KINDS OF BOARD.
+
+      --spec as-drawn    pcb/ is a TRANSCRIPTION. It must equal Apple: 0.30 mm.
+      --spec as-ordered  fab/ is a BUILDABLE DEPARTURE, on purpose. Measuring it
+                         against as-drawn fails forever, and a permanent
+                         expected-red is a check people learn to ignore.
+
+    AND THE AS-ORDERED PATH IS BUILT NOT TO AGREE WITH ITSELF. A lane that
+    writes down the spec it is then measured against has measured nothing. So
+    as-ordered does not compare the board to a number this project chose; it
+    compares BOTH the board AND THE SPEC ITSELF against the VENDOR'S OFFER
+    LIST, which is external evidence and can contradict us. Three rows, and
+    the first is the guard:
+
+      spec_is_orderable   the recorded spec must be a thickness the vendor
+                          actually offers at that layer count. Invent a
+                          convenient 0.5 mm and THIS row goes red first.
+      board_is_orderable  same test on the board.
+      board_matches_spec  and only then, do they agree.
     """
     import json as _json
     import os as _os
     spec_path = spec_path or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
                                            "..", "board", "stackup", "stackup.json")
+    key = {"as-drawn": "replica_as_drawn", "as-ordered": "fab_as_ordered"}.get(which)
+    if key is None:
+        print(f"CANNOT DETERMINE — unknown spec {which!r}; use as-drawn or as-ordered")
+        return CANNOT
     try:
-        spec = _json.load(open(spec_path))["replica_as_drawn"]
+        doc = _json.load(open(spec_path))
+        spec = doc[key]
     except Exception as e:                                    # noqa: BLE001
-        print(f"CANNOT DETERMINE — could not read the as-drawn spec: {e}")
+        print(f"CANNOT DETERMINE — could not read spec {key}: {e}")
         return CANNOT
     if not _os.path.exists(path):
         print(f"CANNOT DETERMINE — {path} is not on disk")
         return CANNOT
     got = read_board_stackup(path)
-    want_t = spec.get("board_thickness_mm")
-    want_l = spec.get("layer_count")
+    want_t, want_l = spec.get("board_thickness_mm"), spec.get("layer_count")
 
     print(f"board   {path}")
-    print(f"spec    board/stackup/stackup.json  replica_as_drawn\n")
+    print(f"spec    stackup.json  {key}   (--spec {which})\n")
     rows, worst = [], PASS
+
+    def add(name, verdict, why):
+        nonlocal worst
+        rows.append((name, verdict, why))
+        if verdict == FAIL:
+            worst = FAIL
+        elif verdict == CANNOT and worst == PASS:
+            worst = CANNOT
+
+    offer = (spec.get("vendor_offer") or {}).get("thickness_options_mm")
+    if which == "as-ordered":
+        # THE GUARD, and it runs before anything about the board: a spec this
+        # project invented for its own convenience fails here first.
+        if not offer:
+            add("spec_is_orderable", CANNOT, "the spec records no vendor offer list to check against")
+        elif want_t in offer:
+            add("spec_is_orderable", PASS,
+                f"spec {want_t} mm is in {spec['vendor_offer']['vendor']}'s offer at "
+                f"{spec['vendor_offer']['at_layers']} layers {offer}")
+        else:
+            add("spec_is_orderable", FAIL,
+                f"THE SPEC ITSELF IS NOT ORDERABLE: {want_t} mm is not in {offer}. "
+                "A spec nobody can buy is not a spec")
+        if offer:
+            g = got["declared_thickness_mm"]
+            add("board_is_orderable", PASS if g in offer else FAIL,
+                f"board {g} mm {'is' if g in offer else 'is NOT'} in {offer}")
+
     for name, g, w, unit in (("board thickness", got["declared_thickness_mm"], want_t, "mm"),
                              ("copper layers", got["copper_layers"], want_l, "")):
         if g is None:
-            v, why = CANNOT, "the board declares no value"
+            add(name, CANNOT, "the board declares no value")
         elif w is None:
-            v, why = CANNOT, "the spec states no value, so there is nothing to compare"
+            add(name, CANNOT, "the spec states no value, so there is nothing to compare")
         elif abs(g - w) < 1e-9:
-            v, why = PASS, "declared value matches the as-drawn spec"
+            add(name, PASS, f"declared value matches {key}")
         else:
-            v = FAIL
-            why = f"declared {g}{unit}, as-drawn is {w}{unit}"
+            why = f"declared {g}{unit}, spec is {w}{unit}"
             if unit == "mm" and w:
                 why += f" — {g / w:.2f}x"
             if unit == "mm" and abs(g - 1.6) < 1e-9:
                 why += ". 1.6 mm is KiCad's DEFAULT: this reads as never set, not as chosen"
-        rows.append((name, g, w, v, why))
-        worst = max(worst, v) if not (v == CANNOT and worst == FAIL) else worst
-        if v == FAIL:
-            worst = FAIL
-    for name, g, w, v, why in rows:
-        print(f"  {['PASS','FAIL','CANNOT DETERMINE'][v]:<17}{name:<18}declared={g!r:<8}spec={w!r}")
+            add(name, FAIL, why)
+
+    LAST_ROWS.clear()
+    LAST_ROWS.update({n: v for n, v, _ in rows})
+    for name, v, why in rows:
+        print(f"  {['PASS','FAIL','CANNOT DETERMINE'][v]:<17}{name}")
         print(f"                    {why}")
     print()
-    print({PASS: "PASS — the board declares the stackup this lane established.",
-           FAIL: "FAIL — a fabricator quotes from the BOARD, not from the document. "
-                 "The as-drawn number is not what would be built.",
+    if worst == FAIL and which == "as-drawn" and "fab_as_ordered" in doc:
+        print("NOTE: compared against replica_as_drawn. If this is the FAB branch, which")
+        print("      departs from as-drawn on purpose, re-run with --spec as-ordered.")
+        print("      This tool will not guess which kind of board it was handed.")
+    print({PASS: f"PASS — the board declares the stackup recorded in {key}.",
+           FAIL: "FAIL — a fabricator quotes from the BOARD, not from the document.",
            CANNOT: "CANNOT DETERMINE — and that is not a pass."}[worst])
     return worst
 
@@ -345,7 +403,7 @@ def cmd_selftest():
         else:
             n_fail += 1
 
-    print("s_stackup_budget selftest — 17 deliberate breaks\n")
+    print("s_stackup_budget selftest — 25 deliberate breaks\n")
 
     # 1. The null-row refusal actually fires.
     check("hdi-ultrathin has null cores -> CannotDetermine, not a default",
@@ -430,18 +488,37 @@ def cmd_selftest():
           lambda: sorted({r["prepreg"].split("x")[1] for r in solve(m, 0.60)}
                          - {"106", "1080", "2116", "7628"}), [])
 
-    # 15. THE LIVE FINDING: the Replica fab board declares KiCad's 1.6 mm
-    #     default against a 0.30 mm as-drawn spec.
+    # 15. THE 1.6 mm DETECTION, pinned SYNTHETICALLY so it stays tested.
+    #     This case used to assert the live Replica fab board reads 1.6 mm. It
+    #     went red on 2026-09-05 because ce-workshop-9a FIXED the board -- the
+    #     right kind of red, a case failing because the world got better. A
+    #     case pinned to a live defect dies with the defect and takes the
+    #     detection with it, so the detection is now pinned to a board built
+    #     here for the purpose, and the live boards get their own case below.
     import os as _os
     here = _os.path.dirname(_os.path.abspath(__file__))
+    import tempfile as _tf0
+    with _tf0.NamedTemporaryFile("w", suffix=".kicad_pcb", delete=False) as fh:
+        fh.write('(kicad_pcb (general (thickness 1.6)) (layers (0 "F.Cu" signal)'
+                 ' (4 "In1.Cu" signal) (6 "In2.Cu" signal) (2 "B.Cu" signal)))')
+        default_board = fh.name
+    check("a board at KiCad's 1.6 mm default FAILS as-drawn",
+          lambda: cmd_verify_quiet(default_board, "as-drawn"), FAIL)
+    check("and it is read as 1.6, not as something else",
+          lambda: read_board_stackup(default_board)["declared_thickness_mm"], 1.6)
+    _os.unlink(default_board)
+
+    # 15b. THE LIVE BOARDS, which is a different claim: neither Replica board
+    #      sits at the default any more. This one SHOULD go red if it regresses.
     rb = _os.path.join(here, "..", "fab", "out", "halo_replica_fab.kicad_pcb")
+    pb = _os.path.join(here, "..", "pcb", "out", "halo_replica.kicad_pcb")
+    live = [read_board_stackup(b)["declared_thickness_mm"]
+            for b in (rb, pb) if _os.path.exists(b)]
+    check("no live Replica board sits at KiCad's 1.6 mm default",
+          lambda: [t for t in live if t == 1.6], [])
     if _os.path.exists(rb):
-        got = read_board_stackup(rb)
-        check("the Replica fab board declares 1.6 mm, not 0.30",
-              lambda: got["declared_thickness_mm"], 1.6)
-        # and its LAYER count is right, so this is not a board that is simply wrong
-        check("the same board's layer count IS correct at 4",
-              lambda: got["copper_layers"], 4)
+        check("the fab board's layer count is 4",
+              lambda: read_board_stackup(rb)["copper_layers"], 4)
 
     # 16. NEGATIVE CONTROL: a board that matches the spec must PASS. Without
     #     this, verify could be a function that returns FAIL.
@@ -464,6 +541,79 @@ def cmd_selftest():
         check("the Replica board FAILS verify (verify is not PASS-always)",
               lambda: cmd_verify_quiet(rb), FAIL)
 
+    # ---- as-ordered: the anti-tautology controls --------------------------
+    # A lane that writes the spec it is measured against has measured nothing.
+    # These five cases exist to prove that did not happen here. Each builds a
+    # DELIBERATELY WRONG spec or board and requires the right row to go red.
+    import json as _j
+    import tempfile as _t2
+    base = _j.load(open(_os.path.join(here, "..", "board", "stackup", "stackup.json")))
+
+    def with_spec(mut):
+        doc = _j.loads(_j.dumps(base))
+        mut(doc)
+        fh = _t2.NamedTemporaryFile("w", suffix=".json", delete=False)
+        _j.dump(doc, fh)
+        fh.close()
+        return fh.name
+
+    def board_at(mm, layers=4):
+        names = ['"F.Cu"', '"In1.Cu"', '"In2.Cu"', '"B.Cu"'][:layers]
+        fh = _t2.NamedTemporaryFile("w", suffix=".kicad_pcb", delete=False)
+        fh.write(f'(kicad_pcb (general (thickness {mm})) (layers '
+                 + " ".join(f"(0 {n} signal)" for n in names) + "))")
+        fh.close()
+        return fh.name
+
+    # 18. THE GUARD. Invent a convenient spec the vendor does not offer and the
+    #     SPEC row must go red BEFORE anything about the board is considered.
+    bad_spec = with_spec(lambda d: d["fab_as_ordered"].__setitem__("board_thickness_mm", 0.5))
+    b05 = board_at(0.5)
+    # Assert the ROW, not the exit code. The first version of this case checked
+    # only the overall verdict, and stayed green when the guard was deleted --
+    # because board_is_orderable failed on the same input for a different
+    # reason. A case satisfied by a neighbouring row does not test its own.
+    def row_after(fn, name):
+        fn()
+        return LAST_ROWS.get(name)
+
+    check("an invented, unorderable SPEC trips spec_is_orderable ITSELF",
+          lambda: row_after(lambda: cmd_verify_quiet(b05, "as-ordered", bad_spec),
+                            "spec_is_orderable"), FAIL)
+
+    # 19. A board at a thickness the vendor does not offer fails, even though
+    #     0.6 is a perfectly ordinary PCB thickness at other layer counts.
+    b06 = board_at(0.6)
+    check("a board at 0.6 mm trips board_is_orderable ITSELF",
+          lambda: row_after(lambda: cmd_verify_quiet(b06, "as-ordered"),
+                            "board_is_orderable"), FAIL)
+
+    # 20. A board at 1.0 is ORDERABLE but is not what was decided. It must
+    #     still fail, and for a different reason than 0.6 did.
+    b10 = board_at(1.0)
+    # 1.0 is ORDERABLE but is not the decision: orderability must PASS while
+    # equality FAILS. Two different failure modes that must stay distinguishable.
+    check("a board at 1.0 mm is orderable BUT fails equality (distinct modes)",
+          lambda: (row_after(lambda: cmd_verify_quiet(b10, "as-ordered"), "board_is_orderable"),
+                   LAST_ROWS.get("board thickness")), (PASS, FAIL))
+
+    # 21. THE TWO SPECS MUST ACTUALLY DIFFER. If as-ordered were a rename of
+    #     as-drawn, every case above would pass for the wrong reason.
+    fab = _os.path.join(here, "..", "fab", "out", "halo_replica_fab.kicad_pcb")
+    if _os.path.exists(fab):
+        check("the fab board PASSES as-ordered and FAILS as-drawn (the specs differ)",
+              lambda: (cmd_verify_quiet(fab, "as-ordered"), cmd_verify_quiet(fab, "as-drawn")),
+              (PASS, FAIL))
+
+    # 22. And the transcription branch must hold to Apple's number.
+    pcb = _os.path.join(here, "..", "pcb", "out", "halo_replica.kicad_pcb")
+    if _os.path.exists(pcb):
+        check("the pcb board PASSES as-drawn (0.30 mm, Apple's number)",
+              lambda: cmd_verify_quiet(pcb, "as-drawn"), PASS)
+
+    for f in (bad_spec, b05, b06, b10):
+        _os.unlink(f)
+
     print(f"\n{n_pass} ok, {n_fail} red")
     return PASS if n_fail == 0 else FAIL
 
@@ -476,11 +626,11 @@ def _try_raises(fn):
     return False
 
 
-def cmd_verify_quiet(path):
+def cmd_verify_quiet(path, which="as-drawn", spec_path=None):
     import io
     import contextlib
     with contextlib.redirect_stdout(io.StringIO()):
-        return cmd_verify(path)
+        return cmd_verify(path, which, spec_path)
 
 
 def cmd_doctor_quiet(m):
@@ -507,7 +657,10 @@ def main(argv):
         if len(argv) < 3:
             print("CANNOT DETERMINE — verify needs a .kicad_pcb path")
             return CANNOT
-        return cmd_verify(argv[2])
+        which = "as-drawn"
+        if "--spec" in argv:
+            which = argv[argv.index("--spec") + 1]
+        return cmd_verify(argv[2], which)
     if verb == "solve":
         return cmd_solve(m, float(argv[2]) if len(argv) > 2 else 0.60,
                          int(argv[3]) if len(argv) > 3 else 4)

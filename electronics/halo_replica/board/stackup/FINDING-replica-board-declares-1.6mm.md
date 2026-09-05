@@ -121,3 +121,78 @@ sighting today, all three caught only by firing a break on purpose:
 | `s_stackup_budget` | "the total went up" — copper still grew while the dielectric had stopped |
 | `s_layerprobe` | an FFT control that scored blank paper *above* the real land grid |
 | `s_fabchain` | an untracked-file case satisfied by a fallback, not by the guard it named |
+
+
+---
+
+## RESOLVED 2026-09-05 — and my own departure figure was wrong
+
+`ce-workshop-9a` fixed **both** boards, and fixed the **generators** rather than
+the files, on the grounds that a value patched into an output is one rebuild
+from coming back. `pcb/board.py` now reads the number out of
+`stackup.json` → `replica_as_drawn.board_thickness_mm` rather than having 0.3
+typed into it — *a typed constant is the same defect one level up*. The root
+cause was named too: **ce-pcb had no thickness API**, so no board here could
+declare one; `Board.thickness(mm, why=)` now exists.
+
+| board | was | now | verdict |
+|---|---|---|---|
+| `pcb/out/halo_replica.kicad_pcb` | 1.6 | **0.30** | PASS `--spec as-drawn` |
+| `fab/out/halo_replica_fab.kicad_pcb` | 1.6 | **0.80** | PASS `--spec as-ordered` |
+
+### My 0.40 mm proposal was wrong, and I had flagged the row that proved it
+
+This file previously proposed **0.40 mm** as the departure, *"the nearest
+orderable thickness above 0.30 **at both houses**"*. **JLCPCB does not offer
+0.4 or 0.6 at four layers.** 9a measured it in the live quote configurator with
+both controls — negative: clicking 0.4 at 4 layers does nothing; positive:
+switching 4 → 2 layers re-enables 0.4 in the same page, so the disable tracks
+layer count and is a real constraint rather than styling. **0.80 mm is the
+thinnest orderable at 4 layers.**
+
+The row that would have caught me is the one **this very file already carried as
+UNVERIFIED** — *"the fetch returned 0.8/1.0/1.2/1.6/2.0 for 4-layer but flagged
+it as inferred rather than quoted. Not treated as a fact here."* I wrote the
+caveat and then reasoned past it in the next field. That row is now **MEASURED**.
+
+### Two specs, and why the second is not a tautology
+
+`fab/` departs from as-drawn **on purpose**; measuring it against as-drawn fails
+forever, and a permanent expected-red is a check people learn to ignore. So
+`stackup.json` now carries **`fab_as_ordered`** (0.80 mm, 4 layers) beside
+`replica_as_drawn` (0.30 mm, 4 layers), and `verify` takes `--spec`.
+
+9a declined to add that row themselves — *"a lane inventing the spec it is then
+measured against"* — which is exactly right, so it is built to be contradictable.
+`--spec as-ordered` checks the **vendor's offer list**, which is external
+evidence, in three separate rows:
+
+1. **`spec_is_orderable`** — the recorded spec must itself be a thickness the
+   vendor offers at that layer count. **Invent a convenient 0.5 mm and this row
+   goes red first**, before anything about the board is considered.
+2. **`board_is_orderable`** — the same test on the board.
+3. **`board thickness` / `copper layers`** — and only then, do they agree.
+
+`--spec as-drawn` on the transcription branch is unchanged and still holds the
+board to Apple's 0.30 mm.
+
+### The half-control, for the fourth time in one session
+
+I wrote three anti-tautology cases, broke the guard, and **all 25 stayed green.**
+
+- Case 18 fed an unorderable *spec* — but `board_is_orderable` failed on the
+  same input for a different reason, so the case passed through a **neighbouring
+  row**.
+- Case 19 fed an unorderable *board* — but the equality row failed anyway.
+
+Each case was satisfied by a row it was not testing. The fix was to expose
+`LAST_ROWS` and assert **which row fired**, not the exit code. Both breaks now
+go **1 red**. `selftest` **25/25**.
+
+> **Asserting an exit code tests the union of every row. It cannot tell you that
+> the row you meant to test still works.**
+
+That is the same shape as `s_fabchain`'s untracked-file case passing through a
+`last_commit()` fallback, `s_layerprobe`'s FFT control, and `s_stackup_budget`'s
+own "the total went up" — **four in one session, every one found only by firing
+a break.**
