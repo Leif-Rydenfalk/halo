@@ -1,0 +1,751 @@
+{
+  "run_utc": "2026-09-05T06:43:19Z",
+  "git_rev": "0f88f7a",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "r_rimcount.py",
+  "engine": "r_circ.py",
+  "frame": "r_frame.py",
+  "verb": "limit",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "down": 3,
+  "nphi": 64,
+  "smooth": 1.0,
+  "rim": [
+    0.86,
+    1.01
+  ],
+  "dilate_mm": 1.5,
+  "sizes_mm": [
+    1.0,
+    2.2
+  ],
+  "r_step_mm": 0.1,
+  "bar": 1.42,
+  "sd_floor": 3.0407,
+  "size_mm": 1.4,
+  "ladders": [
+    {
+      "mode": "quiet",
+      "site": 0,
+      "xy": [
+        1602.0,
+        3006.0
+      ],
+      "theta_deg": 86.4,
+      "mean_abs_grad": 3.247,
+      "base_luma": 36.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 60.29,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 50.5,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 39.37,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 30.89,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 25.22,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 19.56,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 13.9,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 9.66,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 6.83,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 4.0,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 1.92,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 8.0
+    },
+    {
+      "mode": "quiet",
+      "site": 1,
+      "xy": [
+        2829.0,
+        1815.0
+      ],
+      "theta_deg": 3.3,
+      "mean_abs_grad": 3.556,
+      "base_luma": 82.5,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 1.72,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 1.89,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 2.56,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 3.38,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 3.8,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 5.0,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 9.36,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 8.99,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 6.56,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 3.59,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 1.52,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 8.0
+    },
+    {
+      "mode": "quiet",
+      "site": 2,
+      "xy": [
+        2814.0,
+        1530.0
+      ],
+      "theta_deg": 350.8,
+      "mean_abs_grad": 4.525,
+      "base_luma": 81.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 0.91,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 1.01,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 1.37,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 1.87,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 2.48,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 3.64,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 6.82,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 7.75,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 6.16,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 3.33,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 1.35,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 15.0
+    },
+    {
+      "mode": "quiet",
+      "site": 3,
+      "xy": [
+        2640.0,
+        2367.0
+      ],
+      "theta_deg": 29.3,
+      "mean_abs_grad": 5.199,
+      "base_luma": 133.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 4.42,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 3.93,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 3.87,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 4.55,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 5.88,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 7.78,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 6.65,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 4.3,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 2.75,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 1.21,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 0.14,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 25.0
+    },
+    {
+      "mode": "quiet",
+      "site": 4,
+      "xy": [
+        1884.0,
+        3036.0
+      ],
+      "theta_deg": 74.4,
+      "mean_abs_grad": 5.283,
+      "base_luma": 54.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 7.45,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 8.19,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 13.65,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 19.21,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 16.49,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 12.42,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 8.18,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 4.92,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 2.72,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 0.51,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": -0.21,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 25.0
+    },
+    {
+      "mode": "random",
+      "site": 0,
+      "xy": [
+        519.0,
+        2358.0
+      ],
+      "theta_deg": 148.3,
+      "mean_abs_grad": 9.786,
+      "base_luma": 137.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 9.2,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 11.86,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 14.26,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 10.88,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 8.2,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 5.67,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 3.31,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 1.57,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 0.42,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": -0.23,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": -0.42,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 35.0
+    },
+    {
+      "mode": "random",
+      "site": 1,
+      "xy": [
+        1371.0,
+        615.0
+      ],
+      "theta_deg": 262.3,
+      "mean_abs_grad": 7.975,
+      "base_luma": 56.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 6.65,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 7.97,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 9.68,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 10.42,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 9.66,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 6.97,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 4.25,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 2.51,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 1.39,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 0.26,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 0.09,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 35.0
+    },
+    {
+      "mode": "random",
+      "site": 2,
+      "xy": [
+        2721.0,
+        1620.0
+      ],
+      "theta_deg": 354.3,
+      "mean_abs_grad": 7.095,
+      "base_luma": 56.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 21.31,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 23.29,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 17.74,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 12.59,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 9.74,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 7.34,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 5.07,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 3.31,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 2.13,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 0.95,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 0.13,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 25.0
+    },
+    {
+      "mode": "random",
+      "site": 3,
+      "xy": [
+        1071.0,
+        2835.0
+      ],
+      "theta_deg": 112.4,
+      "mean_abs_grad": 6.927,
+      "base_luma": 34.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 2.89,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 3.95,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 6.25,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 9.99,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 13.85,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 15.93,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 11.43,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 7.34,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 4.46,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 1.51,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": -0.29,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 15.0
+    },
+    {
+      "mode": "random",
+      "site": 4,
+      "xy": [
+        738.0,
+        2691.0
+      ],
+      "theta_deg": 129.5,
+      "mean_abs_grad": 10.553,
+      "base_luma": 52.0,
+      "ladder": [
+        {
+          "step_luma": 220.0,
+          "closure": 3.66,
+          "measured": true
+        },
+        {
+          "step_luma": 180.0,
+          "closure": 4.36,
+          "measured": true
+        },
+        {
+          "step_luma": 140.0,
+          "closure": 5.2,
+          "measured": true
+        },
+        {
+          "step_luma": 110.0,
+          "closure": 5.44,
+          "measured": true
+        },
+        {
+          "step_luma": 90.0,
+          "closure": 5.37,
+          "measured": true
+        },
+        {
+          "step_luma": 70.0,
+          "closure": 5.03,
+          "measured": true
+        },
+        {
+          "step_luma": 50.0,
+          "closure": 4.36,
+          "measured": true
+        },
+        {
+          "step_luma": 35.0,
+          "closure": 3.48,
+          "measured": true
+        },
+        {
+          "step_luma": 25.0,
+          "closure": 2.52,
+          "measured": true
+        },
+        {
+          "step_luma": 15.0,
+          "closure": 1.55,
+          "measured": true
+        },
+        {
+          "step_luma": 8.0,
+          "closure": 0.87,
+          "measured": true
+        }
+      ],
+      "step_to_clear": 15.0
+    }
+  ],
+  "step_to_clear": {
+    "min": 8.0,
+    "max": 35.0,
+    "n_reaching": 10,
+    "n_sites": 10
+  },
+  "p1_verdict": "HOLDS",
+  "shape_cal": {
+    "disc": {
+      "n": 18,
+      "p10": 0.014159348548255148,
+      "p50": 0.22779746117572383,
+      "p90": 0.47000183467685314
+    },
+    "square": {
+      "n": 17,
+      "p10": 0.10350410627393274,
+      "p50": 0.17130383962690576,
+      "p90": 0.3624904552595796
+    },
+    "rect21": {
+      "n": 16,
+      "p10": 0.25171060477764623,
+      "p50": 0.308253820378668,
+      "p90": 0.5332188686757646
+    }
+  },
+  "shape_round_max": 0.47000183467685314,
+  "shape_notround_min": 0.10350410627393274,
+  "shape_ratio": 0.7520006533117651,
+  "shape_separates": false,
+  "shape_contrast": 120.0
+}
