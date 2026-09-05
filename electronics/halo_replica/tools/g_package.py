@@ -10,7 +10,7 @@ WHY THE LAYERS ARE NAMED. A default `kicad-cli pcb export gerbers` with no --lay
 wrote User layers and NO COPPER, and the directory looked complete: plausible names,
 non-zero sizes, twenty-odd files. That package would have been uploaded.
 """
-import os, subprocess, sys, zipfile, shutil, json
+import os, re, subprocess, sys, zipfile, shutil, json
 
 # ---------------------------------------------------------------------------
 # WHAT JLCPCB WILL ACTUALLY ACCEPT, MEASURED IN THEIR LIVE QUOTE CONFIGURATOR
@@ -94,6 +94,60 @@ def main():
     print(f"COPPER   all copper layers carry apertures")
 
     zips = []
+    # ---- ASSEMBLY FILES: gerbers say what the BARE BOARD is, and nothing more.
+    # An assembly order also needs a CPL (where each part goes) and a BOM (what
+    # to solder on). Without them the order is a bare-board order wearing an
+    # assembly filename.
+    cpl_src = os.path.join(gdir, "..", "cpl-kicad.csv")
+    rc, _o = run(PCB, "--cli", "pcb", "export", "pos", board,
+                 "-o", cpl_src, "--format", "csv", "--units", "mm",
+                 "--side", "both", "--use-drill-file-origin")
+    cpl_rows = []
+    if rc == 0 and os.path.exists(cpl_src):
+        import csv as _csv
+        with open(cpl_src) as fh:
+            for r in _csv.DictReader(fh):
+                k = {c.lower().strip(): v for c, v in r.items() if c}
+                ref = k.get("ref") or k.get("designator") or ""
+                if not ref: continue
+                side = (k.get("side") or "top").lower()
+                cpl_rows.append([ref, k.get("posx") or k.get("midx") or "",
+                                 k.get("posy") or k.get("midy") or "",
+                                 "top" if side.startswith("t") else "bottom",
+                                 k.get("rot") or k.get("rotation") or "0"])
+        print(f"CPL      {len(cpl_rows)} placements exported")
+    else:
+        print("CPL      CANNOT DETERMINE: kicad-cli export pos failed - the "
+              "package will be BARE BOARD ONLY, not assembly-ready")
+
+    # THE BOM TRAP, and it is silent and expensive: JLCPCB's importer reads the
+    # LCSC column LITERALLY. A cell saying "CANNOT DETERMINE - no price pull was
+    # done" matches no part, and THE LINE IS DROPPED FROM THE ASSEMBLY WITH NO
+    # ERROR ANYWHERE - the board comes back with parts missing. A non-answer must
+    # be an EMPTY cell and a counted refusal, never prose in a part-number field.
+    bom_src = None
+    for cand in ("out/schematic-fab/halo_replica_fab-bom-resolved.csv",
+                 "out/schematic-fab/halo_replica_fab-bom.csv"):
+        c = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), cand)
+        if os.path.exists(c): bom_src = c; break
+    bom_txt, bom_named, bom_blank, bom_prose = None, 0, 0, []
+    if bom_src:
+        import csv as _csv
+        with open(bom_src) as fh:
+            rows = list(_csv.reader(fh))
+        hdr = rows[0]
+        li = next((i for i, c in enumerate(hdr) if "lcsc" in c.lower()), None)
+        for r in rows[1:]:
+            if li is None or li >= len(r): continue
+            v = r[li].strip()
+            if not v: bom_blank += 1
+            elif re.match(r"^C\d+$", v): bom_named += 1
+            else: bom_prose.append((r[1] if len(r) > 1 else "?", v[:40]))
+        bom_txt = open(bom_src).read()
+        print(f"BOM      {bom_named} lines carry a real LCSC code, {bom_blank} "
+              f"blank (an honest refusal), {len(bom_prose)} carry prose")
+
+
     for th in ths:
         z = os.path.join(outdir, f"halo_replica_jlc_{th}mm.zip")
         with zipfile.ZipFile(z, "w", zipfile.ZIP_DEFLATED) as zf:
@@ -114,7 +168,33 @@ def main():
                 f"  Selecting 0.4 mm also FORCES ENIG (HASL is greyed — you cannot\n"
                 f"  hot-air-level a board that thin), collapses Material Type to\n"
                 f"  FR4 TG135 alone, and took a 5-off order from $4.10 to about $66.\n"
+                f"\nWHAT THIS PACKAGE CAN AND CANNOT ORDER\n"
+                f"  BARE BOARD:  ready. Gerbers + Excellon drill, {len(cpl_rows)} "
+                f"parts placed.\n"
+                f"  ASSEMBLY:    NOT ready. The BOM carries {bom_named} real LCSC "
+                f"code(s) and {bom_blank} blank.\n"
+                f"               A blank cell is an HONEST REFUSAL, not an "
+                f"oversight: no price pull\n"
+                f"               was done for those lines. Each names the exact "
+                f"MPN a human must look\n"
+                f"               up. Do NOT invent codes to fill them.\n"
+                f"               JLCPCB's importer reads the LCSC column "
+                f"LITERALLY - a cell holding\n"
+                f"               prose matches no part and THE LINE IS DROPPED "
+                f"FROM THE ASSEMBLY WITH\n"
+                f"               NO ERROR ANYWHERE. The board comes back with "
+                f"parts missing. That is\n"
+                f"               why they are blank rather than explanatory.\n"
                 f"\nNOBODY HAS BUILT ONE. This board has never been powered on.\n")
+            if cpl_rows:
+                import io as _io
+                sio = _io.StringIO()
+                sio.write("Designator,Mid X,Mid Y,Layer,Rotation\n")
+                for r in cpl_rows:
+                    sio.write("%s,%s,%s,%s,%s\n" % tuple(r))
+                zf.writestr("halo_replica_fab-cpl.csv", sio.getvalue())
+            if bom_txt:
+                zf.writestr("halo_replica_fab-bom.csv", bom_txt)
         zips.append(z); print(f"ZIP      {z}  ({os.path.getsize(z)/1024:.0f} KB)")
 
     ok = True
