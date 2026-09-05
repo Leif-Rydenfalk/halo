@@ -11,10 +11,10 @@
    "weight": 10,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
+    "case": "halo-rev-a-2g4-meander9-passive",
     "key": "f_series_res_GHz"
    },
-   "current_note": "rim inverted-F on the round board; lowest SERIES resonance from a reactance zero-crossing, not the deepest dip"
+   "current_note": "2.0669 GHz — 16% below the band. The bare control sits at 2.6763, 7.8% above; the NFC winding pulls it down 22.8% and neither end lands in band"
   },
   {
    "name": "PCB thickness (deliberate divergence)",
@@ -56,15 +56,15 @@
    "name": "Antenna realized gain",
    "unit": "dBi",
    "target_value": -3.2,
-   "tolerance": 3.8,
+   "tolerance": 0.5,
    "cite": "research/01 §3 — Apple's own FCC BLE test report gives the AirTag IFA -3.2 dBi. halo is ABOVE it, which passes Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
    "weight": 7,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
+    "case": "halo-rev-a-2g4-meander9-passive",
     "key": "gain_dBi"
    },
-   "current_note": "0.521 dBi, 3.7 dB better than Apple's"
+   "current_note": "-3.391 dBi, 0.19 dB SHORT of Apple. Measured at 2.4418 GHz on the shipping element with the coil and battery contact present, at half-wavelength boundary. But the element RESONATES at 2.0669 GHz, 16% below band, so this is an antenna used off its band and a retune is the difference between this and what it can do"
   },
   {
    "name": "Overall stack height",
@@ -120,7 +120,7 @@
    "weight": 4,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
+    "case": "halo-rev-a-2g4-meander9-passive",
     "key": "radiation_efficiency_pct"
    }
   },
@@ -262,10 +262,10 @@
    "weight": 9,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
+    "case": "halo-rev-a-2g4-meander9-passive",
     "key": "s11_worst_in_ble_best_network_dB"
    },
-   "current_note": "worst case across 2.400-2.4835 GHz with the best matching network"
+   "current_note": "-4.954 dB with the best buildable network against a -6 dB requirement"
   },
   {
    "name": "Solver convergence on the antenna case",
@@ -274,9 +274,10 @@
    "weight": 10,
    "measure": {
     "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
+    "case": "halo-rev-a-2g4-meander9-passive",
     "key": "solver_converged"
-   }
+   },
+   "current_note": "1.0 — converged for the first time in this family, at half-wavelength boundary"
   },
   {
    "name": "Board routing completeness",
