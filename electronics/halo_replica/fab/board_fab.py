@@ -164,6 +164,18 @@ print("RELAX      %(iterations)d iterations, %(pushes)d pushes; "
       "top %(top_mm2).1f mm2 / bottom %(bottom_mm2).1f mm2, "
       "%(tht)d through-hole parts collide with both faces" % st)
 
+# THE SILKSCREEN, MADE READABLE. 45 parts on a Ø30 mm disc at KiCad's default
+# 1.0 mm text produced 39 silk_overlap and 37 silk_over_copper warnings, with
+# reference strings printed on top of each other. Values move to the Fab layer,
+# which is documentation and is not manufactured; the value belongs in the BOM.
+_silk = b.tidy_silkscreen(ref_mm=0.5)
+print("SILK       %(references_resized)d references at %(ref_mm)s mm / "
+      "%(thickness_mm).3f mm stroke%(_c)s, %(values_moved_to_fab)d values moved "
+      "off the silkscreen to *.Fab"
+      % dict(_silk, _c=(" (CLAMPED UP to the board's own %.1f mm floor - 0.5 mm "
+                        "is not manufacturable)" % _silk["floor_mm"])
+                    if _silk["clamped"] else ""))
+
 print("PLACEMENT  measured from the board:")
 _v, _rows = p.verify()
 if _v != 0:
