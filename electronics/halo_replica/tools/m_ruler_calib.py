@@ -115,6 +115,8 @@ def band_signal(img, box, axis, angle=None):
 
 def tick_centroids(d, pitch):
     v = -d
+    if not np.isfinite(pitch) or pitch <= 0 or not np.any(np.isfinite(v)):
+        return np.array([])          # a band with no signal: return nothing, do not crash
     thr = 0.35 * np.nanmax(v)
     half = max(2, int(round(pitch * 0.30)))
     out, n = [], len(v)
@@ -166,7 +168,7 @@ def comb(img, box, axis, pmin, pmax, angle=None):
     that visibly reaches x=2000 reporting its last tick at 1587."""
     d, off, ang = band_signal(img, box, axis, angle)
     p0, snr = fft_pitch(d, pmin, pmax)
-    pos = tick_centroids(d, p0)
+    pos = tick_centroids(d, p0) if np.isfinite(p0) else np.array([])
     if len(pos) < 8:
         return None, ang, snr, p0, len(pos)
     origin = box[0] if axis == "x" else box[1]

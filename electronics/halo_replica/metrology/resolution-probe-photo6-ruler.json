@@ -1,0 +1,24 @@
+{
+  "tool": "m_resolution_probe.py",
+  "image": "images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+  "box": [
+    400,
+    1130,
+    1400,
+    1250
+  ],
+  "frac": 0.01,
+  "rolloff_as_held": 0.3828125,
+  "control_ladder": {
+    "2": 0.3515625,
+    "3": 0.2890625,
+    "4": 0.2578125,
+    "6": 0.2109375
+  },
+  "first_separating_step": 2,
+  "effective_width_px_range": [
+    1067,
+    2134
+  ],
+  "verdict": "ALREADY SOFT / UPSAMPLED: real detail stops between 1/2 and 1/1 of Nyquist, i.e. about 1067-2134 px of genuine width in a 2134 px file. RE-RENDERING THE SOURCE LARGER CANNOT ADD INFORMATION THAT IS NOT THERE."
+}
