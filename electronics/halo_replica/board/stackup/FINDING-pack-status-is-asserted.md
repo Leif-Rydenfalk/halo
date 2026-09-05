@@ -108,6 +108,52 @@ rotated into a neighbour.
 and putting it there is a write into another session's directory. What is now
 available is the measurement, on the right board, for whoever does.
 
+## 3c. Item 2 is not blocked — its stated blocker is stale, and the real gap is narrower
+
+Item 2, *"Schematic, ERC-clean, plus a reusable design block"*, is PARTIAL, and
+its `reason` ends: *"What remains is applying halo's own block, **which needs
+halo's board to exist**."*
+
+**halo's board exists.** `halo_rev_a.kicad_pcb` is 872 807 bytes, routed, 49
+vias, with gerbers exported — and its schematic passes ERC today:
+
+```
+$ ce-pcb/bin/sch erc .../halo_rev_a.kicad_sch
+ERC PASS — 0 error(s), 0 warning(s)          exit 0
+```
+
+So the precondition has been met since at least 2026-09-04T23:54Z, and nothing
+recorded that it had been.
+
+**The real gap is narrower and sharper than "apply the block".** Contrast the
+two blocks on disk:
+
+| | `aht20-i2c` (the proof case) | `halo-core` |
+|---|---|---|
+| `.kicad_sch` inside the block | 40 938 B | 194 193 B |
+| **`.kicad_pcb` inside the block** | **34 193 B** | **absent** |
+| block DRC | `aht20-i2c.block-drc.json` | **none** |
+| applied into a host | schematic **and board**, host DRC 0/0 | **schematic only** — `applied/halo/` holds `host_halo_core.kicad_sch` + ERC (0 violations) and no `.kicad_pcb` |
+
+`halo-core.kicad_block` is a **schematic-only design block**. Item 2's second
+half is specifically that a block is *"proven to carry a routed layout, not just
+a schematic"* — which is the one thing `halo-core` does not do.
+
+**So the remaining work is:** re-export the block with `sch export-block ...
+--pcb halo_rev_a.kicad_pcb` so it carries a layout, apply it into a host board,
+and DRC that host. **That recipe already exists and was demonstrated on
+`aht20`** — item 2's own reason describes it, worst placement error 0.000000 mm,
+host DRC 0/0.
+
+*Not examined:* `halo-core.block-erc.json` carries 2 violations and
+`aht20-i2c.block-erc.json` carries 5, both from a `probe.kicad_sch` harness.
+Unterminated pins on a block boundary are expected there, so these are **not
+called defects** without reading their severities. Recorded so the numbers are
+not mistaken for a clean result either.
+
+*Item 10 (Compliance dossier) was checked too and is **honestly PARTIAL**: what
+is missing is a lab test campaign, which nothing on this machine can do.*
+
 ## 4. What should change
 
 1. `gen_release_pack.py` should **run each item's recorded `command`** and
@@ -120,6 +166,9 @@ available is the measurement, on the right board, for whoever does.
    this board immediately, and only the artifact is still outstanding.
 4. **V13 in `docs/VERIFICATION-DEBT.md` should be marked closed** — measured
    0 failures today against its recorded 40.
+5. **Item 2's `reason` should drop "needs halo's board to exist"** — it does
+   (§3c) — and name the actual remaining step: export `halo-core` *with* a
+   `--pcb`, then apply and DRC it, as was already done for `aht20`.
 
 ## 5. The instrument
 
