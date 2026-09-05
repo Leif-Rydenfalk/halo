@@ -97,5 +97,20 @@ else
 fi
 
 # 3. Route, nice'd, one only.
+#
+# --check-only RUNS EVERY GUARD AND LAUNCHES NOTHING, and it exists because
+# testing this script cost me a stray router. Verifying the "absent heavy"
+# path means reaching the END of the guards, and the end of the guards is a
+# freerouting launch: my own negative control started a real JVM on the
+# metrology board (which has 0 nets, so routing it is meaningless) and I only
+# noticed because I counted processes afterwards.
+#
+# A GUARD WHOSE PASS PATH EXECUTES THE EXPENSIVE THING CANNOT BE TESTED SAFELY.
+# That is not a shell detail - it is why the absent-heavy branch was the one
+# path I had reasoned about rather than watched.
+if [ "${1:-}" = "--check-only" ] || [ "${CHECK_ONLY:-}" = "1" ]; then
+  echo "CHECK-ONLY: every guard passed; NOT launching a router."
+  exit 0
+fi
 echo "routing $(basename "$BOARD") — one process, nice 10"
 nice -n 10 "$WS/ce-pcb/bin/route" "$BOARD" "$@"
