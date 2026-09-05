@@ -1,0 +1,380 @@
+{
+  "generated": "2026-09-05 18:21:17",
+  "counts": {
+    "published": 72,
+    "refused": 1,
+    "CURRENT": 63,
+    "STALE": 4,
+    "CANNOT DETERMINE": 0,
+    "UNGOVERNED": 5
+  },
+  "ages": [
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-routed-top.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:02, from ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb last written 2026-09-05 08:15 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-routed-iso.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:03, from ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb last written 2026-09-05 08:15 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-routed-bottom.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:02, from ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb last written 2026-09-05 08:15 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-unrouted-top.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:03, from ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb last written 2026-09-05 07:54 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-top.png",
+      "state": "STALE",
+      "why": "drawn 2026-09-04 22:02; ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb was written 2026-09-05 08:15, which is 10.2 h LATER. This picture is of an earlier state of that file."
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo_rev_a-bottom.png",
+      "state": "STALE",
+      "why": "drawn 2026-09-04 22:03; ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb was written 2026-09-05 08:15, which is 10.2 h LATER. This picture is of an earlier state of that file."
+    },
+    {
+      "image": "ce-designs/halo/out/gallery/fig-antenna-trajectory.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:11, from ce-designs/halo/tools/gen_antenna_trajectory.py last written 2026-09-05 18:11 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-passive/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:31, from ce-rf/out/halo-rev-a-2g4-rt1-passive/model.json last written 2026-09-05 17:31 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-passive/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:55, from ce-rf/out/halo-rev-a-2g4-rt1-passive/model.json last written 2026-09-05 17:31 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-passive/zin.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:55, from ce-rf/out/halo-rev-a-2g4-rt1-passive/model.json last written 2026-09-05 17:31 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-passive/pattern.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:55, from ce-rf/out/halo-rev-a-2g4-rt1-passive/model.json last written 2026-09-05 17:31 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-passive/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:27, from ce-rf/out/halo-rev-a-2g4-meander9-passive/model.json last written 2026-09-05 15:27 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-passive/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:33, from ce-rf/out/halo-rev-a-2g4-meander9-passive/model.json last written 2026-09-05 15:27 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-passive/zin.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:33, from ce-rf/out/halo-rev-a-2g4-meander9-passive/model.json last written 2026-09-05 15:27 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-passive/pattern.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:33, from ce-rf/out/halo-rev-a-2g4-meander9-passive/model.json last written 2026-09-05 15:27 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-bare/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:28, from ce-rf/out/halo-rev-a-2g4-rt1-bare/model.json last written 2026-09-05 17:28 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-bare/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:30, from ce-rf/out/halo-rev-a-2g4-rt1-bare/model.json last written 2026-09-05 17:28 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-bare/zin.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:30, from ce-rf/out/halo-rev-a-2g4-rt1-bare/model.json last written 2026-09-05 17:28 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-rt1-bare/pattern.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 17:30, from ce-rf/out/halo-rev-a-2g4-rt1-bare/model.json last written 2026-09-05 17:28 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-bare/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:25, from ce-rf/out/halo-rev-a-2g4-meander9-bare/model.json last written 2026-09-05 15:25 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-bare/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:27, from ce-rf/out/halo-rev-a-2g4-meander9-bare/model.json last written 2026-09-05 15:25 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-bare/zin.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:27, from ce-rf/out/halo-rev-a-2g4-meander9-bare/model.json last written 2026-09-05 15:25 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-round-rim-ifa/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:34, from ce-rf/out/halo-round-rim-ifa/model.json last written 2026-09-05 06:34 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-round-rim-ifa/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:34, from ce-rf/out/halo-round-rim-ifa/model.json last written 2026-09-05 06:34 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-round-rim-ifa/zin.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:34, from ce-rf/out/halo-round-rim-ifa/model.json last written 2026-09-05 06:34 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-round-rim-ifa/pattern.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:34, from ce-rf/out/halo-round-rim-ifa/model.json last written 2026-09-05 06:34 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-quarter/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:09, from ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-quarter/model.json last written 2026-09-05 15:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-half/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:09, from ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-half/model.json last written 2026-09-05 15:09 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-full/s11.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:09, from ce-rf/out/halo-rev-a-2g4-meander4-bare-pad-full/model.json last written 2026-09-05 15:09 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-room-r9743/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:33, from ce-rf/out/halo-rev-a-2g4-room-r9743/model.json last written 2026-09-05 15:33 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-room-r4000/layout.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 15:40, from ce-rf/out/halo-rev-a-2g4-room-r4000/model.json last written 2026-09-05 15:40 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-puck-hero.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-puck-iso.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/gallery/fig-stack.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:09, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 06:09 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-puck-section-front.png",
+      "state": "STALE",
+      "why": "drawn 2026-09-04 12:11; ce-designs/halo/design.py was written 2026-09-04 12:30, which is 19 min LATER. This picture is of an earlier state of that file."
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-puck-section.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-puck-exploded-wide.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-shell-top.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-carrier.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-battery-door.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-pcb-blank.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-bayonet.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-bayonet-section.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-contacts.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/mech/halo-battery-contact-pos-a.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-04 17:04, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-piezo-land.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/render/halo-board-in-shell.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:06, from ce-designs/halo/design.py last written 2026-09-04 12:30 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/cr2032_pulse_load/fresh.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/cr2032_pulse_load/fresh.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/cr2032_pulse_load/pulse-point.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/cr2032_pulse_load/pulse-point.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/cr2032_pulse_load/end-of-life.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/cr2032_pulse_load/end-of-life.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/cr2032_pulse_load/worst-case.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/cr2032_pulse_load/worst-case.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/cr2032_pulse_load/worst-case-no-reservoir.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/cr2032_pulse_load/worst-case-no-reservoir.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/speaker_hbridge/coil-8r-0m5h.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/speaker_hbridge/coil-8r-0m5h.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/speaker_hbridge/coil-8r-2m0h.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/speaker_hbridge/coil-8r-2m0h.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/speaker_hbridge/coil-32r-0m5h.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/speaker_hbridge/coil-32r-0m5h.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/speaker_hbridge/coil-32r-2m0h.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:09, from ce-spice/out/speaker_hbridge/coil-32r-2m0h.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/speaker_hbridge/cr2032-loaded.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:09, from ce-spice/out/speaker_hbridge/cr2032-loaded.cir last written 2026-09-05 18:09 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/decoupling_ldo/datasheet-check.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/decoupling_ldo/datasheet-check.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/decoupling_ldo/underdamped-ringing.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/decoupling_ldo/underdamped-ringing.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/decoupling_ldo/halo-rail.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/decoupling_ldo/halo-rail.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/decoupling_ldo/no-local-decoupling.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/decoupling_ldo/no-local-decoupling.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/decoupling_ldo/halo-rail-50ma.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/decoupling_ldo/halo-rail-50ma.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/nfc_tank/as-measured.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/nfc_tank/as-measured.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/nfc_tank/damped-to-35.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/nfc_tank/damped-to-35.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-spice/out/nfc_tank/detuned-10pct.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:08, from ce-spice/out/nfc_tank/detuned-10pct.cir last written 2026-09-05 18:08 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/gallery/fig-halo-vs-airtag.png",
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 06:09, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 06:09 \u2014 the picture is the newer of the two"
+    },
+    {
+      "image": "ce-designs/halo/out/gallery/fig-board-side-by-side.png",
+      "state": "STALE",
+      "why": "drawn 2026-09-05 06:10; ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb was written 2026-09-05 08:15, which is 2.1 h LATER. This picture is of an earlier state of that file."
+    },
+    {
+      "image": "ce-designs/halo/images/airtag/oflynn-frontside-tpnames.jpg",
+      "state": "UNGOVERNED",
+      "why": ""
+    },
+    {
+      "image": "ce-designs/halo/images/airtag/oflynn-backside-1000px.jpeg",
+      "state": "UNGOVERNED",
+      "why": ""
+    },
+    {
+      "image": "ce-designs/halo/images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+      "state": "UNGOVERNED",
+      "why": ""
+    },
+    {
+      "image": "ce-designs/halo/images/airtag/fcc-BCGA2187-internal-photo-4.jpg",
+      "state": "UNGOVERNED",
+      "why": ""
+    },
+    {
+      "image": "ce-designs/halo/images/airtag/fcc-BCGA2187-internal-photo-1.jpg",
+      "state": "UNGOVERNED",
+      "why": ""
+    }
+  ],
+  "refusals": [
+    {
+      "image": "ce-rf/out/halo-rev-a-2g4-meander9-bare/pattern.png",
+      "why": "STALE and refused \u2014 a simulation plot older than its own run is a picture of a solve that was superseded. drawn 2026-09-05 09:34; ce-rf/out/halo-rev-a-2g4-meander9-bare/model.json was written 2026-09-05 15:25, which is 5.9 h LATER. This picture is of an earlier state of that file."
+    }
+  ],
+  "verdict": "PARTIAL"
+}
