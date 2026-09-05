@@ -10,13 +10,28 @@ below is a paper claim until one exists. Read that line before any other.
 ## What to upload
 
 ```
-fab/out/halo_replica_jlc_0.4mm.zip     # closest to Apple's 0.30 mm
-fab/out/halo_replica_jlc_0.8mm.zip     # the thickness JLC's 4-layer list unambiguously contains
+fab/out/halo_replica_jlc_0.8mm.zip     # the only thickness orderable at 4 layers — see below
 ```
 
-Each zip contains the gerbers, the Excellon drill, and an `ORDER-SETTINGS.txt` naming the settings
-to choose. Upload **one** of them — they differ only in the thickness you should select at order
-time; the copper is identical.
+The zip contains the 13 fabrication gerbers, the Excellon drill, the gerber job file, a **CPL**
+(45 placements, on the drill file's origin), the **BOM**, and an `ORDER-SETTINGS.txt` naming every
+setting to choose.
+
+**There is no longer a 0.4 mm zip, and `g_package.py` refuses to write one for this board** — see
+*Which one* below. `--allow-unorderable` overrides it for a different vendor.
+
+### Bare board yes, assembly not yet
+
+| | state |
+|---|---|
+| **bare board** | **ready** — gerbers + drill, `z_fabcheck` exit 0 |
+| **assembly** | **NOT ready** — the BOM carries **4** real LCSC codes and **21** blank |
+
+A blank LCSC cell is an **honest refusal**, not an oversight: no price pull was done for that line,
+and each one names the exact MPN a human must look up. **Do not invent codes to fill them.**
+JLCPCB's importer reads that column literally — a cell holding prose matches no part and **the line
+is silently dropped from the assembly**, so the board comes back with parts missing. That is why
+they are blank rather than explanatory.
 
 **Which one: use the 0.8 mm zip at JLCPCB.** This was an open question in an earlier revision of
 this file, which told you to *"try 0.4 first"*. **That advice was wrong and is withdrawn.**
@@ -71,7 +86,7 @@ you disconnected copper.
 | | Apple | here | why |
 |---|---|---|---|
 | outline | Ø~25 mm **annulus** | **Ø30 mm disc** | a 6 mm QFN and a coin-cell holder need the area; still inside the AirTag's Ø31.9 mm shell |
-| thickness | **0.30 mm** | 0.4 or 0.8 mm | below every fab floor we could find published |
+| thickness | **0.30 mm** | **0.8 mm**, declared in the board file | 0.30 mm is below every 4-layer process we could find. **Measured**: JLCPCB greys out 0.4 and 0.6 mm at 4 layers, so 0.8 mm is the thinnest orderable. The board file now *says* 0.8 — it previously said **1.6 mm**, which is KiCad's default and nobody's decision, and it is the field a fabricator quotes from |
 | SoC package | nRF52832 **WLCSP-50** | same die, **QFN-48** | no published ball map — 56 grid positions for 50 balls and **which six are depopulated is CANNOT DETERMINE** |
 | 1.8 V rail | buck + load switch | **deleted; runs from the cell** | the nRF52832 spans 1.7–3.6 V across the whole CR2032 curve. It was also the highest-risk block on a board built to answer "does it work" |
 | flash | GD25LQ32C | **MX25R3235F** | Apple's part is 1.65–2.0 V and **cannot run at 3 V**. This follows necessarily from the line above |
