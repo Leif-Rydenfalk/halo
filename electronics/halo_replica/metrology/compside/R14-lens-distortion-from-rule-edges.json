@@ -1,0 +1,157 @@
+{
+ "tool": "c_distortion.py",
+ "verb": "edge",
+ "why": "separate LENS DISTORTION from a non-flat board as the cause of the coherent registration misfit measured in R11",
+ "edges": {
+  "photo6-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     400,
+     1111,
+     2000,
+     1151
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1131 (L1 ruler-calibration photo6_bottom)"
+   },
+   "kept": 1594,
+   "discarded": {
+    "on_box_boundary": 4,
+    "weak_gradient": 2
+   },
+   "n": 1594,
+   "span_px": 1596.0,
+   "slope": 6.501796509782698,
+   "quad_coeff": -0.4708658990068077,
+   "sagitta_px": 1.415319293562469,
+   "sign": -1,
+   "resid_sd_line_px": 2.9538515894264563,
+   "resid_sd_quad_px": 2.9236328631567754,
+   "null_mean": 0.1616316167517179,
+   "null_sd": 0.11967176818837763,
+   "z": 2.584020332751482,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo6-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     1503,
+     100,
+     1543,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1523 (L1 ruler-calibration photo6_right)"
+   },
+   "kept": 773,
+   "discarded": {
+    "on_box_boundary": 27
+   },
+   "n": 773,
+   "span_px": 799.0,
+   "slope": 1.3002173281991338,
+   "quad_coeff": -0.315010134810788,
+   "sagitta_px": 0.9518291298073088,
+   "sign": -1,
+   "resid_sd_line_px": 5.9877527107406285,
+   "resid_sd_quad_px": 5.981184158895091,
+   "null_mean": 0.19804304884640495,
+   "null_sd": 0.14588430613668654,
+   "z": 0.8017797737255613,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo7-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     400,
+     1093,
+     2000,
+     1133
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1113"
+   },
+   "kept": 1590,
+   "discarded": {
+    "weak_gradient": 3,
+    "on_box_boundary": 7
+   },
+   "n": 1590,
+   "span_px": 1596.0,
+   "slope": 0.03715919693739771,
+   "quad_coeff": -0.37779401562401843,
+   "sagitta_px": 1.1366154065438345,
+   "sign": -1,
+   "resid_sd_line_px": 3.4416754341299045,
+   "resid_sd_quad_px": 3.4249905292737925,
+   "null_mean": 0.07779601591674602,
+   "null_sd": 0.05870824337724096,
+   "z": 5.10998085532177,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "MEASURED"
+  },
+  "photo7-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     1537,
+     100,
+     1577,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1557"
+   },
+   "kept": 747,
+   "discarded": {
+    "on_box_boundary": 53
+   },
+   "n": 747,
+   "span_px": 799.0,
+   "slope": 4.2258791110459,
+   "quad_coeff": -1.39213231723602,
+   "sagitta_px": 4.310138370190473,
+   "sign": -1,
+   "resid_sd_line_px": 5.854639356999929,
+   "resid_sd_quad_px": 5.70716303613489,
+   "null_mean": 0.2360402900743644,
+   "null_sd": 0.17639575905013763,
+   "z": 6.553967246077925,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "MEASURED"
+  },
+  "_consistency": {
+   "fcc-BCGA2187-internal-photo-7.jpg": {
+    "edges": [
+     "photo7-bottom",
+     "photo7-right"
+    ],
+    "detail": [
+     {
+      "edge": "photo7-bottom",
+      "quad_sign": -1,
+      "outward": 1.0,
+      "bows": "AWAY from the frame centre",
+      "sagitta_px": 1.1366154065438345
+     },
+     {
+      "edge": "photo7-right",
+      "quad_sign": -1,
+      "outward": 1.0,
+      "bows": "AWAY from the frame centre",
+      "sagitta_px": 4.310138370190473
+     }
+    ],
+    "consistent": true,
+    "kind": "BARREL"
+   }
+  }
+ },
+ "worst_measured_sagitta_px": 4.310138370190473,
+ "verdict": "PASS"
+}
