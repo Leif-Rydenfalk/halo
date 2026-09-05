@@ -59,11 +59,24 @@ def blobs(arr, thr_offset=0.0):
     if n == 0:
         return np.zeros((0, 2)), np.zeros(0), t
     areas = np.asarray(ndimage.sum(mask, lab, range(1, n + 1)))
-    # A land pattern's pads are all the same size. Keep blobs within a factor
-    # of 3 of the MEDIAN area: this drops single-pixel speckle and drops the
-    # one huge blob you get when neighbouring pads bridge.
-    med = float(np.median(areas))
-    keep = np.nonzero((areas >= max(2.0, med / 3.0)) & (areas <= med * 3.0))[0]
+    # A PAD IS SMALL. Drop anything covering more than 5 % of the box BEFORE
+    # taking the median, or one bridged super-blob becomes the median and the
+    # filter then rejects the real pads. Measured: at an Otsu offset of -30 on
+    # a clean synthetic grid the threshold fell BELOW the background mode, the
+    # whole box merged into one 101983 px blob, and the tool reported "1 pad".
+    box_area = float(arr.size)
+    small = areas <= 0.05 * box_area
+    if small.sum() == 0:
+        return np.zeros((0, 2)), np.zeros(0), t
+    # AREA-WEIGHTED median, not the plain median: "the size of the blob a
+    # typical bright PIXEL belongs to". A plain median is destroyed by noise
+    # speckle — measured, a clean 91-pad grid thresholded 12 units low broke
+    # into 348 blobs, the plain median became a 2 px speckle, and the +/-3x
+    # window then rejected every real pad and reported 348.
+    a_small = np.sort(areas[small])
+    csum = np.cumsum(a_small)
+    med = float(a_small[int(np.searchsorted(csum, csum[-1] / 2.0))])
+    keep = np.nonzero(small & (areas >= max(2.0, med / 3.0)) & (areas <= med * 3.0))[0]
     if len(keep) == 0:
         return np.zeros((0, 2)), np.zeros(0), t
     cen = np.asarray(ndimage.center_of_mass(mask, lab, list(keep + 1)))
@@ -84,6 +97,10 @@ def lattice(cen):
     pitch = float(np.median(nn))
     if not np.isfinite(pitch) or pitch <= 0:
         return None
+    # A LATTICE HAS A TIGHT NEAREST-NEIGHBOUR DISTRIBUTION AND SCATTER DOES NOT.
+    # This is independent of the residual test and of the fill test: it looks
+    # only at spacing, not at position or occupancy.
+    nn_cv = float(np.std(nn) / pitch)
     # dominant axis of the near-neighbour offsets, folded to [0,90)
     near = np.nonzero(dist < pitch * 1.4)
     if len(near[0]) < MIN_PADS:
@@ -95,18 +112,37 @@ def lattice(cen):
     u = np.array([math.cos(a0), math.sin(a0)])
     v = np.array([-u[1], u[0]])
     pu, pv = cen @ u, cen @ v
-    # pitch along each axis, measured on the projections rather than assumed equal
-    def axis_pitch(p):
-        s = np.sort(p)
-        gaps = np.diff(s)
-        gaps = gaps[gaps > pitch * 0.35]
-        return float(np.median(gaps)) if len(gaps) else pitch
-    du, dv = axis_pitch(pu), axis_pitch(pv)
-    cols = int(round((pu.max() - pu.min()) / du)) + 1
-    rows = int(round((pv.max() - pv.min()) / dv)) + 1
+
+    # COUNT THE LINES, DO NOT DIVIDE THE EXTENT. Dividing was wrong: a half-
+    # degree error in the axis smears each column across ~2 px, which SHRINKS
+    # the median inter-column gap and GROWS the extent, and both errors push
+    # the quotient the same way. A perfect 13 x 7 grid came back 14 x 8.
+    # Clustering the projections is immune to that smear.
+    def lines(p):
+        srt = np.sort(p)
+        cuts = np.nonzero(np.diff(srt) > pitch * 0.5)[0]
+        groups = np.split(srt, cuts + 1)
+        return len(groups), [float(g.mean()) for g in groups]
+
+    ncols, ucent = lines(pu)
+    nrows, vcent = lines(pv)
+    du = float(np.median(np.diff(ucent))) if ncols > 1 else pitch
+    dv = float(np.median(np.diff(vcent))) if nrows > 1 else pitch
+
+    # DO THE PADS ACTUALLY SIT ON THIS LATTICE? Distance from each centroid to
+    # its nearest lattice line, in units of pitch. A real land pattern is ~0.
+    # Scattered blobs are ~0.25, and without this the tool happily "fits" a
+    # lattice to random points and reports a plausible-looking cell count.
+    def resid(p, cents):
+        c = np.asarray(cents)
+        return float(np.median(np.abs(p[:, None] - c[None, :]).min(axis=1)))
+    res = (resid(pu, ucent) / max(du, 1e-6) + resid(pv, vcent) / max(dv, 1e-6)) / 2
+
     return {"pitch_px": round(pitch, 2), "pitch_u_px": round(du, 2),
-            "pitch_v_px": round(dv, 2), "rows": rows, "cols": cols,
-            "cells": rows * cols, "axis_deg": round(math.degrees(a0), 1),
+            "pitch_v_px": round(dv, 2), "rows": nrows, "cols": ncols,
+            "cells": nrows * ncols, "axis_deg": round(math.degrees(a0), 1),
+            "lattice_residual_frac": round(res, 4),
+            "nn_cv": round(nn_cv, 4),
             "extent_u_px": round(float(pu.max() - pu.min()), 1),
             "extent_v_px": round(float(pv.max() - pv.min()), 1)}
 
@@ -146,6 +182,24 @@ def run(args):
               f"{lat['cells']} cells. The two routes are irreconcilable, so at "
               "least one is measuring something other than this land pattern.")
         return 1
+    if lat["nn_cv"] > 0.25:
+        print(f"  CANNOT DETERMINE — nearest-neighbour spacing has coefficient "
+              f"of variation {lat['nn_cv']:.2f}. A lattice is near 0; scattered "
+              "points are near 0.5. These points are not regularly spaced.")
+        return 2
+    if lat["lattice_residual_frac"] > 0.10:
+        print(f"  CANNOT DETERMINE — the blobs do not SIT on the lattice that "
+              f"was fitted to them: median off-lattice distance is "
+              f"{lat['lattice_residual_frac']:.2f} of a pitch (a real land "
+              "pattern is near 0; scattered blobs are near 0.25). A lattice can "
+              "be fitted to anything; this is the test that it means something.")
+        return 2
+    fill = base["count"] / lat["cells"]
+    if fill < 0.40:
+        print(f"  CANNOT DETERMINE — the fitted lattice is only {fill:.0%} "
+              "occupied. A land pattern with more than half its cells empty is "
+              "not a land pattern, it is a lattice fitted to scattered points.")
+        return 2
     empty = lat["cells"] - base["count"]
     print(f"  reconciled: {base['count']} pads in a {lat['rows']} x {lat['cols']} "
           f"lattice, {empty} cell(s) empty ({empty/lat['cells']:.0%})")
@@ -209,7 +263,8 @@ def _grid_img(rows, cols, pitch=20, r=6, drop=(), size=None, deg=0.0,
             py = cy + u * math.sin(a) + v * math.cos(a)
             bright = 220.0
             if fade is not None and k in fade:
-                bright = 120.0          # a pad only just above the ground
+                bright = 58.0           # a pad only just above the ground, so
+                                        # a realistic threshold swing crosses it
             img[(xx - px) ** 2 + (yy - py) ** 2 <= r * r] = bright
             k += 1
     return np.clip(img + rng.normal(0, noise, size), 0, 255).astype(np.uint8)
@@ -250,27 +305,43 @@ def self_test():
         img[(xx - px) ** 2 + (yy - py) ** 2 <= 36] = 220
     r = one(np.clip(img, 0, 255).astype(np.uint8))
     lat = r["lattice"]
-    bad = lat is None or r["count"] > lat["cells"]
-    chk("SCATTERED blobs are NOT reconciled as a land pattern",
-        bad, f"count {r['count']}, cells {lat['cells'] if lat else None} "
-             "— route A exceeds route B, which is the irreconcilable case")
+    bad = (lat is None or r["count"] > lat["cells"] or lat["nn_cv"] > 0.25
+           or lat["lattice_residual_frac"] > 0.10
+           or r["count"] / lat["cells"] < 0.40)
+    chk("SCATTERED blobs are NOT reconciled as a land pattern", bad,
+        (f"count {r['count']}, cells {lat['cells']}, nn_cv {lat['nn_cv']}, "
+         f"off-lattice {lat['lattice_residual_frac']}") if lat else "no lattice")
+    g = one(_grid_img(13, 7))["lattice"]
+    chk("...and the SAME gates stay quiet on a real grid",
+        g["nn_cv"] <= 0.25 and g["lattice_residual_frac"] <= 0.10,
+        f"nn_cv {g['nn_cv']}, off-lattice {g['lattice_residual_frac']} "
+        "— the separation is what makes the gate a test and not a threshold "
+        "chosen to pass")
 
     r = one(np.full((200, 200), 40, np.uint8))
     chk("a flat box yields no pads", r["count"] < MIN_PADS, f"count {r['count']}")
 
     # THE SWEEP CONTROL: pads of graded brightness, so the count MUST move
     faded = _grid_img(13, 7, fade=set(range(0, 91, 3)))
-    c_lo = one(faded, -30.0)["count"]
-    c_hi = one(faded, +40.0)["count"]
-    chk("sweep control FIRES: a graded land pattern gives different counts at "
-        "different thresholds", c_lo != c_hi, f"{c_lo} at -30, {c_hi} at +40")
+    c_lo = one(faded, -12.0)["count"]
+    c_hi = one(faded, +12.0)["count"]
+    chk("sweep control FIRES: a land pattern with marginal pads gives "
+        "different counts across the tool's OWN threshold range",
+        c_lo != c_hi, f"{c_lo} at -12, {c_hi} at +12")
 
     clean = _grid_img(13, 7)
-    c_lo = one(clean, -30.0)["count"]
-    c_hi = one(clean, +40.0)["count"]
+    c_lo = one(clean, -12.0)["count"]
+    c_hi = one(clean, +12.0)["count"]
     chk("sweep control STAYS QUIET: a clean land pattern gives the SAME count "
-        "across the same threshold range", c_lo == c_hi == 91,
-        f"{c_lo} at -30, {c_hi} at +40")
+        "across that same range", c_lo == c_hi == 91,
+        f"{c_lo} at -12, {c_hi} at +12")
+
+    huge = _grid_img(13, 7)
+    r = one(huge, -34.0)     # threshold below the background mode
+    chk("a threshold below the background does NOT report '1 pad'",
+        r["count"] < MIN_PADS or r["count"] == 91,
+        f"count {r['count']} — the 5%-of-box size filter drops the merged blob "
+        "instead of letting it become the median")
 
     print(f"\n{p}/{p+f} passed, {f} failed")
     return 1 if f else 0

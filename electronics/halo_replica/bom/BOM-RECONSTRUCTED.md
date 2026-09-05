@@ -111,8 +111,19 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 - **confidence** — HIGH that this can is the UWB module (Apple labelled it in a regulatory filing). MEDIUM that the die is TMKA75 — that rests on Catley via siliconpr0n, not on anything visible here.
 - **what the marking establishes** — nothing — no marking was read.
 - **what it does NOT establish** — everything.
-- **what would settle it** — A decapsulated module photograph, or the siliconpr0n die shot read directly.
+- **what would settle it** — A decapsulated module photograph, or the siliconpr0n die shot read directly. For the FOOTPRINT specifically, and separately from the die: a higher-resolution photograph of a depopulated board — attempted 2026-09-05 against IMG-TESTS and REFUSED with measured numbers, see this line's `land_pattern`.
 - **Replica verdict** — GAP — DECISIONS.md D23. Apple's U1 is never sold to anyone at any price. The Replica records this footprint as PRESENT AND UNPOPULATED. This is not a sourcing problem to be worked; it is a wall, and no effort is spent on it.
+- **land_pattern**
+  - **evidence** — IMG-TESTS — the Apple U1 module's land pattern is BARE there, the module having been removed. New to this project on 2026-09-05; the image had been held since 2026-09-03 and never used for this.
+  - **qualitative** — A dense regular rectangular array, visibly far larger and far denser than any other footprint on the board, occupying roughly a fifth of the board's radial width. Stated as qualitative because nothing quantitative survived the test below.
+  - **pad_count** — CANNOT DETERMINE
+  - **extent** — CANNOT DETERMINE
+  - **aspect_ratio** — CANNOT DETERMINE — and note that aspect is SCALE-FREE, so this is not a scale problem, it is a resolution problem.
+  - **THE ANSWER THAT WAS REFUSED** — 69 pads in a 6 x 12 lattice, 3 cells empty (4 %). It passed every reconciliation gate tools/b_padcount.py has — regular nearest-neighbour spacing, pads sitting on the fitted lattice, 96 % occupancy — and a footprint with three depopulated corners is exactly what a real SiP looks like. It would have gone into this file as fact.
+  - **what refused it** — --sweep, over 4 box paddings x 5 threshold offsets. Blob count 65-78 (18 % spread), extent across 33 %, extent along 69 %, scale-free aspect 59 %, and NINE different lattice shapes: 5x12, 6x12, 6x13, 6x14, 7x13, 7x14, 8x13, 9x14, 10x14.
+  - **the physical reason** — The array is about 47 x 71 source pixels at a 5.71 px lattice pitch with ~3 px pads, in a JPEG. Pads merge and split as the threshold moves. A resolution floor, not a method defect: no threshold choice recovers information the photograph does not contain.
+  - **what would settle it** — A higher-resolution photograph of a depopulated component-side board. It does not exist in the public record reachable from here — O'Flynn's repository was enumerated on 2026-09-05 and images/ holds exactly eight files, seven of them images, all seven already in this project. airtag-tests.jpeg is the only one showing a depopulated board and it is the low-resolution one.
+  - **full write-up** — bom/E-L3-DEPOPULATED-BOARD.md; raw record bom/measurements/U2-landpattern.json
 
 ### U3 — firmware storage — holds the nRF firmware AND the Apple U1 'Rose' firmware, unencrypted
 
@@ -704,3 +715,4 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 - **`RESEARCH-A`** — research/01-airtag-hardware.md — research lane A's full evidence file.
 - **`E02`** — electronics/halo_replica/evidence/E02-THE-COIL-CORRECTION.md — the orchestrator's withdrawal of M01 §3's supporting argument, after this lane pointed out that a voice coil is a solenoid and the two 'independent' reads measured the same radial extent.
 - **`NRF-PS`** — nRF52832 Product Specification v1.4, Nordic Semiconductor — Table 132 (WLCSP body 2.956 x 3.226 mm nominal, 0.4 mm pitch, p.541), Table 10 (nRF52832-CIAA = 64 kB RAM / 512 kB flash), Figure 165 (package marking layout N52832 / <PP><VV><H><P> / <YY><WW><LL>). Fetched via the distributor mirror at resources.ampheo.com/static/datasheets/nordic-semiconductor/nrf52832-ciaa-r7.pdf.
+- **`IMG-TESTS`** — images/airtag/oflynn-airtag-tests.jpeg — 1000x658 px, Colin O'Flynn, CC-BY-4.0. Catalogued since 2026-09-03 as a bench photo of probing, which buried the point: the CENTRE board in it has packages PULLED OFF, so it is the ONLY photograph in this project where land patterns are BARE. O'Flynn: 'I pulled some of the chips off to investiate any connections between the test points and the chips.'

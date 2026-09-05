@@ -58,14 +58,24 @@ VIEWS = {
         face='FRONT (component side)',
         note="FCC BCGA2187 internal photo 6, captioned 'MLB - Front'. Board circle "
              "seed from metrology/board-outline-photo6.json (lane L1).",
-        px_per_mm=15.887545712881764,
-        px_per_mm_basis="metrology/ruler-calibration.json photo6_bottom: 93 ticks / 97 mm, "
-                        "stderr 0.0022 px/mm, split-half 0.33%. The RIGHT rule in the same "
-                        "frame gives 15.5651 px/mm - a 2.07% disagreement that this tool "
-                        "does NOT resolve and does not hide.",
-        px_per_mm_note="NOTE: this is the rule's value AT THE RULE. metrology/M02\n"
-                       "measures 15.6850 AT THE BOARD (two routes, 0.23% apart),\n"
-                       "1.29% lower. Pass --target-px-per-mm 15.6850 to use it.",
+        px_per_mm=15.6850,
+        px_per_mm_basis="metrology/scale-at-board-photo6.json - m_scale_at AT THE BOARD "
+                        "(952,678), bottom-rule and right-rule routes 0.228% apart, "
+                        "halfrange 0.0179 px/mm (lane L1, M02). THE SCALE IS TAKEN AT THE "
+                        "BOARD, not at either rule.",
+        px_per_mm_note="DEFAULT CORRECTED 2026-09-05 by L2: 15.887546 -> 15.6850.\n"
+                       "The old default was photo 6's BOTTOM RULE measured AT THE RULE,\n"
+                       "and the board does not sit on that rule. Its sibling view\n"
+                       "fcc7-back already defaulted to an AT-THE-BOARD scale (L9), so the\n"
+                       "two entries of one catalogue defaulted to different KINDS of\n"
+                       "number, and only the FRONT one was wrong. The error was 1.29% in\n"
+                       "the FLATTERING direction: every held-out mm computed against the\n"
+                       "old default came out 1.29% SMALLER than the truth.\n"
+                       "The rule's own value, still true of the rule, is 15.887546 px/mm\n"
+                       "(93 ticks / 97 mm, stderr 0.0022, split-half 0.33%); photo 6's\n"
+                       "RIGHT rule reads 15.5651, a 2.07% rule-to-rule disagreement that\n"
+                       "m_scale_at resolves by interpolating TO THE BOARD.\n"
+                       "Pass --target-px-per-mm 15.887546 for the old behaviour.",
     ),
     'oflynn-front': dict(
         path='oflynn-backside-fullres.jpeg',

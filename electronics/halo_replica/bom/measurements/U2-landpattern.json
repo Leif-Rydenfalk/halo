@@ -1,0 +1,39 @@
+{
+  "label": "U2 — Apple U1 UWB SiP, EXPOSED LAND PATTERN (module removed)",
+  "lane": "L3 (BOM identification)",
+  "measured": "2026-09-05",
+  "input": {
+    "image": "images/airtag/oflynn-airtag-tests.jpeg",
+    "image_size_px": [1000, 658],
+    "source": "Colin O'Flynn, github.com/colinoflynn/airtag-re, CC-BY-4.0",
+    "what_it_shows": "Five AirTag boards on a bench. The CENTRE board is a component-side board with several packages PULLED OFF, so land patterns that are covered by a package in every other photograph in this project are bare. O'Flynn: 'I pulled some of the chips off to investiate any connections between the test points and the chips.'",
+    "box": [566, 367, 613, 438],
+    "tool": "tools/b_padcount.py, 9/9 selftest, every control watched firing"
+  },
+  "verdict": "CANNOT DETERMINE",
+  "what_was_attempted": "The pad count, the lattice shape and the extent of the Apple U1 module's land pattern.",
+  "the_answer_that_was_refused": {
+    "count": 69, "lattice": "6 x 12", "cells": 72, "empty_cells": 3,
+    "why_it_looked_right": "It passed every reconciliation gate the tool has: nearest-neighbour spacing coefficient of variation inside tolerance, pads sitting on the fitted lattice, and 96% lattice occupancy. A land pattern with three depopulated cells is exactly what a real SiP footprint looks like."
+  },
+  "why_it_was_refused": {
+    "test": "--sweep: re-run across 4 box paddings x 5 threshold offsets = 20 combinations, and see whether the answer is a property of the BOARD or of the SEARCH (E07 family 11)",
+    "blob_count_range": [65, 78], "blob_count_spread_pct": 18.0,
+    "lattice_shapes_seen": [[5,12],[6,12],[6,13],[6,14],[7,13],[7,14],[8,13],[9,14],[10,14]],
+    "extent_across_spread_pct": 33.5,
+    "extent_along_spread_pct": 68.6,
+    "aspect_spread_pct": 58.5,
+    "conclusion": "NINE different lattice shapes over twenty parameter combinations. Not the count, not the extent, not even the scale-free aspect ratio survives. Nothing quantitative can be taken from this land pattern."
+  },
+  "the_physical_reason": {
+    "pitch_px": 5.71,
+    "pad_px": "about 3 px across",
+    "statement": "The array is roughly 47 x 71 source pixels. At a ~5.7 px lattice pitch with ~3 px pads in a JPEG, individual pads merge and split as the threshold moves. This is a resolution floor, not a method defect: no threshold choice recovers information the photograph does not contain."
+  },
+  "what_would_settle_it": "A higher-resolution photograph of a depopulated AirTag component-side board. It does not exist in the public record available here: O'Flynn's repository was enumerated on 2026-09-05 and contains exactly eight files in images/ (airtag-tests.jpeg, backside-1000px, backside-fullres, frontside-1000px, frontside-26mm-cropped, frontside-fullres, frontside-tpnames.jpg, frontside-tpnames.psd), all seven images of which this project already holds. airtag-tests.jpeg is the ONLY one showing a depopulated board, and it is the low-resolution one.",
+  "what_IS_established_and_is_new": [
+    "A depopulated component-side AirTag board exists in this project's own image set and had never been used. Land patterns for the removed packages are bare in it.",
+    "The Apple U1 module's land pattern is a dense regular rectangular array occupying roughly a fifth of the board's radial width — visibly far larger and far denser than any other footprint on the board. Qualitative, and stated as qualitative.",
+    "Two further exposed land patterns are visible on the same board (one near the crystals, one lower-left) and have not been examined."
+  ]
+}
