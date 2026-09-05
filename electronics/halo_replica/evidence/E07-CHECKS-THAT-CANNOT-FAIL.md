@@ -100,3 +100,66 @@ shared input because nobody writes it down.*
 **L1's form is better and is the one this lane now uses:** *check the assumption the method
 shares with **its own control**, not only the inputs they do not share.* It covers the
 method-and-control case, which is the one that actually bit both of us today.
+
+## 7 · A check whose failure mode returns the BEST possible score — noise is broadband
+
+The worst of the set, and the one nearest to being published as a headline.
+
+L1's resolution probe, pointed at a box on `oflynn-backside-fullres` that sat mostly **off the
+board**, returned **0.992 of Nyquist** — "SHARP, essentially to the file's own limit". It was
+drafted as the good news. On-board regions of the *same file* measure **0.195–0.258**.
+
+**Sensor and JPEG noise reaches Nyquist by definition and resolves nothing.** So a resolution
+probe aimed at empty background does not merely fail — **it returns the best possible score.**
+This is worse than a check that cannot fail: it is a check whose failure mode is
+*indistinguishable from the ideal result*. The only thing separating them was the region's
+luma sd — **36** for the background box against **64–66** on board.
+
+**Fix:** every row now names its region and carries that region's luma sd. What caught it was
+drawing the sample box back onto the photograph and **looking** — the same move that caught the
+half-max contact-shadow artifact, whose faked ellipse pointed a *different* direction in each
+photograph, which no real board shape can do.
+
+## 8 · A correct measurement with a wrong verdict printed over it
+
+Distinct from all of the above: the number was right and the sentence above it was not. Two
+instances in one tool:
+
+- `k_first`, "the first ladder step that costs detail", is ≥2 even for a perfectly sharp
+  image — so the tool printed **"ALREADY SOFT / UPSAMPLED" over a 0.992 measurement.**
+- The verdict demanded `as_held > /2 > /4` and, when /2 came out *equal*, reported "cannot
+  separate the controls" — when **/2 failing to separate WAS the answer.** A monotonic-ordering
+  assumption had been smuggled into the verdict logic rather than the physics.
+
+**L1's line, kept verbatim: nobody audits a refusal, and nobody audits a confident label
+either.**
+
+---
+
+## The resolution table, because it is the fact these lessons produced
+
+Genuine pixels across the board — rolloff × board span — not pixels per file:
+
+| source | side shown | board span | rolloff | genuine px | genuine px/mm |
+|---|---|---|---|---|---|
+| `oflynn-frontside-fullres` (right) | BACK | 1924 px | 0.570 | 1097 | ~42 |
+| `oflynn-frontside-fullres` (upper-left) | BACK | 1924 px | 0.445 | 856 | ~33 |
+| `oflynn-backside-fullres` (left annulus) | **FRONT** | 2672 px | 0.258 | 689 | ~27 |
+| `oflynn-backside-fullres` (top-right) | **FRONT** | 2672 px | 0.195 | 521 | ~20 |
+| `oflynn-frontside-26mm-cropped` (M01 datum) | BACK | 787 px | 0.398 | 313 | ~12 |
+| FCC photo 6, board | FRONT | 412 px | 0.289 | 119 | ~4.6 |
+| FCC photo 6, **steel rule** (within-image control) | — | — | **0.383** | — | — |
+
+**Three consequences, and the third is the one people will get wrong:**
+
+1. **More pixels is not more information.** The 2916 × 3412 file is *softer per pixel* than the
+   2347 × 2344 one and only wins because the board fills more of the frame.
+2. **The steel rule is sharper than the board in the same frame** (0.383 vs 0.289). That single
+   within-image number explains why the px/mm datum is solid and the rim count never was.
+3. **"Prefer the sharper image" does not apply to component work, because there is no choice.**
+   The components are on the FRONT, and the FRONT is imaged only by the *softer* source. The
+   sharper photograph shows the side with the battery contacts and the coil — **the better
+   picture is of the emptier face.** Component metrology is stuck at 20–27 genuine px/mm.
+   At that scale an 0402 is 20–27 px long and workable; an **0201 is 12–16 px long and 6–8 px
+   wide, and a 6-pixel width cannot support package-size discrimination.** The AirTag uses
+   0201s. That boundary belongs in the BOM as a number, not discovered per line.

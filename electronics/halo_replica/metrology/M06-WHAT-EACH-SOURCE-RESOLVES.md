@@ -45,9 +45,43 @@ you get the only figure the other lanes can act on.
   0.5 mm) is 20–42 px on its long side. L2's held-out error of 0.1029 mm is
   ≈ 2–4 genuine pixels — demanding, but not below the source's resolution, so it
   is a real number rather than one measuring its own softness.
-- **Prefer the BACK image (`oflynn-frontside-fullres`) where a choice exists**:
+- **Prefer the BACK image (`oflynn-frontside-fullres`) WHERE A CHOICE EXISTS**:
   it measures 0.445–0.570 of Nyquist against the FRONT image's 0.195–0.258,
   despite having *fewer* pixels. More pixels is not more information.
+
+  > ### ⚠ AND FOR COMPONENT WORK THERE IS NO CHOICE — read this before acting on the line above
+  >
+  > **The components are on the project FRONT, and the FRONT is imaged by
+  > `oflynn-backside-fullres` — the SOFTER source, at 0.195–0.258 and ≈20–27
+  > genuine px/mm.** The sharper image, `oflynn-frontside-fullres`, shows the
+  > battery-contact and coil face: the side with almost nothing to locate.
+  > **The better picture is of the emptier face.**
+  >
+  > So component metrology is capped at **≈20–27 genuine px/mm** and cannot be
+  > improved by choosing a different photograph. "Prefer the BACK image" applies
+  > only where a lane genuinely has both options, and component positioning does
+  > not. Read without this caveat it sends someone to measure components in a
+  > photograph that does not show them.
+- **PACKAGE SIZING BY RATIO — the boundary, as a number rather than discovered
+  per line.** At the 20–27 genuine px/mm that the component face actually offers:
+
+  | package | nominal | long side | short side | verdict |
+  |---|---|---|---|---|
+  | 0402 | 1.0 × 0.5 mm | **20–27 px** | 10–14 px | **SOUND** |
+  | 0201 | 0.6 × 0.3 mm | **12–16 px** | **6–8 px** | **MARGINAL — do not discriminate package size on a 6-pixel width** |
+
+  **The AirTag uses 0201s.** So sizing unmarked parts by ratio against a known
+  package is sound for **0402 and larger** and marginal below it. L3's nRF52832
+  ruler sits comfortably in the sound region — its 0.4 % aspect agreement against
+  the datasheet says that segmentation is real — but the same method applied to
+  an 0201 is resting on 6–8 px, and a BOM line derived that way must say so.
+
+- **Position uncertainty must be quoted in GENUINE pixels as well as
+  millimetres.** L2's transform validates to 0.1029 mm on held-out spatial folds,
+  which at 20–27 genuine px/mm is **2–4 genuine pixels**. That is a real number
+  and it is also the floor: do not push the transform finer, and **a position
+  quoted to 0.01 mm off this source has three digits of decoration on it.**
+
 - **Do not use the FCC photos for anything smaller than ~1 mm.** At 4.6 genuine
   px/mm a 1 mm feature is under 5 px. That is M03/M05's rim-pad CANNOT DETERMINE
   restated as a number, and it is why M02's px/mm (measured on the *steel rule*,
