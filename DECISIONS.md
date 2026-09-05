@@ -966,3 +966,50 @@ wraps. The `solver_converged` assertion correctly reads 0.0 and the case FAILS,
 so nothing was published wrongly — but a log line that contradicts the tool
 beneath it is the eighth direction in `docs/TOOLS-THAT-LIE.md` and it should be
 made to read from the same source the assertion does.
+
+## D26e — three hypotheses eliminated by measurement; what is left is common to all three
+
+The batch is complete and all three cases ran to the 460,000-timestep cap:
+
+| case | element | passive copper | outcome |
+|---|---|---|---|
+| one | nine teeth | coil + battery contact | floored |
+| two | nine teeth | **none** | floored |
+| three | **four teeth** | none | floored |
+
+Cases two and three differ in trace length by **0.0078 mm**, which makes the
+meander comparison a clean single variable.
+
+**Eliminated, each by measurement rather than by argument:**
+
+1. **The mesh** — refuted in D26c. Fixing `min_cell_mm` was a real defect fixed,
+   and it changed nothing about the floor.
+2. **The passive copper** — the coil and the battery contact. Case two floors on
+   a bare board. (They do pull the resonance 604 MHz and destroy mode identity,
+   per D26d — a large effect, but not this one.)
+3. **The meander density** — case three floors with four teeth as readily as
+   nine.
+
+**What remains is whatever all three share:** the port, the feed, the board
+model, or the solver setup. That is a real narrowing, and three branches closed
+is worth more than one left open.
+
+**The sharpest observation, and it is not mine.** All three reach the cap, and
+the residual *floors flat* — one held −34.87 dB to within a hundredth of a
+decibel across 418,000 timesteps. **A flat residual means the cap is not what is
+binding.** The run would floor at any cap, so raising it again is the one thing
+guaranteed not to help. Something stops the energy falling, and it is present
+even on a bare board with a four-tooth element.
+
+**Next hypothesis, labelled as one after three wrong in a row.** The air-box
+padding is **30.591067 mm** in every case, which is almost exactly a quarter
+wavelength at 2.45 GHz (30.6 mm). A quarter wave is a common minimum for
+absorbing boundaries and a marginal one. Energy reflecting off an imperfect
+boundary and re-circulating is a textbook cause of a residual that stops falling
+at a fixed level. **The test is cheap and it is a single variable:** raise the
+padding — half a wavelength, then one — and see whether the floor moves. If it
+falls, the boundary was the cause. If it does not, the boundary is eliminated too
+and the search moves to the port and feed. Either way a branch closes.
+
+This is a hypothesis, not a finding. It is recorded here so that if it is wrong
+it is wrong on the record, like the three above it.
