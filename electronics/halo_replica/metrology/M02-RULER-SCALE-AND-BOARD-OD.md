@@ -277,3 +277,75 @@ Every published number here was re-derived afterwards and reproduces:
 **One correction:** the fit standard error on the photo 6 bottom rule was first
 written as ±0.0019 and re-runs as **±0.0022**. The px/mm value itself is
 unchanged and nothing downstream moves; the table above has been corrected.
+
+
+---
+
+## 8. IS THE MEASURED EDGE THE SUBSTRATE, OR THE GASKET? — 2026-09-05
+
+A grey fibrous material laps over the board's rim (the same material that
+defeated luminance edge-finding in M01 §2; E01 calls it a conductive gasket or
+adhesive). If this lane's outer diameter were the **gasket's** boundary rather
+than the **substrate's**, every OD would be too large in *both* photographs by the
+same amount — and their 0.40 % agreement would not detect it, because a shared
+bias is not a disagreement. It is additive: a gasket can only make the board look
+bigger.
+
+**Measured** with `tools/m_rim_step.py`: cast rays, locate the edge exactly as
+`m_outline_fit` does, then average luma at fixed offsets around it with the edge
+**aligned**, over more than a thousand rays. A gasket lip reads as
+*dark substrate → grey plateau → bright paper*: two steps with a flat between.
+The prediction from M06 is printed **before** the result so it cannot be fitted
+afterwards.
+
+| | FCC photo 6 | O'Flynn component side |
+|---|---|---|
+| genuine px/mm (M06) | 4.6 | ~24 |
+| a 0.3 mm lip would be | **1.4 genuine px** | **7.2 genuine px** |
+| prediction | below resolution | resolvable |
+| strongest luma rise | +0.000 mm, slope **11.51** | +0.001 mm, slope **6.30** |
+| next rise | +0.104 mm, slope 5.46 (**47 %**) | +0.370 mm, slope 0.36 (**6 %**) |
+| separation | 0.112 mm = **0.5 genuine px** | 0.369 mm = **8.9 genuine px** |
+| verdict | **CANNOT DETERMINE** | **CANNOT DETERMINE** |
+
+**FCC photo 6 behaves exactly as predicted** — the two candidate boundaries are
+0.5 genuine pixels apart and cannot be separated.
+
+**O'Flynn's image does show the structure**, and it still cannot settle the
+question. The edge-aligned profile is dark board ≈70 → a sharp rise to a **grey
+plateau at ≈175 running to +0.29 mm** → a gentle ramp to the paper level ≈205.
+There is genuinely a ~0.25–0.30 mm grey band outside the steep edge. **But a
+contact shadow produces exactly the same thing** — a darker band immediately
+outside the board that brightens outward — and nothing here separates gasket
+overhang from penumbra.
+
+### The reassuring part, which is the actual answer to the concern
+
+> **The steepest gradient is the INNER boundary, not the outer, by a factor of
+> 17** (6.30 against 0.36 luma/sample). `m_outline_fit` selects the steepest
+> gradient, so **the published edge is the dark→grey transition — the innermost
+> of the two.** If the grey band is gasket lapping over the rim, this lane's OD
+> **excludes** it.
+
+So the feared bias runs the **opposite way** to the fear: the risk is not that
+the published OD is inflated by the gasket, but that on a photograph where the
+two boundaries are unresolved (FCC photo 6, 0.5 genuine px) the detector settles
+on a *blended* edge somewhere between them, biasing that photograph's OD
+slightly **outward** relative to a sharp one.
+
+### A third, partly independent diameter
+
+The outline was then measured on **O'Flynn's own image** rather than transferred
+(`metrology/outline-raw-oflynn-front.json`, 1194/1440 rays):
+
+> **median diameter 24.631 mm**
+
+This is *not* fully independent — its scale came from FCC photo 6 through the
+registration — but the *outline* is measured on the sharper photograph. It sits
+just below the 24.95 mm low end of §3's bound, in the direction the blended-edge
+argument predicts. **The §3 bound is not revised on one figure**; it is recorded
+as the third estimate and as consistent with the low end.
+
+**Still CANNOT DETERMINE: whether the published edge is substrate or gasket.**
+What would settle it: a cross-section, or a caliper on a real board with and
+without the gasket.
