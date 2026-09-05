@@ -278,7 +278,53 @@ def main():
     dv = ImageDraw.Draw(ov, "RGBA")
     def P(p):
         return (c0 + p[0] * a.px_per_mm, c0 + p[1] * a.px_per_mm)
-    dv.line([P(p) for p in outer] + [P(outer[0])], fill=CYAN + (255,), width=3)
+    # THE OUTLINE IS COLOURED BY ITS OWN DISAGREEMENT, per angle, so the picture says
+    # WHERE it is not close instead of leaving that to prose.
+    a_th_s = np.array(ap_raw["outer_r_theta"], float)
+    tt2 = np.concatenate([a_th_s[:, 0] - 360, a_th_s[:, 0], a_th_s[:, 0] + 360])
+    vv2 = np.concatenate([a_th_s[:, 1] / ppm_ph] * 3)
+    n_out = len(outer)
+    ang_out = np.arange(n_out) * 360.0 / n_out + a.break_rotation
+    ap_at = np.interp(ang_out % 360, tt2, vv2)
+    near_out = np.min(np.abs(((ang_out[:, None] % 360) - tt2[None, :] + 180) % 360 - 180),
+                      axis=1)
+    ours_at = np.array([math.hypot(x, y) for x, y in outer])
+    dres = np.where(near_out <= 1.0, np.abs(ours_at - ap_at), np.nan)
+    BANDS = [(0.15, (40, 200, 90)), (0.40, (245, 200, 40)), (1e9, (240, 60, 60))]
+    GREY = (150, 150, 155)
+    for i in range(n_out):
+        v = dres[i]
+        if not np.isfinite(v):
+            col = GREY
+        else:
+            col = next(c for t_, c in BANDS if v <= t_)
+        dv.line([P(outer[i]), P(outer[(i + 1) % n_out])], fill=col + (255,), width=4)
+    band_counts = dict(
+        within_0_15=int(np.nansum(dres <= 0.15)),
+        between_0_15_and_0_40=int(np.nansum((dres > 0.15) & (dres <= 0.40))),
+        beyond_0_40=int(np.nansum(dres > 0.40)),
+        no_apple_ray=int(np.isnan(dres).sum()), total=n_out)
+    say(f"X6 outline disagreement map (model vs Apple's measured rays, {n_out} "
+        f"samples): <=0.15 mm {band_counts['within_0_15']}, 0.15-0.40 mm "
+        f"{band_counts['between_0_15_and_0_40']}, >0.40 mm "
+        f"{band_counts['beyond_0_40']}, no Apple ray {band_counts['no_apple_ray']}")
+    worst = []
+    dd = np.where(np.isfinite(dres), dres, -1)
+    bad = dd > 0.40
+    i = 0
+    while i < n_out:
+        if bad[i]:
+            j = i
+            while j + 1 < n_out and bad[j + 1]:
+                j += 1
+            if (j - i + 1) * 360.0 / n_out >= 3.0:
+                worst.append((round(ang_out[i] % 360, 1), round(ang_out[j] % 360, 1),
+                              round(float(dd[i:j + 1].max()), 3)))
+            i = j + 1
+        else:
+            i += 1
+    for w in worst:
+        say(f"   worst arc {w[0]:.1f}-{w[1]:.1f} deg, peak {w[2]:.3f} mm")
     dv.line([P(p) for p in inner] + [P(inner[0])], fill=CYAN + (255,), width=3)
     for (x, y), c in zip(cpts, comps):
         px, py = P((x, y))
@@ -327,6 +373,16 @@ def main():
         (f"X1 scale match        OURS {od:.3f} mm   APPLE'S {pd:.3f} mm   "
          f"delta {abs(od-pd)/pd*100:.2f}%   (registration is by construction, "
          f"nothing was fitted to make these agree)", INK),
+        (f"X6 disagreement map  the OVERLAY OUTLINE IS COLOURED BY ITS OWN ERROR: "
+         f"green <=0.15 mm ({band_counts['within_0_15']*100//band_counts['total']}% of "
+         f"the perimeter), yellow 0.15-0.40 mm "
+         f"({band_counts['between_0_15_and_0_40']*100//band_counts['total']}%), "
+         f"red >0.40 mm ({band_counts['beyond_0_40']*100//band_counts['total']}%), "
+         f"grey = no measured ray "
+         f"({band_counts['no_apple_ray']*100//band_counts['total']}%)", INK),
+        ("worst arcs (deg, peak mm): " + ("  ".join(f"{a0:.0f}-{a1:.0f}: {v:.2f}"
+                                                    for a0, a1, v in worst)
+                                          or "none beyond 0.40 mm"), INK),
         ("Apple's silhouette is L1's measurement of THIS photograph in THIS frame. "
          "Re-thresholding the crop was tried and REJECTED: the wooden blocks behind "
          "the board merge into it and inflated Apple's diameter by 3.20%.",
@@ -379,7 +435,8 @@ def main():
 
     code = PASS if (x1 and x2 and x5) else FAIL
     say({0: "PASS", 1: "FAIL", 2: "CANNOT DETERMINE"}[code])
-    print(json.dumps(dict(rms_mm=rms, p95_mm=p95, ours_dia_mm=od, apple_dia_mm=pd,
+    print(json.dumps(dict(x6=band_counts, worst_arcs=worst,
+                          rms_mm=rms, p95_mm=p95, ours_dia_mm=od, apple_dia_mm=pd,
                           rays=int(good.sum()), rotation_deg=a.break_rotation,
                           x5_marker_median_luma=med_h, x5_random_median_luma=med_c,
                           x5_enrichment=frac_h / frac_c)))

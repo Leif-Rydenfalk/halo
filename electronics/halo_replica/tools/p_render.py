@@ -269,10 +269,39 @@ def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None, break_d
     for i, t_ in enumerate(lines):
         d.text((sx, sy + (i - 1.5) * ppm * 0.40), t_, font=fs, fill=SILK, anchor="mm")
 
+    # ---- R7: an INDEPENDENT rim cross-check.
+    # L1 flagged 14 of 95 bright rows as on_rim_material_suspect using r / the RAW
+    # measured local edge radius. This uses r / the FITTED outline radius -- a
+    # different denominator, computed from a model L1 never saw, and it covers the
+    # blue rows their test never ran on. The two could disagree; that is the point.
+    tf = np.arange(2880) * 360.0 / 2880
+
+    def _edge(ang):
+        return k * np.interp(np.asarray(ang) % 360, tf, r_mm, period=360)
+
+    fr = {}
+    for row in handoff["rows"]:
+        ang = math.degrees(math.atan2(row["y_mm"], row["x_mm"])) % 360
+        fr[row["id"]] = (math.hypot(row["x_mm"], row["y_mm"]) * k) / float(_edge(ang))
+    THR = 0.95
+    mine = {i for i, v in fr.items() if v > THR}
+    l1 = {r["id"] for r in handoff["rows"]
+          if "on_rim_material_suspect" in r.get("flags", [])}
+    both, mo_, lo_ = mine & l1, mine - l1, l1 - mine
+    r7 = dict(thr=THR, mine=len(mine), l1=len(l1), both=len(both),
+              total=len(handoff["rows"]),
+              mine_only=[(i, round(fr[i], 4)) for i in sorted(mo_)],
+              l1_only=[(i, round(fr[i], 4)) for i in sorted(lo_)],
+              verdict=("CORROBORATED: L1's set is CONTAINED in mine, by two "
+                       "denominators neither of which was fitted to the other"
+                       if not lo_ else
+                       "PARTIAL: the two sets do not nest - chase the difference"))
+
     if caption:
         cap = build_caption(board, fit, handoff, comps, skipped, gaps,
-                            n_sized, n_pos, n_susp, k)
+                            n_sized, n_pos, n_susp, k, r7)
         draw_caption(d, cap, H, W)
+
     # which of the 1440 control rays land on arcs the chords do NOT cut
     o = fit["outer"]
     ppm_fit = fit["scale"]["px_per_mm"]
@@ -286,10 +315,11 @@ def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None, break_d
         with np.errstate(divide="ignore", invalid="ignore"):
             rm = np.minimum(rm, np.where(den > 1e-9, c["d"] / den, np.inf))
     free = (rc - rm) / ppm_fit < 0.02
+
     return im, Rmax, dict(sized=n_sized, position_only=n_pos, suspect=n_susp,
                           not_drawn=len(skipped), gaps=len(gaps), k=k,
                           skipped=skipped, total_rows=len(handoff["rows"]),
-                          free_arc_mask=free)
+                          free_arc_mask=free, r7=r7)
 
 
 def quietest_arc(comps, k, step=2.0):
@@ -304,7 +334,7 @@ def quietest_arc(comps, k, step=2.0):
     return besta
 
 
-def build_caption(board, fit, handoff, comps, skipped, gaps, ns, np_, nsus, k):
+def build_caption(board, fit, handoff, comps, skipped, gaps, ns, np_, nsus, k, r7):
     """EVERY line is read from a file. Nothing here is a literal about the board."""
     p = board["parameters"]
     od = p["outer_diameter_mm"]
@@ -341,6 +371,9 @@ def build_caption(board, fit, handoff, comps, skipped, gaps, ns, np_, nsus, k):
                  "; ".join(f"{i}: {w}" for i, w in skipped)))
     rows.append(("named absences", f"{len(gaps)} positions, EYEBALLED, measured:false",
                  "magenta '?' - drawn so the board is KNOWINGLY incomplete"))
+    rows.append(("rim cross-check", f"{r7['mine']} rows beyond {r7['thr']:.2f} of the "
+                 f"FITTED outline radius vs L1's {r7['l1']} flagged by their own "
+                 f"different denominator", r7["verdict"]))
     rows.append(("also absent",
                  "every neutral-black IC body, incl. the largest one",
                  "CANNOT DETERMINE after three detectors (M08). The dark areas SHOULD "
@@ -441,6 +474,14 @@ def controls(png, Rmax, ppm_asked, margin_mm, want_dia, expect, free_arc_mask):
             "this; only this check can.")
         ok = False
 
+    r7 = expect.get("r7")
+    if r7:
+        say(f"R7 rim cross-check (INDEPENDENT of L1's): {r7['mine']} of "
+            f"{r7['total']} rows sit beyond {r7['thr']:.2f} of the FITTED outline "
+            f"radius; L1 flags {r7['l1']} rows on_rim_material_suspect by a DIFFERENT "
+            f"denominator (their raw measured local edge radius).")
+        say(f"   intersection {r7['both']}   mine-only {r7['mine_only']}   "
+            f"L1-only {r7['l1_only']}   -> {r7['verdict']}")
     say(f"R5 components: drawn sized {expect['sized']}, position-only "
         f"{expect['position_only']}, suspect {expect['suspect']}, "
         f"not drawn {expect['not_drawn']}, named absences {expect['gaps']}")
