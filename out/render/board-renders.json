@@ -1,0 +1,70 @@
+{
+  "tool": "tools/gen_board_renders.py",
+  "generated": "2026-09-05 18:03:31",
+  "kicad": "10.0.6",
+  "generator": "electronics/halo_rev_a/board.py",
+  "generator_mtime": "2026-09-05 14:50:31",
+  "renders": [
+    {
+      "image": "out/render/halo_rev_a-routed-top.png",
+      "what": "the routed board from directly above \u2014 the nine-tooth meander antenna runs along the top arc, outside the component field",
+      "source": "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "source_mtime": "2026-09-05 08:15:40",
+      "generator": "electronics/halo_rev_a/board.py",
+      "generator_mtime": "2026-09-05 14:50:31",
+      "command": "kicad-cli pcb render --output out/render/halo_rev_a-routed-top.png --quality high --use-board-stackup-colors --background opaque --side top --width 1800 --height 1800 electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "seconds": 32.0,
+      "read_back": "1768x1768 px, stddev 48.7",
+      "image_mtime": "2026-09-05 18:02:06",
+      "source_behind_generator": true,
+      "verdict": "PASS",
+      "why": "rendered from electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb (2026-09-05 08:15:40) at 2026-09-05 18:02:06; the pcb is itself OLDER than electronics/halo_rev_a/board.py (2026-09-05 14:50:31) \u2014 lane B1 has edited the generator since this pcb was written, so this picture is current for the pcb on disk and NOT necessarily for the board B1 is now describing"
+    },
+    {
+      "image": "out/render/halo_rev_a-routed-bottom.png",
+      "what": "the routed board from below",
+      "source": "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "source_mtime": "2026-09-05 08:15:40",
+      "generator": "electronics/halo_rev_a/board.py",
+      "generator_mtime": "2026-09-05 14:50:31",
+      "command": "kicad-cli pcb render --output out/render/halo_rev_a-routed-bottom.png --quality high --use-board-stackup-colors --background opaque --side bottom --width 1800 --height 1800 electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "seconds": 34.5,
+      "read_back": "1768x1768 px, stddev 50.7",
+      "image_mtime": "2026-09-05 18:02:41",
+      "source_behind_generator": true,
+      "verdict": "PASS",
+      "why": "rendered from electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb (2026-09-05 08:15:40) at 2026-09-05 18:02:41; the pcb is itself OLDER than electronics/halo_rev_a/board.py (2026-09-05 14:50:31) \u2014 lane B1 has edited the generator since this pcb was written, so this picture is current for the pcb on disk and NOT necessarily for the board B1 is now describing"
+    },
+    {
+      "image": "out/render/halo_rev_a-routed-iso.png",
+      "what": "the routed board on an isometric camera, so component height reads",
+      "source": "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "source_mtime": "2026-09-05 08:15:40",
+      "generator": "electronics/halo_rev_a/board.py",
+      "generator_mtime": "2026-09-05 14:50:31",
+      "command": "kicad-cli pcb render --output out/render/halo_rev_a-routed-iso.png --quality high --use-board-stackup-colors --background opaque --side top --rotate -30,0,25 --perspective --width 1800 --height 1350 electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+      "seconds": 19.1,
+      "read_back": "1768x1320 px, stddev 55.3",
+      "image_mtime": "2026-09-05 18:03:00",
+      "source_behind_generator": true,
+      "verdict": "PASS",
+      "why": "rendered from electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb (2026-09-05 08:15:40) at 2026-09-05 18:03:00; the pcb is itself OLDER than electronics/halo_rev_a/board.py (2026-09-05 14:50:31) \u2014 lane B1 has edited the generator since this pcb was written, so this picture is current for the pcb on disk and NOT necessarily for the board B1 is now describing"
+    },
+    {
+      "image": "out/render/halo_rev_a-unrouted-top.png",
+      "what": "the same board BEFORE the router ran \u2014 placement only. Shown so the routing is visible as a difference rather than asserted as one",
+      "source": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+      "source_mtime": "2026-09-05 07:54:19",
+      "generator": "electronics/halo_rev_a/board.py",
+      "generator_mtime": "2026-09-05 14:50:31",
+      "command": "kicad-cli pcb render --output out/render/halo_rev_a-unrouted-top.png --quality high --use-board-stackup-colors --background opaque --side top --width 1800 --height 1800 electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+      "seconds": 29.8,
+      "read_back": "1768x1768 px, stddev 47.9",
+      "image_mtime": "2026-09-05 18:03:30",
+      "source_behind_generator": true,
+      "verdict": "PASS",
+      "why": "rendered from electronics/halo_rev_a/out/halo_rev_a.kicad_pcb (2026-09-05 07:54:19) at 2026-09-05 18:03:30; the pcb is itself OLDER than electronics/halo_rev_a/board.py (2026-09-05 14:50:31) \u2014 lane B1 has edited the generator since this pcb was written, so this picture is current for the pcb on disk and NOT necessarily for the board B1 is now describing"
+    }
+  ],
+  "verdict": "PASS"
+}
