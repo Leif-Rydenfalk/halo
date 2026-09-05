@@ -893,25 +893,37 @@ def build():
                     "HIGH for the label - Apple labelled it in a regulatory "
                     "filing. CANNOT DETERMINE for the geometry. Its only "
                     "driver on this sheet is DNP."))
-    # The value said "U.FL / IPEX MHF RECEPTACLE" until x_schematic_check's C6
-    # fired on it: bom.json's J1 line begins "CANNOT DETERMINE — a U.FL /
-    # IPEX MHF-class receptacle by construction", and a value that names a
-    # family without naming the refusal reads as an identification. What is
-    # HIGH is that a coaxial receptacle is FITTED; which one it is, is not.
+    # THIS PART WAS CALLED A U.FL TWICE AND IT IS NOT ONE. The metrology lane
+    # measured the shell at 1.860 x 1.707 mm; a Hirose U.FL-R-SMT-1 is a
+    # 2.6 mm square body, 3.0 x 3.1 mm overall. That is -28%/-34% and
+    # -38%/-45%, and the measurement is already an OVER-estimate because it
+    # includes the four protruding tabs. NOTHING IN ANY ERROR BAND HERE
+    # SPANS A 28-45% GAP - this is the one identification in the BOM that
+    # does not need the scale to be right to better than about 10%.
+    # THE U.FL FOOTPRINT THAT USED TO BE ON THIS LINE IS GONE WITH IT: a land
+    # pattern from the wrong connector family is a board that cannot be
+    # assembled, and it was assigned on the strength of the same wrong word.
     s.part("J1", "Connector:Conn_Coaxial",
-           value="COAX RF RECEPTACLE - PART CANNOT DETERMINE",
-           group="uwb",
-           footprint="Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical",
-           fields=B("J1", "SUBSTITUTION",
+           value="COAX RF RECEPTACLE, MHF4-CLASS - PART CANNOT DETERMINE",
+           group="uwb", footprint="",
+           fields=B("J1", "PLACEHOLDER-L12",
                     "THIS PART REFUTES 'CONNECTORS: NONE ANYWHERE', which "
                     "REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A "
                     "circular RF receptacle - metal outer shell, four solder "
                     "tabs, dark dielectric annulus, gold centre contact - is "
-                    "unambiguous at 5x on the component face. HIGH "
-                    "confidence that it is fitted on this unit. WHICH "
-                    "receptacle (U.FL vs one of the MHF variants) is a "
-                    "SUBSTITUTION; the Hirose land pattern is the family's "
-                    "common one."))
+                    "unambiguous at 5x on the component face. MEASURED "
+                    "1.860 x 1.707 mm (shell including tabs), which EXCLUDES "
+                    "U.FL by 28-45% against Hirose's own catalogue and sits "
+                    "7.0% / 3.0% inside an MHF4 receptacle's 2.00 x 1.76 mm "
+                    "housing - the right sign, because that housing is black "
+                    "LCP extending past the bright metal segmented. W.FL and "
+                    "Murata HSC are within a few percent of MHF4 and CANNOT "
+                    "BE SEPARATED from it here. KiCad ships no MHF4 or W.FL "
+                    "land pattern, so this part has NO FOOTPRINT rather than "
+                    "the wrong one.",
+                    {"Measured": "1.860 x 1.707 mm shell incl. tabs",
+                     "Excluded by measurement": "U.FL (2.6 mm square body, "
+                                                "3.0 x 3.1 mm overall)"}))
     N("UWB_RF", CHOSEN, "U2 RF (DNP)", "ANT3; J1 centre",
       "THE WEAKEST NET ON THIS SHEET AND IT IS LABELLED SO. bom.json J1: "
       "'its position beside the UWB module is consistent with a UWB "
@@ -1223,110 +1235,72 @@ def build():
     # The sentences a reviewer needs, ON THE SHEET rather than in a document
     # nobody opens next to KiCad.
     # ---------------------------------------------------------------------
+    # SIX NOTES, NOT SIXTEEN. The first version put every argument on the
+    # drawing, and ce-pcb refused to draw thirteen of them because they did
+    # not fit the page — correctly, and only a RENDER showed it: every number
+    # and every ERC was green while the sentences a reviewer most needs were
+    # off the sheet. What stays here is what someone holding the drawing must
+    # not miss. The rest is in this file's docstring and in NETS.md, and it
+    # was never true that a schematic is the place to keep all of it.
     s.text("halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), "
-           "reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Every net "
-           "carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md "
-           "beside this file lists all of them with the counts DERIVED, "
-           "never typed. 13 of 52 nets are MEASURED, and every one of those "
-           "names a FILE AND A STRING THAT MUST BE IN IT, checked at build "
-           "time. The other 39 are inference and choice.")
-    s.text("FOUR NETS ON THIS SHEET WERE WRONG UNTIL A CHECK FORCED SOMEBODY "
-           "TO OPEN THE FILE THEY ALREADY CITED. The flash bus was drawn on "
-           "P0.12/P0.13/P0.14 as a free CHOICE. O'Flynn's test-point table "
-           "gives it by pad, by nRF BALL and by GPIO: SCLK on P0.17 (ball "
-           "G3), COPI on P0.16 (H3), CIPO on P0.15 (H4), CS on P0.11 (F4). "
-           "Three of the four were wrong and the fourth was right by luck. "
-           "The bus is MEASURED now.")
-    s.text("TEN CIAA BALLS ARE SOURCED, AND FORTY ARE NOT. O'Flynn's table "
-           "names nRF ball designators for D3, E2, F1, F4, G1, G3, H1, H2, "
-           "H3 and H4. That is not a ball map and does not make one - the "
-           "package here is still the QFN-48 substitution - but it is ten "
-           "more than this sheet first claimed existed, and L12 should have "
-           "them when it draws the WLCSP land.")
-    s.text("A CONTRADICTION INSIDE O'FLYNN'S OWN TABLE, CARRIED NOT "
-           "RESOLVED: row 8 reads 'nRF ball E2 (P0.16)' and row 19 reads "
-           "'nRF ball H3 (P0.16)'. Two different balls with one GPIO number; "
-           "one is a transcription error. This sheet takes row 19 because "
-           "the SPI block's four balls H3/H4/G3/F4 are a coherent group, and "
-           "TP8 IS DELIBERATELY ABSENT rather than drawn on a guess.")
-    s.text("THE iFIXIT ARGUMENT IS NOW SETTLED BY MEASUREMENT, not by "
-           "self-consistency. O'Flynn, verbatim: 'The nrf controls power to "
-           "the SPI flash, so you need to override it by supplying 1.8V on "
-           "test point 21', and 'most of time the flash is powered off and "
-           "thus the pins are tri-stated'. The flash sits on a switched "
-           "1.8 V rail the MCU commands - which is what this sheet drew from "
-           "the argument that a load switch cannot gate its own controller.")
+           "reconstructed. NOBODY HAS TRACED APPLE'S COPPER: 13 of 52 nets "
+           "are MEASURED and each names a file and a string checked at build "
+           "time; the other 39 are 21 INFERRED and 18 CHOSEN. NEVER CITE A "
+           "CHOSEN NET AS A FINDING ABOUT APPLE. Full table, with what drives "
+           "each net and what it feeds: schematic/NETS.md.")
     s.text("U2 IS APPLE'S 'U1' UWB SiP AND IT IS DNP / UNPOPULATED. Apple "
-           "does not sell it to anyone, at any price, with any lead time. "
-           "That is not a sourcing problem, it is a does-not-exist-for-us "
-           "problem, and Precision Finding is therefore a GAP and not a "
-           "to-do. Its pin NUMBERS on this sheet are invented: no pinout for "
-           "this module has ever been published, so its land pattern does "
-           "not exist and NOTHING MAY BE FABRICATED FROM IT.")
-    s.text("NAME COLLISION: on this sheet U1 is the NORDIC MCU and U2 is "
-           "the Apple UWB part, following bom.json and REFERENCE-TEARDOWN. "
-           "The press calls the Apple part 'the U1'. Never write bare U1 "
-           "about it.")
-    s.text("U4 IS CANNOT DETERMINE. Two visually identical metal-lid parts "
-           "are on the board and neither is confidently the accelerometer; "
-           "no marking is readable at any magnification available here. "
-           "'BMA280' is a teardown assertion this project failed to "
-           "corroborate. The symbol is generic and the value field says so.")
-    s.text("U9 IS CANNOT DETERMINE, INCLUDING ITS FUNCTION. Marking "
-           "'1A8 / 1950'. Its output is deliberately wired to NOTHING, "
-           "because the record does not say what it feeds and a wire to a "
-           "plausible load would be this sheet inventing a circuit.")
+           "does not sell it to anyone, at any price, with any lead time - "
+           "not a sourcing problem but a does-not-exist-for-us one, which is "
+           "why Precision Finding is a GAP and not a to-do. ITS PIN NUMBERS "
+           "HERE ARE INVENTED: no pinout for that module has ever been "
+           "published, so its land pattern does not exist and NOTHING MAY BE "
+           "FABRICATED FROM IT. (On this sheet U1 is the NORDIC MCU.)")
+    s.text("U4 AND U9 ARE CANNOT DETERMINE. Two visually identical metal-lid "
+           "parts are on the board and neither is confidently the "
+           "accelerometer; 'BMA280' is a teardown assertion this project "
+           "failed to corroborate. U9, marked '1A8 / 1950', is unidentified "
+           "DOWN TO ITS FUNCTION, so its output is wired to nothing rather "
+           "than to a plausible load.")
     s.text("D3 IS AN ADDITION, NOT AN OBSERVATION (DECISIONS.md D24). "
-           "nRF52832 product spec 42.10: a strong NFC field can push current "
-           "BACKWARDS into the supply through parasitic diodes and ESD "
-           "structures, and a CR2032 does not tolerate return current. A "
-           "phone on the tag is a strong field by design. COST: a Schottky "
-           "drops a few hundred mV against a cell already tracked to 68 mV "
-           "of end-of-life droop; an ideal-diode controller drops millivolts "
-           "and costs money. No photograph here shows a diode in Apple's "
-           "power path.")
+           "nRF52832 spec 42.10: a strong NFC field pushes current BACKWARDS "
+           "into the supply through parasitic diodes, and a CR2032 does not "
+           "tolerate return current. COST: a Schottky drops a few hundred mV "
+           "against a cell already tracked to 68 mV of end-of-life droop; an "
+           "ideal-diode controller drops millivolts and costs money. NO "
+           "PHOTOGRAPH HERE SHOWS A DIODE IN APPLE'S POWER PATH.")
     s.text("THE PACKAGES ARE NOT APPLE'S PACKAGES. U1 is an nRF52832-CIAA, "
-           "WLCSP-50, drawn with the QFN-48 (QFAA) symbol of the same die "
-           "because no COMPLETE CIAA ball map is sourced here (ten balls "
-           "are; forty are not). U3 is a "
-           "WLCSP-10 drawn as WSON-8. U5 is a WLCSP drawn as TQFP-16. THE "
+           "WLCSP-50, drawn with the QFN-48 (QFAA) symbol of the SAME DIE "
+           "because no COMPLETE ball map is sourced here - O'Flynn's table "
+           "gives TEN of the fifty (D3 E2 F1 F4 G1 G3 H1 H2 H3 H4). U3 is a "
+           "WLCSP-10 drawn as WSON-8, U5 a WLCSP drawn as TQFP-16. THE "
            "NETLIST IS RIGHT BY SIGNAL NAME AND THE PIN NUMBERS ARE NOT "
            "APPLE'S. Every part carries an FP-basis field; L12 owns the land "
            "patterns.")
-    s.text("THIS SHEET DEPARTS FROM iFIXIT ON ONE THING AND SAYS SO: iFixit "
-           "has the load switch U8 gating 'U1 + flash' where U1 is the MCU. "
-           "A load switch whose enable comes from the MCU it powers can "
-           "never be turned on. Here U8 gates the FLASH and the UWB module "
-           "and the MCU sits on the 1.8 V rail directly.")
+    s.text("J1 REFUTES 'CONNECTORS: NONE ANYWHERE' - REFERENCE-TEARDOWN 2.5 "
+           "says it and SPEC.md repeats it. IT IS ALSO NOT A U.FL, which "
+           "this sheet called it twice: the shell MEASURES 1.860 x 1.707 mm "
+           "against a U.FL's 2.6 mm square body, -28% to -45%, a gap no "
+           "error band here spans. MHF4-class; W.FL and Murata HSC are "
+           "within a few percent and cannot be separated. KiCad ships no "
+           "such land pattern, so J1 has NO FOOTPRINT rather than a wrong "
+           "one.")
     s.text("FOUR PARTS THAT ARE ON THE REAL BOARD AND NOT ON THIS SHEET, "
-           "because placing a part asserts what it is: D1/D2 (marking K11, "
-           "a matched pair - part AND function CANNOT DETERMINE), CT1 "
-           "(marking '6X A75', blue body - and 'blue' is a colour, not a "
-           "technology), UNK-A (large matte-black rectangle, no marking at "
-           "all) and UNK-B (pale ceramic square between U2 and J1 - if it is "
-           "an RF switch then this sheet's UWB_RF net is wrong).")
-    s.text("J1 REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN "
-           "2.5 states and SPEC.md repeats. A U.FL/IPEX-class coaxial "
-           "receptacle is unambiguous at 5x on the component face of "
-           "O'Flynn's retail unit. Two documents in this repository are "
-           "wrong and this schematic is where that became unavoidable.")
-    s.text("TP1 AND TP38 ARE DELIBERATELY ABSENT. The fine coil leads land "
-           "there; REFERENCE-TEARDOWN 2.4 calls them the VOICE COIL's joints "
-           "and Apple's own arrow in FCC photo 5 labels that annulus the "
-           "NFC ANTENNA. Both cannot be true and this sheet does not pick a "
-           "winner.")
-    s.text("EVERY CAPACITOR AND RESISTOR VALUE ON THIS SHEET IS CANNOT "
-           "DETERMINE, and that is not laziness. bom.json: 'This is not a "
-           "gap that any photograph can close: a 100 nF and a 1 uF 0402 are "
-           "visually identical.' A missing value stays missing. THIS BOARD "
-           "IS NOT BUILDABLE AS DRAWN and saying so is the point.")
+           "because placing a part asserts what it is: D1/D2 (marking K11), "
+           "CT1 ('6X A75', and 'blue' is a colour, not a technology), UNK-A "
+           "and UNK-B. TP1/TP38 are absent too - REFERENCE-TEARDOWN and "
+           "Apple's own FCC arrow disagree about which coil that annulus is. "
+           "EVERY PASSIVE VALUE HERE IS CANNOT DETERMINE and stays that way: "
+           "a 100 nF and a 1 uF 0402 are visually identical. THIS BOARD IS "
+           "NOT BUILDABLE AS DRAWN, and saying so is the point.")
 
-    # HAND EVERY BASIS TO ce-pcb, WHICH OPENS THE FILES. Until 2026-09-05
-    # this file's basis table was a private dict and nothing checked it: a
-    # net could be promoted to MEASURED by editing a string. `basis()` is
-    # upstream now (P11) and refuses a MEASURED net with no resolvable
-    # anchor, and `check()` reads every anchor off disk and compares. The
-    # first run of it corrected four nets on this sheet.
+    # HAND EVERY BASIS TO ce-pcb, WHICH OPENS THE FILES. This loop was
+    # deleted by accident once, when the sheet-note block above it was
+    # rewritten and the edit's range ran one statement too far. Nothing went
+    # red: cepcb's basis rows are opt-in, so a sheet that declares NOTHING
+    # and a sheet that LOST its declarations look identical to check(), and
+    # NETS.md is generated from this file's own dict rather than from the
+    # bases. x_schematic_check's C8 now fails on exactly that, and runs in
+    # the default pass instead of only under --self-test.
     s.evidence_root = REPO
     for name in NETS:
         kind = NETS[name][0]
@@ -1334,7 +1308,7 @@ def build():
         s.basis(name, kind, anchor=a.get("anchor"),
                 contains=a.get("contains"),
                 derived_from=(a.get("derived_from") or
-                              (NETS[name][4 - 1] if kind == INFERRED else None)),
+                              (NETS[name][3] if kind == INFERRED else None)),
                 note=NETS[name][3])
 
     s.unused_gpio = s.nc_unused()
@@ -1424,6 +1398,16 @@ DISCARDED = [
     "the same radial band width from above, so the 'two agreeing "
     "measurements' were one measurement twice. Only the >=9-turn lower bound "
     "and the direct observation of resolved coplanar conductors survive.",
+    "'J1 is a U.FL/IPEX-class receptacle' - DISCARDED BY MEASUREMENT, and "
+    "it was this sheet's own wording twice. The metrology lane measured the "
+    "shell at 1.860 x 1.707 mm against a Hirose U.FL's 2.6 mm square body "
+    "and 3.0 x 3.1 mm overall: -28%/-34% and -38%/-45%, with the measurement "
+    "already an over-estimate because it includes the four protruding tabs. "
+    "It is MHF4-class; W.FL and Murata HSC are within a few percent and "
+    "cannot be separated here. THE U.FL LAND PATTERN WENT WITH THE WORD - a "
+    "footprint from the wrong connector family is a board that cannot be "
+    "assembled, and it had been assigned on the strength of the same "
+    "mistake.",
     "Filling any capacitor or resistor value with a plausible number - "
     "refused throughout. A 100 nF and a 1 uF 0402 are visually identical, "
     "so every value here is CANNOT DETERMINE and stays that way.",

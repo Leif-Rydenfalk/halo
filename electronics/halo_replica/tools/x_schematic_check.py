@@ -417,8 +417,15 @@ def c6_nothing_filled_in(paths):
                   "still carry it in their value." % (watched, watched))
 
 
+def c8(paths):
+    """C8 in the DEFAULT pass, not only under --self-test. A grader that only
+    runs when somebody asks for the self-test is a grader that is not
+    running."""
+    return anchors_can_fail()
+
+
 CHECKS = [c1_artifact_matches_source, c2_bom_cited, c3_nets_described,
-          c4_erc_fresh_and_clean, c5_dnp_held, c6_nothing_filled_in]
+          c4_erc_fresh_and_clean, c5_dnp_held, c6_nothing_filled_in, c8]
 
 
 def _measured_line():
@@ -521,9 +528,20 @@ def _break_dnp(p):
 
 
 def _break_value(p):
-    _edit(p["sch"], lambda t: t.replace(
-        '"Value" "3-AXIS ACCELEROMETER - PART CANNOT DETERMINE (BMA280 is a '
-        'teardown ASSERTION, not a marking)"', '"Value" "BMA280"', 1))
+    """Tidy the first CANNOT DETERMINE value into a confident one.
+
+    THIS USED TO NAME U4'S VALUE STRING VERBATIM, and it silently became a
+    no-op the day that value was shortened for legibility — the break stopped
+    reaching its check while still looking like a test. _edit()'s guard
+    caught it, which is the only reason this is a comment and not a hole. A
+    break should FIND its target by the property it is breaking.
+    """
+    def tidy(t):
+        m = re.search(r'"Value" "([^"]*CANNOT DETERMINE[^"]*)"', t)
+        if not m:
+            return t                      # _edit() will refuse this, loudly
+        return t.replace(m.group(0), '"Value" "100nF"', 1)
+    _edit(p["sch"], tidy)
 
 
 def _break_erc_stale(p):
@@ -555,7 +573,7 @@ BREAKS = [
     ("C5 U2 still DNP", _break_dnp,
      "clear U2's do-not-populate flag"),
     ("C6 nothing filled in", _break_value,
-     "tidy U4's CANNOT DETERMINE value into a confident 'BMA280'"),
+     "tidy the first CANNOT DETERMINE value into a confident number"),
 ]
 
 
@@ -605,6 +623,17 @@ def anchors_can_fail():
         return Result("C8 anchors can fail", CANNOT,
                       "schematic.py did not build: %s" % e)
     measured = [n for n, b in s.bases.items() if b["kind"] == MEASURED]
+    if not s.bases and s.nets:
+        return Result(
+            "C8 anchors can fail", FAIL,
+            "THIS SHEET DECLARES NO BASIS FOR ANY OF ITS %d NETS. It used to "
+            "declare all of them, so this is a loss, not an absence — and it "
+            "is invisible to everything else: cepcb's basis rows are opt-in, "
+            "so a sheet that never declared and a sheet that lost its "
+            "declarations look identical to check(), and NETS.md is generated "
+            "from the design's own table rather than from the bases. Measured "
+            "2026-09-05, when an edit to the sheet notes ran one statement "
+            "too far and took the basis() handoff with it." % len(s.nets))
     if not measured:
         return Result("C8 anchors can fail", CANNOT,
                       "this sheet declares no MEASURED net, so there is no "

@@ -2,37 +2,37 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic/halo_replica.kicad_sch")
-		(date "2026-09-05T15:21:37")
+		(date "2026-09-05T15:36:39")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
 			(name "/")
 			(tstamps "/")
 			(title_block
-				(title "halo REPLICA - Apple AirTag A2187 reconstructed. NO COPPER WAS TRACED: every net is INFERRED or CHOSEN unless marked MEASURED.")
+				(title "halo REPLICA - Apple AirTag A2187, reconstructed")
 				(company "ce-designs/halo - halo Replica lane L11")
 				(rev "R1")
 				(date "2026-09-05")
 				(source "halo_replica.kicad_sch")
 				(comment
 					(number "1")
-					(value "Parts from electronics/halo_replica/bom/bom.json (27 lines).")
+					(value "NO COPPER WAS TRACED. Every net is INFERRED or CHOSEN unless marked MEASURED - see NETS.md.")
 				)
 				(comment
 					(number "2")
-					(value "U2 (Apple U1 UWB SiP) is DNP/UNPOPULATED - never sold to anyone.")
+					(value "Parts from electronics/halo_replica/bom/bom.json (27 lines).")
 				)
 				(comment
 					(number "3")
-					(value "U4 and U9 are CANNOT DETERMINE: generic symbols, ambiguity in the value field.")
+					(value "U2 (Apple U1 UWB SiP) is DNP/UNPOPULATED - never sold to anyone.")
 				)
 				(comment
 					(number "4")
-					(value "D3 is an ADDITION per DECISIONS.md D24 (NFC field back-drives the cell); no photograph shows one in Apple's board.")
+					(value "U4 and U9 are CANNOT DETERMINE: generic symbols, ambiguity in the value field.")
 				)
 				(comment
 					(number "5")
-					(value "")
+					(value "D3 is an ADDITION per DECISIONS.md D24 (NFC field back-drives the cell); no photograph shows one in Apple's board.")
 				)
 				(comment
 					(number "6")
@@ -56,7 +56,7 @@
 	(components
 		(comp
 			(ref "ANT1")
-			(value "BLE 2.4 GHz INVERTED-F, PRINTED ON THE CARRIER")
+			(value "BLE 2.4GHz INVERTED-F (on carrier)")
 			(datasheet "~")
 			(description "Antenna")
 			(fields
@@ -139,7 +139,7 @@
 		)
 		(comp
 			(ref "ANT2")
-			(value "NFC COIL - WOUND MAGNET WIRE, >=9 TURNS (LOWER BOUND)")
+			(value "NFC COIL - WOUND WIRE, >=9 TURNS")
 			(datasheet "~")
 			(description "Loop antenna")
 			(fields
@@ -231,7 +231,7 @@
 		)
 		(comp
 			(ref "ANT3")
-			(value "UWB PATCH 6.5/8 GHz, PRINTED ON THE CARRIER")
+			(value "UWB PATCH 6.5/8GHz (on carrier)")
 			(datasheet "~")
 			(description "Antenna")
 			(fields
@@ -314,7 +314,7 @@
 		)
 		(comp
 			(ref "BT1")
-			(value "3 SPRUNG CONTACTS (1 neg dome, 2 pos tabs)")
+			(value "3 SPRUNG CONTACTS (1 neg, 2 pos)")
 			(datasheet "~")
 			(description "Three sprung battery contacts: one negative dome on the well floor and TWO positive tabs on the wall. Both positives must see 3 V to boot; only the left carries the logic current, the right is sensed at ~50 nA. This is the connector-less battery interface and there is no catalogue land pattern for it.  [pinout: bom/bom.json BATT-CONTACTS; docs/REFERENCE-TEARDOWN.md 2.5 (O'Flynn: the big pads under the terminals are NOT connected; the real contacts are the small pads under the tabs).]")
 			(fields
@@ -409,7 +409,7 @@
 		)
 		(comp
 			(ref "C1")
-			(value "100uF (marking J107S) - TECHNOLOGY CANNOT DETERMINE")
+			(value "100uF? mark J107S - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -511,7 +511,7 @@
 		)
 		(comp
 			(ref "C2")
-			(value "100uF (marking J107S) - TECHNOLOGY CANNOT DETERMINE")
+			(value "100uF? mark J107S - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -613,7 +613,7 @@
 		)
 		(comp
 			(ref "C3")
-			(value "100uF (marking J107S) - TECHNOLOGY CANNOT DETERMINE")
+			(value "100uF? mark J107S - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -715,7 +715,7 @@
 		)
 		(comp
 			(ref "C4")
-			(value "100uF (marking J107S) - TECHNOLOGY CANNOT DETERMINE")
+			(value "100uF? mark J107S - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -817,7 +817,7 @@
 		)
 		(comp
 			(ref "C5")
-			(value "100uF (marking J107S) - TECHNOLOGY CANNOT DETERMINE")
+			(value "100uF? mark J107S - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0805_2012Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -919,7 +919,7 @@
 		)
 		(comp
 			(ref "C6")
-			(value "NFC TUNING - VALUE CANNOT DETERMINE")
+			(value "NFC TUNING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1009,7 +1009,7 @@
 		)
 		(comp
 			(ref "C7")
-			(value "NFC TUNING - VALUE CANNOT DETERMINE")
+			(value "NFC TUNING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1099,7 +1099,7 @@
 		)
 		(comp
 			(ref "C8")
-			(value "PI SHUNT - VALUE CANNOT DETERMINE")
+			(value "PI SHUNT - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1189,7 +1189,7 @@
 		)
 		(comp
 			(ref "C9")
-			(value "PI SHUNT - VALUE CANNOT DETERMINE")
+			(value "PI SHUNT - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1279,7 +1279,7 @@
 		)
 		(comp
 			(ref "C10")
-			(value "DECOUPLING - VALUE CANNOT DETERMINE")
+			(value "DECOUPLING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0402_1005Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1369,7 +1369,7 @@
 		)
 		(comp
 			(ref "C11")
-			(value "DECOUPLING - VALUE CANNOT DETERMINE")
+			(value "DECOUPLING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0402_1005Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1459,7 +1459,7 @@
 		)
 		(comp
 			(ref "C12")
-			(value "DECOUPLING - VALUE CANNOT DETERMINE")
+			(value "DECOUPLING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0402_1005Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1549,7 +1549,7 @@
 		)
 		(comp
 			(ref "C13")
-			(value "DECOUPLING - VALUE CANNOT DETERMINE")
+			(value "DECOUPLING - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0402_1005Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1639,7 +1639,7 @@
 		)
 		(comp
 			(ref "C14")
-			(value "VALUE CANNOT DETERMINE")
+			(value "CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1729,7 +1729,7 @@
 		)
 		(comp
 			(ref "C15")
-			(value "VALUE CANNOT DETERMINE")
+			(value "CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1819,7 +1819,7 @@
 		)
 		(comp
 			(ref "C16")
-			(value "VALUE CANNOT DETERMINE")
+			(value "CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1909,7 +1909,7 @@
 		)
 		(comp
 			(ref "C17")
-			(value "VALUE CANNOT DETERMINE")
+			(value "CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -1999,7 +1999,7 @@
 		)
 		(comp
 			(ref "C18")
-			(value "LOAD CAP - VALUE CANNOT DETERMINE")
+			(value "LOAD CAP - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -2089,7 +2089,7 @@
 		)
 		(comp
 			(ref "C19")
-			(value "LOAD CAP - VALUE CANNOT DETERMINE")
+			(value "LOAD CAP - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -2179,7 +2179,7 @@
 		)
 		(comp
 			(ref "C20")
-			(value "LOAD CAP - VALUE CANNOT DETERMINE")
+			(value "LOAD CAP - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -2269,7 +2269,7 @@
 		)
 		(comp
 			(ref "C21")
-			(value "LOAD CAP - VALUE CANNOT DETERMINE")
+			(value "LOAD CAP - CANNOT DETERMINE")
 			(footprint "Capacitor_SMD:C_0201_0603Metric")
 			(datasheet "~")
 			(description "Unpolarized capacitor")
@@ -2437,25 +2437,29 @@
 		)
 		(comp
 			(ref "J1")
-			(value "COAXIAL RF RECEPTACLE, U.FL/IPEX MHF-CLASS BY CONSTRUCTION - EXACT PART CANNOT DETERMINE")
-			(footprint "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical")
+			(value "COAX RF RECEPTACLE, MHF4-CLASS - PART CANNOT DETERMINE")
 			(datasheet "~")
 			(description "coaxial connector (BNC, SMA, SMB, SMC, Cinch/RCA, LEMO, ...)")
 			(fields
 				(field
-					(name "BOM confidence") "HIGH that a coaxial RF receptacle is fitted at this location on this unit.")
+					(name "BOM confidence") "HIGH that a coaxial RF receptacle is fitted at this location on this unit. HIGH that it is NOT a U.FL — the size difference is far outside any error here. CANNOT DETERMINE which of")
 				(field
 					(name "BOM line") "J1")
 				(field
-					(name "BOM part") "CANNOT DETERMINE — a U.FL / IPEX MHF-class receptacle by construction")
+					(name "BOM part") "CANNOT DETERMINE for the part number. MEASURED to be of the MHF4 / W.FL / Murata HSC size class, and NOT a U.FL.")
 				(field
 					(name "Evidence class") "SILICON SEEN")
 				(field
-					(name "FP-basis") "SUBSTITUTION")
+					(name "Excluded by measurement") "U.FL (2.6 mm square body, 3.0 x 3.1 mm overall)")
 				(field
-					(name "Note") "THIS PART REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A circular RF receptacle - metal outer shell, four solder tabs, dark dielectric annulus, gold centre contact - is unambiguous at 5x on the component face. HIGH confidence that it is fitted on this unit. WHICH receptacle (U.FL vs one of the MHF variants) is a SUBSTITUTION; the Hirose land pattern is the family's common one.")
+					(name "FP-basis") "PLACEHOLDER-L12")
 				(field
-					(name "Footprint") "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical")
+					(name "Measured") "1.860 x 1.707 mm shell incl. tabs")
+				(field
+					(name "Note") "THIS PART REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A circular RF receptacle - metal outer shell, four solder tabs, dark dielectric annulus, gold centre contact - is unambiguous at 5x on the component face. MEASURED 1.860 x 1.707 mm (shell including tabs), which EXCLUDES U.FL by 28-45% against Hirose's own catalogue and sits 7.0% / 3.0% inside an MHF4 receptacle's 2.00 x 1.76 mm housing - the right sign, because that housing is black LCP extending past the bright metal segmented. W.FL and Murata HSC are within a few percent of MHF4 and CANNOT BE SEPARATED from it here. KiCad ships no MHF4 or W.FL land pattern, so this part has NO FOOTPRINT rather than the wrong one.")
+				(field
+					(name "Footprint")
+				)
 				(field
 					(name "Datasheet") "~")
 				(field
@@ -2468,7 +2472,7 @@
 			)
 			(property
 				(name "BOM confidence")
-				(value "HIGH that a coaxial RF receptacle is fitted at this location on this unit.")
+				(value "HIGH that a coaxial RF receptacle is fitted at this location on this unit. HIGH that it is NOT a U.FL — the size difference is far outside any error here. CANNOT DETERMINE which of")
 			)
 			(property
 				(name "BOM line")
@@ -2476,19 +2480,27 @@
 			)
 			(property
 				(name "BOM part")
-				(value "CANNOT DETERMINE — a U.FL / IPEX MHF-class receptacle by construction")
+				(value "CANNOT DETERMINE for the part number. MEASURED to be of the MHF4 / W.FL / Murata HSC size class, and NOT a U.FL.")
 			)
 			(property
 				(name "Evidence class")
 				(value "SILICON SEEN")
 			)
 			(property
+				(name "Excluded by measurement")
+				(value "U.FL (2.6 mm square body, 3.0 x 3.1 mm overall)")
+			)
+			(property
 				(name "FP-basis")
-				(value "SUBSTITUTION")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Measured")
+				(value "1.860 x 1.707 mm shell incl. tabs")
 			)
 			(property
 				(name "Note")
-				(value "THIS PART REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A circular RF receptacle - metal outer shell, four solder tabs, dark dielectric annulus, gold centre contact - is unambiguous at 5x on the component face. HIGH confidence that it is fitted on this unit. WHICH receptacle (U.FL vs one of the MHF variants) is a SUBSTITUTION; the Hirose land pattern is the family's common one.")
+				(value "THIS PART REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A circular RF receptacle - metal outer shell, four solder tabs, dark dielectric annulus, gold centre contact - is unambiguous at 5x on the component face. MEASURED 1.860 x 1.707 mm (shell including tabs), which EXCLUDES U.FL by 28-45% against Hirose's own catalogue and sits 7.0% / 3.0% inside an MHF4 receptacle's 2.00 x 1.76 mm housing - the right sign, because that housing is black LCP extending past the bright metal segmented. W.FL and Murata HSC are within a few percent of MHF4 and CANNOT BE SEPARATED from it here. KiCad ships no MHF4 or W.FL land pattern, so this part has NO FOOTPRINT rather than the wrong one.")
 			)
 			(property
 				(name "Sheetname")
@@ -2527,7 +2539,7 @@
 		)
 		(comp
 			(ref "L1")
-			(value "WIREWOUND CHIP INDUCTOR - VALUE CANNOT DETERMINE")
+			(value "WIREWOUND - CANNOT DETERMINE")
 			(footprint "Inductor_SMD:L_0402_1005Metric")
 			(datasheet "~")
 			(description "Inductor")
@@ -2617,7 +2629,7 @@
 		)
 		(comp
 			(ref "L2")
-			(value "DC/DC INDUCTOR - VALUE CANNOT DETERMINE")
+			(value "DC/DC L - CANNOT DETERMINE")
 			(footprint "Inductor_SMD:L_0402_1005Metric")
 			(datasheet "~")
 			(description "Inductor")
@@ -2707,7 +2719,7 @@
 		)
 		(comp
 			(ref "L3")
-			(value "PI SERIES - VALUE CANNOT DETERMINE")
+			(value "PI SERIES - CANNOT DETERMINE")
 			(footprint "Inductor_SMD:L_0402_1005Metric")
 			(datasheet "~")
 			(description "Inductor")
@@ -2797,7 +2809,7 @@
 		)
 		(comp
 			(ref "LS1")
-			(value "VOICE COIL - WOUND MAGNET WIRE, GLUED TO THE DOME")
+			(value "VOICE COIL - WOUND MAGNET WIRE")
 			(datasheet "~")
 			(description "Speaker")
 			(fields
@@ -2883,7 +2895,7 @@
 		)
 		(comp
 			(ref "R1")
-			(value "SENSE TOP, P+_POWER - VALUE CANNOT DETERMINE (~50 nA implies megohms)")
+			(value "SNS TOP P+_PWR - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -2973,7 +2985,7 @@
 		)
 		(comp
 			(ref "R2")
-			(value "SENSE BOTTOM, P+_POWER - VALUE CANNOT DETERMINE (~50 nA implies megohms)")
+			(value "SNS BOT P+_PWR - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3063,7 +3075,7 @@
 		)
 		(comp
 			(ref "R3")
-			(value "SENSE TOP, P+_SENSE - VALUE CANNOT DETERMINE (~50 nA implies megohms)")
+			(value "SNS TOP P+_SNS - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3153,7 +3165,7 @@
 		)
 		(comp
 			(ref "R4")
-			(value "SENSE BOTTOM, P+_SENSE - VALUE CANNOT DETERMINE (~50 nA implies megohms)")
+			(value "SNS BOT P+_SNS - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3243,7 +3255,7 @@
 		)
 		(comp
 			(ref "R5")
-			(value "I2C PULL-UP - VALUE CANNOT DETERMINE")
+			(value "I2C PULL-UP - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3333,7 +3345,7 @@
 		)
 		(comp
 			(ref "R6")
-			(value "I2C PULL-UP - VALUE CANNOT DETERMINE")
+			(value "I2C PULL-UP - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3495,7 +3507,7 @@
 		)
 		(comp
 			(ref "R8")
-			(value "GAIN STRAP - VALUE CANNOT DETERMINE")
+			(value "GAIN STRAP - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3585,7 +3597,7 @@
 		)
 		(comp
 			(ref "R9")
-			(value "SENSE DIVIDER TOP - VALUE CANNOT DETERMINE")
+			(value "SENSE DIV TOP - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -3675,7 +3687,7 @@
 		)
 		(comp
 			(ref "R10")
-			(value "SENSE DIVIDER BOT - VALUE CANNOT DETERMINE")
+			(value "SENSE DIV BOT - CANNOT DETERMINE")
 			(footprint "Resistor_SMD:R_0402_1005Metric")
 			(datasheet "~")
 			(description "Resistor")
@@ -4467,7 +4479,7 @@
 		)
 		(comp
 			(ref "TP28")
-			(value "nRF CORE RAIL (DEC1) - THE GLITCH PAD")
+			(value "nRF CORE RAIL - THE GLITCH PAD")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
 			(datasheet "~")
 			(description "test point")
@@ -5013,7 +5025,7 @@
 		)
 		(comp
 			(ref "U1")
-			(value "nRF52832-CIAA (WLCSP-50) - DRAWN AS QFAA/QFN-48")
+			(value "nRF52832-CIAA WLCSP-50 (drawn QFN-48)")
 			(footprint "Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm")
 			(datasheet "https://infocenter.nordicsemi.com/pdf/nRF52832_PS_v1.4.pdf")
 			(description "Multiprotocol BLE/2.4GHz Cortex-M4 SoC, QFN-48")
@@ -5256,7 +5268,7 @@
 		)
 		(comp
 			(ref "U2")
-			(value "APPLE U1 UWB SiP - DNP / UNPOPULATED - NEVER SOLD TO ANYONE")
+			(value "APPLE U1 UWB SiP - DNP, NEVER SOLD")
 			(datasheet "~")
 			(description "PLACEHOLDER ONLY. Apple U1 UWB SiP (die TMKA75, USI system-in-package). NEVER SOLD TO ANYONE, so this part is DNP/UNPOPULATED on this sheet. NO PINOUT FOR THIS MODULE HAS EVER BEEN PUBLISHED: these pin NUMBERS are this sheet's own and are NOT a land pattern. The pin NAMES are inferred from the nRF loading the U1's 'Rose' firmware out of the shared SPI flash and driving it over the 'Durian' opcode set.  [pinout: bom/bom.json U2; docs/REFERENCE-TEARDOWN.md 2.1; research/fetched/A-seemoo-airtag-firmware-and-opcodes.md. PIN NUMBERING IS UNSOURCED AND DELIBERATELY SO.]")
 			(fields
@@ -5378,7 +5390,7 @@
 		)
 		(comp
 			(ref "U3")
-			(value "GD25LQ32C 32Mb 1.8V SPI NOR (WLCSP-10) - DRAWN AS WSON-8")
+			(value "GD25LQ32C 32Mb 1.8V NOR (WLCSP-10)")
 			(datasheet "https://www.gigadevice.com/")
 			(description "3.0V, Standard/Dual/Quad Serial Flash, WSON-8")
 			(fields
@@ -5501,7 +5513,7 @@
 		)
 		(comp
 			(ref "U4")
-			(value "3-AXIS ACCELEROMETER - PART CANNOT DETERMINE (BMA280 is a teardown ASSERTION, not a marking)")
+			(value "3-AXIS ACCEL - PART CANNOT DETERMINE")
 			(datasheet "~")
 			(description "GENERIC 3-axis accelerometer. The part is CANNOT DETERMINE: bom.json U4 sees a metal-lid LGA and cannot read a marking at any magnification available, and 'BMA280' is a teardown assertion this project failed to corroborate by size. This pin set is the intersection the BMA280, LIS2DH, LIS2DW12 and SC7A20 all share; the NUMBERING IS THIS SHEET'S OWN and is not a land pattern.  [pinout: bom/bom.json U4 (confidence: CANNOT DETERMINE which part is the accelerometer; LOW for BMA280).]")
 			(fields
@@ -5614,7 +5626,7 @@
 		)
 		(comp
 			(ref "U5")
-			(value "MAX98357A-CLASS CLASS-D AMP (LOW confidence; iFixit wrote MAX98357B)")
+			(value "MAX98357A-CLASS AMP (LOW conf)")
 			(footprint "Package_CSP:WLCSP-16_4x4_B2.17x2.32mm_P0.5mm")
 			(datasheet "https://www.analog.com/media/en/technical-documentation/data-sheets/MAX98357A-MAX98357B.pdf")
 			(description "Mono DAC with amplifier, I2S, PCM, TDM, 32-bit, 96khz, 3.2W, TQFP-16")
@@ -5749,7 +5761,7 @@
 		)
 		(comp
 			(ref "U6")
-			(value "TPS62746-CLASS BUCK 3V->1V8 (part MEDIUM, package CANNOT DETERMINE)")
+			(value "TPS62746-CLASS BUCK 3V->1V8")
 			(datasheet "~")
 			(description "Step-down converter, 3 V cell to a 1.8 V rail. The FAMILY is evidence (Apple's own board legend reads '98C0051 / TPS746'); the specific part is not, and the package is CANNOT DETERMINE. Pin numbering is this sheet's own.  [pinout: bom/bom.json U6 (MEDIUM for 'a TPS746-family buck is on this board' - a board legend authored by Apple's layout engineer; LOW that the metal-lid part beside it is that buck).]")
 			(fields
@@ -5844,7 +5856,7 @@
 		)
 		(comp
 			(ref "U7")
-			(value "TLV9001-CLASS OP-AMP - ROLE INFERRED, LOW confidence")
+			(value "TLV9001-CLASS OP-AMP - ROLE INFERRED")
 			(footprint "Package_TO_SOT_SMD:SOT-353_SC-70-5")
 			(datasheet "https://www.ti.com/lit/ds/symlink/tlv9001.pdf")
 			(description "Low-power, Rail-to-Rail, 1MHz Operational Amplifier, SOT-353")
@@ -5949,7 +5961,7 @@
 		)
 		(comp
 			(ref "U8")
-			(value "FPF2487-CLASS LOAD SWITCH (LOW confidence, SILICON CITED, single-source)")
+			(value "FPF2487-CLASS LOAD SWITCH (LOW conf)")
 			(datasheet "~")
 			(description "Load switch / OVP. Power-gating is WHY the sleep current is 2.3 uA. bom.json U8 is LOW confidence and single-source (iFixit), uncorroborated by Catley, O'Flynn or any photograph here. Pin numbering is this sheet's own.  [pinout: bom/bom.json U8; docs/REFERENCE-TEARDOWN.md 2.1.]")
 			(fields
@@ -6041,7 +6053,7 @@
 		)
 		(comp
 			(ref "U9")
-			(value "CANNOT DETERMINE - marking 1A8 / 1950; even 'regulator' is inferred")
+			(value "CANNOT DETERMINE - mark 1A8/1950")
 			(datasheet "~")
 			(description "CANNOT DETERMINE. A leadless moulded part marked '1A8' / '1950' exists at this location and that is ALL that is established. Even its function - 'secondary regulator' - is an inference, which is why every pin name here ends in a question mark. Its output is wired to nothing on this sheet because nothing in the record says what it feeds.  [pinout: bom/bom.json U9 (CANNOT DETERMINE for the part number; HIGH only for 'a part bearing these two lines exists here').]")
 			(fields
@@ -6130,7 +6142,7 @@
 		)
 		(comp
 			(ref "X1")
-			(value "32 MHz? marking T320 / RBEV - PART AND LOAD CAP CANNOT DETERMINE")
+			(value "32 MHz? mark T320/RBEV - CANNOT DETERMINE")
 			(footprint "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
 			(datasheet "~")
 			(description "Two pin crystal")
@@ -6226,7 +6238,7 @@
 		)
 		(comp
 			(ref "X2")
-			(value "32.768 kHz? marking A048L - PART AND LOAD CAP CANNOT DETERMINE")
+			(value "32.768 kHz? mark A048L - CANNOT DETERMINE")
 			(footprint "Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm")
 			(datasheet "~")
 			(description "Two pin crystal")

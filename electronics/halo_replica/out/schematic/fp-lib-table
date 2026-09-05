@@ -8,13 +8,6 @@
 		(descr "written by ce-pcb bin/sch")
 	)
 	(lib
-		(name "Connector_Coaxial")
-		(type "KiCad")
-		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Connector_Coaxial.pretty")
-		(options "")
-		(descr "written by ce-pcb bin/sch")
-	)
-	(lib
 		(name "Crystal")
 		(type "KiCad")
 		(uri "/Applications/KiCad/KiCad.app/Contents/SharedSupport/footprints/Crystal.pretty")
