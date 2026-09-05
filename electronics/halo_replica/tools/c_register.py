@@ -336,6 +336,33 @@ def fit_homography_dlt(P, Q):
 
 
 # ------------------------------------------------------------------- pipeline
+def apply_scale_override(tgt, a):
+    """Let the caller supply the px/mm measured AT THE BOARD rather than at the rule.
+
+    WHY THIS MATTERS AND WHY THE HELD-OUT ERROR CANNOT SEE IT.  `validate` fits the
+    transform and measures its error on held-out landmarks, converting BOTH to mm
+    with the SAME px/mm.  A wrong scale divides both sides equally, so it cancels:
+    the held-out RMS is a statement about REGISTRATION CONSISTENCY and carries no
+    information about SCALE ACCURACY at all.  A 1.29% scale error and a 0.1029 mm
+    held-out error can coexist happily, and the second does not warn you about the
+    first -- the check shares its assumption with the thing it checks.
+    """
+    if a.target_px_per_mm is None:
+        if tgt.view.get('px_per_mm'):
+            print("  SCALE BASIS  %.6f px/mm  [%s]" % (tgt.view['px_per_mm'],
+                                                       tgt.view['px_per_mm_basis']))
+            print("               NOTE: this is the rule's value AT THE RULE. metrology/M02")
+            print("               measures 15.6850 AT THE BOARD (two routes, 0.23%% apart),")
+            print("               1.29%% lower. Pass --target-px-per-mm 15.6850 to use it.")
+        return
+    tgt.view = dict(tgt.view)
+    tgt.view['px_per_mm'] = a.target_px_per_mm
+    tgt.view['px_per_mm_basis'] = (a.target_px_per_mm_basis
+                                   or 'CALLER OVERRIDE (basis not stated)')
+    print("  SCALE BASIS  %.6f px/mm  [%s]" % (tgt.view['px_per_mm'],
+                                               tgt.view['px_per_mm_basis']))
+
+
 def prepare(src_name, tgt_name, downsample=None):
     sv, tv = resolve_view(src_name), resolve_view(tgt_name)
     for v in (sv, tv):
@@ -376,6 +403,7 @@ def transfer_scale(H, src, tgt, tgt_px_per_mm):
 def run_fit(a):
     src, tgt, ds = prepare(a.source, a.target, a.downsample)
     print("c_register fit")
+    apply_scale_override(tgt, a)
     print("  SIDE CONVENTION  FRONT = component side (Apple FCC caption 'MLB - Front')")
     print("  SOURCE  %s  %s" % (src.view['name'], src.view['path']))
     print("          face=%s  seed centre=(%.1f,%.1f) r=%.1f  pre-averaged /%.2f"
@@ -731,6 +759,14 @@ def main():
         p.add_argument('--patch', type=int, default=15)
         p.add_argument('--search', type=int, default=5)
         p.add_argument('--min-landmarks', type=int, default=40)
+        p.add_argument('--target-px-per-mm', type=float, default=None,
+                       help='override the target view\'s px/mm. THE BUILT-IN DEFAULT IS THE '
+                            'BOTTOM RULE\'S OWN VALUE (15.8875), measured AT THE RULE, near '
+                            'the frame edge. metrology/M02 measures 15.6850 AT THE BOARD by '
+                            'two independent routes -- 1.29%% lower. Every millimetre derived '
+                            'through the default is therefore 1.29%% too small, which is 3x '
+                            'the held-out error this tool validates to.')
+        p.add_argument('--target-px-per-mm-basis', default=None)
         p.add_argument('--json-out', default=None)
     p = sub.add_parser('fit'); common(p)
     p.add_argument('--min-ncc', type=float, default=0.35)

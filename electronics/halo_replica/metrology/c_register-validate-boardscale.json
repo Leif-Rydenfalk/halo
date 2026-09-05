@@ -1,0 +1,80 @@
+{
+ "tool": "c_register.py",
+ "verb": "validate",
+ "side_convention": "FRONT = component side (Apple FCC 'MLB - Front')",
+ "source": "oflynn-backside-fullres.jpeg",
+ "target": "fcc-BCGA2187-internal-photo-6.jpg",
+ "scale_basis": "metrology/ruler-calibration.json photo6_bottom: 93 ticks / 97 mm, stderr 0.0022 px/mm, split-half 0.33%. The RIGHT rule in the same frame gives 15.5651 px/mm - a 2.07% disagreement that this tool does NOT resolve and does not hide.",
+ "px_per_mm": 15.887545712881764,
+ "model": "homography",
+ "ncc": 0.6860564010523944,
+ "folds": [
+  {
+   "sector": [
+    0.0,
+    90.0
+   ],
+   "n_held": 19,
+   "n_fit": 61,
+   "rms_source_px": 10.001574688543592,
+   "p95_source_px": 17.211873886324994,
+   "rms_target_px": 1.4718520939036654,
+   "p95_target_px": 2.5329344036806116,
+   "rms_mm": 0.0926418794005593,
+   "p95_mm": 0.15942892939259246
+  },
+  {
+   "sector": [
+    90.0,
+    180.0
+   ],
+   "n_held": 14,
+   "n_fit": 66,
+   "rms_source_px": 5.282560818758908,
+   "p95_source_px": 8.935278353438095,
+   "rms_target_px": 0.7773921529242468,
+   "p95_target_px": 1.3149333276940125,
+   "rms_mm": 0.04893091525734716,
+   "p95_mm": 0.08276503819138363
+  },
+  {
+   "sector": [
+    180.0,
+    270.0
+   ],
+   "n_held": 22,
+   "n_fit": 58,
+   "rms_source_px": 8.207549114366762,
+   "p95_source_px": 13.150028633704544,
+   "rms_target_px": 1.2094232625141617,
+   "p95_target_px": 1.9377222494460373,
+   "rms_mm": 0.07612398317340799,
+   "p95_mm": 0.12196485753459799
+  },
+  {
+   "sector": [
+    270.0,
+    360.0
+   ],
+   "n_held": 25,
+   "n_fit": 55,
+   "rms_source_px": 11.054027536290105,
+   "p95_source_px": 19.165574715947795,
+   "rms_target_px": 1.6353675428429566,
+   "p95_target_px": 2.835415302476416,
+   "rms_mm": 0.10293393154595212,
+   "p95_mm": 0.1784677982186661
+  }
+ ],
+ "worst_holdout_rms_mm": 0.10293393154595212,
+ "tolerance_mm": 0.2,
+ "landmarks_kept": 80,
+ "landmarks_discarded": {
+  "no_texture": 179,
+  "ambiguous": 124,
+  "low_peak": 19,
+  "on_boundary": 46
+ },
+ "verdict": "PASS",
+ "why": []
+}
