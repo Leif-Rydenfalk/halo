@@ -219,6 +219,13 @@
         "blocks_fabrication": false,
         "means": "the two features are the same net or the same physical feature, so there is no clearance to violate. The rule fired on a distinction that does not exist on Apple's board.",
         "pointer_must": "name what establishes that Apple's own metal is continuous there."
+      },
+      "BOUND-LIMITED": {
+        "pointer_required": true,
+        "blocks_fabrication": true,
+        "means": "copper-to-OUTLINE, where our outline's diameter is a BOUND (24.95-26.34 mm) and not a number. No placement change fixes these honestly: the violation is against an edge whose position is not known. Specified by the board lane, not invented here.",
+        "pointer_must": "name the bound itself - board/board.json parameters.outer_diameter_mm.bound_mm - and the check confirms it is still a bound of two values rather than having quietly become a single number.",
+        "AND_THE_SIGNED_EXPECTATION_RUNS_AGAINST_US": "M02 sec.8 states that IF THE BOUND MOVES, IT MOVES DOWN. So a copper-to-edge violation at the drawn 25.1593 mm gets WORSE, not better, as the outer diameter resolves toward the 24.95 mm floor. THESE CANNOT BE WAITED OUT. Classifying them BOUND-LIMITED records whose problem they are; it must not be read as expecting them to go away."
       }
     },
     "resolution_floor": {
@@ -249,6 +256,8 @@
         ]
       },
       "if_absent": "every violation falls back to DRAWN-WRONG and the row says the classification is absent. That is not CANNOT DETERMINE: an unexcused violation IS our defect until evidence says otherwise."
-    }
+    },
+    "fourth_class_note": "BOUND-LIMITED arrived from the board lane via the orchestrator after the first three were built. On the DRC read at 2026-09-05T15:13:21 it is the MAJORITY of what remains: 19 copper_edge_clearance of 33 errors, against 9 clearance and 5 solder_mask_bridge.",
+    "where_the_fidelity_reading_lives": "NOT HERE. This gate answers ONE question - can this be fabricated - and every class except GENUINELY-TOUCHING blocks, because you cannot cut a board where two pads overlap whatever the reason. The SECOND question the split answers - how much of the unbuildability belongs to Apple, to the photographs, and to us - is fidelity, and it lives in THREE-WAY.md as a row. Overloading one check with two meanings is the adjacency failure at the level of tool design: a gate that answers both answers neither reliably, and the first person to read it takes the answer to whichever question they arrived with."
   }
 }

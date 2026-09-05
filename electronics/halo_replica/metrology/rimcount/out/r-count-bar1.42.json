@@ -1,0 +1,293 @@
+{
+  "run_utc": "2026-09-05T06:56:43Z",
+  "git_rev": "7152aac",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "r_rimcount.py",
+  "engine": "r_circ.py",
+  "frame": "r_frame.py",
+  "verb": "count",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "down": 3,
+  "nphi": 64,
+  "smooth": 1.0,
+  "rim": [
+    0.86,
+    1.01
+  ],
+  "dilate_mm": 1.5,
+  "sizes_mm": [
+    1.0,
+    2.2
+  ],
+  "r_step_mm": 0.1,
+  "bar": 1.42,
+  "sd_floor": 3.0407,
+  "unmeasured_frac": 0.0,
+  "n_above_bar": 21,
+  "n_after_nms": 15,
+  "rows": [
+    {
+      "closure": 23.17,
+      "theta_deg": 188.8,
+      "r_mm": 11.98,
+      "d_mm": 1.3,
+      "stored_px": [
+        264.0,
+        1545.0
+      ],
+      "noncirc": 0.0057,
+      "a4": 0.0025,
+      "inlier_frac": 1.0,
+      "contrast_luma": 188.7,
+      "core_p90": 243.2,
+      "surround_median": 54.5,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 9.8,
+      "theta_deg": 346.7,
+      "r_mm": 10.63,
+      "d_mm": 1.2,
+      "stored_px": [
+        2622.0,
+        1479.0
+      ],
+      "noncirc": 0.227,
+      "a4": 0.167,
+      "inlier_frac": 0.676,
+      "contrast_luma": 62.2,
+      "core_p90": 106.2,
+      "surround_median": 43.9,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 7.87,
+      "theta_deg": 13.1,
+      "r_mm": 10.65,
+      "d_mm": 1.3,
+      "stored_px": [
+        2625.0,
+        1995.0
+      ],
+      "noncirc": 0.3948,
+      "a4": 0.132,
+      "inlier_frac": 0.348,
+      "contrast_luma": 66.0,
+      "core_p90": 119.3,
+      "surround_median": 53.3,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 2.4,
+      "theta_deg": 192.5,
+      "r_mm": 12.42,
+      "d_mm": 1.0,
+      "stored_px": [
+        234.0,
+        1452.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": null,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    },
+    {
+      "closure": 2.14,
+      "theta_deg": 322.5,
+      "r_mm": 10.73,
+      "d_mm": 1.4,
+      "stored_px": [
+        2427.0,
+        1044.0
+      ],
+      "noncirc": 0.8459,
+      "a4": 0.3101,
+      "inlier_frac": 0.413,
+      "contrast_luma": 65.8,
+      "core_p90": 116.6,
+      "surround_median": 50.8,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 2.13,
+      "theta_deg": 286.4,
+      "r_mm": 12.58,
+      "d_mm": 1.2,
+      "stored_px": [
+        1899.0,
+        456.0
+      ],
+      "noncirc": 0.2373,
+      "a4": 0.0464,
+      "inlier_frac": 0.868,
+      "contrast_luma": 159.9,
+      "core_p90": 203.9,
+      "surround_median": 43.9,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 1.94,
+      "theta_deg": 198.7,
+      "r_mm": 12.05,
+      "d_mm": 1.9,
+      "stored_px": [
+        309.0,
+        1329.0
+      ],
+      "noncirc": 0.2374,
+      "a4": 0.0301,
+      "inlier_frac": 0.193,
+      "contrast_luma": 111.5,
+      "core_p90": 169.0,
+      "surround_median": 57.6,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 1.66,
+      "theta_deg": 263.8,
+      "r_mm": 12.76,
+      "d_mm": 1.0,
+      "stored_px": [
+        1377.0,
+        390.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": 0.38,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    },
+    {
+      "closure": 1.64,
+      "theta_deg": 313.7,
+      "r_mm": 10.64,
+      "d_mm": 1.5,
+      "stored_px": [
+        2304.0,
+        921.0
+      ],
+      "noncirc": 0.5679,
+      "a4": 0.4148,
+      "inlier_frac": 0.46,
+      "contrast_luma": 66.1,
+      "core_p90": 119.6,
+      "surround_median": 53.6,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 1.63,
+      "theta_deg": 330.2,
+      "r_mm": 10.94,
+      "d_mm": 1.0,
+      "stored_px": [
+        2532.0,
+        1161.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": 0.098,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    },
+    {
+      "closure": 1.53,
+      "theta_deg": 210.1,
+      "r_mm": 11.5,
+      "d_mm": 1.2,
+      "stored_px": [
+        465.0,
+        1125.0
+      ],
+      "noncirc": 0.4847,
+      "a4": 0.0766,
+      "inlier_frac": 0.126,
+      "contrast_luma": 72.3,
+      "core_p90": 157.9,
+      "surround_median": 85.6,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 1.51,
+      "theta_deg": 40.9,
+      "r_mm": 11.22,
+      "d_mm": 1.1,
+      "stored_px": [
+        2424.0,
+        2520.0
+      ],
+      "noncirc": 1.232,
+      "a4": 0.1163,
+      "inlier_frac": 0.392,
+      "contrast_luma": 44.6,
+      "core_p90": 95.7,
+      "surround_median": 51.0,
+      "klass": "UNGATED"
+    },
+    {
+      "closure": 1.48,
+      "theta_deg": 111.6,
+      "r_mm": 11.91,
+      "d_mm": 2.0,
+      "stored_px": [
+        1056.0,
+        2916.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": null,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    },
+    {
+      "closure": 1.47,
+      "theta_deg": 37.7,
+      "r_mm": 11.97,
+      "d_mm": 1.0,
+      "stored_px": [
+        2529.0,
+        2517.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": null,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    },
+    {
+      "closure": 1.47,
+      "theta_deg": 29.1,
+      "r_mm": 11.7,
+      "d_mm": 1.1,
+      "stored_px": [
+        2610.0,
+        2343.0
+      ],
+      "noncirc": null,
+      "a4": null,
+      "inlier_frac": 0.186,
+      "contrast_luma": null,
+      "core_p90": null,
+      "surround_median": null,
+      "klass": "UNMEASURED-SHAPE"
+    }
+  ],
+  "tally": {
+    "UNGATED": 9,
+    "UNMEASURED-SHAPE": 6
+  },
+  "count_round": 0,
+  "shape_round_max": null,
+  "shape_notround_min": null
+}

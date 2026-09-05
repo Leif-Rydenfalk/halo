@@ -12,8 +12,4 @@
     (effects (font (size 0.4 0.4) (thickness 0.06)))
   )
   (pad "1" smd rect (at 0 0) (size 1.25 1.26) (layers "F.Cu" "F.Paste" "F.Mask"))
-  (fp_line (start -0.825 -0.83) (end 0.825 -0.83) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 0.825 -0.83) (end 0.825 0.83) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start 0.825 0.83) (end -0.825 0.83) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
-  (fp_line (start -0.825 0.83) (end -0.825 -0.83) (stroke (width 0.05) (type solid)) (layer "F.CrtYd"))
 )

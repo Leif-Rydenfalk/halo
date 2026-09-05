@@ -605,10 +605,88 @@ def main():
     b.place("LGND", "%s:REPL_LEGEND_BOARD" % LIBID,
             at=to_board(0, -17.5), anchor="origin", value="board legend")
     # Silkscreen that is PHYSICALLY PRINTED, in the annulus, radial.
-    silk = [("REPL_SILK_REPLICA", 0.0, 9.3),
-            ("REPL_SILK_U2_DNP", 90.0, 9.3),
-            ("REPL_SILK_THICKNESS", 180.0, 9.3),
-            ("REPL_SILK_INCOMPLETE", 270.0, 9.3)]
+    # THE LEGEND MOVES; A MEASURED POSITION NEVER DOES. Which bearings are
+    # free is SOLVED from the placements rather than guessed -- two rounds of
+    # guessing produced 2 then 8 silk_over_copper. Each legend is a 4.2 x
+    # 1.4 mm box laid radially; each drawn land is a disc of its own measured
+    # size at its own measured position; the four chosen bearings are the
+    # ones with the largest clearance, kept at least 45 deg apart so the
+    # legends are spread round the board rather than stacked in one gap.
+    lands = []
+    for row in handoff["rows"]:
+        if row["x_mm"] is None or FP.classify(row) != "metal":
+            continue
+        lands.append((row["x_mm"], row["y_mm"],
+                      max(row["long_mm"], row["short_mm"]) / 2.0))
+    SILK_R, SILK_L, SILK_W = 9.4, 4.2, 1.4
+
+    def _silk_clear(bearing, rr=None):
+        ca = math.cos(math.radians(bearing))
+        sa = math.sin(math.radians(bearing))
+        rr = SILK_R if rr is None else rr
+        cx, cy = rr * ca, rr * sa
+        worst = 99.0
+        for lx, ly, lr in lands:
+            dx, dy = lx - cx, ly - cy
+            u = abs(dx * ca + dy * sa)          # along the radial box
+            v = abs(-dx * sa + dy * ca)         # across it
+            gap = math.hypot(max(0.0, u - SILK_L / 2.0),
+                             max(0.0, v - SILK_W / 2.0)) - lr
+            worst = min(worst, gap)
+        return worst
+
+    # THE SEARCH IS OVER BEARING *AND* RADIUS. Bearing alone left the fourth
+    # legend at -0.279 mm -- overlapping a measured land -- because three
+    # quiet arcs is all a bearing-only search can find on an annulus this
+    # full. The radius band is bounded by the geometry, not by taste: the
+    # pocket reaches r 8.02 mm at its widest facet and the outer edge is
+    # nearer than r 11.5 mm at the chords, so 8.6 to 10.6 is the room there
+    # actually is.
+    # AND THE BAND IS COMPUTED FROM THE EDGE, NOT TYPED. A legend is 4.2 mm
+    # of text laid RADIALLY, so at r 10.6 it reaches 12.7 mm and crosses an
+    # outer edge that the chords bring in to 11.5 mm in places -- which is
+    # exactly the 4 silk_edge_clearance warnings a hand-picked band produced.
+    # Both bounds now come from geometry.py's own primitives at that bearing.
+    ocen, oR, ochords = GEO._outer_model()
+
+    def _outer_r(bearing):
+        r = GEO._r_circle(bearing, ocen, oR)
+        for ch in ochords:
+            v = GEO._r_line(bearing, ch["n"], ch["d"])
+            if v is not None and v < r:
+                r = v
+        return r
+
+    pocket_max = pmeta["max_radius_mm"]
+    EDGE_KEEP = 0.30                      # silk to board edge
+    cand = []
+    for a in range(0, 360, 2):
+        hi = _outer_r(a) - EDGE_KEEP - SILK_L / 2.0
+        lo = pocket_max + 0.20 + SILK_L / 2.0
+        rr = lo
+        while rr <= hi:
+            cand.append((_silk_clear(a, rr), float(a), round(rr, 2)))
+            rr += 0.2
+    if not cand:
+        raise SystemExit("no radius on any bearing fits a %s mm legend "
+                         "between the pocket and the edge." % SILK_L)
+    cand.sort(reverse=True)
+    chosen = []
+    for gap, a, rr in cand:
+        if all(abs(((a - b + 180) % 360) - 180) >= 40
+               for _, b, _ in chosen):
+            chosen.append((gap, a, rr))
+        if len(chosen) == 4:
+            break
+    if len(chosen) < 4 or chosen[-1][0] < 0.15:
+        raise SystemExit(
+            "only %d legend positions clear the placements by 0.15 mm — the "
+            "annulus is fuller than the legend allows. The answer is FEWER "
+            "WORDS ON THE BOARD, never a moved land." % len(chosen))
+    silk_names = ["REPL_SILK_REPLICA", "REPL_SILK_U2_DNP",
+                  "REPL_SILK_THICKNESS", "REPL_SILK_INCOMPLETE"]
+    silk = [(n, a, rr) for n, (g, a, rr) in zip(silk_names, chosen)]
+    silk_gaps = [round(g, 3) for g, _, _ in chosen]
     for i, (fp, ang, r) in enumerate(silk):
         px = r * math.cos(math.radians(ang))
         py = r * math.sin(math.radians(ang))
@@ -666,6 +744,15 @@ def main():
         "netlist_binding": BIND_VERDICT,
         "nets_read": 0 if nets is None else len(nets),
         "pads_on_a_net": 0,
+        "silkscreen_legend": {
+            "bearings_deg": [a for _, a, _ in silk],
+            "radii_mm": [r for _, _, r in silk],
+            "clearance_to_nearest_drawn_land_mm": silk_gaps,
+            "rule": "the legend moves; a measured position never does. The "
+                    "bearings are solved against the placements, kept 45 deg "
+                    "apart, after two rounds of guessing produced 2 then 8 "
+                    "silk_over_copper violations.",
+        },
         "orientation": {
             "source": "components-front.json angle_deg and "
                       "dark-packages-front.json angle_deg, keyed on the "
@@ -787,6 +874,10 @@ def main():
           % (placed_back["gold_pad"], placed_back["contact_position"]))
     for rid, why in refused_back:
         print("         REFUSED %-6s %s" % (rid, why[:90]))
+    print("SILK   4 legends at %s deg / %s mm, clearance to the nearest "
+          "drawn land %s mm"
+          % ([int(a) for _, a, _ in silk], [r for _, _, r in silk],
+             silk_gaps))
     print("MASK   %s, finish %s — %s. A CHOICE inside the measured bound "
           "'dark and neutral'; Apple's colour stays CANNOT DETERMINE."
           % (mask, finish, mask_state["state"]))

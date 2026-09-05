@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 59
  },
- "written_utc": "2026-09-05T07:08:36.887699Z",
+ "written_utc": "2026-09-05T07:13:52.306155Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
@@ -79,6 +79,27 @@
  "netlist_binding": "CANNOT DETERMINE \u2014 the netlist is READ (65 nets from lane\nL11) and NOT ONE PAD ON THIS BOARD CAN BE ATTACHED TO IT, because the two\nsides name different objects. The schematic's nodes are IDENTIFIED PARTS\n(U1, U3, C1..C5, X1, X2). This board's placements are METROLOGY ROWS -- the\nproducing lane's own words for its handoff are \"A LIST OF METAL AND BLUE. It\nis NOT a list of components.\" There is no row-to-refdes map anywhere in this\nrepo and building one by eye is the contamination this whole lane exists to\nprevent.\n\nONE row IS identified: handoff D000 is the nRF52832, M08's positive control.\nIt still cannot bind, for a second and independent reason -- L11 drew U1 with\nKiCad's QFN-48 symbol because no WLCSP-50 ball map is sourced, so the sheet's\npin NUMBERS are a different package's. Binding by number would attach signals\nto the wrong balls; binding by name needs the ball map that does not exist.\n\nSO THE COPPER ON THIS BOARD HAS NO CONNECTIVITY, and that is stated rather\nthan repaired. What would close it: a published nRF52832-CIAA ball map, and\na row-to-refdes assignment produced by measurement rather than by eye.",
  "nets_read": 65,
  "pads_on_a_net": 0,
+ "silkscreen_legend": {
+  "bearings_deg": [
+   110.0,
+   320.0,
+   58.0,
+   0.0
+  ],
+  "radii_mm": [
+   10.6,
+   8.8,
+   10.6,
+   10.6
+  ],
+  "clearance_to_nearest_drawn_land_mm": [
+   2.283,
+   2.175,
+   0.704,
+   0.571
+  ],
+  "rule": "the legend moves; a measured position never does. The bearings are solved against the placements, kept 45 deg apart, after two rounds of guessing produced 2 then 8 silk_over_copper violations."
+ },
  "orientation": {
   "source": "components-front.json angle_deg and dark-packages-front.json angle_deg, keyed on the measured position",
   "applied_to": "CLASS B rows only \u2014 a min-area-rect angle from an untrustworthy rect is untrustworthy too (board.json)",

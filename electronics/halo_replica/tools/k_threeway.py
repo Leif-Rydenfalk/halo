@@ -297,15 +297,34 @@ def classify_clearances(doc, drc_paths, roots, root=HALO):
             ed = json.load(open(fp))
             ids = {r.get("id") for r in ed.get("rows", [])}
         except Exception:
-            refused.append(f"violation {i}: {cl}'s evidence file is not readable rows JSON")
+            refused.append(f"violation {i}: {cl}'s evidence file is not readable JSON")
             out["DRAWN-WRONG"] += 1; continue
         want = ev.get("rows") or []
-        missing = [r for r in want if r not in ids]
-        if not want or missing:
+        # BOUND-LIMITED names a bound, not handoff rows; its own check is below.
+        missing = [] if cl == "BOUND-LIMITED" else [r for r in want if r not in ids]
+        if (not want and cl != "BOUND-LIMITED") or missing:
             refused.append(f"violation {i}: {cl} names row(s) {missing or '(none)'} "
                            f"absent from {ev['file']}")
             out["DRAWN-WRONG"] += 1; continue
         # THE POINTER RESOLVED. Does it SUPPORT the claim?
+        if cl == "BOUND-LIMITED":
+            # The pointer must name a bound that is STILL A BOUND. If the outer diameter
+            # ever quietly becomes a single number, every violation excused on the
+            # grounds that it is unknown silently loses its grounds - and nothing else
+            # in the pipeline would notice.
+            try:
+                bd = json.load(open(fp))
+                node = bd
+                for seg in (ev.get("path") or "parameters.outer_diameter_mm.bound_mm").split("."):
+                    node = node[seg]
+                okb = isinstance(node, list) and len(node) == 2
+            except Exception:
+                okb = False
+            if not okb:
+                refused.append(f"violation {i}: BOUND-LIMITED points at a value that is not a "
+                               f"two-element bound. If the OD has become a single number the "
+                               f"grounds for this excuse are gone.")
+                out["DRAWN-WRONG"] += 1; continue
         if cl == "MEASUREMENT-LIMITED":
             gap = c.get("measured_gap_mm")
             if gap is None or float(gap) > floor:

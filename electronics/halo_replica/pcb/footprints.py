@@ -314,7 +314,14 @@ def metal_land(w_mm, l_mm):
     o.append('  (pad "1" smd rect (at 0 0) (size %s %s) '
              '(layers "F.Cu" "F.Paste" "F.Mask"))'
              % (_fmt(round(w_mm, 2)), _fmt(round(l_mm, 2))))
-    o += _rect(0, 0, round(w_mm, 2) + 0.4, round(l_mm, 2) + 0.4, "F.CrtYd")
+    # NO COURTYARD, AND FOR THE SAME REASON THE MARKERS HAVE NONE. A
+    # courtyard is the space a PART BODY occupies. This is a transcription of
+    # a MEASURED METAL REGION -- the handoff explicitly is not a list of
+    # components -- so there is no body and there is nothing to reserve space
+    # for. Giving these courtyards produced 25 courtyards_overlap errors that
+    # were statements about a convention this lane invented, not about the
+    # board; crowding between two measured lands is already reported, and
+    # reported better, by the clearance rule.
     o.append(")")
     return name, "\n".join(o)
 
@@ -344,7 +351,14 @@ def back_pad(d_mm):
     o = _head(name, descr, "halo replica backface gold pad measured", "smd")
     o.append('  (pad "1" smd circle (at 0 0) (size %s %s) '
              '(layers "F.Cu" "F.Mask"))' % (_fmt(d), _fmt(d)))
-    o += _rect(0, 0, d + 0.3, d + 0.3, "F.CrtYd")
+    # NO COURTYARD, AND FOR THE SAME REASON THE MARKERS HAVE NONE. A
+    # courtyard is the space a PART BODY occupies. This is a transcription of
+    # a MEASURED METAL REGION -- the handoff explicitly is not a list of
+    # components -- so there is no body and there is nothing to reserve space
+    # for. Giving these courtyards produced 25 courtyards_overlap errors that
+    # were statements about a convention this lane invented, not about the
+    # board; crowding between two measured lands is already reported, and
+    # reported better, by the clearance rule.
     o.append(")")
     return name, "\n".join(o)
 
