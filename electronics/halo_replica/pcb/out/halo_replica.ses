@@ -1,0 +1,279 @@
+(session "halo_replica"
+  (base_design "halo_replica")
+  (placement
+    (resolution um 10)
+    (component "REPL_POS_ONLY"
+      (place B071 229910 -54878 front 0)
+      (place B067 227710 -65738 front 0)
+      (place B078 207350 -205978 front 0)
+      (place B057 192400 -206998 front 0)
+      (place B044 236450 -50858 front 0)
+      (place B083 78250 -123018 front 0)
+      (place B062 141120 -17308 front 0)
+      (place B051 214370 -210728 front 0)
+      (place B059 241240 -185818 front 0)
+      (place B074 157000 -8838 front 0)
+      (place B092 45470 -133778 front 0)
+      (place B093 134650 -8968 front 0)
+      (place B066 234800 -155528 front 0)
+      (place B069 69310 -141548 front 0)
+      (place B058 219210 -34338 front 0)
+      (place B091 59260 -46138 front 0)
+      (place B040 240860 -57628 front 0)
+      (place B050 229800 -44128 front 0)
+      (place B036 194550 -20158 front 0)
+      (place B052 250180 -164308 front 0)
+      (place B086 148340 -42798 front 0)
+      (place B084 260510 -130598 front 0)
+      (place B037 85160 -23878 front 0)
+      (place B045 218020 -44628 front 0)
+      (place B041 220620 -206038 front 0)
+      (place B049 236330 -192438 front 0)
+      (place B042 224250 -50308 front 0)
+      (place B089 168830 -206128 front 0)
+      (place B094 77930 -29638 front 0)
+      (place B043 48870 -154298 front 0)
+      (place B047 241800 -159238 front 0)
+      (place B065 197500 -220778 front 0)
+      (place B085 260710 -109398 front 0)
+      (place B073 140490 -12838 front 0)
+      (place B068 199080 -205958 front 0)
+      (place B081 244760 -173668 front 0)
+      (place B075 192510 -215458 front 0)
+      (place B090 157670 -224968 front 0)
+      (place B060 155660 -13378 front 0)
+      (place B063 215840 -62498 front 0)
+      (place B061 223590 -38648 front 0)
+      (place B070 199350 -214248 front 0)
+      (place B053 189640 -221008 front 0)
+      (place B082 220220 -70388 front 0)
+      (place B033 253540 -156608 front 0)
+      (place B054 207330 -214048 front 0)
+      (place B048 234350 -61758 front 0)
+      (place B056 202260 -23758 front 0)
+      (place B080 52140 -162568 front 0)
+      (place B077 78210 -114278 front 0)
+      (place B072 212550 -29388 front 0)
+      (place B055 222940 -58578 front 0)
+    )
+    (component "REPL_METAL_0.8x1.62"
+      (place B026 78830 -190768 front 304.412)
+    )
+    (component "REPL_NOT_DRAWN"
+      (place B001 215440 -87008 front 0)
+      (place B000 115790 -207828 front 0)
+      (place D001 165380 -35758 front 0)
+    )
+    (component "REPL_METAL_0.91x1.18"
+      (place D002 59210 -151188 front 295.2)
+    )
+    (component "REPL_METAL_0.62x1.4"
+      (place B017 49360 -142658 front 18.998)
+    )
+    (component "REPL_METAL_1.31x1.64"
+      (place B009 158230 -215398 front 273.265)
+    )
+    (component "REPL_METAL_0.94x0.95"
+      (place D003 81310 -96318 front 86.3)
+    )
+    (component "REPL_RIM_SUSPECT"
+      (place B012 232870 -33188 front 0)
+      (place B016 252010 -178348 front 0)
+      (place B079 120010 7562 front 0)
+      (place B088 140310 -2048 front 0)
+      (place B038 126260 2352 front 0)
+      (place B032 75220 -14368 front 0)
+      (place B076 225640 -216718 front 0)
+      (place B027 257130 -182708 front 0)
+      (place B022 186850 1712 front 0)
+      (place B031 173840 5522 front 0)
+      (place B039 161780 6012 front 0)
+      (place B087 60980 -26068 front 0)
+      (place B021 33570 -128418 front 0)
+      (place B018 138450 6152 front 0)
+    )
+    (component "REPL_METAL_0.68x1.51"
+      (place B020 76660 -107298 front 84.217)
+    )
+    (component "REPL_METAL_1.4x1.71"
+      (place B008 55440 -115268 front 357.547)
+    )
+    (component "REPL_METAL_1.21x2.87"
+      (place B013 236120 -148778 front 76.995)
+    )
+    (component "REPL_METAL_0.55x1.34"
+      (place B019 56990 -139138 front 25.767)
+    )
+    (component "REPL_METAL_1.25x1.26"
+      (place B011 31730 -103628 front 40.087)
+    )
+    (component "REPL_METAL_0.7x1.49"
+      (place B046 63060 -158408 front 292.165)
+    )
+    (component "REPL_METAL_0.8x1.57"
+      (place B025 85560 -175608 front 303.474)
+    )
+    (component "REPL_METAL_0.56x0.71"
+      (place B029 76120 -205548 front 323.366)
+    )
+    (component "REPL_METAL_2.25x2.69"
+      (place B003 95450 -58148 front 325.163)
+    )
+    (component "REPL_METAL_0.74x1.59"
+      (place B023 228390 -199228 front 310.33)
+    )
+    (component "REPL_METAL_0.51x0.7"
+      (place B034 180620 -16088 front 335.736)
+    )
+    (component "REPL_METAL_0.98x5.4"
+      (place B004 76050 -167298 front 297.908)
+    )
+    (component "REPL_METAL_1.15x3.88"
+      (place B005 38040 -78018 front 324.816)
+    )
+    (component "REPL_METAL_0.69x1.4"
+      (place B014 253230 -81778 front 26.589)
+    )
+    (component "REPL_METAL_0.75x1.52"
+      (place B024 75100 -55338 front 318.466)
+    )
+    (component "REPL_U1_WLCSP50_NO_LANDS"
+      (place D000 119630 -35028 front 291.1)
+    )
+    (component "REPL_METAL_0.51x1.53"
+      (place D004 139990 3852 front 4.3)
+    )
+    (component "REPL_METAL_0.55x0.73"
+      (place B030 69770 -200568 front 322.955)
+    )
+    (component "REPL_METAL_0.78x4.47"
+      (place B007 73940 -75698 front 61.068)
+    )
+    (component "REPL_METAL_1.72x2.32"
+      (place B010 176870 -213078 front 348.556)
+    )
+    (component "REPL_METAL_0.54x0.94"
+      (place B035 188120 -17738 front 35.336)
+    )
+    (component "REPL_METAL_2.05x2.54"
+      (place B002 185330 -37788 front 350.427)
+    )
+    (component "REPL_ABSENCE_EYEBALLED"
+      (place GAP2 251900 -143698 front 0)
+      (place GAP3 234500 -120198 front 0)
+      (place GAP1 253300 -95298 front 0)
+    )
+    (component "REPL_METAL_1.02x3.21"
+      (place B064 214790 -164348 front 319.7)
+    )
+    (component "REPL_METAL_0.79x4.49"
+      (place B006 165320 -33858 front 350.104)
+    )
+    (component "REPL_METAL_0.6x0.9"
+      (place B028 81730 -35158 front 28.808)
+    )
+    (component "REPL_METAL_0.81x1.95"
+      (place B015 112580 -15768 front 279.189)
+    )
+    (component "REPL_BPAD_D0.6"
+      (place KP020 69030 -171468 back 180)
+      (place KP022 107130 -199498 back 180)
+      (place KP028 137810 -200428 back 180)
+      (place KP030 174810 -199918 back 180)
+      (place KP024 120190 -199778 back 180)
+      (place KP036 227650 -178458 back 180)
+      (place KP015 54260 -113758 back 180)
+      (place KP033 208510 -198348 back 180)
+      (place KP029 149860 -205658 back 180)
+      (place KP032 196180 -182658 back 180)
+      (place KP035 209600 -175878 back 180)
+      (place KP019 65090 -153828 back 180)
+    )
+    (component "REPL_BPAD_D0.62"
+      (place KP039 221210 -151148 back 180)
+    )
+    (component "REPL_BACK_CONTACT_POS"
+      (place KC001 151370 -36128 back 180)
+      (place KC002 126450 -42538 back 180)
+      (place KC000 176850 -43188 back 180)
+    )
+    (component "REPL_BPAD_D1.05"
+      (place KP000 226250 -110708 back 180)
+      (place KP010 75680 -70798 back 180)
+      (place KP011 75500 -83538 back 180)
+      (place KP013 75210 -109138 back 180)
+      (place KP012 75350 -96318 back 180)
+      (place KP016 75050 -121848 back 180)
+    )
+    (component "REPL_BPAD_D0.21"
+      (place KP014 46440 -111198 back 180)
+      (place KP018 49260 -135998 back 180)
+    )
+    (component "REPL_BPAD_D0.36"
+      (place KP002 262100 -82578 back 180)
+      (place KP025 108830 -230258 back 180)
+    )
+    (component "REPL_BPAD_D1.03"
+      (place KP041 226000 -136468 back 180)
+    )
+    (component "REPL_BPAD_D0.59"
+      (place KP017 54130 -125468 back 180)
+      (place KP034 220300 -191118 back 180)
+      (place KP038 238690 -164418 back 180)
+      (place KP023 104330 -218358 back 180)
+      (place KP026 117770 -215228 back 180)
+      (place KP003 254250 -74988 back 180)
+    )
+    (component "REPL_BPAD_D0.61"
+      (place KP040 234970 -151358 back 180)
+      (place KP031 199090 -207258 back 180)
+      (place KP037 217740 -165188 back 180)
+      (place KP021 77160 -181628 back 180)
+    )
+    (component "REPL_BPAD_D0.52"
+      (place KP007 101710 -46848 back 180)
+    )
+    (component "REPL_BPAD_D0.57"
+      (place KP001 268180 -99798 back 180)
+      (place KP027 130990 -220078 back 180)
+      (place KP008 82830 -46348 back 180)
+    )
+    (component "REPL_BPAD_D0.56"
+      (place KP004 226640 -74748 back 180)
+    )
+    (component "REPL_BPAD_D1.06"
+      (place KP042 226180 -123638 back 180)
+    )
+    (component "REPL_BPAD_D0.34"
+      (place KP009 63940 -49638 back 180)
+    )
+  )
+  (was_is
+  )
+  (routes 
+    (resolution um 10)
+    (parser
+      (host_cad "KiCad's Pcbnew")
+      (host_version "10.0.6")
+    )
+    (library_out 
+      (padstack "Via[0-3]_250:150_um"
+        (shape
+          (circle F.Cu 2500 0 0)
+        )
+        (shape
+          (circle In1.Cu 2500 0 0)
+        )
+        (shape
+          (circle In2.Cu 2500 0 0)
+        )
+        (shape
+          (circle B.Cu 2500 0 0)
+        )
+        (attach off)
+      )
+    )
+    (network_out 
+    )
+  )
+)

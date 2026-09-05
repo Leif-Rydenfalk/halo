@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T19:24:38",
+    "date": "2026-09-05T19:25:17",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -30,96 +30,27 @@
     ],
     "kicad_version": "10.0.6",
     "schematic_parity": [],
-    "source": "halo_replica.kicad_pcb",
+    "source": "halo_replica-routed.kicad_pcb",
     "unconnected_items": [],
     "violations": [
         {
-            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0679 mm)",
-            "items": [
-                {
-                    "description": "Pad 1 [<no net>] of B030 on F.Cu",
-                    "pos": {
-                        "x": 6.977,
-                        "y": 20.056829
-                    },
-                    "uuid": "c409c4dc-2a4b-45ed-a3f4-881d03be6315"
-                },
-                {
-                    "description": "Pad 1 [<no net>] of B026 on F.Cu",
-                    "pos": {
-                        "x": 7.883,
-                        "y": 19.076829
-                    },
-                    "uuid": "1adce1d2-0d4f-4cc7-8847-f1936ea5f6bc"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
             "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
+                    "description": "Pad 1 [<no net>] of B046 on F.Cu",
                     "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
+                        "x": 6.306,
+                        "y": 15.8408
                     },
-                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
+                    "uuid": "e5148f42-b89c-4fbc-95f6-29ee7e5f4028"
                 },
                 {
-                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
+                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
+                        "x": 5.921,
+                        "y": 15.1188
                     },
-                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Pad 1 [<no net>] of B010 on F.Cu",
-                    "pos": {
-                        "x": 17.687,
-                        "y": 21.307829
-                    },
-                    "uuid": "71efd287-27e8-42d4-8169-ffb380a999ac"
-                },
-                {
-                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
-                    "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
-                    },
-                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Pad 1 [<no net>] of B064 on F.Cu",
-                    "pos": {
-                        "x": 21.479,
-                        "y": 16.434829
-                    },
-                    "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
-                },
-                {
-                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
-                    "pos": {
-                        "x": 23.612,
-                        "y": 14.877829
-                    },
-                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
+                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
                 }
             ],
             "severity": "error",
@@ -132,7 +63,7 @@
                     "description": "Pad 1 [<no net>] of B017 on F.Cu",
                     "pos": {
                         "x": 4.936,
-                        "y": 14.265829
+                        "y": 14.2658
                     },
                     "uuid": "83da2f9c-8449-463f-98ba-5a1a5e0bf4c7"
                 },
@@ -140,32 +71,9 @@
                     "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
                         "x": 5.921,
-                        "y": 15.118829
+                        "y": 15.1188
                     },
                     "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0119 mm)",
-            "items": [
-                {
-                    "description": "Pad 1 [<no net>] of B007 on F.Cu",
-                    "pos": {
-                        "x": 7.394,
-                        "y": 7.569829
-                    },
-                    "uuid": "ed54e747-3f98-41df-b4f6-47f19614906c"
-                },
-                {
-                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 }
             ],
             "severity": "error",
@@ -175,20 +83,66 @@
             "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Pad 1 [<no net>] of B046 on F.Cu",
+                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
-                        "x": 6.306,
-                        "y": 15.840829
+                        "x": 3.804,
+                        "y": 7.8018
                     },
-                    "uuid": "e5148f42-b89c-4fbc-95f6-29ee7e5f4028"
+                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 },
                 {
-                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
+                    "description": "Pad 1 [<no net>] of B011 on F.Cu",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 3.173,
+                        "y": 10.3628
                     },
-                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
+                    "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0679 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B030 on F.Cu",
+                    "pos": {
+                        "x": 6.977,
+                        "y": 20.0568
+                    },
+                    "uuid": "c409c4dc-2a4b-45ed-a3f4-881d03be6315"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B026 on F.Cu",
+                    "pos": {
+                        "x": 7.883,
+                        "y": 19.0768
+                    },
+                    "uuid": "1adce1d2-0d4f-4cc7-8847-f1936ea5f6bc"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B010 on F.Cu",
+                    "pos": {
+                        "x": 17.687,
+                        "y": 21.3078
+                    },
+                    "uuid": "71efd287-27e8-42d4-8169-ffb380a999ac"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
+                    "pos": {
+                        "x": 15.823,
+                        "y": 21.5398
+                    },
+                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
                 }
             ],
             "severity": "error",
@@ -201,7 +155,7 @@
                     "description": "Pad 1 [<no net>] of B019 on F.Cu",
                     "pos": {
                         "x": 5.699,
-                        "y": 13.913829
+                        "y": 13.9138
                     },
                     "uuid": "bf03c00e-8a15-4c39-afa6-5ee4da1831f0"
                 },
@@ -209,7 +163,7 @@
                     "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
                         "x": 5.921,
-                        "y": 15.118829
+                        "y": 15.1188
                     },
                     "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
                 }
@@ -221,20 +175,66 @@
             "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
+                    "description": "Pad 1 [<no net>] of B064 on F.Cu",
+                    "pos": {
+                        "x": 21.479,
+                        "y": 16.4348
+                    },
+                    "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
+                    "pos": {
+                        "x": 23.612,
+                        "y": 14.8778
+                    },
+                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0119 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B007 on F.Cu",
+                    "pos": {
+                        "x": 7.394,
+                        "y": 7.5698
+                    },
+                    "uuid": "ed54e747-3f98-41df-b4f6-47f19614906c"
+                },
+                {
                     "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
                         "x": 3.804,
-                        "y": 7.801829
+                        "y": 7.8018
                     },
                     "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
+                    "pos": {
+                        "x": 18.812,
+                        "y": 1.7738
+                    },
+                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
                 },
                 {
-                    "description": "Pad 1 [<no net>] of B011 on F.Cu",
+                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
                     "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
+                        "x": 18.062,
+                        "y": 1.6088
                     },
-                    "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
+                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
                 }
             ],
             "severity": "error",
@@ -255,7 +255,7 @@
                     "description": "Pad 1 [<no net>] of B013 on F.Cu",
                     "pos": {
                         "x": 23.612,
-                        "y": 14.877829
+                        "y": 14.8778
                     },
                     "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
                 }
@@ -278,7 +278,7 @@
                     "description": "Pad 1 [<no net>] of B011 on F.Cu",
                     "pos": {
                         "x": 3.173,
-                        "y": 10.362829
+                        "y": 10.3628
                     },
                     "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
                 }
@@ -287,7 +287,7 @@
             "type": "copper_edge_clearance"
         },
         {
-            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4703 mm)",
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4702 mm)",
             "items": [
                 {
                     "description": "Segment on Edge.Cuts",
@@ -301,7 +301,7 @@
                     "description": "Pad 1 [<no net>] of B004 on F.Cu",
                     "pos": {
                         "x": 7.605,
-                        "y": 16.729829
+                        "y": 16.7298
                     },
                     "uuid": "98386467-4a39-4a23-b3c8-85e3bec1058e"
                 }
@@ -324,7 +324,7 @@
                     "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
                         "x": 3.804,
-                        "y": 7.801829
+                        "y": 7.8018
                     },
                     "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 }
@@ -347,7 +347,7 @@
                     "description": "Pad 1 [<no net>] of D004 on F.Cu",
                     "pos": {
                         "x": 13.999,
-                        "y": -0.385171
+                        "y": -0.3852
                     },
                     "uuid": "252c028f-e448-41ae-8259-ef80bf4d0538"
                 }
@@ -370,7 +370,7 @@
                     "description": "Pad 1 [<no net>] of B007 on F.Cu",
                     "pos": {
                         "x": 7.394,
-                        "y": 7.569829
+                        "y": 7.5698
                     },
                     "uuid": "ed54e747-3f98-41df-b4f6-47f19614906c"
                 }
@@ -393,7 +393,7 @@
                     "description": "Pad 1 [<no net>] of B064 on F.Cu",
                     "pos": {
                         "x": 21.479,
-                        "y": 16.434829
+                        "y": 16.4348
                     },
                     "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
                 }
@@ -416,7 +416,7 @@
                     "description": "Pad 1 [<no net>] of B006 on F.Cu",
                     "pos": {
                         "x": 16.532,
-                        "y": 3.385829
+                        "y": 3.3858
                     },
                     "uuid": "1f03811d-bc42-40ba-a534-dbb39c1d0183"
                 }
@@ -425,7 +425,7 @@
             "type": "copper_edge_clearance"
         },
         {
-            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.1840 mm)",
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.1839 mm)",
             "items": [
                 {
                     "description": "Segment on Edge.Cuts",
@@ -439,7 +439,7 @@
                     "description": "Pad 1 [<no net>] of B015 on F.Cu",
                     "pos": {
                         "x": 11.258,
-                        "y": 1.576829
+                        "y": 1.5768
                     },
                     "uuid": "312dae02-6b19-4950-9424-44fe982ee92e"
                 }
@@ -462,7 +462,7 @@
                     "description": "Pad 1 [<no net>] of KP039 on B.Cu",
                     "pos": {
                         "x": 22.121,
-                        "y": 15.114829
+                        "y": 15.1148
                     },
                     "uuid": "8679991b-8105-49db-82a5-c8b3a6e90392"
                 }
@@ -485,7 +485,7 @@
                     "description": "Pad 1 [<no net>] of KP000 on B.Cu",
                     "pos": {
                         "x": 22.625,
-                        "y": 11.070829
+                        "y": 11.0708
                     },
                     "uuid": "19c6a3a6-1f89-48f3-b7eb-b57755575a07"
                 }
@@ -508,7 +508,7 @@
                     "description": "Pad 1 [<no net>] of KP002 on B.Cu",
                     "pos": {
                         "x": 26.21,
-                        "y": 8.257829
+                        "y": 8.2578
                     },
                     "uuid": "db41f0c5-8b27-40f6-9f5c-76cbe01361e8"
                 }
@@ -531,7 +531,7 @@
                     "description": "Pad 1 [<no net>] of KP041 on B.Cu",
                     "pos": {
                         "x": 22.6,
-                        "y": 13.646829
+                        "y": 13.6468
                     },
                     "uuid": "b8011197-5ccc-4ffd-b576-c3d637aa7693"
                 }
@@ -554,7 +554,7 @@
                     "description": "Pad 1 [<no net>] of KP001 on B.Cu",
                     "pos": {
                         "x": 26.818,
-                        "y": 9.979829
+                        "y": 9.9798
                     },
                     "uuid": "603c038d-de7a-4851-9874-b3e1f00a82fc"
                 }
@@ -577,7 +577,7 @@
                     "description": "Pad 1 [<no net>] of KP042 on B.Cu",
                     "pos": {
                         "x": 22.618,
-                        "y": 12.363829
+                        "y": 12.3638
                     },
                     "uuid": "eb1cabec-59c5-44cd-ab71-d4406263eccb"
                 }
@@ -600,7 +600,7 @@
                     "description": "Pad 1 [<no net>] of KP037 on B.Cu",
                     "pos": {
                         "x": 21.774,
-                        "y": 16.518829
+                        "y": 16.5188
                     },
                     "uuid": "08b48bea-2e9e-41f7-8dcf-3f7d73880d84"
                 }
@@ -623,7 +623,7 @@
                     "description": "Pad 1 [<no net>] of KP032 on B.Cu",
                     "pos": {
                         "x": 19.618,
-                        "y": 18.265829
+                        "y": 18.2658
                     },
                     "uuid": "30db3323-3c2b-45a7-8b89-d9eab891ea61"
                 }
@@ -646,7 +646,7 @@
                     "description": "Pad 1 [<no net>] of KP035 on B.Cu",
                     "pos": {
                         "x": 20.96,
-                        "y": 17.587829
+                        "y": 17.5878
                     },
                     "uuid": "e120feba-a9c6-439a-9d5f-16b18f55e7ff"
                 }
@@ -669,7 +669,7 @@
                     "description": "Pad 1 [<no net>] of KP003 on B.Cu",
                     "pos": {
                         "x": 25.425,
-                        "y": 7.498829
+                        "y": 7.4988
                     },
                     "uuid": "4dbebc20-93ee-429c-8afe-7805baf32610"
                 }
@@ -684,7 +684,7 @@
                     "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
                         "x": 5.921,
-                        "y": 15.118829
+                        "y": 15.1188
                     },
                     "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
                 },
@@ -692,7 +692,7 @@
                     "description": "Pad 1 [<no net>] of B046 on F.Cu",
                     "pos": {
                         "x": 6.306,
-                        "y": 15.840829
+                        "y": 15.8408
                     },
                     "uuid": "e5148f42-b89c-4fbc-95f6-29ee7e5f4028"
                 }
@@ -704,20 +704,20 @@
             "description": "Front solder mask aperture bridges items with different nets",
             "items": [
                 {
-                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
-                    "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
-                    },
-                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
-                },
-                {
                     "description": "Pad 1 [<no net>] of B010 on F.Cu",
                     "pos": {
                         "x": 17.687,
-                        "y": 21.307829
+                        "y": 21.3078
                     },
                     "uuid": "71efd287-27e8-42d4-8169-ffb380a999ac"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
+                    "pos": {
+                        "x": 15.823,
+                        "y": 21.5398
+                    },
+                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
                 }
             ],
             "severity": "error",
@@ -727,20 +727,43 @@
             "description": "Front solder mask aperture bridges items with different nets",
             "items": [
                 {
-                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
+                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
                     "pos": {
-                        "x": 23.612,
-                        "y": 14.877829
+                        "x": 18.812,
+                        "y": 1.7738
                     },
-                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
+                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
                 },
+                {
+                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
+                    "pos": {
+                        "x": 18.062,
+                        "y": 1.6088
+                    },
+                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
                 {
                     "description": "Pad 1 [<no net>] of B064 on F.Cu",
                     "pos": {
                         "x": 21.479,
-                        "y": 16.434829
+                        "y": 16.4348
                     },
                     "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
+                    "pos": {
+                        "x": 23.612,
+                        "y": 14.8778
+                    },
+                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
                 }
             ],
             "severity": "error",
@@ -753,7 +776,7 @@
                     "description": "Pad 1 [<no net>] of B011 on F.Cu",
                     "pos": {
                         "x": 3.173,
-                        "y": 10.362829
+                        "y": 10.3628
                     },
                     "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
                 },
@@ -761,32 +784,9 @@
                     "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
                         "x": 3.804,
-                        "y": 7.801829
+                        "y": 7.8018
                     },
                     "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Front solder mask aperture bridges items with different nets",
-            "items": [
-                {
-                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
-                    "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
-                    },
-                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
-                },
-                {
-                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
-                    "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
-                    },
-                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
                 }
             ],
             "severity": "error",

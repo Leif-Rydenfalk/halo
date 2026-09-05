@@ -1,6 +1,6 @@
 # halo — production test plan — what the factory measures on every unit, with limits, fixtures and sources
 
-*Lane P1. Generated 2026-09-04 from `spec/test-plan.json` by `tools/gen_test_plan.py`. Nothing on this page is hand-typed. Companion: [`docs/TOOLS-THAT-LIE.md`](TOOLS-THAT-LIE.md), which is the standard this plan is written to, and [`out/release/TEST-PLAN.html`](../out/release/TEST-PLAN.html), which is the same data as a page for the factory.*
+*Lane P1. Generated 2026-09-05 from `spec/test-plan.json` by `tools/gen_test_plan.py`. Nothing on this page is hand-typed. Companion: [`docs/TOOLS-THAT-LIE.md`](TOOLS-THAT-LIE.md), which is the standard this plan is written to, and [`out/release/TEST-PLAN.html`](../out/release/TEST-PLAN.html), which is the same data as a page for the factory.*
 
 Thirty-one tests across three stations. Every limit in this plan names the datasheet page, the standard, the DECISIONS entry or the in-repo measurement it came from. Where no source exists the limit is written CANNOT DETERMINE with the one measurement that would settle it, because a limit we invented would be worse than no limit: the line would run to it, and the number would be wrong.
 
