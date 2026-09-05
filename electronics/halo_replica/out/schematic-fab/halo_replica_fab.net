@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic-fab/halo_replica_fab.kicad_sch")
-		(date "2026-09-05T18:46:25")
+		(date "2026-09-05T18:51:03")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -130,21 +130,25 @@
 		)
 		(comp
 			(ref "BT1")
-			(value "CR2032 3V in a holder")
-			(footprint "Battery:BatteryHolder_Keystone_1060_1x2032")
+			(value "CR2032 3V holder, THT")
+			(footprint "Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032")
 			(datasheet "~")
 			(description "Single-cell battery")
 			(fields
 				(field
+					(name "Courtyard") "27.41 x 6.30 mm, diagonal 28.13 mm against a 30.0 mm board")
+				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "Keystone 1060")
+					(name "MPN") "BS-07-A1BJ001")
+				(field
+					(name "Replaces") "Keystone 1060, diagonal 39.25 mm - impossible at any position or rotation")
 				(field
 					(name "Stands in for") "BATT-CONTACTS")
 				(field
-					(name "Substitution basis") "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification.")
+					(name "Substitution basis") "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification. THE HOLDER IS THROUGH-HOLE, not SMD like the Keystone 1060 it replaces - a real departure, because it changes how the board is assembled. It is one of only TWO parts in KiCad's Battery library whose courtyard fits a 30 mm disc (27.41 x 6.30 mm, diagonal 28.13 mm), and the other is a cell with solder tabs rather than a holder.")
 				(field
-					(name "Footprint") "Battery:BatteryHolder_Keystone_1060_1x2032")
+					(name "Footprint") "Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032")
 				(field
 					(name "Datasheet") "~")
 				(field
@@ -156,12 +160,20 @@
 				(description "Single-cell battery")
 			)
 			(property
+				(name "Courtyard")
+				(value "27.41 x 6.30 mm, diagonal 28.13 mm against a 30.0 mm board")
+			)
+			(property
 				(name "LCSC Part #")
 				(value "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 			)
 			(property
 				(name "MPN")
-				(value "Keystone 1060")
+				(value "BS-07-A1BJ001")
+			)
+			(property
+				(name "Replaces")
+				(value "Keystone 1060, diagonal 39.25 mm - impossible at any position or rotation")
 			)
 			(property
 				(name "Stands in for")
@@ -169,7 +181,7 @@
 			)
 			(property
 				(name "Substitution basis")
-				(value "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification.")
+				(value "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification. THE HOLDER IS THROUGH-HOLE, not SMD like the Keystone 1060 it replaces - a real departure, because it changes how the board is assembled. It is one of only TWO parts in KiCad's Battery library whose courtyard fits a 30 mm disc (27.41 x 6.30 mm, diagonal 28.13 mm), and the other is a cell with solder tabs rather than a holder.")
 			)
 			(property
 				(name "Sheetname")

@@ -162,15 +162,44 @@ def build():
     # =====================================================================
     # POWER - one rail, and a diode that D24 requires
     # =====================================================================
-    s.part("BT1", "Device:Battery_Cell", value="CR2032 3V in a holder",
-           group="power",
-           footprint="Battery:BatteryHolder_Keystone_1060_1x2032",
-           fields=F("BATT-CONTACTS", "Keystone 1060",
+    # THE FIRST HOLDER CHOSEN HERE COULD NOT FIT THE BOARD AT ANY POSITION.
+    # Measured off KiCad's own footprints rather than a datasheet: the
+    # Keystone 1060's courtyard is 32.90 x 21.40 mm, diagonal 39.25 mm, and
+    # the fab board is a 30.0 mm disc. A rectangle fits inside a circle only
+    # if its DIAGONAL fits, so no rotation and no position was ever legal —
+    # and a placement solver cannot say that. It pushes the part around and
+    # reports convergence.
+    #
+    # WHAT IT LOOKED LIKE INSTEAD, which is the part worth remembering: the
+    # 1060's courtyard is WIDER THAN THE WHOLE BOARD, so every through-hole
+    # pad on the disc fell inside it by construction and KiCad reported nine
+    # `pth_inside_courtyard` violations naming J3's pads. A PART-CHOICE
+    # problem wearing a placement problem's clothes, and the board lane spent
+    # time on it as the latter.
+    #
+    # SEVEN OF THE TEN CR2032 HOLDERS IN KiCad's Battery library are too big
+    # for a 30 mm disc (measured, all ten). That is not an unlucky pick: a
+    # 20 mm cell plus its retention is genuinely marginal here, and it is a
+    # fact about this board's size rather than about this part.
+    s.part("BT1", "Device:Battery_Cell",
+           value="CR2032 3V holder, THT", group="power",
+           footprint="Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032",
+           fields=F("BATT-CONTACTS", "BS-07-A1BJ001",
                     "Apple uses THREE sprung contacts with both positives "
                     "sensed and no holder at all. No catalogue holder has "
                     "three terminals, so this board has two and THE "
                     "FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real "
-                    "loss of function, not a simplification."))
+                    "loss of function, not a simplification. "
+                    "THE HOLDER IS THROUGH-HOLE, not SMD like the Keystone "
+                    "1060 it replaces - a real departure, because it changes "
+                    "how the board is assembled. It is one of only TWO parts "
+                    "in KiCad's Battery library whose courtyard fits a 30 mm "
+                    "disc (27.41 x 6.30 mm, diagonal 28.13 mm), and the "
+                    "other is a cell with solder tabs rather than a holder.",
+                    {"Courtyard": "27.41 x 6.30 mm, diagonal 28.13 mm "
+                                  "against a 30.0 mm board",
+                     "Replaces": "Keystone 1060, diagonal 39.25 mm - "
+                                 "impossible at any position or rotation"}))
 
     s.part("D1", "Device:D_Schottky", value="BAT54HT1G (Vf~0.24V @1mA)",
            group="power", footprint="Diode_SMD:D_SOD-323",
@@ -689,6 +718,16 @@ def build():
            "the 0.30 mm board and the wafer-scale packages live. A person "
            "holding a board that works but is the wrong shape should not "
            "have to work out why.")
+    s.text("THE BATTERY HOLDER IS THROUGH-HOLE AND THAT IS FORCED. SEVEN OF "
+           "THE TEN CR2032 HOLDERS IN KiCad's LIBRARY ARE TOO BIG FOR THIS "
+           "30 mm BOARD - measured courtyards, all ten. The first one chosen "
+           "here, a Keystone 1060, has a 39.25 mm diagonal and could not fit "
+           "at any position or rotation; its courtyard was wider than the "
+           "whole board, so every through-hole pad fell inside it and the "
+           "board read as having nine placement violations when it had one "
+           "part-choice problem. A 20 mm cell plus its retention on a 30 mm "
+           "disc is genuinely marginal, and that is a fact about this "
+           "board's size.")
     s.text("THE FIVE-REMOVALS RESET IS NOT REPRODUCED. Apple has THREE "
            "sprung contacts with BOTH positives sensed. A catalogue CR2032 "
            "holder has two terminals, so this board senses one positive. A "

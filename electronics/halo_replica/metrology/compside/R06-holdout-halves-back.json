@@ -763,10 +763,53 @@
   "k": 4,
   "trials": 400,
   "n": 58,
-  "power_injected_z": 5.104730174465035,
-  "power_injected_amp_px": 1.193725112611781,
-  "powered": true,
-  "power_note": "z of the SAME statistic after injecting a smooth radial warp into the real residuals, sized to their own RMS. If this does not clear 3, a low observed z is CANNOT DETERMINE and NOT 'no structure'."
+  "residual_rms_px": 1.193725112611781,
+  "power_sweep": [
+   {
+    "frac": 1.0,
+    "amp_px": 1.193725112611781,
+    "z": 5.104730174465035
+   },
+   {
+    "frac": 0.7,
+    "amp_px": 0.8356075788282467,
+    "z": 3.237258768038579
+   },
+   {
+    "frac": 0.5,
+    "amp_px": 0.5968625563058905,
+    "z": 2.5187989102700095
+   },
+   {
+    "frac": 0.35,
+    "amp_px": 0.4178037894141233,
+    "z": 1.9825463293471046
+   },
+   {
+    "frac": 0.25,
+    "amp_px": 0.29843127815294523,
+    "z": 1.8987128278771837
+   },
+   {
+    "frac": 0.18,
+    "amp_px": 0.21487052027012057,
+    "z": 1.6424356946701972
+   },
+   {
+    "frac": 0.12,
+    "amp_px": 0.1432470135134137,
+    "z": 1.5483427076561818
+   },
+   {
+    "frac": 0.08,
+    "amp_px": 0.09549800900894248,
+    "z": 1.465029084789872
+   }
+  ],
+  "detection_limit_frac": 0.7,
+  "detection_limit_px": 0.8356075788282467,
+  "powered": false,
+  "power_note": "detection_limit_* is the SMALLEST smooth radial warp, injected into the real residuals, that this landmark set can still distinguish from its permutation null at z>3. A low observed z bounds any coherent component BELOW that amplitude - it never means there is none."
  },
  "landmarks_kept": 58,
  "landmarks_discarded": {

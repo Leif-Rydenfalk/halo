@@ -94,6 +94,49 @@ def main():
     print(f"COPPER   all copper layers carry apertures")
 
     zips = []
+    # THE RULES THE BOARD ACTUALLY CARRIES, read from it rather than typed here.
+    # ORDER-SETTINGS.txt used to state "min via 0.25 mm pad / 0.15 mm drill" as a
+    # literal while the board carried 0.6 / 0.3 — a constant in a document that
+    # nothing forced to agree with the artifact, which is the same defect as the
+    # 1.6 mm thickness one level up. A fabricator reads the file; the file must
+    # read the board.
+    rules = {}
+    rr = os.path.join(os.path.dirname(board),
+                      os.path.basename(board).replace(".kicad_pcb", ".kicad_pro"))
+    if os.path.exists(rr):
+        try:
+            pro = json.load(open(rr))
+            dr = (pro.get("board", {}) or {}).get("design_settings", {}) or {}
+            rl = dr.get("rules", {}) or {}
+            for k, lbl in (("min_clearance", "clearance"),
+                           ("min_track_width", "track"),
+                           ("min_via_diameter", "via"),
+                           ("min_through_hole_diameter", "via_drill")):
+                if rl.get(k) is not None: rules[lbl] = float(rl[k])
+        except Exception as e:
+            print("RULES    CANNOT DETERMINE: %s" % e)
+    if rules:
+        rules_txt = ""
+        if "clearance" in rules:
+            rules_txt += ("  min trace/space %.3f mm   (READ FROM THE BOARD)\n"
+                          % rules["clearance"])
+        else:
+            rules_txt += "  min trace/space CANNOT DETERMINE — the board states none\n"
+        if "track" in rules:
+            rules_txt += ("  min track width %.3f mm   (READ FROM THE BOARD)\n"
+                          % rules["track"])
+        if "via" in rules and "via_drill" in rules:
+            rules_txt += ("  min via         %.3f mm pad / %.3f mm drill   "
+                          "(READ FROM THE BOARD)\n"
+                          % (rules["via"], rules["via_drill"]))
+        print("RULES    read from the board: " +
+              ", ".join("%s %.3f mm" % (k, v) for k, v in sorted(rules.items())))
+    else:
+        rules_txt = ("  min trace/space CANNOT DETERMINE — the board states no "
+                     "design rules\n")
+        print("RULES    CANNOT DETERMINE: no rules found in the .kicad_pro — "
+              "ORDER-SETTINGS will say so rather than state a number")
+
     # ---- ASSEMBLY FILES: gerbers say what the BARE BOARD is, and nothing more.
     # An assembly order also needs a CPL (where each part goes) and a BOM (what
     # to solder on). Without them the order is a bare-board order wearing an
@@ -159,8 +202,7 @@ def main():
                 f"  thickness       {th} mm   <-- SELECT THIS AT ORDER TIME\n"
                 f"  Apple's board   0.30 mm   (delta {float(th)-0.30:+.2f} mm; see fab/README.md)\n"
                 f"  surface finish  ENIG preferred (Apple's is gold-bearing; measured, see stackup.json)\n"
-                f"  min trace/space 0.09/0.09 mm or wider — inside JLC's 4-layer capability\n"
-                f"  min via         0.25 mm pad / 0.15 mm drill\n"
+                f"{rules_txt}"
                 f"\nORDERABLE AT JLCPCB AT 4 LAYERS: "
                 f"{' '.join(sorted(JLC_THICKNESS[4]))} mm\n"
                 f"  measured {JLC_MEASURED} — 0.4 and 0.6 mm are greyed out at 4\n"
