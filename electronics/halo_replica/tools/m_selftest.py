@@ -52,9 +52,13 @@ def test_rulers():
     print("\nRULER PITCH -- m_ruler_calib")
     for pitch in (15.8875, 12.0, 20.5):
         img = synth_ruler(pitch)
-        edge = RC.find_edge(img, "x", (0, img.shape[1]), (0, 30))
+        edge = RC.find_edge(img, "x", (0, 30), (0, img.shape[1]))
         box = (5, edge + 6, img.shape[1] - 5, edge + 6 + 18)
         fit, ang, snr, p0, n = RC.comb(img, box, "x", 8.0, 40.0)
+        if fit is None:
+            check(f"recover a {pitch} px comb", False,
+                  f"no comb found at all (band {box}) -- the tool returned None")
+            continue
         got = fit["pitch"]
         err = abs(got - pitch) / pitch * 100
         check(f"recover a {pitch} px comb", err < 0.5,
@@ -62,13 +66,14 @@ def test_rulers():
 
     print("\n  DELIBERATE BREAK -- reading the wrong band")
     img = synth_ruler(15.8875)
-    edge = RC.find_edge(img, "x", (0, img.shape[1]), (0, 30))
+    edge = RC.find_edge(img, "x", (0, 30), (0, img.shape[1]))
     box = (5, edge + 30, img.shape[1] - 5, edge + 30 + 12)   # below the mm ticks
     fit, *_ = RC.comb(img, box, "x", 8.0, 60.0)
-    cov = fit["n"] / (fit["span"] + 1) if fit else 0
+    cov = fit["n"] / (fit["span"] + 1) if fit else 0.0
     check("the wrong band is caught by the coverage gate",
-          cov < 0.85 or abs(fit["pitch"] - 15.8875) / 15.8875 > 0.02,
+          fit is None or cov < 0.85 or abs(fit["pitch"] - 15.8875) / 15.8875 > 0.02,
           f"pitch {fit['pitch']:.3f} px, coverage {cov:.3f} -- this band holds the 5-mm ticks, "
+          if fit else "no comb at all in that band, which is also a refusal -- "
           f"and reading it as mm is the 4% error M02 Sec 5 records")
 
     print("\n  DELIBERATE BREAK -- pure noise must not yield a comb")
@@ -100,9 +105,9 @@ def synth_disc(R=196.0, size=520, shadow=True, blur=1.2, seed=3, squircle_n=None
     if shadow:
         # a broad, gentle penumbra to the lower-left ONLY -- the real trap
         d = np.hypot(dx, dy)
-        pen = np.clip(1 - (d - R) / 26.0, 0, 1) * (d > R)
-        side = np.clip((-dx - dy) / (1.5 * R), 0, 1)
-        img = img - 95.0 * pen * side
+        pen = np.clip(1 - (d - R) / 34.0, 0, 1) * (d > R)
+        side = np.clip((-dx - dy) / (0.7 * R) + 0.25, 0, 1)
+        img = img - 150.0 * pen * side
     img = ndimage.gaussian_filter(img, blur)
     return np.clip(img + rng.normal(0, 2.5, img.shape), 0, 255)
 
@@ -169,7 +174,7 @@ def test_superellipse():
 
 # ------------------------------------------------------------- rim pads ----
 def synth_rim(n_pads, R=196.0, size=520, pad_arc_mm=1.0, px_per_mm=15.685,
-              contrast=110.0, seed=11, clutter=True):
+              contrast=110.0, seed=11, clutter=True, texture=0.0):
     """A dark annulus at photo 6's real scale carrying n_pads bright edge pads."""
     rng = np.random.default_rng(seed)
     yy, xx = np.mgrid[0:size, 0:size]
@@ -189,22 +194,37 @@ def synth_rim(n_pads, R=196.0, size=520, pad_arc_mm=1.0, px_per_mm=15.685,
     for a0 in pads:                                            # pads run OUT TO the edge
         m = (np.abs((th - a0 + 180) % 360 - 180) < pad_deg / 2) & (d > R * 0.955) & (d <= R)
         img = np.where(m, 42.0 + contrast, img)
+    if texture:
+        # Correlated surface texture, so the SYNTHETIC rim has the same radial
+        # luma variation as the real board rather than a laboratory-clean one.
+        t = ndimage.gaussian_filter(rng.normal(0, 1, img.shape), 6.0)
+        t = t / (t.std() + 1e-9)
+        img = np.where(d <= R, img + texture * t, img)
     img = ndimage.gaussian_filter(img, 1.3)
     return np.clip(img + rng.normal(0, 3.0, img.shape), 0, 255), pads, R, (cx, cy)
 
 
-def count_pads(img, cx, cy, R, min_reach=0.975, min_area=40, bright_pct=80.0):
+def count_pads(img, cx, cy, R, mode="differential"):
     redge = lambda dd: np.full(np.shape(dd), R, float)
     P, ang, F = RP.polar(img, cx, cy, redge, 0.86, 1.00, 1440, 56)
-    thr = float(np.percentile(P, bright_pct))
-    B = RP.blobs(P, F, ang, thr, min_area, min_reach, 1440)
-    got = [b for b in B if b["reach"] >= min_reach and b["span_deg"] >= 1.0]
     rng = np.random.default_rng(20260905)
+    if mode == "differential":
+        S = RP.differential(P, F, ang)
+        pk, _, _, _ = RP.diff_peaks(S, 1440, 4.0, 3.0, 1.0)
+        got = [dict(angle_deg=float(ang[i]), signal=v) for i, v in pk]
+        ctrl = []
+        for _ in range(20):
+            Pp = np.stack([np.roll(P[j], int(rng.integers(1440))) for j in range(P.shape[0])])
+            ctrl.append(len(RP.diff_peaks(RP.differential(Pp, F, ang), 1440, 4.0, 3.0, 1.0)[0]))
+        return got, np.array(ctrl)
+    thr = float(np.percentile(P, 80.0))
+    B = RP.blobs(P, F, ang, thr, 40, 0.975, 1440)
+    got = [b for b in B if b["reach"] >= 0.975 and b["span_deg"] >= 1.0]
     ctrl = []
     for _ in range(20):
         Pp = np.stack([np.roll(P[j], int(rng.integers(1440))) for j in range(P.shape[0])])
-        Bp = RP.blobs(Pp, F, ang, thr, min_area, min_reach, 1440)
-        ctrl.append(len([b for b in Bp if b["reach"] >= min_reach and b["span_deg"] >= 1.0]))
+        Bp = RP.blobs(Pp, F, ang, thr, 40, 0.975, 1440)
+        ctrl.append(len([b for b in Bp if b["reach"] >= 0.975 and b["span_deg"] >= 1.0]))
     return got, np.array(ctrl)
 
 
@@ -212,6 +232,13 @@ def test_rim_pads():
     print("\nRIM PADS -- m_rim_pads: can it find pads that ARE there, at photo 6's scale?")
     print("  (M03 blames RESOLUTION for the CANNOT DETERMINE. That is a claim about this")
     print("   detector, so it is tested here rather than asserted.)")
+    img, pads, R, (cx, cy) = synth_rim(6, pad_arc_mm=1.6)
+    got_b, ctrl_b = count_pads(img, cx, cy, R, "blob")
+    check("THE ORIGINAL BLOB DETECTOR IS SEEN TO FAIL its positive control",
+          len(got_b) < 5,
+          f"6 real pads present, blob mode found {len(got_b)} -- its threshold (80th pct of "
+          f"the annulus) lands just above the board level and everything merges. This case "
+          f"exists so the failure stays reproducible.")
     for n_true, arc in ((6, 1.0), (6, 1.6), (12, 1.0)):
         img, pads, R, (cx, cy) = synth_rim(n_true, pad_arc_mm=arc)
         got, ctrl = count_pads(img, cx, cy, R)
@@ -221,6 +248,28 @@ def test_rim_pads():
         check(f"{n_true} synthetic pads of {arc} mm arc are found and beat the control",
               beats and near >= n_true - 1,
               f"found {len(got)} (control max {ctrl.max()}), {near}/{n_true} at the right angles")
+
+    print("\n  IS THE POSITIVE CONTROL REPRESENTATIVE?  Measured: it was NOT.")
+    print("  The clean synthetic rim has a differential robust sd of ~1.8 luma; FCC photo 6")
+    print("  measures 34.6 and photo 7 measures 37.3.  A pad carrying the synthetic's full")
+    print("  111-luma contrast would therefore sit at ~3.2 sigma in the real photograph, under")
+    print("  the 4-sigma gate.  So the clean case proves the detector's LOGIC and nothing")
+    print("  about whether it can work on THIS source. This case is the honest one.")
+    img, pads, R, (cx, cy) = synth_rim(6, pad_arc_mm=1.6, texture=60.0)
+    redge = lambda dd: np.full(np.shape(dd), R, float)
+    P, ang, F = RP.polar(img, cx, cy, redge, 0.86, 1.00, 1440, 56)
+    S = RP.differential(P, F, ang)
+    ks = 5
+    Ss = np.convolve(np.concatenate([S] * 3), np.ones(ks) / ks, mode="same")[len(S):2 * len(S)]
+    sd_real_like = RP.robust_sd(Ss)
+    got, ctrl = count_pads(img, cx, cy, R)
+    near = sum(1 for a0 in pads
+               if any(abs((g["angle_deg"] - a0 + 180) % 360 - 180) < 4 for g in got))
+    check("at the REAL photograph's noise level the detector CANNOT find 6 real pads",
+          not (len(got) > ctrl.max() and near >= 5),
+          f"differential robust sd {sd_real_like:.1f} luma (FCC photo 6 measures 34.6); "
+          f"found {len(got)} (control max {ctrl.max()}), {near}/6 at the right angles. "
+          f"THIS is why M03 is CANNOT DETERMINE -- not the detector, the source.")
 
     print("\n  DELIBERATE BREAK -- no pads at all must NOT produce pads")
     img, _, R, (cx, cy) = synth_rim(0, clutter=True)

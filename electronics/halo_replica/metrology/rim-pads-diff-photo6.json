@@ -1,0 +1,24 @@
+{
+  "run_utc": "2026-09-05T00:25:22Z",
+  "git_rev": "bbb97d0",
+  "image_sha256_12": "010439c036d6",
+  "tool": "m_rim_pads.py",
+  "image": "images/airtag/fcc-BCGA2187-internal-photo-6.jpg",
+  "centre": [
+    953.04,
+    678.39
+  ],
+  "mode": "differential",
+  "edge_profile": "outline-raw-photo6.json",
+  "edge_profile_run": "2026-09-04T23:56:27Z",
+  "k_sigma": 4.0,
+  "min_sep_deg": 3.0,
+  "smooth_deg": 1.0,
+  "threshold_signal": 146.745,
+  "robust_sd": 34.577,
+  "n_edge_features": 0,
+  "control_mean": 0.06666666666666667,
+  "control_max": 2,
+  "verdict": "CANNOT DETERMINE",
+  "edge_features": []
+}

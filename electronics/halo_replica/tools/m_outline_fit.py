@@ -81,7 +81,12 @@ def smooth(v, sigma):
 
 
 def ray(lum, bad, cx, cy, ang, r_lo, r_hi, mode, step=0.25, sigma=1.2,
-        min_step=35.0, min_rel_peak=0.45):
+        min_step=35.0, min_rel_peak=0.45, method="gradient"):
+    """method 'gradient' is the only one trusted. method 'halfmax' is the NAMED
+    NEGATIVE CONTROL: the half-way level between the board's dark and the paper's
+    bright lands inside the contact PENUMBRA, so it returns the shadow's radius
+    rather than the board's. m_selftest.py exercises it on a synthetic disc with a
+    one-sided shadow and REQUIRES it to fail there."""
     rs = np.arange(r_lo, r_hi, step)
     xs = cx + rs * np.cos(ang); ys = cy + rs * np.sin(ang)
     v = bilinear(lum, xs, ys)
@@ -91,6 +96,18 @@ def ray(lum, bad, cx, cy, ang, r_lo, r_hi, mode, step=0.25, sigma=1.2,
     a_, b_ = (np.median(v[:q]), np.median(v[-q:])) if mode == "out" else (np.median(v[-q:]), np.median(v[:q]))
     if b_ - a_ < min_step:
         return None, "luma step across this ray is below the minimum"
+    if method == "halfmax":
+        thr = 0.5 * (a_ + b_)
+        above = v > thr
+        n = len(rs)
+        idx = ([i for i in range(1, n) if above[i] and not above[i - 1]] if mode == "out"
+               else [i for i in range(1, n) if (not above[i]) and above[i - 1]])
+        if not idx:
+            return None, "no half-max crossing along this ray"
+        i = idx[-1] if mode == "out" else idx[0]
+        v0, v1 = v[i - 1], v[i]
+        f = 0.0 if v1 == v0 else (thr - v0) / (v1 - v0)
+        return float(rs[i - 1] + f * step), None
     g = np.gradient(smooth(v, sigma / step))
     sig = g if mode == "out" else -g
     m = 3
@@ -110,11 +127,11 @@ def ray(lum, bad, cx, cy, ang, r_lo, r_hi, mode, step=0.25, sigma=1.2,
     return float(rs[j] + dj * step), None
 
 
-def profile(lum, bad, cx, cy, r_lo, r_hi, mode, n_ang):
+def profile(lum, bad, cx, cy, r_lo, r_hi, mode, n_ang, method="gradient"):
     ok, drop = [], {}
     for k in range(n_ang):
         a = 2 * math.pi * k / n_ang
-        r, why = ray(lum, bad, cx, cy, a, r_lo, r_hi, mode)
+        r, why = ray(lum, bad, cx, cy, a, r_lo, r_hi, mode, method=method)
         (ok.append((math.degrees(a), r)) if r is not None
          else drop.setdefault(why, []).append(round(math.degrees(a), 2)))
     return ok, drop

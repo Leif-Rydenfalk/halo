@@ -100,6 +100,57 @@ def blobs(P, F, ang, thr, min_area, min_reach, n_ang):
     return out
 
 
+def differential(P, F, ang, out_band=(0.955, 1.00), in_band=(0.88, 0.94)):
+    """Pad signal = (mean luma at the very edge) - (mean luma just behind it).
+
+    WHY NOT A THRESHOLDED BLOB.  The blob detector was measured to FAIL A
+    POSITIVE CONTROL: on a synthetic rim carrying SIX pads of 1.6 mm arc at photo
+    6's exact scale it found ONE. The cause is merging -- its threshold (the 80th
+    percentile of the annulus) came out 9 luma above the board's own level, so
+    every bright thing in the annulus joined into a handful of giant connected
+    regions, each of which both reaches the edge and is set back, so no reach
+    criterion could separate them. Raising the percentile to 95 recovered all six,
+    which is exactly the kind of number one would then be tempted to tune against
+    the real image until it produced the answer one expected.
+
+    The differential cannot merge, because it is computed per angular column and
+    it is a DIFFERENCE: a pad is bright AT the edge and not bright behind it, so
+    it is positive; a component set back from the rim is bright behind and not at
+    the edge, so it is negative; a uniformly bright arc is ~zero. It is also
+    immune to the annulus's overall brightness, which is what differed between
+    photo 6 and photo 7.
+    """
+    o = (F >= out_band[0]) & (F <= out_band[1])
+    i = (F >= in_band[0]) & (F <= in_band[1])
+    return P[o].mean(axis=0) - P[i].mean(axis=0)
+
+
+def robust_sd(v):
+    return 1.4826 * float(np.median(np.abs(v - np.median(v))))
+
+
+def diff_peaks(S, n_ang, k_sigma, min_sep_deg, smooth_deg):
+    ks = max(1, int(round(smooth_deg * n_ang / 360)) | 1)
+    ker = np.ones(ks) / ks
+    Ss = np.convolve(np.concatenate([S, S, S]), ker, mode="same")[len(S):2 * len(S)]
+    sd = robust_sd(Ss)
+    thr = np.median(Ss) + k_sigma * sd
+    sep = max(1, int(round(min_sep_deg * n_ang / 360)))
+    ext = np.concatenate([Ss, Ss, Ss])
+    out = []
+    for j in range(n_ang, 2 * n_ang):
+        if ext[j] < thr:
+            continue
+        if ext[j] < ext[j - sep:j + sep + 1].max() - 1e-9:
+            continue
+        out.append((j - n_ang, float(ext[j])))
+    keep = []
+    for idx, v in sorted(out, key=lambda t: -t[1]):
+        if all(min(abs(idx - j), n_ang - abs(idx - j)) >= sep for j, _ in keep):
+            keep.append((idx, v))
+    return sorted(keep), Ss, thr, sd
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", required=True)
@@ -122,6 +173,13 @@ def main():
                          "a pad. Stated rather than tuned: change it and the table shows what "
                          "moves.")
     ap.add_argument("--px-per-mm", type=float, default=None)
+    ap.add_argument("--mode", default="differential", choices=["differential", "blob"],
+                    help="blob is the ORIGINAL detector and it FAILS ITS POSITIVE CONTROL "
+                         "(1 of 6 synthetic pads found); kept only so the failure stays "
+                         "reproducible. differential is the one to use.")
+    ap.add_argument("--k-sigma", type=float, default=4.0)
+    ap.add_argument("--min-sep-deg", type=float, default=3.0)
+    ap.add_argument("--smooth-deg", type=float, default=1.0)
     ap.add_argument("--json", default=None)
     a = ap.parse_args()
 
@@ -149,6 +207,47 @@ def main():
               f"{2*math.pi*sm.mean()/360/a.px_per_mm:.3f} mm")
 
     P, ang, F = polar(lum, cx, cy, redge, a.f_lo, a.f_hi, a.n_ang, a.n_rad)
+
+    if a.mode == "differential":
+        S = differential(P, F, ang)
+        pk, Ss, thr_d, sd_d = diff_peaks(S, a.n_ang, a.k_sigma, a.min_sep_deg, a.smooth_deg)
+        rng = np.random.default_rng(20260905)
+        cn = []
+        for _ in range(60):
+            Pp = np.stack([np.roll(P[j], int(rng.integers(a.n_ang))) for j in range(P.shape[0])])
+            Sp = differential(Pp, F, ang)
+            cn.append(len(diff_peaks(Sp, a.n_ang, a.k_sigma, a.min_sep_deg, a.smooth_deg)[0]))
+        cn = np.array(cn)
+        print(f"  detector  DIFFERENTIAL: mean luma over {0.955}..{1.00} of the local edge "
+              f"radius MINUS mean over {0.88}..{0.94}")
+        print(f"            smoothed {a.smooth_deg} deg; a peak must exceed median + "
+              f"{a.k_sigma} x robust sd ({np.median(Ss):.2f} + {a.k_sigma} x {sd_d:.2f} "
+              f"= {thr_d:.2f}) and be {a.min_sep_deg} deg from any stronger peak")
+        print(f"\n  FOUND {len(pk)} edge-bright features")
+        print(f"  CONTROL (each radius row rolled independently, 60 draws -- same pixels, "
+              f"same per-row runs, no RADIAL alignment): mean {cn.mean():.2f}, max {cn.max()}")
+        ok = len(pk) > cn.max()
+        print(f"\n  {'angle':>8}  {'signal':>8}  {'arc_mm/deg':>10}")
+        for idx, v in pk:
+            print(f"  {ang[idx]:8.2f}  {v:8.2f}")
+        if not ok:
+            print(f"\n  CANNOT DETERMINE: {len(pk)} does not beat the control's max {cn.max()}.")
+        else:
+            print(f"\n  {len(pk)} beats the control's max {cn.max()} -- these are features.")
+        out = dict(**rid, image=os.path.relpath(path, ROOT), centre=[cx, cy], mode="differential",
+                   edge_profile=os.path.basename(a.profile), edge_profile_run=raw.get("run_utc"),
+                   k_sigma=a.k_sigma, min_sep_deg=a.min_sep_deg, smooth_deg=a.smooth_deg,
+                   threshold_signal=round(float(thr_d), 3), robust_sd=round(float(sd_d), 3),
+                   n_edge_features=len(pk),
+                   control_mean=float(cn.mean()), control_max=int(cn.max()),
+                   verdict="COUNTED" if ok else "CANNOT DETERMINE",
+                   edge_features=[dict(angle_deg=round(float(ang[i]), 2),
+                                       signal=round(float(v), 3)) for i, v in pk])
+        if a.json:
+            json.dump(out, open(a.json, "w"), indent=2)
+            print(f"  wrote {a.json}")
+        sys.exit(0 if ok else 2)
+
     thr = float(np.percentile(P, a.bright_pct))
     print(f"  threshold  {a.bright_pct}th percentile of the annulus itself = {thr:.1f} luma "
           f"(annulus median {np.median(P):.1f})")
