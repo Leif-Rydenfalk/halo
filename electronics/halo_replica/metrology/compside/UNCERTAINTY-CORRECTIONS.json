@@ -60,5 +60,77 @@
   "tools/c_register.py validate --source oflynn-back --target fcc7-back --folds 2 --split-offset 90 --step 8 --search 6",
   "tools/c_register.py selftest",
   "tools/c_distortion.py selftest"
- ]
+ ],
+ "REVISION_HISTORY_READ_THIS": {
+  "why": "Half of metrology/compside/ is withdrawn. A reader arriving cold needs to know not only that 0.1029 mm is superseded, but that the number superseding it is itself the THIRD revision of the same figure in one day, each one upward. Requested by the parent lane, 2026-09-05.",
+  "all measured": "2026-09-05, this session, on the same two photographs throughout. Nothing about the images changed; only the checks did.",
+  "front_registration_holdout_mm": [
+   {
+    "value": 0.1029,
+    "when": "2026-09-05 ~08:00",
+    "basis": "4-fold angular hold-out, scale taken AT THE RULE (15.887546 px/mm), 80 landmarks",
+    "status": "SUPERSEDED - the split interpolates and the scale basis was wrong",
+    "file": "R00 (as first published)"
+   },
+   {
+    "value": 0.1043,
+    "when": "2026-09-05 ~18:00",
+    "basis": "same 4-fold split, scale corrected to AT THE BOARD (15.6850 px/mm)",
+    "status": "SUPERSEDED - split still interpolates",
+    "file": "R02"
+   },
+   {
+    "value": 0.1298,
+    "when": "2026-09-05 ~18:15",
+    "basis": "2-fold angular halves, offset 0, 80 landmarks",
+    "status": "SUPERSEDED - depends on split orientation",
+    "file": "R04/R08"
+   },
+   {
+    "value": 0.1708,
+    "when": "2026-09-05 ~18:45",
+    "basis": "worst over split offsets 0 and 90, 80 landmarks",
+    "status": "SUPERSEDED - sparser landmark grid",
+    "file": "R10"
+   },
+   {
+    "value": 0.1812,
+    "when": "2026-09-05 ~19:00",
+    "basis": "worst over split offsets 0 and 90, 274 landmarks (step 8), scale at the board",
+    "status": "CURRENT",
+    "file": "R12-front-step8-off90.json"
+   }
+  ],
+  "back_registration_holdout_mm": [
+   {
+    "value": 0.1256,
+    "when": "2026-09-05 ~14:00 (lane L9)",
+    "basis": "4-fold angular hold-out, 58 landmarks",
+    "status": "SUPERSEDED as a general figure; still VALID as the INTERPOLATION error, i.e. for a position in a densely landmarked region",
+    "file": "metrology/c_register-validate-back.json"
+   },
+   {
+    "value": 0.705,
+    "when": "2026-09-05 ~18:15",
+    "basis": "2-fold halves, offset 0, 58 landmarks",
+    "status": "SUPERSEDED - depends on split orientation",
+    "file": "R06"
+   },
+   {
+    "value": 1.0366,
+    "when": "2026-09-05 ~18:45",
+    "basis": "2-fold halves, offset 90, 58 landmarks",
+    "status": "SUPERSEDED - sparser landmark grid",
+    "file": "R09-...rot90.json"
+   },
+   {
+    "value": 1.0258,
+    "when": "2026-09-05 ~19:00",
+    "basis": "2-fold halves, offset 90, 192 landmarks (step 8)",
+    "status": "CURRENT",
+    "file": "R11-back-step8-off90.json"
+   }
+  ],
+  "the_pattern": "Every revision moved the number UPWARD and every one came from asking the check a harder question rather than from new data. If a further revision comes, expect it to move the same way."
+ }
 }
