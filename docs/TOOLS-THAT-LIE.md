@@ -629,3 +629,44 @@ is harder to see, because:
 *what would the run do differently if this line were deleted?* If you cannot
 name the difference, grep for the key. If the only hit is the file you just
 wrote, you have found one of these.
+
+---
+
+## The inverse: measure the thing the tool cannot lie about
+
+*Added 2026-09-05. Every other section here is about a report that cannot be
+trusted. This one is about the answer you can get **without** asking the tool
+anything.*
+
+**A failing computation consumes proportionally more resources than a
+succeeding one.** That makes resource usage a progress signal that no bug in the
+tool's own reporting can corrupt, because nothing has to report it.
+
+**The case that produced the rule.** An antenna solve wrote 9.1 GB of near-field
+scratch across twelve surfaces, seven times any previous case, and the disk
+pressure looked like a separate nuisance to be managed. It was not a separate
+problem: the case **floors** at −34.87 dB against a −40 dB convergence
+criterion, so it runs to its 460,000-timestep cap and records every one of those
+timesteps. A converged case stops early and writes proportionally less.
+**The disk symptom and the convergence defect had one root.**
+
+The useful consequence is a free early signal: watching the scratch directory
+grow tells you within minutes whether a run is converging, without waiting out
+an eleven-minute solve and without reading the solver's own output — which in
+this app is not even readable while a run is in flight, because it writes into an
+unlinked temporary file.
+
+**The same shape, elsewhere in this project:**
+
+| what you want to know | what the thing itself says | what you measure instead |
+|---|---|---|
+| is this agent alive? | its status field says "running" | the **mtime of its transcript** — an agent that died at spawn holds its slot and reports running forever |
+| is this solve converging? | nothing, until it finishes | the **growth curve of its scratch** |
+| did this push succeed? | exit 0, because the pipeline's status is the last stage's | **`git ls-remote`** — ask the remote what it has |
+| is this drill file this board's? | the exporter exited cleanly | **count the holes against the vias** |
+
+**The rule.** When a tool's self-report is the only evidence, look for a physical
+side effect of the work that the tool does not mediate — a file's size, a
+timestamp, a count on the far side. It cannot be wrong about something it does
+not know it is producing.
+
