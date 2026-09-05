@@ -1092,6 +1092,13 @@ def main():
                    help='fit must beat its worst wrong-rotation null by this factor')
     q = sub.add_parser('validate'); common(q)
     q.add_argument('--folds', type=int, default=4)
+    q.add_argument('--fit-model', default='homography', choices=['homography', 'poly2'],
+                   help='model fitted to the LANDMARK CORRESPONDENCES in each fold. '
+                        'poly2 adds 4 parameters. It is judged ONLY by the HELD-OUT '
+                        'error - in-sample error always falls when parameters are added. '
+                        'It FAILED its own positive control at 58 landmarks (see '
+                        'fit_poly2); whether it pays at 274 is a question for the '
+                        'hold-out, not for a preference.')
     q.add_argument('--split-offset', type=float, default=0.0,
                    help='rotate the angular fold boundaries by this many degrees. '
                         'A failure that FOLLOWS a fixed region of the board is a '

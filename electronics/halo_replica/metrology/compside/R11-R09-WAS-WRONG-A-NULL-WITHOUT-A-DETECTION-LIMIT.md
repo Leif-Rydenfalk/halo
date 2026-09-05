@@ -86,6 +86,32 @@ every hold-out equally and cancels, so the 2.07 % rule-to-rule disagreement in p
 the question of whether the FCC sample `920-08283-01` and the retail `820-01736-A` differ
 uniformly in size are invisible to every number in R08, R09 and R11 alike.
 
+## Postscript — a richer model does NOT pay, even at 274 landmarks
+
+`poly2` failed its positive control at 58 landmarks (R09). With the smooth coherent field
+now confirmed on both faces, the obvious question was whether four extra parameters pay
+their way once there are 274. **They do not.** Worst held-out fold, same split, same data:
+
+| pair | homography | poly2 |
+|---|---|---|
+| FRONT, 274 landmarks | **0.1812 mm** | 0.6839 mm — **3.8× worse** |
+| BACK, 192 landmarks | **1.0258 mm** | 1.0010 mm — unchanged within noise |
+
+On the back it merely moved the error between folds (90–270° improved 1.0258 → 0.3156 mm
+while 270–450° degraded 0.5482 → 1.0010 mm) for no net gain. **The homography stays.**
+
+The coherent structure is real but a low-order global polynomial cannot capture it under
+extrapolation. What would: an explicit physical model rather than more free parameters —
+and the FCC frames contain the data for one, because **the steel rulers have straight
+edges**. A straight edge that images curved measures the lens distortion directly, and that
+separates candidate 2 (distortion) from candidate 1 (a board that is not flat) without
+touching the board at all. Not done here; it is the next work item in this lane.
+
+There is already a hint that it is non-zero: L1's tick fit on photo 6's bottom rule leaves
+a residual sd of 0.573 px against a straight line, and a quadratic term drops it to
+0.431 px (`metrology/scale-field.json`). That is along the rule's own axis, which is exactly
+where radial distortion would show.
+
 ## The pattern in all three of today's corrections
 
 R00's hold-out was optimistic. R08's diagnosis was wrong. R09's refutation was wrong. Every
