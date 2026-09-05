@@ -1,0 +1,112 @@
+{
+  "disc_p90": 0.10512253920618686,
+  "annulus_p10": 0.46376519528482474,
+  "separates": true,
+  "rows": [
+    {
+      "rank": 1,
+      "closure": 23.17,
+      "theta": 188.8,
+      "annularity": -0.6343460480364198,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 2,
+      "closure": 9.8,
+      "theta": 346.7,
+      "annularity": -0.2769613936654944,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 3,
+      "closure": 7.87,
+      "theta": 13.1,
+      "annularity": -0.03886064534356097,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 4,
+      "closure": 2.4,
+      "theta": 192.5,
+      "annularity": null,
+      "klass": "UNMEASURED"
+    },
+    {
+      "rank": 5,
+      "closure": 2.14,
+      "theta": 322.5,
+      "annularity": 0.7170834526184258,
+      "klass": "ANNULAR"
+    },
+    {
+      "rank": 6,
+      "closure": 2.13,
+      "theta": 286.4,
+      "annularity": -1.3319286095929628,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 7,
+      "closure": 1.94,
+      "theta": 198.7,
+      "annularity": -0.42774140701307445,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 8,
+      "closure": 1.66,
+      "theta": 263.8,
+      "annularity": -0.14345014627761726,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 9,
+      "closure": 1.64,
+      "theta": 313.7,
+      "annularity": 0.6182919866804533,
+      "klass": "ANNULAR"
+    },
+    {
+      "rank": 10,
+      "closure": 1.63,
+      "theta": 330.2,
+      "annularity": -0.05656865557129709,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 11,
+      "closure": 1.53,
+      "theta": 210.1,
+      "annularity": -0.8150912459191643,
+      "klass": "FILLED"
+    },
+    {
+      "rank": 12,
+      "closure": 1.51,
+      "theta": 40.9,
+      "annularity": 0.9806879132952951,
+      "klass": "ANNULAR"
+    },
+    {
+      "rank": 13,
+      "closure": 1.48,
+      "theta": 111.6,
+      "annularity": null,
+      "klass": "UNMEASURED"
+    },
+    {
+      "rank": 14,
+      "closure": 1.47,
+      "theta": 37.7,
+      "annularity": null,
+      "klass": "UNMEASURED"
+    },
+    {
+      "rank": 15,
+      "closure": 1.47,
+      "theta": 29.1,
+      "annularity": -0.10728088598027027,
+      "klass": "FILLED"
+    }
+  ]
+}
