@@ -62,7 +62,18 @@ fi
 # them machine-wide BY EXECUTABLE PATH, never by command line (every Claude
 # session's argv contains its whole brief, so `pgrep -f <word>` is unreliable by
 # construction - measured there at 14 Claude processes live, 0 miscounted).
-HEAVY="$HOME/dev/ce-fleet/bin/heavy"
+# THE CONTRACT (ce-workshop-d1, 2026-09-05), and the two absences are opposite:
+#   exit 0  proceed
+#   exit 1  refuse - the machine is measurably too busy
+#   exit 2  REFUSE - it RAN and could not read memory_pressure or the VM volume,
+#           so the machine's state is UNKNOWN, and unknown is exactly when not to
+#           add a JVM. A tool that could not measure is a worse position than
+#           either green or red.
+#   absent  PROCEED, loudly. A capacity gate is not an authorization gate; if
+#           ce-fleet is missing or this is a machine without it, hard-refusing
+#           would stop all work to prevent a POSSIBLE overload. The absence is
+#           named instead, so it is visible rather than silently "no check".
+HEAVY="${HEAVY_BIN:-$HOME/dev/ce-fleet/bin/heavy}"
 if [ -x "$HEAVY" ]; then
   # Our own per-dsn lock and this are different questions; machine-wide capacity
   # is the cheaper refusal, so it goes first.
