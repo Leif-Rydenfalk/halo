@@ -115,6 +115,34 @@ def main():
                 if rl.get(k) is not None: rules[lbl] = float(rl[k])
         except Exception as e:
             print("RULES    CANNOT DETERMINE: %s" % e)
+    # AND WHAT THE COPPER ACTUALLY CONTAINS. The rules above come from the
+    # .kicad_pro sitting beside the board, which can be STALE relative to the
+    # copper: restoring a routed board without its project file made
+    # ORDER-SETTINGS.txt state "via 0.450 mm" over a board whose 58 vias are all
+    # 0.6/0.3. A document that reads a SETTING is one file away from the artifact;
+    # measuring the tracks and vias is not.
+    import re as _re
+    _t = open(board, errors="ignore").read()
+    # KiCad 10 writes each via across several lines, so this must span newlines.
+    _vias = _re.findall(r'\(via\b.*?\(size ([\d.]+)\).*?\(drill ([\d.]+)\)', _t, _re.S)
+    _seg = sorted({m for m in _re.findall(r'\(segment\b.*?\(width ([\d.]+)\)', _t, _re.S)},
+                  key=float)
+    measured = ""
+    if _vias:
+        _vs = sorted({(a, b) for a, b in _vias}, key=lambda z: float(z[0]))
+        measured += ("  vias IN COPPER  %d, sizes %s   (MEASURED off the board)\n"
+                     % (len(_vias), ", ".join("%s/%s mm" % v for v in _vs)))
+        if rules.get("via") and abs(float(_vs[0][0]) - rules["via"]) > 1e-6:
+            measured += ("  ** the project file says via %.3f mm and the COPPER "
+                         "says %s mm - trust the copper **\n"
+                         % (rules["via"], _vs[0][0]))
+    if _seg:
+        measured += ("  track widths    %s mm   (MEASURED off the board)\n"
+                     % ", ".join(_seg))
+    if _vias or _seg:
+        print("COPPER   %d vias, %d distinct track width(s), measured from the board"
+              % (len(_vias), len(_seg)))
+
     if rules:
         rules_txt = ""
         if "clearance" in rules:
@@ -134,6 +162,7 @@ def main():
     else:
         rules_txt = ("  min trace/space CANNOT DETERMINE — the board states no "
                      "design rules\n")
+        measured = measured if "measured" in dir() else ""
         print("RULES    CANNOT DETERMINE: no rules found in the .kicad_pro — "
               "ORDER-SETTINGS will say so rather than state a number")
 
@@ -202,7 +231,7 @@ def main():
                 f"  thickness       {th} mm   <-- SELECT THIS AT ORDER TIME\n"
                 f"  Apple's board   0.30 mm   (delta {float(th)-0.30:+.2f} mm; see fab/README.md)\n"
                 f"  surface finish  ENIG preferred (Apple's is gold-bearing; measured, see stackup.json)\n"
-                f"{rules_txt}"
+                f"{rules_txt}{measured}"
                 f"\nORDERABLE AT JLCPCB AT 4 LAYERS: "
                 f"{' '.join(sorted(JLC_THICKNESS[4]))} mm\n"
                 f"  measured {JLC_MEASURED} — 0.4 and 0.6 mm are greyed out at 4\n"

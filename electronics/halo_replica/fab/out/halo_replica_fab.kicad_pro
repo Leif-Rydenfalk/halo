@@ -6,7 +6,7 @@
         "min_track_width": 0.127,
         "min_hole_clearance": 0.25,
         "min_through_hole_diameter": 0.3,
-        "min_via_diameter": 0.45
+        "min_via_diameter": 0.6
       }
     }
   },
@@ -16,7 +16,7 @@
         "name": "Default",
         "clearance": 0.09,
         "track_width": 0.127,
-        "via_diameter": 0.45,
+        "via_diameter": 0.6,
         "via_drill": 0.3
       }
     ]

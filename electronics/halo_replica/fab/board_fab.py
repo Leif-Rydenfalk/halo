@@ -136,7 +136,14 @@ b = Board("halo_replica_fab", diameter=D_BOARD, layers=4)
 # 0.45 mm pad / 0.30 mm drill is the DEFAULT option on JLCPCB's own quote page
 # ("Min via hole size/diameter: 0.3mm(0.4/0.45mm)", read there 2026-09-05), so
 # this costs nothing and returns 0.15 mm of channel width per via.
-b.rules(clearance=0.09, track=0.127, via=0.45, via_drill=0.3,
+# MEASURED AND REVERTED. 0.45 mm pad was a hypothesis about U1's escape routing
+# and it is REFUTED - it made the board worse on every axis:
+#     via 0.60 mm ->  5 unconnected,  0 DRC errors,  251 s
+#     via 0.45 mm -> 11 unconnected, 51 DRC errors, 1011 s
+# A 0.45 mm pad on a 0.30 mm drill leaves 0.075 mm of annular ring, and the
+# router used the extra room to pack tighter and then violate clearance. More
+# channel width is not free if it comes out of the annular ring.
+b.rules(clearance=0.09, track=0.127, via=0.6, via_drill=0.3,
         why="JLCPCB 4-layer: 0.09 mm min trace/space; vias 0.6 mm pad / 0.3 mm "
             "drill. The previous 0.20 mm was KiCad's default and forbade U4's "
             "own 0.150 mm pad gaps.")
