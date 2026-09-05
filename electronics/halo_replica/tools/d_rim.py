@@ -5,17 +5,18 @@ L7 DARK-PACKAGE DETECTOR lane, halo Replica.
 SIDE NAMING: the side carrying the SoC and the shield can. O'Flynn's
 `oflynn-backside-fullres.jpeg` IS that side.
 
-THE QUESTION.  docs/REFERENCE-TEARDOWN.md says SIX tear-off joints hold the
-antenna carrier to the board rim.  Nobody has counted them.  M03 and M05 closed
-it CANNOT DETERMINE with INTENSITY and BLOB methods on the FCC photos, and M05's
-closing statement was about SIGNAL-TO-NOISE at 4.6 genuine px/mm -- not about the
-board.  This engine is not an intensity method and this source carries 20-27
-genuine px/mm, ~5x more.
+THE QUESTION.  How many tear-off joints hold the antenna carrier to the board
+rim?  It has never been counted here.  Earlier attempts closed CANNOT DETERMINE
+with INTENSITY and BLOB methods on a source carrying 4.6 genuine px/mm, and their
+closing statement was about SIGNAL-TO-NOISE rather than about the board.  This
+engine is not an intensity method and this source carries 20-27 genuine px/mm.
 
-THE PREDICTIONS WERE WRITTEN AND COMMITTED FIRST:
-metrology/darkpkg/P01-RIM-PADS-PREDICTIONS-BEFORE-MEASURING.md.  P2 says the pads
-will fail on edge LENGTH rather than contrast, and names the number that would
-falsify it.  Read that before reading any output here.
+THIS FILE IS BLIND-SAFE AND IS MEANT TO STAY THAT WAY.  It states no count, cites
+no count, and carries no feature positions.  The seeds `step` and `probe` need
+live in metrology/darkpkg/r-seeds-WITHHELD.json, which is CONTAMINATING: it
+reveals how many rim features one person found by eye and where.  A lane counting
+rim features must not open it, and `step`/`probe` will refuse rather than load it
+unless --i-am-not-counting is passed.  See PROTOCOL-rim-count-blind.md.
 
 THE BAR IS NOT A PROPERTY OF THE BOARD -- IT SCALES WITH EDGE LENGTH.  The dark
 packages' published limit (100-160 luma) was measured on a 3.2 mm object.
@@ -39,15 +40,25 @@ import d_rect as DR
 import d_darkpkg as DD
 import m_dark_packages as MD
 
-# Seeds read BY LOOKING at native-resolution tiles of the rim.  Seeds only: what is
-# published is each side's own evidence.  (cx, cy, theta_deg, long_mm, short_mm, shape)
-SEEDS = {
-    "rim_bottom_pad_A": (905, 2888, 42.0, 1.05, 1.00, "rectangular copper pad"),
-    "rim_bottom_pad_B": (1175, 2996, 42.0, 1.15, 1.00, "rectangular copper pad"),
-    "rim_top_joint_1": (1300, 385, 0.0, 1.30, 1.25, "round solder joint"),
-    "rim_top_joint_2": (1478, 375, 0.0, 1.45, 1.35, "round solder joint"),
-    "rim_top_joint_3": (1745, 370, 0.0, 1.60, 1.40, "round solder joint"),
-}
+SEEDS_PATH = os.path.join(HERE, "..", "metrology", "darkpkg", "r-seeds-WITHHELD.json")
+
+
+def load_seeds(allowed):
+    """Eye-located rim features.  Their COUNT and POSITIONS are contaminating for
+    any lane counting rim features, so they live outside this file and loading
+    them is an explicit act."""
+    if not allowed:
+        print("  REFUSED: `step` and `probe` need seeds that reveal how many rim\n"
+              "  features one person found by eye, and where.  If you are counting\n"
+              "  rim features, opening them destroys your blindness -- run `null`,\n"
+              "  `limit` and `count` instead, which need no seeds.  If you are NOT\n"
+              "  counting, pass --i-am-not-counting.\n"
+              "  PROTOCOL: metrology/darkpkg/PROTOCOL-rim-count-blind.md")
+        sys.exit(2)
+    if not os.path.exists(SEEDS_PATH):
+        print(f"  CANNOT DETERMINE: {SEEDS_PATH} is not present.")
+        sys.exit(2)
+    return {k: tuple(v) for k, v in json.load(open(SEEDS_PATH))["seeds"].items()}
 
 
 def rim_mask(board, outer, origin, ppm, lo=0.86, hi=1.01):
@@ -80,6 +91,10 @@ def main():
     ap.add_argument("--bar", type=float, default=None)
     ap.add_argument("--min-mm", type=float, default=0.6)
     ap.add_argument("--max-mm", type=float, default=2.2)
+    ap.add_argument("--i-am-not-counting", action="store_true",
+                    help="required by `step` and `probe`: confirms you are NOT counting "
+                         "rim features, because their seeds reveal how many were found "
+                         "by eye and where")
     ap.add_argument("--dilate-mm", type=float, default=1.5,
                     help="dilate the board mask outward for rim work, so a feature that "
                          "straddles the edge is measurable rather than silently unmeasured")
@@ -109,8 +124,8 @@ def main():
           f"GENUINE {DD.GENUINE[0]}-{DD.GENUINE[1]} px/mm")
     print(f"  rim mask 0.86-1.01 of the LOCAL edge radius r(theta); "
           f"{RM.sum()} stored px, {M.sum()} at d={d}")
-    print(f"  PREDICTIONS committed first: "
-          f"metrology/darkpkg/P01-RIM-PADS-PREDICTIONS-BEFORE-MEASURING.md\n")
+    print(f"  Pre-registered predictions are REQUIRED before running this on a")
+    print(f"  counting question: metrology/darkpkg/PROTOCOL-rim-count-blind.md\n")
     out = dict(**rid, verb=a.verb, source=f["source"]["path"], px_per_mm=ppm,
                downsample=d, rim_px=int(RM.sum()))
 
@@ -125,7 +140,7 @@ def main():
         # an upper bound on any boundary step a better outline could recover.
         yy, xx = np.mgrid[0:lum.shape[0], 0:lum.shape[1]]
         rows = []
-        for name, (cx, cy, th, lo, sh, shape) in SEEDS.items():
+        for name, (cx, cy, th, lo, sh, shape) in load_seeds(a.i_am_not_counting).items():
             st = DD.side_steps(lum, cx, cy, th, sh * ppm, lo * ppm, out_px=12.0, in_px=5.0)
             best = max(abs(v) for v in st.values())
             rr = np.hypot(xx - cx, yy - cy)
@@ -259,7 +274,7 @@ def main():
         print(f"  64-99 luma, an outline-independent core-minus-ring said 174-191 -- and")
         print(f"  neither is what the detector uses. This is: per-side |z| at each joint.\n")
         rows = []
-        for name, (cx, cy, th, lo, sh, shape) in SEEDS.items():
+        for name, (cx, cy, th, lo, sh, shape) in load_seeds(a.i_am_not_counting).items():
             best = None
             for dx in (-20, 0, 20):
                 for dy in (-20, 0, 20):
