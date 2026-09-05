@@ -737,3 +737,85 @@ that hides the discriminating feature.**
 
 It needs no new teardown, only a differently-lit one. **This belongs at the top of every
 what-would-close-it list in this lane.**
+
+## 28 · A quantity measured a second way is not automatically the better one
+
+**The nastiest entry here, because every instinct this project has built says "measure it another
+way" is the safe move. It usually is. It was not here.**
+
+The rim lane measured a boundary step at a rough seed and got **64–99 luma**, and could see the
+figure was diluted by its own imperfect outline. So it measured the same thing a way that does not
+depend on the outline at all — **brightest core against the board ring beyond** — and got
+**174–191**, above the 140–170 limit. It read that as *bar cleared, count on*, and said so out loud.
+
+**Wrong.** Core-minus-ring is a **peak-to-median** statistic and a **loose upper bound** on a
+boundary **step** — and the step is what the detector integrates. The direct per-side measurement
+settled it at **|z| 8–27** against a 23.7 bar.
+
+**The outline-independent estimate was more robust AND further from what the method actually
+consumes.** The tell was that the second measurement was of a **different quantity**, not a second
+look at the same one.
+
+**The number that decides a verdict has to be the number the method uses, not a proxy that
+correlates with it.**
+
+*(And the lane's own pre-registered P4 predicted its bias would be pessimism. It was pessimism,
+then optimism, and only the direct measurement was neither — which is the kind of scoring that only
+a committed prediction makes possible.)*
+
+## 29 · A mask that manufactures an absence out of a coverage failure
+
+The rim probe returned **|z| = 0.0 on eleven of twenty sides**, one step from being reported as *no
+boundary*. It was not. **A rim feature straddles the board edge**, and fitting against the *eroded*
+board mask cut its outer boundary, so the scan returned nothing — **and printed a zero**.
+
+**A number that looks like strong evidence of absence, and is the absence of a measurement.**
+
+Fixed by dilating the mask 1.5 mm outward into the gasket where a rim pad's outer boundary
+legitimately sits; 0 of 20 unmeasured now. **And the structural fix: `probe` NAMES unmeasured sides
+instead of scoring them.**
+
+**An unmeasured thing must never be representable in the same field as a measured zero.**
+
+## 30 · A control that catches the wrong failure — the limits of the disjoint-arc tell
+
+L1's disjoint-arc control exists to catch a detector following per-photograph illumination: front
+candidates clustering at 147–199° while back candidates cluster at 210–308° is a tell, because two
+views of one board cannot legitimately put their features in non-overlapping arcs.
+
+A later run's five detections spanned **45–322° across five of eight octants** and **passed that
+control comfortably** — while being **SMD capacitor pads and entirely the wrong objects**.
+
+**The control catches a detector following illumination. It does not catch a detector looking at the
+wrong things.** Passing it is necessary and nowhere near sufficient — and anyone inheriting a control
+should be told what it does *not* cover, not only what it does.
+
+---
+
+## The rim joints: closed a second time, and for a DIFFERENT reason
+
+M05 closed the rim count on **signal-to-noise**. That closure no longer holds, and the new one is
+about the instrument:
+
+- On this source the joints are **unmistakable** — core luma **222–242** against a surrounding board
+  ring of **34–56**, at roughly **5× the genuine resolution** M05 closed on. **They are not lost in
+  noise.**
+- They fail the boundary detector because **a straight-sided rectangle is the wrong model for a round
+  solder blob** — a straight-line integral matches only a short tangent arc of a circle. **2 of 20
+  boundaries clear.**
+
+**That is a statement about the instrument, not the source, which means the question is genuinely
+live again rather than closed twice.** The matched instrument is a **round**-feature detector, and
+`bin/boardmetro circle` already has one with an inlier-fraction shape test.
+
+## The refusal that produced a blind test
+
+The lane that reached this point **could see the answer at native resolution** — and noticed its own
+tally matched the dossier's stated figure. **It refused to run the circle detector**, on the grounds
+that running a counter straight after seeing an expected number is how a count gets fitted to an
+expectation. *"The number I expected is the number I saw."*
+
+**Declining to run an available tool because the TIMING would contaminate it** is a form of control
+this catalogue had no entry for. The observation is preserved, marked never-to-be-drawn, **as the
+thing a later blind measurement gets compared against** — and a separate lane now runs the count
+without being told the number, because **there is only one first look.**
