@@ -6,3 +6,4 @@ __pycache__/
 *.tmp
 # Leif's verbatim words — personal, project-local record (leifsays convention)
 /trash/
+*.kicad_pro.lck
