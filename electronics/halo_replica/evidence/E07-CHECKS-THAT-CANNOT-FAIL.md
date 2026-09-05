@@ -977,3 +977,39 @@ else would, the check is adjacent and not on target. Two lanes independently ref
 exactly this reason on the same day — a capacitor matching EIA 3216 to 0.25 %, and a package fit
 agreeing with its datasheet to 4.6 % — because in both cases **the agreement was with something
 adjacent to the measurement rather than produced by it.**
+
+### Two amendments to the synthesis, both against rules I specified
+
+**A counter must not be improvable by typing — AND IT MUST NOT BE SILENTLY ZEROABLE.** I asked for
+the basis grade to be guarded against relabelling, and it was. Then a sheet edit ran one statement
+too far and deleted the loop that hands every basis to the checker. **The count went to "0 of 52
+MEASURED" and nothing went red**, because the feature is opt-in — so *a sheet that never declared*
+and *a sheet that lost its declarations* are indistinguishable to the check. I specified the opt-in
+and the promotion guard and did not think about deletion. Fixed by a grader that fails on exactly
+that case, **moved into the default pass**: a grader that only runs under `--self-test` is a grader
+that is not running.
+
+**A break must find its target by the property it breaks, never by a hardcoded literal.** Two of
+this session's five "break that did not reach its check" instances came from the same cause — a
+break naming a string verbatim that something else was free to change. Shortening a component's
+value turned a break into a no-op. **A literal in a break is a dependency the break does not
+declare.**
+
+### And the rule that no check can enforce
+
+> *"I had not looked at my own drawing."*
+
+Every number green, ERC passing, 6 of 6 checks passing — and the rendered sheet had 29 value fields
+running to 92 characters over their neighbours, 16 paragraph notes drawn past the bottom edge over
+each other, and a title truncated mid-sentence.
+
+**And looking properly mattered twice, in opposite directions, in one image.** At page scale the
+note block *looked* like it had overlapping lines — and the measurement said it fitted with 34 mm
+to spare. At real zoom the notes were clean, but a rail label was printing on top of the first note
+line, which page scale had hidden. **A render that is produced and glanced at is not a render that
+was looked at.**
+
+One design law fell out of the repair, and it is worth more than the repair: **two pieces of code
+placing text into one band cannot be made not to collide by arithmetic in one of them.** Proved by
+trying — the first fix cleared the notes and put them over the power-flag symbols. A second
+collision in place of the first.
