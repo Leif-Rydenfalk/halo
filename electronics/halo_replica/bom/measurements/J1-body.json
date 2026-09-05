@@ -1,0 +1,166 @@
+{
+  "threshold": 121.0,
+  "separability": 0.805,
+  "pixels": 25598,
+  "pixels_before_fill": 16832,
+  "rectangularity_raw": 0.469,
+  "hole_fraction": 0.342,
+  "long_px": 197.72249385824523,
+  "short_px": 181.4930750898106,
+  "angle_deg": -94.3,
+  "touches_box_edge": false,
+  "box_fill_fraction": 0.318,
+  "rectangularity": 0.713,
+  "components_found": 171,
+  "robust": {
+    "threshold": 121.0,
+    "rect_long_px": 197.72249385824523,
+    "rect_short_px": 181.4930750898106,
+    "median_long_px": 183.5,
+    "median_short_px": 156.9,
+    "p25_long_px": 165.4,
+    "p25_short_px": 144.7,
+    "median_aspect": 1.169,
+    "p25_aspect": 1.144,
+    "rect_aspect": 1.089,
+    "median_vs_p25_long_frac": 0.1092,
+    "median_vs_p25_short_frac": 0.0848,
+    "protrusion_long_frac": 0.0775,
+    "protrusion_short_frac": 0.1566,
+    "n_slices_long": 198,
+    "n_slices_short": 180
+  },
+  "pad_sweep": {
+    "rows": [
+      {
+        "pad": 0,
+        "box": [
+          1650,
+          2580,
+          1960,
+          2840
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 197.72249385824523,
+          "short_px": 181.4930750898106,
+          "angle_deg": -94.3,
+          "threshold": 121.0,
+          "separability": 0.805,
+          "rectangularity": 0.713,
+          "pixels": 25598,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 20,
+        "box": [
+          1630,
+          2560,
+          1980,
+          2860
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 197.72249385824523,
+          "short_px": 180.79503557288868,
+          "angle_deg": -94.3,
+          "threshold": 122.0,
+          "separability": 0.806,
+          "rectangularity": 0.714,
+          "pixels": 25517,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 40,
+        "box": [
+          1610,
+          2540,
+          2000,
+          2880
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 197.5729139617619,
+          "short_px": 180.79503557288865,
+          "angle_deg": -94.3,
+          "threshold": 123.0,
+          "separability": 0.817,
+          "rectangularity": 0.711,
+          "pixels": 25413,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 60,
+        "box": [
+          1590,
+          2520,
+          2020,
+          2900
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 197.572913961762,
+          "short_px": 180.79503557288865,
+          "angle_deg": -94.3,
+          "threshold": 124.0,
+          "separability": 0.825,
+          "rectangularity": 0.707,
+          "pixels": 25257,
+          "touches_box_edge": false
+        }
+      }
+    ],
+    "summary": {
+      "n_pads": 4,
+      "n_usable": 4,
+      "pads": [
+        0,
+        20,
+        40,
+        60
+      ],
+      "long_px": {
+        "min": 197.5729139617619,
+        "max": 197.72249385824523,
+        "median": 197.6477039100036,
+        "spread_frac": 0.0008,
+        "stable": true
+      },
+      "short_px": {
+        "min": 180.79503557288865,
+        "max": 181.4930750898106,
+        "median": 180.79503557288865,
+        "spread_frac": 0.0039,
+        "stable": true
+      },
+      "aspect": {
+        "min": 1.089,
+        "max": 1.094,
+        "median": 1.093,
+        "spread_frac": 0.0038
+      },
+      "verdict": "STABLE",
+      "tolerance": 0.05
+    }
+  },
+  "px_per_mm": 106.31295578013115,
+  "long_mm": 1.86,
+  "short_mm": 1.707,
+  "aspect": 1.089,
+  "input": {
+    "image": "../../images/airtag/oflynn-backside-fullres.jpeg",
+    "box": [
+      1650,
+      2580,
+      1960,
+      2840
+    ],
+    "pick": "bright",
+    "channel": "lum",
+    "label": "J1 coaxial receptacle, whole metal body",
+    "ruler_note": "106.313 px/mm registration-derived (see bom.json ruler)"
+  }
+}

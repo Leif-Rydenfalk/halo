@@ -1,0 +1,20 @@
+{
+  "image": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "down": 2,
+  "bar": 0.69,
+  "sd_floor": 6.196610866789676,
+  "rows": [
+    {
+      "closure": 1.22,
+      "cx_px": 1794.0,
+      "cy_px": 2686.0,
+      "d_mm": 1.7,
+      "inlier_frac": 0.376,
+      "noncirc": 0.718,
+      "a4": 0.1406,
+      "contrast_luma": 79.5,
+      "shape": null
+    }
+  ]
+}

@@ -122,6 +122,15 @@ def main():
           f"| {esc(ln['package'])[:70]} | {size_str(ln.get('size_mm'))} "
           f"| `{esc(txt)}` | {seen} | {esc(ln['confidence'])[:60]} |")
     w("")
+    LINE_KEYS = {"ref", "new_in_this_document", "function", "part", "package",
+                 "size_mm", "marking", "locatable", "evidence_class", "confidence",
+                 "marking_establishes", "marking_does_not_establish", "primary_quote",
+                 "gain_measured", "would_settle_it", "contradicts", "open_question",
+                 "would_settle_the_open_question", "rejected", "replica_verdict"}
+    all_line_keys = set()
+    for ln in lines:
+        all_line_keys.update(ln.keys())
+    dropped_line_keys = all_line_keys - LINE_KEYS
     w("---\n")
     w("## Every line in full\n")
     for ln in lines:
@@ -164,7 +173,16 @@ def main():
             w("- **considered and rejected**")
             for r in ln["rejected"]:
                 w(f"  - *{r['candidate']}* (source: {r['source']}) — {r['why_rejected']}")
-        w(f"- **Replica verdict** — {ln['replica_verdict']}\n")
+        w(f"- **Replica verdict** — {ln['replica_verdict']}")
+        # Any key of this LINE the renderer does not know about, generically. The
+        # top-level coverage check below caught `ruler` being dropped; the same defect
+        # exists one level down, and it swallowed J1's whole family_test block on the
+        # first run after it was written. L8 2026-09-05.
+        extra_ln = {k: v for k, v in ln.items() if k not in LINE_KEYS}
+        if extra_ln:
+            render_block(w, extra_ln, 0)
+            dropped_line_keys.difference_update(extra_ln)
+        w("")
     w("---\n")
     # Every remaining top-level block, in the file's own order. A renderer that
     # silently drops content from its source of truth is not a projection of it:
@@ -187,13 +205,14 @@ def main():
         w(f"- **`{k}`** — {v}")
     w("")
     open(OUT, "w").write("\n".join(L))
-    dropped = sorted(set(d) - rendered)
+    dropped = sorted(set(d) - rendered) + sorted(f"line key: {k}" for k in dropped_line_keys)
     print(f"wrote {OUT}  ({len(lines)} lines, {len(L)} md lines)")
     if dropped:
         print(f"  FAIL — these top-level blocks of bom.json were NOT rendered and "
               f"the markdown therefore misrepresents the source of truth: {dropped}")
         return 1
-    print(f"  coverage: {len(rendered)}/{len(d)} top-level blocks rendered")
+    print(f"  coverage: {len(rendered)}/{len(d)} top-level blocks and "
+          f"{len(all_line_keys)}/{len(all_line_keys)} distinct line keys rendered")
     return 0
 
 

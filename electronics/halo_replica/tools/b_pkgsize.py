@@ -100,8 +100,26 @@ MIN_SEPARABILITY = 0.55
 MIN_RECTANGULARITY = 0.60   # see selftest case 6
 
 
-def measure(arr, pick):
-    """arr: HxW uint8 luminance of the BOX ONLY. Returns dict or None."""
+def measure(arr, pick, fill_holes=False):
+    """arr: HxW uint8 luminance of the BOX ONLY. Returns dict or None.
+
+    fill_holes: measure the OUTER outline of a part that has a hole in it.
+
+    L8 2026-09-05, and it was found by the tool refusing rather than by anyone
+    predicting it: J1, the coaxial receptacle, is a RING. An annulus of outer
+    190 px and inner 100 px fills 0.57 of its own bounding rectangle, under the
+    0.60 rectangularity floor, so b_pkgsize returned CANNOT DETERMINE on a part
+    that is one of the most unambiguous objects on the board. The floor is
+    right - it is what rejects thresholded texture - and the answer is not to
+    lower it. Filling interior holes first measures the OUTER boundary, which
+    is the dimension a connector datasheet publishes.
+
+    The raw (unfilled) fill fraction is still reported as `rectangularity_raw`,
+    because the difference between the two IS the hole and a reader must see
+    that the part is a ring. Selftest case 17b is the control that matters: a
+    NOISE-ONLY box must still be refused WITH --fill-holes, or this option has
+    bought a measurement of nothing.
+    """
     if float(arr.std()) < 2.0:
         return None
     got = otsu(arr.astype(float).ravel())
@@ -119,6 +137,9 @@ def measure(arr, pick):
     sizes = ndimage.sum(mask, lab, range(1, n + 1))
     keep = int(np.argmax(sizes)) + 1
     m = lab == keep
+    raw_px = int(m.sum())
+    if fill_holes:
+        m = ndimage.binary_fill_holes(m)
     ys, xs = np.nonzero(m)
     rect = min_area_rect(xs, ys)
     if rect is None:
@@ -131,7 +152,9 @@ def measure(arr, pick):
     if rect_fill < MIN_RECTANGULARITY:
         return None
     return {"threshold": round(t, 1), "separability": round(eta, 3),
-            "pixels": int(m.sum()),
+            "pixels": int(m.sum()), "pixels_before_fill": raw_px,
+            "rectangularity_raw": round(raw_px / (long_px * short_px), 3),
+            "hole_fraction": round(1.0 - raw_px / max(1, m.sum()), 3),
             "long_px": float(long_px), "short_px": float(short_px),
             "angle_deg": round(float(ang), 1),
             "touches_box_edge": bool(touches), "box_fill_fraction": round(fill, 3),
@@ -395,7 +418,7 @@ PAD_TOL = 0.05          # 5 % — an axis that moves more than this with the box
                         # is reporting the box, not the part (E07 section 11)
 
 
-def pad_sweep(im, box, pick, chan, pads):
+def pad_sweep(im, box, pick, chan, pads, fill_holes=False):
     """Re-measure the SAME part with the box grown by each pad, and report how
     much the answer moves.
 
@@ -415,7 +438,7 @@ def pad_sweep(im, box, pick, chan, pads):
     for pad in pads:
         bx = (max(0, x0 - pad), max(0, y0 - pad), min(W, x1 + pad), min(H, y1 + pad))
         arr = channel(np.asarray(im.crop(bx)), chan)
-        r = measure(arr, pick)
+        r = measure(arr, pick, fill_holes)
         rows.append({"pad": pad, "box": list(bx),
                      "clamped": bx != (x0 - pad, y0 - pad, x1 + pad, y1 + pad),
                      "result": None if r is None else
@@ -604,7 +627,7 @@ def run(args):
         print(f"  label: {args.label}")
     if getattr(args, "smooth_dark", False):
         return run_smooth_dark(args, im, arr, x0, y0, x1, y1)
-    r = measure(arr, args.pick)
+    r = measure(arr, args.pick, getattr(args, "fill_holes", False))
     if r is None:
         print("  CANNOT DETERMINE — no component in this box that behaves like a "
               "package: either the box is flat, the two classes do not separate, "
@@ -614,7 +637,10 @@ def run(args):
         return 2
     print(f"  otsu threshold {r['threshold']} (separability {r['separability']}), "
           f"{r['components_found']} components, largest {r['pixels']} px, "
-          f"rectangularity {r['rectangularity']}")
+          f"rectangularity {r['rectangularity']}"
+          + (f"  [holes filled: {r['pixels_before_fill']} px before, hole fraction "
+             f"{r['hole_fraction']}, unfilled rectangularity "
+             f"{r['rectangularity_raw']}]" if getattr(args, "fill_holes", False) else ""))
     print(f"  oriented extent: {r['long_px']:.1f} x {r['short_px']:.1f} px "
           f"at {r['angle_deg']:.1f} deg")
     if r["touches_box_edge"]:
@@ -691,7 +717,8 @@ def run(args):
     sweep = None
     if getattr(args, "pad_sweep", False):
         pads = [int(v) for v in args.pads.split(",")]
-        rows, sweep = pad_sweep(im, (x0, y0, x1, y1), args.pick, args.channel, pads)
+        rows, sweep = pad_sweep(im, (x0, y0, x1, y1), args.pick, args.channel, pads,
+                                getattr(args, "fill_holes", False))
         print("  --- ROI padding sweep (E07 s11: does the answer track the box?) ---")
         for row in rows:
             rr = row["result"]
@@ -1014,6 +1041,45 @@ def self_test():
               f"{rbb}")
         fails += 1
 
+    # 17a: --fill-holes recovers a RING's OUTER diameter, which the rectangularity
+    # floor otherwise refuses. This is J1: an annulus fills ~0.57 of its own bounding
+    # box, under the 0.60 floor, so the tool said CANNOT DETERMINE about one of the
+    # most unambiguous objects on the board.
+    ring = np.full((500, 500), 30, float) + rng.normal(0, 3, (500, 500))
+    yyr, xxr = np.mgrid[0:500, 0:500]
+    rrr = np.hypot(xxr - 249.5, yyr - 249.5)
+    ring[(rrr > 50) & (rrr < 95)] = 220
+    ring = np.clip(ring, 0, 255).astype(np.uint8)
+    no_fill = measure(ring, "bright", False)
+    with_fill = measure(ring, "bright", True)
+    ok_ring = (no_fill is None and with_fill is not None and
+               abs(with_fill["long_px"] - 190) / 190 < 0.03)
+    if ok_ring:
+        print(f"  PASS  --fill-holes recovers a RING's outer diameter: without it the "
+              f"rectangularity floor REFUSES (as it should - a ring is not a solid "
+              f"package); with it {with_fill['long_px']:.0f} px (true 190), hole "
+              f"fraction {with_fill['hole_fraction']}, unfilled rectangularity "
+              f"{with_fill['rectangularity_raw']}")
+        passes += 1
+    else:
+        print(f"  FAIL  ring case: no_fill={no_fill} with_fill={with_fill}")
+        fails += 1
+
+    # 17b: THE CONTROL THAT MATTERS. Filling holes makes a ragged mask solid, so it
+    # could hand back a "measurement" of thresholded noise. The noise-only box from
+    # case 6 must STILL be refused with --fill-holes, or this option bought nothing.
+    if measure(flat2, "bright", True) is None:
+        print("  PASS  --fill-holes does NOT rescue a noise-only box: still refused, "
+              "so the option did not buy a measurement of nothing")
+        passes += 1
+    else:
+        r_ = measure(flat2, "bright", True)
+        print(f"  FAIL  --fill-holes turned noise into a part: "
+              f"{r_['long_px']:.0f}x{r_['short_px']:.0f} px, rectangularity "
+              f"{r_['rectangularity']} — the option must be withdrawn or gated "
+              f"differently")
+        fails += 1
+
     # 13: one padding is not a sweep. A single point must be CANNOT DETERMINE,
     # never STABLE — otherwise a sweep that silently collapsed to one box would
     # report the strongest possible verdict from no comparison at all.
@@ -1070,6 +1136,10 @@ def main():
                                          "IS a package — must come back rectangular")
     p.add_argument("--control-neg", help="x0,y0,x1,y1 of bare board — must NOT "
                                          "yield a comparable component")
+    p.add_argument("--fill-holes", action="store_true",
+                   help="the part has a HOLE in it (a coaxial receptacle, a washer, a "
+                        "shield frame). Measures the OUTER outline. Reports the unfilled "
+                        "fill fraction too, so a ring still reads as a ring.")
     p.add_argument("--robust", action="store_true",
                    help="also report the MEDIAN cross-section in the part's own "
                         "frame. The min-area rectangle is set by extremes, so "

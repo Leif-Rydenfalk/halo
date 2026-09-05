@@ -261,11 +261,11 @@ def B(bom_ref, fp_basis, note="", extra=None):
 def build():
     s = Schematic(
         "halo_replica",
-        title="halo REPLICA - Apple AirTag A2187 reconstructed. NO COPPER "
-              "WAS TRACED: every net is INFERRED or CHOSEN unless marked "
-              "MEASURED.",
+        title="halo REPLICA - Apple AirTag A2187, reconstructed",
         rev="R1", company="ce-designs/halo - halo Replica lane L11",
         comments=[
+            "NO COPPER WAS TRACED. Every net is INFERRED or CHOSEN "
+            "unless marked MEASURED - see NETS.md.",
             "Parts from electronics/halo_replica/bom/bom.json (27 lines).",
             "U2 (Apple U1 UWB SiP) is DNP/UNPOPULATED - never sold to anyone.",
             "U4 and U9 are CANNOT DETERMINE: generic symbols, ambiguity in "
@@ -389,7 +389,7 @@ def build():
     # =====================================================================
     # BLOCK 1 - the cell, both positive contacts, and D24's series diode
     # =====================================================================
-    s.part("BT1", batt_id, value="3 SPRUNG CONTACTS (1 neg dome, 2 pos tabs)",
+    s.part("BT1", batt_id, value="3 SPRUNG CONTACTS (1 neg, 2 pos)",
            group="power", footprint="",
            fields=B("BATT-CONTACTS", "PLACEHOLDER-L12",
                     "L12 draws the land pattern. THE CELL IS NOT DRAWN ON "
@@ -465,8 +465,7 @@ def build():
     # circuit: pull the cell and the tag has to stay alive long enough to
     # count the removal, which is what this capacitance is FOR.
     for ref in ("C1", "C2", "C3", "C4", "C5"):
-        s.part(ref, "Device:C", value="100uF (marking J107S) - TECHNOLOGY "
-               "CANNOT DETERMINE", group="power", footprint=C0805,
+        s.part(ref, "Device:C", value="100uF? mark J107S - CANNOT DETERMINE", group="power", footprint=C0805,
                fields=B("C1..C5", "PLACEHOLDER-L12",
                         "Five of them, counted around the rim on the "
                         "battery-contact face. bom.json: HIGH for the "
@@ -482,8 +481,7 @@ def build():
     # =====================================================================
     # BLOCK 2 - the 1.8 V rail: buck, inductor, and the gated branch
     # =====================================================================
-    s.part("U6", buck_id, value="TPS62746-CLASS BUCK 3V->1V8 (part MEDIUM, "
-           "package CANNOT DETERMINE)", group="power", footprint="",
+    s.part("U6", buck_id, value="TPS62746-CLASS BUCK 3V->1V8", group="power", footprint="",
            fields=B("U6", "PLACEHOLDER-L12",
                     "The evidence is a BOARD LEGEND, '98C0051 / TPS746', "
                     "silkscreened by Apple's own layout engineer. bom.json "
@@ -505,8 +503,7 @@ def build():
     s.net("VBAT", "R7.1")
     s.net("EN_BUCK", "R7.2", "U6.2")
 
-    s.part("L1", "Device:L", value="WIREWOUND CHIP INDUCTOR - VALUE CANNOT "
-           "DETERMINE", group="power", footprint=L0402,
+    s.part("L1", "Device:L", value="WIREWOUND - CANNOT DETERMINE", group="power", footprint=L0402,
            fields=B("L1x", "PLACEHOLDER-L12",
                     "bom.json L1x: individual turns of copper wire are "
                     "DIRECTLY RESOLVABLE over the core between two "
@@ -532,7 +529,7 @@ def build():
                       ("C11", "at U1 VDD pin 13"),
                       ("C12", "at U1 VDD pin 36"),
                       ("C13", "at U1 VDD pin 48")):
-        s.part(ref, "Device:C", value="DECOUPLING - VALUE CANNOT DETERMINE",
+        s.part(ref, "Device:C", value="DECOUPLING - CANNOT DETERMINE",
                group="power", footprint=C0402,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         note + ". bom.json is explicit that this is not a "
@@ -542,8 +539,7 @@ def build():
         s.net("V1V8", ref + ".1")
         s.net("GND", ref + ".2")
 
-    s.part("U8", lsw_id, value="FPF2487-CLASS LOAD SWITCH (LOW confidence, "
-           "SILICON CITED, single-source)", group="power", footprint="",
+    s.part("U8", lsw_id, value="FPF2487-CLASS LOAD SWITCH (LOW conf)", group="power", footprint="",
            fields=B("U8", "PLACEHOLDER-L12",
                     "Power-gating is why sleep is 2.3 uA - copy the INTENT "
                     "even if not the part. THIS SHEET DEPARTS FROM iFIXIT'S "
@@ -578,8 +574,7 @@ def build():
     s.net("V1V8_SW", "U8.4")
 
     # U9 - the part nobody has identified, wired the only honest way.
-    s.part("U9", u9_id, value="CANNOT DETERMINE - marking 1A8 / 1950; even "
-           "'regulator' is inferred", group="power", footprint="",
+    s.part("U9", u9_id, value="CANNOT DETERMINE - mark 1A8/1950", group="power", footprint="",
            fields=B("U9", "PLACEHOLDER-L12",
                     "bom.json U9: HIGH only for 'a part bearing these two "
                     "lines exists at this location'. Its INPUT is drawn from "
@@ -601,7 +596,7 @@ def build():
     # BLOCK 3 - U1, the nRF52832. CPU + BLE + NFC tag, one chip.
     # =====================================================================
     s.part("U1", "MCU_Nordic:nRF52832-QFxx",
-           value="nRF52832-CIAA (WLCSP-50) - DRAWN AS QFAA/QFN-48",
+           value="nRF52832-CIAA WLCSP-50 (drawn QFN-48)",
            group="soc",
            footprint="Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm",
            datasheet="https://infocenter.nordicsemi.com/pdf/"
@@ -632,7 +627,7 @@ def build():
                            ("C17", "46", "DEC4, pin 46")):
         net = {"C14": "DEC1", "C15": "DEC2", "C16": "DEC3",
                "C17": "DEC4"}[ref]
-        s.part(ref, "Device:C", value="VALUE CANNOT DETERMINE", group="soc",
+        s.part(ref, "Device:C", value="CANNOT DETERMINE", group="soc",
                footprint=C0201,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "Decoupling at " + note + ". TOPOLOGY ONLY: no copy "
@@ -653,7 +648,7 @@ def build():
           "they need capacitors is the part's own requirement; the values "
           "are CANNOT DETERMINE.")
 
-    s.part("L2", "Device:L", value="DC/DC INDUCTOR - VALUE CANNOT DETERMINE",
+    s.part("L2", "Device:L", value="DC/DC L - CANNOT DETERMINE",
            group="soc", footprint=L0402,
            fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                     "The nRF52832's own DC/DC runs DCC (pin 47) through an "
@@ -672,8 +667,7 @@ def build():
     # =====================================================================
     # BLOCK 4 - both crystals. Two are SEEN, with markings read.
     # =====================================================================
-    s.part("X1", "Device:Crystal", value="32 MHz? marking T320 / RBEV - "
-           "PART AND LOAD CAP CANNOT DETERMINE", group="clock",
+    s.part("X1", "Device:Crystal", value="32 MHz? mark T320/RBEV - CANNOT DETERMINE", group="clock",
            footprint="Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm",
            fields=B("X1", "PLACEHOLDER-L12",
                     "HIGH that the marking is 'T320 / RBEV'. CANNOT "
@@ -684,8 +678,7 @@ def build():
                     "(seam-sealed ceramic, gold seal ring, two pads) but not "
                     "the size.",
                     {"Marking": "T320 / RBEV"}))
-    s.part("X2", "Device:Crystal", value="32.768 kHz? marking A048L - "
-           "PART AND LOAD CAP CANNOT DETERMINE", group="clock",
+    s.part("X2", "Device:Crystal", value="32.768 kHz? mark A048L - CANNOT DETERMINE", group="clock",
            footprint="Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm",
            fields=B("X2", "PLACEHOLDER-L12",
                     "HIGH for the marking 'A048L'. MEDIUM for the frequency "
@@ -710,7 +703,7 @@ def build():
 
     for ref, net, xtal in (("C18", "XC1", "X1"), ("C19", "XC2", "X1"),
                            ("C20", "XL1", "X2"), ("C21", "XL2", "X2")):
-        s.part(ref, "Device:C", value="LOAD CAP - VALUE CANNOT DETERMINE",
+        s.part(ref, "Device:C", value="LOAD CAP - CANNOT DETERMINE",
                group="clock", footprint=C0201,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "Load capacitor for " + xtal + ". THE CRYSTAL'S CL "
@@ -726,7 +719,7 @@ def build():
     # BLOCK 5 - NFC. The tag peripheral is INSIDE the SoC. No NFC chip.
     # =====================================================================
     s.part("ANT2", "Device:Antenna_Loop",
-           value="NFC COIL - WOUND MAGNET WIRE, >=9 TURNS (LOWER BOUND)",
+           value="NFC COIL - WOUND WIRE, >=9 TURNS",
            group="rf", footprint="",
            fields=B("ANT2", "n/a",
                     "SEEN AND MEASURED, and the measurement was CORRECTED: "
@@ -747,7 +740,7 @@ def build():
                      "deliberately absent."}))
 
     for ref, pad, net in (("C6", "11", "NFC1"), ("C7", "12", "NFC2")):
-        s.part(ref, "Device:C", value="NFC TUNING - VALUE CANNOT DETERMINE",
+        s.part(ref, "Device:C", value="NFC TUNING - CANNOT DETERMINE",
                group="rf", footprint=C0201,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "The NFC-A tag peripheral needs two series tuning "
@@ -774,7 +767,7 @@ def build():
     # BLOCK 6 - the 2.4 GHz path
     # =====================================================================
     s.part("ANT1", "Device:Antenna",
-           value="BLE 2.4 GHz INVERTED-F, PRINTED ON THE CARRIER",
+           value="BLE 2.4GHz INVERTED-F (on carrier)",
            group="rf", footprint="",
            fields=B("ANT1", "n/a",
                     "HIGH that Apple labels a Bluetooth antenna at that rim "
@@ -783,7 +776,7 @@ def build():
                     "printed onto the plastic carrier, so there is no PCB "
                     "land pattern at all and 'n/a' is the honest FP-basis."))
     for ref, val in (("C8", "PI SHUNT"), ("C9", "PI SHUNT")):
-        s.part(ref, "Device:C", value=val + " - VALUE CANNOT DETERMINE",
+        s.part(ref, "Device:C", value=val + " - CANNOT DETERMINE",
                group="rf", footprint=C0201,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "A matching network between the SoC's ANT pin and a "
@@ -791,7 +784,7 @@ def build():
                         "ARE A MEASUREMENT NOBODY HAS TAKEN on Apple's "
                         "copper. Drawn as a pi so the topology can hold a "
                         "future S11 result."))
-    s.part("L3", "Device:L", value="PI SERIES - VALUE CANNOT DETERMINE",
+    s.part("L3", "Device:L", value="PI SERIES - CANNOT DETERMINE",
            group="rf", footprint=L0402,
            fields=B("R/C/L bulk", "PLACEHOLDER-L12", "Series element of the "
                     "pi. Same refusal as C8/C9."))
@@ -809,7 +802,7 @@ def build():
     # BLOCK 7 - the flash. Identified by INSTRUMENT, not by marking.
     # =====================================================================
     s.part("U3", "Memory_Flash:GD25QxxxEY",
-           value="GD25LQ32C 32Mb 1.8V SPI NOR (WLCSP-10) - DRAWN AS WSON-8",
+           value="GD25LQ32C 32Mb 1.8V NOR (WLCSP-10)",
            group="memory", footprint="",
            datasheet="https://www.gigadevice.com/",
            fields=B("U3", "PLACEHOLDER-L12",
@@ -864,7 +857,7 @@ def build():
     # BLOCK 8 - U2. Apple's UWB SiP. PLACED, AND NOT POPULATED.
     # =====================================================================
     s.part("U2", uwb_id,
-           value="APPLE U1 UWB SiP - DNP / UNPOPULATED - NEVER SOLD TO ANYONE",
+           value="APPLE U1 UWB SiP - DNP, NEVER SOLD",
            group="uwb", footprint="", dnp=True,
            fields=B("U2", "PLACEHOLDER-L12",
                     "DO NOT POPULATE. Apple's U1 (die TMKA75, TSMC 16 nm, in "
@@ -895,8 +888,7 @@ def build():
     s.net("UWB_IRQ", "U1.28", "U2.7")
     s.net("UWB_nRESET", "U1.29", "U2.8")
 
-    s.part("ANT3", "Device:Antenna", value="UWB PATCH 6.5/8 GHz, PRINTED ON "
-           "THE CARRIER", group="uwb", footprint="",
+    s.part("ANT3", "Device:Antenna", value="UWB PATCH 6.5/8GHz (on carrier)", group="uwb", footprint="",
            fields=B("ANT3", "n/a",
                     "HIGH for the label - Apple labelled it in a regulatory "
                     "filing. CANNOT DETERMINE for the geometry. Its only "
@@ -907,8 +899,7 @@ def build():
     # family without naming the refusal reads as an identification. What is
     # HIGH is that a coaxial receptacle is FITTED; which one it is, is not.
     s.part("J1", "Connector:Conn_Coaxial",
-           value="COAXIAL RF RECEPTACLE, U.FL/IPEX MHF-CLASS BY "
-                 "CONSTRUCTION - EXACT PART CANNOT DETERMINE",
+           value="COAX RF RECEPTACLE - PART CANNOT DETERMINE",
            group="uwb",
            footprint="Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical",
            fields=B("J1", "SUBSTITUTION",
@@ -935,8 +926,7 @@ def build():
     # BLOCK 9 - accelerometer. Generic, because the part is CANNOT DETERMINE.
     # =====================================================================
     s.part("U4", acc_id,
-           value="3-AXIS ACCELEROMETER - PART CANNOT DETERMINE (BMA280 is a "
-                 "teardown ASSERTION, not a marking)",
+           value="3-AXIS ACCEL - PART CANNOT DETERMINE",
            group="sensor", footprint="",
            fields=B("U4", "PLACEHOLDER-L12",
                     "bom.json U4: TWO VISUALLY IDENTICAL METAL-LID PARTS are "
@@ -966,7 +956,7 @@ def build():
     s.net("ACC_SDA", "U1.9", "U4.5", "R6.1")
     s.net("ACC_INT1", "U1.10", "U4.8")
     for ref in ("R5", "R6"):
-        s.part(ref, "Device:R", value="I2C PULL-UP - VALUE CANNOT DETERMINE",
+        s.part(ref, "Device:R", value="I2C PULL-UP - CANNOT DETERMINE",
                group="sensor", footprint=R0402,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "An I2C bus needs pull-ups. THE BUS ITSELF IS "
@@ -979,8 +969,7 @@ def build():
     # BLOCK 10 - the sounder: class-D amplifier into a voice coil
     # =====================================================================
     s.part("U5", "Audio:MAX98357A",
-           value="MAX98357A-CLASS CLASS-D AMP (LOW confidence; iFixit wrote "
-                 "MAX98357B)", group="audio",
+           value="MAX98357A-CLASS AMP (LOW conf)", group="audio",
            footprint="Package_CSP:WLCSP-16_4x4_B2.17x2.32mm_P0.5mm",
            fields=B("U5", "SUBSTITUTION",
                     "SILICON CITED, LOW confidence: the part is not "
@@ -994,7 +983,7 @@ def build():
     s.net("GND", "U5.3", "U5.11", "U5.15", "U5.17")
     s.nc("U5.5", "U5.6", "U5.12", "U5.13")
 
-    s.part("R8", "Device:R", value="GAIN STRAP - VALUE CANNOT DETERMINE",
+    s.part("R8", "Device:R", value="GAIN STRAP - CANNOT DETERMINE",
            group="audio", footprint=R0402,
            fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                     "The MAX98357 family sets gain with one resistor on "
@@ -1027,7 +1016,7 @@ def build():
     s.net("AMP_nSD", "U1.23", "U5.4")
 
     s.part("LS1", "Device:Speaker",
-           value="VOICE COIL - WOUND MAGNET WIRE, GLUED TO THE DOME",
+           value="VOICE COIL - WOUND MAGNET WIRE",
            group="audio", footprint="",
            fields=B("SPK-COIL", "n/a",
                     "There is no speaker in an AirTag. There is a VOICE COIL "
@@ -1048,7 +1037,7 @@ def build():
     # established purpose, drawn in the shape its source describes.
     # =====================================================================
     s.part("U7", "Amplifier_Operational:TLV9001IDCK",
-           value="TLV9001-CLASS OP-AMP - ROLE INFERRED, LOW confidence",
+           value="TLV9001-CLASS OP-AMP - ROLE INFERRED",
            group="audio", footprint="Package_TO_SOT_SMD:SOT-353_SC-70-5",
            fields=B("U7", "SUBSTITUTION",
                     "SILICON CITED, LOW confidence, package CANNOT "
@@ -1064,8 +1053,8 @@ def build():
                      "current-sense amp; anti-alias filter; bias buffer"}))
     s.net("V1V8", "U7.5")
     s.net("GND", "U7.2")
-    for ref, val in (("R9", "SENSE DIVIDER TOP"), ("R10", "SENSE DIVIDER BOT")):
-        s.part(ref, "Device:R", value=val + " - VALUE CANNOT DETERMINE",
+    for ref, val in (("R9", "SENSE DIV TOP"), ("R10", "SENSE DIV BOT")):
+        s.part(ref, "Device:R", value=val + " - CANNOT DETERMINE",
                group="audio", footprint=R0402,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "Part of this sheet's INFERRED role for U7. If U7 is "
@@ -1082,12 +1071,9 @@ def build():
     # =====================================================================
     # BLOCK 12 - cell-removal sense. Both positives, per REFERENCE-TEARDOWN.
     # =====================================================================
-    for ref, val in (("R1", "SENSE TOP, P+_POWER"),
-                     ("R2", "SENSE BOTTOM, P+_POWER"),
-                     ("R3", "SENSE TOP, P+_SENSE"),
-                     ("R4", "SENSE BOTTOM, P+_SENSE")):
-        s.part(ref, "Device:R", value=val + " - VALUE CANNOT DETERMINE "
-               "(~50 nA implies megohms)", group="sense", footprint=R0402,
+    for ref, val in (("R1", "SNS TOP P+_PWR"), ("R2", "SNS BOT P+_PWR"),
+                     ("R3", "SNS TOP P+_SNS"), ("R4", "SNS BOT P+_SNS")):
+        s.part(ref, "Device:R", value=val + " - CANNOT DETERMINE", group="sense", footprint=R0402,
                fields=B("R/C/L bulk", "PLACEHOLDER-L12",
                         "REFERENCE-TEARDOWN 2.5 gives the ONE electrical "
                         "number this sheet has about the sense path: the "
@@ -1151,8 +1137,7 @@ def build():
           anchor=anchor, contains=claim)
         s.net(net, "U1." + pin, ref + ".1")
 
-    s.part("TP28", "Connector:TestPoint", value="nRF CORE RAIL (DEC1) - "
-           "THE GLITCH PAD", group="test",
+    s.part("TP28", "Connector:TestPoint", value="nRF CORE RAIL - THE GLITCH PAD", group="test",
            footprint="TestPoint:TestPoint_Pad_D1.0mm", in_bom=False,
            fields=B(None, "PLACEHOLDER-L12",
                     "O'Flynn's TP28 is the nRF core rail. LimitedResults' "
@@ -1211,8 +1196,7 @@ def build():
     # TP9 lands on a GPIO whose FUNCTION O'Flynn does not give. The pad and
     # the ball are measured; what it does is not, and a test point on a net
     # named after its function would invent one.
-    s.part("TP9", "Connector:TestPoint", value="P0.26 - FUNCTION CANNOT "
-           "DETERMINE", group="test",
+    s.part("TP9", "Connector:TestPoint", value="P0.26 - FUNCTION CANNOT DETERMINE", group="test",
            footprint="TestPoint:TestPoint_Pad_D1.0mm", in_bom=False,
            fields=B(None, "PLACEHOLDER-L12",
                     "O'Flynn: '9 | nRF ball D3 (P0.26)'. He gives the pad "

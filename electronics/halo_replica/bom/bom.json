@@ -488,12 +488,36 @@
    "ref": "J1",
    "new_in_this_document": true,
    "function": "coaxial RF connector — a conducted-measurement port. Its position beside the UWB module is consistent with a UWB conducted-test port, but the net it lands on is not established here.",
-   "part": "CANNOT DETERMINE — a U.FL / IPEX MHF-class receptacle by construction",
+   "part": "CANNOT DETERMINE for the part number. MEASURED to be of the MHF4 / W.FL / Murata HSC size class, and NOT a U.FL.",
    "package": "circular RF receptacle: metal outer shell, four solder tabs, a dark dielectric annulus and a gold centre contact. Unambiguous at 5x.",
    "size_mm": {
-    "value": null,
-    "verdict": "NOT YET MEASURED",
-    "note": "Worth measuring: U.FL-R-SMT is 2.6 mm across, MHF4 is 2.0 mm. The measurement would name the family."
+    "value": {
+     "long_mm": 1.86,
+     "short_mm": 1.707,
+     "long_px": 197.7,
+     "short_px": 181.5,
+     "aspect": 1.089,
+     "short_side_genuine_px": [
+      35.3,
+      46.8
+     ],
+     "what_is_measured": "the OUTER extent of the bright metal shell INCLUDING its four solder tabs, with the dark bore filled. It is not the housing: an MHF4-class housing is black LCP and extends slightly beyond the metal."
+    },
+    "verdict": "MEASURED — and it EXCLUDES U.FL",
+    "method": "tools/b_pkgsize.py --fill-holes, box 1650,2580,1960,2840, lum/bright. --fill-holes exists because of this part: a connector is a RING, it fills 0.469 of its own bounding rectangle unfilled, under b_pkgsize's 0.60 rectangularity floor, and the tool refused it. The floor is right — it is what rejects thresholded texture — so the fix was to measure the outer outline, not to lower the floor. The control that matters is that a noise-only box is STILL refused with --fill-holes (selftest 17b); otherwise the option would have bought a measurement of nothing.",
+    "ruler": "106.313 px/mm registration-derived. ~+/-1% scale, ~+/-4% segmentation.",
+    "pad_sweep": "0/20/40/60 px -> long spread 0.08%, short 0.39%, aspect 1.089-1.094. STABLE.",
+    "median_cross_section": {
+     "long_px": 183.5,
+     "short_px": 156.9,
+     "note": "the min-area rectangle exceeds the medians by 7.8%/15.7%, and that excess is the four solder tabs. The RECTANGLE is the right number to compare against a datasheet OVERALL dimension, which is what is done below."
+    },
+    "overlay LOOKED at": "The segmentation was drawn back onto the photograph and inspected: it traces the metal shell and all four solder tabs exactly, with the dark bore as the filled hole (hole fraction 0.342). It is the connector and nothing else.",
+    "raw": [
+     "bom/measurements/J1-body.json",
+     "bom/measurements/J1-circles.json",
+     "bom/measurements/J1-circles-large.json"
+    ]
    },
    "marking": {
     "text": "NONE VISIBLE",
@@ -502,13 +526,71 @@
    },
    "locatable": "YES — Apple FRONT side, immediately right of the UWB module can.",
    "evidence_class": "SILICON SEEN",
-   "confidence": "HIGH that a coaxial RF receptacle is fitted at this location on this unit.",
+   "confidence": "HIGH that a coaxial RF receptacle is fitted at this location on this unit. HIGH that it is NOT a U.FL — the size difference is far outside any error here. CANNOT DETERMINE which of MHF4 / W.FL / HSC it is: they differ by a few percent and that is inside this photograph's segmentation band.",
    "marking_establishes": "n/a",
    "marking_does_not_establish": "Which net it is on, and whether it is fitted on every production unit.",
-   "would_settle_it": "Continuity from the connector to the UWB module on a live unit; or the same region in FCC-6 at sufficient resolution to confirm it on a second board.",
+   "would_settle_it": "Which of MHF4 / W.FL / HSC: a photograph of this region at higher genuine resolution, or a mating plug identified on a cable. Which net it is on: continuity from the connector to the UWB module on a live unit. Whether it is fitted on every production unit: the same region in FCC-6 at sufficient resolution — and FCC-6 resolves the board at ~4.6 genuine px/mm, so it cannot answer that.",
    "rejected": [],
    "replica_verdict": "SUB / OMIT.",
-   "contradicts": "REFTEAR §2.5 states 'connectors: none anywhere — 1:1, copy this', and RESEARCH-A §2.2 opens 'There are no connectors anywhere.' There is a connector, on the retail board O'Flynn photographed (silkscreen 820-01736-A, date 2920 17), and it is one of the more conspicuous objects on the component side. The claim was almost certainly meant as 'no off-board wiring connectors', which is still true and still the interesting point. Corrected here rather than argued: the sentence as written is refuted by the photograph the same document cites."
+   "contradicts": "REFTEAR §2.5 states 'connectors: none anywhere — 1:1, copy this', and RESEARCH-A §2.2 opens 'There are no connectors anywhere.' There is a connector, on the retail board O'Flynn photographed (silkscreen 820-01736-A, date 2920 17), and it is one of the more conspicuous objects on the component side. The claim was almost certainly meant as 'no off-board wiring connectors', which is still true and still the interesting point. Corrected here rather than argued: the sentence as written is refuted by the photograph the same document cites.",
+   "family_test": {
+    "question": "This document has said 'a U.FL / IPEX MHF-class receptacle by construction' with a note that U.FL is 2.6 mm and MHF4 is 2.0 mm and that measuring would name the family. Neither number had a source attached. Both were checked against the manufacturers' own drawings before the comparison was made.",
+    "published, from the manufacturers themselves": {
+     "U.FL-R-SMT-1": {
+      "square_body_mm": 2.6,
+      "overall_mm": [
+       3.0,
+       3.1
+      ],
+      "shell_barrel_dia_mm": 2.0,
+      "height_mm": 1.25,
+      "recommended_pcb_pattern_mm": [
+       4.0,
+       2.2
+      ],
+      "source": "Hirose Electric, U.FL Series catalogue 'U.FL Series/1.9mm to 2.4mm Mated Height, Light Weight SMT Micro Coaxial Connector', Sep. 2024 revision, Receptacle outline drawing p.11 (Ø2, 2.6, 3, (3.1), 1.8, 1.25) and the Recommended PCB Mounting Pattern on the following page. Fetched from hirose.com and read out of the PDF, not recalled."
+     },
+     "MHF4 receptacle 20449-001E": {
+      "housing_mm": [
+       2.0,
+       1.76
+      ],
+      "housing_tolerance_mm": 0.15,
+      "footprint_mm": [
+       2.0,
+       1.68
+      ],
+      "shell_dia_mm": 1.4,
+      "shell_tolerance_mm": 0.15,
+      "contact_dia_mm": 0.45,
+      "source": "I-PEX / Dai-ichi Seiko, 2D drawing 2D_MHF_4_RECEPTACLE_20449C15.pdf, rev 15 (2020/10/16), fetched from i-pex.com and read out of the PDF."
+     },
+     "W.FL / Murata HSC": {
+      "square_body_mm": [
+       1.76,
+       1.68
+      ],
+      "footprint_mm": [
+       2.0,
+       2.0
+      ],
+      "mating_male_od_mm": 1.5,
+      "source": "SECONDARY — en.wikipedia.org/wiki/Hirose_U.FL comparison table. Named as secondary because no manufacturer drawing was fetched for it, and the same table's MHF4 row disagrees slightly with I-PEX's own drawing (it gives 1.7 x 1.7 where I-PEX prints 1.76 x 1.68). Used only to say that W.FL sits in the same size class, never to separate it from MHF4."
+     }
+    },
+    "measured": {
+     "metal_body_mm": [
+      1.86,
+      1.707
+     ],
+     "weak_circular_signature_mm": 1.7
+    },
+    "RESULT — U.FL IS EXCLUDED": "The measured metal body is 1.860 x 1.707 mm against a U.FL square body of 2.6 mm and an overall of 3.0 x 3.1 mm: -28% / -34% against the square, -38% / -45% against the overall. The measurement is also an OVER-estimate of the metal, since b_pkgsize reads 3.5-3.9% high on the one part with a published body, and it INCLUDES the four protruding tabs. Nothing in the +/-1% scale band or the +/-4% segmentation band spans a 28-45% gap. A U.FL on this board would be half again as large as what is in the photograph.",
+    "RESULT — the size class it IS": "1.860 x 1.707 mm sits 7.0% and 3.0% INSIDE the MHF4 receptacle's 2.00 x 1.76 mm housing, which is the expected sign and roughly the expected size: the housing is black LCP and extends beyond the bright metal that was segmented. W.FL's 1.76 x 1.68 mm body is within a few percent of MHF4's and cannot be separated from it here.",
+    "the corroborating circle, reported WEAK": "boardmetro circles over 1.2-2.6 mm found exactly one maximum above its own null bar: d = 1.700 mm at (1794, 2686), closure 1.22 against a bar of 0.69 (N3 p99 of the real field, 1200 draws). Its shape scores are poor — noncircularity 0.718, inlier fraction 0.376 — because the four tabs break the ring, so this corroborates the SCALE of the barrel and is not itself a clean diameter. Quoted with its weakness rather than as a second measurement. A stronger maximum exists at d = 1.000 mm (closure 6.49, inlier 0.925) but it lands inside the dark dielectric bore and no datasheet dimension was found to compare it against, so it is recorded and not used.",
+    "how this could still be wrong": "It rests on the scale being right to ~10%, which is a far weaker requirement than anything else in this file and is met with room to spare. The residual risks are: (a) a U.FL-compatible clone in a smaller body — several exist, and this measurement would not distinguish one from a genuine MHF4; (b) the Hirose and I-PEX drawings describing a different revision from the part Apple fitted. Neither touches the exclusion, which is a factor of 1.4-1.7 and not a few percent.",
+    "what it changes": "The line moves from 'a U.FL / IPEX MHF-class receptacle by construction' — a class named by looking — to a class named by measurement, with the most commonly assumed member of it ruled out. It does not name a part number and does not claim to."
+   }
   },
   {
    "ref": "D1, D2",
