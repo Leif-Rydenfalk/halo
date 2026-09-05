@@ -79,7 +79,7 @@
     "surface_finish": {
       "value": "gold-bearing — ENIG or another immersion/electroless-gold finish",
       "verdict": "MEASURED, with an in-frame control",
-      "method": "tools/s_colour.py on images/airtag/oflynn-backside-fullres.jpeg. Hue of the plated hole rims against the hue of the bare copper wire of a wirewound inductor IN THE SAME FRAME, under the same light. Colour under an unknown illuminant cannot be trusted absolutely; a hue DIFFERENCE between two metals in one frame survives a white-balance error because the error moves both together. That is why the control is not optional.",
+      "method": "tools/s_colour.py on images/airtag/oflynn-backside-fullres.jpeg. TWO statistics, in order: WARM FRACTION says whether the region is bare metal at all; HUE then says which metal. Hue is compared against an in-frame control under the same light, because a white-balance error moves both together.",
       "measurements": {
         "copper_wire_CONTROL_bare_Cu": {
           "box": [
@@ -95,7 +95,9 @@
             90
           ],
           "hue_deg": 21.8,
-          "sat": 0.48
+          "sat": 0.48,
+          "warm_fraction": 0.649,
+          "_what_it_actually_is": "the exposed winding of a wirewound inductor — magnet wire, whose thin enamel reads as copper. Labelled precisely because 'bare copper' was imprecise. The conclusion is robust to the enamel: any tint it adds pushes toward RED, i.e. lower hue, which would WIDEN the measured separation rather than create it. No enamel makes copper read at 44 deg with a 66% warm fraction."
         },
         "gold_rim_right_hole": {
           "box": [
@@ -111,7 +113,8 @@
             48
           ],
           "hue_deg": 43.8,
-          "sat": 0.575
+          "sat": 0.575,
+          "warm_fraction": 0.66
         },
         "gold_rim_left_hole": {
           "box": [
@@ -127,12 +130,40 @@
             57
           ],
           "hue_deg": 40.5,
-          "sat": 0.567
-        }
+          "sat": 0.567,
+          "warm_fraction": 0.988
+        },
+        "_warm_fraction_added": "2026-09-05. The first version reported HUE ONLY, over a warm-pixel selection — so it could not say 'this region is grey', because the selection had already discarded the grey. Running the negative control this file ASSERTED and never executed is what exposed it."
       },
-      "result": "19-22 degrees of hue separation between the plated rims and known bare copper in the same frame. The rims are not copper and not OSP-over-copper. They are not HASL or immersion tin or immersion silver either, all of which are grey — R, G and B within a few counts of each other, no warm pixels at all.",
+      "result": "19-22 degrees of hue separation between the plated rims and the in-frame copper control, AND both rims at 66-99% warm fraction against 4.6-8.8% for grey solder and soldermask. The rims are bare metal and they are not copper. HASL, immersion tin and immersion silver are excluded because they are grey and fail the warm-fraction floor — now measured rather than asserted.",
       "still_cannot_determine": "WHICH gold finish. ENIG, ENEPIG, immersion gold and hard gold are indistinguishable by hue in a JPEG. A cross-section or XRF would separate them.",
-      "supporting_inference_labelled_as_such": "A 50-ball WLCSP and 0201 passives need a coplanar finish. HASL cannot hold coplanarity at that scale. This agrees with the measurement but was NOT used to reach it."
+      "supporting_inference_labelled_as_such": "A 50-ball WLCSP and 0201 passives need a coplanar finish. HASL cannot hold coplanarity at that scale. This agrees with the measurement but was NOT used to reach it.",
+      "negative_controls_RUN": {
+        "_status": "RUN 2026-09-05. This file previously ASSERTED that HASL/tin/silver are 'grey, R=G=B, with no warm pixels at all' and never measured one. The assertion was not quite right, and HOW it was wrong is the useful part.",
+        "grey_solder_fillet": {
+          "box": [
+            1000,
+            600,
+            1040,
+            660
+          ],
+          "warm_fraction": 0.046,
+          "hue_deg": 35.0
+        },
+        "dark_soldermask": {
+          "box": [
+            1080,
+            530,
+            1140,
+            580
+          ],
+          "warm_fraction": 0.088,
+          "hue_deg": 52.9
+        },
+        "what_they_show": "Both are rejected BY WARM FRACTION — 4.6% and 8.8% against a 40% floor — and NOT by hue.",
+        "the_counterfactual": "On HUE ALONE the dark soldermask sits at 52.9 deg, INSIDE the gold band: hue alone would have called soldermask a gold finish. The grey solder at 35.0 deg would have landed in the uncalled gap between copper and gold. One false positive and one refusal — which is exactly why the fraction gate exists.",
+        "separation": "bare metal 64.9-98.8% warm; not-bare metal 4.6-8.8%. Wide and empty, so the 40% floor is not doing delicate work."
+      }
     },
     "soldermask_colour": {
       "value": null,
