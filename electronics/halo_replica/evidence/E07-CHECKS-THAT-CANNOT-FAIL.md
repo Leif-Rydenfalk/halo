@@ -662,3 +662,78 @@ The correct design follows from the measurement: fit each side **independently**
 support**, and call a dimension MEASURED only when **both sides of that axis** are supported —
 otherwise the row is position-only. That is the same located-not-sized distinction already carried
 by 63 of the 100 rows in the front-face handoff.
+
+## 26 · A parameter you did not know was a parameter — and "chosen by the code" is not a control
+
+**The sharpest defect surfaced today, and it feels *more* objective than the thing it replaced.**
+
+The dark-package lane's detection-limit run used **the single quietest on-board window**, selected
+automatically. It landed on the **metal shield can** — smooth at 4.2 mm, so it wins a
+gradient-energy contest while being **nothing like the soldermask a package actually sits on**.
+
+**Nothing in the numbers said so. Only drawing the evidence onto the photograph and looking did.**
+
+And it was load-bearing: sweeping the site moved the closing number from "~120" to **100–140 luma**.
+
+**In the lane's words: an automatic choice is not the same as a controlled one.** "Chosen by the
+code, not by me" removes the operator's hand and **leaves the criterion's own blind spot exactly
+where it was** — while feeling more objective, which is what makes it dangerous. Sweep the site
+selection like any other parameter.
+
+## 27 · A regression test written against an easy case is not a regression test
+
+Selftest case 7 exists to protect a bound against side-wander. **With that bound removed, it still
+passed** — because on a clean four-edged synthetic the sides have no reason to wander in the first
+place.
+
+Rebuilt on a `onesided` synthetic reproducing the real situation (one strong boundary, three nearly
+absent), removing the bound produced **3.423 × 0.000 mm**. Only then was it a test.
+
+**Family 4 arriving inside a selftest rather than inside a measurement.** A regression case must
+reproduce the conditions the bound exists for, not merely exercise the code path.
+
+---
+
+## The refusal, repeated independently by two lanes on the same day
+
+The per-side fit of the nRF gives **3.076 × 2.878 mm** against a published **3.226 × 2.956** —
+−4.6 % and −2.6 %, with the centre wandering only 0.242 mm. **It was not admitted**, because only
+**one of four boundaries** clears the measured bar.
+
+**In the lane's words: its agreement with the datasheet is not a reason to believe it, and
+admitting it for that reason is a control agreeing with itself.**
+
+That is the same trap as the capacitor snapping to **EIA 3216 Case A to 0.25 %** that the back-face
+lane refused (§23) — and **the two lanes refused it independently, hours apart, without
+coordination.**
+
+## The dark packages are closed with a NUMBER, not an absence
+
+**What the photograph needs:** a boundary step of **100–140 luma** for 3 of 4 sides to be
+exceptional among the board's own straight structures; **120–160** for all four. Measured at five
+automatically-chosen sites, all five reaching it.
+
+**What the packages present:** **1–26 luma** on most sides; the nRF reaches **75** on its single
+best one. Per-side |z| 37.2 / 15.4 / 9.2 / 13.5 against a bar of 33.4. **One supported boundary in
+twenty examined**, across five bodies.
+
+**And the method is not at fault:** the positive control is made *of* the photograph — a
+3.226 × 2.956 mm rectangle of known boundary step pasted into the quietest on-board windows — and
+at 120 luma it is recovered as **3.217 × 2.935 mm (0.3 % / 0.7 %)**.
+
+So the verdict moves from *"we could not see them"* to **"at the boundary contrast they actually
+present, they could not have been seen by any boundary method on this source."**
+
+## The reframe that changes what would close it
+
+**Every method this project has tried — intensity, texture, colour, boundary — reads a FLAT-LIT
+photograph.** Flat lighting destroys precisely the property that makes a package trivially
+separable: **its height.**
+
+**A 0.5 mm tall body under oblique or raking illumination throws a shadow edge that no method has
+to infer.** The gap is therefore not resolution (M10: 1.9× more genuine resolution does not do it)
+and not contrast in the flat-lit sense — **it is that every source we hold was lit in the one way
+that hides the discriminating feature.**
+
+It needs no new teardown, only a differently-lit one. **This belongs at the top of every
+what-would-close-it list in this lane.**
