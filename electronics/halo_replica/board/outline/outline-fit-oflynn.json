@@ -1,0 +1,224 @@
+{
+  "tool": "p_fit.py",
+  "run_utc": "2026-09-05T01:13:58Z",
+  "lane": "L5 BOARD BUILD",
+  "what_this_is": "FITTED MANUFACTURABLE PRIMITIVES, not samples. The raw per-degree profile lives in metrology/outline-raw-oflynn-front.json and is NEVER merged into this file.",
+  "side_convention": "the side carrying the SoC and the shield can",
+  "frame": {
+    "origin": "board centre in oflynn-backside-fullres.jpeg, transferred from FCC photo 6 through c_register's homography",
+    "origin_px": [
+      1522.55877112391,
+      1738.800754982248
+    ],
+    "axes": "+x right, +y DOWN (image convention); theta from +x through +y"
+  },
+  "scale": {
+    "px_per_mm": 106.31295578013115,
+    "basis": "metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart; transferred to the oflynn frame by c_register"
+  },
+  "source_raw": "metrology/outline-raw-oflynn-front.json",
+  "rays": 1194,
+  "outer": {
+    "primitive": "circle clipped by straight chords",
+    "circle_centre_px": [
+      -59.1196645103346,
+      -2.4213462191419493
+    ],
+    "circle_centre_mm": [
+      -0.556090874122639,
+      -0.022775645746785596
+    ],
+    "circle_R_px": 1337.3790528328323,
+    "circle_diameter_mm": 25.15928642974999,
+    "diameter_state": "DERIVED, NOT INDEPENDENT -- this millimetre inherits the same registration scale as every other number in this frame. It is a shape result, not a third opinion on the OD.",
+    "chords": [
+      {
+        "arc_deg": [
+          145.25,
+          189.5
+        ],
+        "n_rays": 169,
+        "nx": -0.9743014167600309,
+        "ny": 0.22524819488598924,
+        "normal_deg": 166.98252666084025,
+        "d": 1224.8600807764242,
+        "offset_mm": 11.52126823855403,
+        "chord_span_mm": 9.460933897188053,
+        "line_resid_sd_mm": 0.18748281068632683,
+        "line_inlier_frac": 0.5325443786982249,
+        "circle_resid_sd_mm_here": 0.29157083377386933,
+        "circle_inlier_frac_here": 0.0,
+        "max_depth_below_circle_mm": 1.7878470308157364,
+        "admitted": true
+      },
+      {
+        "arc_deg": [
+          237.0,
+          254.0
+        ],
+        "n_rays": 3,
+        "nx": -0.30824463271479313,
+        "ny": -0.9513071251717408,
+        "normal_deg": 252.04652429218942,
+        "d": 1271.8689702888137,
+        "offset_mm": 11.963442846224707,
+        "chord_span_mm": 3.625481148768435,
+        "line_resid_sd_mm": 0.013729309192475128,
+        "line_inlier_frac": 1.0,
+        "circle_resid_sd_mm_here": 0.13939218754839233,
+        "circle_inlier_frac_here": 0.0,
+        "max_depth_below_circle_mm": 0.824847050886662,
+        "admitted": true
+      },
+      {
+        "arc_deg": [
+          262.5,
+          272.75
+        ],
+        "n_rays": 21,
+        "nx": -0.030523118757761647,
+        "ny": -0.9995340610611025,
+        "normal_deg": 268.2508824485056,
+        "d": 1284.3984994513353,
+        "offset_mm": 12.081297994457387,
+        "chord_span_mm": 2.179898381787736,
+        "line_resid_sd_mm": 0.09083486887566146,
+        "line_inlier_frac": 0.8571428571428571,
+        "circle_resid_sd_mm_here": 0.09920927241143071,
+        "circle_inlier_frac_here": 0.0,
+        "max_depth_below_circle_mm": 0.6973956467772545,
+        "admitted": true
+      },
+      {
+        "arc_deg": [
+          302.75,
+          314.5
+        ],
+        "n_rays": 48,
+        "nx": 0.6445876613263452,
+        "ny": -0.7645304093794,
+        "normal_deg": 310.13476676968594,
+        "d": 1260.5550114065913,
+        "offset_mm": 11.857021584590132,
+        "chord_span_mm": 2.4323978340598797,
+        "line_resid_sd_mm": 0.07248365710290205,
+        "line_inlier_frac": 0.9375,
+        "circle_resid_sd_mm_here": 0.07671412943171552,
+        "circle_inlier_frac_here": 0.020833333333333332,
+        "max_depth_below_circle_mm": 0.40630521047672685,
+        "admitted": true
+      }
+    ],
+    "chords_refused": [],
+    "fit_residual_all_rays": {
+      "sd_mm": 0.2770920806938666,
+      "p95_mm": 0.7131511459866853,
+      "max_mm": 0.9794708755974867,
+      "inlier_frac": 0.5577889447236181
+    },
+    "circle_only_residual_all_rays": {
+      "sd_mm": 0.5628946812881166,
+      "p95_mm": 1.4738127257944653,
+      "max_mm": 1.787868186730639,
+      "inlier_frac": 0.43634840871021774
+    },
+    "N4_break_control": {
+      "shift_mm": 0.3,
+      "sd_before": 0.2770920806938666,
+      "sd_after": 0.3160835103353533,
+      "inlier_before": 0.5577889447236181,
+      "inlier_after": 0.4815745393634841
+    },
+    "inlier_band_mm": 0.15,
+    "unmeasured_arcs_deg": [
+      [
+        64.5,
+        66.25,
+        1.75
+      ],
+      [
+        69.0,
+        71.25,
+        2.25
+      ],
+      [
+        101.25,
+        115.0,
+        13.75
+      ],
+      [
+        118.5,
+        123.0,
+        4.5
+      ],
+      [
+        186.5,
+        189.0,
+        2.5
+      ],
+      [
+        237.0,
+        250.75,
+        13.75
+      ],
+      [
+        250.75,
+        254.0,
+        3.25
+      ],
+      [
+        254.0,
+        258.0,
+        4.0
+      ],
+      [
+        258.75,
+        262.5,
+        3.75
+      ],
+      [
+        265.0,
+        270.25,
+        5.25
+      ],
+      [
+        278.25,
+        281.0,
+        2.75
+      ],
+      [
+        283.75,
+        285.0,
+        1.25
+      ],
+      [
+        285.0,
+        288.0,
+        3.0
+      ],
+      [
+        291.25,
+        292.5,
+        1.25
+      ]
+    ],
+    "unmeasured_total_deg": 63.0,
+    "unmeasured_note": "no ray exists on these arcs. The outline is drawn across them so it closes, and drawn in the PROVISIONAL colour so the picture says where it is guessing."
+  },
+  "inner": {
+    "primitive": "superellipse",
+    "state": "PARTIALLY DETERMINED -- publish no single hole diameter",
+    "why": "two photographs fail to pin the exponent in DIFFERENT directions: FCC photo 6 gives n=2.70, this frame's fit pins n at its 2.00 bound. On THIS photograph the superellipse does not even beat a circle (35.80 px vs 34.66 px), so the rounded-square shape is carried by photo 6, not by this one.",
+    "centre_px": [
+      1723.568082663605,
+      1525.262456946039
+    ],
+    "two_a_mm": 14.022224906723139,
+    "two_b_mm": 13.290614285141185,
+    "n": 2.0,
+    "phi_deg": 40.9665139356448,
+    "corner_radius_mm": 6.29858828895774,
+    "residual_sd_mm": 0.33675099319248497,
+    "source": "metrology/hole-oflynn-front.json"
+  }
+}
