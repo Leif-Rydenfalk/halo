@@ -455,3 +455,76 @@ propagating error.
 - The faster cross-correlation statistic is applied **identically to the real set and to every
   random set**. A strict statistic for the real data and a loose one for the null is the rigged
   comparison caught three times elsewhere in this project.
+
+## 18 · A fix applied in one place and not the other — the latent defect
+
+The near-tangential guard (a straight edge cannot be the boundary more than 60° from its own
+normal, because `d/cos` diverges at 90°) was added to the **hole facets** and **never propagated
+to the outer chords**. It surfaced only when a *second* profile was fitted: chords at 4.02 and
+5.55 mm offset, **73° and 63° from their own arcs**, residual 3.21 mm.
+
+**It changed nothing on the published profile.** That is the point — it was a **latent** defect,
+not an active one, and latent defects are the ones that survive, because nothing goes red. The
+board lane found two of its own in one session.
+
+**When a guard is added, grep for every other place the same operator is applied.**
+
+## 19 · A control that cannot be placed cleanly on the geometry — reported, not tuned
+
+`E1` (find nothing where there is nothing) first ran over 0.40–0.80 R, which **straddles the
+centre hole**. It fired 72 of 72 — and it was **right to**, because it was being shown genuine
+background and asked to find nothing. **The control was wrong, not the finder.**
+
+Moved fully into the annulus it *still* fires (50/35/26 of 72 at persistence 1.5/2.5/3.5 mm), with
+found radii clustered at 0.68/0.64/0.62 R — **against the hole's bright shelf, not scattered**.
+The annulus is 5.79 mm wide and the persistence window needs 1.5–3.5 mm of it, so **the control
+cannot be placed clear of both the shelf and the rim.**
+
+**Reported as un-runnable on this geometry rather than tuned until it passed.** `E4` — real
+annulus texture with a known step appended — carries the verdict instead: 0 missed of 24, median
+error 0.0015 mm, **but p90 0.19 mm and max 3.76 mm, so roughly one ray in ten prefers an annulus
+feature to the true edge.** That rate is published, and it is what makes the whole-circle refusal
+below legible rather than a matter of taste.
+
+---
+
+## The refusal that matters most: more data, declined
+
+A whole-circle re-extraction produced **1428 rays with an edge against L1's 1194**, including
+**246 rays L1 had no value for**. It was **not adopted.**
+
+- **N4 fired: displacing the fitted chords by 0.30 mm made the fit BETTER**, and `p_fit`
+  **refused to write the file.** A fit that improves when you deliberately corrupt it is not
+  tracking the geometry, and a tool that notices this about its own output and declines to
+  publish is doing something almost nothing does.
+- The gaps are gaps **precisely where the edge is genuinely ambiguous**, and E4 puts the
+  gross-failure rate there near **one ray in ten**. Filling a gap with a value that is wrong one
+  time in ten is worse than leaving it empty.
+
+**More data was available and was declined, with the number that justified declining it
+published.** Almost everyone takes the extra rays.
+
+And the corroboration that came free: on the **1182 shared rays the two extractors agree to a
+median 0.0158 mm** — sixteen microns, from two finders never tuned to each other.
+
+## The two worst arcs answered differently, which is why re-measuring was worth it
+
+- **82.75–101.0°** — the 0.901 mm excursion. Mine +0.556 mm from the fit, L1 +0.674 mm, and a
+  second independent extractor moves it only 0.119 mm. **The bulge is REAL** — unmodelled
+  geometry, not a detector artefact. Whether it is substrate or the grey rim material lapping
+  over it **cannot be separated with the sources this lane has**. The model has no feature there
+  and none was invented.
+- **101.0–123.0°** — the 0.979 mm excursion, containing a 13.75° data gap. Mine −0.127 mm, L1
+  −0.691 mm, and 74 rays L1 had no value for sit **near the fit**. **The dent is largely a
+  detector artefact** — so refusing to model a flat across that gap was right, and is now
+  measured rather than argued.
+
+**One worst arc was a real feature the model lacks; the other was the instrument. Only measuring
+told us which.**
+
+## And a measurement bias larger than the thing being measured
+
+`E2` caught the gradient-peak edge estimator at **4.21 px of bias on a synthetic step — 40 µm,
+larger than the feature being measured.** A boxcar smoother turns a step into a ramp whose
+gradient is a *plateau*, and the peak lands anywhere in it. Position is the **50 % crossing**
+now: **0.05 px**.
