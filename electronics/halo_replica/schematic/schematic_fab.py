@@ -298,12 +298,19 @@ def build():
 
     # Nordic's decoupling. Values CHOSEN from the family's ordinary practice,
     # because this repository holds no copy of the reference circuit.
-    for ref, pad, net, val in (("C7", "1", "DEC1", "100nF 16V X7R"),
-                               ("C8", "32", "DEC2", "100nF 16V X7R"),
-                               ("C9", "33", "DEC3", "100nF 16V X7R"),
-                               ("C10", "46", "DEC4", "1uF 16V X7R")):
+    # THE MPN IS PER-VALUE, NOT PER-LOOP. It was one string for all four
+    # until bom_from_sch grouped by (value, footprint, MPN) and split "1uF"
+    # into two lines that were supposed to be one: C10 is 1 uF and was
+    # carrying CL05B104KO5NNNC, which is a 100 nF part. Nothing else on this
+    # sheet could have caught that — the value field was right, the footprint
+    # was right, and only the order number was wrong.
+    for ref, pad, net, val, mpn in (
+            ("C7", "1", "DEC1", "100nF 16V X7R", "CL05B104KO5NNNC"),
+            ("C8", "32", "DEC2", "100nF 16V X7R", "CL05B104KO5NNNC"),
+            ("C9", "33", "DEC3", "100nF 16V X7R", "CL05B104KO5NNNC"),
+            ("C10", "46", "DEC4", "1uF 16V X7R", "CL05A105KA5NNNC")):
         s.part(ref, "Device:C", value=val, group="soc", footprint=C0402,
-               fields=F("R/C/L bulk", "CL05B104KO5NNNC",
+               fields=F("R/C/L bulk", mpn,
                         "Decoupling at the SoC's on-die regulator pin %s. "
                         "VALUE CHOSEN: no copy of the nRF52832 reference "
                         "circuit is in this repository, so this is ordinary "
@@ -365,13 +372,19 @@ def build():
     s.net("XL1", "U1.2", "X2.1")
     s.net("XL2", "U1.3", "X2.2")
 
-    for ref, net, val, note in (
-            ("C15", "XC1", "8pF 50V C0G", "HFXO load, for CL=8pF"),
-            ("C16", "XC2", "8pF 50V C0G", "HFXO load, for CL=8pF"),
-            ("C17", "XL1", "22pF 50V C0G", "LFXO load, for CL=12.5pF"),
-            ("C18", "XL2", "22pF 50V C0G", "LFXO load, for CL=12.5pF")):
+    # Same defect, same cause: CL05C080CB5NNNC is an 8 pF part and it was
+    # pasted onto the 22 pF lines too.
+    for ref, net, val, note, mpn in (
+            ("C15", "XC1", "8pF 50V C0G", "HFXO load, for CL=8pF",
+             "CL05C080CB5NNNC"),
+            ("C16", "XC2", "8pF 50V C0G", "HFXO load, for CL=8pF",
+             "CL05C080CB5NNNC"),
+            ("C17", "XL1", "22pF 50V C0G", "LFXO load, for CL=12.5pF",
+             "CL05C220JB5NNNC"),
+            ("C18", "XL2", "22pF 50V C0G", "LFXO load, for CL=12.5pF",
+             "CL05C220JB5NNNC")):
         s.part(ref, "Device:C", value=val, group="clock", footprint=C0402,
-               fields=F("R/C/L bulk", "CL05C080CB5NNNC",
+               fields=F("R/C/L bulk", mpn,
                         note + ". CHOSEN to match the crystal CHOSEN above, "
                         "using the ordinary 2*(CL - Cstray) rule with "
                         "Cstray taken as ~4 pF. STRAY CAPACITANCE ON A BOARD "
