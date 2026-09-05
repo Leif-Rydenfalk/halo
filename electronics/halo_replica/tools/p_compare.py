@@ -345,7 +345,7 @@ def main():
             ("OVERLAY  our outline, hole and every marker, on Apple's", ov)]
     cw, ch = ph.size
     head, gap = 66, 22
-    foot = 340
+    foot = 430
     W, H = 3 * cw + 4 * gap, head + ch + foot
     m = Image.new("RGB", (W, H), BG)
     dm = ImageDraw.Draw(m, "RGBA")

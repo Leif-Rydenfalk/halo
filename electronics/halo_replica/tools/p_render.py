@@ -106,7 +106,10 @@ def outer_poly(fit, n=2880):
 
 
 def hole_poly(fit, n=1440):
-    """The superellipse hole, in mm, relative to the BOARD centre."""
+    """The hole, in mm, relative to the BOARD centre: a superellipse with 7 measured
+    straight FACETS overriding it on their own arcs. Arcs and straights - a routed
+    pocket, dimensionable. The facets cut the residual 0.334 -> 0.199 mm against a
+    fabrication floor of -0.31% (see the fit file's H3 control)."""
     i = fit["inner"]
     ppm = fit["scale"]["px_per_mm"]
     ox, oy = fit["frame"]["origin_px"]
@@ -114,13 +117,21 @@ def hole_poly(fit, n=1440):
     cy = (i["centre_px"][1] - oy) / ppm
     a, b, e = i["two_a_mm"] / 2.0, i["two_b_mm"] / 2.0, i["n"]
     phi = math.radians(i["phi_deg"])
-    t = np.linspace(0, 2 * math.pi, n, endpoint=False)
+    th = np.arange(n) * 360.0 / n
+    t = np.deg2rad(th)
     ct, st = np.cos(t), np.sin(t)
-    u = np.sign(ct) * np.abs(ct) ** (2.0 / e) * a
-    v = np.sign(st) * np.abs(st) ** (2.0 / e) * b
-    x = cx + u * math.cos(phi) - v * math.sin(phi)
-    y = cy + u * math.sin(phi) + v * math.cos(phi)
-    return list(zip(x, y))
+    u = (math.cos(phi) * ct + math.sin(phi) * st) / a
+    v = (-math.sin(phi) * ct + math.cos(phi) * st) / b
+    r = (np.abs(u) ** e + np.abs(v) ** e) ** (-1.0 / e)
+    for f in i.get("facets", []):
+        fn = math.radians(f["normal_deg"])
+        den = math.cos(fn) * ct + math.sin(fn) * st
+        a0, a1 = f["arc_deg"]
+        m = ((th - a0) % 360.0) <= ((a1 - a0) % 360.0)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            rl = np.where(den > 1e-9, f["offset_mm"] / den, np.nan)
+        r = np.where(m & np.isfinite(rl), rl, r)
+    return list(zip(cx + r * ct, cy + r * st))
 
 
 # ---------------------------------------------------------------- components

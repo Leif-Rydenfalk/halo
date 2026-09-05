@@ -1,6 +1,6 @@
 {
   "tool": "p_fit.py",
-  "run_utc": "2026-09-05T01:16:24Z",
+  "run_utc": "2026-09-05T01:33:55Z",
   "lane": "L5 BOARD BUILD",
   "what_this_is": "FITTED MANUFACTURABLE PRIMITIVES, not samples. The raw per-degree profile lives in metrology/outline-raw-oflynn-front.json and is NEVER merged into this file.",
   "side_convention": "the side carrying the SoC and the shield can",
@@ -14,7 +14,7 @@
   },
   "scale": {
     "px_per_mm": 106.31295578013115,
-    "basis": "metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart; transferred to the oflynn frame by c_register"
+    "basis": "M02 at the board, transferred by c_register"
   },
   "source_raw": "metrology/outline-raw-oflynn-front.json",
   "rays": 1194,
@@ -220,6 +220,139 @@
     "circle_alternative_resid_sd_mm": 0.3612605097377331,
     "improvement_frac": 0.07496023161429166,
     "H2_improvement_floor_from_parameter_count": 0.015308646241705137,
+    "facets": [
+      {
+        "arc_deg": [
+          25.835339704425177,
+          32.59292258309032
+        ],
+        "n_pts": 14,
+        "normal_deg": 29.831887342649896,
+        "offset_mm": 7.466889060261208,
+        "direction": "outward",
+        "line_resid_sd_mm": 0.08310678578235184,
+        "line_inlier_frac": 0.8571428571428571,
+        "superellipse_resid_sd_mm_here": 0.09411971319704383,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 3.996547638224712
+      },
+      {
+        "arc_deg": [
+          45.22520403877035,
+          62.33556740502278
+        ],
+        "n_pts": 30,
+        "normal_deg": 63.66231241584464,
+        "offset_mm": 7.617616279632838,
+        "direction": "outward",
+        "line_resid_sd_mm": 0.19484498343506512,
+        "line_inlier_frac": 0.4666666666666667,
+        "superellipse_resid_sd_mm_here": 0.20785367636182367,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 18.43710837707428
+      },
+      {
+        "arc_deg": [
+          299.43473341823625,
+          308.1938643455326
+        ],
+        "n_pts": 29,
+        "normal_deg": 303.94229620018274,
+        "offset_mm": 7.405305426595326,
+        "direction": "outward",
+        "line_resid_sd_mm": 0.07098537741256065,
+        "line_inlier_frac": 0.9310344827586207,
+        "superellipse_resid_sd_mm_here": 0.08365414012450328,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 4.50756278194649
+      },
+      {
+        "arc_deg": [
+          12.080846088595484,
+          22.40709876538063
+        ],
+        "n_pts": 20,
+        "normal_deg": 17.438276862828637,
+        "offset_mm": 6.423746336384147,
+        "direction": "inward",
+        "line_resid_sd_mm": 0.006142010722546297,
+        "line_inlier_frac": 1.0,
+        "superellipse_resid_sd_mm_here": 0.03391408336645153,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 5.3574307742331655
+      },
+      {
+        "arc_deg": [
+          284.00061142426193,
+          297.09257578092735
+        ],
+        "n_pts": 44,
+        "normal_deg": 284.0783422211546,
+        "offset_mm": 6.3617940041556,
+        "direction": "inward",
+        "line_resid_sd_mm": 0.00829100323489605,
+        "line_inlier_frac": 1.0,
+        "superellipse_resid_sd_mm_here": 0.0164034300375919,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 13.01423355977272
+      },
+      {
+        "arc_deg": [
+          319.6787279982161,
+          344.74658217743877
+        ],
+        "n_pts": 70,
+        "normal_deg": 335.3673286829495,
+        "offset_mm": 6.558301894343689,
+        "direction": "inward",
+        "line_resid_sd_mm": 0.033348533093998815,
+        "line_inlier_frac": 1.0,
+        "superellipse_resid_sd_mm_here": 0.042240901458965224,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 15.688600684733387
+      },
+      {
+        "arc_deg": [
+          351.90178393207657,
+          359.9470080173043
+        ],
+        "n_pts": 21,
+        "normal_deg": 18.297430132222182,
+        "offset_mm": 5.74609039176561,
+        "direction": "inward",
+        "line_resid_sd_mm": 0.051290931427434315,
+        "line_inlier_frac": 1.0,
+        "superellipse_resid_sd_mm_here": 0.08522533213656837,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 26.39564620014562
+      }
+    ],
+    "facets_refused": [
+      {
+        "arc_deg": [
+          127.56116776803745,
+          155.19732626328062
+        ],
+        "n_pts": 41,
+        "normal_deg": 140.21223846239585,
+        "offset_mm": 6.620744411011644,
+        "direction": "inward",
+        "line_resid_sd_mm": 0.0610565129614498,
+        "line_inlier_frac": 1.0,
+        "superellipse_resid_sd_mm_here": 0.02961739022247573,
+        "superellipse_inlier_frac_here": 0.0,
+        "max_arc_to_normal_deg": 14.98508780088477,
+        "why_refused": "line sd 0.0611 vs superellipse 0.0296 mm, inlier 1.000 vs 0.000 -- no separation, so this is the extra parameters talking and not a facet"
+      }
+    ],
+    "facet_resid_sd_mm": 0.19873235043162865,
+    "superellipse_only_resid_sd_mm": 0.33418033825469556,
+    "H3_facet_improvement_frac": 0.40531405447269375,
+    "H3_floor_from_fabricated_facets": -0.0030838192173707757,
+    "H3_facets_fabricated_on_a_pure_superellipse": 1,
+    "H3_synthetic_generator_zero_noise_error_px": 3.410605131648481e-13,
+    "H3_synthetic_resid_sd_mm": 0.3393517349826829,
+    "H3_verdict": "EARNED",
     "H2_verdict": "EARNED",
     "primitive": "superellipse",
     "state": "PARTIALLY DETERMINED -- NO single hole diameter is published",

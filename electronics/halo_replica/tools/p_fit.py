@@ -248,6 +248,94 @@ def _ci_resid(p, P):
     return np.hypot(P[:, 0] - p[0], P[:, 1] - p[1]) - p[2]
 
 
+def _hole_resid(P, cx, cy, a, b, n, phi):
+    dx, dy = P[:, 0] - cx, P[:, 1] - cy
+    c, s = math.cos(phi), math.sin(phi)
+    u = (c * dx + s * dy) / a
+    v = (-s * dx + c * dy) / b
+    f = (np.abs(u) ** n + np.abs(v) ** n) ** (1.0 / n)
+    return (f - 1.0) * np.hypot(dx, dy), np.degrees(np.arctan2(dy, dx)) % 360.0
+
+
+def find_facets(P, cx, cy, a, b, n, phi, ppm, depth_mm=0.30):
+    """The hole is not a smooth curve: straight FACETS fit parts of it far better than
+    the superellipse does.  Same admission rule as the outer chords -- a facet is
+    admitted only if a line separates from the superellipse on INLIER FRACTION, not
+    merely on residual.
+    Returns facets as {normal_deg, offset_mm} in the hole's own centre frame.
+    """
+    res_px, th = _hole_resid(P, cx, cy, a, b, n, phi)
+    o = np.argsort(th)
+    th, res, Q = th[o], res_px[o] / ppm, P[o]
+    out, refused = [], []
+    for sign in (+1, -1):
+        for i, j in _runs(sign * res > depth_mm, th):
+            px, py = Q[i:j + 1, 0] - cx, Q[i:j + 1, 1] - cy
+            mx, my = px.mean(), py.mean()
+            u = np.c_[px - mx, py - my]
+            _, _, V = np.linalg.svd(u, full_matrices=False)
+            dv = V[0]
+            nv = np.array([-dv[1], dv[0]])
+            off = mx * nv[0] + my * nv[1]
+            if off < 0:
+                nv, off = -nv, -off
+            lres = u @ nv
+            line_sd = float(lres.std()) / ppm
+            line_in = float((np.abs(lres) / ppm < INLIER_MM).mean())
+            se_sd = float(res[i:j + 1].std())
+            se_in = float((np.abs(res[i:j + 1]) < INLIER_MM).mean())
+            row = dict(arc_deg=[float(th[i]), float(th[j])], n_pts=int(j - i + 1),
+                       normal_deg=float(math.degrees(math.atan2(nv[1], nv[0])) % 360.0),
+                       offset_mm=float(off / ppm),
+                       direction=("outward" if sign > 0 else "inward"),
+                       line_resid_sd_mm=line_sd, line_inlier_frac=line_in,
+                       superellipse_resid_sd_mm_here=se_sd,
+                       superellipse_inlier_frac_here=se_in)
+            # A straight edge can only BE the boundary within ~90 deg of its own
+            # normal -- d/cos(theta-normal) diverges at 90. A line fitted to a short
+            # noisy arc comes out nearly TANGENTIAL, and applying it then throws the
+            # radius to infinity inside its own arc. That is exactly how the H3 floor
+            # first came back at -221%: the detector was fabricating tangential facets
+            # on a pure superellipse and they made the fit catastrophically worse.
+            devs = np.abs(((th[i:j + 1] - row["normal_deg"] + 180) % 360) - 180)
+            row["max_arc_to_normal_deg"] = float(devs.max())
+            geometric_ok = devs.max() < 60.0
+            if geometric_ok and line_sd < se_sd and line_in > se_in + 0.25:
+                out.append(row)
+            else:
+                row["why_refused"] = (
+                    ("this line is nearly TANGENTIAL to its own arc "
+                     f"({devs.max():.1f} deg from its normal, limit 60) -- a straight "
+                     "edge cannot be the boundary that far from its normal"
+                     if not geometric_ok else
+                     f"line sd {line_sd:.4f} vs superellipse {se_sd:.4f} mm, inlier "
+                     f"{line_in:.3f} vs {se_in:.3f} -- no separation, so this is the "
+                     "extra parameters talking and not a facet"))
+                refused.append(row)
+    return out, refused
+
+
+def hole_r(theta_deg, a, b, n, phi_deg, facets):
+    """r(theta) of the superellipse, overridden on each admitted facet arc by that
+    facet's straight line.  Arcs and straights: a routed pocket, dimensionable."""
+    t = np.deg2rad(np.asarray(theta_deg, float))
+    ph = math.radians(phi_deg)
+    c, s = math.cos(ph), math.sin(ph)
+    ct, st = np.cos(t), np.sin(t)
+    u = (c * ct + s * st) / a
+    v = (-s * ct + c * st) / b
+    r = (np.abs(u) ** n + np.abs(v) ** n) ** (-1.0 / n)
+    for f in facets:
+        fn = math.radians(f["normal_deg"])
+        den = math.cos(fn) * ct + math.sin(fn) * st
+        a0, a1 = f["arc_deg"]
+        m = (((np.asarray(theta_deg) - a0) % 360.0) <= ((a1 - a0) % 360.0))
+        with np.errstate(divide="ignore", invalid="ignore"):
+            rl = np.where(den > 1e-9, f["offset_mm"] / den, np.nan)
+        r = np.where(m & np.isfinite(rl), rl, r)
+    return r
+
+
 def fit_hole(P, ppm):
     """Superellipse AND circle, both fitted, both reported.
 
@@ -278,6 +366,40 @@ def fit_hole(P, ppm):
     floor = 1.0 - float(_se_resid(se2.x, Q).std()) / float(_ci_resid(ci2.x, Q).std())
 
     pinned = [abs(se.x[i] - lo[i]) < 1e-6 or abs(se.x[i] - hi[i]) < 1e-6 for i in range(6)]
+
+    # ---- FACETS, and H3: the floor that keeps them honest.
+    cx0, cy0, aa, bb, nn, pp = se.x
+    facets, refused = find_facets(P, cx0, cy0, aa, bb, nn, pp, ppm)
+    res0, th0 = _hole_resid(P, cx0, cy0, aa, bb, nn, pp)
+    sd_se = float(res0.std()) / ppm
+    rfit = hole_r(th0, aa / ppm, bb / ppm, nn, math.degrees(pp) % 360.0,
+                  [dict(f) for f in facets])
+    rmeas = np.hypot(P[:, 0] - cx0, P[:, 1] - cy0) / ppm
+    sd_fac = float((rfit - rmeas).std())
+
+    # H3 floor: the SAME detector on a synthetic PURE superellipse carrying the same
+    # angular sampling and the same noise. Whatever it "finds" there is fabricated, and
+    # whatever residual drop that fabrication buys is the floor the real drop must clear.
+    # (The first version of this control built its synthetic points in the wrong frame
+    # and returned a floor of -3836%. A control that returns a nonsense number is not a
+    # control; it was rebuilt to generate points ON the fitted curve at the MEASURED
+    # angles, which is checkable: with zero noise its own residual must be ~0.)
+    rng2 = np.random.default_rng(23)
+    a_mm, b_mm, phi_d = aa / ppm, bb / ppm, math.degrees(pp) % 360.0
+    r_true = hole_r(th0, a_mm, b_mm, nn, phi_d, []) * ppm
+    zero_chk = float(np.abs(np.hypot(
+        (cx0 + r_true * np.cos(np.deg2rad(th0))) - cx0,
+        (cy0 + r_true * np.sin(np.deg2rad(th0))) - cy0) - r_true).max())
+    r_syn = r_true + rng2.normal(0, sd_se * ppm, len(th0))
+    Psyn = np.c_[cx0 + r_syn * np.cos(np.deg2rad(th0)),
+                 cy0 + r_syn * np.sin(np.deg2rad(th0))]
+    fsyn, _ = find_facets(Psyn, cx0, cy0, aa, bb, nn, pp, ppm)
+    sd_s0 = float((np.hypot(Psyn[:, 0] - cx0, Psyn[:, 1] - cy0) - r_true).std()) / ppm
+    rfs = hole_r(th0, a_mm, b_mm, nn, phi_d, [dict(f) for f in fsyn])
+    sd_s1 = float((rfs - np.hypot(Psyn[:, 0] - cx0, Psyn[:, 1] - cy0) / ppm).std())
+    floor3 = 1.0 - sd_s1 / sd_s0 if sd_s0 else 0.0
+    gain3 = 1.0 - sd_fac / sd_se if sd_se else 0.0
+
     return dict(
         centre_px=[float(se.x[0]), float(se.x[1])],
         two_a_mm=float(2 * se.x[2] / ppm), two_b_mm=float(2 * se.x[3] / ppm),
@@ -288,6 +410,17 @@ def fit_hole(P, ppm):
         circle_alternative_resid_sd_mm=ci_sd,
         improvement_frac=float(real_gain),
         H2_improvement_floor_from_parameter_count=float(floor),
+        facets=facets, facets_refused=refused,
+        facet_resid_sd_mm=sd_fac,
+        superellipse_only_resid_sd_mm=sd_se,
+        H3_facet_improvement_frac=float(gain3),
+        H3_floor_from_fabricated_facets=float(floor3),
+        H3_facets_fabricated_on_a_pure_superellipse=len(fsyn),
+        H3_synthetic_generator_zero_noise_error_px=float(zero_chk),
+        H3_synthetic_resid_sd_mm=float(sd_s0),
+        H3_verdict=("EARNED" if (gain3 > 2.0 * floor3 and gain3 > 0.05) else
+                    "NOT EARNED -- the facets do not beat what the same detector "
+                    "fabricates on a shape that has none"),
         H2_verdict=("EARNED" if real_gain > 2.0 * max(floor, 1e-6) else
                     "NOT EARNED -- the superellipse's advantage over a circle is not "
                     "clearly larger than what two extra parameters buy on a pure circle"),
@@ -466,6 +599,19 @@ def main():
         f"phi {hf['phi_deg']:.2f} deg  resid sd {hf['superellipse_resid_sd_mm']:.4f} mm")
     say(f"  circle alternative R {hf['circle_alternative_R_mm']:.4f} mm  "
         f"resid sd {hf['circle_alternative_resid_sd_mm']:.4f} mm")
+    say(f"  facets: {len(hf['facets'])} admitted, {len(hf['facets_refused'])} refused; "
+        f"resid sd {hf['superellipse_only_resid_sd_mm']:.4f} -> "
+        f"{hf['facet_resid_sd_mm']:.4f} mm")
+    for f in hf["facets"]:
+        say(f"    {f['direction']:7s} {f['arc_deg'][0]:6.1f}-{f['arc_deg'][1]:6.1f} deg  "
+            f"offset {f['offset_mm']:.3f} mm  normal {f['normal_deg']:.1f} deg  "
+            f"line sd {f['line_resid_sd_mm']:.4f}/inl {f['line_inlier_frac']:.2f} vs "
+            f"SE {f['superellipse_resid_sd_mm_here']:.4f}/inl "
+            f"{f['superellipse_inlier_frac_here']:.2f}")
+    say(f"  H3: facets buy {hf['H3_facet_improvement_frac']*100:.2f}% vs a floor of "
+        f"{hf['H3_floor_from_fabricated_facets']*100:.2f}% "
+        f"({hf['H3_facets_fabricated_on_a_pure_superellipse']} facets fabricated on a "
+        f"PURE superellipse) -> {hf['H3_verdict']}")
     say(f"  H2: real improvement {hf['improvement_frac']*100:.2f}% vs "
         f"parameter-count floor {hf['H2_improvement_floor_from_parameter_count']*100:.2f}% "
         f"-> {hf['H2_verdict']}")
