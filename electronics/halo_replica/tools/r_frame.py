@@ -55,6 +55,29 @@ def poly_mask(shape, poly):
     return np.asarray(im) > 0
 
 
+def background_mask(lum, outer, thr=190.0, dilate=3):
+    """BRIGHT REGIONS CONNECTED TO THE OUTSIDE OF THE MAPPED OUTLINE.
+
+    The mapped outline OVERSHOOTS at 2-4 o'clock (E07 records 0.277 mm fit residual
+    sd on the same outline), so part of the annulus it defines is not board at all --
+    it is the bright table.  That matters twice over: a paste site chosen for being
+    QUIET lands there preferentially, because background is smooth, and a detection
+    there is a detection of nothing.
+
+    THIS MASK IS DELIBERATELY NOT USED TO DELETE ANYTHING.  A rim joint STRADDLES the
+    board edge, so a bright joint can touch the background and be swallowed by the
+    flood -- silently, which is E07 sec.29 (a mask that manufactures an absence) with
+    the polarity that hurts most.  It is used ONLY where a false exclusion is free:
+    choosing paste sites.  For the count, positions are LABELLED, never removed."""
+    poly = poly_mask(lum.shape, outer)
+    outside = ~ndimage.binary_dilation(poly, np.ones((3, 3)), iterations=dilate)
+    bright = lum > thr
+    lab, _ = ndimage.label(bright)
+    seeds = np.unique(lab[bright & outside])
+    seeds = seeds[seeds > 0]
+    return np.isin(lab, seeds), poly
+
+
 def board_frame(fit_path=FIT, raw_path=RAW, hole_level=190.0, pre_average=None):
     fit = json.load(open(fit_path))
     spath = os.path.join(ROOT, "images", "airtag", fit["source"]["path"])

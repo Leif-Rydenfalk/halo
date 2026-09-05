@@ -78,6 +78,8 @@ def frame(a):
         sys.exit(2)
     lum, board, outer, origin, ppm, spath, f = RF.board_frame(a.fit)
     RM, R = rim_mask(board, outer, origin, ppm, a.rim_lo, a.rim_hi)
+    BG, POLY = RF.background_mask(lum, outer, a.bg_thr)
+    BGd = DR.downsample(BG.astype(float), a.down) > 0.5
     d = a.down
     L = DR.downsample(lum, d)
     B0 = DR.downsample(board.astype(float), d) > 0.999
@@ -94,7 +96,8 @@ def frame(a):
     rid = run_id(spath)
     return dict(lum=lum, board=board, outer=outer, origin=origin, ppm=ppm, ppmd=ppmd,
                 L=L, VALID=VALID, ANN=ANN, Gx=Gx, Gy=Gy, radii=radii, d=d,
-                spath=spath, fit=f, rid=rid, RM=RM, frame_check=chk)
+                spath=spath, fit=f, rid=rid, RM=RM, frame_check=chk,
+                BG=BG, BGd=BGd)
 
 
 def hdr(c, a):
@@ -108,6 +111,9 @@ def hdr(c, a):
     print(f"  annulus  {a.rim_lo}-{a.rim_hi} of the LOCAL edge radius r(theta); "
           f"{c['RM'].sum()} stored px, {c['ANN'].sum()} at down {c['d']}")
     print(f"  mask     board dilated {a.dilate_mm} mm OUTWARD (E07 sec.29)")
+    bgf = float((c["BGd"] & c["ANN"]).sum()) / max(int(c["ANN"].sum()), 1)
+    print(f"  overshoot {100*bgf:.2f} % of the annulus is BRIGHT BACKGROUND connected to "
+          f"outside the outline (luma > {a.bg_thr}) -- LABELLED, never deleted")
     print(f"  frame    REBUILT here and verified: scale {c['frame_check']['scale_err_pct']:+.3f} % "
           f"vs stored, outline diameter {c['frame_check']['dia_mm']:.3f} mm")
     print(f"  sizes    {a.min_mm}-{a.max_mm} mm diameter, {len(c['radii'])} radii, "
@@ -186,7 +192,8 @@ def crop_eval(c, a, cx, cy, floor, paste=None, shape="disc", size_mm=1.4,
         return None, None, None
     o = RC.best_at(Gx, Gy, V, (cx - x0) / d, (cy - y0) / d, c["radii"], a.nphi, floor)
     sg = RC.shape_gate(W, cx - x0, cy - y0, (o["r_px"] * d) if o else
-                       c["radii"][len(c["radii"]) // 2] * d, sigma=a.shape_sigma)
+                       c["radii"][len(c["radii"]) // 2] * d, sigma=a.shape_sigma,
+                       bg=c["BG"][y0:y0 + W.shape[0], x0:x0 + W.shape[1]])
     return o, sg, (W, x0, y0)
 
 
@@ -200,7 +207,11 @@ def quiet_sites(c, a, n=5, mode="quiet"):
     w = int(1.9 * a.size_mm * c["ppmd"])
     E = ndimage.uniform_filter(g, w)
     C = ndimage.uniform_filter(c["VALID"].astype(float), w)
-    E = np.where((C > 0.999) & c["ANN"], E, np.inf)
+    # THE SITE MUST BE ON BOARD MATERIAL.  The quiet criterion selects BACKGROUND,
+    # because background is smooth -- E07 sec.26 and sec.7 in one.  Here a false
+    # exclusion costs nothing (another site is picked), so the flood mask is safe.
+    NB = ndimage.uniform_filter(c["BGd"].astype(float), w) < 1e-6
+    E = np.where((C > 0.999) & c["ANN"] & NB, E, np.inf)
     out = []
     if mode == "quiet":
         Ew = E.copy()
@@ -254,16 +265,46 @@ def v_limit(c, a, out):
     floor = a.sd_floor if a.sd_floor else sd_floor(c, a, ys, xs)[0]
     print(f"  bar {a.bar}   ring-sd floor {floor:.4f}   feature {a.size_mm} mm\n")
     steps = [float(x) for x in a.steps.split(",")]
-    allsites, ladders = [], []
+    allsites, ladders, rejected = [], [], []
+
+    def empty_sites(mode, want):
+        """A LADDER SITE MUST BE EMPTY, AND THAT IS MEASURED, NOT ASSUMED.
+
+        Seven of ten ladders came back NON-MONOTONIC -- closure FALLING as the pasted
+        contrast ROSE.  A detector that loses a feature as its contrast rises is
+        reporting on the site.  The cause is that the site already contained
+        something: pasting a bright disc over an existing bright feature raises the
+        local level and destroys the boundary that was already there, so the ladder
+        measures the demolition rather than the paste.  So every site is scored
+        UNPASTED first and is admitted only if it is below the bar.  Sites rejected
+        for being occupied are counted and reported, not silently replaced."""
+        got, tried, rej = [], 0, 0
+        for (sx, sy, e) in quiet_sites(c, a, want * 6, mode):
+            tried += 1
+            o0, _, _ = crop_eval(c, a, sx, sy, floor)
+            if o0 is None:
+                rej += 1; continue
+            if o0["closure_used"] > a.bar:
+                rej += 1
+                rejected.append(dict(mode=mode, xy=[sx, sy],
+                                     unpasted_closure=round(o0["closure_used"], 2)))
+                continue
+            got.append((sx, sy, e, o0["closure_used"]))
+            if len(got) >= want:
+                break
+        print(f"  {mode.upper()} site selection: {len(got)} empty sites admitted, "
+              f"{rej} rejected as OCCUPIED or unmeasurable, out of {tried} examined")
+        return got
+
     for mode in ("quiet", "random"):
-        sites = quiet_sites(c, a, a.sites, mode)
-        print(f"  SITE SELECTION = {mode.upper()}  ({len(sites)} sites)")
-        for k, (sx, sy, e) in enumerate(sites):
+        sites = empty_sites(mode, a.sites)
+        for k, (sx, sy, e, c0) in enumerate(sites):
             th = math.degrees(math.atan2(sy - c["origin"][1], sx - c["origin"][0])) % 360
             base = float(np.median(c["lum"][int(sy) - 40:int(sy) + 40,
                                             int(sx) - 40:int(sx) + 40]))
             row = dict(mode=mode, site=k, xy=[sx, sy], theta_deg=round(th, 1),
-                       mean_abs_grad=round(e, 3), base_luma=round(base, 1), ladder=[])
+                       mean_abs_grad=round(e, 3), base_luma=round(base, 1),
+                       unpasted_closure=round(c0, 2), ladder=[])
             clear = None
             for st in steps:
                 o, sg, _ = crop_eval(c, a, sx, sy, floor, paste=True, shape="disc",
@@ -271,20 +312,52 @@ def v_limit(c, a, out):
                 cl = o["closure_used"] if o else None
                 row["ladder"].append(dict(step_luma=st,
                                           closure=round(cl, 2) if cl is not None else None,
+                                          z_total=round(o["z_total"], 1) if o else None,
+                                          ring_sd=round(o["ring_sd"], 3) if o else None,
+                                          sd_floored=o["sd_floored"] if o else None,
+                                          d_mm=round(2 * o["r_px"] / c["ppmd"], 3) if o else None,
                                           measured=o is not None))
                 if cl is not None and cl > a.bar:
                     clear = st
-            asc = [r for r in sorted(row["ladder"], key=lambda r: r["step_luma"])
-                   if r["closure"] is not None and r["closure"] > a.bar]
-            row["step_to_clear"] = asc[0]["step_luma"] if asc else None
+            # A LADDER THAT IS NOT MONOTONIC HAS NO SINGLE LIMIT, and quoting the
+            # LOWEST clearing step from one reads as high sensitivity while the
+            # ladder itself says the detector fails at high contrast.  So the limit
+            # is the lowest step ABOVE WHICH EVERY HIGHER STEP ALSO CLEARS, and
+            # non-monotonicity is reported rather than averaged away.
+            asc = sorted(row["ladder"], key=lambda r: r["step_luma"])
+            vals = [r["closure"] for r in asc]
+            row["monotonic"] = all(
+                (vals[i] is not None and vals[i + 1] is not None
+                 and vals[i + 1] >= vals[i] - 0.05 * max(abs(vals[i]), 1.0))
+                for i in range(len(vals) - 1))
+            lim = None
+            for i, r in enumerate(asc):
+                if r["closure"] is not None and all(
+                        (x["closure"] is not None and x["closure"] > a.bar)
+                        for x in asc[i:]):
+                    lim = r["step_luma"]; break
+            row["step_to_clear"] = lim
+            row["clears_at_top"] = (asc[-1]["closure"] is not None
+                                    and asc[-1]["closure"] > a.bar)
             print(f"    {mode:6s} site {k} theta {th:6.1f}  |grad| {e:5.2f}  "
-                  f"base luma {base:5.1f}  clears at {row['step_to_clear']} luma   "
+                  f"base {base:5.1f} empty {c0:5.2f}  limit {row['step_to_clear']} luma"
+                  f"{'' if row['monotonic'] else '  NON-MONOTONIC'}"
+                  f"{'' if row['clears_at_top'] else '  FAILS AT TOP STEP'}   "
                   + " ".join(f"{r['step_luma']:.0f}:{r['closure']:.1f}"
                              if r["closure"] is not None else f"{r['step_luma']:.0f}:UNMEAS"
                              for r in sorted(row["ladder"], key=lambda r: -r["step_luma"])))
             ladders.append(row); allsites.append((sx, sy, e, mode))
     got = [r["step_to_clear"] for r in ladders if r["step_to_clear"] is not None]
     n_fail = sum(1 for r in ladders if r["step_to_clear"] is None)
+    n_nonmono = sum(1 for r in ladders if not r["monotonic"])
+    n_toptail = sum(1 for r in ladders if not r["clears_at_top"])
+    fl = [r for r in ladders if all(x["sd_floored"] for x in r["ladder"] if x["measured"])]
+    print(f"\n  the ring-sd FLOOR binds at every step at {len(fl)}/{len(ladders)} sites; "
+          f"where it does the closure is exactly proportional to contrast and the ladder "
+          f"is monotone, and where it does not the ring's own spread grows WITH the paste")
+    print(f"  {n_nonmono}/{len(ladders)} ladders are NON-MONOTONIC and "
+          f"{n_toptail}/{len(ladders)} FAIL AT THE TOP STEP -- a detector that loses a "
+          f"feature as its contrast RISES is reporting on the site, not on the feature")
     print(f"\n  PAD-SCALE LIMIT, {a.size_mm} mm, IN THE RIM, over {len(ladders)} sites "
           f"in 2 swept selections:")
     print(f"    clears the bar at {min(got) if got else None}-{max(got) if got else None}"
@@ -296,6 +369,7 @@ def v_limit(c, a, out):
          "OUTSIDE-PREDICTED-RANGE-BUT-NOT-FALSIFIED" if got else "NO-SITE-CLEARED")
     print(f"  P1 {v}")
     out.update(bar=a.bar, sd_floor=floor, size_mm=a.size_mm, ladders=ladders,
+               sites_rejected_occupied=rejected,
                step_to_clear=dict(min=min(got) if got else None,
                                   max=max(got) if got else None,
                                   n_reaching=len(got), n_sites=len(ladders)),
@@ -370,7 +444,7 @@ def v_count(c, a, out):
     print(f"  {n} above-bar regions -> {len(keep)} maxima after NMS\n")
     rows = []
     for cl, cx, cy, r in keep:
-        sg = RC.shape_gate(c["lum"], cx, cy, r, sigma=a.shape_sigma)
+        sg = RC.shape_gate(c["lum"], cx, cy, r, sigma=a.shape_sigma, bg=c["BG"])
         p = sg.get("profile") if sg else None
         th = math.degrees(math.atan2(cy - c["origin"][1], cx - c["origin"][0])) % 360
         rr = math.hypot(cx - c["origin"][0], cy - c["origin"][1]) / c["ppm"]
@@ -475,6 +549,7 @@ def main():
     ap.add_argument("--size-mm", type=float, default=1.4)
     ap.add_argument("--sites", type=int, default=5)
     ap.add_argument("--steps", default="220,180,140,110,90,70,50,35,25,15,8")
+    ap.add_argument("--bg-thr", type=float, default=190.0)
     ap.add_argument("--paste-blur-px", type=float, default=4.42,
                     help="FWHM in STORED px of the blur applied to a pasted control. "
                          "Default 106.313/24.05 = the source's own resolution cell; a "

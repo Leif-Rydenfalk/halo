@@ -201,7 +201,7 @@ def phase_scramble(a, seed=20260905):
 
 # --------------------------------------------------------------- shape gate
 
-def shape_gate(lum, cx, cy, r_px, band=None, min_px=40, sigma=3.0):
+def shape_gate(lum, cx, cy, r_px, band=None, min_px=40, sigma=3.0, bg=None):
     """INDEPENDENT of the locator.  A FILLED SQUARE is also a compact bright blob
     and WILL clear the locator -- that is how five SMD capacitor pads became five
     confident rim detections (E07 sec.30).  So the blob's own boundary contour is
@@ -252,7 +252,7 @@ def shape_gate(lum, cx, cy, r_px, band=None, min_px=40, sigma=3.0):
     d_eq = 2.0 * math.sqrt(area / math.pi)
     peri = float(len(ys))
     circ = 4.0 * math.pi * area / (peri * peri) if peri else 0.0
-    prof = radial_profile(lum, cx, cy, r_px, sigma=sigma)
+    prof = radial_profile(lum, cx, cy, r_px, sigma=sigma, bg=bg)
     return dict(inlier_frac=frac, profile=prof, fit_r_px=float(rf), fit_cx=float(cxf),
                 fit_cy=float(cyf), resid_sd_px=float(res.std()) if len(res) else float("nan"),
                 area_px=area, d_equiv_px=float(d_eq), boundary_px=int(len(ys)),
@@ -262,7 +262,8 @@ def shape_gate(lum, cx, cy, r_px, band=None, min_px=40, sigma=3.0):
                                     or blob[:, 0].any() or blob[:, -1].any()))
 
 
-def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140):
+def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140, bg=None,
+                   r_out=(1.35, 1.85), min_surround_frac=0.40):
     """The half-max radius R(theta) about a candidate centre, and its NON-CIRCULAR
     ENERGY -- the general shape statistic.
 
@@ -292,7 +293,7 @@ def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140):
     is a parameter and is swept."""
     Ls = ndimage.gaussian_filter(lum, sigma) if sigma > 0 else lum
     th = np.linspace(0, 2 * np.pi, nth, endpoint=False)
-    rs = np.linspace(0.15 * r_px, 2.4 * r_px, nr)
+    rs = np.linspace(0.15 * r_px, r_out[1] * r_px, nr)
     ys = cy + rs[None, :] * np.sin(th[:, None])
     xs = cx + rs[None, :] * np.cos(th[:, None])
     if (ys.min() < 1 or xs.min() < 1 or ys.max() > lum.shape[0] - 2
@@ -300,7 +301,23 @@ def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140):
         return None                        # the profile leaves the image -- UNMEASURED
     V = ndimage.map_coordinates(Ls, [ys, xs], order=1, mode="nearest")
     hi = float(np.percentile(V[:, :10], 90))
-    lo = float(np.median(V[:, -20:]))
+    # THE SURROUND OF A RIM FEATURE INCLUDES THE BACKGROUND, AND THE BACKGROUND IS
+    # BRIGHT.  A rim joint straddles the board edge by definition, so a surround
+    # median taken over the whole outer annulus is pulled up by the table behind the
+    # board, the half-max threshold goes with it, and the crossing radius is then a
+    # measurement of the photograph's backdrop.  Background samples are dropped, and
+    # if too few survive the profile REFUSES rather than returning a number built
+    # from the backdrop.
+    sel = (rs >= r_out[0] * r_px) & (rs <= r_out[1] * r_px)
+    S = V[:, sel]
+    if bg is not None:
+        keep = ~(ndimage.map_coordinates(bg.astype(np.float32), [ys[:, sel], xs[:, sel]],
+                                         order=0, mode="nearest") > 0.5)
+        if keep.mean() < min_surround_frac:
+            return None                    # the surround is mostly backdrop -- UNMEASURED
+        S = np.where(keep, S, np.nan)
+    lo = float(np.nanmedian(S))
+    n_surround = int(np.isfinite(S).sum())
     if not np.isfinite(hi) or not np.isfinite(lo) or hi <= lo:
         return None                        # no bright core over its own surround
     thr = 0.5 * (hi + lo)
@@ -314,7 +331,7 @@ def radial_profile(lum, cx, cy, r_px, sigma=3.0, nth=180, nr=140):
     F = np.fft.rfft(R) / len(R)
     nc = float(math.sqrt(2.0 * sum(abs(F[k]) ** 2 for k in range(2, len(F)))) / m)
     a4 = float(2 * abs(F[4]) / m)
-    return dict(noncirc=nc, a4=a4, R_mean_px=m, R_min_px=float(R.min()),
+    return dict(noncirc=nc, a4=a4, n_surround=n_surround, R_mean_px=m, R_min_px=float(R.min()),
                 R_max_px=float(R.max()), rays_open=n_open, half_max_thr=thr,
                 core_p90=hi, surround_median=lo, contrast_luma=hi - lo,
                 sigma_px=float(sigma))
@@ -561,6 +578,29 @@ def selftest(verbose=True):
           and seps[50.0][0] >= seps[50.0][1],
           "  ".join(f"{int(C)}: disc_p90 {a:.4f} vs square_p10 {b:.4f} "
                     f"{'SEP' if a < b else 'OVERLAP'}" for C, (a, b) in seps.items()))
+
+    # 13 BREAK: a BRIGHT BACKDROP beside the feature -- the rim's own situation.  A
+    #    surround median that includes it drags the half-max threshold up and the
+    #    profile then measures the backdrop.  Watched red: without the exclusion the
+    #    noncirc of a clean disc goes from ~0.03 to a value a square would give.
+    Lg, Mg, tg = synth("disc", ppm=ppm, contrast=120.0)
+    n2 = Lg.shape[0]
+    # A MEDIAN SURROUND IS ROBUST UNTIL THE BACKDROP IS THE MAJORITY, and the first
+    # version of this case put the backdrop on ~35 % of the ring, where the median
+    # shrugged it off and the case could not fail.  Watched: 0.0325 -> 0.0325, no
+    # movement at all.  The condition the exclusion exists for is a feature sitting
+    # PROUD of the board edge, where most of its surround IS the table.
+    xb = int(tg["cx"] - 0.30 * radii[6])
+    Lg = Lg.copy(); Lg[:, xb:] = 235.0
+    bgm = np.zeros(Lg.shape, bool); bgm[:, xb:] = True
+    p_no = radial_profile(Lg, tg["cx"], tg["cy"], radii[6])
+    p_yes = radial_profile(Lg, tg["cx"], tg["cy"], radii[6], bg=bgm)
+    check("13 BREAK with the backdrop a MAJORITY of the surround, the profile must "
+          "REFUSE, not return a number",
+          p_no is not None and p_yes is None,
+          f"backdrop included: returns noncirc {p_no['noncirc']:.4f} from a threshold "
+          f"built on the table; excluded: REFUSES (None). An unmeasured thing must not "
+          f"be representable as a measurement -- E07 sec.29")
 
     print(f"\n  {len(P)}/{len(P)+len(F)} passed, {len(F)} failed")
     if F:
