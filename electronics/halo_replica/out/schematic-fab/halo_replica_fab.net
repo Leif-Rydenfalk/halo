@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic-fab/halo_replica_fab.kicad_sch")
-		(date "2026-09-05T18:54:49")
+		(date "2026-09-05T19:10:25")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
