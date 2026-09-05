@@ -154,6 +154,61 @@ not mistaken for a clean result either.
 *Item 10 (Compliance dossier) was checked too and is **honestly PARTIAL**: what
 is missing is a lab test campaign, which nothing on this machine can do.*
 
+## 3d. Item 6 is READY on one of three solver validations — the other two FAIL
+
+`6 · Simulation evidence` — **READY**. Its four `ce-spice` verdicts are all
+genuinely PASS; I opened each. The problem is the other half of its claim:
+
+> *"the electromagnetic solver **has been validated** against a published
+> reference antenna to within 0.66 percent, **which is what makes its other
+> answers trustworthy**."*
+
+`ce-rf` has **three** validation cases. The item cites one.
+
+| validation case | verdict | cited? |
+|---|---|---|
+| `validation-patch-openems-tutorial` | **PASS** | **yes** |
+| `validation-dipole-freespace` | **FAIL** — `radiation_efficiency_physical`, *"0 >= 1 is False"* | **no** |
+| `validation-staircase-straight` | **FAIL** — `eps_eff_implied` *"1.7753 is NOT in [1, 1.35]"* | **no** |
+
+Neither failing case is mentioned anywhere in the pack — `grep` for *dipole*
+and *far field* across `out/release/` and `spec/release-pack.json` returns only
+`board/README.md`, and nothing in `INDEX.html`.
+
+`VERIFICATION-DEBT` **V3** says why it matters: the patch case validates the
+**near** field; the dipole is the **far**-field case, so *"no gain or efficiency
+this app reports for any case is trustworthy."* **V3's specifics are partly
+stale** — it records `eps_eff_implied` 6.964 and directivity/gain/efficiency as
+CANNOT DETERMINE, and today those rows PASS — **but the case still FAILs.**
+Partly fixed, not fixed. And `validation-staircase-straight` is not in V3 at all:
+a straight wire returning an implied permittivity of **1.7753** is the solver
+inventing a dielectric that is not there.
+
+**Nothing item 6 says is false.** That is what makes it hard to catch by
+reading: it is a true citation with a failing sibling omitted.
+
+### The 15 failures I did NOT report, and why
+
+The first run of this check flagged **17** failing cases and **15 of them were
+fine**. Treating them alike would have buried the real finding in noise, so the
+tool now classifies:
+
+- **control** — `halo-rim-ifa-coil-keepout-broken`. Built to fail. **Its FAIL is
+  the check working.** Never flagged.
+- **design** — the `halo-rev-a-2g4-*`, `halo-round-*`, `halo-rim-ifa-*` sweep:
+  **17 FAIL, 12 pass.** Most variants in a geometry sweep fail; that is what a
+  sweep is. And item 6 **already discloses this honestly**: *"the two
+  round-board antenna geometries pass their own tests while resonating outside
+  the Bluetooth band, and are being retuned."* Reported, never flagged.
+- **validation** — the instrument measured against a known answer. A FAIL here
+  impeaches every number the instrument produces. Always flagged.
+
+**A failing design variant is iteration. A failing validation is impeachment.**
+
+**Recommendation:** item 6 → **PARTIAL**, or its reason amended to say the near
+field is validated, two validation cases fail, and gain and efficiency figures
+are therefore not underwritten.
+
 ## 4. What should change
 
 1. `gen_release_pack.py` should **run each item's recorded `command`** and
@@ -166,6 +221,8 @@ is missing is a lab test campaign, which nothing on this machine can do.*
    this board immediately, and only the artifact is still outstanding.
 4. **V13 in `docs/VERIFICATION-DEBT.md` should be marked closed** — measured
    0 failures today against its recorded 40.
+6. **Item 6 → PARTIAL**, or its reason amended (§3d): two of three solver
+   validation cases FAIL and neither is named anywhere in the pack.
 5. **Item 2's `reason` should drop "needs halo's board to exist"** — it does
    (§3c) — and name the actual remaining step: export `halo-core` *with* a
    `--pcb`, then apply and DRC it, as was already done for `aht20`.

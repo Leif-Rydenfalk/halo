@@ -159,6 +159,99 @@ def cmd_artifacts(items):
     return worst
 
 
+
+# Where an item's evidence lives, and therefore where its SIBLINGS live. The
+# cherry-pick this catches is not a false citation -- every file item 6 cites
+# really does pass -- it is a TRUE citation with a failing sibling left out.
+EVIDENCE_TREES = {
+    6: ["ce-spice/out", "ce-rf/out"],
+}
+WORKSHOP = os.path.abspath(os.path.join(ROOT, "..", ".."))
+
+
+def _verdict_of(path):
+    """PASS/FAIL/... out of a verdict.json, whichever schema it uses."""
+    try:
+        with open(path) as fh:
+            d = json.load(fh)
+    except Exception:                                    # noqa: BLE001
+        return None
+    for probe in (d, d.get("record") if isinstance(d.get("record"), dict) else None):
+        if isinstance(probe, dict) and probe.get("verdict"):
+            return probe["verdict"]
+    return None
+
+
+def classify(case):
+    """Not every failing sibling is a defect, and treating them alike is how a
+    real finding gets buried in noise. The FIRST run of this check flagged 17
+    failing cases; 15 of them were fine.
+
+      control     a case built to FAIL on purpose. Its FAIL is the check
+                  WORKING -- e.g. halo-rim-ifa-coil-keepout-broken. Never flag.
+      validation  the instrument measured against a known answer. A FAIL here
+                  impeaches every number the instrument produces. ALWAYS flag.
+      design      a geometry being iterated. Most variants in a sweep fail;
+                  that is what a sweep is. Report, never flag.
+    """
+    if case.endswith("-broken") or "-broken-" in case:
+        return "control"
+    if case.startswith("validation-"):
+        return "validation"
+    return "design"
+
+
+def cmd_evidence(items):
+    """Flag a FAILING VALIDATION case sitting in a tree a READY item cites,
+    that the item does not name. A status resting on a true citation with a
+    failing sibling omitted is the hardest kind to catch by reading, because
+    nothing the item says is false."""
+    print("RELEASE PACK — failing results inside the trees an item cites\n")
+    worst = PASS
+    for it in items:
+        trees = EVIDENCE_TREES.get(it["n"])
+        if not trees:
+            continue
+        cited = it.get("evidence", "")
+        named, unnamed = [], []
+        for t in trees:
+            base = os.path.join(WORKSHOP, t)
+            if not os.path.isdir(base):
+                print(f"  {it['n']:>2}  CANNOT DETERMINE — {t} not on disk")
+                worst = CANNOT if worst == PASS else worst
+                continue
+            for case in sorted(os.listdir(base)):
+                vp = os.path.join(base, case, "verdict.json")
+                if not os.path.exists(vp):
+                    continue
+                v = _verdict_of(vp)
+                (named if case in cited else unnamed).append((case, v, t))
+        print(f"  item {it['n']} [{it['status']}] — {it['name']}")
+        for case, v, t in named:
+            print(f"      cited     {v or '?':<5} {t}/{case}")
+        buckets = {"validation": [], "design": [], "control": []}
+        for case, v, t in unnamed:
+            buckets[classify(case)].append((case, v, t))
+        for case, v, t in buckets["validation"]:
+            flag = "  <-- A VALIDATION CASE FAILS AND IS NOT CITED" if v == "FAIL" else ""
+            print(f"      not cited {v or '?':<5} [validation] {t}/{case}{flag}")
+            if v == "FAIL" and it["status"] == "READY":
+                worst = FAIL
+        nf = [c for c, v, _ in buckets["design"] if v == "FAIL"]
+        np_ = [c for c, v, _ in buckets["design"] if v != "FAIL"]
+        print(f"      not cited [design]  {len(nf)} FAIL, {len(np_)} pass — "
+              "iteration in a geometry sweep, NOT flagged")
+        for c, v, _ in buckets["control"]:
+            print(f"      not cited {v or '?':<5} [control] {c} — built to fail; "
+                  "its FAIL is the check working, NOT flagged")
+    print()
+    if worst == FAIL:
+        print("FAIL — a READY item cites a passing VALIDATION case while a failing")
+        print("validation case sits beside it, uncited. A failing design variant is")
+        print("iteration; a failing validation impeaches the instrument itself.")
+    return worst
+
+
 def cmd_selftest():
     items = load()
     n_ok = n_red = 0
@@ -171,7 +264,7 @@ def cmd_selftest():
         else:
             n_red += 1
 
-    print("s_packstatus selftest — 6 cases\n")
+    print("s_packstatus selftest — 9 cases\n")
 
     check("the spec really carries 11 artifacts", len(items), len(items) == 11, 11)
 
@@ -203,6 +296,30 @@ def cmd_selftest():
     del CHEAP[98]
     check("a READY whose command exits non-zero is a MISMATCH", v2, v2 == FAIL, f"{FAIL} (FAIL)")
 
+    # 7. THE LIVE FINDING: item 6 is READY and its evidence tree holds a FAIL
+    #    it does not name.
+    with contextlib.redirect_stdout(io.StringIO()):
+        v6 = cmd_evidence([i for i in items if i["n"] == 6])
+    check("item 6 READY with an uncited FAIL in its evidence tree", v6, v6 == FAIL, f"{FAIL} (FAIL)")
+
+    # 8. NEGATIVE CONTROL: the same item marked PARTIAL must NOT be flagged --
+    #    the check must key on READY, not fire on any failing sibling at all.
+    p6 = [dict(i, status="PARTIAL") for i in items if i["n"] == 6]
+    with contextlib.redirect_stdout(io.StringIO()):
+        vp = cmd_evidence(p6)
+    check("the same item as PARTIAL is not flagged", vp, vp != FAIL, f"not {FAIL}")
+
+    # 9. NEGATIVE CONTROL on the classifier: a deliberately-broken case must
+    #    NOT be what trips the check, and a design variant must not either.
+    check("classifier: -broken is a control, validation- is validation, rest is design",
+          [classify("halo-rim-ifa-coil-keepout-broken"),
+           classify("validation-dipole-freespace"),
+           classify("halo-rev-a-2g4-meander9-bare")],
+          [classify("halo-rim-ifa-coil-keepout-broken"),
+           classify("validation-dipole-freespace"),
+           classify("halo-rev-a-2g4-meander9-bare")] == ["control", "validation", "design"],
+          ["control", "validation", "design"])
+
     # An item with no cheap checker must be NOT RUN / CANNOT DETERMINE, never a pass.
     rc, note = run_cheap(7)
     check("an item with no cheap checker is NOT RUN, not a pass",
@@ -221,6 +338,8 @@ def main(argv):
     items = load()
     if argv[1] == "audit":
         return cmd_audit(items)
+    if argv[1] == "evidence":
+        return cmd_evidence(items)
     if argv[1] == "artifacts":
         return cmd_artifacts(items)
     print(f"unknown verb {argv[1]!r}")
