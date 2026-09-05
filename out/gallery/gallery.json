@@ -1,10 +1,10 @@
 {
-  "generated": "2026-09-05 18:27:50",
+  "generated": "2026-09-05 18:29:45",
   "counts": {
     "published": 72,
     "refused": 1,
-    "CURRENT": 63,
-    "STALE": 4,
+    "CURRENT": 64,
+    "STALE": 3,
     "CANNOT DETERMINE": 0,
     "UNGOVERNED": 5
   },
@@ -177,7 +177,7 @@
     {
       "image": "ce-designs/halo/out/gallery/fig-stack.png",
       "state": "CURRENT",
-      "why": "drawn 2026-09-05 06:09, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 06:09 \u2014 the picture is the newer of the two"
+      "why": "drawn 2026-09-05 18:28, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 18:28 \u2014 the picture is the newer of the two"
     },
     {
       "image": "ce-designs/halo/out/mech/halo-puck-section-front.png",
@@ -337,12 +337,12 @@
     {
       "image": "ce-designs/halo/out/gallery/fig-halo-vs-airtag.png",
       "state": "CURRENT",
-      "why": "drawn 2026-09-05 06:09, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 06:09 \u2014 the picture is the newer of the two"
+      "why": "drawn 2026-09-05 18:28, from ce-designs/halo/tools/gen_gallery_figs.py last written 2026-09-05 18:28 \u2014 the picture is the newer of the two"
     },
     {
       "image": "ce-designs/halo/out/gallery/fig-board-side-by-side.png",
-      "state": "STALE",
-      "why": "drawn 2026-09-05 06:10; ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb was written 2026-09-05 08:15, which is 2.1 h LATER. This picture is of an earlier state of that file."
+      "state": "CURRENT",
+      "why": "drawn 2026-09-05 18:28, from ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb last written 2026-09-05 08:15 \u2014 the picture is the newer of the two"
     },
     {
       "image": "ce-designs/halo/images/airtag/oflynn-frontside-tpnames.jpg",

@@ -319,7 +319,15 @@ def _board_bbox(path):
 
 
 def fig_boards():
-    halo_p = os.path.join(ROOT, "out", "render", "halo_rev_a-top.png")
+    # THE ROUTED board, rendered by tools/gen_board_renders.py from the
+    # .kicad_pcb on disk. This pointed at out/render/halo_rev_a-top.png until
+    # 2026-09-05, which was an ad-hoc render from the previous evening of an
+    # UNROUTED board with a FOUR-tooth antenna. The figure was therefore
+    # comparing Apple's shipped board against a halo board that no longer
+    # existed. The scale is measured off whichever render this names, so
+    # repointing it is safe: _board_bbox() re-derives px/mm from the pixels.
+    halo_p = os.path.join(ROOT, "out", "render",
+                          "halo_rev_a-routed-top.png")
     apple_p = os.path.join(ROOT, "images", "airtag",
                            "oflynn-frontside-26mm-cropped.jpg")
     halo_im = Image.open(halo_p).convert("RGB")
@@ -349,8 +357,9 @@ def fig_boards():
     fig, axes = plt.subplots(1, 2, figsize=(12.4, 7.0), dpi=150)
     for ax, im, ttl, sub in [
             (axes[0], h_sq, "halo rev A — top",
-             "Ø26.00 mm, 4 layers, 0.60 mm. Rim inverted-F top left.\n"
-             "measured %.1f px/mm in out/render/halo_rev_a-top.png"
+             "Ø26.00 mm, 4 layers, 0.60 mm. Nine-tooth 2.4 GHz "
+             "element along the top arc; routed.\n"
+             "measured %.1f px/mm in out/render/halo_rev_a-routed-top.png"
              % halo_px_per_mm),
             (axes[1], a_sq, "Apple AirTag A2187 — MLB front",
              "Ø~26 mm annular board, 0.30 mm. NFC coil at the centre.\n"

@@ -741,14 +741,16 @@ SECTIONS = [
                          "length by construction",
                          "REFERENCE",
                          "halo Ø26.00 mm measured in the render at "
-                         "52.9 px/mm; Apple's on O'Flynn's own 26 mm crop "
-                         "at 30.3 px/mm. Apple's board is a 0.30 mm "
-                         "annular flex-thin board; halo's is 0.60 mm and "
-                         "solid — DECISIONS.md D17, a deliberate divergence. "
-                         "NOTE: this figure was built from the SUPERSEDED "
-                         "board render, so halo's half of it is the "
-                         "four-tooth unrouted board — which is why it is "
-                         "banded STALE against the .kicad_pcb below",
+                         "65.6 px/mm; Apple's on O'Flynn's own 26 mm crop "
+                         "at 30.3 px/mm — both re-derived from the pixels, "
+                         "so neither scale is asserted. Apple's board is a "
+                         "0.30 mm annular flex-thin board with the NFC coil "
+                         "at its centre; halo's is a solid 0.60 mm disc "
+                         "with the coil in bottom copper — DECISIONS.md "
+                         "D17, a deliberate divergence. Until 2026-09-05 "
+                         "this figure was built from the superseded "
+                         "four-tooth unrouted render; it now names the "
+                         "routed board",
                          source=PCB_ROUTED),
             airtag_card("oflynn-frontside-tpnames.jpg",
                         "Apple's board, top, with every test point numbered "
