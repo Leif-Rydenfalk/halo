@@ -1409,6 +1409,69 @@
           "note": "one face of two"
         }
       }
+    },
+    {
+      "n": 25,
+      "axis": "Design-rule violations, and whose they are",
+      "group": "meta",
+      "apple": {
+        "value": "NO DRC EXISTS AND NONE CAN. Apple's board ships; nobody outside Apple has its rule set, its stackup tolerances or its fabricator's capability. The only thing this lane can say is that the board was manufactured, so by construction it passed whatever rules Apple applied.",
+        "state": "n/a - not a measurable axis on Apple's side",
+        "source": "The bound that makes this row necessary is Apple's OD, which is 24.95-26.34 mm and not a number (board/board.json). Every copper-to-edge rule the Replica fires is a rule against an edge whose position is not known.",
+        "anchor": {
+          "file": "electronics/halo_replica/board/board.json",
+          "path": "parameters.outer_diameter_mm.bound_mm|len",
+          "expect": 2
+        }
+      },
+      "rev_a": {
+        "value": "0 errors, 3 warnings (all track_dangling), 28 unconnected items on the routed board. A CLEAN RULE SET AND AN INCOMPLETE ROUTE - the opposite failure to the Replica's.",
+        "state": "MEASURED",
+        "source": "electronics/halo_rev_a/out/halo_rev_a-routed.drc.json, dated 2026-09-05T08:15:46. Note its gerbers predate it by 7,742 s and were cut from a board with those 28 unconnected nets - see the deliverable section.",
+        "anchor": {
+          "file": "electronics/halo_rev_a/out/halo_rev_a-routed.drc.json",
+          "path": "unconnected_items|len",
+          "expect": 28
+        }
+      },
+      "replica": {
+        "value": "0 unconnected and a live, moving error count - the route is COMPLETE and the rules are not satisfied. THE EXACT INVERSE OF rev_a. The count is read live by k_threeway rather than frozen here, because it has moved 42 -> 58 -> 33 in under two hours while the board lane iterates, and an anchored number that churns is an anchor that cries wolf.",
+        "state": "MEASURED, live",
+        "source": "pcb/out/halo_replica.drc.json, read at render time; the split by class is in the deliverable section of this page. The CLASSES are stable and anchored here even though the counts are not.",
+        "anchor": {
+          "file": "electronics/halo_replica/comparison/deliverable.json",
+          "path": "clearance_classification.classes.BOUND-LIMITED.blocks_fabrication",
+          "expect": true
+        }
+      },
+      "better": {
+        "on": "F",
+        "winner": "CANNOT DETERMINE",
+        "why": "Apple has no DRC to compare against, so no fidelity verdict is available on this axis at all. What the row DOES carry is the split - how much of the Replica's unbuildability belongs to Apple's unknown edge, to the photographs' resolution, and to us - and that split is a fidelity reading even though the gate that produces it is a buildability gate. THE TWO QUESTIONS ARE KEPT IN SEPARATE INSTRUMENTS ON PURPOSE: the deliverable gate answers 'can it be cut' and blocks on every class but one; this row answers 'whose fault is it' and blocks nothing.",
+        "would_settle": "nothing available. Apple's rule set is not public and its board is already made."
+      },
+      "also": [
+        {
+          "on": "buildability",
+          "winner": "halo_rev_a",
+          "why": "a board with 0 rule errors and 28 unrouted nets is nearer to fabricable than one with a complete route and 33 rule errors: finishing a route is ordinary work, while 19 of the Replica's 33 are copper-to-OUTLINE against an edge whose position is a bound. rev_a's remaining work is known; the Replica's is partly unknowable."
+        },
+        {
+          "on": "THE SIGNED EXPECTATION",
+          "winner": "n/a",
+          "why": "AND THIS IS THE PART THAT MUST NOT BE MISREAD. M02 sec.8 records that IF THE OD BOUND MOVES, IT MOVES DOWN. So the Replica's 19 copper-to-edge violations get WORSE, not better, as the outer diameter resolves toward the 24.95 mm floor. Classifying them BOUND-LIMITED records WHOSE PROBLEM THEY ARE. It must never be read as expecting them to go away - they cannot be waited out, and the expectation runs against us."
+        }
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "n/a",
+          "note": "not a fidelity axis - Apple has no DRC to be faithful to"
+        },
+        "replica": {
+          "verdict": "n/a",
+          "note": "same"
+        }
+      }
     }
   ],
   "fidelity_vocabulary": {

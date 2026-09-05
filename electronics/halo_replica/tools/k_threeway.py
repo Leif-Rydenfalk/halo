@@ -1256,6 +1256,31 @@ def cmd_selftest(args):
         print(f"          resolving is not supporting. Without this the excuse is a string.")
         if not okc4: dfails.append("C-4")
 
+        # C-6 / C-7  BOUND-LIMITED: the pointer must name a value that is STILL A BOUND.
+        json.dump({"parameters": {"outer_diameter_mm": {"bound_mm": [24.95, 26.34]}}},
+                  open(os.path.join(lane, "bound.json"), "w"))
+        json.dump({"schema": "halo/clearance-classification/1", "drc_report": "c.drc.json",
+                   "classified": [{"index": 0, "class": "BOUND-LIMITED",
+                                   "evidence": {"file": os.path.join("lane", "bound.json"),
+                                                "path": "parameters.outer_diameter_mm.bound_mm"}}]},
+                  open(os.path.join(lane, "c-clearance-class.json"), "w"))
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc6 = r["counts"]["BOUND-LIMITED"] == 1
+        print(f"    [{'ok ' if okc6 else 'RED'}] C-6 BOUND-LIMITED, pointer names a real 2-value "
+              f"bound -> {r['counts']['BOUND-LIMITED']} (must be 1)")
+        if not okc6: dfails.append("C-6")
+
+        json.dump({"parameters": {"outer_diameter_mm": {"bound_mm": 25.1593}}},
+                  open(os.path.join(lane, "bound.json"), "w"))
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc7 = r["counts"]["BOUND-LIMITED"] == 0 and r["counts"]["DRAWN-WRONG"] == 2
+        print(f"    [{'ok ' if okc7 else 'RED'}] C-7 the SAME claim after the bound quietly "
+              f"became a single number -> refused, DRAWN-WRONG {r['counts']['DRAWN-WRONG']} "
+              f"(must be 2)")
+        print(f"          if the OD stops being unknown, every violation excused BECAUSE it was "
+              f"unknown loses its grounds - and nothing else would have noticed.")
+        if not okc7: dfails.append("C-7")
+
         write_claim("GENUINELY-TOUCHING", None)
         r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
         okc5 = r["counts"]["GENUINELY-TOUCHING"] == 1 and r["blocking"] == 1
@@ -1272,7 +1297,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 19 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 21 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS

@@ -618,19 +618,34 @@ def main():
             continue
         lands.append((row["x_mm"], row["y_mm"],
                       max(row["long_mm"], row["short_mm"]) / 2.0))
-    SILK_R, SILK_L, SILK_W = 9.4, 4.2, 1.4
+    # EACH LEGEND IS SIZED FROM ITS OWN LONGEST LINE, and they are tried in
+    # PRIORITY ORDER. A single 4.2 mm box for all four refused outright --
+    # "only 2 legend positions clear the placements", which is the correct
+    # answer to the wrong question. The annulus is full; the fix is fewer
+    # and shorter words, and the words that matter most go first.
+    SILK_W = 1.4
+    SILK_CHAR = 0.62 * FP.SILK_MIN_H / 0.80    # width per char at 0.8 mm
+    SILK_WANT = [
+        ("REPL_SILK_U2_DNP", ["U2 UWB", "DNP"],
+         "the brief requires the UWB module's DNP state ON THE BOARD"),
+        ("REPL_SILK_REPLICA", ["REPLICA"],
+         "so the object cannot be mistaken for Apple's artwork"),
+        ("REPL_SILK_THICKNESS", ["0.30mm"],
+         "the thickness that makes it unorderable"),
+        ("REPL_SILK_INCOMPLETE", ["PARTIAL"],
+         "knowingly incomplete — also in the Cmts.User block"),
+    ]
 
-    def _silk_clear(bearing, rr=None):
+    def _silk_clear(bearing, rr, box_len):
         ca = math.cos(math.radians(bearing))
         sa = math.sin(math.radians(bearing))
-        rr = SILK_R if rr is None else rr
         cx, cy = rr * ca, rr * sa
         worst = 99.0
         for lx, ly, lr in lands:
             dx, dy = lx - cx, ly - cy
             u = abs(dx * ca + dy * sa)          # along the radial box
             v = abs(-dx * sa + dy * ca)         # across it
-            gap = math.hypot(max(0.0, u - SILK_L / 2.0),
+            gap = math.hypot(max(0.0, u - box_len / 2.0),
                              max(0.0, v - SILK_W / 2.0)) - lr
             worst = min(worst, gap)
         return worst
@@ -658,35 +673,34 @@ def main():
         return r
 
     pocket_max = pmeta["max_radius_mm"]
-    EDGE_KEEP = 0.30                      # silk to board edge
-    cand = []
-    for a in range(0, 360, 2):
-        hi = _outer_r(a) - EDGE_KEEP - SILK_L / 2.0
-        lo = pocket_max + 0.20 + SILK_L / 2.0
-        rr = lo
-        while rr <= hi:
-            cand.append((_silk_clear(a, rr), float(a), round(rr, 2)))
-            rr += 0.2
-    if not cand:
-        raise SystemExit("no radius on any bearing fits a %s mm legend "
-                         "between the pocket and the edge." % SILK_L)
-    cand.sort(reverse=True)
-    chosen = []
-    for gap, a, rr in cand:
-        if all(abs(((a - b + 180) % 360) - 180) >= 40
-               for _, b, _ in chosen):
-            chosen.append((gap, a, rr))
-        if len(chosen) == 4:
-            break
-    if len(chosen) < 4 or chosen[-1][0] < 0.15:
+    EDGE_KEEP = 0.30
+    MIN_GAP = 0.15
+    silk, silk_gaps, silk_refused = [], [], []
+    for name, lines, why in SILK_WANT:
+        SILK_L = max(len(t) for t in lines) * SILK_CHAR + 0.3
+        best = None
+        for a in range(0, 360, 2):
+            hi = _outer_r(a) - EDGE_KEEP - SILK_L / 2.0
+            lo = pocket_max + 0.20 + SILK_L / 2.0
+            rr = lo
+            while rr <= hi:
+                if all(abs(((a - b + 180) % 360) - 180) >= 40
+                       for _, b, _ in silk):
+                    g = _silk_clear(a, rr, SILK_L)
+                    if best is None or g > best[0]:
+                        best = (g, float(a), round(rr, 2))
+                rr += 0.2
+        if best is None or best[0] < MIN_GAP:
+            silk_refused.append((name, why, None if best is None
+                                 else round(best[0], 3)))
+            continue
+        silk.append((name, best[1], best[2]))
+        silk_gaps.append(round(best[0], 3))
+    if not any(n == "REPL_SILK_U2_DNP" for n, _, _ in silk):
         raise SystemExit(
-            "only %d legend positions clear the placements by 0.15 mm — the "
-            "annulus is fuller than the legend allows. The answer is FEWER "
-            "WORDS ON THE BOARD, never a moved land." % len(chosen))
-    silk_names = ["REPL_SILK_REPLICA", "REPL_SILK_U2_DNP",
-                  "REPL_SILK_THICKNESS", "REPL_SILK_INCOMPLETE"]
-    silk = [(n, a, rr) for n, (g, a, rr) in zip(silk_names, chosen)]
-    silk_gaps = [round(g, 3) for g, _, _ in chosen]
+            "the U2 UWB DNP legend does not fit anywhere on this annulus. "
+            "That statement is required ON THE BOARD, so the board is not "
+            "finished until it fits — shorten it, do not drop it.")
     for i, (fp, ang, r) in enumerate(silk):
         px = r * math.cos(math.radians(ang))
         py = r * math.sin(math.radians(ang))
@@ -748,6 +762,10 @@ def main():
             "bearings_deg": [a for _, a, _ in silk],
             "radii_mm": [r for _, _, r in silk],
             "clearance_to_nearest_drawn_land_mm": silk_gaps,
+            "refused_for_lack_of_room": [
+                {"legend": n, "why_it_was_wanted": w,
+                 "best_clearance_found_mm": g, "min_required_mm": 0.15}
+                for n, w, g in silk_refused],
             "rule": "the legend moves; a measured position never does. The "
                     "bearings are solved against the placements, kept 45 deg "
                     "apart, after two rounds of guessing produced 2 then 8 "
@@ -874,10 +892,14 @@ def main():
           % (placed_back["gold_pad"], placed_back["contact_position"]))
     for rid, why in refused_back:
         print("         REFUSED %-6s %s" % (rid, why[:90]))
-    print("SILK   4 legends at %s deg / %s mm, clearance to the nearest "
+    print("SILK   %d legends at %s deg / %s mm, clearance to the nearest "
           "drawn land %s mm"
-          % ([int(a) for _, a, _ in silk], [r for _, _, r in silk],
-             silk_gaps))
+          % (len(silk), [int(a) for _, a, _ in silk],
+             [r for _, _, r in silk], silk_gaps))
+    for n, w, g in silk_refused:
+        print("       NO ROOM for %s (%s) — best clearance %s mm against a "
+              "0.15 mm bar. The annulus is full; the words go, the lands "
+              "stay." % (n, w, g))
     print("MASK   %s, finish %s — %s. A CHOICE inside the measured bound "
           "'dark and neutral'; Apple's colour stays CANNOT DETERMINE."
           % (mask, finish, mask_state["state"]))
