@@ -61,6 +61,38 @@ from this board's stackup is computed at 1.6 mm.
   measured. That changes the urgency, not the fact: `1.6` is exactly what
   survives to the fab if nobody looks.
 
+## The sweep: 45 boards, and only TWO are ours and wrong
+
+Running `verify`'s reader over every `.kicad_pcb` in `ce-designs/halo`,
+`ce-pcb/out` and `ce-fab/out` finds **26 of 45 at 1.6 mm** — a number that means
+almost nothing until it is split, and reporting it unsplit would have been the
+same over-flagging mistake as the 17 antenna cases.
+
+| group | at 1.6 mm | verdict |
+|---|---|---|
+| **halo Replica boards** — `fab/out/halo_replica_fab`, `pcb/out/halo_replica` | **2** | **DEFECT.** Both carry the default against a 0.30 mm spec |
+| third-party reference designs — `reference/ruuvitag_hw`, `reference/nordic-lib-kicad` | 12 | **not ours.** 1.6 mm is their choice |
+| toolchain fixtures — `aht20_breakout`, `esp32_carrier`, `hexdrive`, `netstep`, `round32_4layer`, `round32-dfm-violations` | 12 | **not defects.** 1.6 mm is a sensible default for a test board |
+
+**So the finding is two boards, not twenty-six** — and it is one more than I
+started with: `pcb/out/halo_replica.kicad_pcb` carries it too.
+
+### And the positive control, which is the encouraging half
+
+**Every `halo_rev_a` board reads 0.6 mm — all seven of them:** the source board,
+the routed board, `out/verify/`, `out/release/quote/dfm/`, both design-block
+copies in `ce-pcb/out/blocks/`, and `ce-fab/out/halo_rev_a/dfm/`. B1's single
+correction propagated to every derived copy.
+
+That matters twice over: it proves the fix propagates cleanly when it is made,
+and it proves this sweep can distinguish corrected boards from uncorrected ones
+rather than flagging everything.
+
+*(`round32_4layer` at 1.6 mm is worth one line: it is the Ø31.87 mm placeholder
+that release item 5's panel evidence was actually measured on — see
+`FINDING-pack-status-is-asserted.md` §3b. Correctly a fixture, and correctly not
+this project's board.)*
+
 ## The check that would have caught it, and now does
 
 `s_stackup_budget.py verify <board>` reads the two declarations a fabricator is
