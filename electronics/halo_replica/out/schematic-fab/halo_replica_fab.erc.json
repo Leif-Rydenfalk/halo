@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/erc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T18:50:16",
+    "date": "2026-09-05T18:54:24",
     "ignored_checks": [
         {
             "description": "Global label only appears once in the schematic",
@@ -37,7 +37,7 @@
                         {
                             "description": "Symbol U3 Pin 3 [~{WP}/SIO2, Bidirectional, Line]",
                             "pos": {
-                                "x": 3.0607,
+                                "x": 3.7719,
                                 "y": 0.4191
                             },
                             "uuid": "edf377bc-3a1d-5eb7-a650-03d0bce1f860"
@@ -46,7 +46,7 @@
                             "description": "Symbol #PWR906 Pin 1 [Power output, Line]",
                             "pos": {
                                 "x": 0.8128,
-                                "y": 2.8575
+                                "y": 2.7305
                             },
                             "uuid": "5acc93e1-5a37-5694-92cc-cc325be1ca81"
                         }
@@ -60,7 +60,7 @@
                         {
                             "description": "Symbol U3 Pin 7 [~{RESET}/SIO3, Bidirectional, Line]",
                             "pos": {
-                                "x": 3.0607,
+                                "x": 3.7719,
                                 "y": 0.4445
                             },
                             "uuid": "b3733ddf-2225-5816-949e-ebd8c38d7094"
@@ -69,7 +69,7 @@
                             "description": "Symbol #PWR906 Pin 1 [Power output, Line]",
                             "pos": {
                                 "x": 0.8128,
-                                "y": 2.8575
+                                "y": 2.7305
                             },
                             "uuid": "5acc93e1-5a37-5694-92cc-cc325be1ca81"
                         }
@@ -83,7 +83,7 @@
                         {
                             "description": "Symbol U4 Pin 1 [SDO, Bidirectional, Line]",
                             "pos": {
-                                "x": 3.6068,
+                                "x": 4.318,
                                 "y": 0.3683
                             },
                             "uuid": "c2cbfa42-fd6a-5ac1-821c-681a0531e5ee"
@@ -92,7 +92,7 @@
                             "description": "Symbol #PWR908 Pin 1 [Power output, Line]",
                             "pos": {
                                 "x": 1.1176,
-                                "y": 2.8575
+                                "y": 2.7305
                             },
                             "uuid": "62af285d-c678-59ed-ac0b-cf60e5ce588c"
                         }
@@ -106,7 +106,7 @@
                         {
                             "description": "Symbol U5 Pin 17 [PAD, Unspecified, Line]",
                             "pos": {
-                                "x": 4.3815,
+                                "x": 5.0927,
                                 "y": 0.5207
                             },
                             "uuid": "4fc361ee-23cf-5cf3-94d3-2b6deb4d4f84"
@@ -114,7 +114,7 @@
                         {
                             "description": "Symbol U5 Pin 3 [GND, Power input, Line]",
                             "pos": {
-                                "x": 4.3307,
+                                "x": 5.0419,
                                 "y": 0.5207
                             },
                             "uuid": "b6491e21-838b-5829-9dc4-cf01b582c74a"

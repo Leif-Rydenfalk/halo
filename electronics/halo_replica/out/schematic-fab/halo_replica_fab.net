@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic-fab/halo_replica_fab.kicad_sch")
-		(date "2026-09-05T18:51:03")
+		(date "2026-09-05T18:54:49")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -130,38 +130,34 @@
 		)
 		(comp
 			(ref "BT1")
-			(value "CR2032 3V holder, THT")
-			(footprint "Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032")
+			(value "CR2032 CELL - OFF-BOARD, ON 2 PADS")
+			(footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 			(datasheet "~")
-			(description "Single-cell battery")
+			(description "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			(fields
-				(field
-					(name "Courtyard") "27.41 x 6.30 mm, diagonal 28.13 mm against a 30.0 mm board")
 				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "BS-07-A1BJ001")
-				(field
-					(name "Replaces") "Keystone 1060, diagonal 39.25 mm - impossible at any position or rotation")
+					(name "MPN") "-")
 				(field
 					(name "Stands in for") "BATT-CONTACTS")
 				(field
-					(name "Substitution basis") "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification. THE HOLDER IS THROUGH-HOLE, not SMD like the Keystone 1060 it replaces - a real departure, because it changes how the board is assembled. It is one of only TWO parts in KiCad's Battery library whose courtyard fits a 30 mm disc (27.41 x 6.30 mm, diagonal 28.13 mm), and the other is a cell with solder tabs rather than a holder.")
+					(name "Substitution basis") "Apple uses THREE sprung contacts with both positives sensed and no holder at all. This board has TWO PADS and no holder either, for a different reason: NO CR2032 HOLDER IN KiCad's LIBRARY FITS A 30 mm DISC - nine of nine measurable ones are too big, measured through KiCad's own courtyard geometry. THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED, and now the cell is not even on the board. Both are real losses of function, stated rather than absorbed.")
 				(field
-					(name "Footprint") "Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032")
+					(name "Why not a holder") "smallest holder that fits is none; MYOUNG BS-07 diag 36.78 mm, Keystone 1060 39.38 mm, board 30.0")
+				(field
+					(name "Why not a solder-tab cell") "the one part that fits (Panasonic CR2032-VS1N, 21.64 mm) welds the cell in permanently")
+				(field
+					(name "Footprint") "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
 				(field
 					(name "Datasheet") "~")
 				(field
-					(name "Description") "Single-cell battery")
+					(name "Description") "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			)
 			(libsource
-				(lib "Device")
-				(part "Battery_Cell")
-				(description "Single-cell battery")
-			)
-			(property
-				(name "Courtyard")
-				(value "27.41 x 6.30 mm, diagonal 28.13 mm against a 30.0 mm board")
+				(lib "Connector_Generic")
+				(part "Conn_01x02")
+				(description "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)")
 			)
 			(property
 				(name "LCSC Part #")
@@ -169,11 +165,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "BS-07-A1BJ001")
-			)
-			(property
-				(name "Replaces")
-				(value "Keystone 1060, diagonal 39.25 mm - impossible at any position or rotation")
+				(value "-")
 			)
 			(property
 				(name "Stands in for")
@@ -181,7 +173,15 @@
 			)
 			(property
 				(name "Substitution basis")
-				(value "Apple uses THREE sprung contacts with both positives sensed and no holder at all. No catalogue holder has three terminals, so this board has two and THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED. A real loss of function, not a simplification. THE HOLDER IS THROUGH-HOLE, not SMD like the Keystone 1060 it replaces - a real departure, because it changes how the board is assembled. It is one of only TWO parts in KiCad's Battery library whose courtyard fits a 30 mm disc (27.41 x 6.30 mm, diagonal 28.13 mm), and the other is a cell with solder tabs rather than a holder.")
+				(value "Apple uses THREE sprung contacts with both positives sensed and no holder at all. This board has TWO PADS and no holder either, for a different reason: NO CR2032 HOLDER IN KiCad's LIBRARY FITS A 30 mm DISC - nine of nine measurable ones are too big, measured through KiCad's own courtyard geometry. THE FIVE-REMOVALS RESET RITUAL IS NOT REPRODUCED, and now the cell is not even on the board. Both are real losses of function, stated rather than absorbed.")
+			)
+			(property
+				(name "Why not a holder")
+				(value "smallest holder that fits is none; MYOUNG BS-07 diag 36.78 mm, Keystone 1060 39.38 mm, board 30.0")
+			)
+			(property
+				(name "Why not a solder-tab cell")
+				(value "the one part that fits (Panasonic CR2032-VS1N, 21.64 mm) welds the cell in permanently")
 			)
 			(property
 				(name "Sheetname")
@@ -193,7 +193,11 @@
 			)
 			(property
 				(name "ki_keywords")
-				(value "battery cell")
+				(value "connector")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Connector*:*_1x??_*")
 			)
 			(sheetpath
 				(names "/")
@@ -4072,43 +4076,6 @@
 		)
 		(libpart
 			(lib "Device")
-			(part "Battery_Cell")
-			(description "Single-cell battery")
-			(fields
-				(field
-					(name "Reference") "BT")
-				(field
-					(name "Value") "Battery_Cell")
-				(field
-					(name "Footprint")
-				)
-				(field
-					(name "Datasheet")
-				)
-				(field
-					(name "Description") "Single-cell battery")
-				(field
-					(name "Sim.Device") "V")
-				(field
-					(name "Sim.Type") "DC")
-				(field
-					(name "Sim.Pins") "1=+ 2=-")
-			)
-			(pins
-				(pin
-					(num "1")
-					(name "+")
-					(type "passive")
-				)
-				(pin
-					(num "2")
-					(name "-")
-					(type "passive")
-				)
-			)
-		)
-		(libpart
-			(lib "Device")
 			(part "C")
 			(description "Unpolarized capacitor")
 			(footprints
@@ -5031,7 +4998,7 @@
 			(node
 				(ref "BT1")
 				(pin "2")
-				(pinfunction "-_2")
+				(pinfunction "Pin_2_2")
 				(pintype "passive")
 			)
 			(node
@@ -5616,7 +5583,7 @@
 			(node
 				(ref "BT1")
 				(pin "1")
-				(pinfunction "+_1")
+				(pinfunction "Pin_1_1")
 				(pintype "passive")
 			)
 			(node

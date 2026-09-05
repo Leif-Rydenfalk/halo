@@ -260,18 +260,27 @@ print(f"THICKNESS  board declares {_t_read} mm (read back from the board), "
 # through-hole pad on the board fell inside it and KiCad reported 9
 # pth_inside_courtyard violations that looked like a placement problem and were
 # a PART CHOICE problem.
-_toobig = []
+_toobig, _nocy = [], []
 for _fp in b._pcb.GetFootprints():
     _bb = None
     for _ly in (_pn.F_CrtYd, _pn.B_CrtYd):
         _r = _fp.GetCourtyard(_ly).BBox()
         if _r.GetWidth() > 0 and (_bb is None or _r.GetWidth() > _bb[0]):
             _bb = (_r.GetWidth()/1e6, _r.GetHeight()/1e6)
-    if _bb is None: continue
+    if _bb is None:
+        # A FOOTPRINT WITH NO COURTYARD IS UNMEASURABLE, NOT COMPLIANT. Skipping
+        # it silently is how BatteryHolder_MPD_BC2003 — which declares no
+        # courtyard at all — would have passed this check without being measured.
+        _nocy.append(_fp.GetReference())
+        continue
     _diag = math.hypot(*_bb)
     if _diag > D_BOARD:
         _toobig.append((_fp.GetReference(), round(_bb[0], 2), round(_bb[1], 2),
                         round(_diag, 2)))
+if _nocy:
+    print(f"FOOTPRINT  CANNOT DETERMINE: {len(_nocy)} part(s) declare NO courtyard, "
+          f"so whether they fit was never measured: {sorted(_nocy)}")
+    raise SystemExit(2)
 if _toobig:
     print(f"FOOTPRINT  REFUSED: {len(_toobig)} part(s) have a courtyard that "
           f"cannot fit a Ø{D_BOARD} mm board at any position "

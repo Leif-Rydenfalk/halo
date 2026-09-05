@@ -4,7 +4,6 @@ nRF52832-QFAA-R,U1,Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,C77540,NR
 "MAX98357A class-D, TQFN-16",U5,Package_DFN_QFN:TQFN-16-1EP_3x3mm_P0.5mm_EP1.23x1.23mm,C910544,MAX98357AETE+T,1,"research/fetched/E-lcsc-price-pull-2026-09-03.md:34 names MAX98357AETE+T beside C910544 [TQFN-16-EP(3x3), stock 17515] | package PASS: both say 16 pins, 3x3 mm"
 2450AT18A100 2.4GHz chip,AE1,RF_Antenna:Johanson_2450AT18x100,C89334,2450AT18A100E,1,"research/fetched/E-lcsc-price-pull-2026-09-03.md:54 names 2450AT18A100E beside C89334 [1206, stock 6578] | package CANNOT DETERMINE: no comparable size in catalogue '1206' and land pattern 'Johanson_2450AT18x100'"
 10k,"R3,R4,R6",Resistor_SMD:R_0402_1005Metric,C60490,RC0402FR-0710KL,3,"research/fetched/E-jlcpcb-search-2026-09-03.md:385 names RC0402FR-0710KL beside C60490 [0402, extended, stock 9600477] | package PASS: both say 0402"
-"CR2032 3V holder, THT",BT1,Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032,,BS-07-A1BJ001,1,NOT SEARCHED: no committed pull queried 'BS-07-A1BJ001'. This is the cheap kind of unknown - one catalogue lookup closes it.
 1.0pF 50V C0G,"C21,C22",Capacitor_SMD:C_0402_1005Metric,,-,2,the schematic gives no MPN for this line
 150pF 50V C0G,"C23,C24",Capacitor_SMD:C_0402_1005Metric,,-,2,the schematic gives no MPN for this line
 1uF 16V X7R,"C6,C10",Capacitor_SMD:C_0402_1005Metric,,CL05A105KA5NNNC,2,NOT SEARCHED: no committed pull queried 'CL05A105KA5NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
@@ -12,6 +11,7 @@ nRF52832-QFAA-R,U1,Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,C77540,NR
 8pF 50V C0G,"C15,C16",Capacitor_SMD:C_0402_1005Metric,,CL05C080CB5NNNC,2,NOT SEARCHED: no committed pull queried 'CL05C080CB5NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
 10uF 6.3V X5R,C20,Capacitor_SMD:C_0603_1608Metric,,CL10A106MQ8NNNC,1,NOT SEARCHED: no committed pull queried 'CL10A106MQ8NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
 100uF 6.3V X5R,"C1,C2,C3,C4,C5",Capacitor_SMD:C_0805_2012Metric,,CL21A107MQNNNNE,5,NOT SEARCHED: no committed pull queried 'CL21A107MQNNNNE'. This is the cheap kind of unknown - one catalogue lookup closes it.
+"CR2032 CELL - OFF-BOARD, ON 2 PADS",BT1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
 NFC COIL 13.56MHz,J2,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
 VOICE COIL / SOUNDER,J1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
 SWD (nRST SWDIO SWCLK GND VBAT),J3,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line

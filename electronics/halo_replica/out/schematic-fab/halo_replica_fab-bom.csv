@@ -1,5 +1,4 @@
 Comment,Designator,Footprint,LCSC Part #,MPN,Quantity
-"CR2032 3V holder, THT",BT1,Battery:BatteryHolder_MYOUNG_BS-07-A1BJ001_CR2032,,BS-07-A1BJ001,1
 1.0pF 50V C0G,"C21,C22",Capacitor_SMD:C_0402_1005Metric,,-,2
 100nF 16V X7R,"C7,C8,C9,C11,C12,C13,C19,C25",Capacitor_SMD:C_0402_1005Metric,,CL05B104KO5NNNC,8
 150pF 50V C0G,"C23,C24",Capacitor_SMD:C_0402_1005Metric,,-,2
@@ -8,6 +7,7 @@ Comment,Designator,Footprint,LCSC Part #,MPN,Quantity
 8pF 50V C0G,"C15,C16",Capacitor_SMD:C_0402_1005Metric,,CL05C080CB5NNNC,2
 10uF 6.3V X5R,C20,Capacitor_SMD:C_0603_1608Metric,,CL10A106MQ8NNNC,1
 100uF 6.3V X5R,"C1,C2,C3,C4,C5",Capacitor_SMD:C_0805_2012Metric,,CL21A107MQNNNNE,5
+"CR2032 CELL - OFF-BOARD, ON 2 PADS",BT1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1
 NFC COIL 13.56MHz,J2,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1
 VOICE COIL / SOUNDER,J1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1
 SWD (nRST SWDIO SWCLK GND VBAT),J3,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,,-,1
