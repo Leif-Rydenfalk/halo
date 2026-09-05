@@ -83,7 +83,7 @@ WHAT THIS BOARD DOES NOT CLAIM
   * THE ANTENNA GEOMETRY IS THIS FILE'S, NOT ce-rf's. Lane T3 owns the
     shape and, as of this writing, its two round-board cases resonate at
     4.0 and 5.8 GHz instead of 2.44 and it is retuning — on a Ø30 outline,
-    which is not this board either. So the inverted-F drawn here is a
+    which is not this board either. So the AE1 element drawn here is a
     PARAMETRIC PLACEHOLDER at a length computed from a quarter wavelength,
     put where the copper has to go, so that ce-rf has real geometry to
     solve instead of a blank annulus. Its S11 is CANNOT DETERMINE until
@@ -93,6 +93,24 @@ WHAT THIS BOARD DOES NOT CLAIM
   * A PASSING DRC MEANS MANUFACTURABLE, NOT CORRECT. Whether the circuit
     works is the schematic's question and the simulators'.
 """
+# AE1 TOPOLOGY IS NOT SETTLED, and this file used to call it three things.
+# It was described here as a "meandered quarter-wave monopole", an "inverted-F"
+# and an "inverted-L monopole" in three separate places. Those are three
+# different topologies with three different counterpoise requirements, so a
+# reader could not tell what was drawn and neither could anyone setting up a
+# solver port. The names were removed rather than one being picked, because
+# picking one would assert something nobody has established.
+#
+# What IS established, measured: the element is a meandered trace on F.Cu only,
+# nine teeth, conductor 24.49100 mm against a quarter-wave target of the same,
+# error -0.00000, copper R11.1920-R12.2000 at theta 256-340 degrees, fed at one
+# end with the other end open. Whether that behaves as a monopole, an
+# inverted-F or an inverted-L on THIS ground depends on the counterpoise, which
+# is what ce-rf is still trying to characterise -- three hypotheses refuted so
+# far (DECISIONS.md D26b-D26e).
+#
+# Call it "the AE1 element" until a solve identifies its mode.
+
 import json
 import math
 import os
@@ -322,7 +340,7 @@ b.keepout(diameter=D_ANTENNA_KO, center=(CX, CY), layers="*",
 #    under the radiating element or it does not radiate.
 ANT_CLEAR = sector_polygon(R_ANNULUS_IN - 0.3, R - 0.05,
                            ANT_SECTOR_MID, ANT_SECTOR_ARC + 6.0)
-# FORBIDS POURS AND VIAS, NOT TRACKS AND PADS. What an inverted-L monopole
+# FORBIDS POURS AND VIAS, NOT TRACKS AND PADS. What the AE1 element
 # needs is its COUNTERPOISE removed - the ground and VDD planes, and any via
 # stitching them - from under the radiating element. Forbidding tracks and
 # pads as well was tried and reported 100 items_not_allowed against the NFC
@@ -817,7 +835,7 @@ def arc_track(net, r, a0, a1, width, layer, steps=40):
 # "custom pad shape must resolve to a single polygon". A track is arbitrary
 # in shape, carries a net, plots as copper and is understood by the DRC.
 
-# -- AE1: the meandered quarter-wave monopole -----------------------------
+# -- AE1: a meandered element, topology UNRESOLVED (see note below) -----------------------------
 # The waypoints come from footprints.element_path(), whose tooth depth is
 # SOLVED so the conductor is exactly a quarter wave at the eps_eff openEMS
 # measured on this board (1.573, not the textbook 2.2). One path, drawn here
