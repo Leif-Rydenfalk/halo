@@ -192,3 +192,53 @@ reported and not assumed.**
 **And the standing one:** the board is knowingly incomplete in the dark regions and
 the picture says so. **Do not fill those gaps by eye.** An eyeballed position among
 measured ones is invisible in a render, which is exactly why it must not happen.
+
+---
+
+## The pocket cross-photograph test — a NULL, and the control says why
+
+ce-workshop-9a's hypothesis: if the hole is a routed pocket then `n` is not a property
+of it at all, two photographs would disagree on `n` **by construction**, and the spread
+would be evidence FOR the pocket rather than evidence the hole cannot be measured.
+Test on **facet angles**, never on `n` and never on residuals.
+
+| run | result |
+|---|---|
+| FCC photo 6, registered (+87.201°, derived from `c_register`'s homography Jacobian, det J > 0, no reflection, fitted on 80 **interior landmarks** so it never saw the hole) | 3 pairs, mean 3.87° — **p 8.64 %** |
+| same, restricted to CH3's threshold-stable normals — **chosen AFTER that null** | 3 pairs, mean 7.17° — p 2.81 % |
+| **FCC photo 7, PRE-REGISTERED in `7f4f25e` before extraction**, free rotation, no registration used | 3 of 3 at 84.50° — **p 60.97 %** |
+
+**VERDICT: CANNOT DETERMINE. L1's PARTIALLY DETERMINED stands.**
+
+**The photo-7 test had almost no power and my own negative control is what says so:**
+chance already scores **2.61 of a possible 3**. With 7 A-facets and a 12° tolerance,
+**36 % of the circle counts as a match** (measured, printed by the tool), and a free
+rotation makes almost any 3-facet set match. The pre-registration fixed the procedure
+honestly; the procedure still could not discriminate. **That is a test-design error,
+caught by the control, and it is the only reason a 3-of-3 "agreement" is not sitting
+in this file as a result.**
+
+**No third statistic was run after two nulls.** The next test needs pre-registering
+before extraction: restrict A to only the facets the second photograph could resolve
+(a per-facet power calculation, not all 7), derive the tolerance per facet from
+`atan(1 genuine px / that facet's span)` rather than one number for all, and use the
+angular **error** as the statistic — a count saturates, an error does not.
+
+### What stands without any of it
+
+**L1's "three disagreeing exponents" are not three independent measurements.**
+n = 2.00 (pinned) and n = 2.449 come from the **same photograph and the same boundary
+points**, differing only by optimiser and bounds. There are **two** estimates: photo 6's
+2.70 and O'Flynn's ~2.0–2.45. That does not overturn PARTIALLY DETERMINED — it narrows
+the basis the verdict rests on, and the verdict should be restated on two, not three.
+
+### Instrument facts measured along the way
+
+| control | photo 6 | photo 7 |
+|---|---|---|
+| CH1 the same extractor centred on solid board | 0 px | 0 px |
+| CH2 hole diameter across thresholds 150–210 | **6.60 %** spread | 2.97 % |
+| CH3 facet normals surviving more than half the sweep | 3 of up to 7 | 3 of up to 4 |
+
+**Correction to commit `74cf6dd`'s message:** it says 47 % of the circle counts as a
+match. The measured figure the tool prints is **36 %**. The conclusion is unchanged.
