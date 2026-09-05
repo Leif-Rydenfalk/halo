@@ -118,6 +118,21 @@ b = Board("halo_replica_fab", diameter=D_BOARD, layers=4)
 # disable tracks layer count and is a real constraint. This board is 4 layers,
 # so 0.8 mm is the thinnest orderable — 0.50 mm from Apple, and recorded as such
 # in fab/README.md's departures table.
+# THE DESIGN RULES, SET RATHER THAN DEFAULTED — the same defect as the thickness.
+# Nothing here called b.rules(), so the board carried KiCad's 0.20 mm minimum
+# clearance. MEASURED: U4 is an LGA-12 at 0.5 mm pitch whose own pads sit
+# 0.150 mm apart, so a 0.20 mm rule forbids the manufacturer's own land pattern
+# and produced 12 "clearance errors" that no placement could ever fix. The rule
+# was also tighter than what fab/README.md and ORDER-SETTINGS.txt tell the fab
+# we need (0.09 mm), so the board was being held to a standard we do not order to.
+# 0.09 mm is JLCPCB's published 4-layer minimum trace/space. This is not a check
+# loosened to pass: it is the rule being set to the process we are actually
+# buying, instead of a number nobody chose.
+b.rules(clearance=0.09, track=0.127, via=0.6, via_drill=0.3,
+        why="JLCPCB 4-layer: 0.09 mm min trace/space; vias 0.6 mm pad / 0.3 mm "
+            "drill. The previous 0.20 mm was KiCad's default and forbade U4's "
+            "own 0.150 mm pad gaps.")
+
 T_BOARD = 0.8
 b.thickness(T_BOARD, why="thinnest orderable at 4 layers at JLCPCB, measured "
                          "2026-09-05 in the live configurator; the Replica is "
@@ -237,6 +252,32 @@ if abs(_t_read - T_BOARD) > 1e-6:
     raise SystemExit(1)
 print(f"THICKNESS  board declares {_t_read} mm (read back from the board), "
       f"{_t_read - 0.30:+.2f} mm from the 0.30 mm the Replica is drawn to")
+# CAN EACH PART EVEN FIT ON THIS BOARD? Distinct from "is it inside the
+# outline": a footprint whose COURTYARD is larger than the board can never be
+# placed legally no matter where it goes, and no amount of relaxation will
+# report that — the solver just pushes it around forever. MEASURED: BT1's
+# Keystone 1060 courtyard is 32.90 x 21.40 mm on a Ø30 mm board, so every
+# through-hole pad on the board fell inside it and KiCad reported 9
+# pth_inside_courtyard violations that looked like a placement problem and were
+# a PART CHOICE problem.
+_toobig = []
+for _fp in b._pcb.GetFootprints():
+    _bb = None
+    for _ly in (_pn.F_CrtYd, _pn.B_CrtYd):
+        _r = _fp.GetCourtyard(_ly).BBox()
+        if _r.GetWidth() > 0 and (_bb is None or _r.GetWidth() > _bb[0]):
+            _bb = (_r.GetWidth()/1e6, _r.GetHeight()/1e6)
+    if _bb is None: continue
+    _diag = math.hypot(*_bb)
+    if _diag > D_BOARD:
+        _toobig.append((_fp.GetReference(), round(_bb[0], 2), round(_bb[1], 2),
+                        round(_diag, 2)))
+if _toobig:
+    print(f"FOOTPRINT  REFUSED: {len(_toobig)} part(s) have a courtyard that "
+          f"cannot fit a Ø{D_BOARD} mm board at any position "
+          f"(ref, w, h, diagonal): {sorted(_toobig)}")
+    raise SystemExit(1)
+print(f"FITS       every courtyard fits inside Ø{D_BOARD} mm")
 print(f"ONBOARD    45/45 footprints read back inside Edge.Cuts "
       f"(Ø{2*_er:.2f} mm at {_ecx:.2f},{_ecy:.2f}) - measured from the board")
 placed = sorted(set(pos) | BACK_SIDE)

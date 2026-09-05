@@ -467,12 +467,62 @@ def residual_coherence(P, Q, k=4, trials=400, seed=11):
 
     I = stat(R)
     rng = np.random.default_rng(seed)
-    null = np.empty(trials)
-    for t in range(trials):
-        null[t] = stat(R[rng.permutation(n)])
-    m, sd = float(null.mean()), float(null.std())
-    z = (I-m)/sd if sd > 0 else float('nan')
-    return dict(I=float(I), null_mean=m, null_sd=sd, z=float(z), k=k, trials=trials, n=n)
+
+    def zof(Rv):
+        Iv = stat(Rv)
+        nl = np.empty(trials)
+        for t in range(trials):
+            nl[t] = stat(Rv[rng.permutation(n)])
+        m_, sd_ = float(nl.mean()), float(nl.std())
+        return Iv, m_, sd_, ((Iv-m_)/sd_ if sd_ > 0 else float('nan'))
+
+    I, m, sd, z = zof(R)
+
+    # POWER PROBE - and it exists because its absence produced a wrong published
+    # conclusion.  On 2026-09-05 this statistic read z=+1.4 on the BACK face with
+    # 58 landmarks and R09 published "a smooth geometric cause is RULED OUT".  The
+    # same face with 192 landmarks reads z=+8.5.  The low z was not evidence of
+    # absence, it was ABSENCE OF POWER, and nothing in the output said so.
+    #
+    # So: inject a SMOOTH radial warp into the ACTUAL residuals, sized to the
+    # residuals already present, and re-score.  If the injected z does not clear
+    # the threshold, this landmark set CANNOT detect a smooth field and a low z
+    # means CANNOT DETERMINE - never "ruled out".
+    c = P.mean(axis=0); d = P - c
+    rr = np.hypot(d[:, 0], d[:, 1]); Rn = max(rr.max(), 1e-9)
+    rms = float(np.sqrt((R*R).sum(axis=1).mean()))
+    shape = d/np.maximum(rr, 1e-9)[:, None] * ((rr/Rn)**2)[:, None]
+
+    # A FIRST VERSION OF THIS PROBE WAS ALSO WRONG, 2026-09-05, and the failure is
+    # kept here because it is the instructive one.  It injected ONE warp, sized to
+    # the FULL residual RMS, and reported POWERED / UNDERPOWERED.  On the back
+    # face's 58 landmarks it said POWERED (injected z=+5.1) while the observed
+    # z was +1.4 -- and the same face at 192 landmarks then read z=+8.5.  So the
+    # probe passed the set that had just got the answer wrong.  The reason: the
+    # real coherent component is a FRACTION of the residual RMS, most of which is
+    # localisation noise, so a probe at full RMS tests for a warp far larger than
+    # the one in question.  A yes/no at one over-large effect size is not power.
+    #
+    # What replaces it: sweep the injected amplitude DOWN and report the smallest
+    # one this landmark set can still see.  A low observed z then means something
+    # precise -- "no coherent component larger than THIS" -- instead of "none".
+    fracs = [1.0, 0.7, 0.5, 0.35, 0.25, 0.18, 0.12, 0.08]
+    sweep, limit = [], None
+    for f in fracs:
+        _, _, _, zf = zof(R + shape*(rms*f))
+        sweep.append(dict(frac=f, amp_px=rms*f, z=float(zf)))
+        if zf > 3.0:
+            limit = f
+    return dict(I=float(I), null_mean=m, null_sd=sd, z=float(z), k=k, trials=trials, n=n,
+                residual_rms_px=rms, power_sweep=sweep,
+                detection_limit_frac=limit,
+                detection_limit_px=(rms*limit if limit is not None else None),
+                powered=bool(limit is not None and limit <= 0.5),
+                power_note="detection_limit_* is the SMALLEST smooth radial warp, injected "
+                           "into the real residuals, that this landmark set can still "
+                           "distinguish from its permutation null at z>3. A low observed z "
+                           "bounds any coherent component BELOW that amplitude - it never "
+                           "means there is none.")
 
 
 def fit_homography_dlt(P, Q):
@@ -761,15 +811,23 @@ def run_validate(a):
         print("  RESIDUAL COHERENCE  I = %+.4f   null %.4f +- %.4f over %d permutations"
               "   z = %+.1f" % (coh['I'], coh['null_mean'], coh['null_sd'],
                                 coh['trials'], coh['z']))
+        if coh['detection_limit_frac'] is None:
+            print("                      DETECTION LIMIT: none - this set cannot see a "
+                  "smooth warp even at the full residual RMS (%.2f px)." % coh['residual_rms_px'])
+        else:
+            print("                      DETECTION LIMIT: %.0f%% of the residual RMS = "
+                  "%.2f px. A smooth field smaller than that is INVISIBLE here."
+                  % (100*coh['detection_limit_frac'], coh['detection_limit_px']))
         if coh['z'] > 3.0:
             print("                      SPATIALLY COHERENT: neighbouring landmarks miss "
                   "TOGETHER, so the misfit is a smooth field, not independent per-part "
                   "scatter. It does NOT say which smooth cause.")
-        elif coh['z'] < 1.5:
-            print("                      NOT distinguishable from a field with no spatial "
-                  "structure at all - consistent with independent per-landmark error.")
         else:
-            print("                      between the two - CANNOT DETERMINE.")
+            print("                      CANNOT DETERMINE. A coherent field is BOUNDED "
+                  "below %s, not excluded. Reading a low score as 'ruled out' is the "
+                  "error R09 published and R11 corrected."
+                  % ('the full residual RMS' if coh['detection_limit_px'] is None
+                     else '%.2f px' % coh['detection_limit_px']))
 
     verdict = PASS; why = []
     if not ok:
@@ -936,6 +994,31 @@ def run_selftest(a):
         rec(cs is not None and cs['z'] > 3.0,
             "COHERENCE RISES for a genuinely SMOOTH warp: I=%+.4f null %.4f+-%.4f "
             "z=%+.1f" % (cs['I'], cs['null_mean'], cs['null_sd'], cs['z']))
+        # 8: THE POWER PROBE, which is the control whose absence produced a wrong
+        # published conclusion (R09: "a smooth cause is RULED OUT", from z=+1.4 on
+        # 58 landmarks; the same face reads z=+8.5 on 192). A thin landmark set
+        # must be REPORTED as unable to see, not read as having seen nothing.
+        thin = np.arange(0, len(P), max(1, len(P)//14))
+        ct = residual_coherence(P[thin], Qi[thin])
+        cf = residual_coherence(P, Qi)
+        lt = ct['detection_limit_frac'] if ct else None
+        lf = cf['detection_limit_frac'] if cf else None
+        rec(cf is not None and lf is not None and (lt is None or lt > lf),
+            "DETECTION LIMIT is WORSE for a THIN set than a full one: n=%d limit %s "
+            "vs n=%d limit %s (fraction of residual RMS; None = cannot see even at 1.0)"
+            % (len(thin), lt, cf['n'], lf))
+        # The limit must TIGHTEN when the data get quieter, in the unit that
+        # matters (pixels). A "bound" that ignores the noise it is bounding
+        # against would be a decoration. An earlier version of this case asserted
+        # `limit <= 0.5 x RMS` and went red on a set whose limit is legitimately
+        # 1.0 - an arbitrary threshold, not a property; replaced with this.
+        Qq = Q + (Qi - Q)*0.4                      # same field, 40% of the noise
+        cq = residual_coherence(P, Qq)
+        rec(cq is not None and cq['detection_limit_px'] is not None
+            and cf['detection_limit_px'] is not None
+            and cq['detection_limit_px'] < cf['detection_limit_px'],
+            "DETECTION LIMIT TIGHTENS as the data get quieter: %.2f px at 40%% noise "
+            "vs %.2f px at full noise" % (cq['detection_limit_px'], cf['detection_limit_px']))
     ok = sum(1 for r in results if r)
     print("\n%d/%d passed, %d failed" % (ok, len(results), len(results)-ok))
     print("synthetic inputs kept at %s" % tmp)

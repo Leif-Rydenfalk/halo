@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic-fab/halo_replica_fab.kicad_sch")
-		(date "2026-09-05T18:08:07")
+		(date "2026-09-05T18:46:25")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -64,11 +64,11 @@
 				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "2450AT18A100")
+					(name "MPN") "2450AT18A100E")
 				(field
 					(name "Stands in for") "ANT1")
 				(field
-					(name "Substitution basis") "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. A chip antenna is CHOSEN because it works on a board of any outline and needs no carrier: this board is meant to be switched on, not to be the right shape.")
+					(name "Substitution basis") "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. A chip antenna is CHOSEN because it works on a board of any outline and needs no carrier: this board is meant to be switched on, not to be the right shape. THE MPN CARRIES ITS 'E': the catalogue has no part called 2450AT18A100, and x_lcsc_resolve matched that shorter string inside the longer 2450AT18A100E and returned a code for a part number this sheet did not name. Both ends were wrong and both are fixed - the matcher is token-exact, and this line now names what can actually be bought.")
 				(field
 					(name "Footprint") "RF_Antenna:Johanson_2450AT18x100")
 				(field
@@ -87,7 +87,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "2450AT18A100")
+				(value "2450AT18A100E")
 			)
 			(property
 				(name "Stands in for")
@@ -95,7 +95,7 @@
 			)
 			(property
 				(name "Substitution basis")
-				(value "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. A chip antenna is CHOSEN because it works on a board of any outline and needs no carrier: this board is meant to be switched on, not to be the right shape.")
+				(value "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. A chip antenna is CHOSEN because it works on a board of any outline and needs no carrier: this board is meant to be switched on, not to be the right shape. THE MPN CARRIES ITS 'E': the catalogue has no part called 2450AT18A100, and x_lcsc_resolve matched that shorter string inside the longer 2450AT18A100E and returned a code for a part number this sheet did not name. Both ends were wrong and both are fixed - the matcher is token-exact, and this line now names what can actually be bought.")
 			)
 			(property
 				(name "Sheetname")
@@ -914,7 +914,7 @@
 				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "CL05B104KO5NNNC")
+					(name "MPN") "CL05A105KA5NNNC")
 				(field
 					(name "Stands in for") "R/C/L bulk")
 				(field
@@ -937,7 +937,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "CL05B104KO5NNNC")
+				(value "CL05A105KA5NNNC")
 			)
 			(property
 				(name "Stands in for")
@@ -1463,7 +1463,7 @@
 				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "CL05C080CB5NNNC")
+					(name "MPN") "CL05C220JB5NNNC")
 				(field
 					(name "Stands in for") "R/C/L bulk")
 				(field
@@ -1486,7 +1486,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "CL05C080CB5NNNC")
+				(value "CL05C220JB5NNNC")
 			)
 			(property
 				(name "Stands in for")
@@ -1541,7 +1541,7 @@
 				(field
 					(name "LCSC Part #") "CANNOT DETERMINE - no price pull was done by this lane; source against MPN")
 				(field
-					(name "MPN") "CL05C080CB5NNNC")
+					(name "MPN") "CL05C220JB5NNNC")
 				(field
 					(name "Stands in for") "R/C/L bulk")
 				(field
@@ -1564,7 +1564,7 @@
 			)
 			(property
 				(name "MPN")
-				(value "CL05C080CB5NNNC")
+				(value "CL05C220JB5NNNC")
 			)
 			(property
 				(name "Stands in for")

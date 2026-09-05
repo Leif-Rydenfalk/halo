@@ -11,6 +11,7 @@
  "ncc": 0.5066064121452601,
  "split": "angular",
  "folds_k": 2,
+ "split_offset_deg": 0.0,
  "folds": [
   {
    "sector": [
@@ -761,7 +762,11 @@
   "z": 1.3714810820237546,
   "k": 4,
   "trials": 400,
-  "n": 58
+  "n": 58,
+  "power_injected_z": 5.104730174465035,
+  "power_injected_amp_px": 1.193725112611781,
+  "powered": true,
+  "power_note": "z of the SAME statistic after injecting a smooth radial warp into the real residuals, sized to their own RMS. If this does not clear 3, a low observed z is CANNOT DETERMINE and NOT 'no structure'."
  },
  "landmarks_kept": 58,
  "landmarks_discarded": {

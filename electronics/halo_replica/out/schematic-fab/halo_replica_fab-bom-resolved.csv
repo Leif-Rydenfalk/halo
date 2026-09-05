@@ -1,26 +1,26 @@
 Comment,Designator,Footprint,LCSC Part #,MPN,Quantity,Order code source
-100nF 16V X7R,"C7,C8,C9,C11,C12,C13,C19,C25",Capacitor_SMD:C_0402_1005Metric,C1525,CL05B104KO5NNNC,8,research/fetched/E-lcsc-price-pull-2026-09-03.md:57 names CL05B104KO5NNNC beside C1525
-nRF52832-QFAA-R,U1,Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,C77540,NRF52832-QFAA-R,1,research/fetched/E-lcsc-price-pull-2026-09-03.md:9 names NRF52832-QFAA-R beside C77540
-"MAX98357A class-D, TQFN-16",U5,Package_DFN_QFN:TQFN-16-1EP_3x3mm_P0.5mm_EP1.23x1.23mm,C910544,MAX98357AETE+T,1,research/fetched/E-lcsc-price-pull-2026-09-03.md:34 names MAX98357AETE+T beside C910544
-10k,"R3,R4,R6",Resistor_SMD:R_0402_1005Metric,C60490,RC0402FR-0710KL,3,research/fetched/E-jlcpcb-search-2026-09-03.md:385 names RC0402FR-0710KL beside C60490
-CR2032 3V in a holder,BT1,Battery:BatteryHolder_Keystone_1060_1x2032,,Keystone 1060,1,no committed price pull names Keystone 1060 on a line with an order code
+100nF 16V X7R,"C7,C8,C9,C11,C12,C13,C19,C25",Capacitor_SMD:C_0402_1005Metric,C1525,CL05B104KO5NNNC,8,"research/fetched/E-lcsc-price-pull-2026-09-03.md:57 names CL05B104KO5NNNC beside C1525 [0402, stock 6842900] | package PASS: both say 0402"
+nRF52832-QFAA-R,U1,Package_DFN_QFN:QFN-48-1EP_6x6mm_P0.4mm_EP4.4x4.4mm,C77540,NRF52832-QFAA-R,1,"research/fetched/E-lcsc-price-pull-2026-09-03.md:9 names NRF52832-QFAA-R beside C77540 [QFN-48-EP(6x6), stock 29868] | package PASS: both say 48 pins, 6x6 mm"
+"MAX98357A class-D, TQFN-16",U5,Package_DFN_QFN:TQFN-16-1EP_3x3mm_P0.5mm_EP1.23x1.23mm,C910544,MAX98357AETE+T,1,"research/fetched/E-lcsc-price-pull-2026-09-03.md:34 names MAX98357AETE+T beside C910544 [TQFN-16-EP(3x3), stock 17515] | package PASS: both say 16 pins, 3x3 mm"
+2450AT18A100 2.4GHz chip,AE1,RF_Antenna:Johanson_2450AT18x100,C89334,2450AT18A100E,1,"research/fetched/E-lcsc-price-pull-2026-09-03.md:54 names 2450AT18A100E beside C89334 [1206, stock 6578] | package CANNOT DETERMINE: no comparable size in catalogue '1206' and land pattern 'Johanson_2450AT18x100'"
+10k,"R3,R4,R6",Resistor_SMD:R_0402_1005Metric,C60490,RC0402FR-0710KL,3,"research/fetched/E-jlcpcb-search-2026-09-03.md:385 names RC0402FR-0710KL beside C60490 [0402, extended, stock 9600477] | package PASS: both say 0402"
+CR2032 3V in a holder,BT1,Battery:BatteryHolder_Keystone_1060_1x2032,,Keystone 1060,1,NOT SEARCHED: no committed pull queried 'Keystone 1060'. This is the cheap kind of unknown - one catalogue lookup closes it.
 1.0pF 50V C0G,"C21,C22",Capacitor_SMD:C_0402_1005Metric,,-,2,the schematic gives no MPN for this line
 150pF 50V C0G,"C23,C24",Capacitor_SMD:C_0402_1005Metric,,-,2,the schematic gives no MPN for this line
-1uF 16V X7R,"C6,C10",Capacitor_SMD:C_0402_1005Metric,,CL05A105KA5NNNC,2,no committed price pull names CL05A105KA5NNNC on a line with an order code
-22pF 50V C0G,"C17,C18",Capacitor_SMD:C_0402_1005Metric,,CL05C220JB5NNNC,2,no committed price pull names CL05C220JB5NNNC on a line with an order code
-8pF 50V C0G,"C15,C16",Capacitor_SMD:C_0402_1005Metric,,CL05C080CB5NNNC,2,no committed price pull names CL05C080CB5NNNC on a line with an order code
-10uF 6.3V X5R,C20,Capacitor_SMD:C_0603_1608Metric,,CL10A106MQ8NNNC,1,no committed price pull names CL10A106MQ8NNNC on a line with an order code
-100uF 6.3V X5R,"C1,C2,C3,C4,C5",Capacitor_SMD:C_0805_2012Metric,,CL21A107MQNNNNE,5,no committed price pull names CL21A107MQNNNNE on a line with an order code
+1uF 16V X7R,"C6,C10",Capacitor_SMD:C_0402_1005Metric,,CL05A105KA5NNNC,2,NOT SEARCHED: no committed pull queried 'CL05A105KA5NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
+22pF 50V C0G,"C17,C18",Capacitor_SMD:C_0402_1005Metric,,CL05C220JB5NNNC,2,NOT SEARCHED: no committed pull queried 'CL05C220JB5NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
+8pF 50V C0G,"C15,C16",Capacitor_SMD:C_0402_1005Metric,,CL05C080CB5NNNC,2,NOT SEARCHED: no committed pull queried 'CL05C080CB5NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
+10uF 6.3V X5R,C20,Capacitor_SMD:C_0603_1608Metric,,CL10A106MQ8NNNC,1,NOT SEARCHED: no committed pull queried 'CL10A106MQ8NNNC'. This is the cheap kind of unknown - one catalogue lookup closes it.
+100uF 6.3V X5R,"C1,C2,C3,C4,C5",Capacitor_SMD:C_0805_2012Metric,,CL21A107MQNNNNE,5,NOT SEARCHED: no committed pull queried 'CL21A107MQNNNNE'. This is the cheap kind of unknown - one catalogue lookup closes it.
 NFC COIL 13.56MHz,J2,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
 VOICE COIL / SOUNDER,J1,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
 SWD (nRST SWDIO SWCLK GND VBAT),J3,Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical,,-,1,the schematic gives no MPN for this line
-32MHz 10ppm CL=8pF,X1,Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm,,NX2012SA-32M-STD-CSW-5,1,no committed price pull names NX2012SA-32M-STD-CSW-5 on a line with an order code
-32.768kHz 20ppm CL=12.5pF,X2,Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm,,ABS07-32.768KHZ-T,1,no committed price pull names ABS07-32.768KHZ-T on a line with an order code
-BAT54HT1G (Vf~0.24V @1mA),D1,Diode_SMD:D_SOD-323,,BAT54HT1G,1,no committed price pull names BAT54HT1G on a line with an order code
+32MHz 10ppm CL=8pF,X1,Crystal:Crystal_SMD_2012-2Pin_2.0x1.2mm,,NX2012SA-32M-STD-CSW-5,1,NOT SEARCHED: no committed pull queried 'NX2012SA-32M-STD-CSW-5'. This is the cheap kind of unknown - one catalogue lookup closes it.
+32.768kHz 20ppm CL=12.5pF,X2,Crystal:Crystal_SMD_3215-2Pin_3.2x1.5mm,,ABS07-32.768KHZ-T,1,NOT SEARCHED: no committed pull queried 'ABS07-32.768KHZ-T'. This is the cheap kind of unknown - one catalogue lookup closes it.
+BAT54HT1G (Vf~0.24V @1mA),D1,Diode_SMD:D_SOD-323,,BAT54HT1G,1,NOT SEARCHED: no committed pull queried 'BAT54HT1G'. This is the cheap kind of unknown - one catalogue lookup closes it.
 3.9nH,L1,Inductor_SMD:L_0402_1005Metric,,-,1,the schematic gives no MPN for this line
-"SC7A20 3-axis, LGA-12",U4,Package_LGA:LGA-12_2x2mm_P0.5mm,,SC7A20,1,no committed price pull names SC7A20 on a line with an order code
-MX25R3235F 32Mb 1.65-3.6V,U3,Package_SO:JEITA_SOIC-8_3.9x4.9mm_P1.27mm,,MX25R3235FM1IL0,1,no committed price pull names MX25R3235FM1IL0 on a line with an order code
-"MIC94090YC6 (0.5 uA, 1.5 A)",U2,Package_TO_SOT_SMD:SOT-363_SC-70-6,,MIC94090YC6,1,no committed price pull names MIC94090YC6 on a line with an order code
-2450AT18A100 2.4GHz chip,AE1,RF_Antenna:Johanson_2450AT18x100,,2450AT18A100,1,no committed price pull names 2450AT18A100 on a line with an order code
-100k,R5,Resistor_SMD:R_0402_1005Metric,,RC0402FR-07100KL,1,no committed price pull names RC0402FR-07100KL on a line with an order code
-10M,"R1,R2",Resistor_SMD:R_0402_1005Metric,,RC0402FR-0710ML,2,no committed price pull names RC0402FR-0710ML on a line with an order code
+"SC7A20 3-axis, LGA-12",U4,Package_LGA:LGA-12_2x2mm_P0.5mm,,SC7A20,1,NOT SEARCHED: no committed pull queried 'SC7A20'. This is the cheap kind of unknown - one catalogue lookup closes it.
+MX25R3235F 32Mb 1.65-3.6V,U3,Package_SO:JEITA_SOIC-8_3.9x4.9mm_P1.27mm,,MX25R3235FM1IL0,1,NOT SEARCHED: no committed pull queried 'MX25R3235FM1IL0'. This is the cheap kind of unknown - one catalogue lookup closes it.
+"MIC94090YC6 (0.5 uA, 1.5 A)",U2,Package_TO_SOT_SMD:SOT-363_SC-70-6,,MIC94090YC6,1,NOT SEARCHED: no committed pull queried 'MIC94090YC6'. This is the cheap kind of unknown - one catalogue lookup closes it.
+100k,R5,Resistor_SMD:R_0402_1005Metric,,RC0402FR-07100KL,1,NOT SEARCHED: no committed pull queried 'RC0402FR-07100KL'. This is the cheap kind of unknown - one catalogue lookup closes it.
+10M,"R1,R2",Resistor_SMD:R_0402_1005Metric,,RC0402FR-0710ML,2,NOT SEARCHED: no committed pull queried 'RC0402FR-0710ML'. This is the cheap kind of unknown - one catalogue lookup closes it.

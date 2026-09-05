@@ -540,12 +540,19 @@ def build():
     # =====================================================================
     s.part("AE1", "Device:Antenna_Chip", value="2450AT18A100 2.4GHz chip",
            group="rf", footprint="RF_Antenna:Johanson_2450AT18x100",
-           fields=F("ANT1", "2450AT18A100",
+           fields=F("ANT1", "2450AT18A100E",
                     "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE "
                     "PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. "
                     "A chip antenna is CHOSEN because it works on a board of "
                     "any outline and needs no carrier: this board is meant "
-                    "to be switched on, not to be the right shape."))
+                    "to be switched on, not to be the right shape. THE MPN "
+                    "CARRIES ITS 'E': the catalogue has no part called "
+                    "2450AT18A100, and x_lcsc_resolve matched that shorter "
+                    "string inside the longer 2450AT18A100E and returned a "
+                    "code for a part number this sheet did not name. Both "
+                    "ends were wrong and both are fixed - the matcher is "
+                    "token-exact, and this line now names what can actually "
+                    "be bought."))
     for ref, val, note in (
             ("C21", "1.0pF 50V C0G", "shunt at the SoC side of the pi"),
             ("L1", "3.9nH", "series element of the pi"),
