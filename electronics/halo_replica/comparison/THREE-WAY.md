@@ -108,6 +108,40 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 
 ---
 
+## Distance from a deliverable — the other axis of drift
+
+*The divergence counter in threeway.json counts distance FROM APPLE. It does not count DISTANCE FROM A DELIVERABLE, and that is the gap that let this project run for a day with 130 measurement files, 40 measuring tools and twelve evidence documents, and NOTHING ANYONE CAN OPEN IN KiCAD OR SEND TO A FABRICATOR. We had an instrument for one axis of drift and none for the other, so the Replica could move steadily away from being a buildable thing while every number about fidelity improved. THIS IS THE MISSING AXIS. It is red until KiCad can open something.*
+
+**1 of 8 artifacts exist and open.**
+
+| | artifact | state | halo_rev_a | evidence |
+|---|---|:-:|---|---|
+| D1 | Schematic source | 🔴 | electronics/halo_rev_a/out/halo_rev_a.kicad_sch | no file of this kind anywhere in the Replica tree |
+| D2 | Netlist | 🔴 | electronics/halo_rev_a/out/halo_rev_a.net | no file of this kind anywhere in the Replica tree |
+| D3 | Footprint library | ✅ | electronics/halo_rev_a/halo.pretty/*.kicad_mod | `electronics/halo_replica/halo_replica.pretty/REPL_METAL_1.4x1.71.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_0.7x1.49.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_1.25x1.26.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_0.74x1.59.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_0.75x1.52.kicad_mod` |
+| D4 | Board file | 🔴 | electronics/halo_rev_a/out/halo_rev_a.kicad_pcb | no file of this kind anywhere in the Replica tree |
+| D5 | ERC result | 🔴 | electronics/halo_rev_a/out/halo_rev_a.erc.json | no file of this kind anywhere in the Replica tree |
+| D6 | DRC result | 🔴 | electronics/halo_rev_a/out/drc.json | no file of this kind anywhere in the Replica tree |
+| D7 | Gerbers | 🔴 | **also absent** | no file of this kind anywhere in the Replica tree |
+| D8 | Drill file | 🔴 | **also absent** | no file of this kind anywhere in the Replica tree |
+
+**The rule.** A ROW IS GREEN ONLY WHEN A FILE EXISTS THAT THE RELEVANT TOOL CAN ACTUALLY OPEN. A path that exists is not an artifact. Every row therefore carries a FORMAT PROBE - a string the real format must contain - and an empty file, a stub, or a file of the wrong kind at the right name all stay RED. The selftest watches each of those three cases fail on purpose, because a check that only ever goes red proves nothing about its own ability to go green.
+
+**Anti-gaming.** The board and schematic rows additionally REFUSE a file whose sha256 matches halo_rev_a's equivalent. The cheapest way to turn this check green without doing the work is to copy the board Leif rejected into the Replica's tree, and that would be the exact failure this check exists to catch, dressed as a pass.
+
+Why each is required, in the row's own words:
+
+- **D1 Schematic source** — There is no circuit until there is a schematic. Every net, every part and every connection the Replica claims to copy from Apple lives here or lives nowhere.
+- **D2 Netlist** — The netlist is the schematic in the form the board tool consumes. Without it a board file is a drawing of copper rather than a realisation of a circuit, and nothing can check that the copper matches the schematic.
+- **D3 Footprint library** — Apple's parts are WLCSP-50, WLCSP-10, 0201 and a wound coil. None of those has a stock footprint that fits this board, and the Replica's whole claim is that its geometry is measured rather than assumed. The measured geometry has to become land patterns or it is not in the design.
+- **D4 Board file** — THIS IS THE ONE LEIF ASKED FOR. His words were 'the exact pcb design and all the components'. Until this row is green there is no PCB design, only an apparatus for measuring one.
+- **D5 ERC result** — A schematic nobody ran the rule checker over is a claim, not a verified circuit. This project's own standard is that a check which never ran is verification debt.
+- **D6 DRC result** — Same argument one level down, and it is the row THREE-WAY.md row 23 turns on: halo_rev_a is a design that CAN be wrong and is measured to be wrong in four height rows. The Replica cannot be wrong in that sense at all, because there is nothing to check.
+- **D7 Gerbers** — A board file is what WE can open. Gerbers are what a FABRICATOR can open. Nothing gets made without them. *halo_rev_a HAS NOT GOT THESE EITHER. This row is red for both boards, and saying so is the point - a check that only accuses the Replica would be measuring the wrong thing.*
+- **D8 Drill file** — The board is annular with a routed centre pocket and three plated tooling holes. Every one of those is a drill or route operation and none of them exists until this file does. *halo_rev_a HAS NOT GOT THIS EITHER. Red for both.*
+
+---
+
 ## Reconciliation with the prior comparison
 
 *The brief's instruction: read out/comparison/ and docs/COMPARISON.md and say whether these numbers agree, and where they do not. They mostly agree. Three rows do not, and one of the three matters.*

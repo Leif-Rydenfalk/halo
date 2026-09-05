@@ -62,6 +62,7 @@ LANE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # .../halo_
 HALO = os.path.dirname(os.path.dirname(LANE))                        # .../halo
 TABLE = os.path.join(LANE, "comparison", "threeway.json")
 OUT_MD = os.path.join(LANE, "comparison", "THREE-WAY.md")
+DELIV = os.path.join(LANE, "comparison", "deliverable.json")
 
 SIDES = ("apple", "rev_a", "replica")
 SIDE_LABEL = {"apple": "Apple AirTag A2187", "rev_a": "halo_rev_a", "replica": "halo_replica"}
@@ -135,6 +136,71 @@ def strict_eq(got, want):
     if isinstance(got, (int, float)) and isinstance(want, (int, float)):
         return float(got) == float(want)          # exact float equality, on purpose
     return type(got) is type(want) and got == want
+
+# ------------------------------------------------------- the deliverable check
+# The counter in threeway.json measures distance FROM APPLE. This measures DISTANCE
+# FROM A DELIVERABLE, and the project ran a whole day without it: 130 measurement
+# files, 40 measuring tools, and nothing KiCad can open. A row here is GREEN only when
+# a file exists that the relevant tool can ACTUALLY OPEN - a path that exists is not an
+# artifact, so every row carries a format probe and an empty file at the right name
+# stays red.
+
+def _sha256(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, "rb") as fh:
+        for b in iter(lambda: fh.read(1 << 16), b""):
+            h.update(b)
+    return h.hexdigest()
+
+def check_deliverable(root=HALO, lane_rel="electronics/halo_replica"):
+    import glob as _glob
+    doc = json.load(open(DELIV))
+    lane = os.path.join(root, lane_rel)
+    out = []
+    for row in doc["rows"]:
+        hits = _glob.glob(os.path.join(lane, row["glob"]), recursive=True)
+        hits = [h for h in hits if os.path.isfile(h)]
+        rec = dict(id=row["id"], what=row["what"], glob=row["glob"],
+                   probe=row["probe"], candidates=len(hits))
+        if not hits:
+            rec.update(state="RED", why="no file of this kind anywhere in the Replica tree")
+            out.append(rec); continue
+        opened, reasons = [], []
+        for h in hits:
+            rel = os.path.relpath(h, root)
+            try:
+                if os.path.getsize(h) == 0:
+                    reasons.append(f"{rel}: EMPTY FILE - a name is not an artifact"); continue
+                with open(h, "r", errors="replace") as fh:
+                    head = fh.read(4096)
+            except Exception as e:
+                reasons.append(f"{rel}: unreadable ({e})"); continue
+            if row["probe"] not in head:
+                reasons.append(f"{rel}: does not open as {row['what'].lower()} - "
+                               f"no {row['probe']!r} in its first 4 KB")
+                continue
+            ref = row.get("refuse_if_sha256_matches")
+            if ref:
+                # RESOLVED AGAINST THE REAL REPO, NEVER AGAINST `root`. The first version
+                # joined it to `root`, so under any root but the real one the reference
+                # file did not exist and the guard SILENTLY DID NOTHING - a guard that
+                # cannot fire, found by the break written for it (D-4). The thing being
+                # refused is the actual halo_rev_a board, wherever the Replica tree sits.
+                rp = os.path.join(HALO, ref)
+                if os.path.exists(rp) and _sha256(rp) == _sha256(h):
+                    reasons.append(f"{rel}: IS halo_rev_a's file, byte for byte. Copying the "
+                                   f"board Leif rejected into the Replica's tree is the exact "
+                                   f"failure this check exists to catch, dressed as a pass.")
+                    continue
+            opened.append(rel)
+        if opened:
+            rec.update(state="GREEN", opened=opened[:5], n_opened=len(opened))
+        else:
+            rec.update(state="RED", why="; ".join(reasons[:3]),
+                       rejected=len(reasons))
+        out.append(rec)
+    return doc, out
 
 # --------------------------------------------------------------------- checking
 def check_cell(row_n, side, cell, root=HALO):
@@ -230,8 +296,23 @@ def cmd_check(args):
         if r["verdict"] != "PASS" or args.verbose:
             print(f"  [{r['verdict']:>17}] row {str(r['row']):>4} {r['side']:<14} {r['why']}")
     print(f"\n{counts['PASS']} PASS  {counts['FAIL']} FAIL  {counts['CANNOT DETERMINE']} CANNOT DETERMINE")
-    print(f"VERDICT: {verdict}")
-    return EXIT[verdict]
+    print(f"ANCHORS: {verdict}")
+
+    ddoc, drows = check_deliverable()
+    green = [r for r in drows if r["state"] == "GREEN"]
+    print(f"\nDELIVERABLE - can anyone open this design?")
+    for r in drows:
+        mark = "GREEN" if r["state"] == "GREEN" else "  RED"
+        tail = (", ".join(r["opened"]) if r["state"] == "GREEN" else r["why"])
+        print(f"  [{mark}] {r['id']} {r['what']:<20} {tail[:110]}")
+    dv = "PASS" if len(green) == len(drows) else "FAIL"
+    print(f"\n{len(green)} of {len(drows)} artifacts exist AND open.")
+    print(f"DELIVERABLE: {dv}")
+    worst = "FAIL" if (verdict == "FAIL" or dv == "FAIL") else (
+        "CANNOT DETERMINE" if verdict == "CANNOT DETERMINE" else "PASS")
+    print(f"VERDICT: {worst}   (the worse of the two - a page that cites its sources "
+          f"correctly about a design that does not exist is still not a design)")
+    return EXIT[worst]
 
 # --------------------------------------------------------------------- render
 def _one(s):
@@ -329,6 +410,27 @@ def cmd_render(args):
     W(g["and_the_risk_in_this_very_document"] + "\n")
     W("---\n")
 
+    ddoc, drows = check_deliverable()
+    dgreen = [r for r in drows if r["state"] == "GREEN"]
+    W("## Distance from a deliverable — the other axis of drift\n")
+    W("*" + ddoc["why_this_exists"] + "*\n")
+    W(f"**{len(dgreen)} of {len(drows)} artifacts exist and open.**\n")
+    W("| | artifact | state | halo_rev_a | evidence |")
+    W("|---|---|:-:|---|---|")
+    for r, spec in zip(drows, ddoc["rows"]):
+        rv = spec.get("rev_a_has") or "**also absent**"
+        ev = (", ".join(f"`{o}`" for o in r["opened"]) if r["state"] == "GREEN"
+              else r["why"])
+        W(f"| {r['id']} | {r['what']} | {'✅' if r['state']=='GREEN' else '🔴'} | {rv} | {ev} |")
+    W("")
+    W("**The rule.** " + ddoc["the_rule"] + "\n")
+    W("**Anti-gaming.** " + ddoc["anti_gaming"] + "\n")
+    W("Why each is required, in the row's own words:\n")
+    for spec in ddoc["rows"]:
+        W(f"- **{spec['id']} {spec['what']}** — {spec['why_it_is_required']}"
+          + (f" *{spec['rev_a_note']}*" if spec.get("rev_a_note") else ""))
+    W("")
+    W("---\n")
     rec = doc["reconciliation_with_the_prior_comparison"]
     W("## Reconciliation with the prior comparison\n")
     W("*" + rec["_what"] + "*\n")
@@ -518,13 +620,71 @@ def cmd_selftest(args):
         print("         resolve() genuinely reads the files. N1-N7 are therefore about the "
               "comparison, not about an empty read.")
 
+    # ---- THE DELIVERABLE CHECK'S OWN BREAKS.
+    # This check's natural state is RED, which makes it the easy kind to get wrong: a
+    # check that only ever goes red is indistinguishable from one that cannot go green.
+    # So all four cases are watched - and the two that matter most are the DECOYS, an
+    # empty file and a wrong-format file at exactly the right name, because "a path
+    # exists" is precisely the weak test this was built to avoid.
+    import tempfile, shutil
+    print("  D-breaks  the deliverable check, in a temporary tree:")
+    dfails = []
+    def dstate(tmp, rid):
+        _, rows = check_deliverable(root=tmp, lane_rel="lane")
+        return {r["id"]: r for r in rows}[rid]
+    tmp = tempfile.mkdtemp(prefix="k_threeway-deliv-")
+    try:
+        os.makedirs(os.path.join(tmp, "lane"))
+        board = os.path.join(tmp, "lane", "x.kicad_pcb")
+
+        r0 = dstate(tmp, "D4")
+        ok0 = r0["state"] == "RED"
+        print(f"    [{'ok ' if ok0 else 'RED'}] D-0 empty tree            -> {r0['state']} (must be RED)")
+        if not ok0: dfails.append("D-0")
+
+        open(board, "w").close()                       # EMPTY file, right name
+        r1 = dstate(tmp, "D4")
+        ok1 = r1["state"] == "RED" and "EMPTY" in r1.get("why", "")
+        print(f"    [{'ok ' if ok1 else 'RED'}] D-1 empty x.kicad_pcb     -> {r1['state']} (must be RED) "
+              f"{r1.get('why','')[:60]}")
+        if not ok1: dfails.append("D-1")
+
+        open(board, "w").write("(kicad_sch\n  (version 1)\n)")   # WRONG format, right name
+        r2 = dstate(tmp, "D4")
+        ok2 = r2["state"] == "RED" and "does not open" in r2.get("why", "")
+        print(f"    [{'ok ' if ok2 else 'RED'}] D-2 a SCHEMATIC named .kicad_pcb -> {r2['state']} (must be RED)")
+        if not ok2: dfails.append("D-2")
+
+        open(board, "w").write("(kicad_pcb\n  (version 20260206)\n)")   # valid
+        r3 = dstate(tmp, "D4")
+        ok3 = r3["state"] == "GREEN"
+        print(f"    [{'ok ' if ok3 else 'RED'}] D-3 a real board file     -> {r3['state']} (must be GREEN) "
+              f"- THE CHECK CAN GO GREEN, which is the half a red-by-default check hides")
+        if not ok3: dfails.append("D-3")
+
+        rev = os.path.join(HALO, "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb")
+        if os.path.exists(rev):
+            shutil.copyfile(rev, board)                # ANTI-GAMING: rev_a's own board
+            r4 = dstate(tmp, "D4")
+            ok4 = r4["state"] == "RED" and "halo_rev_a" in r4.get("why", "")
+            print(f"    [{'ok ' if ok4 else 'RED'}] D-4 halo_rev_a's board copied in -> {r4['state']} "
+                  f"(must be RED - the cheapest way to fake a pass)")
+            if not ok4: dfails.append("D-4")
+        else:
+            print("    [ -- ] D-4 skipped: halo_rev_a's board file is not on disk to copy")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    fails.extend(dfails)
+
     print()
     if fails:
         print("SELFTEST FAIL")
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 breaks, each went the colour it had to.")
+    print("SELFTEST PASS - 9 anchor breaks + 5 deliverable breaks, each went the colour "
+          "it had to, including the two DECOYS (an empty file and a wrong-format file at "
+          "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS
 
 def main():
@@ -533,8 +693,18 @@ def main():
     c = sub.add_parser("check"); c.add_argument("-v", "--verbose", action="store_true")
     sub.add_parser("render")
     sub.add_parser("selftest")
+    sub.add_parser("deliverable")
     a = p.parse_args()
-    return {"check": cmd_check, "render": cmd_render, "selftest": cmd_selftest}[a.cmd](a)
+    def cmd_deliverable(_a):
+        ddoc, drows = check_deliverable()
+        g = [r for r in drows if r["state"] == "GREEN"]
+        for r in drows:
+            print(f"  [{'GREEN' if r['state']=='GREEN' else '  RED'}] {r['id']} {r['what']:<20} "
+                  + (", ".join(r["opened"]) if r["state"] == "GREEN" else r["why"]))
+        print(f"\n{len(g)} of {len(drows)} artifacts exist AND open.")
+        return EX_PASS if len(g) == len(drows) else EX_FAIL
+    return {"check": cmd_check, "render": cmd_render, "selftest": cmd_selftest,
+            "deliverable": cmd_deliverable}[a.cmd](a)
 
 if __name__ == "__main__":
     sys.exit(main())

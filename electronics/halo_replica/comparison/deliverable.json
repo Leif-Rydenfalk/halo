@@ -1,0 +1,74 @@
+{
+  "schema": "halo/deliverable/1",
+  "lane": "L9 THE COMPARISON, halo Replica",
+  "written": "2026-09-05",
+
+  "why_this_exists": "The divergence counter in threeway.json counts distance FROM APPLE. It does not count DISTANCE FROM A DELIVERABLE, and that is the gap that let this project run for a day with 130 measurement files, 40 measuring tools and twelve evidence documents, and NOTHING ANYONE CAN OPEN IN KiCAD OR SEND TO A FABRICATOR. We had an instrument for one axis of drift and none for the other, so the Replica could move steadily away from being a buildable thing while every number about fidelity improved. THIS IS THE MISSING AXIS. It is red until KiCad can open something.",
+
+  "the_rule": "A ROW IS GREEN ONLY WHEN A FILE EXISTS THAT THE RELEVANT TOOL CAN ACTUALLY OPEN. A path that exists is not an artifact. Every row therefore carries a FORMAT PROBE - a string the real format must contain - and an empty file, a stub, or a file of the wrong kind at the right name all stay RED. The selftest watches each of those three cases fail on purpose, because a check that only ever goes red proves nothing about its own ability to go green.",
+
+  "anti_gaming": "The board and schematic rows additionally REFUSE a file whose sha256 matches halo_rev_a's equivalent. The cheapest way to turn this check green without doing the work is to copy the board Leif rejected into the Replica's tree, and that would be the exact failure this check exists to catch, dressed as a pass.",
+
+  "search": "Each row GLOBS the whole Replica tree for its extension rather than demanding one guessed path. The design lanes choose their own layout; this check asks whether an artifact of the right KIND exists and opens, not whether it sits where L9 imagined it would.",
+
+  "rows": [
+    {
+      "id": "D1", "what": "Schematic source", "glob": "**/*.kicad_sch",
+      "probe": "(kicad_sch", "probe_is": "the s-expression header KiCad's schematic editor requires",
+      "why_it_is_required": "There is no circuit until there is a schematic. Every net, every part and every connection the Replica claims to copy from Apple lives here or lives nowhere.",
+      "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.kicad_sch",
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_sch"
+    },
+    {
+      "id": "D2", "what": "Netlist", "glob": "**/*.net",
+      "probe": "(export", "probe_is": "the KiCad netlist root node",
+      "why_it_is_required": "The netlist is the schematic in the form the board tool consumes. Without it a board file is a drawing of copper rather than a realisation of a circuit, and nothing can check that the copper matches the schematic.",
+      "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.net",
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.net"
+    },
+    {
+      "id": "D3", "what": "Footprint library", "glob": "**/*.kicad_mod",
+      "probe": "(footprint", "probe_is": "the s-expression header of a KiCad footprint",
+      "why_it_is_required": "Apple's parts are WLCSP-50, WLCSP-10, 0201 and a wound coil. None of those has a stock footprint that fits this board, and the Replica's whole claim is that its geometry is measured rather than assumed. The measured geometry has to become land patterns or it is not in the design.",
+      "rev_a_has": "electronics/halo_rev_a/halo.pretty/*.kicad_mod",
+      "refuse_if_sha256_matches": null
+    },
+    {
+      "id": "D4", "what": "Board file", "glob": "**/*.kicad_pcb",
+      "probe": "(kicad_pcb", "probe_is": "the s-expression header pcbnew requires",
+      "why_it_is_required": "THIS IS THE ONE LEIF ASKED FOR. His words were 'the exact pcb design and all the components'. Until this row is green there is no PCB design, only an apparatus for measuring one.",
+      "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+    },
+    {
+      "id": "D5", "what": "ERC result", "glob": "**/*erc*.json",
+      "probe": "erc", "probe_is": "the schema key of a KiCad ERC report",
+      "why_it_is_required": "A schematic nobody ran the rule checker over is a claim, not a verified circuit. This project's own standard is that a check which never ran is verification debt.",
+      "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.erc.json",
+      "refuse_if_sha256_matches": null
+    },
+    {
+      "id": "D6", "what": "DRC result", "glob": "**/*drc*.json",
+      "probe": "drc", "probe_is": "the schema key of a KiCad DRC report",
+      "why_it_is_required": "Same argument one level down, and it is the row THREE-WAY.md row 23 turns on: halo_rev_a is a design that CAN be wrong and is measured to be wrong in four height rows. The Replica cannot be wrong in that sense at all, because there is nothing to check.",
+      "rev_a_has": "electronics/halo_rev_a/out/drc.json",
+      "refuse_if_sha256_matches": null
+    },
+    {
+      "id": "D7", "what": "Gerbers", "glob": "**/*.gbr",
+      "probe": "%FSLAX", "probe_is": "the RS-274X format specification an extended-Gerber file opens with",
+      "why_it_is_required": "A board file is what WE can open. Gerbers are what a FABRICATOR can open. Nothing gets made without them.",
+      "rev_a_has": null,
+      "rev_a_note": "halo_rev_a HAS NOT GOT THESE EITHER. This row is red for both boards, and saying so is the point - a check that only accuses the Replica would be measuring the wrong thing.",
+      "refuse_if_sha256_matches": null
+    },
+    {
+      "id": "D8", "what": "Drill file", "glob": "**/*.drl",
+      "probe": "M48", "probe_is": "the header of an Excellon drill program",
+      "why_it_is_required": "The board is annular with a routed centre pocket and three plated tooling holes. Every one of those is a drill or route operation and none of them exists until this file does.",
+      "rev_a_has": null,
+      "rev_a_note": "halo_rev_a HAS NOT GOT THIS EITHER. Red for both.",
+      "refuse_if_sha256_matches": null
+    }
+  ]
+}
