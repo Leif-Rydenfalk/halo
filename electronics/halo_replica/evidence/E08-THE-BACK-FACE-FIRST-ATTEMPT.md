@@ -268,10 +268,10 @@ back into `THREE-WAY.md` row 17. `halo_rev_a`'s 11 named test points have no pub
 diameter in any file this lane read, so the two still cannot be compared on pad geometry —
 but the Apple side of that row is no longer empty.
 
-## 4d · The battery contacts — and a gate that passed for the wrong reason, twice caught
+## 4d · The battery contacts — SOLVED, after a gate that passed for the wrong reason
 
-**CANNOT DETERMINE.** Three attempts, and each was stopped by a control rather than by
-inspection.
+**MEASURED**, and it took inverting the whole association. Three attempts; the first two
+were stopped by a control rather than by inspection.
 
 A stamped contact is **grey**, so the gold criterion cannot find these at all; they are
 selected on being bright **and unsaturated**. The overexposed centre dome qualifies too and
@@ -290,11 +290,37 @@ magnet/dome assembly — rather than by a size threshold picked to make the answ
    mirrored about the board's vertical axis. It now fires: **radius difference 2.567 mm
    against a 0.600 floor, midpoint 4.231 mm off axis against a 1.200 floor.**
 
-**Nothing is published as a contact dimension.** Recorded for the next attempt: an operator
-probe of this same frame found a pair at (965, 661) and (1315, 657) — areas 1.625 and
-1.680 mm² (**3.4 %** apart), radii 7.94 and 7.68 mm (**0.26 mm** apart), midpoint **0.98 mm**
-off axis — which satisfies all three constraints. **It is an eyeballed seed, not a
-measurement**, and the association that reaches it automatically has not been written.
+4. **So the association was INVERTED, and that is the fix.** Instead of driving it from
+   O'Flynn's labels, **the physics finds the pair and O'Flynn validates it.** Apple's two
+   positive tabs are one part in one symmetric scheme, so a search over every pair of
+   neutral-metal features above the board centre, one each side of the vertical axis,
+   scored on same-radius + mirrored + equal-area, has a **two-parameter constraint no
+   random pair satisfies**. O'Flynn's names then become a check that can still fail.
+
+**It converges, and on the pair that had only been eyeballed before:**
+
+| | extent | area | r from centre | θ |
+|---|---|---|---|---|
+| **VCC1** | 1.495 × 1.423 mm | 1.625 mm² | 8.30 mm | 251.1° |
+| **GND** | 3.321 × 2.070 mm | 5.017 mm² | 8.56 mm | 269.1° |
+| **VCC2** | 1.682 × 1.409 mm | 1.680 mm² | 8.26 mm | 286.6° |
+
+Areas **3.3 %** apart, radii **0.253 mm** apart, midpoint **0.487 mm** off axis — all inside
+their floors. All three sit within **2.44 mm** of a name O'Flynn wrote. And the three angles
+are **symmetric about 269°**, 18° either side: three contacts at the top of the board, which
+is the scheme the dossier describes and which nothing in this method was told to look for.
+
+**One more selection defect on the way, and it is the same shape as the area one.** GND was
+first taken as the feature *between* the two tabs in x. That picked a rim feature at
+**r 11.03 mm** while the tabs sat at 7.94 and 7.68. **Being between two things in one
+coordinate is not being with them.** Constraining GND to within 1.50 mm of the tabs' own
+radius finds the central clip.
+
+**The extents are still not pad dimensions.** Whether each extent is the **board pad** or the
+**sprung contact sitting on it** is not separable in an assembled photograph — the two are
+coincident in plan view. **FCC internal photo 4**, the battery cavity with the contacts and
+no board, is the frame that separates them, and it is already on disk. The handoff carries
+the positions with that stated on every contact row.
 
 **And one thing is not separable in this frame at all, stated rather than glossed:** whether
 the measured extent is the **board pad** or the **sprung contact sitting on it**. This
@@ -316,5 +342,5 @@ frame that would separate them.
 | 6 | the coil, re-measured at 69.557 px/mm | **CANNOT DETERMINE** — L1's copper threshold does not transfer out of the 26 mm crop; separation 1.37× against a 2.00× floor |
 | 7 | do the two scale routes (O'Flynn's tilde vs the FCC rulers) agree | **NOT TESTED.** The instrument that would have tested it failed first |
 | 8 | the round gold pads on this face | **MEASURED — 43 pads, median Ø 0.5985 mm, IQR 5.7 %.** Negative control empty off the board; positive control 4.27× against chance |
-| 9 | the three battery contacts | **CANNOT DETERMINE** — the association is unsolved and the symmetry gate fires at 2.567 mm radius difference |
+| 9 | the three battery contacts | **MEASURED** — found by symmetric-pair search, validated against O'Flynn; areas 3.3 % apart, radii 0.253 mm apart, θ symmetric about 269° |
 | 10 | board pad vs sprung contact | **NOT SEPARABLE** in an assembled frame. FCC internal photo 4 would separate them |

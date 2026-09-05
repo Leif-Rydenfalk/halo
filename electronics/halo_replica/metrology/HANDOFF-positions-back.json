@@ -1,0 +1,1087 @@
+{
+  "generated_utc": "2026-09-05T06:41:53Z",
+  "git_rev": "2060fe0",
+  "producer": "L9 THE COMPARISON lane",
+  "side": "BACK = the BATTERY-CONTACT / COIL / TEST-POINT side. O'Flynn's frontside-fullres.jpeg IS this side. This is the face the Replica had NOT drawn (THREE-WAY.md row 24).",
+  "source_image": "images/airtag/oflynn-frontside-fullres.jpeg",
+  "frame": {
+    "origin": "board centre, transferred from FCC internal photo 7 through c_register's homography (view fcc7-back, added by this lane - the catalogue previously held NO ruler-bearing view of this face, which is why this face had never been measured)",
+    "axes": "+x right, +y DOWN (image convention); theta from +x through +y",
+    "origin_px": [
+      1151.6049286286705,
+      1207.1627099253749
+    ]
+  },
+  "scale": {
+    "stored_px_per_mm": 69.55678686352425,
+    "basis": "metrology/scale-at-board-photo7.json - m_scale_at at the board (932,752), bottom and right rule routes 0.45% apart",
+    "spread_over_board_pct": 0.18311770383493475,
+    "genuine_px_per_mm": [
+      33.0,
+      42.0
+    ],
+    "decoration_factor": "1.7-2.1x more stored pixels than resolved detail (M06)"
+  },
+  "uncertainty": {
+    "registration_holdout_mm": 0.1256,
+    "registration_holdout_genuine_px": [
+      4.14,
+      5.28
+    ],
+    "note": "DO NOT QUOTE ANY POSITION TO 0.01 mm. The floor is 4-5 genuine px."
+  },
+  "THE_CAVEAT_UNDER_EVERY_MILLIMETRE_HERE": "*** THE SCALE COMES FROM A DIFFERENT PHYSICAL BOARD. *** FCC internal photo 7 is 920-08283-01, data code 3119 - a 2019 engineering build. O'Flynn's photograph, which every position here is measured in, is 820-01736-A, data code 2920 17 - 2020 production. A uniform dimensional difference between the two is ABSORBED INTO THE FITTED SCALE and leaves the held-out residual COMPLETELY UNCHANGED, because the check divides both sides by the same number. Registration consistency is not scale accuracy. It cannot be settled from this machine; a caliper on one board of each part number settles it. THE SAME CAVEAT ALREADY APPLIED, UNSTATED, TO THE FRONT HANDOFF's 106.313 px/mm.",
+  "controls": {
+    "negative": "the pad detector off the board (r>1000 px): 0 pads. It can come back empty.",
+    "positive": "Colin O'Flynn's 2021 annotation, oflynn-frontside-tpnames.jpg - the SAME photograph rescaled, NCC 0.9993 with the red pixels masked out, so the mapping is exact and the annotation is EXTERNAL to this method. His label positions sit a median 0.462 mm from a detection; 4000 random points on the same annulus sit 1.973 mm away. SEPARATION 4.27x, floor 2.00x. The null is the load-bearing part: he writes each number BESIDE its pad and this annulus is dense, so absolute distance would have proved nothing.",
+    "contacts": "the two positive tabs were found by a SYMMETRIC-PAIR SEARCH - same radius, mirrored about the vertical axis, equal area - and O'Flynn's names are the CHECK, not the driver. Result: areas 3.3% apart, radii 0.253 mm apart, midpoint 0.487 mm off axis, all three within 2.44 mm of a name he wrote."
+  },
+  "excluded": [
+    {
+      "what": "the five bulk capacitors",
+      "verdict": "CANNOT DETERMINE",
+      "why": "the measured size is a function of the operator's window - 3.192 x 1.581 mm at a 1.6 mm span and 4.699 x 4.414 mm at 2.4 mm. See evidence/E08 sec.2.4. 3.192 x 1.581 is EIA 3216 / Case A to 0.25% and 1.2% and is very likely correct; it is NOT published because a number that matches what you expected, from a method that also produces numbers that do not, is not a measurement.",
+      "instruction": "DO NOT place these from candidates_not_published in metrology/backface-caps.json. They are leads with their refusal attached, not sizes."
+    },
+    {
+      "what": "the wound coil's inner and outer diameter",
+      "verdict": "CANNOT DETERMINE",
+      "why": "L1's copper-fraction threshold does not transfer out of the 26 mm crop it was set in. In the full frame the same criterion returns a band 2.732 mm wide against M01's 0.727 mm, because the whole board's gold is now in view. Control separation 1.37x against a 2.00x floor. E08 sec.4b.",
+      "instruction": "Use M01's ID 9.380 / OD 10.834 mm if you need a coil, and carry M01's datum caveat with it. Do NOT use the numbers in metrology/backface-coil.json."
+    },
+    {
+      "what": "the overexposed centre dome",
+      "verdict": "EXCLUDED BY NAME",
+      "why": "a 78.1 mm2 neutral-metal blob at r 0.46 mm. M01 sec.4 records that the saturated white core is the magnet/dome assembly. Excluded by name rather than by a size threshold chosen to make the answer come out.",
+      "instruction": "not a contact and not a part."
+    }
+  ],
+  "known_gaps": [
+    {
+      "what": "whether a contact extent is the BOARD PAD or the SPRUNG CONTACT on it",
+      "measured": false,
+      "do_not_draw_as_measured": true,
+      "note": "coincident in plan view in an assembled photograph. FCC internal photo 4 shows the battery cavity with the contacts and NO BOARD and is the frame that separates them. It is already in images/airtag. USE THE CONTACT POSITIONS; do not take their extents as pad dimensions."
+    },
+    {
+      "what": "every part on this face that is not a round gold pad or a battery contact",
+      "measured": false,
+      "do_not_draw_as_measured": true,
+      "note": "the five capacitors, the two small ICs, the silkscreen and the DataMatrix are all present in the photograph and NONE of them is in these rows. This file is a pad and contact file, not a component file. A face drawn from it alone will be knowingly incomplete, and that is better than looking complete."
+    }
+  ],
+  "next_steps_named_not_left_loose": [
+    {
+      "what": "the coil by RADIAL PERIODICITY at AWG 35's ~0.145 mm turn pitch",
+      "why": "it is a two-for-one and not a loose end: periodicity separates a WOUND coil from a field of gold pads in a way no colour threshold can, AND it yields a TURN COUNT - which is exactly what separates the NFC antenna from a voice coil in evidence/E02, still OPEN. It also reopens the one comparison that can only disagree about SCALE: O'Flynn's retracted '~26 mm' tilde against the FCC steel rulers, on one object, in a photograph both measurements share."
+    },
+    {
+      "what": "the capacitor width estimator",
+      "why": "k_backface selftest S1 fails on a SYNTHETIC - a part 2.200 mm wide measures 0.855 mm - so it can be iterated without touching the photograph. Then mask to the part before profiling: every window failure is contamination by neighbours, and C1/C2/C3 sit within 2 mm of each other on the left rim."
+    },
+    {
+      "what": "the EIA case-code check, ONLY after a size survives window-invariance",
+      "why": "it would be the first scale evidence in this project that does NOT pass through the FCC rulers or the 920-/820- board-identity assumption above. k_backface already implements it and refuses to quote it when the nearest two codes are ambiguous."
+    }
+  ],
+  "counts": {
+    "total": 46,
+    "pads": 43,
+    "contacts": 3,
+    "do_not_draw": 2,
+    "outside_od_bound": 2,
+    "pad_median_diameter_mm": 0.5984730662071152,
+    "pad_diameter_iqr_mm": 0.03401337073584454
+  },
+  "outside_od_bound_note": "2 of 46 rows lie outside the board's own OD bound and are flagged outside_the_board_OD_bound with do_not_draw_as_component set. They are kept so the count is honest.",
+  "rows": [
+    {
+      "id": "KP000",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.625,
+      "y_mm": -1.099,
+      "r_mm": 7.704,
+      "theta_deg": 188.2,
+      "long_mm": 1.048,
+      "short_mm": 1.048,
+      "short_genuine_px": [
+        34.6,
+        44.0
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP001",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -11.818,
+      "y_mm": -2.19,
+      "r_mm": 12.019,
+      "theta_deg": 190.5,
+      "long_mm": 0.574,
+      "short_mm": 0.574,
+      "short_genuine_px": [
+        19.0,
+        24.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP002",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -11.21,
+      "y_mm": -3.912,
+      "r_mm": 11.873,
+      "theta_deg": 199.24,
+      "long_mm": 0.356,
+      "short_mm": 0.356,
+      "short_genuine_px": [
+        11.8,
+        15.0
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP003",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -10.425,
+      "y_mm": -4.671,
+      "r_mm": 11.424,
+      "theta_deg": 204.14,
+      "long_mm": 0.589,
+      "short_mm": 0.589,
+      "short_genuine_px": [
+        19.4,
+        24.7
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP004",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.664,
+      "y_mm": -4.695,
+      "r_mm": 8.987,
+      "theta_deg": 211.49,
+      "long_mm": 0.559,
+      "short_mm": 0.559,
+      "short_genuine_px": [
+        18.4,
+        23.5
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP005",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -1.897,
+      "y_mm": -14.423,
+      "r_mm": 14.547,
+      "theta_deg": 262.51,
+      "long_mm": 0.181,
+      "short_mm": 0.181,
+      "short_genuine_px": [
+        6.0,
+        7.6
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population",
+        "outside_the_board_OD_bound"
+      ],
+      "do_not_draw_as_component": true,
+      "why": "r = 14.547 mm exceeds 13.17 mm, the largest radius allowed by the OUTER DIAMETER BOUND of 24.95-26.34 mm (board.json - the OD is a bound and not a number). This feature is on the shell or the plastic antenna carrier, not on the copper. NOT BOARD GEOMETRY."
+    },
+    {
+      "id": "KP006",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -1.677,
+      "y_mm": -14.473,
+      "r_mm": 14.57,
+      "theta_deg": 263.39,
+      "long_mm": 0.188,
+      "short_mm": 0.188,
+      "short_genuine_px": [
+        6.2,
+        7.9
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population",
+        "outside_the_board_OD_bound"
+      ],
+      "do_not_draw_as_component": true,
+      "why": "r = 14.570 mm exceeds 13.17 mm, the largest radius allowed by the OUTER DIAMETER BOUND of 24.95-26.34 mm (board.json - the OD is a bound and not a number). This feature is on the shell or the plastic antenna carrier, not on the copper. NOT BOARD GEOMETRY."
+    },
+    {
+      "id": "KP007",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 4.829,
+      "y_mm": -7.485,
+      "r_mm": 8.908,
+      "theta_deg": 302.83,
+      "long_mm": 0.517,
+      "short_mm": 0.517,
+      "short_genuine_px": [
+        17.1,
+        21.7
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP008",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 6.717,
+      "y_mm": -7.535,
+      "r_mm": 10.095,
+      "theta_deg": 311.71,
+      "long_mm": 0.568,
+      "short_mm": 0.568,
+      "short_genuine_px": [
+        18.7,
+        23.9
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP009",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 8.606,
+      "y_mm": -7.206,
+      "r_mm": 11.224,
+      "theta_deg": 320.06,
+      "long_mm": 0.343,
+      "short_mm": 0.343,
+      "short_genuine_px": [
+        11.3,
+        14.4
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP010",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.432,
+      "y_mm": -5.09,
+      "r_mm": 9.008,
+      "theta_deg": 325.6,
+      "long_mm": 1.046,
+      "short_mm": 1.046,
+      "short_genuine_px": [
+        34.5,
+        43.9
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP011",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.45,
+      "y_mm": -3.816,
+      "r_mm": 8.37,
+      "theta_deg": 332.88,
+      "long_mm": 1.054,
+      "short_mm": 1.054,
+      "short_genuine_px": [
+        34.8,
+        44.3
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP012",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.465,
+      "y_mm": -2.538,
+      "r_mm": 7.885,
+      "theta_deg": 341.23,
+      "long_mm": 1.052,
+      "short_mm": 1.052,
+      "short_genuine_px": [
+        34.7,
+        44.2
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP013",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.479,
+      "y_mm": -1.256,
+      "r_mm": 7.583,
+      "theta_deg": 350.47,
+      "long_mm": 1.051,
+      "short_mm": 1.051,
+      "short_genuine_px": [
+        34.7,
+        44.2
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP014",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 10.356,
+      "y_mm": -1.05,
+      "r_mm": 10.409,
+      "theta_deg": 354.21,
+      "long_mm": 0.209,
+      "short_mm": 0.209,
+      "short_genuine_px": [
+        6.9,
+        8.8
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP015",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 9.574,
+      "y_mm": -0.794,
+      "r_mm": 9.606,
+      "theta_deg": 355.26,
+      "long_mm": 0.597,
+      "short_mm": 0.597,
+      "short_genuine_px": [
+        19.7,
+        25.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP016",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.495,
+      "y_mm": 0.015,
+      "r_mm": 7.495,
+      "theta_deg": 0.11,
+      "long_mm": 1.051,
+      "short_mm": 1.051,
+      "short_genuine_px": [
+        34.7,
+        44.1
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP017",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 9.587,
+      "y_mm": 0.377,
+      "r_mm": 9.595,
+      "theta_deg": 2.25,
+      "long_mm": 0.595,
+      "short_mm": 0.595,
+      "short_genuine_px": [
+        19.6,
+        25.0
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP018",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 10.074,
+      "y_mm": 1.43,
+      "r_mm": 10.175,
+      "theta_deg": 8.08,
+      "long_mm": 0.214,
+      "short_mm": 0.214,
+      "short_genuine_px": [
+        7.1,
+        9.0
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP019",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 8.491,
+      "y_mm": 3.213,
+      "r_mm": 9.078,
+      "theta_deg": 20.73,
+      "long_mm": 0.601,
+      "short_mm": 0.601,
+      "short_genuine_px": [
+        19.8,
+        25.2
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP020",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 8.097,
+      "y_mm": 4.977,
+      "r_mm": 9.504,
+      "theta_deg": 31.58,
+      "long_mm": 0.6,
+      "short_mm": 0.6,
+      "short_genuine_px": [
+        19.8,
+        25.2
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP021",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 7.284,
+      "y_mm": 5.993,
+      "r_mm": 9.432,
+      "theta_deg": 39.44,
+      "long_mm": 0.606,
+      "short_mm": 0.606,
+      "short_genuine_px": [
+        20.0,
+        25.4
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP022",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 4.287,
+      "y_mm": 7.78,
+      "r_mm": 8.883,
+      "theta_deg": 61.14,
+      "long_mm": 0.598,
+      "short_mm": 0.598,
+      "short_genuine_px": [
+        19.7,
+        25.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP023",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 4.567,
+      "y_mm": 9.666,
+      "r_mm": 10.691,
+      "theta_deg": 64.71,
+      "long_mm": 0.591,
+      "short_mm": 0.591,
+      "short_genuine_px": [
+        19.5,
+        24.8
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP024",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 2.981,
+      "y_mm": 7.808,
+      "r_mm": 8.357,
+      "theta_deg": 69.1,
+      "long_mm": 0.598,
+      "short_mm": 0.598,
+      "short_genuine_px": [
+        19.7,
+        25.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP025",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 4.117,
+      "y_mm": 10.856,
+      "r_mm": 11.611,
+      "theta_deg": 69.23,
+      "long_mm": 0.359,
+      "short_mm": 0.359,
+      "short_genuine_px": [
+        11.9,
+        15.1
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP026",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 3.223,
+      "y_mm": 9.353,
+      "r_mm": 9.893,
+      "theta_deg": 70.98,
+      "long_mm": 0.59,
+      "short_mm": 0.59,
+      "short_genuine_px": [
+        19.5,
+        24.8
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP027",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 1.901,
+      "y_mm": 9.838,
+      "r_mm": 10.02,
+      "theta_deg": 79.06,
+      "long_mm": 0.571,
+      "short_mm": 0.571,
+      "short_genuine_px": [
+        18.9,
+        24.0
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP028",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 1.219,
+      "y_mm": 7.873,
+      "r_mm": 7.967,
+      "theta_deg": 81.2,
+      "long_mm": 0.598,
+      "short_mm": 0.598,
+      "short_genuine_px": [
+        19.7,
+        25.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP029",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": 0.014,
+      "y_mm": 8.396,
+      "r_mm": 8.396,
+      "theta_deg": 89.9,
+      "long_mm": 0.599,
+      "short_mm": 0.599,
+      "short_genuine_px": [
+        19.8,
+        25.2
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP030",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -2.481,
+      "y_mm": 7.822,
+      "r_mm": 8.206,
+      "theta_deg": 107.6,
+      "long_mm": 0.602,
+      "short_mm": 0.602,
+      "short_genuine_px": [
+        19.9,
+        25.3
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP031",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -4.909,
+      "y_mm": 8.556,
+      "r_mm": 9.864,
+      "theta_deg": 119.85,
+      "long_mm": 0.608,
+      "short_mm": 0.608,
+      "short_genuine_px": [
+        20.1,
+        25.5
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP032",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -4.618,
+      "y_mm": 6.096,
+      "r_mm": 7.648,
+      "theta_deg": 127.14,
+      "long_mm": 0.603,
+      "short_mm": 0.603,
+      "short_genuine_px": [
+        19.9,
+        25.3
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP033",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -5.851,
+      "y_mm": 7.665,
+      "r_mm": 9.643,
+      "theta_deg": 127.36,
+      "long_mm": 0.598,
+      "short_mm": 0.598,
+      "short_genuine_px": [
+        19.7,
+        25.1
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP034",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.03,
+      "y_mm": 6.942,
+      "r_mm": 9.88,
+      "theta_deg": 135.36,
+      "long_mm": 0.594,
+      "short_mm": 0.594,
+      "short_genuine_px": [
+        19.6,
+        25.0
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP035",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -5.96,
+      "y_mm": 5.418,
+      "r_mm": 8.055,
+      "theta_deg": 137.72,
+      "long_mm": 0.605,
+      "short_mm": 0.605,
+      "short_genuine_px": [
+        20.0,
+        25.4
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP036",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.765,
+      "y_mm": 5.676,
+      "r_mm": 9.618,
+      "theta_deg": 143.84,
+      "long_mm": 0.605,
+      "short_mm": 0.605,
+      "short_genuine_px": [
+        20.0,
+        25.4
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP037",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -6.774,
+      "y_mm": 4.349,
+      "r_mm": 8.05,
+      "theta_deg": 147.3,
+      "long_mm": 0.606,
+      "short_mm": 0.606,
+      "short_genuine_px": [
+        20.0,
+        25.5
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP038",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -8.869,
+      "y_mm": 4.272,
+      "r_mm": 9.844,
+      "theta_deg": 154.28,
+      "long_mm": 0.595,
+      "short_mm": 0.595,
+      "short_genuine_px": [
+        19.6,
+        25.0
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP039",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.121,
+      "y_mm": 2.945,
+      "r_mm": 7.706,
+      "theta_deg": 157.53,
+      "long_mm": 0.619,
+      "short_mm": 0.619,
+      "short_genuine_px": [
+        20.4,
+        26.0
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP040",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -8.497,
+      "y_mm": 2.966,
+      "r_mm": 9.0,
+      "theta_deg": 160.76,
+      "long_mm": 0.609,
+      "short_mm": 0.609,
+      "short_genuine_px": [
+        20.1,
+        25.6
+      ],
+      "area_mm2": null,
+      "confidence": "high",
+      "flags": [
+        "diameter_is_equivalent_circle"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP041",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.6,
+      "y_mm": 1.477,
+      "r_mm": 7.742,
+      "theta_deg": 169.01,
+      "long_mm": 1.026,
+      "short_mm": 1.026,
+      "short_genuine_px": [
+        33.9,
+        43.1
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KP042",
+      "method": "gold colour AND circular shape (k_backface pads)",
+      "found": "round gold pad - the test-point / probe-pad field",
+      "x_mm": -7.618,
+      "y_mm": 0.194,
+      "r_mm": 7.62,
+      "theta_deg": 178.54,
+      "long_mm": 1.059,
+      "short_mm": 1.059,
+      "short_genuine_px": [
+        34.9,
+        44.5
+      ],
+      "area_mm2": null,
+      "confidence": "medium",
+      "flags": [
+        "diameter_is_equivalent_circle",
+        "outside_the_main_pad_population"
+      ],
+      "do_not_draw_as_component": false
+    },
+    {
+      "id": "KC000",
+      "method": "neutral bright metal + symmetric-pair search (k_backface contacts)",
+      "found": "battery contact, O'Flynn label VCC1",
+      "x_mm": -2.685,
+      "y_mm": -7.851,
+      "r_mm": 8.298,
+      "theta_deg": 251.12,
+      "long_mm": 1.495,
+      "short_mm": 1.423,
+      "short_genuine_px": [
+        47.0,
+        59.8
+      ],
+      "area_mm2": 1.6246,
+      "confidence": "medium",
+      "flags": [
+        "extent_is_pad_OR_spring_not_separable"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "This photograph shows the board assembled in the shell. Whether this extent is the BOARD PAD or the SPRUNG CONTACT sitting on it is NOT SEPARABLE in plan view. FCC internal photo 4 - the battery cavity with the contacts and no board - is the frame that separates them. DRAW THE POSITION; do not take the extent as a pad dimension."
+    },
+    {
+      "id": "KC001",
+      "method": "neutral bright metal + symmetric-pair search (k_backface contacts)",
+      "found": "battery contact, O'Flynn label GND",
+      "x_mm": -0.137,
+      "y_mm": -8.557,
+      "r_mm": 8.559,
+      "theta_deg": 269.08,
+      "long_mm": 3.321,
+      "short_mm": 2.07,
+      "short_genuine_px": [
+        68.3,
+        87.0
+      ],
+      "area_mm2": 5.0172,
+      "confidence": "medium",
+      "flags": [
+        "extent_is_pad_OR_spring_not_separable"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "This photograph shows the board assembled in the shell. Whether this extent is the BOARD PAD or the SPRUNG CONTACT sitting on it is NOT SEPARABLE in plan view. FCC internal photo 4 - the battery cavity with the contacts and no board - is the frame that separates them. DRAW THE POSITION; do not take the extent as a pad dimension."
+    },
+    {
+      "id": "KC002",
+      "method": "neutral bright metal + symmetric-pair search (k_backface contacts)",
+      "found": "battery contact, O'Flynn label VCC2",
+      "x_mm": 2.355,
+      "y_mm": -7.916,
+      "r_mm": 8.259,
+      "theta_deg": 286.57,
+      "long_mm": 1.682,
+      "short_mm": 1.409,
+      "short_genuine_px": [
+        46.5,
+        59.2
+      ],
+      "area_mm2": 1.6804,
+      "confidence": "medium",
+      "flags": [
+        "extent_is_pad_OR_spring_not_separable"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "This photograph shows the board assembled in the shell. Whether this extent is the BOARD PAD or the SPRUNG CONTACT sitting on it is NOT SEPARABLE in plan view. FCC internal photo 4 - the battery cavity with the contacts and no board - is the frame that separates them. DRAW THE POSITION; do not take the extent as a pad dimension."
+    }
+  ]
+}

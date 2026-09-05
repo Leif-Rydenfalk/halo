@@ -14,22 +14,13 @@
   },
   "contacts": [
     {
-      "area_mm2": 4.472167090899261,
-      "w_mm": 3.608562317469915,
-      "h_mm": 4.025487844189547,
-      "cx_px": 617.2718029301659,
-      "cy_px": 685.2175440218144,
-      "r_mm": 10.632020802290363,
+      "area_mm2": 1.6245890527553817,
+      "w_mm": 1.495181199270403,
+      "h_mm": 1.4232974877670181,
+      "cx_px": 964.8750636132315,
+      "cy_px": 661.0446564885497,
+      "r_mm": 7.9373238044402745,
       "oflynn_label": "VCC1"
-    },
-    {
-      "area_mm2": 0.7465668776784273,
-      "w_mm": 1.2795300647602488,
-      "h_mm": 0.9488649918446788,
-      "cx_px": 836.359634551495,
-      "cy_px": 529.0999446290144,
-      "r_mm": 10.439945381712578,
-      "oflynn_label": "GND"
     },
     {
       "area_mm2": 5.017210517377117,
@@ -38,6 +29,15 @@
       "cx_px": 1142.0789321908214,
       "cy_px": 611.9332207299992,
       "r_mm": 8.065003278578853,
+      "oflynn_label": "GND"
+    },
+    {
+      "area_mm2": 1.6803955469340015,
+      "w_mm": 1.6820788491792034,
+      "h_mm": 1.4089207454663413,
+      "cx_px": 1315.418573185732,
+      "cy_px": 656.5575645756458,
+      "r_mm": 7.684232483099119,
       "oflynn_label": "VCC2"
     }
   ],
@@ -139,12 +139,14 @@
       "r_mm": 8.139758683308054
     }
   ],
-  "vcc_area_mismatch_pct": 10.863475323391288,
+  "gnd_found": true,
+  "gnd_note": null,
+  "vcc_area_mismatch_pct": 3.3210332103320943,
   "symmetry_gate_pct": 15.0,
-  "symmetry_gate_passed": false,
-  "vcc_radius_diff_mm": 2.5670175237115096,
-  "vcc_midpoint_off_axis_mm": 4.231429393324246,
-  "geometric_symmetry_passed": false,
+  "symmetry_gate_passed": true,
+  "vcc_radius_diff_mm": 0.25309132134115586,
+  "vcc_midpoint_off_axis_mm": 0.4866984679286713,
+  "geometric_symmetry_passed": true,
   "operator_seed_not_measured": {
     "note": "an eyeballed probe of this frame found a pair satisfying all three symmetry constraints; the automatic association does not reach it yet. NOT a measurement.",
     "left_px": [
@@ -169,9 +171,15 @@
   "positive_control": {
     "source": "oflynn-frontside-tpnames.jpg upper band",
     "n_labels": 10,
-    "distinct_features_hit": 5,
-    "median_mm": 1.1557332255474386
+    "nearest_label_mm": [
+      2.3172369450526853,
+      1.3163846738610405,
+      2.4353410245667826
+    ],
+    "floor_mm": 3.0,
+    "passed": true,
+    "direction": "the SYMMETRY SEARCH chose the features; O'Flynn's names are the check, not the driver"
   },
   "not_separable": "board pad vs sprung contact - coincident in plan view in this assembled photograph. FCC internal photo 4 shows the cavity with contacts and no board and would separate them.",
-  "verdict": "CANNOT DETERMINE"
+  "verdict": "PASS"
 }

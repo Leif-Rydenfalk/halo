@@ -679,39 +679,88 @@ def cmd_contacts(args):
     tree = cKDTree(P)
     # the three labels sit in the upper band of the board; take the label groups there
     up = labels[labels[:, 1] < 0.32 * tpshape[0]]
-    # STATED GEOMETRIC ASSUMPTION, and it is an assumption: O'Flynn writes each name
-    # ABOVE the feature it names, so a plain nearest-neighbour walks uphill to the rim
-    # metal instead of down to the contact. The first version did exactly that and its
-    # own symmetry check caught it at 83.3%. Associate downward only, within 4 mm.
-    cands = []
-    for L in up:
-        below = [(np.hypot(P[i, 0] - L[0], P[i, 1] - L[1]), i) for i in range(len(P))
-                 if P[i, 1] > L[1] and np.hypot(P[i, 0] - L[0], P[i, 1] - L[1]) < 4.0 * ppm * k]
-        if below:
-            below.sort(); cands.append(rows[below[0][1]])
-    seen, uniq = set(), []
-    for c in cands:
-        key = (round(c["cx_px"]), round(c["cy_px"]))
-        if key not in seen:
-            seen.add(key); uniq.append(c)
-    cands = uniq
-    d, idx = tree.query(up)
-    hit = sorted(set(int(i) for i in idx))
-    print(f"  POSITIVE CONTROL  {len(up)} annotation groups in the upper band of")
-    print(f"    oflynn-frontside-tpnames.jpg (where VCC1, GND and VCC2 are), associated")
-    print(f"    DOWNWARD (see the note in the source) -> {len(cands)} distinct features.")
-    cands.sort(key=lambda r: r["cx_px"])
+    # THE ASSOCIATION IS INVERTED, and that is the fix. Driving it from O'Flynn's labels
+    # failed twice: a plain nearest-neighbour walked UPHILL to the rim (his names sit ABOVE
+    # their features), and associating downward then passed the area-symmetry check AT
+    # 10.9% ON A PAIR AT r 10.63 AND r 8.07 mm - two unrelated features whose areas
+    # happened to agree. Area is one number and two wrong features can share it.
+    #
+    # So the PHYSICS finds the pair and O'FLYNN VALIDATES IT, rather than the other way
+    # round. Apple's two positive tabs are one part in one symmetric scheme, so they must
+    # be at the same radius and mirrored about the board's vertical axis. That is a
+    # two-parameter constraint no random pair satisfies. The labels are then a check that
+    # can still fail - if the best symmetric pair is not where O'Flynn put VCC1 and VCC2,
+    # this refuses.
+    best = None
+    for i in range(len(rows)):
+        for j in range(i + 1, len(rows)):
+            A, B = rows[i], rows[j]
+            if A["cx_px"] > B["cx_px"]:
+                A, B = B, A
+            if A["cy_px"] > cy0 or B["cy_px"] > cy0:      # both tabs are above centre
+                continue
+            dr = abs(A["r_mm"] - B["r_mm"])
+            dmir = abs((A["cx_px"] + B["cx_px"]) / 2.0 - cx0) / ppm
+            da = 100 * abs(A["area_mm2"] - B["area_mm2"]) / max(A["area_mm2"], B["area_mm2"])
+            if A["cx_px"] > cx0 or B["cx_px"] < cx0:      # one each side of the axis
+                continue
+            cost = (dr / 0.60) ** 2 + (dmir / 1.20) ** 2 + (da / 15.0) ** 2
+            if best is None or cost < best[0]:
+                best = (cost, A, B, dr, dmir, da)
+    if best is None:
+        print("  CANNOT DETERMINE: no candidate pair straddles the vertical axis above centre")
+        return CANNOT
+    _, A, B, dr0, dmir0, da0 = best
+    print(f"  SYMMETRIC-PAIR SEARCH over {len(rows)} neutral-metal features, both above the")
+    print(f"  board centre and one each side of the vertical axis. Best pair:")
+    print(f"    radius difference {dr0:.3f} mm (floor 0.600) - midpoint {dmir0:.3f} mm off axis")
+    print(f"    (floor 1.200) - areas {da0:.1f}% apart (floor 15.0)")
+    # GND: the feature between them, above both
+    mid_x = (A["cx_px"] + B["cx_px"]) / 2.0
+    # GND SITS IN THE SAME BATTERY WELL AS THE TWO TABS, so it must be at a comparable
+    # RADIUS - not merely between them in x. The first version asked only for "between in
+    # x and not far below", and picked a rim feature at r 11.03 mm while the two tabs sat
+    # at 7.94 and 7.68. Being between two things in one coordinate is not being with them.
+    r_ref = 0.5 * (A["r_mm"] + B["r_mm"])
+    between = [r for r in rows
+               if min(A["cx_px"], B["cx_px"]) < r["cx_px"] < max(A["cx_px"], B["cx_px"])
+               and abs(r["r_mm"] - r_ref) <= 1.50
+               and r is not A and r is not B]
+    between.sort(key=lambda r: abs(r["cx_px"] - mid_x))
+    G = between[0] if between else None
+    if G is None:
+        print(f"  GND: NO CANDIDATE. Nothing lies between the two tabs in x AND within")
+        print(f"  1.50 mm of their radius ({r_ref:.2f} mm). The two positive tabs below are")
+        print(f"  published; GND is CANNOT DETERMINE and is published as absent, not guessed.")
+    cands = [A] + ([G] if G else []) + [B]
+    # POSITIVE CONTROL: are O'Flynn's three names actually nearest to the pair physics found?
+    lab_d = []
+    for r in cands:
+        pt = np.array([r["cx_px"] * k, r["cy_px"] * k])
+        dd = np.hypot(up[:, 0] - pt[0], up[:, 1] - pt[1])
+        lab_d.append(float(dd.min() / (ppm * k)))
+    print()
+    print(f"  POSITIVE CONTROL  {len(up)} annotation groups sit in the upper band of")
+    print(f"    oflynn-frontside-tpnames.jpg, where VCC1, GND and VCC2 are. Distance from each")
+    print(f"    feature the SYMMETRY SEARCH chose to its nearest O'Flynn name:")
+    for nm0, dv in zip(("left", "centre", "right"), lab_d):
+        print(f"      {nm0:7s} {dv:.3f} mm")
+    lab_ok = max(lab_d) < 3.0
+    print(f"    -> " + ("all three are within 3.0 mm of a name O'Flynn wrote. The pair physics"
+                        "\n       found is the pair he labelled." if lab_ok else
+                        "AT LEAST ONE IS NOT NEAR ANY NAME. The symmetric pair is not O'Flynn's."))
     print()
     print(f"  THE THREE FEATURES O'FLYNN LABELS VCC1 / GND / VCC2")
-    names = ["VCC1 (left)", "GND (centre)", "VCC2 (right)"]
+    names = (["VCC1 (left)", "GND (centre)", "VCC2 (right)"] if G is not None
+             else ["VCC1 (left)", "VCC2 (right)"])
     out_rows = []
     for nm, r in zip(names, cands[:3]):
         print(f"    {nm:14s} {r['w_mm']:.3f} x {r['h_mm']:.3f} mm   area {r['area_mm2']:.3f} mm2   "
               f"r {r['r_mm']:.2f} mm from board centre")
         rr = dict(r); rr["oflynn_label"] = nm.split()[0]; out_rows.append(rr)
     sym = None
-    if len(out_rows) >= 3:
-        a1, a3 = out_rows[0]["area_mm2"], out_rows[2]["area_mm2"]
+    if len(out_rows) >= 2:
+        a1, a3 = out_rows[0]["area_mm2"], out_rows[-1]["area_mm2"]
         sym = 100 * abs(a1 - a3) / max(a1, a3)
         print()
         print(f"  INTERNAL CONSISTENCY  the two VCC features differ in area by {sym:.1f}%.")
@@ -725,8 +774,8 @@ def cmd_contacts(args):
     # on the battery-well wall, so they must be at the SAME RADIUS and MIRRORED about the
     # board's vertical axis. Two features picked at random are not.
     geo_ok, dr, dmir = False, None, None
-    if len(out_rows) >= 3:
-        A, B = out_rows[0], out_rows[2]
+    if len(out_rows) >= 2:
+        A, B = out_rows[0], out_rows[-1]
         dr = abs(A["r_mm"] - B["r_mm"])
         dmir = abs((A["cx_px"] + B["cx_px"]) / 2.0 - cx0) / ppm
         geo_ok = (dr <= 0.60) and (dmir <= 1.20)
@@ -737,7 +786,8 @@ def cmd_contacts(args):
         print(f"      midpoint off-axis    {dmir:.3f} mm   (floor 1.200)")
         print(f"    -> " + ("consistent with two tabs of one symmetric scheme."
                             if geo_ok else "NOT A SYMMETRIC PAIR."))
-    ok = (len(cands) >= 3) and (sym is not None) and (sym <= 15.0) and geo_ok
+    # The VCC pair and GND are graded SEPARATELY. The pair can be solid while GND is not.
+    ok = (len(out_rows) >= 2) and (sym is not None) and (sym <= 15.0) and geo_ok and lab_ok
     if not ok:
         print()
         print(f"  *** THE SYMMETRY GATE HAS FIRED. Apple's two positive tabs are the same")
@@ -759,6 +809,10 @@ def cmd_contacts(args):
     out = dict(tool="k_backface.py", verb="contacts", image=os.path.relpath(IMG, REPO),
                px_per_mm=ppm, criterion="luma>150 and saturation<0.22, r<0.90*865 px",
                excluded_by_name=dome, contacts=out_rows, all_candidates=rows[:12],
+               gnd_found=bool(G is not None),
+               gnd_note=(None if G is not None else
+                         "CANNOT DETERMINE. Nothing lies between the two tabs in x AND within "
+                         "1.50 mm of their radius. Published as absent rather than guessed."),
                vcc_area_mismatch_pct=sym, symmetry_gate_pct=15.0, symmetry_gate_passed=bool(ok),
                vcc_radius_diff_mm=dr, vcc_midpoint_off_axis_mm=dmir,
                geometric_symmetry_passed=bool(geo_ok),
@@ -771,8 +825,9 @@ def cmd_contacts(args):
                    r_mm=[7.94, 7.68], midpoint_off_axis_mm=0.98),
                positive_control=dict(source="oflynn-frontside-tpnames.jpg upper band",
                                      n_labels=int(len(up)),
-                                     distinct_features_hit=len(hit),
-                                     median_mm=float(np.median(d) / (ppm * k))),
+                                     nearest_label_mm=lab_d, floor_mm=3.0, passed=bool(lab_ok),
+                                     direction="the SYMMETRY SEARCH chose the features; O'Flynn's "
+                                               "names are the check, not the driver"),
                not_separable="board pad vs sprung contact - coincident in plan view in this "
                              "assembled photograph. FCC internal photo 4 shows the cavity "
                              "with contacts and no board and would separate them.",
@@ -922,6 +977,223 @@ def cmd_coil(args):
     json.dump(out, open(p2, "w"), indent=2)
     print(f"\n  wrote {os.path.relpath(p2, REPO)}")
     return PASS if ok_sep else CANNOT
+
+def cmd_handoff(args):
+    """Emit HANDOFF-positions-back.json in the SAME per-row shape as L1's front handoff.
+
+    L12 consumes both files with one reader. Nothing here is new measurement - it is the
+    pads and contacts already measured, in the schema the board lane already uses, with
+    every refusal carried across as a named field rather than an absence.
+    """
+    import subprocess, datetime
+    fit = json.load(open(FIT))
+    ppm = fit["transferred_scale"]["source_px_per_mm_mean"]
+    pads = json.load(open(os.path.join(LANE, "metrology", "backface-pads.json")))
+    cont = json.load(open(os.path.join(LANE, "metrology", "backface-contacts.json")))
+    caps = json.load(open(os.path.join(LANE, "metrology", "backface-caps.json")))
+    coil = json.load(open(os.path.join(LANE, "metrology", "backface-coil.json")))
+
+    # board centre in SOURCE px: photo 7's fitted centre mapped through the registration
+    H = np.array(fit["H_target_to_source_cropframe"])
+    ox, oy = fit["target"].get("crop_origin", [725, 545])
+    tx, ty = 935.25 - ox, 755.395 - oy
+    den = H[2, 0] * tx + H[2, 1] * ty + H[2, 2]
+    cx = float((H[0, 0] * tx + H[0, 1] * ty + H[0, 2]) / den)
+    cy = float((H[1, 0] * tx + H[1, 1] * ty + H[1, 2]) / den)
+    # THE HOMOGRAPHY WORKS IN THE PRE-AVERAGED SOURCE FRAME, NOT FULL RESOLUTION.
+    # c_register downsamples the source to roughly the target's sampling so that warping
+    # is not aliasing a 5x finer image, and H therefore lands in that reduced frame. The
+    # first version omitted this and put the board centre at (224, 235) instead of near
+    # (1174, 1172) - visibly absurd, which is the only reason it was caught. A smaller
+    # frame error would not have looked wrong and would have shifted EVERY position here.
+    kpre = float(fit["source"].get("pre_average", 1.0))
+    cx *= kpre; cy *= kpre
+    GEN = (33.0, 42.0)   # M06's genuine px/mm band for THIS face
+
+    def mk(idx, r, method, found, long_mm, short_mm, conf, flags, dnd=False, why=None):
+        x = (r["cx_px"] - cx) / ppm; y = (r["cy_px"] - cy) / ppm
+        row = dict(id=idx, method=method, found=found,
+                   x_mm=round(x, 3), y_mm=round(y, 3),
+                   r_mm=round(math.hypot(x, y), 3),
+                   theta_deg=round(math.degrees(math.atan2(y, x)) % 360.0, 2),
+                   long_mm=(round(long_mm, 3) if long_mm is not None else None),
+                   short_mm=(round(short_mm, 3) if short_mm is not None else None),
+                   short_genuine_px=([round(short_mm * GEN[0], 1), round(short_mm * GEN[1], 1)]
+                                     if short_mm is not None else None),
+                   area_mm2=round(r.get("area_mm2", 0.0), 4) or None,
+                   confidence=conf, flags=flags, do_not_draw_as_component=dnd)
+        if why: row["why"] = why
+        return row
+
+    rows = []
+    for i, pd in enumerate(sorted(pads["pads"], key=lambda q: math.atan2(q["cy_px"] - cy, q["cx_px"] - cx))):
+        d = pd["d_mm"]
+        rows.append(mk(f"KP{i:03d}", pd, "gold colour AND circular shape (k_backface pads)",
+                       "round gold pad - the test-point / probe-pad field", d, d,
+                       "high" if 0.45 < d < 0.80 else "medium",
+                       ["diameter_is_equivalent_circle"] +
+                       ([] if 0.45 < d < 0.80 else ["outside_the_main_pad_population"])))
+    for j, c in enumerate(cont.get("contacts", [])):
+        lo = max(c["w_mm"], c["h_mm"]); sh = min(c["w_mm"], c["h_mm"])
+        rows.append(mk(f"KC{j:03d}", c, "neutral bright metal + symmetric-pair search (k_backface contacts)",
+                       f"battery contact, O'Flynn label {c.get('oflynn_label')}", lo, sh,
+                       "medium", ["extent_is_pad_OR_spring_not_separable"], False,
+                       "This photograph shows the board assembled in the shell. Whether this "
+                       "extent is the BOARD PAD or the SPRUNG CONTACT sitting on it is NOT "
+                       "SEPARABLE in plan view. FCC internal photo 4 - the battery cavity with "
+                       "the contacts and no board - is the frame that separates them. DRAW THE "
+                       "POSITION; do not take the extent as a pad dimension."))
+
+    # A ROW THAT CANNOT BE ON THE BOARD MUST NOT BE HANDED OVER AS BOARD GEOMETRY.
+    # The OD is a BOUND, 24.95-26.34 mm (board.json), so the largest radius any feature
+    # can have is 13.17 mm. Anything beyond that is on the shell or the plastic carrier,
+    # not on the copper. Flagged rather than deleted, because a detection that was made
+    # and then rejected is a different object from one that was never made.
+    R_MAX = 13.17
+    n_out = 0
+    for r in rows:
+        if r["r_mm"] > R_MAX:
+            n_out += 1
+            r["do_not_draw_as_component"] = True
+            r["flags"] = r["flags"] + ["outside_the_board_OD_bound"]
+            r["why"] = (f"r = {r['r_mm']:.3f} mm exceeds {R_MAX} mm, the largest radius allowed by "
+                        f"the OUTER DIAMETER BOUND of 24.95-26.34 mm (board.json - the OD is a "
+                        f"bound and not a number). This feature is on the shell or the plastic "
+                        f"antenna carrier, not on the copper. NOT BOARD GEOMETRY.")
+    out_note = (f"{n_out} of {len(rows)} rows lie outside the board's own OD bound and are "
+                f"flagged outside_the_board_OD_bound with do_not_draw_as_component set. They are "
+                f"kept so the count is honest.")
+    out = dict(
+        generated_utc=datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        git_rev=subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
+                               capture_output=True, text=True).stdout.strip(),
+        producer="L9 THE COMPARISON lane",
+        side=("BACK = the BATTERY-CONTACT / COIL / TEST-POINT side. O'Flynn's "
+              "frontside-fullres.jpeg IS this side. This is the face the Replica had NOT "
+              "drawn (THREE-WAY.md row 24)."),
+        source_image="images/airtag/oflynn-frontside-fullres.jpeg",
+        frame=dict(origin="board centre, transferred from FCC internal photo 7 through "
+                          "c_register's homography (view fcc7-back, added by this lane - the "
+                          "catalogue previously held NO ruler-bearing view of this face, which "
+                          "is why this face had never been measured)",
+                   axes="+x right, +y DOWN (image convention); theta from +x through +y",
+                   origin_px=[cx, cy]),
+        scale=dict(stored_px_per_mm=ppm,
+                   basis="metrology/scale-at-board-photo7.json - m_scale_at at the board "
+                         "(932,752), bottom and right rule routes 0.45% apart",
+                   spread_over_board_pct=fit["transferred_scale"]["spread_pct"],
+                   genuine_px_per_mm=list(GEN),
+                   decoration_factor=f"{ppm/GEN[1]:.1f}-{ppm/GEN[0]:.1f}x more stored pixels "
+                                     f"than resolved detail (M06)"),
+        uncertainty=dict(registration_holdout_mm=0.1256,
+                         registration_holdout_genuine_px=[round(0.1256 * GEN[0], 2),
+                                                          round(0.1256 * GEN[1], 2)],
+                         note="DO NOT QUOTE ANY POSITION TO 0.01 mm. The floor is 4-5 genuine px."),
+        THE_CAVEAT_UNDER_EVERY_MILLIMETRE_HERE=(
+            "*** THE SCALE COMES FROM A DIFFERENT PHYSICAL BOARD. *** FCC internal photo 7 is "
+            "920-08283-01, data code 3119 - a 2019 engineering build. O'Flynn's photograph, "
+            "which every position here is measured in, is 820-01736-A, data code 2920 17 - "
+            "2020 production. A uniform dimensional difference between the two is ABSORBED "
+            "INTO THE FITTED SCALE and leaves the held-out residual COMPLETELY UNCHANGED, "
+            "because the check divides both sides by the same number. Registration "
+            "consistency is not scale accuracy. It cannot be settled from this machine; a "
+            "caliper on one board of each part number settles it. THE SAME CAVEAT ALREADY "
+            "APPLIED, UNSTATED, TO THE FRONT HANDOFF's 106.313 px/mm."),
+        controls=dict(
+            negative="the pad detector off the board (r>1000 px): 0 pads. It can come back empty.",
+            positive=("Colin O'Flynn's 2021 annotation, oflynn-frontside-tpnames.jpg - the SAME "
+                      "photograph rescaled, NCC 0.9993 with the red pixels masked out, so the "
+                      "mapping is exact and the annotation is EXTERNAL to this method. His label "
+                      "positions sit a median 0.462 mm from a detection; 4000 random points on "
+                      "the same annulus sit 1.973 mm away. SEPARATION 4.27x, floor 2.00x. The "
+                      "null is the load-bearing part: he writes each number BESIDE its pad and "
+                      "this annulus is dense, so absolute distance would have proved nothing."),
+            contacts=("the two positive tabs were found by a SYMMETRIC-PAIR SEARCH - same "
+                      "radius, mirrored about the vertical axis, equal area - and O'Flynn's "
+                      "names are the CHECK, not the driver. Result: areas 3.3% apart, radii "
+                      "0.253 mm apart, midpoint 0.487 mm off axis, all three within 2.44 mm of "
+                      "a name he wrote.")),
+        excluded=[
+            dict(what="the five bulk capacitors", verdict="CANNOT DETERMINE",
+                 why=("the measured size is a function of the operator's window - 3.192 x 1.581 mm "
+                      "at a 1.6 mm span and 4.699 x 4.414 mm at 2.4 mm. See evidence/E08 sec.2.4. "
+                      "3.192 x 1.581 is EIA 3216 / Case A to 0.25% and 1.2% and is very likely "
+                      "correct; it is NOT published because a number that matches what you "
+                      "expected, from a method that also produces numbers that do not, is not a "
+                      "measurement."),
+                 instruction=("DO NOT place these from candidates_not_published in "
+                              "metrology/backface-caps.json. They are leads with their refusal "
+                              "attached, not sizes.")),
+            dict(what="the wound coil's inner and outer diameter", verdict="CANNOT DETERMINE",
+                 why=("L1's copper-fraction threshold does not transfer out of the 26 mm crop it "
+                      "was set in. In the full frame the same criterion returns a band 2.732 mm "
+                      "wide against M01's 0.727 mm, because the whole board's gold is now in "
+                      "view. Control separation 1.37x against a 2.00x floor. E08 sec.4b."),
+                 instruction=("Use M01's ID 9.380 / OD 10.834 mm if you need a coil, and carry "
+                              "M01's datum caveat with it. Do NOT use the numbers in "
+                              "metrology/backface-coil.json.")),
+            dict(what="the overexposed centre dome", verdict="EXCLUDED BY NAME",
+                 why=("a 78.1 mm2 neutral-metal blob at r 0.46 mm. M01 sec.4 records that the "
+                      "saturated white core is the magnet/dome assembly. Excluded by name rather "
+                      "than by a size threshold chosen to make the answer come out."),
+                 instruction="not a contact and not a part."),
+        ],
+        known_gaps=[
+            dict(what="whether a contact extent is the BOARD PAD or the SPRUNG CONTACT on it",
+                 measured=False, do_not_draw_as_measured=True,
+                 note=("coincident in plan view in an assembled photograph. FCC internal photo 4 "
+                       "shows the battery cavity with the contacts and NO BOARD and is the frame "
+                       "that separates them. It is already in images/airtag. USE THE CONTACT "
+                       "POSITIONS; do not take their extents as pad dimensions.")),
+            dict(what="every part on this face that is not a round gold pad or a battery contact",
+                 measured=False, do_not_draw_as_measured=True,
+                 note=("the five capacitors, the two small ICs, the silkscreen and the DataMatrix "
+                       "are all present in the photograph and NONE of them is in these rows. This "
+                       "file is a pad and contact file, not a component file. A face drawn from it "
+                       "alone will be knowingly incomplete, and that is better than looking "
+                       "complete.")),
+        ],
+        next_steps_named_not_left_loose=[
+            dict(what="the coil by RADIAL PERIODICITY at AWG 35's ~0.145 mm turn pitch",
+                 why=("it is a two-for-one and not a loose end: periodicity separates a WOUND coil "
+                      "from a field of gold pads in a way no colour threshold can, AND it yields a "
+                      "TURN COUNT - which is exactly what separates the NFC antenna from a voice "
+                      "coil in evidence/E02, still OPEN. It also reopens the one comparison that "
+                      "can only disagree about SCALE: O'Flynn's retracted '~26 mm' tilde against "
+                      "the FCC steel rulers, on one object, in a photograph both measurements "
+                      "share.")),
+            dict(what="the capacitor width estimator",
+                 why=("k_backface selftest S1 fails on a SYNTHETIC - a part 2.200 mm wide measures "
+                      "0.855 mm - so it can be iterated without touching the photograph. Then mask "
+                      "to the part before profiling: every window failure is contamination by "
+                      "neighbours, and C1/C2/C3 sit within 2 mm of each other on the left rim.")),
+            dict(what="the EIA case-code check, ONLY after a size survives window-invariance",
+                 why=("it would be the first scale evidence in this project that does NOT pass "
+                      "through the FCC rulers or the 920-/820- board-identity assumption above. "
+                      "k_backface already implements it and refuses to quote it when the nearest "
+                      "two codes are ambiguous.")),
+        ],
+        counts=dict(total=len(rows),
+                    pads=len([r for r in rows if r["id"].startswith("KP")]),
+                    contacts=len([r for r in rows if r["id"].startswith("KC")]),
+                    do_not_draw=len([r for r in rows if r["do_not_draw_as_component"]]),
+                    outside_od_bound=n_out,
+                    pad_median_diameter_mm=pads["diameter_mm"]["median"],
+                    pad_diameter_iqr_mm=pads["diameter_mm"]["iqr"]),
+        outside_od_bound_note=out_note,
+        rows=rows)
+    p2 = os.path.join(LANE, "metrology", "HANDOFF-positions-back.json")
+    json.dump(out, open(p2, "w"), indent=2)
+    print(f"k_backface handoff")
+    print(f"  origin (board centre) in source px: ({cx:.2f}, {cy:.2f}) - mapped from photo 7's")
+    print(f"  fitted centre through the registration homography, not eyeballed")
+    print(f"  {len(rows)} rows: {out['counts']['pads']} pads + {out['counts']['contacts']} contacts")
+    print(f"  pad median diameter {out['counts']['pad_median_diameter_mm']:.4f} mm, "
+          f"IQR {out['counts']['pad_diameter_iqr_mm']:.4f} mm")
+    print(f"  {n_out} rows flagged outside_the_board_OD_bound + do_not_draw_as_component")
+    print(f"  3 exclusions and 2 known gaps carried across as named fields")
+    print(f"  wrote {os.path.relpath(p2, REPO)}")
+    return PASS
 
 def cmd_calibrate(args):
     """Measure what z THIS PHOTOGRAPH's own board throws, and set the floor from it.
@@ -1137,13 +1409,13 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("caps"); sub.add_parser("selftest"); sub.add_parser("controls")
-    sub.add_parser("coil"); sub.add_parser("pads"); sub.add_parser("contacts")
+    sub.add_parser("coil"); sub.add_parser("pads"); sub.add_parser("contacts"); sub.add_parser("handoff")
     c = sub.add_parser("calibrate")
     c.add_argument("--n", type=int, default=120)
     c.add_argument("--margin", type=float, default=1.0)
     a = p.parse_args()
     return {"caps": cmd_caps, "selftest": cmd_selftest, "controls": cmd_controls,
-            "calibrate": cmd_calibrate, "coil": cmd_coil, "pads": cmd_pads, "contacts": cmd_contacts}[a.cmd](a)
+            "calibrate": cmd_calibrate, "coil": cmd_coil, "pads": cmd_pads, "contacts": cmd_contacts, "handoff": cmd_handoff}[a.cmd](a)
 
 if __name__ == "__main__":
     sys.exit(main())
