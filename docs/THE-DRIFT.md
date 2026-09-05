@@ -83,6 +83,39 @@ either. Two concrete changes:
    divergence is visibly the thirteenth rather than just the next one. A ratchet
    with no counter is how you get here.
 
+## Revision, 2026-09-05: this document was too harsh on the board and too kind to the process
+
+*Added after the replica lane re-read `GOAL.md` against the accumulation, which
+is the check this document asks for — and the check found the document itself
+wrong.*
+
+**The board answers three of the four aims `GOAL.md` actually states.** The
+embeddable block: yes. Peer ranging: yes. Cost as a first-class spec: yes. A
+perfect copy: no. The Replica, meanwhile, answers **none of the four**, and
+structurally cannot answer the block or the ranging, because it has no
+schematic, no netlist and no nets.
+
+So "built the wrong thing while every step was right" is not accurate. **The
+defect was never that the board diverged** — it diverged toward the goal Leif
+wrote down. The defect was that **the recreation he also asked for went unbuilt
+until he said so twice**, and that nothing counted the divergences in between.
+That is a narrower failure and a more useful one, because the remedy is
+different: not "stop diverging", but "build both, and count".
+
+**And the count in D23 was wrong.** It said the board had diverged in seven
+places. **The measured count is 13** — nearly double, stated in the very
+document that named the ratchet. The board reads 5 same, 2 equivalent,
+**12 diverged**, 1 missing, 3 undetermined across 24 axes. The Replica reads
+9 same, 1 diverged, 1 missing, **8 undetermined and 4 unstarted**.
+
+**Both columns must be quoted together, always.** "2 divergences against 13"
+read alone is precisely this project's favourable-half headline, appearing
+inside the document written to catch it. The Replica's two departures come with
+**twelve no-answers**. And its nine matches are all in one region — outline,
+shape, thickness, layers, hole, finish, and three refusals where drawing nothing
+was correct. It matches Apple on the **bare board** and has almost no answer on
+anything mounted to it. Leif's word was *internals*.
+
 ## What it cost
 
 Not the work — the board, the enclosure, the firmware and the tooling are real

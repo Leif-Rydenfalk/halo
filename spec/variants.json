@@ -135,5 +135,28 @@
    "why": "Every competitor sells one and Apple does not. The embeddable block makes it nearly free to try.",
    "status": "PROPOSED"
   }
- ]
+ ],
+ "divergence_ceiling": {
+  "note": "THE-DRIFT.md asks for a stated ceiling because a ratchet with no counter is how a project walks off its goal. This is the ceiling. It is a product decision and Leif may overrule it; it is set here rather than left blank because a missing threshold is why the count reached 13 while a decision record said 7.",
+  "measured_over": "24 axes, counted per board by the replica lane's instrument",
+  "ceilings": {
+   "halo-replica": {
+    "diverged_max": 2,
+    "why": "it is the REFERENCE the other five are measured against. A reference that drifts makes every downstream comparison meaningless. Two allows only departures forced by a part being unbuyable, each named."
+   },
+   "halo-core": {
+    "diverged_max": 14,
+    "why": "it is a functional equivalent by design and answers three of GOAL.md's four aims. It currently measures 12. The ceiling is set two above the present count deliberately: close enough that the next divergence is a decision rather than a drift, far enough that it is not breached by the routine work in flight."
+   },
+   "halo-block": {
+    "diverged_max": 16,
+    "why": "a castellated module cannot keep Apple's outline, contacts or enclosure at all, so three departures are structural before any choice is made."
+   },
+   "others": {
+    "diverged_max": null,
+    "why": "Ranger, Plus and Card are explicitly not copies. A ceiling on them would be theatre."
+   }
+  },
+  "rule": "When a variant reaches its ceiling, the next divergence requires a decision entry saying what it buys and what it costs against GOAL.md — not merely a justification for the step. Both the diverged count AND the cannot-determine count are quoted together, always: 2 against 13 read alone is the favourable half."
+ }
 }
