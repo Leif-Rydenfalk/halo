@@ -75,6 +75,33 @@ def _cum0(a, axis):
     return np.concatenate([z, np.cumsum(a, axis=axis)], axis=axis)
 
 
+def highpass_grad(D, w, axis):
+    """Remove slowly-varying gradient along the scan axis.
+
+    A smooth ILLUMINATION RAMP has a constant non-zero derivative, and a constant
+    integrates coherently over any length -- exactly like an edge.  That is where
+    a spectrum-matched null gets its power on this photograph, whose interior luma
+    runs 90/41/66/36 across a single 3 mm package.  A step is a SPIKE in the
+    derivative, so subtracting the local mean derivative over a window much wider
+    than an edge and much narrower than a package removes the ramp and keeps the
+    step.  The null is rebuilt through the identical filter, so nothing is free."""
+    if not w or w < 3:
+        return D
+    return D - ndimage.uniform_filter1d(D, int(w), axis=axis)
+
+
+def phase_scramble(a, seed=20260905):
+    """Same power spectrum, random phases: every texture statistic of the image
+    survives and every straight edge and closed corner does not.  This is the null
+    a boundary detector has to beat before anything else is discussed."""
+    rng = np.random.default_rng(seed)
+    F = np.fft.rfft2(a)
+    ph = rng.uniform(-np.pi, np.pi, F.shape)
+    ph[0, 0] = 0.0
+    out = np.fft.irfft2(np.abs(F) * np.exp(1j * ph), s=a.shape)
+    return (out - out.mean()) / (out.std() + 1e-9) * a.std() + a.mean()
+
+
 def _row_roll_null(D, rng):
     """Per-row independent circular roll.  Same per-row values, same along-row
     correlation, alignment BETWEEN rows destroyed.  E07 sec.2."""
@@ -326,6 +353,20 @@ def synth(kind, n=420, ppm=26.0, seed=7, contrast=40.0, texture=18.0):
         base = np.where(b > np.percentile(b, 88), base - contrast, base)
     elif kind == "stripe":
         base = np.where(np.abs(xx - n / 2) < 1.5 * ppm, base - contrast, base)
+    elif kind == "onesided":
+        # The nRF's real situation, made synthetic: ONE strong boundary and three
+        # that are nearly absent.  A clean four-edged synthetic cannot test the
+        # side-crossing bound, because its sides never have any reason to wander --
+        # that made selftest case 7 a check that could not fail, and this is the fix.
+        w, h, th = 3.0 * ppm, 2.5 * ppm, 23.0
+        t = math.radians(th)
+        u = (xx - n / 2) * math.cos(t) + (yy - n / 2) * math.sin(t)
+        v = -(xx - n / 2) * math.sin(t) + (yy - n / 2) * math.cos(t)
+        body = (np.abs(u) <= w / 2) & (np.abs(v) <= h / 2)
+        edge = body & (u < -w / 2 + 3)
+        base = np.where(body, base - 2.0, base)          # three sides: 2 luma
+        base = np.where(edge, base - contrast, base)     # one side: full contrast
+        truth = dict(long_mm=w / ppm, short_mm=h / ppm, theta_deg=th, cx=n / 2, cy=n / 2)
     elif kind == "flat":
         pass
     return ndimage.gaussian_filter(base, 0.8), mask, truth
@@ -496,7 +537,7 @@ def _local(lum, mask, cx, cy, theta_deg, R, smooth):
 
 
 def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
-              band=2, smooth=1.0, seed=20260905, iters=2):
+              band=2, smooth=1.0, seed=20260905, iters=2, hp=0):
     """Fit the FOUR SIDES OF A RECTANGLE INDEPENDENTLY and report each side's own
     evidence.
 
@@ -519,6 +560,8 @@ def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
     Rot, Mr = _local(lum, mask, cx, cy, theta_deg, R, smooth)
     Dx = np.zeros_like(Rot); Dx[:, 1:-1] = 0.5 * (Rot[:, 2:] - Rot[:, :-2])
     Dy = np.zeros_like(Rot); Dy[1:-1, :] = 0.5 * (Rot[2:, :] - Rot[:-2, :])
+    Dx = highpass_grad(np.where(Mr, Dx, 0.0), hp, 1)
+    Dy = highpass_grad(np.where(Mr, Dy, 0.0), hp, 0)
     Dx = np.where(Mr, Dx, 0.0); Dy = np.where(Mr, Dy, 0.0)
     MV = _cum0(Mr.astype(float), 0); MH = _cum0(Mr.astype(float), 1).T
     CV = _cum0(Dx, 0); CH = _cum0(Dy, 1).T
@@ -530,9 +573,18 @@ def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
     sdV = _null_sd_table(Dx, rng, lens, MV, half=band)
     sdH = _null_sd_table(Dy.T, rng, lens, MH, half=band)
 
-    def scan(C, Mc, sd, pos, span_lo, span_hi):
-        """|z| of one side as its offset moves, at fixed opposite-axis span."""
-        offs = np.arange(int(round(pos)) - search, int(round(pos)) + search + 1)
+    def scan(C, Mc, sd, pos, span_lo, span_hi, lim_lo=None, lim_hi=None):
+        """|z| of one side as its offset moves, at fixed opposite-axis span.
+
+        lim_lo/lim_hi keep this side from wandering past its opposite number.
+        Without them the two scans converge on the SAME strong edge and the
+        rectangle collapses to zero width -- seen, and the reason this bound
+        exists."""
+        lo = int(round(pos)) - search if lim_lo is None else max(int(round(pos)) - search,
+                                                                 int(round(lim_lo)))
+        hi = int(round(pos)) + search if lim_hi is None else min(int(round(pos)) + search,
+                                                                 int(round(lim_hi)))
+        offs = np.arange(lo, hi + 1)
         offs = offs[(offs > band + 1) & (offs < C.shape[1] - band - 2)]
         if offs.size == 0 or span_hi <= span_lo:
             return None
@@ -549,12 +601,14 @@ def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
                     profile=[float(x) for x in z], off0=float(offs[0]),
                     span=int(s1 - s0))
 
+    gapw, gaph = 0.45 * w_px, 0.45 * h_px
+    a0, b0, c0_, d0 = a, b, cc, dd
     out = {}
-    for _ in range(iters):
-        L_ = scan(CV, MV, sdV, a, cc, dd)
-        R_ = scan(CV, MV, sdV, b, cc, dd)
-        T_ = scan(CH, MH, sdH, cc, a, b)
-        B_ = scan(CH, MH, sdH, dd, a, b)
+    for _ in range(max(1, iters)):
+        L_ = scan(CV, MV, sdV, a0, cc, dd, lim_hi=b - gapw)
+        R_ = scan(CV, MV, sdV, b0, cc, dd, lim_lo=a + gapw)
+        T_ = scan(CH, MH, sdH, c0_, a, b, lim_hi=dd - gaph)
+        B_ = scan(CH, MH, sdH, d0, a, b, lim_lo=cc + gaph)
         if L_: a = L_["offset"]
         if R_: b = R_["offset"]
         if T_: cc = T_["offset"]
@@ -570,7 +624,7 @@ def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
 
 
 def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
-             seed=20260905, scramble=True):
+             seed=20260905, scramble=True, hp=0):
     """The bar a SINGLE side must clear.  Same scan, same span, same search range,
     at n random on-board locations of a phase-scrambled copy -- so it carries the
     same multiple-comparison burden the real scan does.  Returns the whole
@@ -588,7 +642,8 @@ def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
         k = rng.integers(0, len(ys))
         f = fit_sides(src, mask, ppm, float(xs[k]), float(ys[k]),
                       float(rng.uniform(0, 90)), w_px, h_px,
-                      band=band, smooth=smooth, seed=int(rng.integers(1 << 30)), iters=1)
+                      band=band, smooth=smooth, hp=hp,
+                      seed=int(rng.integers(1 << 30)), iters=1)
         for s in f["sides"].values():
             if s:
                 zs.append(abs(s["z"]))
@@ -596,3 +651,110 @@ def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
     return dict(n=len(zs), p50=float(np.percentile(zs, 50)),
                 p90=float(np.percentile(zs, 90)), p99=float(np.percentile(zs, 99)),
                 max=float(zs.max()))
+
+
+# ----------------------------------------------------------------- selftest
+
+def selftest(verbose=True):
+    """Synthetic ground truth and deliberate breaks.  Every case here failed on
+    purpose at least once before it was trusted; cases 6 and 7 are REGRESSIONS for
+    two real defects this file shipped and that are described at their fix sites."""
+    P, F = [], []
+
+    def check(name, ok, detail=""):
+        (P if ok else F).append(name)
+        if verbose:
+            print(f"  {'PASS' if ok else 'FAIL'}  {name}{('  -- ' + detail) if detail else ''}")
+
+    ppm = 26.0
+    lum, mask, truth = synth("rect", ppm=ppm)
+    got = detect(lum, mask, ppm, astep=3.0, z_thr=4.0, band=1)
+    top = max(got, key=lambda r: r["score"]) if got else None
+    eL = 100 * (top["long_px"] / ppm - truth["long_mm"]) / truth["long_mm"] if top else 999
+    eW = 100 * (top["short_px"] / ppm - truth["short_mm"]) / truth["short_mm"] if top else 999
+    check("1 a 3.000 x 2.500 mm rectangle in board-like texture is recovered to 5 %",
+          top is not None and abs(eL) < 5 and abs(eW) < 5,
+          f"{top['long_px']/ppm:.3f} x {top['short_px']/ppm:.3f} mm, "
+          f"{eL:+.1f} % / {eW:+.1f} %" if top else "nothing found")
+    ref = top["score"] if top else 0.0
+
+    worst = 0.0
+    for kind in ("flat", "blob", "stripe"):
+        for sd in (7, 8, 9):
+            l2, m2, _ = synth(kind, ppm=ppm, seed=sd)
+            g2 = detect(l2, m2, ppm, astep=3.0, z_thr=4.0, band=1)
+            worst = max(worst, max((r["score"] for r in g2), default=0.0))
+    check("2 no field WITHOUT a rectangle reaches the rectangle's score",
+          worst < ref, f"best null {worst:.1f} against {ref:.1f}")
+
+    g = detect(lum, mask, ppm, astep=3.0, z_thr=1e6, band=1)
+    check("3 an impossible score requirement returns nothing", len(g) == 0, f"{len(g)} found")
+    g = detect(lum, np.zeros_like(mask), ppm, astep=3.0, z_thr=4.0, band=1)
+    check("4 an empty mask returns nothing", len(g) == 0, f"{len(g)} found")
+
+    l0, m0, _ = synth("rect", ppm=ppm, contrast=0.0)
+    g0 = detect(l0, m0, ppm, astep=3.0, z_thr=4.0, band=1)
+    s0 = max((r["score"] for r in g0), default=0.0)
+    check("5 the SAME image with the rectangle's contrast set to zero loses it",
+          s0 < ref, f"{s0:.1f} against {ref:.1f}")
+
+    # REGRESSION 6.  _null_sd_table once took its robust sd over spans lying off the
+    # mask, where the derivative is identically zero.  Past 50 % zeros the MAD is
+    # ZERO, every z becomes infinite and every rectangle scores the same -- a check
+    # that SATURATES rather than one that fails.  Measured 1e11 before the fix.
+    rng = np.random.default_rng(3)
+    D = np.zeros((300, 300))
+    D[120:180, :] = rng.normal(size=(60, 300))          # only 20 % of rows carry data
+    Mc = np.zeros((300, 300), bool); Mc[120:180, :] = True
+    tab = _null_sd_table(D, rng, [40], _cum0(Mc.astype(float), 0), half=1)
+    check("6 REGRESSION: the null sd stays finite and non-zero when most spans are "
+          "off-mask", np.isfinite(tab[40]) and tab[40] > 1e-6, f"sd = {tab[40]:.4f}")
+
+    # REGRESSION 7.  fit_sides once let a side's scan walk onto its opposite number,
+    # collapsing the rectangle to zero width.  The case must be ONE-SIDED: on a clean
+    # four-edged synthetic the sides never wander, so removing the bound changed
+    # nothing and the check could not fail.  Watched red with the bound removed.
+    l7, m7, t7 = synth("onesided", ppm=ppm, contrast=90.0)
+    r = fit_sides(l7, m7, ppm, t7["cx"], t7["cy"], t7["theta_deg"],
+                  t7["long_mm"] * ppm, t7["short_mm"] * ppm, search=int(0.9 * ppm * 2.5))
+    check("7 REGRESSION: with ONE strong side and three nearly absent, opposite sides "
+          "still cannot cross", r["w_px"] > 0.3 * t7["long_mm"] * ppm and
+          r["h_px"] > 0.3 * t7["short_mm"] * ppm,
+          f"{r['w_px']/ppm:.3f} x {r['h_px']/ppm:.3f} mm")
+
+    # 8.  maximal() must drop a nested rectangle and KEEP a neighbouring one.
+    big = dict(cx=100., cy=100., theta_deg=0., w_px=80., h_px=80., long_px=80.,
+               short_px=80., score=9.)
+    inside = dict(cx=105., cy=98., theta_deg=0., w_px=20., h_px=20., long_px=20.,
+                  short_px=20., score=20.)
+    beside = dict(cx=220., cy=100., theta_deg=0., w_px=20., h_px=20., long_px=20.,
+                  short_px=20., score=20.)
+    keep = maximal([big, inside, beside])
+    check("8 a nested rectangle is dropped and a neighbouring one is kept",
+          big in keep and inside not in keep and beside in keep,
+          f"{len(keep)} of 3 kept")
+
+    # 9.  score_grid, with the peak-picking stage removed, must find the same truth.
+    # w is the x-extent of the rotated frame, which is the LONG axis here
+    b = score_grid(lum, mask, ppm, truth["cx"], truth["cy"],
+                   angles=[truth["theta_deg"]], wmm=[truth["long_mm"]],
+                   hmm=[truth["short_mm"]], rad_px=8, band=1)
+    check("9 the exhaustive local search agrees with the peak-picking detector",
+          b is not None and b["score"] > 0.5 * ref, f"{b['score']:.1f} against {ref:.1f}")
+
+    # 10.  side_bar on a scrambled copy must not exceed the real rectangle's sides.
+    rr = fit_sides(lum, mask, ppm, truth["cx"], truth["cy"], truth["theta_deg"],
+                   truth["long_mm"] * ppm, truth["short_mm"] * ppm)
+    zr = min(abs(s["z"]) for s in rr["sides"].values() if s)
+    nb = side_bar(lum, mask, ppm, truth["long_mm"] * ppm, truth["short_mm"] * ppm, n=25)
+    check("10 a spectrum-matched null does not reach the real rectangle's weakest side",
+          nb["p99"] < zr, f"null p99 {nb['p99']:.1f} against weakest side {zr:.1f}")
+
+    print(f"\n  {len(P)} passed, {len(F)} failed")
+    return len(F) == 0
+
+
+if __name__ == "__main__":
+    import sys as _s
+    print("d_rect selftest -- synthetic ground truth and deliberate breaks\n")
+    _s.exit(0 if selftest() else 1)

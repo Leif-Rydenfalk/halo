@@ -22,6 +22,10 @@ VERBS
     scale-ruler IMG     px/mm from a ruler's tick pitch (periodic signal, not two picked ticks)
     circle IMG          fit a circle; refuses when the fit is really the frame
     radial IMG          radial luma/chroma profile about a centre
+    rect IMG            rectangles by BOUNDARY EVIDENCE (straight-edge coherence), not by
+                        intensity level - for IC package bodies that no brightness or colour
+                        threshold separates from bare soldermask
+    rect-selftest       the rect engine's own synthetic ground truth and deliberate breaks
 
 Every verb prints the INPUT it used - filename, region, method, basis - because three
 antenna results in this project were correct computations on the wrong board, and the
@@ -584,6 +588,80 @@ def v_doctor(a):
     print()
     return EX_PASS if ok else EX_FAIL
 
+# ---------------------------------------------------------------- rect (d_rect engine)
+def _drect():
+    sys.path.insert(0, os.path.join(HALO, "tools"))
+    import d_rect
+    return d_rect
+
+
+def v_rect_selftest(a):
+    print("boardmetro rect-selftest - the boundary-evidence engine\n")
+    return EX_PASS if _drect().selftest() else EX_FAIL
+
+
+def v_rect(a):
+    """Rectangles by boundary evidence.
+
+    A straight edge integrates the directional derivative COHERENTLY along its
+    length (~L) while texture sums incoherently (~sqrt L), so the statistic is a
+    line integral over an empirical null and NO absolute intensity enters it.
+    Built because four intensity-based attempts on this project's own board failed
+    by measurement, not by opinion (metrology/M08, M10, M11).
+
+    --bar is not optional and there is no default: run this verb with --null first,
+    read the number it prints, and pass it back.  A detector with an invented
+    threshold is a decoration."""
+    np = _np()
+    D = _drect()
+    from PIL import Image
+    path, im = _img(a.image)
+    lum = np.asarray(im.convert("L")).astype(float)
+    mask = np.ones(lum.shape, bool)
+    if a.region:
+        mask[:] = False
+        x0, y0, x1, y1 = a.region
+        mask[y0:y1, x0:x1] = True
+    d = max(1, a.down)
+    L = D.downsample(lum, d)
+    M = D.downsample(mask.astype(float), d) > 0.999
+    ppmd = a.px_per_mm / d
+    print(f"boardmetro rect - INPUT")
+    print(f"  image      {path}  {im.size[0]}x{im.size[1]}")
+    print(f"  region     {a.region if a.region else 'whole image'}")
+    print(f"  scale      {a.px_per_mm} px/mm stored, {ppmd:.3f} px/mm at downsample {d}")
+    print(f"  criteria   four sides, consistent polarity, score = MIN of the four |z|")
+    if a.null:
+        g = D.detect(L, M, ppmd, astep=a.astep, smooth=a.smooth, npeak=a.npeak,
+                     nms=a.nms, z_thr=1.0, band=a.band, min_mm=a.min_mm, max_mm=a.max_mm)
+        gs = D.detect(D.phase_scramble(L) if hasattr(D, "phase_scramble") else L, M, ppmd,
+                      astep=a.astep, smooth=a.smooth, npeak=a.npeak, nms=a.nms,
+                      z_thr=1.0, band=a.band, min_mm=a.min_mm, max_mm=a.max_mm)
+        print(f"\n  NEGATIVE CONTROL - phase-scrambled copy of this image: identical power")
+        print(f"  spectrum, no straight edge and no corner survives.")
+        print(f"    real       n={len(g):5d}  max score {max((r['score'] for r in g), default=0):.2f}")
+        print(f"    scrambled  n={len(gs):5d}  max score {max((r['score'] for r in gs), default=0):.2f}")
+        print(f"\n  BAR = {max((r['score'] for r in gs), default=0):.2f}  -- pass it back as --bar.")
+        return EX_PASS
+    if a.bar is None:
+        return die_cannot("no admission bar given. Run with --null first and pass the "
+                          "number back as --bar; this verb refuses to invent a threshold")
+    g = D.detect(L, M, ppmd, astep=a.astep, smooth=a.smooth, npeak=a.npeak, nms=a.nms,
+                 z_thr=a.bar, band=a.band, min_mm=a.min_mm, max_mm=a.max_mm)
+    g = D.maximal(g)
+    print(f"\n  {len(g)} rectangles above the bar {a.bar}")
+    for r in sorted(g, key=lambda r: -r["score"]):
+        print(f"    {r['long_px']/ppmd:7.3f} x {r['short_px']/ppmd:7.3f} mm  theta "
+              f"{r['theta_deg']:5.1f}  score {r['score']:7.2f}  at "
+              f"({r['cx']*d:8.1f},{r['cy']*d:8.1f}) px  {r['polarity']}")
+    if a.json_out:
+        json.dump(dict(image=a.image, region=a.region, px_per_mm=a.px_per_mm,
+                       downsample=d, bar=a.bar, n=len(g), rects=g),
+                  open(a.json_out, "w"), indent=2)
+        print(f"  wrote {a.json_out}")
+    return EX_PASS if g else EX_CANNOT
+
+
 def main():
     ap = argparse.ArgumentParser(prog="boardmetro", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -625,6 +703,19 @@ def main():
     t.add_argument("--px-per-mm", type=float, default=None)
     t.add_argument("--mean-dia-mm", type=float, default=None)
     t.add_argument("--json-out")
+    sub.add_parser("rect-selftest")
+    q = sub.add_parser("rect"); q.add_argument("image")
+    q.add_argument("--px-per-mm", type=float, required=True)
+    q.add_argument("--region", type=int, nargs=4, default=None, metavar=("X0","Y0","X1","Y1"))
+    q.add_argument("--down", type=int, default=4)
+    q.add_argument("--astep", type=float, default=2.0); q.add_argument("--smooth", type=float, default=1.0)
+    q.add_argument("--npeak", type=int, default=22); q.add_argument("--nms", type=int, default=3)
+    q.add_argument("--band", type=int, default=1)
+    q.add_argument("--min-mm", type=float, default=0.7); q.add_argument("--max-mm", type=float, default=9.0)
+    q.add_argument("--bar", type=float, default=None,
+                   help="admission score. NO DEFAULT: get it from --null on this same image")
+    q.add_argument("--null", action="store_true", help="measure the bar and print it")
+    q.add_argument("--json-out")
     e = sub.add_parser("perspective"); e.add_argument("json_in")
     e.add_argument("--key", default="outer"); e.add_argument("--field", default="r_theta_deg_px")
     e.add_argument("--px-per-mm", type=float, default=None)
@@ -638,7 +729,8 @@ def main():
     a = ap.parse_args()
     return {"doctor": v_doctor, "selftest": v_selftest, "circle": v_circle,
             "scale-ruler": v_scale_ruler, "radial": v_radial,
-            "perspective": v_perspective, "turns": v_turns}[a.verb](a)
+            "perspective": v_perspective, "turns": v_turns,
+            "rect": v_rect, "rect-selftest": v_rect_selftest}[a.verb](a)
 
 if __name__ == "__main__":
     sys.exit(main())

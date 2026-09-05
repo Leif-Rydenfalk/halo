@@ -463,6 +463,326 @@ def cmd_caps(args):
     print(f"  VERDICT: {V[verdict]}")
     return verdict
 
+TPNAMES = os.path.join(REPO, "images", "airtag", "oflynn-frontside-tpnames.jpg")
+
+def _oflynn_labels():
+    """O'Flynn's red annotation positions, extracted mechanically.
+
+    THE POINT OF THIS FUNCTION is that these positions were produced by a person who
+    had never heard of this detector, on a photograph he published in 2021. They are a
+    POSITIVE CONTROL THAT COULD NOT BE MADE EASY, and they can disagree.
+    """
+    from scipy import ndimage
+    from scipy.spatial import cKDTree
+    a = np.asarray(Image.open(TPNAMES).convert("RGB")).astype(float)
+    r, g, b = a[..., 0], a[..., 1], a[..., 2]
+    red = (r - np.maximum(g, b) > 60) & (r > 120)
+    lab, n = ndimage.label(red)
+    sizes = ndimage.sum(red, lab, range(1, n + 1))
+    keep = [i + 1 for i, sz in enumerate(sizes) if sz >= 25]
+    cen = ndimage.center_of_mass(red, lab, keep)
+    pts = np.array([(c[1], c[0]) for c in cen])
+    # digits of one number are separate blobs; link those within 26 px
+    tree = cKDTree(pts); pairs = tree.query_pairs(26)
+    par = list(range(len(pts)))
+    def find(i):
+        while par[i] != i: par[i] = par[par[i]]; i = par[i]
+        return i
+    for i, j in pairs: par[find(i)] = find(j)
+    grp = {}
+    for i in range(len(pts)): grp.setdefault(find(i), []).append(i)
+    return np.array([pts[v].mean(0) for v in grp.values()]), a.shape
+
+def cmd_pads(args):
+    """Locate the round gold pads on Apple's BACK face, in millimetres."""
+    from scipy import ndimage
+    from scipy.spatial import cKDTree
+    fit = json.load(open(FIT))
+    ppm = fit["transferred_scale"]["source_px_per_mm_mean"]
+    rgb = np.asarray(Image.open(IMG).convert("RGB")).astype(float)
+    lum = rgb.mean(2); Rc, Bc = rgb[..., 0], rgb[..., 2]
+    gold = (Rc - Bc > 28) & (Rc > 90) & (lum < 250)
+    gold = ndimage.binary_opening(gold, np.ones((3, 3)))
+    lab, n = ndimage.label(gold)
+    objs = ndimage.find_objects(lab)
+    print("k_backface pads")
+    print(f"  INPUT   {os.path.relpath(IMG, REPO)}")
+    print(f"  SCALE   {ppm:.4f} px/mm  [FCC steel rulers -> photo 7 -> c_register]")
+    print(f"  GOLD    R-B>28, R>90, luma<250 - tools/measure_coil.py's criterion, unchanged")
+    print(f"  SHAPE   aspect<1.35, circularity>0.72, equivalent diameter 0.15-1.60 mm")
+    print(f"          Shape is what selects a PAD. The colour criterion alone catches every")
+    print(f"          gold feature on the board - that is exactly what defeated the coil")
+    print(f"          measurement in the same frame (E08 sec.4b), and it is why nothing here")
+    print(f"          rests on colour alone.")
+    print()
+    pads, rejected = [], 0
+    for i, sl in enumerate(objs, 1):
+        if sl is None: continue
+        h = sl[0].stop - sl[0].start; w = sl[1].stop - sl[1].start
+        area = int((lab[sl] == i).sum())
+        if area < 80: continue
+        d_eq = 2 * math.sqrt(area / math.pi)
+        aspect = max(h, w) / max(1, min(h, w))
+        circ = area / (math.pi * (max(h, w) / 2) ** 2)
+        d_mm = d_eq / ppm
+        if aspect < 1.35 and circ > 0.72 and 0.15 < d_mm < 1.60:
+            cy, cx = ndimage.center_of_mass(lab == i)
+            pads.append(dict(cx_px=float(cx), cy_px=float(cy), d_mm=float(d_mm),
+                             area_px=area, aspect=float(aspect), circularity=float(circ),
+                             d_genuine_px=float(d_mm * 37.5)))
+        else:
+            rejected += 1
+    ds = np.array([p["d_mm"] for p in pads])
+    print(f"  FOUND {len(pads)} circular pads ({rejected} gold components rejected on shape)")
+    print(f"    diameter  min {ds.min():.3f}  p25 {np.percentile(ds,25):.3f}  "
+          f"MEDIAN {np.median(ds):.3f}  p75 {np.percentile(ds,75):.3f}  max {ds.max():.3f} mm")
+    iqr = np.percentile(ds, 75) - np.percentile(ds, 25)
+    print(f"    interquartile range {iqr:.3f} mm = {100*iqr/np.median(ds):.1f}% of the median")
+    print(f"    At M06's 33-42 genuine px/mm the median pad is {np.median(ds)*33:.0f}-"
+          f"{np.median(ds)*42:.0f} genuine px across, so this is a resolved feature, not an")
+    print(f"    interpolation.")
+
+    # ---- NEGATIVE CONTROL: the same detector on the white shell, off the board.
+    H, W = lum.shape
+    cx0, cy0 = 1174.0, 1172.0
+    rr = np.hypot(*np.mgrid[0:H, 0:W][::-1][::-1])
+    ys, xs = np.mgrid[0:H, 0:W]
+    rad = np.hypot(ys - cy0, xs - cx0)
+    off = [p for p in pads if np.hypot(p["cx_px"] - cx0, p["cy_px"] - cy0) > 1000]
+    print()
+    print(f"  NEGATIVE CONTROL  the same detector on the white shell, r > 1000 px "
+          f"({1000/ppm:.1f} mm), where there is no board:")
+    print(f"    {len(off)} pads found. " + ("The detector can come back empty off the board."
+          if len(off) == 0 else "THE CONTROL FIRED - it is finding pads where there is no board."))
+
+    # ---- POSITIVE CONTROL: O'Flynn's independent annotation, with a null.
+    labels, tpshape = _oflynn_labels()
+    k = tpshape[1] / rgb.shape[1]          # tpnames px per full-res px
+    P = np.array([[p["cx_px"] * k, p["cy_px"] * k] for p in pads])
+    tree = cKDTree(P)
+    dlab, _ = tree.query(labels)
+    dlab_mm = dlab / (ppm * k)
+    rng = np.random.default_rng(17)
+    rmin = 0.30 * 1000.0; rmax = 0.92 * 1000.0
+    nr = rng.uniform(rmin, rmax, 4000) * (tpshape[1] / 2347.0) / (1000.0 / 2347.0) * 0
+    # random points on the SAME annulus the labels occupy, in tpnames pixels
+    lc = labels.mean(0)
+    lr = np.hypot(labels[:, 0] - lc[0], labels[:, 1] - lc[1])
+    rs = rng.uniform(lr.min(), lr.max(), 4000)
+    th = rng.uniform(0, 2 * np.pi, 4000)
+    R2 = np.stack([lc[0] + rs * np.cos(th), lc[1] + rs * np.sin(th)], 1)
+    drnd, _ = tree.query(R2)
+    drnd_mm = drnd / (ppm * k)
+    print()
+    print(f"  POSITIVE CONTROL  {len(labels)} annotation positions from "
+          f"oflynn-frontside-tpnames.jpg")
+    print(f"    That image is the SAME photograph rescaled - measured NCC 0.9993 against this")
+    print(f"    one with the red pixels masked out - so the mapping is exact and the")
+    print(f"    annotation is EXTERNAL: Colin O'Flynn placed those numbers in 2021 with no")
+    print(f"    knowledge of this detector. It is a positive control that cannot be made easy.")
+    print(f"    distance from each label to the nearest detected pad:")
+    print(f"      LABELS  median {np.median(dlab_mm):.3f} mm   p75 {np.percentile(dlab_mm,75):.3f}   "
+          f"p90 {np.percentile(dlab_mm,90):.3f}")
+    print(f"      NULL    median {np.median(drnd_mm):.3f} mm   p75 {np.percentile(drnd_mm,75):.3f}   "
+          f"p90 {np.percentile(drnd_mm,90):.3f}   (4000 random points on the same annulus)")
+    ratio = float(np.median(drnd_mm) / np.median(dlab_mm))
+    print(f"      SEPARATION {ratio:.2f}x")
+    print(f"    THE NULL IS THE LOAD-BEARING PART. O'Flynn's labels sit BESIDE their pads, not")
+    print(f"    on them, so a small absolute distance proves nothing on its own - and this")
+    print(f"    annulus is dense, so ANY point is near SOMETHING. The question is only whether")
+    print(f"    his labels are nearer than chance, and by how much.")
+    ok_pos = ratio >= 2.0
+    print(f"    -> " + ("labels land on detections far better than chance."
+                        if ok_pos else "NOT SEPARATED FROM CHANCE. The agreement is an artefact "
+                                       "of pad density, not a confirmation."))
+
+    verdict = PASS if (len(off) == 0 and ok_pos) else FAIL
+    out = dict(tool="k_backface.py", verb="pads", image=os.path.relpath(IMG, REPO),
+               px_per_mm=ppm, scale_basis="FCC steel rulers -> photo 7 -> c_register",
+               n_pads=len(pads), rejected_on_shape=rejected,
+               diameter_mm=dict(min=float(ds.min()), p25=float(np.percentile(ds, 25)),
+                                median=float(np.median(ds)), p75=float(np.percentile(ds, 75)),
+                                max=float(ds.max()), iqr=float(iqr)),
+               pads=pads,
+               negative_control=dict(region="r>1000 px, the white shell", found=len(off),
+                                     fired=bool(len(off) > 0)),
+               positive_control=dict(source="oflynn-frontside-tpnames.jpg",
+                                     same_photograph_ncc=0.9993, n_labels=int(len(labels)),
+                                     label_nn_median_mm=float(np.median(dlab_mm)),
+                                     null_nn_median_mm=float(np.median(drnd_mm)),
+                                     separation=ratio, floor=2.0, passed=bool(ok_pos),
+                                     why_the_null="labels sit BESIDE their pads and the annulus "
+                                                  "is dense, so absolute distance proves nothing"),
+               verdict=V[verdict])
+    p2 = os.path.join(LANE, "metrology", "backface-pads.json")
+    json.dump(out, open(p2, "w"), indent=2)
+    print(f"\n  wrote {os.path.relpath(p2, REPO)}")
+    print(f"  VERDICT: {V[verdict]}")
+    return verdict
+
+def cmd_contacts(args):
+    """The three battery contacts, by NEUTRAL bright metal rather than by gold.
+
+    The gold criterion cannot find these: a stamped contact is grey, not gold, so it is
+    selected on being bright AND UNSATURATED. That also means the white shell and the
+    overexposed centre dome qualify, and both are handled by name below rather than by a
+    size threshold chosen to make the answer come out.
+    """
+    from scipy import ndimage
+    from scipy.spatial import cKDTree
+    fit = json.load(open(FIT))
+    ppm = fit["transferred_scale"]["source_px_per_mm_mean"]
+    rgb = np.asarray(Image.open(IMG).convert("RGB")).astype(float)
+    lum = rgb.mean(2); mx = rgb.max(2); mn = rgb.min(2)
+    sat = (mx - mn) / np.maximum(mx, 1e-6)
+    metal = (lum > 150) & (sat < 0.22)
+    H, W = lum.shape; cx0, cy0 = 1174.0, 1172.0
+    ys, xs = np.mgrid[0:H, 0:W]
+    rad = np.hypot(ys - cy0, xs - cx0)
+    R_BOARD_PX = 865.0
+    metal &= (rad < 0.90 * R_BOARD_PX)
+    metal = ndimage.binary_opening(metal, np.ones((5, 5)))
+    lab, n = ndimage.label(metal)
+    sizes = ndimage.sum(metal, lab, range(1, n + 1))
+    objs = ndimage.find_objects(lab)
+    print("k_backface contacts")
+    print(f"  INPUT   {os.path.relpath(IMG, REPO)}")
+    print(f"  SCALE   {ppm:.4f} px/mm  [FCC steel rulers -> photo 7 -> c_register]")
+    print(f"  METAL   luma>150 AND saturation<0.22 - a stamped contact is GREY. The gold")
+    print(f"          criterion used for the pads cannot find these and was not reused.")
+    print(f"  MASKED  r < 0.90 x {R_BOARD_PX:.0f} px, so the white shell is out of frame by")
+    print(f"          construction rather than by a size threshold.")
+    print()
+    rows = []
+    for i, sl in enumerate(objs, 1):
+        a_px = sizes[i - 1]
+        if a_px < 0.30 * ppm * ppm:
+            continue
+        h = (sl[0].stop - sl[0].start) / ppm; w = (sl[1].stop - sl[1].start) / ppm
+        cy, cx = ndimage.center_of_mass(lab == i)
+        rows.append(dict(area_mm2=float(a_px / ppm / ppm), w_mm=float(w), h_mm=float(h),
+                         cx_px=float(cx), cy_px=float(cy),
+                         r_mm=float(math.hypot(cx - cx0, cy - cy0) / ppm)))
+    rows.sort(key=lambda r: -r["area_mm2"])
+    dome = rows[0] if rows and rows[0]["area_mm2"] > 40 else None
+    if dome:
+        print(f"  EXCLUDED BY NAME, not by threshold: a {dome['area_mm2']:.1f} mm2 blob at")
+        print(f"    r {dome['r_mm']:.2f} mm - the OVEREXPOSED CENTRE DOME. M01 sec.4 already")
+        print(f"    records that the saturated white core is the magnet/dome assembly. It is")
+        print(f"    the largest neutral-metal region on this face and it is not a contact.")
+        rows = rows[1:]
+    print()
+    # associate with O'Flynn's VCC1 / GND / VCC2 labels
+    labels, tpshape = _oflynn_labels()
+    k = tpshape[1] / rgb.shape[1]
+    P = np.array([[r["cx_px"] * k, r["cy_px"] * k] for r in rows])
+    tree = cKDTree(P)
+    # the three labels sit in the upper band of the board; take the label groups there
+    up = labels[labels[:, 1] < 0.32 * tpshape[0]]
+    # STATED GEOMETRIC ASSUMPTION, and it is an assumption: O'Flynn writes each name
+    # ABOVE the feature it names, so a plain nearest-neighbour walks uphill to the rim
+    # metal instead of down to the contact. The first version did exactly that and its
+    # own symmetry check caught it at 83.3%. Associate downward only, within 4 mm.
+    cands = []
+    for L in up:
+        below = [(np.hypot(P[i, 0] - L[0], P[i, 1] - L[1]), i) for i in range(len(P))
+                 if P[i, 1] > L[1] and np.hypot(P[i, 0] - L[0], P[i, 1] - L[1]) < 4.0 * ppm * k]
+        if below:
+            below.sort(); cands.append(rows[below[0][1]])
+    seen, uniq = set(), []
+    for c in cands:
+        key = (round(c["cx_px"]), round(c["cy_px"]))
+        if key not in seen:
+            seen.add(key); uniq.append(c)
+    cands = uniq
+    d, idx = tree.query(up)
+    hit = sorted(set(int(i) for i in idx))
+    print(f"  POSITIVE CONTROL  {len(up)} annotation groups in the upper band of")
+    print(f"    oflynn-frontside-tpnames.jpg (where VCC1, GND and VCC2 are), associated")
+    print(f"    DOWNWARD (see the note in the source) -> {len(cands)} distinct features.")
+    cands.sort(key=lambda r: r["cx_px"])
+    print()
+    print(f"  THE THREE FEATURES O'FLYNN LABELS VCC1 / GND / VCC2")
+    names = ["VCC1 (left)", "GND (centre)", "VCC2 (right)"]
+    out_rows = []
+    for nm, r in zip(names, cands[:3]):
+        print(f"    {nm:14s} {r['w_mm']:.3f} x {r['h_mm']:.3f} mm   area {r['area_mm2']:.3f} mm2   "
+              f"r {r['r_mm']:.2f} mm from board centre")
+        rr = dict(r); rr["oflynn_label"] = nm.split()[0]; out_rows.append(rr)
+    sym = None
+    if len(out_rows) >= 3:
+        a1, a3 = out_rows[0]["area_mm2"], out_rows[2]["area_mm2"]
+        sym = 100 * abs(a1 - a3) / max(a1, a3)
+        print()
+        print(f"  INTERNAL CONSISTENCY  the two VCC features differ in area by {sym:.1f}%.")
+        print(f"    Apple's scheme puts TWO positive tabs on the battery-well wall, so they")
+        print(f"    should be the same part. THIS IS A CONSISTENCY CHECK AND NOT AN ACCURACY")
+        print(f"    ONE - they would agree just as well if the scale were 10% wrong.")
+    # AREA SYMMETRY ALONE PASSED FOR THE WRONG REASON. Its first form accepted a pair at
+    # r 10.63 and r 8.07 mm whose areas happened to agree to 10.9% - two unrelated rim
+    # features, not Apple's two positive tabs. Area is one number and two wrong features
+    # can share it. THE PHYSICAL SCHEME CONSTRAINS GEOMETRY TOO: the two positive tabs sit
+    # on the battery-well wall, so they must be at the SAME RADIUS and MIRRORED about the
+    # board's vertical axis. Two features picked at random are not.
+    geo_ok, dr, dmir = False, None, None
+    if len(out_rows) >= 3:
+        A, B = out_rows[0], out_rows[2]
+        dr = abs(A["r_mm"] - B["r_mm"])
+        dmir = abs((A["cx_px"] + B["cx_px"]) / 2.0 - cx0) / ppm
+        geo_ok = (dr <= 0.60) and (dmir <= 1.20)
+        print()
+        print(f"  GEOMETRIC SYMMETRY  the two VCC features must be the same distance from the")
+        print(f"    board centre and mirrored about its vertical axis:")
+        print(f"      radius difference    {dr:.3f} mm   (floor 0.600)")
+        print(f"      midpoint off-axis    {dmir:.3f} mm   (floor 1.200)")
+        print(f"    -> " + ("consistent with two tabs of one symmetric scheme."
+                            if geo_ok else "NOT A SYMMETRIC PAIR."))
+    ok = (len(cands) >= 3) and (sym is not None) and (sym <= 15.0) and geo_ok
+    if not ok:
+        print()
+        print(f"  *** THE SYMMETRY GATE HAS FIRED. Apple's two positive tabs are the same")
+        print(f"  part in one symmetric scheme, so a pair that disagrees in area, in radius or")
+        print(f"  in mirror position means THE ASSOCIATION IS WRONG - not that the contacts")
+        print(f"  differ. NOTHING HERE IS PUBLISHED AS A CONTACT DIMENSION.")
+        print(f"  RECORDED FOR THE NEXT ATTEMPT: an operator probe of this same frame found a")
+        print(f"  pair at (965,661) and (1315,657) - areas 1.625 and 1.680 mm2 (3.4% apart),")
+        print(f"  radii 7.94 and 7.68 mm (0.26 mm apart), midpoint 0.98 mm off axis - which")
+        print(f"  satisfies all three constraints. It is an EYEBALLED seed, not a measurement,")
+        print(f"  and the association that reaches it automatically has not been written.")
+    print()
+    print(f"  WHAT IS NOT SEPARABLE HERE, stated rather than glossed: whether the measured")
+    print(f"  extent is the BOARD PAD or the SPRUNG CONTACT sitting on it. This photograph")
+    print(f"  shows the board assembled in the shell, and the two are coincident in plan view.")
+    print(f"  FCC internal photo 4 shows the battery cavity with the contacts and no board;")
+    print(f"  that is the frame that would separate them.")
+    verdict = PASS if ok else CANNOT
+    out = dict(tool="k_backface.py", verb="contacts", image=os.path.relpath(IMG, REPO),
+               px_per_mm=ppm, criterion="luma>150 and saturation<0.22, r<0.90*865 px",
+               excluded_by_name=dome, contacts=out_rows, all_candidates=rows[:12],
+               vcc_area_mismatch_pct=sym, symmetry_gate_pct=15.0, symmetry_gate_passed=bool(ok),
+               vcc_radius_diff_mm=dr, vcc_midpoint_off_axis_mm=dmir,
+               geometric_symmetry_passed=bool(geo_ok),
+               operator_seed_not_measured=dict(
+                   note="an eyeballed probe of this frame found a pair satisfying all three "
+                        "symmetry constraints; the automatic association does not reach it yet. "
+                        "NOT a measurement.",
+                   left_px=[965, 661], right_px=[1315, 657],
+                   area_mm2=[1.625, 1.680], area_mismatch_pct=3.4,
+                   r_mm=[7.94, 7.68], midpoint_off_axis_mm=0.98),
+               positive_control=dict(source="oflynn-frontside-tpnames.jpg upper band",
+                                     n_labels=int(len(up)),
+                                     distinct_features_hit=len(hit),
+                                     median_mm=float(np.median(d) / (ppm * k))),
+               not_separable="board pad vs sprung contact - coincident in plan view in this "
+                             "assembled photograph. FCC internal photo 4 shows the cavity "
+                             "with contacts and no board and would separate them.",
+               verdict=V[verdict])
+    p2 = os.path.join(LANE, "metrology", "backface-contacts.json")
+    json.dump(out, open(p2, "w"), indent=2)
+    print(f"\n  wrote {os.path.relpath(p2, REPO)}")
+    print(f"  VERDICT: {V[verdict]}")
+    return verdict
+
 def cmd_coil(args):
     """Re-measure the wound coil in the REGISTERED frame, and compare the two SCALES.
 
@@ -817,13 +1137,13 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("caps"); sub.add_parser("selftest"); sub.add_parser("controls")
-    sub.add_parser("coil")
+    sub.add_parser("coil"); sub.add_parser("pads"); sub.add_parser("contacts")
     c = sub.add_parser("calibrate")
     c.add_argument("--n", type=int, default=120)
     c.add_argument("--margin", type=float, default=1.0)
     a = p.parse_args()
     return {"caps": cmd_caps, "selftest": cmd_selftest, "controls": cmd_controls,
-            "calibrate": cmd_calibrate, "coil": cmd_coil}[a.cmd](a)
+            "calibrate": cmd_calibrate, "coil": cmd_coil, "pads": cmd_pads, "contacts": cmd_contacts}[a.cmd](a)
 
 if __name__ == "__main__":
     sys.exit(main())

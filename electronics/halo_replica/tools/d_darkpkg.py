@@ -105,6 +105,35 @@ def to_mm(r, ppmd, d, origin, ppm):
     return o
 
 
+def side_steps(lum, cx, cy, theta_deg, w_px, h_px, out_px=16.0, in_px=6.0):
+    """Median luma OUTSIDE minus INSIDE, FOR EACH SIDE SEPARATELY.
+
+    Averaging the four sides was wrong and it hid the finding: around the nRF the
+    four steps are -68, -15, -14 and +5 luma, so the mean is -2 and reads as "no
+    boundary" for a package with one very strong boundary.  The illumination
+    gradient across a single 3 mm part makes a whole-perimeter statistic
+    meaningless here."""
+    t = math.radians(theta_deg)
+    out = {}
+    for name, ax, sgn in (("left", 0, -1), ("right", 0, 1),
+                          ("top", 1, -1), ("bottom", 1, 1)):
+        half = (w_px if ax == 0 else h_px) / 2.0
+        span = (h_px if ax == 0 else w_px)
+        s = np.linspace(-0.35, 0.35, 41) * span
+        vals = {}
+        for band, key in ((-in_px, "in"), (out_px, "out")):
+            u = sgn * (half + band) if sgn > 0 else sgn * (half + band)
+            u = sgn * half + sgn * band
+            ux, uy = (np.full(41, u), s) if ax == 0 else (s, np.full(41, u))
+            px = cx + ux * math.cos(t) - uy * math.sin(t)
+            py = cy + ux * math.sin(t) + uy * math.cos(t)
+            ii = np.clip(np.round(py).astype(int), 0, lum.shape[0] - 1)
+            jj = np.clip(np.round(px).astype(int), 0, lum.shape[1] - 1)
+            vals[key] = float(np.median(lum[ii, jj]))
+        out[name] = round(vals["out"] - vals["in"], 1)
+    return out
+
+
 def boundary_step(lum, cx, cy, theta_deg, w_px, h_px, out_px=16.0, in_px=6.0):
     """Median luma OUTSIDE the boundary minus median INSIDE it, in luma units.
     This is the quantity the method actually lives on, and it is exactly what a
@@ -343,9 +372,151 @@ def v_control(a, ctx):
     return out, (0 if allok else 1)
 
 
+# ------------------------------------------------------------------ probe / limit
+
+SEEDS = {
+    # name: (cx, cy, theta_deg, long_mm, short_mm)  -- stored px, read BY LOOKING at
+    # native-resolution tiles.  These are SEEDS ONLY.  Nothing here is published as a
+    # position: what is published is each side's own evidence, and the seed-jitter
+    # table says how far the fit moves when the seed moves.
+    "nRF52832_CIAA_control": (1205, 813, 68.1, 3.32, 2.97),
+    "black_9oclock":         (544, 1397, 48.1, 2.75, 1.21),
+    "plus_AKN_8H7":          (2415, 1457, 20.0, 1.65, 1.60),
+    "black_05I_1A8":         (645, 1705, 20.0, 1.30, 1.10),
+    "black_diode_lower":     (770, 2040, 25.0, 1.20, 0.95),
+}
+
+
+def v_probe(a, ctx):
+    lum, board, outer, origin, ppm, spath, f, rid = ctx
+    p = dict(DEFAULTS); p["down"] = a.down
+    L, M = prep(lum, board, p["down"]); ppmd = ppm / p["down"]
+    print("d_darkpkg probe -- each boundary measured ON ITS OWN, against two nulls\n")
+    hdr(ctx, p)
+    print("  THE TWO NULLS, both built with the SAME scan, span and search range:")
+    nb = DR.side_bar(L, M, ppmd, 3.2 * ppmd, 3.0 * ppmd, n=a.null_n, scramble=True)
+    nr = DR.side_bar(L, M, ppmd, 3.2 * ppmd, 3.0 * ppmd, n=a.null_n, scramble=False)
+    print(f"    N1 phase-scrambled board   |z| p50 {nb['p50']:.1f}  p90 {nb['p90']:.1f}  "
+          f"p99 {nb['p99']:.1f}  max {nb['max']:.1f}   (n={nb['n']})")
+    print(f"    N3 REAL board, random place and random angle")
+    print(f"       |z| p50 {nr['p50']:.1f}  p90 {nr['p90']:.1f}  p99 {nr['p99']:.1f}  "
+          f"max {nr['max']:.1f}   (n={nr['n']})")
+    print(f"    N3 is the one that decides: it asks whether a package boundary is")
+    print(f"    EXCEPTIONAL among the straight structures this board already has --")
+    print(f"    traces, pad rows, silkscreen, the rim.  N1 only asks whether it beats")
+    print(f"    texture of the same spectrum.\n")
+    bar = nr["p99"]
+    rows = []
+    for name, (cx, cy, th, lo, sh) in SEEDS.items():
+        best = None
+        jit = []
+        for dx in (-30, 0, 30):
+            for dy in (-30, 0, 30):
+                r = DR.fit_sides(L, M, ppmd, (cx + dx) / p["down"], (cy + dy) / p["down"],
+                                 th, sh * ppmd, lo * ppmd)
+                jit.append(r)
+                if best is None or sum(abs(s["z"]) for s in r["sides"].values() if s) > \
+                        sum(abs(s["z"]) for s in best["sides"].values() if s):
+                    best = r
+        z = {k: (round(abs(v["z"]), 1) if v else None) for k, v in best["sides"].items()}
+        sup = {k: (v is not None and abs(v) > bar) for k, v in z.items()}
+        steps = side_steps(lum, cx, cy, th, sh * ppm, lo * ppm)
+        Lm = np.array([max(r["w_px"], r["h_px"]) / ppmd for r in jit])
+        Sm = np.array([min(r["w_px"], r["h_px"]) / ppmd for r in jit])
+        Cx = np.array([r["cx"] * p["down"] for r in jit])
+        Cy = np.array([r["cy"] * p["down"] for r in jit])
+        seed_swing_mm = float(np.hypot(Cx.max() - Cx.min(), Cy.max() - Cy.min()) / ppm)
+        nsup = sum(sup.values())
+        rows.append(dict(name=name, seed_stored_px=[cx, cy], seed_theta_deg=th,
+                         seed_long_mm=lo, seed_short_mm=sh,
+                         side_abs_z=z, side_supported=sup, n_sides_supported=nsup,
+                         side_step_luma_at_seed=steps,
+                         fit_long_mm=round(float(np.median(Lm)), 3),
+                         fit_short_mm=round(float(np.median(Sm)), 3),
+                         fit_long_spread_mm=round(float(Lm.max() - Lm.min()), 3),
+                         fit_short_spread_mm=round(float(Sm.max() - Sm.min()), 3),
+                         seed_swing_mm=round(seed_swing_mm, 3)))
+        print(f"  {name}")
+        print(f"    |z| per side  L {z['left']}  R {z['right']}  T {z['top']}  B {z['bottom']}"
+              f"   (bar = N3 p99 = {bar:.1f})")
+        print(f"    step luma     L {steps['left']:+7.1f}  R {steps['right']:+7.1f}  "
+              f"T {steps['top']:+7.1f}  B {steps['bottom']:+7.1f}   (at the SEED outline)")
+        print(f"    sides clearing the bar: {nsup} of 4")
+        print(f"    fit across 9 seeds: long {np.median(Lm):.3f} mm (spread "
+              f"{Lm.max()-Lm.min():.3f}), short {np.median(Sm):.3f} mm (spread "
+              f"{Sm.max()-Sm.min():.3f}), centre wanders {seed_swing_mm:.3f} mm")
+    out = dict(**rid, verb="probe", source=f["source"]["path"], px_per_mm=ppm, params=p,
+               nulls=dict(n1_phase_scramble=nb, n3_real_board_random=nr),
+               admission_bar_abs_z=round(bar, 2), rows=rows)
+    if a.json:
+        json.dump(out, open(a.json, "w"), indent=2, default=float)
+        print(f"\n  wrote {a.json}")
+    return out
+
+
+def v_limit(a, ctx):
+    """A positive control at the REAL noise, with a truth I set: paste a rectangle
+    of KNOWN size and KNOWN boundary step into the photograph and ask what step it
+    takes for its sides to clear the real-board null.  E07 sec.4: a synthetic
+    control that is cleaner than the photograph is not evidence, so this one is
+    made OF the photograph."""
+    lum, board, outer, origin, ppm, spath, f, rid = ctx
+    p = dict(DEFAULTS); p["down"] = a.down
+    L, M = prep(lum, board, p["down"]); ppmd = ppm / p["down"]
+    print("d_darkpkg limit -- what boundary step would this photograph need?\n")
+    hdr(ctx, p)
+    nr = DR.side_bar(L, M, ppmd, 3.2 * ppmd, 3.0 * ppmd, n=a.null_n, scramble=False)
+    bar = nr["p99"]
+    if a.paste_at == "auto":
+        g = np.hypot(*np.gradient(ndimage.gaussian_filter(L, 1.0)))
+        w = int(4.2 * ppmd)
+        E = ndimage.uniform_filter(g, w)
+        C = ndimage.uniform_filter(M.astype(float), w)
+        E = np.where(C > 0.999, E, np.inf)
+        if not np.isfinite(E).any():
+            print("  CANNOT DETERMINE: no window of that size lies wholly on the board")
+            sys.exit(2)
+        iy, ix = np.unravel_index(np.argmin(E), E.shape)
+        cx, cy = float(ix * p["down"]), float(iy * p["down"])
+        print(f"  paste site chosen AUTOMATICALLY as the quietest 4.2 mm window that lies")
+        print(f"  wholly on the board -- mean |grad| {E[iy, ix]:.2f} -- so the site is not")
+        print(f"  mine either.  ({cx:.0f},{cy:.0f}) stored px")
+    else:
+        cx, cy = [float(v) for v in a.paste_at.split(",")]
+    lo, sh, th = 3.226, 2.956, 30.0
+    print(f"  a {lo} x {sh} mm rectangle pasted at ({cx:.0f},{cy:.0f}) stored px, "
+          f"theta {th}, into the photograph itself")
+    print(f"  bar = real-board null p99 = {bar:.1f}\n")
+    yy, xx = np.mgrid[0:L.shape[0], 0:L.shape[1]]
+    t = math.radians(th)
+    u = (xx - cx / p["down"]) * math.cos(t) + (yy - cy / p["down"]) * math.sin(t)
+    v = -(xx - cx / p["down"]) * math.sin(t) + (yy - cy / p["down"]) * math.cos(t)
+    body = (np.abs(u) <= sh * ppmd / 2) & (np.abs(v) <= lo * ppmd / 2)
+    rows = []
+    for step in [float(x) for x in a.steps.split(",")]:
+        Lp = L.copy(); Lp[body] -= step
+        r = DR.fit_sides(Lp, M, ppmd, cx / p["down"], cy / p["down"], th,
+                         sh * ppmd, lo * ppmd, search=int(0.25 * sh * ppmd))
+        z = {k: (round(abs(s["z"]), 1) if s else None) for k, s in r["sides"].items()}
+        n = sum(1 for x in z.values() if x and x > bar)
+        rows.append(dict(step_luma=step, abs_z=z, sides_clearing=n,
+                         long_mm=round(max(r["w_px"], r["h_px"]) / ppmd, 3),
+                         short_mm=round(min(r["w_px"], r["h_px"]) / ppmd, 3)))
+        print(f"    step {step:5.1f} luma   |z| L {z['left']} R {z['right']} "
+              f"T {z['top']} B {z['bottom']}   sides clearing {n}/4   "
+              f"{rows[-1]['long_mm']:.3f} x {rows[-1]['short_mm']:.3f} mm")
+    out = dict(**rid, verb="limit", px_per_mm=ppm, params=p,
+               paste_at_stored_px=[cx, cy], rect_mm=[lo, sh], theta_deg=th,
+               bar_abs_z=round(bar, 2), null=nr, ladder=rows)
+    if a.json:
+        json.dump(out, open(a.json, "w"), indent=2, default=float)
+        print(f"\n  wrote {a.json}")
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("verb", choices=["bar", "control", "run"])
+    ap.add_argument("verb", choices=["bar", "control", "run", "probe", "limit"])
     ap.add_argument("--fit", default=os.path.join(HERE, "..", "metrology",
                                                   "c_register-fit-boardscale.json"))
     ap.add_argument("--down", type=int, default=DEFAULTS["down"])
@@ -359,6 +530,9 @@ def main():
                     default="black_9oclock=380,1200,760,1650;plus_AKN=2280,1330,2640,1620")
     ap.add_argument("--tol", type=float, default=6.0)
     ap.add_argument("--swing-tol", type=float, default=6.0)
+    ap.add_argument("--null-n", type=int, default=60)
+    ap.add_argument("--paste-at", default="auto")
+    ap.add_argument("--steps", default="160,120,80,60,45,35,25,18,12,8")
     ap.add_argument("--png", default=None)
     ap.add_argument("--json", default=None)
     a = ap.parse_args()
@@ -369,6 +543,10 @@ def main():
         v_bar(a, ctx); sys.exit(0)
     if a.verb == "control":
         _, code = v_control(a, ctx); sys.exit(code)
+    if a.verb == "probe":
+        v_probe(a, ctx); sys.exit(0)
+    if a.verb == "limit":
+        v_limit(a, ctx); sys.exit(0)
     print("run: not yet wired"); sys.exit(2)
 
 

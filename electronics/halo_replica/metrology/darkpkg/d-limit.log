@@ -1,0 +1,26 @@
+d_darkpkg limit -- what boundary step would this photograph need?
+
+  run_id   2026-09-05T05:05:23Z git f58ba14 image sha 5d5f8475b774
+  SOURCE   oflynn-backside-fullres.jpeg  (the side carrying the SoC and the shield can)
+  scale    106.313 px/mm stored [metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart]
+           35.438 px/mm at downsample 3; GENUINE 20.7-27.4 px/mm
+  params   {'down': 3, 'astep': 2.0, 'smooth': 1.0, 'npeak': 22, 'nms': 3}
+
+  paste site chosen AUTOMATICALLY as the quietest 4.2 mm window that lies
+  wholly on the board -- mean |grad| 6.26 -- so the site is not
+  mine either.  (1188,2697) stored px
+  a 3.226 x 2.956 mm rectangle pasted at (1188,2697) stored px, theta 30.0, into the photograph itself
+  bar = real-board null p99 = 33.4
+
+    step 160.0 luma   |z| L 44.4 R 43.3 T 54.0 B 39.5   sides clearing 4/4   3.217 x 2.963 mm
+    step 120.0 luma   |z| L 35.6 R 34.5 T 42.5 B 27.6   sides clearing 3/4   3.245 x 2.963 mm
+    step  80.0 luma   |z| L 24.4 R 23.6 T 29.2 B 26.5   sides clearing 0/4   3.048 x 2.963 mm
+    step  60.0 luma   |z| L 17.9 R 17.3 T 26.0 B 26.7   sides clearing 0/4   3.386 x 2.963 mm
+    step  45.0 luma   |z| L 13.7 R 13.2 T 26.1 B 26.8   sides clearing 0/4   3.386 x 2.963 mm
+    step  35.0 luma   |z| L 10.9 R 10.4 T 26.1 B 26.9   sides clearing 0/4   3.386 x 2.935 mm
+    step  25.0 luma   |z| L 8.0 R 7.6 T 26.1 B 26.8   sides clearing 0/4   3.386 x 2.935 mm
+    step  18.0 luma   |z| L 6.0 R 5.6 T 26.0 B 26.8   sides clearing 0/4   3.386 x 2.935 mm
+    step  12.0 luma   |z| L 4.2 R 3.8 T 26.0 B 26.7   sides clearing 0/4   3.386 x 2.963 mm
+    step   8.0 luma   |z| L 3.1 R 2.7 T 25.9 B 26.7   sides clearing 0/4   3.386 x 2.963 mm
+
+  wrote metrology/darkpkg/d-limit.json

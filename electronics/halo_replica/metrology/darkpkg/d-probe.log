@@ -1,0 +1,44 @@
+d_darkpkg probe -- each boundary measured ON ITS OWN, against two nulls
+
+  run_id   2026-09-05T05:05:23Z git f58ba14 image sha 5d5f8475b774
+  SOURCE   oflynn-backside-fullres.jpeg  (the side carrying the SoC and the shield can)
+  scale    106.313 px/mm stored [metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart]
+           35.438 px/mm at downsample 3; GENUINE 20.7-27.4 px/mm
+  params   {'down': 3, 'astep': 2.0, 'smooth': 1.0, 'npeak': 22, 'nms': 3}
+
+  THE TWO NULLS, both built with the SAME scan, span and search range:
+    N1 phase-scrambled board   |z| p50 9.2  p90 14.5  p99 17.8  max 20.0   (n=240)
+    N3 REAL board, random place and random angle
+       |z| p50 7.0  p90 19.1  p99 33.4  max 45.4   (n=240)
+    N3 is the one that decides: it asks whether a package boundary is
+    EXCEPTIONAL among the straight structures this board already has --
+    traces, pad rows, silkscreen, the rim.  N1 only asks whether it beats
+    texture of the same spectrum.
+
+  nRF52832_CIAA_control
+    |z| per side  L 37.2  R 15.4  T 9.2  B 13.5   (bar = N3 p99 = 33.4)
+    step luma     L   -75.0  R   -10.0  T    +8.0  B    +1.0   (at the SEED outline)
+    sides clearing the bar: 1 of 4
+    fit across 9 seeds: long 3.076 mm (spread 0.226), short 2.878 mm (spread 0.282), centre wanders 0.242 mm
+  black_9oclock
+    |z| per side  L 3.3  R 5.4  T 6.7  B 10.0   (bar = N3 p99 = 33.4)
+    step luma     L    -3.0  R    -5.0  T    +1.0  B    -8.0   (at the SEED outline)
+    sides clearing the bar: 0 of 4
+    fit across 9 seeds: long 2.822 mm (spread 0.847), short 1.524 mm (spread 0.621), centre wanders 1.050 mm
+  plus_AKN_8H7
+    |z| per side  L 6.1  R 8.3  T 8.2  B 8.4   (bar = N3 p99 = 33.4)
+    step luma     L    +5.0  R    +2.0  T   +18.0  B   +20.0   (at the SEED outline)
+    sides clearing the bar: 0 of 4
+    fit across 9 seeds: long 2.060 mm (spread 1.580), short 1.439 mm (spread 1.016), centre wanders 1.078 mm
+  black_05I_1A8
+    |z| per side  L 12.4  R 10.8  T 3.5  B 6.5   (bar = N3 p99 = 33.4)
+    step luma     L  +145.0  R    +0.0  T   +26.0  B    +5.0   (at the SEED outline)
+    sides clearing the bar: 0 of 4
+    fit across 9 seeds: long 2.032 mm (spread 0.536), short 1.496 mm (spread 0.085), centre wanders 0.597 mm
+  black_diode_lower
+    |z| per side  L 5.4  R 1.5  T 2.0  B 10.2   (bar = N3 p99 = 33.4)
+    step luma     L    +5.0  R    +1.0  T    +6.0  B    +2.0   (at the SEED outline)
+    sides clearing the bar: 0 of 4
+    fit across 9 seeds: long 1.213 mm (spread 0.762), short 0.988 mm (spread 0.875), centre wanders 1.351 mm
+
+  wrote metrology/darkpkg/d-probe.json
