@@ -1587,6 +1587,42 @@ for _dx in (-EP_VIA_PITCH, 0.0, EP_VIA_PITCH):
               layers=("F.Cu", "B.Cu"))
         EP_VIAS.append((_ep_x + _dx, _ep_y + _dy))
 
+# -- a2) U1's other two ground pins, joined to the exposed pad ------------
+# MEASURED CONSEQUENCE OF WIDENING THE LANDS, and it is the reason this is
+# here rather than left to the pour. U1-32 and U1-44 were connected to the
+# B.Cu ground pour by 0.027 mm of overlap -- the fill crept to 0.3976 mm from
+# a pad centre whose half-height is 0.4250. Widening the lands from 0.200 to
+# 0.250 mm pushed the fill's clearance out by 0.025 mm on each side, the
+# slivers between the pins fell under the zone's 0.25 mm minimum thickness and
+# vanished, and both pads became islands: unconnected went 80 -> 82 with the
+# two new items reading "Pad 44 [GND] of U1 on B.Cu | Zone [GND] on B.Cu".
+#
+# A 0.027 mm overlap was never a connection anybody chose; it was the fill
+# arriving there. So the pins are now joined to the exposed pad EXPLICITLY,
+# which is what a QFN's ground pins are supposed to be joined to. Each track
+# runs from the pin's centre to 0.20 mm inside the EP, axis-aligned, 0.30 mm
+# long. Clearance to the neighbouring pin: on 0.40 mm pitch with 0.25 mm lands
+# and a 0.20 mm track that is 0.40 - 0.125 - 0.100 = 0.175 mm against a
+# 0.127 mm rule.
+EP_HALF = 2.20
+EP_FANOUT = []
+for _pad in b.refs["U1"].Pads():
+    if _pad.GetNetname() != "GND" or _pad.GetNumber() == "49":
+        continue
+    _px, _py = _pad_xy("U1", _pad.GetNumber())
+    _dx, _dy = _px - _ep_x, _py - _ep_y
+    if abs(_dx) >= abs(_dy):
+        _tgt = (_ep_x + math.copysign(EP_HALF - 0.20, _dx), _py)
+    else:
+        _tgt = (_px, _ep_y + math.copysign(EP_HALF - 0.20, _dy))
+    b.track("GND", [(_px, _py), _tgt], width=0.20, layer="B.Cu")
+    EP_FANOUT.append((_pad.GetNumber(), round(math.dist((_px, _py), _tgt), 4)))
+if len(EP_FANOUT) != 2:
+    raise SystemExit(
+        "expected U1 to have exactly 2 ground pins besides the exposed pad "
+        "and found %d (%s). The footprint changed under this code."
+        % (len(EP_FANOUT), EP_FANOUT))
+
 # -- b) the In2 VDD ring, joined to the In2 VDD core ----------------------
 # RADIAL SPOKES, NOT A SECOND RING AND NOT A VIA PAIR. `nfc-coil-clearance`
 # forbids pours and vias inside the band and ALLOWS TRACKS, in its own words
