@@ -110,9 +110,30 @@ per layer by construction — on a delayered board the ground-away regions expos
 laminate and the outer copper does not reach the rim uniformly. A background-
 subtraction attempt then measured the letterbox border instead of the board.
 
-**What would work:** the **three plated tooling holes**, which are board
-features at fixed positions visible on all four layers, and which would give a
-similarity transform *including rotation* rather than the scale-and-offset
-assumed here. Not attempted — machine load was 39.7 with a freerouting job in
-flight. `s_register.py` is committed with its residual check going red, because
+**The tooling-hole route was then tried, and also failed.** Three plated holes
+at fixed board positions would give a similarity transform including rotation.
+Detecting them as *background enclosed by board* — you see the table through a
+through-hole — recovered the centre hole on `layer3` and `layer4` (26 303 and
+30 251 px at fill 0.62–0.63) but **not on `layer1` or `layer2`**, where the
+centre region drains to the frame edge through a notch, and **no tooling holes
+on any layer**: every other enclosed component came back at fill 0.22–0.45,
+irregular ground-away patches rather than round holes. The plated holes do not
+read as background, presumably because the barrel is plated and lit.
+
+**Stopped here, and the reason is not that it was hard.** Three methods failed;
+searching method-space until one produces an answer, with no control saying the
+answer is right, is the same defect as tuning a threshold until it agrees.
+
+**The deeper reason, which would have applied even if registration had worked.**
+The via test is *"a land on the component side with no counterpart on the other
+outer face is a blind via."* That is a claim about an **absence**. On `layer4`
+the copper is sparse and ground, so a land the detector simply missed and a land
+that is genuinely not there produce **the same output**. A test whose negative
+result is indistinguishable from a broken instrument is not a test — and it
+would have failed silently in the direction that flatters, because "blind vias
+found" is the more interesting answer.
+
+**What would actually settle it:** a cross-section, or an X-ray at a resolution
+that separates a blind barrel from a through barrel. Both are bench work, not
+image work. `s_register.py` stays committed with its residual check going red:
 a tool that reports its own failure is worth more than a deleted one.
