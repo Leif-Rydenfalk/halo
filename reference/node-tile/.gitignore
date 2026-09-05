@@ -1,8 +1,0 @@
-.idea/
-dist/
-.env
-node_modules/
-*.tgz
-lib/
-test.ts
-research/jadx/*.cache/

@@ -1,5 +1,0 @@
-board:
-  name: nrf52805_evm
-  vendor: fanstel
-  socs:
-  - name: nrf52805

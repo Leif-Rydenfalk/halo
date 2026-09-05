@@ -1,5 +1,0 @@
-config OPENHAYSTACK
-	bool "OpenHaystack support"
-	default n
-	help
-	  Enable the OpenHaystack library

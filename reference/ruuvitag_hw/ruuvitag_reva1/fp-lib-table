@@ -1,3 +1,0 @@
-(fp_lib_table
-  (lib (name RuuviTag)(type KiCad)(uri ${KIPRJMOD}/../kicad_lib/RuuviTag.pretty)(options "")(descr ""))
-)

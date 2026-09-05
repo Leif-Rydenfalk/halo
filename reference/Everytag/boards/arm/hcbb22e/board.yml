@@ -1,5 +1,0 @@
-board:
-  name: hcbb22e
-  vendor: Honeycomm
-  socs:
-  - name: nrf52832

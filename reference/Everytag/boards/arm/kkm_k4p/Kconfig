@@ -1,6 +1,0 @@
-if BOARD_KKM_K4P
-
-config BT_CTLR
-  default y if BT
-
-endif

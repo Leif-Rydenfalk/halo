@@ -1,5 +1,0 @@
-board:
-  name: kkm_c2_nrf82805
-  vendor: KKM
-  socs:
-  - name: nrf52805
