@@ -1,3 +1,11 @@
+> # ⛔ RETRACTED — see `E05-RETRACTING-E04.md`
+> **The conclusion below ("about 25 mm, not 26") is WITHDRAWN.** The two image axes do not
+> share a scale. Measured per-axis, the board is **26.3 mm wide and 25.0 mm tall**, bounded
+> 24.95–26.34 mm, and O'Flynn's "~26 mm" is NOT contradicted. My "four independent methods"
+> all inherited one shared assumption — a scalar px/mm on an anisotropic projection — so they
+> could not have disagreed about the thing I used their agreement to establish. Kept unedited
+> as the record of the error.
+
 # E04 — how big is the board, and how well do we actually know it
 
 *halo Replica lane (orchestrator), 2026-09-05. A cross-lane reconciliation: each lane below
