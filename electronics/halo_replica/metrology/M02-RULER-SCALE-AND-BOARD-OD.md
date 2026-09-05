@@ -47,7 +47,7 @@ a sub-pixel dark centroid, assigns integer indices and least-squares fits
 
 | rule | px/mm | ± (fit) | ticks | span | resid sd | resid max |
 |---|---|---|---|---|---|---|
-| photo 6 bottom | **15.8875** | 0.0019 | 107 | 107 mm | 0.617 px | 1.564 px |
+| photo 6 bottom | **15.8875** | 0.0022 | 107 | 107 mm | 0.617 px | 1.564 px |
 | photo 6 right | **15.5651** | 0.0082 | 48 | 56 mm | 1.049 px | 2.789 px |
 | photo 7 bottom | **15.2585** | 0.0020 | 99 | 99 mm | 0.574 px | 1.654 px |
 | photo 7 right | **15.0074** | 0.0083 | 52 | 51 mm | 0.894 px | 1.918 px |
@@ -257,3 +257,23 @@ re-derives it.
 | 7 | the notch at top centre of the hole | **EYEBALLED ONLY**, not measured |
 | 8 | edge solder pads: count and angular positions | **NOT YET MEASURED** |
 | 9 | board thickness | **NOT ATTEMPTED** — no edge-on photograph in the set |
+
+---
+
+## 7. Regression, 2026-09-05, after the tools were changed
+
+The tools were edited after this file was written (a NaN guard, the `halfmax`
+negative control moved into `m_outline_fit.py`, a differential rim detector).
+Every published number here was re-derived afterwards and reproduces:
+
+| quantity | published | re-run |
+|---|---|---|
+| photo 6 bottom rule | 15.8875 px/mm | **15.8875** |
+| photo 6 right rule | 15.5651 px/mm | **15.5651** |
+| px/mm at the board | 15.6850 ± 0.0179 | **15.6850 ± 0.0179** |
+| hole superellipse `n` | 2.70 | **2.70** |
+| hole corner radius | 62.08 px | **62.08 px** |
+
+**One correction:** the fit standard error on the photo 6 bottom rule was first
+written as ±0.0019 and re-runs as **±0.0022**. The px/mm value itself is
+unchanged and nothing downstream moves; the table above has been corrected.
