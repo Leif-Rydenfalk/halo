@@ -543,3 +543,89 @@ This is the sibling of the rule at the top of this page. There, a tool reported
 success it had not earned. Here, a tool reports an **absence** it has not earned
 — and absence is more persuasive, because it looks like the world being simple.
 
+
+---
+
+## A setting that is read by nothing — the knob with no wire behind it
+
+*Added 2026-09-05 by lane T3, from `ce-rf`'s `sim.min_cell_mm`. This one has no
+false report at all: the tool never claimed anything. The lie was in the SPEC
+FILES, written by people who believed they were configuring something.*
+
+`sim.min_cell_mm` is ce-rf's mesh-line merge threshold — the number that decides
+which of two nearly-coincident grid lines survives, and therefore the smallest
+cell in the model, and therefore the Courant timestep the whole run pays. **13
+antenna specs in that repo declared it. It was read by nothing.**
+`fdtd.build_model` normalises a spec's `sim` block into the dict the runner
+actually reads, and that dict did not carry the key, so
+`s.get("min_cell_mm", fine / 3.0)` returned the default on every run ever made.
+
+Three of those specs carry a paragraph of reasoning about the value:
+
+> *"min_cell_mm 0.15 instead of the fine_res/3 = 0.0833 default. … The smallest
+> cell sets the Courant timestep for the whole domain; merging mesh lines at
+> 0.15 mm buys back the timestep."*
+
+and one of the validation specs says a coarser mesh "would merge the staircase
+into a smooth diagonal and **answer the question by construction**". Every one
+of those runs wrote, in its own `solver.log`, one line above its own result:
+
+```
+[sim] mesh-line merge at 0.0833 mm: x 661->196, y 671->190, z 6->6
+```
+
+**Nobody had ever compared the two lines.** The spec said 0.15; the log said
+0.0833; the log was right; the reasoning in the spec described a run that never
+happened.
+
+**What it cost, measured on the same spec with nothing else changed:**
+
+| | before (default in force) | after (the declared value in force) |
+|---|---|---|
+| merge threshold | 0.0833 mm | **0.1500 mm** |
+| cells | 1 584 128 | **1 065 792** (−33 %) |
+| smallest cell | 0.08338 mm | **0.15000 mm** |
+| timestep | 1.859 × 10⁻¹³ s | **3.061 × 10⁻¹³ s** (1.65×) |
+
+And the consequence that mattered: with 0.083 mm cells sitting beside 3.70 mm
+cells, the residual energy of every run in this family **floored**.
+`halo-rev-a-2g4-meander9-bare` sat at **−34.87 dB from timestep 41 745 to
+459 690 — flat to 0.01 dB over 418 000 timesteps** — against a −40 dB end
+criterion. That is not slow convergence, and the standing fix in this repo
+("let it run, the criterion is not lowered to meet it") could never have worked:
+no number of extra timesteps reaches a floor it has already been sitting on for
+90 % of the run.
+
+### Why this shape is worth its own entry
+
+The seven directions above are all *a report not derived from its effect*. This
+one is **an input not connected to its effect** — the same break, upstream. It
+is harder to see, because:
+
+- **there is no error.** Unknown keys in a config are normally ignored on
+  purpose, so the mechanism that swallows the setting is a feature everywhere
+  else;
+- **the prose around it is persuasive.** A paragraph explaining *why* 0.15 was
+  chosen reads exactly like evidence that 0.15 was used;
+- **and the default is usually reasonable**, so nothing looks broken. Here the
+  default was *finer* than what was asked for — slower and more expensive, never
+  visibly wrong.
+
+### The three defences, and only the second one is new
+
+1. **Log the value AND where it came from.** `mesh-line merge at 0.1500 mm
+   (sim.min_cell_mm)` versus `at 0.0833 mm (fine_res_mm/3 default — the spec
+   declared no min_cell_mm)`. A number with no provenance cannot be checked
+   against the file that was supposed to supply it.
+2. **Make the consumer refuse a mismatch.** The runner now raises if the
+   threshold it merged at is not the one the spec named. A setting that can be
+   silently dropped will be.
+3. **Count over every input file, not over one.** The new self-test row walks
+   *all* the specs on disk and reports "13 of 13 carry it into the model". Broken
+   on purpose it reads "0 of 13" and names the files — which is the row that
+   would have caught this on any one of thirteen occasions.
+
+**The question to ask, and it is cheap:** for each knob a config file exposes,
+*what would the run do differently if this line were deleted?* If you cannot
+name the difference, grep for the key. If the only hit is the file you just
+wrote, you have found one of these.
