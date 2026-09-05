@@ -48,12 +48,40 @@ problem. That is precisely why it belongs here.
 **What settles it:** a measured current profile on real silicon, which is
 verification debt V4 and needs hardware.
 
-### C-2 · The antenna match clears by 0.39 dB
-**Raised 2026-09-05.** With the coil at its working distance the best buildable
-network reaches −6.39 dB against a −6 dB requirement. That is not margin; it is
-the width of a manufacturing tolerance. Any later change near the annulus — a
-ground pour, a via, a component moved — can spend it, and nobody would notice
-until units failed.
+### C-2 · The antenna match does not clear at all — SUPERSEDED AND WORSE
+**Raised 2026-09-05, and revised the same day by D29.** As raised, this said the
+best buildable network reached **−6.39 dB** against a −6 dB requirement, and
+warned that 0.39 dB is the width of a manufacturing tolerance rather than a
+margin.
+
+**The re-graded measurement is −4.95 dB. It does not clear the requirement; it
+misses it by 1.05 dB.** The −6.39 dB figure was read from the wrong resonance —
+`f_series_res_GHz` reports the *lowest* zero in the sweep, which on the loaded
+board is the NFC winding's, not the antenna's (D28a). With the specs corrected
+to grade `f_series_res_near_R_GHz` and all six cases re-graded from data already
+on disk, the shipping element reads:
+
+| row | value | verdict |
+|---|---|---|
+| mode identified | 2.5294 GHz / 7.19 Ω | PASS |
+| in 2.400–2.4835 GHz | +45.9 MHz above the edge | FAIL |
+| gain | −3.391 dBi vs Apple's −3.2 | FAIL by 0.19 dB |
+| s11, best network | **−4.95 dB vs −6 required** | FAIL |
+
+**The concern as raised was right for the wrong reason, and that is the part
+worth keeping.** "This clears by less than a tolerance" was the correct instinct
+about a number that turned out not to be a pass at all. A margin that thin is
+usually a sign the quantity is not yet understood, not a sign the design is
+nearly there.
+
+**What it does NOT mean.** All three failures above are the same 45.9 MHz of
+detuning seen from three directions, not four independent problems. D29 records
+why that miss is **CANNOT DETERMINE rather than FAIL**: closing it needs
+`eps_eff × 1.0373`, the board declares a generic `epsilon_r = 4.3` that its own
+spec calls the largest single uncertainty here, and ordinary FR-4 Dk spread is
+±5%. **The miss is smaller than the model's dominant uncertainty.** It cannot be
+settled by simulating harder; it needs a fabricator to state the laminate Dk —
+which the factory step this project is already driving toward will supply.
 
 ### C-3 · The mandated sound level cannot be tested on a production line
 **Raised 2026-09-04, restated.** The anti-stalking standard specifies 60 phon, a
@@ -65,6 +93,12 @@ gauge study.
 ---
 
 ### C-5 · I quoted a beat-Apple antenna number the board's own source withdraws
+**CLOSED 2026-09-05 by measurement.** The replacement figure is **−3.391 dBi**
+against Apple's filed **−3.2 dBi** (D29): halo does not beat it, and now has a
+measured number saying so. Unlike the withdrawn +0.521 dBi this was taken 3.6%
+off the antenna's real resonance rather than 16% off, so it is honest and well
+conditioned — but it is a miss and is recorded as one. Original entry follows.
+
 **Raised 2026-09-05.** I told Leif more than once that halo's antenna measures
 +0.521 dBi against Apple's filed −3.2 dBi, 3.7 dB better. The replica lane read
 both files and found `board.py` says, under its own heading *what this board does
@@ -127,7 +161,13 @@ Fresh reports now sit in `out/verify/`. The row cannot move until routing reache
 zero, the source and routed files stop diverging, and the package passes a
 freshness gate against the board it was actually cut from.
 
-### C-7 · A retune scaled from a number that was never measured
+### C-7 · A retune scaled from a number that was never measured — CLOSED AT ROOT
+**CLOSED 2026-09-05.** Root cause found and fixed in ce-rf (87f2a63c): a length
+chosen by a **constraint** (`--max-reach`) back-computed a frequency into a
+field named `measured_GHz`. Provenance is now explicit and the field is null
+unless genuinely measured. `tools/check_spec_premises.py` is the standing guard.
+Original entry follows.
+
 **Raised 2026-09-05 from the finished rt2 solve, confirmed by searching every
 verdict on disk.** The rt2 spec states its premise in its own `why`:
 
