@@ -34,24 +34,55 @@ if pgrep -f "freerouting.*$(basename "$DSN")" >/dev/null 2>&1; then
   exit 1
 fi
 # any freerouting at all is also worth naming — this machine has 8 GB
-if pgrep -f freerouting >/dev/null 2>&1; then
+# NOTE-ONLY, and it MISFIRES BY CONSTRUCTION: `pgrep -f freerouting` matches any
+# process whose argv contains the word, which includes the zsh wrapper that
+# launched the router and any Claude session whose brief mentions it. Measured:
+# it named pid 56691, a /bin/zsh -c line, as "another freerouting". Restricted to
+# processes whose executable is actually java; ce-fleet/bin/heavy does this
+# properly, by executable path, and is the leg that refuses.
+if pgrep -f "openjdk.*freerouting-.*\.jar" >/dev/null 2>&1; then
   echo "NOTE: another freerouting is running on a different board:"
-  pgrep -fl freerouting | head -2
+  pgrep -fl "openjdk.*freerouting-.*\.jar" | head -2
 fi
 
-# 2. IS THERE MEMORY TO RUN A JVM? Measured, not assumed.
-SWAP_USED=$(sysctl -n vm.swapusage | sed -E 's/.*used = ([0-9.]+)M.*/\1/')
-SWAP_TOT=$(sysctl -n vm.swapusage | sed -E 's/.*total = ([0-9.]+)M.*/\1/')
-PCT=$(python3 -c "print(int(100*$SWAP_USED/$SWAP_TOT))" 2>/dev/null || echo 0)
-echo "swap ${SWAP_USED}M of ${SWAP_TOT}M used (${PCT}%)"
-if [ "$PCT" -ge 70 ]; then
-  echo "REFUSED: swap ${SWAP_USED}M of ${SWAP_TOT}M = ${PCT}%, against a 70% bar."
-  echo "  (marginally over and catastrophically over want different responses, so the"
-  echo "   measured number is here as well as the rule.)"
-  echo "  Starting a JVM into that is the precondition"
-  echo "  for the kernel panics this machine has had twice this week."
-  echo "  Free memory first (idle terminals hold it), then re-run."
-  exit 1
+# 2. IS THE MACHINE ABLE TO TAKE ANOTHER HEAVY TOOL AT ALL?
+#
+# THE OLD LEG HERE GATED ON SWAP RATIO AND WAS WRONG. macOS grows its swap file
+# on demand, so a high ratio is not a shortage: measured 2026-09-05, swap went
+# 7168M -> 9216M inside an hour on a healthy machine, and this leg would have
+# refused a launch at 34% memory free with 18 GiB of VM space spare. The signals
+# that actually cap a JVM are memory_pressure free % and free space on
+# /System/Volumes/VM, not the ratio.
+#
+# AND THE HOLE THIS LEG COULD NOT SEE, which is the more important one: legs 0
+# and 1 look for A ROUTER. They are blind to a heavy tool of a DIFFERENT KIND -
+# FreeCAD, openEMS, a solver - already mid-flight, because no lane can see
+# another lane's processes. Load hit 37 with three heavy tools running from
+# three sessions, none of which knew about the others. ce-fleet/bin/heavy counts
+# them machine-wide BY EXECUTABLE PATH, never by command line (every Claude
+# session's argv contains its whole brief, so `pgrep -f <word>` is unreliable by
+# construction - measured there at 14 Claude processes live, 0 miscounted).
+HEAVY="$HOME/dev/ce-fleet/bin/heavy"
+if [ -x "$HEAVY" ]; then
+  # Our own per-dsn lock and this are different questions; machine-wide capacity
+  # is the cheaper refusal, so it goes first.
+  # CAPTURE THE STATUS DIRECTLY. `if ! OUT=$(cmd); then RC=$?` records the
+  # NEGATION's status, which is 0 exactly when the command failed - so this
+  # printed "REFUSED ... (exit 0)" while refusing. A guard that reports success
+  # while refusing is the same defect as a pipe returning head's exit code.
+  OUT=$("$HEAVY" 2>&1); RC=$?
+  if [ "$RC" -ne 0 ]; then
+    echo "$OUT"
+    echo "REFUSED by ce-fleet/bin/heavy (exit $RC): the MACHINE cannot take"
+    echo "  another heavy tool right now, whatever this .dsn's own state is."
+    exit "$RC"
+  fi
+  echo "$OUT"
+  unset OUT RC
+else
+  echo "CANNOT DETERMINE: $HEAVY is not executable, so machine-wide capacity was"
+  echo "  NOT checked. Proceeding on the per-dsn lock alone, which is blind to"
+  echo "  FreeCAD, openEMS and solvers. Install ce-fleet to close this."
 fi
 
 # 3. Route, nice'd, one only.
