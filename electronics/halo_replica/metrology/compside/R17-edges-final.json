@@ -1,0 +1,167 @@
+{
+ "tool": "c_distortion.py",
+ "verb": "edge",
+ "why": "separate LENS DISTORTION from a non-flat board as the cause of the coherent registration misfit measured in R11",
+ "edges": {
+  "photo6-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     400,
+     1111,
+     2000,
+     1151
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1131 (L1 ruler-calibration photo6_bottom)"
+   },
+   "kept": 1187,
+   "discarded": {
+    "on_box_boundary": 4,
+    "weak_gradient": 2,
+    "off_edge_discontinuous": 197,
+    "outside_clean_span": 210
+   },
+   "n": 1187,
+   "span_px": 1250.0,
+   "slope": 5.3733853620812,
+   "quad_coeff": -0.06089832898209346,
+   "sagitta_px": 0.19407179561063975,
+   "sign": -1,
+   "resid_sd_line_px": 0.731206118953854,
+   "resid_sd_quad_px": 0.7290396413397575,
+   "null_mean": 0.13424565234187819,
+   "null_sd": 0.09882918923014289,
+   "z": -0.7421625526946426,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "two_level": {
+    "level_gap_px": 1.0980413812564256,
+    "minority_share": 0.49957877000842466,
+    "two_level": false,
+    "min_gap": 3.0,
+    "min_share": 0.05
+   },
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo6-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     1503,
+     100,
+     1543,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1523 (L1 ruler-calibration photo6_right)"
+   },
+   "kept": 461,
+   "discarded": {
+    "on_box_boundary": 27,
+    "off_edge_discontinuous": 312
+   },
+   "n": 461,
+   "span_px": 798.0,
+   "slope": -0.6618956302478742,
+   "quad_coeff": 0.20002563614182595,
+   "sagitta_px": 0.61204212455476,
+   "sign": 1,
+   "resid_sd_line_px": 4.479671172145557,
+   "resid_sd_quad_px": 4.47598024877858,
+   "null_mean": 0.20108760763549233,
+   "null_sd": 0.14310078959617883,
+   "z": -0.007421143493779421,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "two_level": {
+    "level_gap_px": 7.3273795321165744,
+    "minority_share": 0.44685466377440347,
+    "two_level": true,
+    "min_gap": 3.0,
+    "min_share": 0.05
+   },
+   "refused": "the trace occupies TWO LEVELS 7.3 px apart with 45% of samples on the minority one - it is switching between two features, not following one edge",
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo7-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     400,
+     1093,
+     2000,
+     1133
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1113"
+   },
+   "kept": 1164,
+   "discarded": {
+    "weak_gradient": 3,
+    "on_box_boundary": 7,
+    "off_edge_discontinuous": 245,
+    "outside_clean_span": 181
+   },
+   "n": 1164,
+   "span_px": 1245.0,
+   "slope": 0.40128874869721237,
+   "quad_coeff": -0.03699326809497041,
+   "sagitta_px": 0.12266830929740252,
+   "sign": -1,
+   "resid_sd_line_px": 0.6571350811334183,
+   "resid_sd_quad_px": 0.6562494046621503,
+   "null_mean": 0.018494600599485045,
+   "null_sd": 0.014925286224656465,
+   "z": 1.239417939263751,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "two_level": {
+    "level_gap_px": 1.0444754760181008,
+    "minority_share": 0.4579037800687285,
+    "two_level": false,
+    "min_gap": 3.0,
+    "min_share": 0.05
+   },
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo7-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     1537,
+     100,
+     1577,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1557"
+   },
+   "kept": 520,
+   "discarded": {
+    "on_box_boundary": 53,
+    "off_edge_discontinuous": 227
+   },
+   "n": 520,
+   "span_px": 798.0,
+   "slope": 3.7041632989988393,
+   "quad_coeff": -0.9421771917008624,
+   "sagitta_px": 2.7993791699455732,
+   "sign": -1,
+   "resid_sd_line_px": 4.7507975368144555,
+   "resid_sd_quad_px": 4.670556303782193,
+   "null_mean": 0.2332267795134494,
+   "null_sd": 0.17800766343341132,
+   "z": 3.982696017200493,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "two_level": {
+    "level_gap_px": 8.285056107350936,
+    "minority_share": 0.4,
+    "two_level": true,
+    "min_gap": 3.0,
+    "min_share": 0.05
+   },
+   "refused": "the trace occupies TWO LEVELS 8.3 px apart with 40% of samples on the minority one - it is switching between two features, not following one edge",
+   "reading": "CANNOT DETERMINE"
+  }
+ },
+ "worst_measured_sagitta_px": 0.0,
+ "verdict": "CANNOT DETERMINE"
+}

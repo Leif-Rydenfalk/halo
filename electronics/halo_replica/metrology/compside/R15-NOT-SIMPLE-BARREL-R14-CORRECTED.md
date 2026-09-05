@@ -1,5 +1,13 @@
 # R15 — R14's "the lens is barrel-distorted" does not survive the magnitude check
 
+> **⚠ FULLY SUPERSEDED BY [R17](R17-THE-RULE-EDGES-ARE-STRAIGHT.md).** Its k values (-0.00646, -0.06259) came from contaminated traces: the
+> tracker was following the rule's TICK MARKS and, past x ~ 1700, the rule's far end
+> rather than its edge. With a continuity gate, a two-level refusal and the clean span,
+> both bottom edges measure **0.194 px and 0.123 px, neither clearing its null**, and
+> both right edges are **refused as two-level traces**. There is no measurable lens
+> distortion. Nothing numeric in this file stands.
+
+
 *halo Replica, lane L2, 2026-09-05. Corrects [R14](R14-THE-LENS-IS-BARREL-DISTORTED.md).*
 
 R14 measured two genuinely bowed rule edges in FCC internal photo 7, found that **both bow

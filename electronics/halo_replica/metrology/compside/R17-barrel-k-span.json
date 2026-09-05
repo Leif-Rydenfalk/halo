@@ -1,0 +1,22 @@
+{
+ "photo6-bottom": {
+  "skipped": true,
+  "z": -0.7421625526946426
+ },
+ "photo6-right": {
+  "skipped": true,
+  "z": -0.007421143493779421
+ },
+ "photo7-bottom": {
+  "skipped": true,
+  "z": 1.239417939263751
+ },
+ "photo7-right": {
+  "image": "fcc-BCGA2187-internal-photo-7.jpg",
+  "sagitta_px": 2.7993791699455732,
+  "k": -0.04065130601800236,
+  "z": 3.982696017200493,
+  "W": 2134,
+  "H": 1600
+ }
+}

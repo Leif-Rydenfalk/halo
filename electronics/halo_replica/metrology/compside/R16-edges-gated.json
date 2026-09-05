@@ -1,0 +1,161 @@
+{
+ "tool": "c_distortion.py",
+ "verb": "edge",
+ "why": "separate LENS DISTORTION from a non-flat board as the cause of the coherent registration misfit measured in R11",
+ "edges": {
+  "photo6-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     400,
+     1111,
+     2000,
+     1151
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1131 (L1 ruler-calibration photo6_bottom)"
+   },
+   "kept": 1397,
+   "discarded": {
+    "on_box_boundary": 4,
+    "weak_gradient": 2,
+    "off_edge_discontinuous": 197
+   },
+   "n": 1397,
+   "span_px": 1590.0,
+   "slope": 5.853235686423001,
+   "quad_coeff": -0.7193398665039988,
+   "sagitta_px": 2.403199630919812,
+   "sign": -1,
+   "resid_sd_line_px": 1.6625582284423779,
+   "resid_sd_quad_px": 1.511008762125371,
+   "null_mean": 0.13753052823310824,
+   "null_sd": 0.10328647989689585,
+   "z": 5.632967052916054,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "MEASURED"
+  },
+  "photo6-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-6.jpg",
+    "box": [
+     1503,
+     100,
+     1543,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1523 (L1 ruler-calibration photo6_right)"
+   },
+   "kept": 461,
+   "discarded": {
+    "on_box_boundary": 27,
+    "off_edge_discontinuous": 312
+   },
+   "n": 461,
+   "span_px": 798.0,
+   "slope": -0.6618956302478742,
+   "quad_coeff": 0.20002563614182595,
+   "sagitta_px": 0.61204212455476,
+   "sign": 1,
+   "resid_sd_line_px": 4.479671172145557,
+   "resid_sd_quad_px": 4.47598024877858,
+   "null_mean": 0.20108760763549233,
+   "null_sd": 0.14310078959617883,
+   "z": -0.007421143493779421,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "CANNOT DETERMINE"
+  },
+  "photo7-bottom": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     400,
+     1093,
+     2000,
+     1133
+    ],
+    "axis": "h",
+    "note": "bottom rule's top edge, rule_edge_px 1113"
+   },
+   "kept": 1345,
+   "discarded": {
+    "weak_gradient": 3,
+    "on_box_boundary": 7,
+    "off_edge_discontinuous": 245
+   },
+   "n": 1345,
+   "span_px": 1593.0,
+   "slope": -0.32466109177070596,
+   "quad_coeff": -0.7365130272660109,
+   "sagitta_px": 2.5884033132923396,
+   "sign": -1,
+   "resid_sd_line_px": 1.524394862577865,
+   "resid_sd_quad_px": 1.3359790628598471,
+   "null_mean": 0.034901302535198075,
+   "null_sd": 0.026515172586693704,
+   "z": 26.46076401867011,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "MEASURED"
+  },
+  "photo7-right": {
+   "spec": {
+    "image": "fcc-BCGA2187-internal-photo-7.jpg",
+    "box": [
+     1537,
+     100,
+     1577,
+     900
+    ],
+    "axis": "v",
+    "note": "right rule's left edge, rule_edge_px 1557"
+   },
+   "kept": 520,
+   "discarded": {
+    "on_box_boundary": 53,
+    "off_edge_discontinuous": 227
+   },
+   "n": 520,
+   "span_px": 798.0,
+   "slope": 3.7041632989988393,
+   "quad_coeff": -0.9421771917008624,
+   "sagitta_px": 2.7993791699455732,
+   "sign": -1,
+   "resid_sd_line_px": 4.7507975368144555,
+   "resid_sd_quad_px": 4.670556303782193,
+   "null_mean": 0.2332267795134494,
+   "null_sd": 0.17800766343341132,
+   "z": 3.982696017200493,
+   "null_note": "quadratic coefficient refitted 600 times with the along-edge positions PERMUTED: destroys curvature, keeps the noise",
+   "reading": "MEASURED"
+  },
+  "_consistency": {
+   "fcc-BCGA2187-internal-photo-7.jpg": {
+    "edges": [
+     "photo7-bottom",
+     "photo7-right"
+    ],
+    "detail": [
+     {
+      "edge": "photo7-bottom",
+      "quad_sign": -1,
+      "outward": 1.0,
+      "bows": "AWAY from the frame centre",
+      "sagitta_px": 2.5884033132923396
+     },
+     {
+      "edge": "photo7-right",
+      "quad_sign": -1,
+      "outward": 1.0,
+      "bows": "AWAY from the frame centre",
+      "sagitta_px": 2.7993791699455732
+     }
+    ],
+    "consistent": true,
+    "kind": "BARREL"
+   }
+  }
+ },
+ "worst_measured_sagitta_px": 2.7993791699455732,
+ "verdict": "PASS"
+}

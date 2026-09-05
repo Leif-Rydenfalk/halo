@@ -51,13 +51,15 @@ V = {PASS: 'PASS', FAIL: 'FAIL', CANNOT: 'CANNOT DETERMINE'}
 # Rule edge y/x values are lane L1's, from metrology/ruler-calibration.json.
 EDGES = {
     'photo6-bottom': dict(image='fcc-BCGA2187-internal-photo-6.jpg', axis='h',
-                          box=(400, 1111, 2000, 1151), note="bottom rule's top edge, "
+                          box=(400, 1111, 2000, 1151), span=(400, 1650),
+                          note="bottom rule's top edge, "
                           "rule_edge_px 1131 (L1 ruler-calibration photo6_bottom)"),
     'photo6-right':  dict(image='fcc-BCGA2187-internal-photo-6.jpg', axis='v',
                           box=(1503, 100, 1543, 900), note="right rule's left edge, "
                           "rule_edge_px 1523 (L1 ruler-calibration photo6_right)"),
     'photo7-bottom': dict(image='fcc-BCGA2187-internal-photo-7.jpg', axis='h',
-                          box=(400, 1093, 2000, 1133), note="bottom rule's top edge, "
+                          box=(400, 1093, 2000, 1133), span=(400, 1650),
+                          note="bottom rule's top edge, "
                           "rule_edge_px 1113"),
     'photo7-right':  dict(image='fcc-BCGA2187-internal-photo-7.jpg', axis='v',
                           box=(1537, 100, 1577, 900), note="right rule's left edge, "
@@ -69,7 +71,7 @@ def gray(path):
     return np.asarray(Image.open(path).convert('L'), dtype=np.float64)
 
 
-def scan_edge(img, box, axis, min_grad=6.0, smooth=1.0):
+def scan_edge(img, box, axis, min_grad=6.0, smooth=1.0, med_win=51, max_jump=2.5):
     """Sub-pixel edge position along the box, one sample per column (h) or row (v).
 
     Returns (t, e, kept, discarded) where t is the along-edge coordinate and e the
@@ -117,7 +119,40 @@ def scan_edge(img, box, axis, min_grad=6.0, smooth=1.0):
         off = float((w*gw).sum()/gw.sum())
         ts.append(t0 + j)
         es.append(e0 + off + 0.5)
-    return np.asarray(ts, float), np.asarray(es, float), len(ts), disc
+    ts = np.asarray(ts, float); es = np.asarray(es, float)
+
+    # CONTINUITY GATE. *** THE CONTROL THIS FILE MOST NEEDED AND DID NOT HAVE. ***
+    # Without it the tracker follows whatever has the strongest gradient in each
+    # column, which on a steel rule alternates between the rule's EDGE and its TICK
+    # MARKS a few pixels away. The resulting trace is a square wave jumping 10-15 px,
+    # and a quadratic fitted through it returns a confident sagitta with a z of +5
+    # to +7 - a number that looks measured and is junk. It was invisible in every
+    # scalar the tool printed and obvious the moment the profile was DRAWN
+    # (metrology/compside/img/R16-edge-profiles.png).
+    #
+    # A real edge is CONTINUOUS: adjacent samples along it differ by a fraction of a
+    # pixel, not by ten. Sample positions far from a robust local median are not on
+    # the edge, and are discarded and counted rather than fitted.
+    if len(ts) >= 2*med_win:
+        keep = np.ones(len(ts), bool)
+        for _ in range(2):
+            e_ok = np.where(keep, es, np.nan)
+            med = np.full(len(ts), np.nan)
+            h = med_win//2
+            for i in range(len(ts)):
+                w = e_ok[max(0, i-h):i+h+1]
+                w = w[~np.isnan(w)]
+                if w.size >= 5:
+                    med[i] = np.median(w)
+            bad = np.isfinite(med) & (np.abs(es-med) > max_jump)
+            if not bad.any():
+                break
+            keep &= ~bad
+        n_off = int((~keep).sum())
+        if n_off:
+            disc['off_edge_discontinuous'] = disc.get('off_edge_discontinuous', 0) + n_off
+        ts, es = ts[keep], es[keep]
+    return ts, es, len(ts), disc
 
 
 def curvature(t, e, trials=600, seed=5):
@@ -173,11 +208,73 @@ def bows_away(axis, box, cx, cy, quad_coeff):
         outward = math.copysign(1.0, (x0+x1)/2.0 - cx)
     return int(math.copysign(1.0, -quad_coeff) * outward)
 
-def measure(name, min_grad=6.0):
+def two_level(t, e, min_gap=3.0, min_share=0.05, iters=40):
+    """Is this trace FOLLOWING ONE EDGE, or SWITCHING between two features?
+
+    The continuity gate rejects isolated jumps but cannot reject long RUNS at a
+    different level - a rule's tick band, say, held for 200 columns - because a
+    local median follows them. Those runs are what photo 6's and photo 7's RIGHT
+    edges do, and a quadratic through such a trace returned a confident sagitta of
+    2.8 px with z=+4.0 while the drawn profile is plainly a square wave.
+
+    So: 1-D 2-means on the residuals from the straight-line fit. If two levels are
+    separated by more than min_gap px and each holds at least min_share of the
+    samples, the trace is not one edge and the measurement is refused - never
+    averaged.
+
+    min_share is 0.05, not the 0.15 first written. A selftest run put 14% of a
+    synthetic trace on a level 21 px away and the gate stayed quiet: 15% was too
+    lax, because ISOLATED outliers are already removed by the continuity gate, so
+    anything reaching several percent at that separation is a second FEATURE, not
+    noise. The threshold was tightened - the gate now fires MORE readily - rather
+    than the synthetic being made easier to catch.
+    """
+    if len(t) < 40:
+        return None
+    tc = (t-t.mean())/max(t.std(), 1e-9)
+    r = e - np.polyval(np.polyfit(tc, e, 1), tc)
+    a, b = float(np.percentile(r, 15)), float(np.percentile(r, 85))
+    for _ in range(iters):
+        da, db = np.abs(r-a), np.abs(r-b)
+        ga, gb = da <= db, db < da
+        if ga.sum() == 0 or gb.sum() == 0:
+            break
+        a, b = float(r[ga].mean()), float(r[gb].mean())
+    da, db = np.abs(r-a), np.abs(r-b)
+    ga = da <= db
+    share = min(ga.mean(), 1-ga.mean())
+    gap = abs(b-a)
+    return dict(level_gap_px=gap, minority_share=float(share),
+                two_level=bool(gap > min_gap and share > min_share),
+                min_gap=min_gap, min_share=min_share)
+
+def measure(name, min_grad=6.0, max_jump=2.5):
     spec = EDGES[name]
     img = gray(os.path.join(IMGDIR, spec['image']))
-    t, e, kept, disc = scan_edge(img, spec['box'], spec['axis'], min_grad=min_grad)
+    t, e, kept, disc = scan_edge(img, spec['box'], spec['axis'], min_grad=min_grad,
+                                 max_jump=max_jump)
+    # CLEAN SPAN. Read off the DRAWN profile (metrology/compside/img/R16-edge-profiles-gated.png),
+    # not guessed: both bottom edges run smooth to about x=1650 and then dive 4-7 px,
+    # where the rule's far end and its inch scale enter the box. Cutting there is a
+    # judgement about the PHOTOGRAPH and it is recorded as one - the span is in the
+    # catalogue entry, the discarded count is printed, and the raw trace is unchanged.
+    sp = spec.get('span')
+    if sp is not None and len(t):
+        m = (t >= sp[0]) & (t <= sp[1])
+        n_out = int((~m).sum())
+        if n_out:
+            disc['outside_clean_span'] = n_out
+        t, e = t[m], e[m]
+        kept = len(t)
     c = curvature(t, e) if kept >= 30 else None
+    tl = two_level(t, e)
+    if c is not None and tl is not None:
+        c['two_level'] = tl
+        if tl['two_level']:
+            c['refused'] = ("the trace occupies TWO LEVELS %.1f px apart with %.0f%% of "
+                            "samples on the minority one - it is switching between two "
+                            "features, not following one edge"
+                            % (tl['level_gap_px'], 100*tl['minority_share']))
     return spec, t, e, kept, disc, c
 
 
@@ -190,7 +287,7 @@ def run_edge(a):
     img_shape = {}
     verdict = PASS
     for n in names:
-        spec, t, e, kept, disc, c = measure(n, a.min_grad)
+        spec, t, e, kept, disc, c = measure(n, a.min_grad, getattr(a, 'max_jump', 2.5))
         img_shape[spec['image']] = gray(os.path.join(IMGDIR, spec['image'])).shape
         print("\n  EDGE %s" % n)
         print("    image %s   box %s   axis %s" % (spec['image'], spec['box'], spec['axis']))
@@ -208,7 +305,11 @@ def run_edge(a):
               (c['sagitta_px'], c['span_px'], c['sign']))
         print("    null (positions permuted): |c2| %.4g +- %.4g   ->  z = %+.1f"
               % (c['null_mean'], c['null_sd'], c['z']))
-        if c['z'] < 3.0:
+        if c.get('refused'):
+            print("    CANNOT DETERMINE: %s" % c['refused'])
+            c['reading'] = 'CANNOT DETERMINE'
+            verdict = max(verdict, CANNOT)
+        elif c['z'] < 3.0:
             print("    CANNOT DETERMINE: the bow does not stand clear of its own null.")
             c['reading'] = 'CANNOT DETERMINE'
         else:
@@ -346,10 +447,11 @@ def run_solvek(a):
     print("  an arithmetic identity.")
     out = {}
     for n in (a.edge and [a.edge] or list(EDGES)):
-        spec, t, e, kept, disc, c = measure(n, a.min_grad)
-        if c is None or c['z'] < 3.0:
+        spec, t, e, kept, disc, c = measure(n, a.min_grad, getattr(a, 'max_jump', 2.5))
+        if c is None or c['z'] < 3.0 or c.get('refused'):
             print("\n  %-15s skipped: %s" % (n, 'no usable edge' if c is None else
-                                             'bow does not clear its null (z=%+.1f)' % c['z']))
+                                             (c.get('refused') or
+                                              'bow does not clear its null (z=%+.1f)' % c['z'])))
             out[n] = dict(skipped=True, z=(c or {}).get('z'))
             continue
         H_, W_ = gray(os.path.join(IMGDIR, spec['image'])).shape
@@ -374,6 +476,70 @@ def run_solvek(a):
     if a.json_out:
         with open(a.json_out, 'w') as fh: json.dump(out, fh, indent=1)
         print("\n  wrote %s" % a.json_out)
+    return PASS
+
+def run_profile(a):
+    """LOOK AT THE EDGE. A quadratic coefficient cannot tell a smooth bow from a
+    kink, a step or a scratch, and photo 7's right edge carries a 4.31 px sagitta
+    with the worst noise of the four (line-fit residual sd 5.86 px). So: draw the
+    departure-from-straight profile, and split each edge into thirds and solve k
+    on each. A genuine radial bow gives every third a similar k; contamination
+    does not."""
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    names = [a.edge] if a.edge else list(EDGES)
+    fig, axes = plt.subplots(len(names), 1, figsize=(11, 2.6*len(names)), squeeze=False)
+    out = {}
+    for ax, n in zip(axes[:, 0], names):
+        spec, t, e, kept, disc, c = measure(n, a.min_grad, getattr(a, 'max_jump', 2.5))
+        H_, W_ = gray(os.path.join(IMGDIR, spec['image'])).shape
+        tc = (t-t.mean())/max(t.std(), 1e-9)
+        r = e - np.polyval(np.polyfit(tc, e, 1), tc)
+        ax.plot(t, r, lw=0.5, color='#444', label='departure from the straight-line fit')
+        ax.plot(t, np.polyval(np.polyfit(tc, e, 2), tc) - np.polyval(np.polyfit(tc, e, 1), tc),
+                lw=2.0, color='#c1440e', label='the fitted quadratic')
+        ax.axhline(0, lw=0.6, color='#888')
+        # thirds
+        ks, rows = [], []
+        m = len(t)//3
+        for i in range(3):
+            sl = slice(i*m, (i+1)*m if i < 2 else len(t))
+            tt, ee = t[sl], e[sl]
+            cc = curvature(tt, ee, trials=200)
+            if cc is None:
+                rows.append(dict(third=i, k=None, why='too few samples')); continue
+            box3 = (list(spec['box'])[0:1] + [0, 0, 0])
+            b = list(spec['box'])
+            if spec['axis'] == 'h': b[0], b[2] = float(tt.min()), float(tt.max())
+            else: b[1], b[3] = float(tt.min()), float(tt.max())
+            kk = solve_k(spec['axis'], tuple(b), W_, H_, cc['sagitta_px'])
+            ks.append(kk); rows.append(dict(third=i, sagitta_px=cc['sagitta_px'],
+                                            z=cc['z'], k=kk, n=cc['n']))
+            ax.axvspan(tt.min(), tt.max(), color='#000', alpha=0.03 if i % 2 else 0.0)
+        good = [k for k in ks if k is not None]
+        spread = (max(good)-min(good))/abs(np.mean(good)) if len(good) >= 2 and np.mean(good) else None
+        ax.set_title("%s  -  %s   sagitta %.3f px, line-fit resid sd %.2f px, "
+                     "thirds imply k %s"
+                     % (n, spec['image'], (c or {}).get('sagitta_px', float('nan')),
+                        (c or {}).get('resid_sd_line_px', float('nan')),
+                        ' / '.join('%.4f' % k if k is not None else 'n/a' for k in ks) or 'n/a'),
+                     fontsize=8)
+        ax.set_ylabel('px'); ax.legend(fontsize=6, loc='upper right')
+        out[n] = dict(thirds=rows, k_spread_frac=spread,
+                      sagitta_px=(c or {}).get('sagitta_px'),
+                      resid_sd_line_px=(c or {}).get('resid_sd_line_px'))
+        print("  %-15s sagitta %7s px  thirds k: %s   spread %s"
+              % (n, ('%.3f' % c['sagitta_px']) if c else 'n/a',
+                 ' / '.join('%.4f' % k if k is not None else 'n/a' for k in ks),
+                 ('%.0f%%' % (100*spread)) if spread is not None else 'n/a'))
+    axes[-1, 0].set_xlabel('position along the edge (px)')
+    fig.tight_layout()
+    fig.savefig(a.png, dpi=130)
+    print("\n  wrote %s" % a.png)
+    if a.json_out:
+        with open(a.json_out, 'w') as fh: json.dump(out, fh, indent=1)
+        print("  wrote %s" % a.json_out)
     return PASS
 
 def run_selftest(a):
@@ -420,6 +586,48 @@ def run_selftest(a):
     rec(c1['sign'] != c2['sign'],
         "the SIGN follows the direction of the bow: %+d for +3 px, %+d for -3 px"
         % (c1['sign'], c2['sign']))
+
+    # THE TWO-LEVEL GATE, both directions. It is what rejects photo 7's right edge,
+    # whose square-wave trace returned a confident sagitta of 2.8 px at z=+4.0.
+    p4, b4 = _synth_edge(tmp, 1.0, name='block.png')
+    img4 = gray(p4).copy()
+    img4[:, 300:520] = np.roll(img4[:, 300:520], 7, axis=0)   # a LONG run 7 px off
+    t4, e4, _, _ = scan_edge(img4, b4, 'h')
+    tl_bad = two_level(t4, e4)
+    rec(tl_bad is not None and tl_bad['two_level'],
+        "TWO-LEVEL gate FIRES on a trace with a long run at a second level: gap "
+        "%.1f px, minority share %.0f%%" % (tl_bad['level_gap_px'],
+                                            100*tl_bad['minority_share']))
+    pc, bc = _synth_edge(tmp, 1.0, name='clean3.png')
+    tc4, ec4, _, _ = scan_edge(gray(pc), bc, 'h')
+    tl_ok = two_level(tc4, ec4)
+    rec(tl_ok is not None and not tl_ok['two_level'],
+        "TWO-LEVEL gate STAYS QUIET on a clean single edge: gap %.2f px"
+        % tl_ok['level_gap_px'])
+
+    # THE CONTINUITY GATE, both directions. It is the control whose absence let a
+    # square-wave trace return a confident sagitta with z=+5 to +7.
+    p3, b3 = _synth_edge(tmp, 2.0, name='jump.png')
+    img3 = gray(p3).copy()
+    # move a fifth of the columns onto a "tick mark" 9 px away, as a rule's ticks do
+    n3 = img3.shape[1]
+    for j in range(0, n3, 5):
+        img3[:, j] = np.roll(img3[:, j], 9)
+    t_ng, e_ng, k_ng, d_ng = scan_edge(img3, b3, 'h', max_jump=1e9)   # gate OFF
+    t_g, e_g, k_g, d_g = scan_edge(img3, b3, 'h')                     # gate ON
+    c_ng = curvature(t_ng, e_ng); c_g = curvature(t_g, e_g)
+    rec(c_ng is not None and c_g is not None
+        and abs(c_g['sagitta_px']-2.0) < 0.25 and abs(c_ng['sagitta_px']-2.0) > 0.25,
+        "CONTINUITY GATE rescues a trace contaminated by 'tick marks': ungated "
+        "sagitta %.3f px (true 2.0), gated %.3f px, %d samples discarded as "
+        "discontinuous" % (c_ng['sagitta_px'], c_g['sagitta_px'],
+                           d_g.get('off_edge_discontinuous', 0)))
+    rec(d_g.get('off_edge_discontinuous', 0) > 0.10*n3,
+        "the gate DISCARDS the contaminated samples rather than down-weighting them: "
+        "%d of %d" % (d_g.get('off_edge_discontinuous', 0), n3))
+    t_c, e_c, _, d_c = scan_edge(gray(_synth_edge(tmp, 2.0, name='clean2.png')[0]), b3, 'h')
+    rec(d_c.get('off_edge_discontinuous', 0) == 0,
+        "the gate stays QUIET on a clean edge: 0 discarded as discontinuous")
 
     # THE k-INVERSION, round-tripped. Without this, a disagreement between two
     # edges could be my arithmetic rather than the photograph - and on 2026-09-05
@@ -505,14 +713,24 @@ def main():
     p = sub.add_parser('edge')
     p.add_argument('--edge', default=None, choices=list(EDGES))
     p.add_argument('--min-grad', type=float, default=6.0)
+    p.add_argument('--max-jump', type=float, default=2.5,
+                   help='px from a robust local median beyond which a sample is not on '
+                        'this edge. The gate that separates a rule EDGE from its TICKS.')
     p.add_argument('--json-out', default=None)
     q = sub.add_parser('solve-k')
     q.add_argument('--edge', default=None, choices=list(EDGES))
     q.add_argument('--min-grad', type=float, default=6.0)
+    q.add_argument('--max-jump', type=float, default=2.5)
     q.add_argument('--json-out', default=None)
+    r = sub.add_parser('profile')
+    r.add_argument('--edge', default=None, choices=list(EDGES))
+    r.add_argument('--min-grad', type=float, default=6.0)
+    r.add_argument('--max-jump', type=float, default=2.5)
+    r.add_argument('--png', default='out/edge-profiles.png')
+    r.add_argument('--json-out', default=None)
     sub.add_parser('doctor'); sub.add_parser('selftest')
     a = ap.parse_args()
-    return {'edge': run_edge, 'solve-k': run_solvek,
+    return {'edge': run_edge, 'solve-k': run_solvek, 'profile': run_profile,
             'doctor': run_doctor, 'selftest': run_selftest}[a.verb](a)
 
 

@@ -1,5 +1,13 @@
 # R14 — one of R11's three candidates is now measured: **photo 7's lens is barrel-distorted**
 
+> **⚠ FULLY SUPERSEDED BY [R17](R17-THE-RULE-EDGES-ARE-STRAIGHT.md).** Its per-edge sagittas (1.137 and 4.310 px) are CONTAMINATION: the
+> tracker was following the rule's TICK MARKS and, past x ~ 1700, the rule's far end
+> rather than its edge. With a continuity gate, a two-level refusal and the clean span,
+> both bottom edges measure **0.194 px and 0.123 px, neither clearing its null**, and
+> both right edges are **refused as two-level traces**. There is no measurable lens
+> distortion. Nothing numeric in this file stands.
+
+
 > **⚠ THIS FILE'S HEADLINE IS WRONG — read [R15](R15-NOT-SIMPLE-BARREL-R14-CORRECTED.md).**
 > The sign test below passed and I published on it. The **magnitude** test, which this file
 > never ran, fails: photo 7's bottom edge implies a barrel coefficient of **k = −0.00646**
