@@ -1,0 +1,48 @@
+{
+  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+  "routed": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+  "dsn": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.filtered.dsn",
+  "ses": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.filtered.ses",
+  "dsn_filter": {
+    "script": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/dsnfix.py",
+    "in": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.dsn",
+    "out": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.filtered.dsn",
+    "bytes_in": 175629,
+    "bytes_out": 176308,
+    "stdout": "{\n  \"before\": {\n    \"keepout\": 3,\n    \"via_keepout\": 8,\n    \"plane\": 4,\n    \"wire\": 273,\n    \"signal_layers\": 4,\n    \"power_layers\": 0\n  },\n  \"after\": {\n    \"keepout\": 11,\n    \"via_keepout\": 8,\n    \"plane\": 4,\n    \"wire\": 273,\n    \"signal_layers\": 2,\n    \"power_layers\": 2\n  },\n  \"plane_layers_retyped\": 2,\n  \"wires_protected\": 322,\n  \"nets_dropped\": [\n    \"GND\",\n    \"VDD\"\n  ],\n  \"nfc\": {\n    \"coil_wires_seen\": 214,\n    \"renamed\": 0\n  },\n  \"fiducial_keepouts\": {\n    \"fiducials\": 2,\n    \"refs\": [\n      \"FID2\",\n      \"FID1\"\n    ],\n    \"keepouts_added\": 8,\n    \"clear_diameter_mm\": 2.0,\n    \"layers\": [\n      \"F.Cu\",\n      \"In1.Cu\",\n      \"In2.Cu\",\n      \"B.Cu\"\n    ],\n    \"why\": \"IPC-7351B clear area, one fiducial diameter of no copper\"\n  }\n}\n"
+  },
+  "before": {
+    "unconnected": 83,
+    "violations": 3,
+    "errors": 0,
+    "warnings": 3,
+    "json": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.drc.json"
+  },
+  "after": {
+    "unconnected": 28,
+    "violations": 3,
+    "errors": 0,
+    "warnings": 3,
+    "json": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a-routed.drc.json"
+  },
+  "seconds": 1155.55,
+  "passes": 10,
+  "router_settings": [
+    "--router.copper_to_edge_clearance_um=300",
+    "--router.fanout.enabled=false",
+    "--router.hole_clearance_um=200"
+  ],
+  "project_rules": {
+    "min_clearance": 0.127,
+    "min_track_width": 0.127,
+    "min_hole_clearance": 0.2,
+    "min_through_hole_diameter": 0.25,
+    "min_via_diameter": 0.45,
+    "min_copper_edge_clearance": 0.3,
+    "solder_mask_min_width": 0.0,
+    "solder_mask_to_copper_clearance": 0.0
+  },
+  "fanout": false,
+  "improved": 55,
+  "note": "Autorouted copper connects the netlist and clears the rules. It is NOT a layout: nothing here knows about return paths, differential pairs, thermal relief or loop area. On a board where those matter this is a starting point a person edits."
+}
