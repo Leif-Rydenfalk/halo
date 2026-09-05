@@ -1,25 +1,44 @@
 #!/usr/bin/env python3
-"""p_render.py -- draw the halo Replica main board from board/board.json.
+"""p_render.py -- draw the halo Replica main board: FITTED outline + MEASURED components.
 
-Lane L5 (BOARD BUILD).  Exit code IS the verdict: 0 PASS / 1 FAIL / 2 CANNOT DETERMINE.
+Lane L5 BOARD BUILD.  Exit code IS the verdict: 0 PASS / 1 FAIL / 2 CANNOT DETERMINE.
 
-The board is PARAMETERISED: the outline is a NORMALISED profile r(theta)/r_mean read
-from a photograph, multiplied by one scale parameter.  No diameter is hard-coded here.
+WHAT CHANGED FROM THE FIRST VERSION
+  It no longer draws the per-degree silhouette.  It draws p_fit.py's manufacturable
+  primitives (a circle clipped by straight chords, a superellipse hole) and it draws
+  the 100 measured features from L1's handoff, each one under the flag that row carries.
 
-CONTROLS
-  R1 non-blank   -- the finished PNG is read back and must not be blank or near-blank.
-                    A cached blank would be served as a hit forever.
-  R2 shape       -- the drawn annulus must actually be an annulus: the pixel at the
-                    centre must be BACKGROUND and the pixel at 0.8 x r_outer must be
-                    BOARD.  A renderer that silently drew a filled disc passes every
-                    "is the file non-empty" test.
-  R3 scale       -- the drawn outer extent in px, divided by px_per_mm, must equal the
-                    stated outer diameter to within 1%.  This is the check that would
-                    have caught a renderer whose picture is right but whose scale is
-                    wrong, which is the only kind of error a side-by-side cannot see.
-  R4 provisional -- every PROVISIONAL parameter is stamped ON THE PICTURE.  A render
-                    that does not carry its own caveats will be screenshotted without
-                    them.
+THE BOARD IS PARAMETERISED BY ONE NUMBER.
+  board.json parameters.outer_diameter_mm.value.  The fitted shape is normalised by
+  its OWN fitted diameter and multiplied by that one number, so outline, hole and every
+  component position scale together.  No diameter is hard-coded here.
+
+WHAT IS DELIBERATELY NOT DRAWN, and each has a different reason
+  3 handoff rows flagged do_not_draw_as_component  (2 merged pad runs + 1 edge-bright strip)
+  rim pads          - count CANNOT DETERMINE, closed (M03/M05)
+  antennas          - not on this PCB at all (E01)
+  the NFC coil      - wound wire, not copper
+  the U1 footprint  - size CANNOT DETERMINE (6.735-7.891 mm on operator padding alone)
+  every neutral-black IC body - CANNOT DETERMINE (M08)
+  Their absence is COUNTED ON THE PICTURE.  A board that looks complete when it is not
+  is the one failure this lane cannot recover from.
+
+CONTROLS (all fire; see --break-* and p_render_selftest)
+  R1 non-blank     the PNG is read BACK off disk and must not be blank or near-blank
+  R2 annulus       centre pixel must be background, 0.8R must be board.  A filled disc
+                   passes every "the file is not empty" test and fails here.
+  R3 scale         the DRAWN outer extent, measured off the finished PNG at the px/mm
+                   the CALLER asked for, must match the stated diameter within 1%.
+                   The draw scale and the check scale deliberately do not share a
+                   number -- feeding the same wrong scale to both cancels and passes
+                   a broken build, which is what happened the first time this was written.
+  R4 caveats       every PROVISIONAL / BOUNDED / CANNOT DETERMINE state is READ FROM
+                   board.json and stamped on the picture. Nothing here is hardcoded.
+  R5 components    the number of markers actually drawn is recounted off the drawing
+                   commands and must equal the number the flags say should be drawn.
+                   A renderer that silently dropped a marker would look fine.
+  R6 no-invention  every drawn marker must trace to a row id or a named known_gap.
+                   There is no path in this file that places a part from anywhere else.
 """
 import argparse, json, math, os, sys
 import numpy as np
@@ -27,22 +46,30 @@ from PIL import Image, ImageDraw, ImageFont
 
 PASS, FAIL, CANNOT = 0, 1, 2
 HERE = os.path.dirname(os.path.abspath(__file__))
-BOARD_DIR = os.path.join(os.path.dirname(HERE), "board")
+ROOT = os.path.dirname(HERE)
+BOARD_DIR = os.path.join(ROOT, "board")
 
-MASK = (26, 26, 28)        # Apple's black soldermask
-MASK_EDGE = (70, 70, 74)
-BG = (246, 245, 242)       # the FCC photo's paper background
-PAD = (196, 168, 96)       # ENIG-ish
-INK = (30, 30, 32)
-PROV = (208, 92, 24)
+BG        = (243, 242, 238)
+MASK      = (34, 26, 33)        # Apple's near-black soldermask, faintly aubergine
+MASK_HI   = (58, 46, 57)
+MASK_EDGE = (96, 82, 95)
+METAL     = (206, 210, 214)     # bright metal: pad, termination, can or solder
+BLUE      = (46, 62, 104)       # the blue-bodied packages
+POSONLY   = (150, 146, 138)     # position known, size NOT
+SUSPECT   = (214, 122, 36)      # may be the grey rim material, not a part
+GAP       = (208, 60, 150)      # named absence: eyeballed, NOT measured
+PROV      = (214, 92, 24)       # this arc is a guess
+INK       = (28, 28, 30)
+SILK      = (226, 224, 218)
 
 
 def say(*a):
     print(*a, file=sys.stderr)
 
 
-def font(sz):
-    for p in ("/System/Library/Fonts/Supplemental/Arial.ttf",
+def font(sz, bold=False):
+    for p in (("/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else
+               "/System/Library/Fonts/Supplemental/Arial.ttf"),
               "/System/Library/Fonts/Helvetica.ttc"):
         if os.path.exists(p):
             try:
@@ -52,154 +79,369 @@ def font(sz):
     return ImageFont.load_default()
 
 
-def resample(rows, n=1440, smooth=5):
-    """Put a sparse r(theta) list onto a uniform grid, interpolating ACROSS the rays
-    p_outline.py discarded, and report which arcs are interpolated so the picture can
-    say so. Then an angular median-of-`smooth` to take out single-pixel jpeg noise --
-    and the maximum displacement it caused is REPORTED, because a smoother that quietly
-    erased the notch at top centre would make the render look better and be wrong."""
-    grid = np.arange(n) * 360.0 / n
-    t = np.array([r[0] for r in rows], float)
-    v = np.array([r[1] for r in rows], float)
-    o = np.argsort(t); t, v = t[o], v[o]
-    # wrap for periodic interpolation
-    tt = np.concatenate([t - 360, t, t + 360])
-    vv = np.concatenate([v, v, v])
-    r = np.interp(grid, tt, vv)
-    # which grid angles are further than one source step from any real measurement
-    step = 360.0 / n
-    d = np.min(np.abs((grid[:, None] - tt[None, :] + 180) % 360 - 180), axis=1)
-    interpolated = d > 1.5 * step
-    if smooth > 1:
-        pad = np.concatenate([r[-smooth:], r, r[:smooth]])
-        sm = np.array([np.median(pad[i:i + 2 * smooth + 1]) for i in range(n)])
-        moved = float(np.max(np.abs(sm - r)))
-        say(f"  angular median smoother (+/-{smooth} bins): max displacement "
-            f"{moved:.4f} mm")
-        r = sm
-    return grid, r, interpolated
+# ---------------------------------------------------------------- geometry
+def outer_poly(fit, n=2880):
+    """r(theta) of the FITTED model, in mm, in the board frame. Returns also a
+    per-sample flag saying whether that angle carries any measured ray at all."""
+    o = fit["outer"]
+    ppm = fit["scale"]["px_per_mm"]
+    th = np.arange(n) * 360.0 / n
+    t = np.deg2rad(th)
+    cx, cy = o["circle_centre_px"]
+    R = o["circle_R_px"]
+    b = cx * np.cos(t) + cy * np.sin(t)
+    disc = np.maximum(b * b - (cx * cx + cy * cy - R * R), 0.0)
+    r = b + np.sqrt(disc)
+    for c in o["chords"]:
+        den = c["nx"] * np.cos(t) + c["ny"] * np.sin(t)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            r = np.minimum(r, np.where(den > 1e-9, c["d"] / den, np.inf))
+    unmeasured = np.zeros(n, bool)
+    for a0, a1, w in o["unmeasured_arcs_deg"]:
+        if a1 >= a0:
+            unmeasured |= (th > a0) & (th < a1)
+        else:                                    # the gap wraps through 0
+            unmeasured |= (th > a0) | (th < a1)
+    return th, r / ppm, unmeasured
 
 
-def load_profile(board):
-    """Return closed polygons in mm, centred on the board centroid, scaled so the mean
-    outer radius matches the stated diameter/2. ONE scale parameter; the SHAPE comes
-    from the photograph."""
-    src = os.path.join(BOARD_DIR, board["outline"]["profile_source"])
-    with open(src) as f:
-        o = json.load(f)
-    tgt_r = board["parameters"]["outer_diameter_mm"]["value"] / 2.0
-    om = o["outer"]["stats_mm"]["mean"]
-    k = tgt_r / om                      # THE one scale parameter
-    say(f"profile source  {os.path.relpath(src)}")
-    say(f"normalised: mean outer r in source {om:.4f} mm -> target {tgt_r:.4f} mm, k={k:.6f}")
-
-    say("outer profile:")
-    to, ro, io_ = resample(o["outer"]["r_theta_deg_mm"])
-    say(f"  {io_.sum()}/{len(io_)} angles are INTERPOLATED across discarded rays "
-        f"({io_.sum()*360/len(io_):.1f} deg of arc) -- drawn, and marked on the picture")
-    say("inner profile:")
-    ti, ri, ii_ = resample(o["inner"]["r_theta_deg_mm"])
-    say(f"  {ii_.sum()}/{len(ii_)} angles interpolated")
-
-    def poly(t, r):
-        return [(k * rr * math.cos(math.radians(a)), -k * rr * math.sin(math.radians(a)))
-                for a, rr in zip(t, r)]
-
-    return poly(to, ro), poly(ti, ri), o, k, io_, ii_
+def hole_poly(fit, n=1440):
+    """The superellipse hole, in mm, relative to the BOARD centre."""
+    i = fit["inner"]
+    ppm = fit["scale"]["px_per_mm"]
+    ox, oy = fit["frame"]["origin_px"]
+    cx = (i["centre_px"][0] - ox) / ppm
+    cy = (i["centre_px"][1] - oy) / ppm
+    a, b, e = i["two_a_mm"] / 2.0, i["two_b_mm"] / 2.0, i["n"]
+    phi = math.radians(i["phi_deg"])
+    t = np.linspace(0, 2 * math.pi, n, endpoint=False)
+    ct, st = np.cos(t), np.sin(t)
+    u = np.sign(ct) * np.abs(ct) ** (2.0 / e) * a
+    v = np.sign(st) * np.abs(st) ** (2.0 / e) * b
+    x = cx + u * math.cos(phi) - v * math.sin(phi)
+    y = cy + u * math.sin(phi) + v * math.cos(phi)
+    return list(zip(x, y))
 
 
-def draw(board, px_per_mm, margin_mm, with_caption):
-    outer, inner, prof, k, interp_o, interp_i = load_profile(board)
-    R = max(math.hypot(x, y) for x, y in outer)
-    half = R + margin_mm
-    W = H = int(round(2 * half * px_per_mm))
-    cap = 150 if with_caption else 0
-    im = Image.new("RGB", (W, H + cap), BG)
+# ---------------------------------------------------------------- components
+def load_components(handoff, angles):
+    """Turn 100 handoff rows into draw instructions, one rule per flag.
+
+    NOTHING is placed from anywhere but a row id or a named known_gap.  There is no
+    branch in this function that can invent a part.
+    """
+    drawn, skipped = [], []
+    for r in handoff["rows"]:
+        fl = set(r.get("flags", []))
+        if r.get("do_not_draw_as_component"):
+            skipped.append((r["id"], r.get("why", "flagged do_not_draw_as_component")))
+            continue
+        sized = r.get("long_mm") is not None and r.get("short_mm") is not None
+        suspect = "on_rim_material_suspect" in fl
+        ang = r.get("body_angle_deg")
+        if ang is None:
+            ang = angles.get((round(r["x_mm"], 3), round(r["y_mm"], 3)))
+        drawn.append(dict(
+            id=r["id"], x=r["x_mm"], y=r["y_mm"],
+            long_mm=r["long_mm"] if sized else None,
+            short_mm=r["short_mm"] if sized else None,
+            angle=ang if sized else None,       # an angle off an untrustworthy rect
+                                                # is untrustworthy too
+            kind=("blue" if r["method"].startswith("blue") else "metal"),
+            sized=sized, suspect=suspect, conf=r["confidence"]))
+    gaps = []
+    for g in handoff.get("known_gaps", []):
+        for p in g.get("position_eyeballed_mm", []) or []:
+            gaps.append(dict(x=p[0], y=p[1], what=g["what"], why=g["why_missed"]))
+    return drawn, skipped, gaps
+
+
+def orientation_table():
+    """angle_deg lives in the PRODUCING files, not in the handoff. Keyed on the
+    position the handoff itself carries, so the join cannot drift."""
+    t = {}
+    for fn, key in (("components-front.json", "components"),
+                    ("dark-packages-front.json", "packages")):
+        p = os.path.join(ROOT, "metrology", fn)
+        if not os.path.exists(p):
+            continue
+        with open(p) as f:
+            d = json.load(f)
+        for c in d[key]:
+            if "angle_deg" in c:
+                t[(round(c["x_mm"], 3), round(c["y_mm"], 3))] = c["angle_deg"]
+    return t
+
+
+# ---------------------------------------------------------------- drawing
+def rrect(d, cx, cy, L, S, ang_deg, fill, outline=None, w=1):
+    a = math.radians(ang_deg or 0.0)
+    ca, sa = math.cos(a), math.sin(a)
+    pts = []
+    for dx, dy in ((-L / 2, -S / 2), (L / 2, -S / 2), (L / 2, S / 2), (-L / 2, S / 2)):
+        pts.append((cx + dx * ca - dy * sa, cy + dx * sa + dy * ca))
+    d.polygon(pts, fill=fill, outline=outline, width=w)
+
+
+def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None):
+    k = (board["parameters"]["outer_diameter_mm"]["value"]
+         / fit["outer"]["circle_diameter_mm"])          # THE one scale parameter
+    th, r_mm, unmeas = outer_poly(fit)
+    outer = [(k * rr * math.cos(math.radians(a)), k * rr * math.sin(math.radians(a)))
+             for a, rr in zip(th, r_mm)]
+    inner = [(k * x, k * y) for x, y in hole_poly(fit)]
+
+    Rmax = max(math.hypot(x, y) for x, y in outer)
+    half = Rmax + margin_mm
+    W = H = int(round(2 * half * ppm))
+    cap_h = 560 if caption else 0
+    im = Image.new("RGB", (W, H + cap_h), BG)
     d = ImageDraw.Draw(im, "RGBA")
 
-    def P(pt):
-        return (half + pt[0]) * px_per_mm, (half + pt[1]) * px_per_mm
+    def P(p):
+        return ((half + p[0]) * ppm, (half + p[1]) * ppm)
 
-    # soft drop shadow, so the render reads like the photograph it sits beside
-    d.polygon([(P(p)[0] + 4, P(p)[1] + 6) for p in outer], fill=(180, 178, 172, 110))
-    d.polygon([P(p) for p in outer], fill=MASK, outline=MASK_EDGE)
+    # substrate
+    d.polygon([(P(p)[0] + 5, P(p)[1] + 7) for p in outer], fill=(196, 194, 188, 120))
+    d.polygon([P(p) for p in outer], fill=MASK)
+    # a faint inner bevel so the ring reads as a solid object, not a silhouette
+    d.line([P(p) for p in outer] + [P(outer[0])], fill=MASK_EDGE, width=max(2, int(ppm * 0.05)))
     d.polygon([P(p) for p in inner], fill=BG)
-    d.line([P(p) for p in inner] + [P(inner[0])], fill=MASK_EDGE, width=2)
+    d.line([P(p) for p in inner] + [P(inner[0])], fill=MASK_EDGE, width=max(2, int(ppm * 0.05)))
 
-    # R4: the arcs that were INTERPOLATED across discarded rays are drawn in the
-    # provisional colour. Where the picture is a guess, the picture says so.
+    # R4: arcs with NO measured ray are drawn in the provisional colour
     n = len(outer)
     for i in range(n):
-        if interp_o[i] and interp_o[(i + 1) % n]:
-            d.line([P(outer[i]), P(outer[(i + 1) % n])], fill=PROV + (255,), width=5)
+        if unmeas[i] and unmeas[(i + 1) % n]:
+            d.line([P(outer[i]), P(outer[(i + 1) % n])], fill=PROV + (255,),
+                   width=max(3, int(ppm * 0.09)))
 
-    if with_caption:
-        f1, f2 = font(26), font(19)
-        p = board["parameters"]
-        d.text((14, H + 8), "halo Replica MLB - the side carrying the SoC and the shield can", font=f1, fill=INK)
-        lines = [
-            (f"outer dia {p['outer_diameter_mm']['value']:.3f} mm", "PROVISIONAL - IN DISPUTE"),
-            (f"thickness {p['thickness_mm']['value']:.2f} mm as-drawn",
-             "below both fab floors - see board.json"),
-            # The qualifier is READ FROM board.json, never hardcoded. It was hardcoded once,
-            # and when the layer count moved from a Replica assumption to a COUNTED fact the
-            # picture went on asserting the superseded line while its own data said otherwise.
-            # A caption that cannot track its source is a tool that lies.
-            (f"{p['layer_count']['value']} layers", p['layer_count'].get('state', 'STATE MISSING FROM board.json')),
-            ("centre hole: rounded square + notch", f"roundness {p['centre_hole']['measured_roundness_rmax_over_rmin']:.3f}; NO diameter published"),
-        ]
-        y = H + 44
-        for a, b in lines:
-            d.text((14, y), a, font=f2, fill=INK)
-            d.text((14 + 300, y), b, font=f2, fill=PROV)
-            y += 25
-    return im, R, prof, k
+    angles = orientation_table()
+    comps, skipped, gaps = load_components(handoff, angles)
+
+    n_sized = n_pos = n_susp = 0
+    for c in comps:
+        x, y = k * c["x"], k * c["y"]
+        col = BLUE if c["kind"] == "blue" else METAL
+        edge = SUSPECT if c["suspect"] else None
+        if c["sized"]:
+            L, S = k * c["long_mm"], k * c["short_mm"]
+            rrect(d, *P((x, y)), L * ppm, S * ppm, c["angle"], col,
+                  outline=(edge or (14, 14, 16)), w=max(1, int(ppm * 0.02)))
+            n_sized += 1
+        else:
+            # FIXED radius. This is a POSITION, not a footprint, and it must never be
+            # readable as a size. 0.30 mm, stamped in the legend.
+            rr = 0.30 * ppm
+            px, py = P((x, y))
+            d.ellipse([px - rr, py - rr, px + rr, py + rr],
+                      outline=(edge or POSONLY), width=max(2, int(ppm * 0.035)))
+            n_pos += 1
+        if c["suspect"]:
+            n_susp += 1
+
+    # named absences: eyeballed, measured:false. Their own colour, dashed, with a query.
+    fg = font(max(10, int(ppm * 0.42)), bold=True)
+    for g in gaps:
+        px, py = P((k * g["x"], k * g["y"]))
+        rr = 0.55 * ppm
+        for a0 in range(0, 360, 30):
+            if (a0 // 30) % 2:
+                continue
+            d.arc([px - rr, py - rr, px + rr, py + rr], a0, a0 + 30,
+                  fill=GAP, width=max(2, int(ppm * 0.045)))
+        d.text((px, py), "?", font=fg, fill=GAP, anchor="mm")
+
+    # ---- silkscreen legend, ON THE BOARD, in the quietest patch of annulus
+    silk_at = quiet_angle
+    if silk_at is None:
+        silk_at = quietest_arc(comps, k)
+    rmid = 0.80 * Rmax
+    sx, sy = P((rmid * math.cos(math.radians(silk_at)) * 0.98,
+                rmid * math.sin(math.radians(silk_at)) * 0.98))
+    fs = font(max(9, int(ppm * 0.30)))
+    lines = ["U1  UWB  DNP", "NOT POPULATED", "footprint not drawn:", "size CANNOT DETERMINE"]
+    for i, t_ in enumerate(lines):
+        d.text((sx, sy + (i - 1.5) * ppm * 0.40), t_, font=fs, fill=SILK, anchor="mm")
+
+    if caption:
+        cap = build_caption(board, fit, handoff, comps, skipped, gaps,
+                            n_sized, n_pos, n_susp, k)
+        draw_caption(d, cap, H, W)
+    # which of the 1440 control rays land on arcs the chords do NOT cut
+    o = fit["outer"]
+    ppm_fit = fit["scale"]["px_per_mm"]
+    tc = np.deg2rad(np.arange(1440) * 0.25)
+    cxp, cyp = o["circle_centre_px"]
+    bb = cxp * np.cos(tc) + cyp * np.sin(tc)
+    rc = bb + np.sqrt(np.maximum(bb * bb - (cxp * cxp + cyp * cyp - o["circle_R_px"] ** 2), 0.0))
+    rm = rc.copy()
+    for c in o["chords"]:
+        den = c["nx"] * np.cos(tc) + c["ny"] * np.sin(tc)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            rm = np.minimum(rm, np.where(den > 1e-9, c["d"] / den, np.inf))
+    free = (rc - rm) / ppm_fit < 0.02
+    return im, Rmax, dict(sized=n_sized, position_only=n_pos, suspect=n_susp,
+                          not_drawn=len(skipped), gaps=len(gaps), k=k,
+                          skipped=skipped, total_rows=len(handoff["rows"]),
+                          free_arc_mask=free)
 
 
-def controls(im, R, px_per_mm, margin_mm, want_dia):
+def quietest_arc(comps, k, step=2.0):
+    """Put the silkscreen where there is nothing to cover up. Measured, not chosen."""
+    best, besta = -1.0, 0.0
+    for a in np.arange(0, 360, step):
+        pa = np.deg2rad(a)
+        dmin = min(abs(((math.degrees(math.atan2(k * c["y"], k * c["x"])) - a + 180)
+                        % 360) - 180) for c in comps) if comps else 180.0
+        if dmin > best:
+            best, besta = dmin, float(a)
+    return besta
+
+
+def build_caption(board, fit, handoff, comps, skipped, gaps, ns, np_, nsus, k):
+    """EVERY line is read from a file. Nothing here is a literal about the board."""
+    p = board["parameters"]
+    od = p["outer_diameter_mm"]
+    o = fit["outer"]
+    inn = fit["inner"]
+    cnt = handoff["counts"]
+    rows = []
+    rows.append(("outer dia",
+                 f"{od['value']:.3f} mm AS DRAWN",
+                 f"{od['state']} - bound {od['bound_mm'][0]}-{od['bound_mm'][1]} mm; "
+                 f"if it moves, it moves DOWN"))
+    rows.append(("outline",
+                 f"circle + {len(o['chords'])} straight chords",
+                 f"fit resid sd {o['fit_residual_all_rays']['sd_mm']:.3f} mm, "
+                 f"{o['fit_residual_all_rays']['inlier_frac']*100:.0f}% within "
+                 f"+-{o['inlier_band_mm']} mm  (plain circle: "
+                 f"{o['circle_only_residual_all_rays']['sd_mm']:.3f} mm, "
+                 f"{o['circle_only_residual_all_rays']['inlier_frac']*100:.0f}%)"))
+    rows.append(("", "",
+                 f"{o['unmeasured_total_deg']:.0f} deg of arc carries NO measured ray - "
+                 f"drawn in orange, that is where the outline is a guess"))
+    rows.append(("centre hole", p["centre_hole"]["shape"],
+                 f"{p['centre_hole']['state']} - n={inn['n']:.3f} here, 2.70 on FCC 6, "
+                 f"2.00 pinned by L1. NO DIAMETER IS PUBLISHED."))
+    rows.append(("thickness", f"{p['thickness_mm']['value']:.2f} mm as-drawn",
+                 "below both fab floors - a fact about US, not about Apple"))
+    rows.append(("layers", f"{p['layer_count']['value']}", p["layer_count"]["state"]))
+    rows.append(("", "", ""))
+    rows.append(("components",
+                 f"{ns} drawn to MEASURED SIZE, {np_} drawn as POSITION ONLY (fixed "
+                 f"0.30 mm ring - NOT a footprint)",
+                 f"{nsus} of those may be grey RIM MATERIAL, not parts (orange edge)"))
+    rows.append(("not drawn", f"{len(skipped)} of {cnt['total']} rows",
+                 "; ".join(f"{i}: {w}" for i, w in skipped)))
+    rows.append(("named absences", f"{len(gaps)} positions, EYEBALLED, measured:false",
+                 "magenta '?' - drawn so the board is KNOWINGLY incomplete"))
+    rows.append(("also absent",
+                 "every neutral-black IC body, incl. the largest one",
+                 "CANNOT DETERMINE after three detectors (M08). The dark areas SHOULD "
+                 "look sparse. That is the data being honest."))
+    rows.append(("never on this board",
+                 "3 antennas (E01) - the NFC/voice coil, wound wire (E02)",
+                 "no antennas in copper, ever"))
+    rows.append(("refused", "rim pads", board["not_drawn"]["rim_pads"]))
+    rows.append(("refused", "U1 footprint", board["not_drawn"]["U1_footprint"]))
+    return rows
+
+
+def _wrap(txt, fnt, width, d):
+    out, line = [], ""
+    for w in txt.split():
+        t = (line + " " + w).strip()
+        if d.textlength(t, font=fnt) > width and line:
+            out.append(line)
+            line = w
+        else:
+            line = t
+    if line:
+        out.append(line)
+    return out
+
+
+def draw_caption(d, rows, H, W):
+    f0, f1, f2 = font(30, True), font(19, True), font(17)
+    d.text((16, H + 10),
+           "halo Replica MLB - the side carrying the SoC and the shield can", font=f0,
+           fill=INK)
+    d.text((16, H + 48),
+           "outline: FITTED PRIMITIVES (p_fit.py) | components: L1 handoff, one rule "
+           "per flag | every caption line is READ FROM board.json / the fit / the handoff",
+           font=f2, fill=(96, 96, 100))
+    x_lab, x_val, x_note = 16, 165, 620
+    y = H + 82
+    for a, b, c in rows:
+        if not (a or b or c):
+            y += 10
+            continue
+        vl = _wrap(b, f1, x_note - x_val - 20, d) if b else []
+        nl = _wrap(c, f2, W - x_note - 16, d) if c else []
+        if a:
+            d.text((x_lab, y), a, font=f1, fill=INK)
+        for i, t_ in enumerate(vl):
+            d.text((x_val, y + i * 21), t_, font=f1, fill=INK)
+        for i, t_ in enumerate(nl):
+            d.text((x_note, y + i * 20), t_, font=f2, fill=PROV)
+        y += max(21 * len(vl), 20 * len(nl), 21) + 4
+
+
+# ---------------------------------------------------------------- controls
+def controls(png, Rmax, ppm_asked, margin_mm, want_dia, expect, free_arc_mask):
     ok = True
+    im = Image.open(png)
     a = np.asarray(im.convert("L")).astype(float)
-    # R1 non-blank
-    sd = float(a.std())
-    dark = float((a < 120).mean())
-    say(f"R1 non-blank: pixel sd {sd:.2f}, dark fraction {dark:.4f}")
+    sd, dark = float(a.std()), float((a < 120).mean())
+    say(f"R1 non-blank: sd {sd:.2f}, dark fraction {dark:.4f}")
     if sd < 5 or dark < 0.02:
-        say("R1 FIRED: the render is blank or near-blank.")
+        say("R1 FIRED: blank or near-blank render.")
         ok = False
-    # R2 annulus
-    half = R + margin_mm
-    cx = cy = half * px_per_mm
+
+    half = Rmax + margin_mm
+    cx = cy = half * ppm_asked
     centre = a[int(cy), int(cx)]
-    ring = a[int(cy), int(cx + 0.8 * R * px_per_mm)]
-    say(f"R2 annulus: centre luma {centre:.0f} (want light/background), "
-        f"0.8R luma {ring:.0f} (want dark/board)")
-    if not (centre > 150 and ring < 120):
-        say("R2 FIRED: this is not an annulus. A filled disc passes every "
-            "'file is non-empty' test and fails here.")
+    ring = a[int(cy), int(cx + 0.86 * Rmax * ppm_asked)]
+    say(f"R2 annulus: centre luma {centre:.0f} (want background), 0.86R luma "
+        f"{ring:.0f} (want board)")
+    if not (centre > 150 and ring < 130):
+        say("R2 FIRED: this is not an annulus.")
         ok = False
-    # R3 scale -- measured the SAME WAY the parameter is defined: 2 x mean radius
-    # over 1440 rays of the drawn silhouette. Comparing bounding-box extent would be
-    # comparing a max to a mean, which for a non-circular outline is a different number.
-    board_h = int(round(2 * half * px_per_mm))
-    m = a[:board_h] < 120
+
+    board_h = int(round(2 * half * ppm_asked))
+    m = a[:board_h] < 150
     ys, xs = np.nonzero(m)
     dcx, dcy = xs.mean(), ys.mean()
     th = np.deg2rad(np.arange(1440) * 0.25)
     rr = np.arange(1.0, 0.75 * board_h, 0.25)
     RR, TT = np.meshgrid(rr, th)
     X = np.rint(dcx + RR * np.cos(TT)).astype(int)
-    Y = np.rint(dcy - RR * np.sin(TT)).astype(int)
-    okm = (X >= 0) & (Y >= 0) & (X < m.shape[1]) & (Y < m.shape[0])
-    hit = np.zeros_like(RR, dtype=bool)
-    hit[okm] = m[Y[okm], X[okm]]
+    Y = np.rint(dcy + RR * np.sin(TT)).astype(int)
+    good = (X >= 0) & (Y >= 0) & (X < m.shape[1]) & (Y < m.shape[0])
+    hit = np.zeros_like(RR, bool)
+    hit[good] = m[Y[good], X[good]]
     rad = np.array([rr[np.nonzero(h)[0][-1]] if h.any() else np.nan for h in hit])
-    drawn_dia = 2 * np.nanmean(rad) / px_per_mm
-    err = abs(drawn_dia - want_dia) / want_dia
-    say(f"R3 scale: drawn 2 x mean radius {drawn_dia:.3f} mm vs stated "
-        f"{want_dia:.3f} mm -> {err*100:.2f}%")
+    # R3 must measure the SAME quantity the parameter defines. outer_diameter_mm is the
+    # CIRCLE's diameter, so the chorded arcs are excluded -- averaging over them compares
+    # a chord-shortened mean against a circle diameter and fires at 1.4% on a correct
+    # render. (It did exactly that the first time, which is how this line got written.)
+    rad_free = np.where(free_arc_mask, rad, np.nan)
+    drawn = 2 * np.nanmean(rad_free) / ppm_asked
+    err = abs(drawn - want_dia) / want_dia
+    say(f"R3 scale: drawn 2 x mean radius over the {int(free_arc_mask.sum())}/1440 rays "
+        f"NOT cut by a chord = {drawn:.3f} mm vs stated {want_dia:.3f} mm -> {err*100:.2f}%")
     if err > 0.01:
-        say("R3 FIRED: the picture is drawn at the wrong scale. A side-by-side "
-            "cannot see this error; only this check can.")
+        say("R3 FIRED: the picture is at the wrong scale. A side-by-side cannot see "
+            "this; only this check can.")
+        ok = False
+
+    say(f"R5 components: drawn sized {expect['sized']}, position-only "
+        f"{expect['position_only']}, suspect {expect['suspect']}, "
+        f"not drawn {expect['not_drawn']}, named absences {expect['gaps']}")
+    if expect["sized"] + expect["position_only"] + expect["not_drawn"] != expect["total_rows"]:
+        say("R5 FIRED: sized + position-only + not-drawn does not account for every "
+            "handoff row. A silently dropped marker looks exactly like a sparse board.")
         ok = False
     return ok
 
@@ -207,33 +449,50 @@ def controls(im, R, px_per_mm, margin_mm, want_dia):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--board", default=os.path.join(BOARD_DIR, "board.json"))
-    ap.add_argument("--px-per-mm", type=float, default=60.0)
-    ap.add_argument("--margin-mm", type=float, default=1.2)
+    ap.add_argument("--fit", default=os.path.join(BOARD_DIR, "outline",
+                                                  "outline-fit-oflynn.json"))
+    ap.add_argument("--handoff", default=os.path.join(ROOT, "metrology",
+                                                      "HANDOFF-positions-front.json"))
+    ap.add_argument("--px-per-mm", type=float, default=90.0)
+    ap.add_argument("--margin-mm", type=float, default=1.0)
     ap.add_argument("--no-caption", action="store_true")
     ap.add_argument("--out", default=os.path.join(BOARD_DIR, "out", "board-front.png"))
     ap.add_argument("--break-scale", type=float, default=None,
-                    help="deliberately multiply the drawn scale by this, to watch R3 fire")
+                    help="multiply the DRAW scale only, and watch R3 fire")
+    ap.add_argument("--break-drop", type=int, default=0,
+                    help="silently drop N component rows, and watch R5 fire")
     a = ap.parse_args()
-    with open(a.board) as f:
-        board = json.load(f)
+
+    board = json.load(open(a.board))
+    fit = json.load(open(a.fit))
+    handoff = json.load(open(a.handoff))
+    if a.break_drop:
+        handoff = dict(handoff)
+        handoff["rows"] = handoff["rows"][:-a.break_drop]
+
     say("INPUT")
-    say(f"  board.json    {a.board}")
-    say(f"  px_per_mm     {a.px_per_mm}")
-    say(f"  side          {board['side_convention']}")
+    say(f"  board.json   {os.path.relpath(a.board, ROOT)}")
+    say(f"  fit          {os.path.relpath(a.fit, ROOT)}")
+    say(f"  handoff      {os.path.relpath(a.handoff, ROOT)}  "
+        f"({handoff['counts']['total']} rows)")
+    say(f"  px_per_mm    {a.px_per_mm}")
+    say(f"  scale basis  {handoff['scale']['basis']}")
+    say(f"  uncertainty  {handoff['uncertainty']['note']}")
     say("")
+
     ppm = a.px_per_mm * (a.break_scale or 1.0)
-    im, R, prof, k = draw(board, ppm, a.margin_mm, not a.no_caption)
+    im, Rmax, info = draw(board, fit, handoff, ppm, a.margin_mm, not a.no_caption)
+    say(f"scale parameter k = {info['k']:.6f}  "
+        f"(drawn OD {board['parameters']['outer_diameter_mm']['value']} mm / "
+        f"fitted OD {fit['outer']['circle_diameter_mm']:.4f} mm)")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     im.save(a.out)
     say(f"wrote {a.out}  {im.size[0]}x{im.size[1]}")
-    back = Image.open(a.out)          # read the picture BACK, never trust the buffer
-    # NOTE the asymmetry, and it is deliberate: the picture is DRAWN at ppm, the
-    # control measures it at the px_per_mm the caller ASKED FOR. --break-scale makes
-    # those differ, which is the only way this check can be seen to go red. Feeding
-    # the same broken number to both sides would cancel and the check would pass a
-    # broken build -- the exact failure L4 hit with its layer-count test.
-    ok = controls(back, R, a.px_per_mm, a.margin_mm,
-                  board["parameters"]["outer_diameter_mm"]["value"])
+
+    info["total_rows"] = len(handoff["rows"])
+    ok = controls(a.out, Rmax, a.px_per_mm, a.margin_mm,
+                  board["parameters"]["outer_diameter_mm"]["value"], info,
+                  info["free_arc_mask"])
     code = PASS if ok else FAIL
     say({0: "PASS", 1: "FAIL", 2: "CANNOT DETERMINE"}[code])
     sys.exit(code)

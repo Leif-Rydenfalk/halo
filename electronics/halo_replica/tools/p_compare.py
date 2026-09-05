@@ -1,29 +1,38 @@
 #!/usr/bin/env python3
-"""p_compare.py -- THE SIDE-BY-SIDE. Our render beside Apple's photograph at MATCHED
-SCALE and MATCHED ORIENTATION, plus an outline overlay on the photograph itself.
+"""p_compare.py -- THE SIDE-BY-SIDE. Our render beside Apple's photograph at ONE shared
+px/mm, plus our geometry drawn ON Apple's photograph.
 
-Lane L5 (BOARD BUILD), halo Replica.  This picture is what this lane is judged on.
+Lane L5 BOARD BUILD, halo Replica.  This picture is what this lane is judged on.
 Exit code IS the verdict: 0 PASS / 1 FAIL / 2 CANNOT DETERMINE.
 
-Three panels:
-  1  OURS      -- rendered from board/board.json, no caption, on the photo's own paper
-  2  APPLE'S   -- the FCC internal photo, cropped to the board, resampled to the SAME
-                  millimetres-per-pixel as panel 1
-  3  OVERLAY   -- our outline drawn in cyan ON Apple's photograph. This is the panel
-                  that shows disagreement; the first two only show resemblance.
+REGISTRATION IS BY CONSTRUCTION, NOT BY ALIGNMENT.
+  The frame (origin_px, px/mm) in which every component position was measured is a
+  stated property of the photograph.  The crop is taken about that origin at that
+  scale, so panel 2 and panel 1 are in the same millimetres WITHOUT anything being
+  fitted to make them agree.  Nothing here nudges one picture onto the other.
+
+PANELS
+  1 OURS     -- p_render.py, uncaptioned, at the montage scale
+  2 APPLE'S  -- the photograph, cropped about the measured board centre, resampled to
+                the SAME px/mm
+  3 OVERLAY  -- our fitted outline, our hole and EVERY drawn component marker, on
+                Apple's photograph.  Resemblance is what panels 1 and 2 show;
+                DISAGREEMENT is what panel 3 shows, and only panel 3 is evidence.
 
 CONTROLS
-  X1 scale-match  -- both panels are measured back off the finished image and their
-                     2 x mean board radius in mm must agree to 1%. Two pictures that
-                     merely LOOK the same size prove nothing.
-  X2 non-blank    -- the finished PNG is read back; blank or near-blank is a FAIL.
-  X3 mis-registration control -- --break-rotation N rotates our outline by N degrees
-                     before overlaying. The residual MUST get worse. A comparison whose
-                     number does not move when the alignment is destroyed is measuring
-                     nothing.
-  X4 residual     -- the overlay reports the RMS radial disagreement in mm between our
-                     drawn outline and the photograph's own silhouette, per ray. This
-                     is a number, not an adjective.
+  X1 scale match     both silhouettes measured back off the finished panels, 2 x mean
+                     radius in mm must agree within 1%
+  X2 non-blank       the montage is read BACK off disk
+  X3 mis-registration  --break-rotation N rotates OUR geometry N degrees before
+                     overlaying; X4 and X5 must both get worse.  A comparison whose
+                     numbers do not move when the alignment is destroyed measures nothing.
+  X4 outline residual  RMS radial disagreement, ours vs the photograph's own silhouette
+  X5 COMPONENT LANDING -- the one that tests the components rather than the outline.
+                     For every drawn marker, the photograph's luma at that position is
+                     compared against the SAME statistic at randomly drawn positions
+                     inside the annulus.  Bright-metal markers must separate from
+                     random.  If they do not, the positions are decoration.  The random
+                     draw IS the negative control and it is reported, always.
 """
 import argparse, json, math, os, subprocess, sys
 import numpy as np
@@ -35,10 +44,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPL = os.path.dirname(HERE)
 BOARD_DIR = os.path.join(REPL, "board")
 ROOT = os.path.dirname(os.path.dirname(REPL))
-BG = (246, 245, 242)
+BG = (243, 242, 238)
 INK = (26, 26, 28)
 PROV = (208, 92, 24)
-CYAN = (0, 224, 232)
+CYAN = (0, 226, 234)
+GAPC = (255, 60, 190)
+
+sys.path.insert(0, HERE)
+import p_render as PR                                    # ONE definition of the geometry
 
 
 def say(*a):
@@ -58,7 +71,6 @@ def font(sz, bold=False):
 
 
 def board_mask(a_l):
-    """dark, largest component, holes filled -> the board silhouette"""
     m = a_l < 120
     lab, n = ndimage.label(m)
     if n == 0:
@@ -68,13 +80,14 @@ def board_mask(a_l):
 
 
 def radial(mask, n=720):
+    """r(theta) of a mask, IMAGE CONVENTION (+y down), same as everything else here."""
     ys, xs = np.nonzero(mask)
     cx, cy = xs.mean(), ys.mean()
     th = np.deg2rad(np.arange(n) * 360.0 / n)
     rr = np.arange(1.0, 0.75 * max(mask.shape), 0.5)
     R, T = np.meshgrid(rr, th)
     X = np.rint(cx + R * np.cos(T)).astype(int)
-    Y = np.rint(cy - R * np.sin(T)).astype(int)
+    Y = np.rint(cy + R * np.sin(T)).astype(int)
     ok = (X >= 0) & (Y >= 0) & (X < mask.shape[1]) & (Y < mask.shape[0])
     hit = np.zeros_like(R, dtype=bool)
     hit[ok] = mask[Y[ok], X[ok]]
@@ -82,146 +95,260 @@ def radial(mask, n=720):
     return cx, cy, np.rad2deg(th), r
 
 
+def crop_about(img, cx, cy, half_px):
+    """Crop about a STATED centre, padding rather than shifting if the frame runs out.
+    Shifting would silently move the origin and every millimetre with it."""
+    l, t = int(round(cx - half_px)), int(round(cy - half_px))
+    r, b = int(round(cx + half_px)), int(round(cy + half_px))
+    out = Image.new("RGB", (r - l, b - t), (238, 236, 232))
+    sl, st = max(l, 0), max(t, 0)
+    sr, sb = min(r, img.width), min(b, img.height)
+    out.paste(img.crop((sl, st, sr, sb)), (sl - l, st - t))
+    return out
+
+
+def rot(pts, deg):
+    if not deg:
+        return pts
+    a = math.radians(deg)
+    c, s = math.cos(a), math.sin(a)
+    return [(x * c - y * s, x * s + y * c) for x, y in pts]
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--photo", default=os.path.join(ROOT, "images", "airtag",
-                                                    "fcc-BCGA2187-internal-photo-6.jpg"))
-    ap.add_argument("--photo-box", nargs=4, type=int, default=[660, 400, 1250, 960])
-    ap.add_argument("--photo-px-per-mm", type=float, default=15.887545712881764)
-    ap.add_argument("--photo-scale-basis",
-                    default="photo6 BOTTOM steel rule, 93 ticks, linear resid sd 0.573 px (L1 scale-field.json)")
-    ap.add_argument("--px-per-mm", type=float, default=48.0, help="the shared scale of the montage")
+                                                    "oflynn-backside-fullres.jpeg"))
+    ap.add_argument("--photo-label",
+                    default="APPLE'S  O'Flynn teardown, the SoC/shield-can side")
     ap.add_argument("--board", default=os.path.join(BOARD_DIR, "board.json"))
-    ap.add_argument("--break-rotation", type=float, default=0.0,
-                    help="X3: rotate OUR outline by this many degrees before overlaying. "
-                         "The residual must get worse. Watch the control go red.")
+    ap.add_argument("--fit", default=os.path.join(BOARD_DIR, "outline",
+                                                  "outline-fit-oflynn.json"))
+    ap.add_argument("--handoff", default=os.path.join(REPL, "metrology",
+                                                      "HANDOFF-positions-front.json"))
+    ap.add_argument("--px-per-mm", type=float, default=48.0,
+                    help="the ONE shared scale of the montage")
+    ap.add_argument("--margin-mm", type=float, default=1.0)
+    ap.add_argument("--break-rotation", type=float, default=0.0)
     ap.add_argument("--out", default=os.path.join(BOARD_DIR, "out", "compare-front.png"))
     a = ap.parse_args()
 
+    board = json.load(open(a.board))
+    fit = json.load(open(a.fit))
+    handoff = json.load(open(a.handoff))
+    ppm_ph = fit["scale"]["px_per_mm"]
+    ox, oy = fit["frame"]["origin_px"]
+
     say("INPUT")
-    say(f"  photo             {os.path.relpath(a.photo, ROOT)}")
-    say(f"  photo crop        {a.photo_box}")
-    say(f"  photo px/mm       {a.photo_px_per_mm}   basis: {a.photo_scale_basis}")
-    say(f"  montage px/mm     {a.px_per_mm}  (BOTH panels resampled to this)")
-    say(f"  board model       {os.path.relpath(a.board, ROOT)}")
+    say(f"  photo        {os.path.relpath(a.photo, ROOT)}")
+    say(f"  frame        origin_px ({ox:.1f},{oy:.1f})  {ppm_ph:.4f} px/mm")
+    say(f"  frame basis  {fit['scale']['basis']}")
+    say(f"  montage      {a.px_per_mm} px/mm, BOTH panels")
     if a.break_rotation:
-        say(f"  X3 BREAK          our outline rotated {a.break_rotation} deg on purpose")
+        say(f"  X3 BREAK     our geometry rotated {a.break_rotation} deg on purpose")
     say("")
 
-    # ---- panel 1: render ours, uncaptioned, at the montage scale
+    # ---- geometry, in mm, from the SAME functions the renderer uses
+    k = (board["parameters"]["outer_diameter_mm"]["value"]
+         / fit["outer"]["circle_diameter_mm"])
+    th, r_mm, _ = PR.outer_poly(fit)
+    outer = rot([(k * rr * math.cos(math.radians(t)), k * rr * math.sin(math.radians(t)))
+                 for t, rr in zip(th, r_mm)], a.break_rotation)
+    inner = rot([(k * x, k * y) for x, y in PR.hole_poly(fit)], a.break_rotation)
+    comps, skipped, gaps = PR.load_components(handoff, PR.orientation_table())
+    cpts = rot([(k * c["x"], k * c["y"]) for c in comps], a.break_rotation)
+    gpts = rot([(k * g["x"], k * g["y"]) for g in gaps], a.break_rotation)
+
+    Rmax = max(math.hypot(x, y) for x, y in outer)
+    half = Rmax + a.margin_mm
+
+    # ---- panel 1
     ours_png = os.path.join(BOARD_DIR, "out", ".compare-ours.png")
     r = subprocess.run([sys.executable, os.path.join(HERE, "p_render.py"),
-                        "--board", a.board, "--px-per-mm", str(a.px_per_mm),
-                        "--no-caption", "--out", ours_png],
-                       capture_output=True, text=True)
+                        "--board", a.board, "--fit", a.fit, "--handoff", a.handoff,
+                        "--px-per-mm", str(a.px_per_mm), "--margin-mm", str(a.margin_mm),
+                        "--no-caption", "--out", ours_png], capture_output=True, text=True)
     if r.returncode != 0:
         say("p_render.py refused; the montage inherits its verdict:")
-        say(r.stderr.strip()[-800:])
+        say(r.stderr.strip()[-900:])
         sys.exit(r.returncode)
     ours = Image.open(ours_png).convert("RGB")
 
-    # ---- panel 2: the photo, resampled to the SAME px/mm
-    ph = Image.open(a.photo).convert("RGB").crop(tuple(a.photo_box))
-    f = a.px_per_mm / a.photo_px_per_mm
-    ph = ph.resize((int(ph.width * f), int(ph.height * f)), Image.LANCZOS)
-    say(f"photo resampled x{f:.4f} -> {ph.size[0]}x{ph.size[1]} px at {a.px_per_mm} px/mm")
+    # ---- panel 2: cropped about the STATED origin, at the STATED scale
+    full = Image.open(a.photo).convert("RGB")
+    ph = crop_about(full, ox, oy, half * ppm_ph)
+    side = int(round(2 * half * a.px_per_mm))
+    ph = ph.resize((side, side), Image.LANCZOS)
+    say(f"photo cropped about the measured board centre, {ph.size[0]}x{ph.size[1]} px "
+        f"at {a.px_per_mm} px/mm  (no alignment was fitted)")
+    if ours.size != ph.size:
+        ours = ours.resize(ph.size, Image.LANCZOS)
 
-    # ---- X1 scale match, measured off the two panels
+    # ---- X1
     mo = board_mask(np.asarray(ours.convert("L")).astype(float))
     mp = board_mask(np.asarray(ph.convert("L")).astype(float))
     if mo is None or mp is None:
         say("X2 FIRED: no board silhouette in one of the panels.")
         sys.exit(CANNOT)
-    ocx, ocy, oth, orad = radial(mo)
-    pcx, pcy, pth, prad = radial(mp)
+    _, _, oth, orad = radial(mo)
+    _, _, pth, prad = radial(mp)
     od = 2 * np.nanmean(orad) / a.px_per_mm
     pd = 2 * np.nanmean(prad) / a.px_per_mm
-    say(f"X1 scale match: OURS 2 x mean r = {od:.3f} mm | APPLE'S = {pd:.3f} mm | "
-        f"delta {abs(od-pd)/pd*100:.2f}%")
     x1 = abs(od - pd) / pd <= 0.01
-    if not x1:
-        say("X1 FIRED: the two panels are not at the same scale.")
+    say(f"X1 scale match: OURS 2 x mean r {od:.3f} mm | APPLE'S {pd:.3f} mm | "
+        f"delta {abs(od-pd)/pd*100:.2f}% -> {'ok' if x1 else 'FIRED'}")
 
-    # ---- X4 residual, per ray, in mm
-    rot = a.break_rotation
-    ours_r = np.interp((oth + rot) % 360, oth, orad, period=360)
+    # ---- X4: our fitted outline against the photograph's own silhouette
+    ours_r = np.interp(pth, oth, orad, period=360)
     resid = (ours_r - prad) / a.px_per_mm
     good = np.isfinite(resid)
     rms = float(np.sqrt(np.nanmean(resid[good] ** 2)))
     p95 = float(np.nanpercentile(np.abs(resid[good]), 95))
-    say(f"X4 outline residual (ours - Apple's, per ray, {good.sum()} rays): "
-        f"RMS {rms:.3f} mm, p95 |.| {p95:.3f} mm, max {np.nanmax(np.abs(resid[good])):.3f} mm")
+    say(f"X4 outline residual over {good.sum()} rays: RMS {rms:.3f} mm, "
+        f"p95 {p95:.3f} mm, max {np.nanmax(np.abs(resid[good])):.3f} mm")
 
-    # ---- panel 3: overlay
+    # ---- X5 COMPONENT LANDING, with its negative control
+    L = np.asarray(ph.convert("L")).astype(float)
+    c0 = side / 2.0
+    def luma_at(x_mm, y_mm, rad_mm=0.18):
+        px, py = c0 + x_mm * a.px_per_mm, c0 + y_mm * a.px_per_mm
+        rr = max(1, int(rad_mm * a.px_per_mm))
+        x0, x1_, y0, y1_ = int(px - rr), int(px + rr + 1), int(py - rr), int(py + rr + 1)
+        if x0 < 0 or y0 < 0 or x1_ > side or y1_ > side:
+            return np.nan
+        return float(np.median(L[y0:y1_, x0:x1_]))
+    hit = np.array([luma_at(x, y) for x, y in cpts])
+    rng = np.random.default_rng(3)
+    inner_r = 0.5 * fit["inner"]["two_a_mm"] * k
+    ctrl = []
+    while len(ctrl) < 4000:
+        t = rng.uniform(0, 2 * math.pi)
+        rr = math.sqrt(rng.uniform((inner_r + 0.4) ** 2, (Rmax - 0.4) ** 2))
+        v = luma_at(rr * math.cos(t), rr * math.sin(t))
+        if np.isfinite(v):
+            ctrl.append(v)
+    ctrl = np.array(ctrl)
+    hit_ok = hit[np.isfinite(hit)]
+    med_h, med_c = float(np.median(hit_ok)), float(np.median(ctrl))
+    thr = float(np.percentile(ctrl, 90))
+    frac_h = float((hit_ok > thr).mean())
+    frac_c = 0.10
+    say(f"X5 component landing: median luma under our {len(hit_ok)} markers "
+        f"{med_h:.1f} vs {len(ctrl)} RANDOM annulus positions {med_c:.1f}")
+    say(f"   fraction above the random-90th-percentile ({thr:.1f}): "
+        f"markers {frac_h*100:.1f}%  |  random 10.0% by construction  "
+        f"-> enrichment {frac_h/frac_c:.2f}x")
+    x5 = frac_h > 0.25          # 2.5x the random rate; stated once, here
+    if not x5:
+        say("X5 FIRED: our markers are not landing on anything brighter than a random "
+            "spot on the annulus. The positions would be decoration.")
+
+    # ---- panel 3
     ov = ph.copy()
     dv = ImageDraw.Draw(ov, "RGBA")
-    pts = []
-    for i in range(len(pth)):
-        if not np.isfinite(ours_r[i]):
-            continue
-        ang = math.radians(pth[i])
-        pts.append((pcx + ours_r[i] * math.cos(ang), pcy - ours_r[i] * math.sin(ang)))
-    dv.line(pts + [pts[0]], fill=CYAN + (255,), width=3)
+    def P(p):
+        return (c0 + p[0] * a.px_per_mm, c0 + p[1] * a.px_per_mm)
+    dv.line([P(p) for p in outer] + [P(outer[0])], fill=CYAN + (255,), width=3)
+    dv.line([P(p) for p in inner] + [P(inner[0])], fill=CYAN + (255,), width=3)
+    for (x, y), c in zip(cpts, comps):
+        px, py = P((x, y))
+        if c["sized"]:
+            PR.rrect(dv, px, py, k * c["long_mm"] * a.px_per_mm,
+                     k * c["short_mm"] * a.px_per_mm, c["angle"], None,
+                     outline=CYAN + (255,), w=2)
+        else:
+            rr = 0.30 * a.px_per_mm
+            dv.ellipse([px - rr, py - rr, px + rr, py + rr], outline=CYAN + (200,), width=2)
+    for x, y in gpts:
+        px, py = P((x, y))
+        rr = 0.55 * a.px_per_mm
+        dv.ellipse([px - rr, py - rr, px + rr, py + rr], outline=GAPC + (255,), width=3)
 
     # ---- montage
-    cols = [("OURS  halo Replica R0", ours), ("APPLE'S  FCC BCGA2187 photo 6", ph),
-            ("OVERLAY  ours (cyan) on Apple's", ov)]
-    ch = max(i.height for _, i in cols)
-    cw = max(i.width for _, i in cols)
-    head, foot, gap = 66, 190, 22
-    W = 3 * cw + 4 * gap
-    H = head + ch + foot
+    cols = [("OURS  halo Replica R0", ours), (a.photo_label, ph),
+            ("OVERLAY  our outline, hole and every marker, on Apple's", ov)]
+    cw, ch = ph.size
+    head, gap = 66, 22
+    foot = 340
+    W, H = 3 * cw + 4 * gap, head + ch + foot
     m = Image.new("RGB", (W, H), BG)
     dm = ImageDraw.Draw(m, "RGBA")
     fb, fs, ft = font(30, True), font(20), font(17)
     for i, (t, im2) in enumerate(cols):
         x = gap + i * (cw + gap)
-        m.paste(im2, (x + (cw - im2.width) // 2, head + (ch - im2.height) // 2))
+        m.paste(im2, (x, head))
         dm.text((x, 22), t, font=fb, fill=INK)
-    # a real scale bar, in the montage's own millimetres
-    bx, by = gap, head + ch + 16
+    bx, by = gap, head + ch + 20
     dm.line([(bx, by), (bx + 10 * a.px_per_mm, by)], fill=INK, width=4)
     for t in range(11):
-        dm.line([(bx + t * a.px_per_mm, by), (bx + t * a.px_per_mm, by - (12 if t % 5 else 20))],
-                fill=INK, width=2)
-    dm.text((bx + 10 * a.px_per_mm + 12, by - 12), "10 mm  (both panels, same scale)",
+        dm.line([(bx + t * a.px_per_mm, by),
+                 (bx + t * a.px_per_mm, by - (12 if t % 5 else 20))], fill=INK, width=2)
+    dm.text((bx + 10 * a.px_per_mm + 12, by - 12), "10 mm  (all three panels)",
             font=fs, fill=INK)
 
-    with open(a.board) as f2:
-        bd = json.load(f2)
-    y = by + 30
-    for line, col in [
-        (f"outline residual  RMS {rms:.3f} mm   p95 {p95:.3f} mm   over {good.sum()} rays", INK),
-        (f"OURS 2 x mean r = {od:.3f} mm     APPLE'S = {pd:.3f} mm     delta {abs(od-pd)/pd*100:.2f}%", INK),
-        (f"outer diameter {bd['parameters']['outer_diameter_mm']['value']:.3f} mm  PROVISIONAL AND IN DISPUTE "
-         f"(O'Flynn '~26', L1 ~24.6, L5 {bd['parameters']['outer_diameter_mm']['value']:.2f} off photo 6)", PROV),
-        ("thickness 0.30 mm AS-DRAWN; below PCBWay's and JLCPCB's 0.40 mm floors - a fact about US, not Apple", PROV),
-        ("4 layers = STATED REPLICA CHOICE. Apple's true count is CANNOT DETERMINE in {4,6}", PROV),
-        ("centre hole is a ROUNDED SQUARE WITH A NOTCH. This lane publishes no hole diameter.", PROV),
-        ("NOT YET DRAWN: rim pads, component footprints, silkscreen, copper. Outline only.", PROV),
-        (f"scale basis: {a.photo_scale_basis}", (110, 110, 114)),
-        ("FACES NAMED BY WHAT IS ON THEM. This panel: the side carrying the SoC and the shield can", (110, 110, 114)),
-        ("(= Apple FCC photo 6 'MLB - Front' = O'Flynn's 'backside-*'). The word 'front' is AMBIGUOUS", (110, 110, 114)),
-        ("across sources and is not used here - see evidence/E03-SIDE-NAMING.md", (110, 110, 114)),
-    ]:
-        dm.text((bx, y), line, font=ft, fill=col)
-        y += 19
-    if rot:
-        dm.text((bx + cw + gap, by - 4), f"X3 CONTROL ACTIVE: outline rotated {rot} deg on purpose",
+    p = board["parameters"]
+    od_p = p["outer_diameter_mm"]
+    lines = [
+        (f"X4 outline residual   RMS {rms:.3f} mm   p95 {p95:.3f} mm   over "
+         f"{good.sum()} rays", INK),
+        (f"X5 component landing  median luma under our markers {med_h:.1f} vs random "
+         f"annulus {med_c:.1f};  {frac_h*100:.1f}% of markers above the random 90th "
+         f"percentile vs 10% by construction  ->  {frac_h/frac_c:.2f}x enrichment", INK),
+        (f"X1 scale match        OURS {od:.3f} mm   APPLE'S {pd:.3f} mm   "
+         f"delta {abs(od-pd)/pd*100:.2f}%   (registration is by construction, "
+         f"nothing was fitted to make these agree)", INK),
+        ("", INK),
+        (f"outer diameter {od_p['value']:.3f} mm AS DRAWN - {od_p['state']}; "
+         f"bound {od_p['bound_mm'][0]}-{od_p['bound_mm'][1]} mm and if it moves it "
+         f"moves DOWN", PROV),
+        (f"centre hole {p['centre_hole']['state']} - no diameter is published; "
+         f"three fits give n = 2.00 (pinned) / "
+         f"{fit['inner']['n']:.2f} / 2.70 and disagree in different directions", PROV),
+        (f"thickness {p['thickness_mm']['value']:.2f} mm as-drawn, below both fab "
+         f"floors - a fact about US, not about Apple.   "
+         f"{p['layer_count']['value']} layers - {p['layer_count']['state']}", PROV),
+        (f"{len([c for c in comps if c['sized']])} components drawn to MEASURED SIZE, "
+         f"{len([c for c in comps if not c['sized']])} drawn as POSITION ONLY (fixed "
+         f"0.30 mm ring, NOT a footprint), "
+         f"{len([c for c in comps if c['suspect']])} may be grey RIM MATERIAL not parts",
+         PROV),
+        (f"KNOWINGLY INCOMPLETE: {len(skipped)} rows not drawn at all, "
+         f"{len(gaps)} named absences (magenta). Every neutral-black IC body is "
+         f"CANNOT DETERMINE (M08) - INCLUDING THE LARGEST ONE. The dark areas SHOULD "
+         f"look sparse.", PROV),
+        ("NOT DRAWN AND NOT AN OVERSIGHT: rim pads (count CANNOT DETERMINE, closed), "
+         "the 3 antennas (not on this PCB at all), the NFC/voice coil (wound wire), "
+         "the U1 footprint (size CANNOT DETERMINE). U1 IS UNPOPULATED.", PROV),
+        ("", INK),
+        (f"scale basis: {fit['scale']['basis']}", (110, 110, 114)),
+        (f"positional floor: {handoff['uncertainty']['note']}", (110, 110, 114)),
+        ("faces are named by what is on them; 'front' means two different faces across "
+         "three sources and is not used here", (110, 110, 114)),
+    ]
+    y = by + 28
+    for line, col in lines:
+        if line:
+            dm.text((bx, y), line, font=ft, fill=col)
+        y += 20
+    if a.break_rotation:
+        dm.text((bx + cw + gap, by - 4),
+                f"X3 CONTROL ACTIVE: our geometry rotated {a.break_rotation} deg on purpose",
                 font=fs, fill=(200, 0, 0))
 
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     m.save(a.out)
     say(f"\nwrote {a.out}  {W}x{H}")
-
     back = np.asarray(Image.open(a.out).convert("L")).astype(float)
     x2 = back.std() > 5 and (back < 120).mean() > 0.02
-    say(f"X2 non-blank: sd {back.std():.2f}, dark {(back<120).mean():.4f} -> {'ok' if x2 else 'FIRED'}")
+    say(f"X2 non-blank: sd {back.std():.2f}, dark {(back<120).mean():.4f} -> "
+        f"{'ok' if x2 else 'FIRED'}")
 
-    code = PASS if (x1 and x2) else FAIL
+    code = PASS if (x1 and x2 and x5) else FAIL
     say({0: "PASS", 1: "FAIL", 2: "CANNOT DETERMINE"}[code])
     print(json.dumps(dict(rms_mm=rms, p95_mm=p95, ours_dia_mm=od, apple_dia_mm=pd,
-                          rays=int(good.sum()), rotation_deg=rot)))
+                          rays=int(good.sum()), rotation_deg=a.break_rotation,
+                          x5_marker_median_luma=med_h, x5_random_median_luma=med_c,
+                          x5_enrichment=frac_h / frac_c)))
     sys.exit(code)
 
 

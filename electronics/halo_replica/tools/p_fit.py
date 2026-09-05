@@ -232,6 +232,68 @@ def measure(fit, theta_deg, r_px, ppm, chord_shift_mm=0.0):
     return (pred - r_px) / ppm, pred
 
 
+
+# ---------------------------------------------------------------- the hole
+def _se_resid(p, P):
+    cx, cy, a, b, n, phi = p
+    c, s = math.cos(phi), math.sin(phi)
+    dx, dy = P[:, 0] - cx, P[:, 1] - cy
+    u = (c * dx + s * dy) / a
+    v = (-s * dx + c * dy) / b
+    f = (np.abs(u) ** n + np.abs(v) ** n) ** (1.0 / n)
+    return (f - 1.0) * np.hypot(dx, dy)
+
+
+def _ci_resid(p, P):
+    return np.hypot(P[:, 0] - p[0], P[:, 1] - p[1]) - p[2]
+
+
+def fit_hole(P, ppm):
+    """Superellipse AND circle, both fitted, both reported.
+
+    H2 -- THE CONTROL THAT MATTERS.  Two extra parameters always lower a residual.
+    So the same pair of models is fitted to a SYNTHETIC CIRCLE carrying the same
+    noise, and the improvement the superellipse buys THERE is the floor the real
+    improvement has to clear.  Without that floor, 'the superellipse fits better'
+    is a statement about parameter counting, not about the hole.
+    """
+    from scipy.optimize import least_squares
+    mx, my = P[:, 0].mean(), P[:, 1].mean()
+    lo = [mx - 300, my - 300, 300, 300, 1.5, -3.2]
+    hi = [mx + 300, my + 300, 1200, 1200, 6.0, 3.2]
+    se = least_squares(_se_resid, [mx, my, 730, 700, 2.5, 0.0], args=(P,), bounds=(lo, hi))
+    ci = least_squares(_ci_resid, [mx, my, 730], args=(P,))
+    se_sd = float(_se_resid(se.x, P).std()) / ppm
+    ci_sd = float(_ci_resid(ci.x, P).std()) / ppm
+    real_gain = 1.0 - se_sd / ci_sd
+
+    # H2 floor: a true circle, same point count, same residual scale
+    rng = np.random.default_rng(11)
+    th = np.linspace(0, 2 * math.pi, len(P), endpoint=False)
+    R0 = ci.x[2]
+    noise = rng.normal(0, ci_sd * ppm, len(P))
+    Q = np.c_[mx + (R0 + noise) * np.cos(th), my + (R0 + noise) * np.sin(th)]
+    se2 = least_squares(_se_resid, [mx, my, R0, R0, 2.5, 0.0], args=(Q,), bounds=(lo, hi))
+    ci2 = least_squares(_ci_resid, [mx, my, R0], args=(Q,))
+    floor = 1.0 - float(_se_resid(se2.x, Q).std()) / float(_ci_resid(ci2.x, Q).std())
+
+    pinned = [abs(se.x[i] - lo[i]) < 1e-6 or abs(se.x[i] - hi[i]) < 1e-6 for i in range(6)]
+    return dict(
+        centre_px=[float(se.x[0]), float(se.x[1])],
+        two_a_mm=float(2 * se.x[2] / ppm), two_b_mm=float(2 * se.x[3] / ppm),
+        n=float(se.x[4]), phi_deg=float(math.degrees(se.x[5]) % 180.0),
+        any_parameter_pinned_at_its_bound=bool(any(pinned)),
+        superellipse_resid_sd_mm=se_sd,
+        circle_alternative_R_mm=float(ci.x[2] / ppm),
+        circle_alternative_resid_sd_mm=ci_sd,
+        improvement_frac=float(real_gain),
+        H2_improvement_floor_from_parameter_count=float(floor),
+        H2_verdict=("EARNED" if real_gain > 2.0 * max(floor, 1e-6) else
+                    "NOT EARNED -- the superellipse's advantage over a circle is not "
+                    "clearly larger than what two extra parameters buy on a pure circle"),
+    )
+
+
 # ---------------------------------------------------------------- controls
 def selftest(break_which=None):
     """N1, N1b and N2.  `break_which` feeds each control the input that MUST make it
@@ -395,6 +457,39 @@ def main():
 
     with open(a.hole) as f:
         hole = json.load(f)
+    HP = np.array(hole["boundary"], float)[:, 1:3]
+    hf = fit_hole(HP, ppm)
+    say("")
+    say(f"hole superellipse  centre offset from board centre "
+        f"{math.hypot(hf['centre_px'][0]-raw['outer_centre'][0], hf['centre_px'][1]-raw['outer_centre'][1])/ppm:.3f} mm")
+    say(f"  2a {hf['two_a_mm']:.4f} mm  2b {hf['two_b_mm']:.4f} mm  n {hf['n']:.4f}  "
+        f"phi {hf['phi_deg']:.2f} deg  resid sd {hf['superellipse_resid_sd_mm']:.4f} mm")
+    say(f"  circle alternative R {hf['circle_alternative_R_mm']:.4f} mm  "
+        f"resid sd {hf['circle_alternative_resid_sd_mm']:.4f} mm")
+    say(f"  H2: real improvement {hf['improvement_frac']*100:.2f}% vs "
+        f"parameter-count floor {hf['H2_improvement_floor_from_parameter_count']*100:.2f}% "
+        f"-> {hf['H2_verdict']}")
+    hole_out = dict(hf)
+    hole_out.update({
+        "primitive": "superellipse",
+        "state": "PARTIALLY DETERMINED -- NO single hole diameter is published",
+        "why": ("three fits disagree on the exponent and they disagree in DIFFERENT "
+                "directions: FCC photo 6 gives n=2.70, L1's fit in this frame pinned n "
+                "at its 2.00 bound, and this refit of the SAME boundary points gives "
+                f"n={hf['n']:.3f}. A rounded square is n=4, a circle/ellipse is n=2."),
+        "refit_note": ("refitted here from hole-oflynn-front.json's own `boundary` "
+                       "points because that file's `centre_px` is 2.76 mm from the "
+                       "board centre while its boundary points imply 0.62 mm -- the "
+                       "two fields disagree, so the points were used and the stated "
+                       "centre was not. REPORTED UPSTREAM, not edited."),
+        "L1_stated_for_contrast": {"two_a_mm": hole["two_a_mm"],
+                                   "two_b_mm": hole["two_b_mm"], "n": hole["n"],
+                                   "phi_deg": hole["phi_deg"],
+                                   "centre_px": hole["centre_px"],
+                                   "residual_sd_mm": hole["residual_sd_mm"]},
+        "source_points": os.path.relpath(a.hole, ROOT),
+        "n_boundary_points": int(len(HP)),
+    })
 
     out = {
         "tool": "p_fit.py",
@@ -433,22 +528,7 @@ def main():
                                 "across them so it closes, and drawn in the PROVISIONAL "
                                 "colour so the picture says where it is guessing."),
         },
-        "inner": {
-            "primitive": "superellipse",
-            "state": "PARTIALLY DETERMINED -- publish no single hole diameter",
-            "why": ("two photographs fail to pin the exponent in DIFFERENT directions: "
-                    "FCC photo 6 gives n=2.70, this frame's fit pins n at its 2.00 bound. "
-                    "On THIS photograph the superellipse does not even beat a circle "
-                    f"({hole['residual_sd_px']:.2f} px vs "
-                    f"{hole['circle_residual_sd_px']:.2f} px), so the rounded-square "
-                    "shape is carried by photo 6, not by this one."),
-            "centre_px": hole["centre_px"],
-            "two_a_mm": hole["two_a_mm"], "two_b_mm": hole["two_b_mm"],
-            "n": hole["n"], "phi_deg": hole["phi_deg"],
-            "corner_radius_mm": hole["corner_radius_mm"],
-            "residual_sd_mm": hole["residual_sd_mm"],
-            "source": os.path.relpath(a.hole, ROOT),
-        },
+        "inner": hole_out,
     }
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w") as f:

@@ -1,17 +1,23 @@
 {
   "name": "halo-replica-mlb",
   "revision": "R0",
-  "state": "PROVISIONAL - every dimension below is tagged; none is settled",
+  "state": "PROVISIONAL - every dimension is tagged; the outer diameter is a BOUND and the centre hole is PARTIALLY DETERMINED",
   "lane": "L5 BOARD BUILD",
   "side_convention": "FRONT = COMPONENT SIDE (Apple FCC caption 'MLB - Front'). O'Flynn's 'frontside' is this project's BACK.",
   "what_this_is": "A parameterised annular board. NOTHING here is a hard-coded diameter: the outline is a normalised profile r(theta)/r_mean taken from a photograph, multiplied by one scale parameter. Change outer_diameter_mm and the whole board rescales.",
   "parameters": {
     "outer_diameter_mm": {
-      "value": 24.984,
-      "state": "PROVISIONAL - IN DISPUTE",
-      "source": "L5 p_outline.py on fcc-BCGA2187-internal-photo-6.jpg, scale = photo6 bottom steel rule (L1 metrology/scale-field.json, 15.8875 px/mm, linear resid sd 0.573 px). 2 x mean kept-ray radius.",
-      "dispute": "O'Flynn's oft-quoted '~26 mm' is his tilde, not a measurement. L1's ruler work suggests nearer 24.6 mm. This lane measures 24.98 mm off photo 6. The three do not agree and the value is NOT settled.",
-      "inherits": "any perspective error between the steel rule plane and the board top face. NOT bounded by the rule's residual."
+      "value": 25.1593,
+      "state": "BOUNDED, NOT A SINGLE NUMBER - the value above is the one DRAWN, not a settled diameter",
+      "bound_mm": [
+        24.95,
+        26.34
+      ],
+      "bound_source": "metrology/M02 - the two image axes do not share a scale (26.3 wide x 25.0 tall), so the OD is a bound and not a number",
+      "signed_expectation": "IF THE BOUND MOVES, IT MOVES DOWN (M02 sec 8). Two reasons, both in place before the confirming measurement: the edge detector settles on a blended substrate/rim-material edge, which biases FCC photo 6 OUTWARD and FCC 6 is where the bound came from; and the sharper photograph measures 24.631 mm, below the 24.95 floor. The bound is NOT revised, because that third estimate's scale still comes from FCC 6 through the registration.",
+      "drawn_value_source": "board/outline/outline-fit-oflynn.json - p_fit.py robust circle fit to the O'Flynn component-side outline, 1194 rays, 106.313 px/mm",
+      "drawn_value_is_not_independent": "this millimetre inherits the SAME registration scale as every other number in this frame. It is a shape result. It is NOT a fourth opinion on the outer diameter and must never be quoted as one.",
+      "how_to_change_it": "set this value; p_render.py normalises the fitted shape by the fitted diameter and multiplies by this one number, so the outline, the hole and every component position scale together. No diameter is hard-coded in any tool."
     },
     "thickness_mm": {
       "value": 0.3,
@@ -29,23 +35,46 @@
       "superseded_decision": "The orchestrator authorised drawing 4 as a STATED REPLICA CHOICE within a {4,6} bound while Apple's count was unknown. The delayering evidence arrived in the same session and made that unnecessary. Recorded because the reasoning was right for the state of knowledge it was made in."
     },
     "centre_hole": {
-      "shape": "ROUNDED SQUARE WITH A NOTCH AT TOP CENTRE - not a circle",
-      "state": "PROVISIONAL profile from photo 6",
-      "measured_roundness_rmax_over_rmin": 1.38,
-      "reference": "1.000 = circle, 1.414 = square. 1.380 is a rounded square.",
-      "refusal": "This lane publishes NO 'centre hole diameter'. A circle fitted here returns a small clean residual while being the wrong shape."
+      "shape": "superellipse - NOT a circle, and NOT pinned to a rounded square either",
+      "state": "PARTIALLY DETERMINED",
+      "refusal": "This lane publishes NO centre-hole diameter. Three fits disagree on the exponent and they disagree in DIFFERENT directions: FCC photo 6 gives n=2.70, L1's fit in the O'Flynn frame pinned n at its 2.00 bound, and p_fit.py's refit of L1's OWN boundary points gives n=2.449. n=2 is an ellipse; n=4 is a rounded square.",
+      "drawn_from": "board/outline/outline-fit-oflynn.json inner - refitted from L1's boundary points",
+      "earned_over_a_circle": "YES, but only just and only because the improvement was measured against a floor: the superellipse beats the circle by 7.50% in residual sd, against a 1.53% floor obtained by fitting the same pair of models to a synthetic PURE CIRCLE. Two extra parameters always lower a residual; that floor is what makes the 7.50% mean anything."
     }
   },
   "outline": {
-    "profile_source": "outline/outline-photo6.json",
-    "mode": "normalised-profile-times-scale",
-    "note": "outer and inner profiles are stored as r(theta) in mm in the source file and normalised at load time, so the single scale parameter above controls absolute size and the SHAPE is fixed by the photograph."
+    "fit_source": "outline/outline-fit-oflynn.json",
+    "raw_evidence_never_merged": [
+      "outline/outline-photo6.json",
+      "../metrology/outline-raw-oflynn-front.json"
+    ],
+    "mode": "fitted-primitives-times-scale",
+    "note": "The board is drawn from FITTED MANUFACTURABLE PRIMITIVES - a circle clipped by straight chords, and a superellipse hole - never from the per-degree silhouette. The silhouette carries the edge detector's noise, cannot be dimensioned or toleranced, and beside Apple's machined ring reads wrong for reasons unrelated to our dimensions. The raw profiles stay on disk as evidence and are NEVER merged into the fit file.",
+    "fit_residual": "published in the fit file and printed on the render: circle alone sd 0.5629 mm / 43.6% inliers; circle+4 chords sd 0.2771 mm / 55.8% inliers, band +-0.15 mm."
   },
   "not_on_this_board": {
     "antennas": "The three antennas are NOT on the PCB (evidence/E01). They live on a moulded carrier soldered to rim pads. Draw the RIM PADS and the feeds; never antennas in copper.",
     "nfc_coil": "WOUND MAGNET WIRE, ID 9.380 mm / OD 10.834 mm (L1). Not a trace, not copper on this board."
   },
   "unpopulated": {
-    "U1": "The Apple U1 UWB module is never sold to anyone. Its footprint is placed UNPOPULATED and that fact is printed ON THE BOARD legend, not only in a document."
+    "U1": "The Apple U1 UWB module is never sold to anyone. U1 IS UNPOPULATED. That fact is printed ON THE BOARD in the legend, not only here."
+  },
+  "components": {
+    "source": "../metrology/HANDOFF-positions-front.json (L1 PHOTOGRAPH METROLOGY lane, 100 rows)",
+    "orientation_source": "../metrology/components-front.json angle_deg / dark-packages-front.json angle_deg - the handoff drops the angle, the producing files keep it. Orientation is used ONLY for rows whose SIZE is trustworthy; a min-area-rect angle from an untrustworthy rect is untrustworthy too.",
+    "what_the_handoff_is": "A LIST OF METAL AND BLUE. It is NOT a list of components. Its author's words.",
+    "drawing_rules": {
+      "do_not_draw_as_component": "NOT DRAWN. Counted on the picture with the reason.",
+      "located_not_sized": "drawn as a FIXED-SIZE position marker, never as a footprint. The position is usable; the size is not.",
+      "on_rim_material_suspect": "drawn in the suspect colour - it may be the grey fibrous rim material rather than a part (M02 sec 8, M09).",
+      "known_gaps": "the file names 4 positions that are EYEBALLED, measured:false, do_not_draw_as_measured:true. They are drawn as ABSENCE MARKERS in their own colour and never as parts. A miss written down is a different object from a miss not written down."
+    },
+    "knowingly_incomplete": "The largest dark body on the board is absent BY NAME, and so are the two gold-ringed round parts and the large silver clip beside the centre hole. Neutral-black packages are CANNOT DETERMINE after three detector attempts, one of which returned an answer that was purely a function of the operator's chosen box (34% swing on padding alone). The render will look sparse in the dark areas. That is the file being honest, not the drawing being broken. DO NOT FILL THE GAPS BY EYE."
+  },
+  "not_drawn": {
+    "antennas": "The three antennas are NOT on this PCB (evidence/E01). They live on a moulded carrier. No antennas in copper, ever.",
+    "nfc_coil": "WOUND MAGNET WIRE, ID 9.380 / OD 10.834 mm (L1). Not a trace, not copper on this board. Whether it is the NFC antenna or the voice coil is OPEN (evidence/E02).",
+    "rim_pads": "NOT DRAWN. The rim pad COUNT is CANNOT DETERMINE and closed (M03/M05). The withdrawn 15- and 13-pad candidate angle sets FAILED A POSITIVE CONTROL and must not be drawn.",
+    "U1_footprint": "NOT DRAWN, and the reason is not the same as the reason it is unpopulated. Its size is CANNOT DETERMINE: an independent remeasure of the can swings 6.735 -> 7.891 mm on the operator's padding alone (metrology/uwb-can-remeasure.json), and the only handoff row at that location is flagged merged_pad_run / do_not_draw_as_component. A footprint drawn from either would be a number invented by the operator."
   }
 }

@@ -1,6 +1,6 @@
 {
   "tool": "p_fit.py",
-  "run_utc": "2026-09-05T01:13:58Z",
+  "run_utc": "2026-09-05T01:16:24Z",
   "lane": "L5 BOARD BUILD",
   "what_this_is": "FITTED MANUFACTURABLE PRIMITIVES, not samples. The raw per-degree profile lives in metrology/outline-raw-oflynn-front.json and is NEVER merged into this file.",
   "side_convention": "the side carrying the SoC and the shield can",
@@ -206,19 +206,37 @@
     "unmeasured_note": "no ray exists on these arcs. The outline is drawn across them so it closes, and drawn in the PROVISIONAL colour so the picture says where it is guessing."
   },
   "inner": {
-    "primitive": "superellipse",
-    "state": "PARTIALLY DETERMINED -- publish no single hole diameter",
-    "why": "two photographs fail to pin the exponent in DIFFERENT directions: FCC photo 6 gives n=2.70, this frame's fit pins n at its 2.00 bound. On THIS photograph the superellipse does not even beat a circle (35.80 px vs 34.66 px), so the rounded-square shape is carried by photo 6, not by this one.",
     "centre_px": [
-      1723.568082663605,
-      1525.262456946039
+      1583.033013133767,
+      1765.6057690361447
     ],
-    "two_a_mm": 14.022224906723139,
-    "two_b_mm": 13.290614285141185,
-    "n": 2.0,
-    "phi_deg": 40.9665139356448,
-    "corner_radius_mm": 6.29858828895774,
-    "residual_sd_mm": 0.33675099319248497,
-    "source": "metrology/hole-oflynn-front.json"
+    "two_a_mm": 13.49647798468809,
+    "two_b_mm": 13.282628172643953,
+    "n": 2.4490869600697533,
+    "phi_deg": 5.345873768010254,
+    "any_parameter_pinned_at_its_bound": false,
+    "superellipse_resid_sd_mm": 0.33418033825469556,
+    "circle_alternative_R_mm": 6.877286564365462,
+    "circle_alternative_resid_sd_mm": 0.3612605097377331,
+    "improvement_frac": 0.07496023161429166,
+    "H2_improvement_floor_from_parameter_count": 0.015308646241705137,
+    "H2_verdict": "EARNED",
+    "primitive": "superellipse",
+    "state": "PARTIALLY DETERMINED -- NO single hole diameter is published",
+    "why": "three fits disagree on the exponent and they disagree in DIFFERENT directions: FCC photo 6 gives n=2.70, L1's fit in this frame pinned n at its 2.00 bound, and this refit of the SAME boundary points gives n=2.449. A rounded square is n=4, a circle/ellipse is n=2.",
+    "refit_note": "refitted here from hole-oflynn-front.json's own `boundary` points because that file's `centre_px` is 2.76 mm from the board centre while its boundary points imply 0.62 mm -- the two fields disagree, so the points were used and the stated centre was not. REPORTED UPSTREAM, not edited.",
+    "L1_stated_for_contrast": {
+      "two_a_mm": 14.022224906723139,
+      "two_b_mm": 13.290614285141185,
+      "n": 2.0,
+      "phi_deg": 40.9665139356448,
+      "centre_px": [
+        1723.568082663605,
+        1525.262456946039
+      ],
+      "residual_sd_mm": 0.33675099319248497
+    },
+    "source_points": "metrology/hole-oflynn-front.json",
+    "n_boundary_points": 720
   }
 }
