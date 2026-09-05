@@ -74,11 +74,45 @@ VIEWS = {
     ),
     'oflynn-back': dict(
         path='oflynn-frontside-fullres.jpeg',
-        centre=(1174.0, 1172.0), r=1090.0,
+        centre=(1174.0, 1172.0), r=962.0,
         face='BACK (test-point side)',
-        note="O'Flynn 'frontside-fullres' - the OPPOSITE face. Present only as the "
-             "WRONG-FACE negative control.",
+        note="O'Flynn 'frontside-fullres' - the OPPOSITE face. Serves TWO roles: the "
+             "WRONG-FACE negative control for a FRONT registration, and (added by lane "
+             "L9, 2026-09-05) the SOURCE for a BACK registration against fcc7-back. "
+             "SEED RADIUS CORRECTED 1090 -> 962 by L9: 1090 traces the plastic antenna "
+             "carrier, not the board. 962 = M06's measured board span of 1924 px / 2. "
+             "The old seed put the true scale ratio 13.3% out, beyond the fit's +-10% "
+             "refine window, so a BACK registration could not have converged with it. "
+             "IT IS STILL A SEED, NOT A MEASUREMENT - the fit moves off it.",
         px_per_mm=None, px_per_mm_basis=None,
+    ),
+    'fcc7-back': dict(
+        path='fcc-BCGA2187-internal-photo-7.jpg',
+        centre=(935.25, 755.395), r=187.482,
+        face='BACK (test-point / battery-contact side)',
+        note="FCC BCGA2187 internal photo 7, captioned 'MLB - Back'. Added by lane L9, "
+             "2026-09-05, so the BACK face has a scale donor at all - before this the "
+             "catalogue held no ruler-bearing view of this face and no BACK registration "
+             "was possible. Board circle seed from metrology/outline-fit-photo7.json "
+             "(cx 935.25, cy 755.395, circle_fit_radius_px 187.482, lane L1). "
+             "*** THIS IS NOT THE SAME PHYSICAL BOARD AS oflynn-back. *** Its silkscreen "
+             "reads 920-08283-01 with data code 3119 (a 2019 engineering build); "
+             "O'Flynn's reads 820-01736-A, data code 2920 17 (2020 production). Whether "
+             "the two share dimensions is CANNOT DETERMINE and is NOT assumed - see the "
+             "warning under px_per_mm_basis. The same caveat already applies, unstated, "
+             "to the FRONT pair fcc6-front / oflynn-front.",
+        px_per_mm=15.0719,
+        px_per_mm_basis="metrology/scale-at-board-photo7.json - m_scale_at at the board "
+                        "(932,752), bottom rule and right rule routes 0.45% apart, "
+                        "halfrange 0.0339 px/mm. THE SCALE IS MEASURED AT THE BOARD, not "
+                        "at the rule, so it does not carry the 1.29% rule-to-board error. "
+                        "*** THE ASSUMPTION THIS SHARES WITH ITS OWN HELD-OUT CONTROL: "
+                        "that the 920- sample board and the 820- production board have the "
+                        "same dimensions. A uniform dimensional difference between them is "
+                        "absorbed into the fitted scale and leaves the held-out residual "
+                        "COMPLETELY UNCHANGED, because the check divides both sides by the "
+                        "same number. Registration consistency is not scale accuracy. What "
+                        "would settle it: a caliper on one board of each part number. ***",
     ),
 }
 
