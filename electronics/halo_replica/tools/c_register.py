@@ -614,7 +614,20 @@ def run_validate(a):
         # ruler actually lives in, and only then converted to millimetres.
         s_ds = math.sqrt(abs(np.linalg.det(Hf[:2, :2])))
         err_tgt = err_ds/s_ds if s_ds > 0 else np.full_like(err_ds, np.nan)
+        # PER-LANDMARK held-out residuals.  The RMS alone cannot tell a transform
+        # that is uniformly a little wrong from one that is right everywhere except
+        # over a handful of features - and those two have completely different
+        # meanings when the two photographs are of two DIFFERENT physical boards.
+        # A localised cluster of large residuals is what a real layout difference
+        # would look like; a broad elevation is what a bad fit looks like.
+        idx = np.nonzero(held)[0]
+        per = [dict(theta_deg=float(th[i]), r=float(rad[i]),
+                    target_px=[float(P[i, 0] + tgt.ox), float(P[i, 1] + tgt.oy)],
+                    err_mm=float(e/s_ds/ppm) if (ppm and s_ds > 0) else None)
+               for i, e in zip(idx, err_ds)] if len(idx) else []
+        per.sort(key=lambda z: -(z['err_mm'] or 0))
         folds.append(dict(sector=[a0, a1], n_held=int(held.sum()), n_fit=int(fit.sum()),
+                          per_landmark_worst=per[:10], per_landmark_all=per,
                           rms_source_px=float(np.sqrt((err_ds**2).mean())*src.k),
                           p95_source_px=float(np.percentile(err_ds, 95)*src.k),
                           rms_target_px=float(np.sqrt((err_tgt**2).mean())),

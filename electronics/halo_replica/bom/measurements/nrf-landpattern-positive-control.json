@@ -1,0 +1,39 @@
+{
+  "label": "POSITIVE CONTROL — a second exposed land pattern with a candidate KNOWN answer",
+  "lane": "L3 (BOM identification)",
+  "measured": "2026-09-05",
+  "purpose": "Decide whether pad counting is possible AT ALL in images/airtag/oflynn-airtag-tests.jpeg, by running the method against a land pattern whose answer is already published rather than against one that is unknown. Without this, the U2 refusal is only a tool declining to answer; with it, the refusal is demonstrated correct.",
+  "input": {
+    "image": "images/airtag/oflynn-airtag-tests.jpeg",
+    "box": [389, 487, 444, 534],
+    "tool": "tools/b_padcount.py, 9/9 selftest"
+  },
+  "the_candidate_identification": {
+    "claim": "This second bare land pattern is the nRF52832-CIAA's.",
+    "evidence_for": "It sits adjacent to a gold-framed rectangular part of crystal proportions, which is exactly the nRF's neighbour relationship on the populated component side (oflynn-backside-fullres: the nRF is immediately beside the T320/RBEV crystal). Its array is of the right order of size.",
+    "status": "NOT ESTABLISHED. Positional consistency is not identification, and the conclusion below does not depend on it — see conclusion_holds_either_way."
+  },
+  "the_known_answer_if_it_is_the_nRF": {
+    "pads": 50, "grid": "7 x 8 (56 positions, 50 populated)", "pitch_mm": 0.4,
+    "source": "Nordic nRF52832 Product Specification v1.4 — Table 132 (WLCSP, 0.4 mm pitch) and the FICR PACKAGE field, which describes the CI package as 'CIxx - 7x8 WLCSP 56 balls'"
+  },
+  "the_seductive_result": {
+    "route_A_blob_count_at_default_parameters": 49,
+    "why_it_is_seductive": "49 against a known 50 is a 2 % miss. Reported alone it would read as a validated method and a located part — turning U1 from SILICON SEEN into SILICON SEEN WITH ITS FOOTPRINT, and implicitly certifying the same method's answer for the Apple U1 module."
+  },
+  "what_the_controls_did": {
+    "route_B_lattice": "5 x 8 = 40 cells",
+    "reconciliation": "FAIL — 49 blobs cannot sit on a 40-cell lattice. The two routes are irreconcilable, so at least one is measuring something other than this land pattern. The tool refused before the sweep was even reached.",
+    "sweep_20_combinations": {
+      "blob_count_range": [5, 56], "mean": 47.4, "spread_pct": 108,
+      "lattice_shapes_seen": [[2,4],[5,8],[5,10],[6,9],[6,13],[7,9],[7,10],[7,11],[8,11],[9,9],[9,11],[9,13],[10,9],[10,10],[10,11]],
+      "was_the_true_shape_7x8_ever_fitted": false,
+      "is_the_true_count_50_inside_the_range": true
+    }
+  },
+  "verdict": "CANNOT DETERMINE — and the method is demonstrated INCAPABLE at this resolution, not merely cautious.",
+  "conclusion_holds_either_way": "If this IS the nRF land pattern, the method missed a known 7 x 8 shape in fifteen attempts and its count range spans an order of magnitude — so the 49 was luck. If it is NOT the nRF, then a 108 % count spread and fifteen lattice shapes condemn the measurement on their own. The identification does not need to be settled for the conclusion to stand.",
+  "why_the_near_hit_carries_no_information": "50 lies inside an observed range of 5 to 56. A prediction that cannot be missed is not confirmed by being hit. This is the same failure the coil measurement had — an agreement that could not have gone the other way — and it is why the near-hit is recorded here as a warning rather than as a result.",
+  "consequence": "Pad counting from oflynn-airtag-tests.jpeg is CLOSED. No further quota should be spent on it by any lane. The U2 land-pattern refusal (bom/measurements/U2-landpattern.json) is upheld by a control with a known answer, which is stronger evidence than the U2 sweep alone.",
+  "what_would_reopen_it": "Only a higher-resolution photograph of a depopulated component-side board. Enumerated 2026-09-05: O'Flynn's repository images/ holds eight files, seven images, all seven already in this project, and this is the only depopulated one."
+}

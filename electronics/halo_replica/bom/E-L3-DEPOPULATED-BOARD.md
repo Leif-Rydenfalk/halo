@@ -88,3 +88,63 @@ has not been measured. If one of them is the `U3` flash it would be a **10-pad W
 centre pads** — O'Flynn identified the part that way, *"The SPI flash chip had 10 pins on it – it
 was missing some center pins"* — which is a distinctive, countable signature and the one land
 pattern in this project worth the most.
+
+---
+
+## The positive control, and the near-hit that would have fooled me
+
+The section above ends by saying the two remaining land patterns *probably* hit the same
+resolution floor. **That was a prediction, so I measured it** — and the second land pattern turned
+out to be the best possible thing to measure, because it may have a **published answer**.
+
+It sits beside a gold-framed part of crystal proportions, which is the nRF52832's neighbour
+relationship on the populated component side. If it is the nRF's land pattern, the answer is
+already known: **50 pads in a 7 × 8 grid**, 0.4 mm pitch (Nordic PS v1.4, Table 132, and the FICR
+`PACKAGE` field: *"CIxx - 7x8 WLCSP 56 balls"*).
+
+**Route A returned 49.**
+
+A 2 % miss against a known 50. Reported on its own it would have read as a validated method *and*
+a newly located part — and it would have implicitly certified the same method's answer for the
+Apple U1 module in the section above.
+
+**Every control refused it:**
+
+| control | result |
+|---|---|
+| route B lattice | **5 × 8 = 40 cells** — irreconcilable with 49 blobs; the tool failed it before the sweep was reached |
+| sweep, 20 combinations | blob count **5 – 56**, spread **108 %** |
+| lattice shapes seen | **fifteen**: 2×4, 5×8, 5×10, 6×9, 6×13, 7×9, 7×10, 7×11, 8×11, 9×9, 9×11, 9×13, 10×9, 10×10, 10×11 |
+| was the true 7 × 8 ever fitted? | **no — not once** |
+| is the true 50 inside the count range? | **yes, trivially** |
+
+**A prediction that cannot be missed is not confirmed by being hit.** 50 sits comfortably inside
+5–56. The 49 carried no information whatsoever, and it is recorded here as a warning rather than
+as a result.
+
+**The conclusion does not depend on the identification.** If this is the nRF land pattern, the
+method missed a known shape fifteen times out of fifteen and its count range spans an order of
+magnitude, so the 49 was luck. If it is not the nRF, a 108 % spread and fifteen shapes condemn
+the measurement on their own. Either way it stands.
+
+## Consequence — this question is closed, do not spend more quota on it
+
+Pad counting from `oflynn-airtag-tests.jpeg` is **demonstrated impossible**, against a control
+with a known answer, not merely declined. The `U2` refusal above is upheld by stronger evidence
+than its own sweep. **What would reopen it:** only a higher-resolution photograph of a
+depopulated component-side board, and none exists in the public record reachable from here.
+
+## What is still worth taking from this photograph
+
+The *positions* of the bare land patterns survive even though their pad counts do not — a
+position is one coarse measurement where a count needs every pad resolved. E07 §10 records that
+L1's component detector *"finds metal and is blind to dark IC bodies … it is the gap that matters
+most for the deliverable, because the dark packages are what make the photograph read as an
+AirTag at all."* A depopulated board shows exactly where the dark packages were.
+
+**And the tool for the populated board already exists in this lane:** `tools/b_pkgsize.py`
+isolates a dark IC body on a dark PCB using a blue-minus-red channel, because luminance alone
+cannot separate dark navy silicon from dark maroon laminate — that case is selftest case 10, with
+a synthetic part built at *exactly* equal luminance to the ground so the luminance route provably
+fails and the colour route provably succeeds. It found the nRF52832 at rectangularity 0.969. It is
+offered to L1 rather than rebuilt there.
