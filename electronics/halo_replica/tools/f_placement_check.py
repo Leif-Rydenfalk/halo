@@ -69,7 +69,10 @@ def _angles():
 
 def _long_bearing(pad):
     """Long-side bearing of a pad, READ OFF ITS OWN CORNER COORDINATES."""
-    poly = pad.GetEffectivePolygon()
+    # KiCad 10 wants the LAYER: a padstack can differ per layer, so
+    # "the pad's polygon" is not a question with one answer any more.
+    import pcbnew
+    poly = pad.GetEffectivePolygon(pcbnew.F_Cu)
     if poly.OutlineCount() < 1:
         return None, None, None
     o = poly.Outline(0)
