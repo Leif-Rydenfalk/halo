@@ -1013,3 +1013,72 @@ One design law fell out of the repair, and it is worth more than the repair: **t
 placing text into one band cannot be made not to collide by arithmetic in one of them.** Proved by
 trying — the first fix cleared the notes and put them over the power-flag symbols. A second
 collision in place of the first.
+
+---
+
+## 33 · A check whose SUBJECT is the artefact its INPUT was derived from
+
+*L5b BOARD BUILD, 2026-09-05. Mine, it was this lane's headline number, and I quoted it to two
+sessions and into the changelog before catching it.*
+
+`p_compare.py`'s **X5 "component landing"** measured, for each of 97 drawn component markers, the
+photograph's luma at that position, against the same statistic at 4000 random annulus positions.
+It returned **4.23× enrichment**, and it moved correctly under every perturbation: it collapses to
+1.44× when the geometry is rotated 12° on purpose. It has a real negative control, it has a real
+break, and both work.
+
+**And the marker positions were extracted from that same photograph.**
+`metrology/components-front.json` `source: oflynn-backside-fullres.jpeg`; X5 samples
+`oflynn-backside-fullres.jpeg`. The markers ARE the bright blobs of that image. Bright-metal
+markers landing on bright pixels is **close to a tautology**.
+
+**This is not entry 1's shape.** There the *estimator* agreed with what it checked — IRLS chooses
+its own inliers. Here the estimator is fine, the null is fine, the break is fine: **the
+circularity is in the DATA PROVENANCE**, one file upstream of anything the check can see. No
+amount of inspecting the check reveals it. The question that does is *"where did the INPUT come
+from, and is it the same artefact as the SUBJECT?"*
+
+**What X5 does genuinely test**, and it is kept under a correct name — **registration round-trip**:
+the k-scaling, the crop about the stated origin, the resample to the montage scale, the coordinate
+mapping. That is worth having. It is not what it was called.
+
+**The fix — X5B, and it can fail.** Push the same markers through `c_register`'s homography into
+**FCC photo 6**, an image they were never extracted from, taken by different people with a
+different camera:
+
+| | |
+|---|---|
+| marker median luma | **106** |
+| 4000 random annulus positions | **42** |
+| null — 97-sized draws from the random pool reaching our median | **zero of 20000, p < 1/20000** |
+| fraction above the random 90th percentile | 15.5 % vs 10 % by construction — 1.55×, **p = 0.051** |
+
+The count statistic is only marginal and that is **reported, not dropped**: photo 6 gives a 2.8 px
+sampling radius, so blur mixes a pad with its neighbourhood. The median statistic is the powerful
+one and it is decisive.
+
+**The rule.** A check inherits the provenance of its input. Before believing a check that compares
+a derived quantity against a source, ask **which artefact the derived quantity came from** — and if
+it is the same one, the check is measuring the pipeline, not the world. Say so in its name.
+
+## 34 · A null that was mine, not the board's
+
+*Same lane, same hour, and it is entry 33's inverse.*
+
+X5B's first version returned a flat **0.00× enrichment, 10 of 97 markers even inside the frame** —
+a clean, quotable negative that would have read as *"the markers are an artefact of one
+photograph."*
+
+It was wrong. `c_register`'s homography maps into the O'Flynn image **divided by its `pre_average`
+of 6.58**, not into full resolution. Omitting that factor put every marker on the paper background,
+where the luma is saturated and identical to the random control.
+
+**Verified in one line:** `H(fcc6 board centre) × 6.58 = (1522.559, 1738.801)` — the stated frame
+origin to three decimals. The measurement that settles a frame question is *round-tripping a point
+you already know the answer for*, and it costs nothing.
+
+**The rule.** `VERIFICATION-DEBT.md` records the mirror defect for **capabilities** — a thing
+declared absent because the probe looked in the wrong place. This is the same shape for a
+**measurement**: a null needs auditing for its own construction exactly as hard as a pass does, and
+it will not get that audit from anyone who is pleased with it. A negative result flatters whoever
+wanted the negative.
