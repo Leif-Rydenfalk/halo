@@ -1414,3 +1414,61 @@ produced, not a mode anyone confirmed. When mode identification fails the
 frequency row is **CANNOT DETERMINE**, not a value. See `CONCERNS.md` C-7 and
 `docs/TOOLS-THAT-LIE.md` §10 for the related defect — a retune premise that was
 a prediction wearing the word *measured*.
+
+## D28a · Correction to D28 — the coupling is small, and I compared the wrong zeros
+
+**2026-09-05, same day, from the `series_resonances` lists D28 did not read.**
+D28's shift table is wrong and its physical conclusion with it. The error was
+mine and it is a specific one: **`f_series_res_GHz` reports the LOWEST series
+resonance in the sweep.** In the passive cases the coil contributes zeros
+*below* the antenna's, so I compared the bare antenna mode against a passive
+zero that is not the antenna, and read the difference as coupling.
+
+`measurements.json` says so in its own words, on every case:
+
+> *"This, not the deepest dip, is the fundamental — **UNLESS the model contains
+> passive copper that resonates too, in which case read `series_resonances` and
+> grade `f_series_res_near_R_GHz`.**"*
+
+The passive cases are exactly the condition that sentence names. Nobody read
+`series_resonances`. Reading it now:
+
+| case | bare mode | nearest passive zero | shift |
+|---|---|---|---|
+| meander9 | 2.6763 GHz / 3.3 Ω | 2.5294 GHz / 7.2 Ω | **−147 MHz** |
+| rt2 | 2.6630 GHz / 3.4 Ω | 2.5778 GHz / 8.8 Ω | **−85 MHz** |
+| rt1 | (no list emitted) | 2.7225 GHz / 4.7 Ω | — |
+
+**The coil costs 85–147 MHz, not 333–1310 MHz.** D26's ~668 MHz figure is also
+not reproduced here, but the honest statement is that this comparison and
+D26's are not the same measurement, so D26 is *unconfirmed*, not refuted.
+The lowest passive zeros — 2.0669 GHz / 4.1 Ω and 1.3542 GHz / 30.1 Ω — are the
+coil's own resonances, and they are what `f_series_res_GHz` has been reporting
+as "the antenna" all along.
+
+**So the picture is far better than D28 said.** The passive antenna mode sits at
+**2.53–2.58 GHz, only 85–147 MHz above the band's upper edge** — a small retune,
+not a coupled-pair pathology. D28's instruction to stop retuning and go
+characterise the coil was based on the bad table; **it is withdrawn.**
+
+**What survives D28 unchanged, because it was measured separately:**
+- `mode_identified` is 0 on every passive case and 1 on every bare case, 3/3.
+  The failure mode is *too many candidates* (3, 2 and 3 zeros satisfy both
+  criteria), not too few — which is the coupled-copper signature the tool warns
+  about.
+- The conductor is a weak knob. +4.7% of length moved the bare mode −0.5%.
+  Tuning 85–147 MHz by length alone would need a length change far outside the
+  geometry's room, so the retune needs a second parameter.
+- C-7 stands: rt2's premise was a prediction wearing the word *measured*.
+
+**The actual defect, and it is a one-line fix.** None of the six meander/rt
+specs grade **`f_series_res_near_R_GHz`** — the row that says *which* zero is
+the antenna. Six older `halo-rim-ifa-*` specs do grade it. The capability was
+built, used in the previous generation, and then dropped in the generation that
+introduced the passive copper it exists for. Every passive frequency since has
+been the lowest zero, unidentified, reported as the antenna's.
+
+**The order now:** add `f_series_res_near_R_GHz` to the passive specs, re-grade
+the three finished passive runs from their existing `raw.json` (no re-solve
+needed — the data is on disk), and only then retune, against the identified
+mode and a target that is 85–147 MHz away rather than 1.3 GHz.
