@@ -1,0 +1,156 @@
+{
+  "run_utc": "2026-09-05T04:30:49Z",
+  "git_rev": "ad41abd",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "d_darkpkg.py",
+  "engine": "d_rect.py",
+  "verb": "control",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "params": {
+    "down": 4,
+    "astep": 2.0,
+    "smooth": 1.0,
+    "npeak": 22,
+    "nms": 3
+  },
+  "nrf": {
+    "published_mm": [
+      2.956,
+      3.226
+    ],
+    "truth_source": "Nordic nRF52832 PS v1.4, Table 132, p.541 (fetched by lane L3, not recalled)",
+    "roi_padding_stored_px": [
+      0,
+      20,
+      40,
+      60,
+      80,
+      120
+    ],
+    "per_padding": [
+      {
+        "pad": 0,
+        "long_mm": 1.1287429562975881,
+        "short_mm": 1.053493425877749,
+        "score": 24.08722157271004,
+        "theta_deg": 66.0,
+        "cx": 1261.1026316816312,
+        "cy": 856.4615559607224,
+        "n": 17
+      },
+      {
+        "pad": 20,
+        "long_mm": 1.1287429562975881,
+        "short_mm": 1.053493425877749,
+        "score": 25.58465423647323,
+        "theta_deg": 66.0,
+        "cx": 1261.1026316816312,
+        "cy": 856.4615559607224,
+        "n": 20
+      },
+      {
+        "pad": 40,
+        "long_mm": 1.1287429562975881,
+        "short_mm": 1.053493425877749,
+        "score": 21.80880690745918,
+        "theta_deg": 66.0,
+        "cx": 1261.1026316816312,
+        "cy": 856.4615559607224,
+        "n": 27
+      },
+      {
+        "pad": 60,
+        "long_mm": 2.671358329904292,
+        "short_mm": 1.6931144344463822,
+        "score": 19.408404276923527,
+        "theta_deg": 66.0,
+        "cx": 1196.689681389567,
+        "cy": 795.3798742986064,
+        "n": 30
+      },
+      {
+        "pad": 80,
+        "long_mm": 1.8436134952860608,
+        "short_mm": 1.8059887300761412,
+        "score": 17.598421616455084,
+        "theta_deg": 64.0,
+        "cx": 1244.6785302859516,
+        "cy": 727.6800025922043,
+        "n": 36
+      },
+      {
+        "pad": 120,
+        "long_mm": 0.7901200694083117,
+        "short_mm": 0.7524953041983922,
+        "score": 35.877026291447955,
+        "theta_deg": 82.0,
+        "cx": 1425.5192573800014,
+        "cy": 604.7064050480892,
+        "n": 58
+      }
+    ],
+    "measured_long_mm": 1.129,
+    "measured_short_mm": 1.053,
+    "err_long_pct": -65.01,
+    "err_short_pct": -64.36,
+    "roi_swing_long_pct": 166.67,
+    "roi_swing_short_pct": 100.0,
+    "boundary_step_luma": -62.5,
+    "implied_px_per_mm": 37.2
+  },
+  "contrast_ladder": [
+    {
+      "k": 1.0,
+      "step_luma": -62.5,
+      "score": 21.7,
+      "long_mm": 1.091,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.7,
+      "step_luma": -54.4,
+      "score": 22.1,
+      "long_mm": 1.091,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.5,
+      "step_luma": -49.0,
+      "score": 22.3,
+      "long_mm": 1.091,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.35,
+      "step_luma": -45.0,
+      "score": 23.1,
+      "long_mm": 1.053,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.25,
+      "step_luma": -42.2,
+      "score": 23.1,
+      "long_mm": 1.053,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.15,
+      "step_luma": -39.5,
+      "score": 23.1,
+      "long_mm": 1.053,
+      "short_mm": 0.752
+    },
+    {
+      "k": 0.1,
+      "step_luma": -38.2,
+      "score": 23.2,
+      "long_mm": 1.053,
+      "short_mm": 0.752
+    }
+  ],
+  "breaks": {
+    "empty_mask": true,
+    "impossible_threshold": true,
+    "scramble_in_control_box": 

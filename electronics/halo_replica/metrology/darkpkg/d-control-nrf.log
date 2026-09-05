@@ -1,0 +1,76 @@
+d_darkpkg control -- the nRF52832-CIAA, and the ladder that can fail it
+
+  run_id   2026-09-05T04:30:49Z git ad41abd image sha 5d5f8475b774
+  SOURCE   oflynn-backside-fullres.jpeg  (the side carrying the SoC and the shield can)
+  scale    106.313 px/mm stored [metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart]
+           26.578 px/mm at downsample 4; GENUINE 20.7-27.4 px/mm
+  params   {'down': 4, 'astep': 2.0, 'smooth': 1.0, 'npeak': 22, 'nms': 3}
+
+  POSITIVE CONTROL  nRF52832-CIAA, published body 3.226 x 2.956 mm
+    truth  Nordic nRF52832 PS v1.4, Table 132, p.541 (fetched by lane L3, not recalled)
+    box    (1040, 660, 1400, 990) stored px -- generous; the detector is NOT told
+           where the part is inside it, and the candidate is chosen by
+           BOUNDARY SCORE, never by closeness to the published size.
+
+    pad   0   1.129 x  1.053 mm   score   24.1  theta  66.0  (17 candidates in box)
+    pad  20   1.129 x  1.053 mm   score   25.6  theta  66.0  (20 candidates in box)
+    pad  40   1.129 x  1.053 mm   score   21.8  theta  66.0  (27 candidates in box)
+    pad  60   2.671 x  1.693 mm   score   19.4  theta  66.0  (30 candidates in box)
+    pad  80   1.844 x  1.806 mm   score   17.6  theta  64.0  (36 candidates in box)
+    pad 120   0.790 x  0.752 mm   score   35.9  theta  82.0  (58 candidates in box)
+
+    ROI-PADDING SWING  long 166.67 %   short 100.00 %
+    M08 attempt 3, the method this replaces, swung 34 % on this axis.
+    MEASURED (median over paddings)  1.129 x 1.053 mm
+    PUBLISHED                        3.226 x 2.956 mm
+    ERROR   long -65.01 %   short -64.36 %
+    FAIL  size within +/-6.0 %, ROI swing within 6.0 %
+
+  THE ASSUMPTION THE CONTROL SHARES WITH THE METHOD  (E07 sec.4)
+    The nRF is BLUE epoxy, so its boundary STEP is large -- and boundary
+    step is the one thing this method lives on.  A control that is easy in
+    exactly the dimension that decides the black packages is not evidence.
+    nRF52832 boundary step, measured: -62.5 luma (outside minus inside)
+    black_9oclock          boundary step  -54.5 luma   (best score in box 18.6)
+    plus_AKN               boundary step  -13.0 luma   (best score in box 10.7)
+
+  THE CONTRAST LADDER -- the nRF's own step, shrunk, and re-detected
+    k=1.00  step  -62.5 luma   score   21.7   1.091 x 0.752 mm
+    k=0.70  step  -54.4 luma   score   22.1   1.091 x 0.752 mm
+    k=0.50  step  -49.0 luma   score   22.3   1.091 x 0.752 mm
+    k=0.35  step  -45.0 luma   score   23.1   1.053 x 0.752 mm
+    k=0.25  step  -42.2 luma   score   23.1   1.053 x 0.752 mm
+    k=0.15  step  -39.5 luma   score   23.1   1.053 x 0.752 mm
+    k=0.10  step  -38.2 luma   score   23.2   1.053 x 0.752 mm
+
+  DELIBERATE BREAKS -- each must go RED
+    PASS  empty mask -> 0 found
+    PASS  an impossible score requirement (1e6) -> 0 found
+    PASS  the SAME box, phase-scrambled: best score 13.4 against the control's 22.9
+Traceback (most recent call last):
+  File "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/tools/d_darkpkg.py", line 376, in <module>
+    main()
+    ~~~~^^
+  File "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/tools/d_darkpkg.py", line 371, in main
+    _, code = v_control(a, ctx); sys.exit(code)
+              ~~~~~~~~~^^^^^^^^
+  File "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/tools/d_darkpkg.py", line 341, in v_control
+    json.dump(out, open(a.json, "w"), indent=2); print(f"\n  wrote {a.json}")
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/__init__.py", line 181, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/encoder.py", line 444, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/encoder.py", line 413, in _iterencode_dict
+    yield from chunks
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/encoder.py", line 413, in _iterencode_dict
+    yield from chunks
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/encoder.py", line 451, in _iterencode
+    newobj = _default(o)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/encoder.py", line 182, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+                    f'is not JSON serializable')
+TypeError: Object of type bool is not JSON serializable
+when serializing dict item 'scramble_in_control_box'
+when serializing dict item 'breaks'

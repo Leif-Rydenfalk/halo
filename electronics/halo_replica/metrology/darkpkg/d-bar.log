@@ -1,0 +1,19 @@
+d_darkpkg bar -- THE ADMISSION BAR, and no box in it is mine
+
+  run_id   2026-09-05T04:30:44Z git ad41abd image sha 5d5f8475b774
+  SOURCE   oflynn-backside-fullres.jpeg  (the side carrying the SoC and the shield can)
+  scale    106.313 px/mm stored [metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart]
+           26.578 px/mm at downsample 4; GENUINE 20.7-27.4 px/mm
+  params   {'down': 4, 'astep': 2.0, 'smooth': 1.0, 'npeak': 22, 'nms': 3}
+
+  N1 PHASE-SCRAMBLED BOARD, same annulus mask, same code path
+     identical power spectrum, no straight edge and no corner survives
+     n=412   MAX SCORE 26.00    (21 s)
+
+  N2 THE REAL BOARD, tiled automatically at 4.0 mm -- 5 full-board tiles, no box chosen by hand
+     max score per tile:  median 75.57  p75 80.19  p90 99.2  p95 105.54  p99 110.61  max 111.88
+     tiles above the N1 bar: 5 of 5
+
+  ADMISSION BAR = 26.00   (N1).  It is measured, by the same code, on
+  this image, and it CAN GO UP and disqualify my own findings.
+  wrote metrology/darkpkg/d-bar.json
