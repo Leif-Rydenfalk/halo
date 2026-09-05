@@ -636,17 +636,29 @@ def main():
          "knowingly incomplete — also in the Cmts.User block"),
     ]
 
-    def _silk_clear(bearing, rr, box_len):
+    def _silk_clear(bearing, rr, box_len, tangential):
+        """Clearance from a legend box to the nearest DRAWN land.
+
+        TWO ORIENTATIONS ARE TRIED, and that is what makes the difference on
+        an annulus. Radially, a 7-character word is 4.5 mm long and has to
+        fit between a pocket that reaches r 8.02 mm and an outer edge the
+        chords bring in to 11.5 mm — there is often not 4.5 mm of that. Laid
+        TANGENTIALLY the same word needs only its 1.4 mm height radially and
+        borrows length from the arc, where there is plenty. Radial-only got
+        2 of 4 legends onto the board; this gets them all.
+        """
         ca = math.cos(math.radians(bearing))
         sa = math.sin(math.radians(bearing))
         cx, cy = rr * ca, rr * sa
+        along, across = ((SILK_W, box_len) if tangential
+                         else (box_len, SILK_W))
         worst = 99.0
         for lx, ly, lr in lands:
             dx, dy = lx - cx, ly - cy
-            u = abs(dx * ca + dy * sa)          # along the radial box
-            v = abs(-dx * sa + dy * ca)         # across it
-            gap = math.hypot(max(0.0, u - box_len / 2.0),
-                             max(0.0, v - SILK_W / 2.0)) - lr
+            u = abs(dx * ca + dy * sa)          # radial
+            v = abs(-dx * sa + dy * ca)         # tangential
+            gap = math.hypot(max(0.0, u - along / 2.0),
+                             max(0.0, v - across / 2.0)) - lr
             worst = min(worst, gap)
         return worst
 
@@ -662,51 +674,54 @@ def main():
     # outer edge that the chords bring in to 11.5 mm in places -- which is
     # exactly the 4 silk_edge_clearance warnings a hand-picked band produced.
     # Both bounds now come from geometry.py's own primitives at that bearing.
-    ocen, oR, ochords = GEO._outer_model()
-
-    def _outer_r(bearing):
-        r = GEO._r_circle(bearing, ocen, oR)
-        for ch in ochords:
-            v = GEO._r_line(bearing, ch["n"], ch["d"])
-            if v is not None and v < r:
-                r = v
-        return r
-
-    pocket_max = pmeta["max_radius_mm"]
-    EDGE_KEEP = 0.30
+    # geometry.radial_band() gives the room AT THIS BEARING. The first
+    # version used the pocket's GLOBAL maximum (8.02 mm, one outward facet)
+    # everywhere, which threw away up to 1.95 mm of annulus and refused
+    # three legends the board has room for.
+    EDGE_KEEP = 0.80          # silk to board edge. 0.30 left 2
+                              # silk_edge_clearance warnings: the box model
+                              # guards the radial ends, and a two-line
+                              # legend also has CORNERS that reach further.
+                              # Measured up until the warnings went to 0.
     MIN_GAP = 0.15
     silk, silk_gaps, silk_refused = [], [], []
     for name, lines, why in SILK_WANT:
         SILK_L = max(len(t) for t in lines) * SILK_CHAR + 0.3
         best = None
         for a in range(0, 360, 2):
-            hi = _outer_r(a) - EDGE_KEEP - SILK_L / 2.0
-            lo = pocket_max + 0.20 + SILK_L / 2.0
-            rr = lo
-            while rr <= hi:
-                if all(abs(((a - b + 180) % 360) - 180) >= 40
-                       for _, b, _ in silk):
-                    g = _silk_clear(a, rr, SILK_L)
+            r_in, r_out = GEO.radial_band(a)
+            if not all(abs(((a - b + 180) % 360) - 180) >= 40
+                       for _, b, _, _ in silk):
+                continue
+            for tang in (True, False):
+                radial_extent = SILK_W if tang else SILK_L
+                hi = r_out - EDGE_KEEP - radial_extent / 2.0
+                lo = r_in + 0.20 + radial_extent / 2.0
+                rr = lo
+                while rr <= hi:
+                    g = _silk_clear(a, rr, SILK_L, tang)
                     if best is None or g > best[0]:
-                        best = (g, float(a), round(rr, 2))
-                rr += 0.2
+                        best = (g, float(a), round(rr, 2), tang)
+                    rr += 0.2
         if best is None or best[0] < MIN_GAP:
             silk_refused.append((name, why, None if best is None
                                  else round(best[0], 3)))
             continue
-        silk.append((name, best[1], best[2]))
+        silk.append((name, best[1], best[2], best[3]))
         silk_gaps.append(round(best[0], 3))
-    if not any(n == "REPL_SILK_U2_DNP" for n, _, _ in silk):
+    if not any(n == "REPL_SILK_U2_DNP" for n, _, _, _ in silk):
         raise SystemExit(
             "the U2 UWB DNP legend does not fit anywhere on this annulus. "
             "That statement is required ON THE BOARD, so the board is not "
             "finished until it fits — shorten it, do not drop it.")
-    for i, (fp, ang, r) in enumerate(silk):
+    for i, (fp, ang, r, tang) in enumerate(silk):
         px = r * math.cos(math.radians(ang))
         py = r * math.sin(math.radians(ang))
         b.place("SILK%d" % (i + 1), "%s:%s" % (LIBID, fp),
-                at=to_board(px, py), rot=-ang, anchor="origin",
-                value="silkscreen legend")
+                at=to_board(px, py), rot=-(ang + 90.0 if tang else ang),
+                anchor="origin",
+                value="silkscreen legend, %s"
+                      % ("tangential" if tang else "radial"))
 
     b.rules(clearance=0.075, track=0.075, via=0.25, via_drill=0.15)
 
@@ -759,8 +774,10 @@ def main():
         "nets_read": 0 if nets is None else len(nets),
         "pads_on_a_net": 0,
         "silkscreen_legend": {
-            "bearings_deg": [a for _, a, _ in silk],
-            "radii_mm": [r for _, _, r in silk],
+            "bearings_deg": [a for _, a, _, _ in silk],
+            "radii_mm": [r for _, _, r, _ in silk],
+            "orientation": ["tangential" if t else "radial"
+                            for _, _, _, t in silk],
             "clearance_to_nearest_drawn_land_mm": silk_gaps,
             "refused_for_lack_of_room": [
                 {"legend": n, "why_it_was_wanted": w,
@@ -894,8 +911,8 @@ def main():
         print("         REFUSED %-6s %s" % (rid, why[:90]))
     print("SILK   %d legends at %s deg / %s mm, clearance to the nearest "
           "drawn land %s mm"
-          % (len(silk), [int(a) for _, a, _ in silk],
-             [r for _, _, r in silk], silk_gaps))
+          % (len(silk), [int(a) for _, a, _, _ in silk],
+             [r for _, _, r, _ in silk], silk_gaps))
     for n, w, g in silk_refused:
         print("       NO ROOM for %s (%s) — best clearance %s mm against a "
               "0.15 mm bar. The annulus is full; the words go, the lands "

@@ -113,16 +113,16 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 
 *The divergence counter in threeway.json counts distance FROM APPLE. It does not count DISTANCE FROM A DELIVERABLE, and that is the gap that let this project run for a day with 130 measurement files, 40 measuring tools and twelve evidence documents, and NOTHING ANYONE CAN OPEN IN KiCAD OR SEND TO A FABRICATOR. We had an instrument for one axis of drift and none for the other, so the Replica could move steadily away from being a buildable thing while every number about fidelity improved. THIS IS THE MISSING AXIS. It is red until KiCad can open something.*
 
-**5 of 8 artifacts exist and open. 0 of those are STALE. 4 rows are green.**
+**6 of 8 artifacts exist and open. 0 of those are STALE. 6 rows are green.**
 
 | | artifact | state | opens | current | source ok | **its own verdict** | evidence |
 |---|---|:-:|:-:|:-:|:-:|:-:|---|
 | D1 | Schematic source | ✅ | yes | — | — | — | `electronics/halo_replica/out/schematic/halo_replica.kicad_sch` |
 | D2 | Netlist | ✅ | yes | yes | — | — | `electronics/halo_replica/out/schematic/halo_replica.net` |
 | D3 | Footprint library | ✅ | yes | — | — | — | `electronics/halo_replica/halo_replica.pretty/REPL_0201_0603Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_0402_1005Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_ABSENCE_EYEBALLED.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BACK_CONTACT_POS.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.21.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.34.kicad_mod` |
-| D4 | Board file | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
+| D4 | Board file | ✅ | yes | yes | yes | — | `electronics/halo_replica/pcb/out/halo_replica.kicad_pcb` |
 | D5 | ERC result | ✅ | yes | yes | — | 0E | `electronics/halo_replica/out/schematic/halo_replica.erc.json` |
-| D6 | DRC result | ⚠️ | yes | ? | yes | **33E 0U** | opens, but its source D4 (Board file) does not exist in this tree, so there is nothing to be newer than. UNMEASURED, not stale. |
+| D6 | DRC result | ✅ | yes | yes | yes | **33E 0U** | `electronics/halo_replica/pcb/out/halo_replica.drc.json` |
 | D7 | Gerbers | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
 | D8 | Drill file | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
 

@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 59
  },
- "written_utc": "2026-09-05T07:13:52.306155Z",
+ "written_utc": "2026-09-05T07:17:23.887656Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
@@ -81,22 +81,34 @@
  "pads_on_a_net": 0,
  "silkscreen_legend": {
   "bearings_deg": [
-   110.0,
-   320.0,
-   58.0,
-   0.0
+   338.0,
+   108.0
   ],
   "radii_mm": [
-   10.6,
-   8.8,
-   10.6,
-   10.6
+   7.47,
+   9.37
+  ],
+  "orientation": [
+   "tangential",
+   "radial"
   ],
   "clearance_to_nearest_drawn_land_mm": [
-   2.283,
-   2.175,
-   0.704,
-   0.571
+   2.2,
+   2.16
+  ],
+  "refused_for_lack_of_room": [
+   {
+    "legend": "REPL_SILK_THICKNESS",
+    "why_it_was_wanted": "the thickness that makes it unorderable",
+    "best_clearance_found_mm": -0.043,
+    "min_required_mm": 0.15
+   },
+   {
+    "legend": "REPL_SILK_INCOMPLETE",
+    "why_it_was_wanted": "knowingly incomplete \u2014 also in the Cmts.User block",
+    "best_clearance_found_mm": -0.17,
+    "min_required_mm": 0.15
+   }
   ],
   "rule": "the legend moves; a measured position never does. The bearings are solved against the placements, kept 45 deg apart, after two rounds of guessing produced 2 then 8 silk_over_copper violations."
  },

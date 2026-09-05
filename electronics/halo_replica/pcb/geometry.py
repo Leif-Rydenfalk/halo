@@ -424,6 +424,35 @@ def pocket(step_deg=POCKET_STEP_DEG):
     return segs, walls, meta
 
 
+def radial_band(bearing_deg):
+    """(pocket_r, outer_r) in mm AT THIS BEARING. The room there actually is.
+
+    Added because board.py's legend solver used the pocket's GLOBAL maximum
+    radius (8.02 mm, reached at one outward facet) as the inner bound at
+    EVERY bearing. The pocket runs 6.07 to 8.02 mm, so that threw away up to
+    1.95 mm of annulus everywhere the pocket is not at its widest, and the
+    solver then reported "no room" for a 7-character word on a board that
+    has room for it. An over-conservative bound is not the safe direction:
+    it refuses true things.
+    """
+    c, R, chords = _outer_model()
+    r_out = _r_circle(bearing_deg, c, R)
+    for ch in chords:
+        v = _r_line(bearing_deg, ch["n"], ch["d"])
+        if v is not None and v < r_out:
+            r_out = v
+    pc, a, b, n, phi, facets, k = _pocket_model()
+    r_in = _r_superellipse(bearing_deg, pc, a, b, n, phi)
+    for f in facets:
+        if _in_arc(bearing_deg, f["arc_deg"][0], f["arc_deg"][1]):
+            nx, ny = _u(f["normal_deg"])
+            v = _r_line(bearing_deg, (nx, ny), f["offset_mm"] * k)
+            if v is not None:
+                r_in = v
+            break
+    return r_in, r_out
+
+
 if __name__ == "__main__":
     sh, m = outer()
     print("OUTER  ", json.dumps(m, indent=1))

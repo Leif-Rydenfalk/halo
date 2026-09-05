@@ -276,14 +276,22 @@ def classify_clearances(doc, drc_paths, roots, root=HALO):
         for c in cd.get("classified", []):
             claims[c.get("index")] = c
     out = {k: 0 for k in classes}
-    refused = []
+    refused, unknown = [], {}
     for i, v in enumerate(viol):
         c = claims.get(i)
         if not c:
             out["DRAWN-WRONG"] += 1; continue
         cl = c.get("class")
         if cl not in classes:
-            refused.append(f"violation {i}: class {cl!r} is not one of the three")
+            # A CLASS THIS GATE DOES NOT KNOW IS A REQUEST, NOT AN ERROR. The board lane
+            # is closer to the violations than this lane is, and if it finds a kind that
+            # none of the defined classes fit, the honest response is to SAY SO LOUDLY
+            # rather than bucket it into DRAWN-WRONG behind a truncated refusal line.
+            # It still counts as DRAWN-WRONG - silence and novelty both mean our fault
+            # until evidence says otherwise - but it is reported separately and in full,
+            # because a gate that quietly absorbs a class it does not understand cannot
+            # ever be told it needs a new one.
+            unknown[cl] = unknown.get(cl, 0) + 1
             out["DRAWN-WRONG"] += 1; continue
         if not classes[cl]["pointer_required"]:
             out[cl] += 1; continue
@@ -336,7 +344,8 @@ def classify_clearances(doc, drc_paths, roots, root=HALO):
         out[cl] += 1
     blocking = sum(n for k, n in out.items() if classes[k]["blocks_fabrication"])
     return dict(drc=os.path.relpath(bpath, root), errors=len(viol), counts=out,
-                blocking=blocking, refused=refused, floor_mm=floor,
+                blocking=blocking, refused=refused, unknown_classes=unknown, floor_mm=floor,
+                known_classes=sorted(classes),
                 classification_file=cls_file,
                 note=("no classification file found - every error falls back to DRAWN-WRONG. "
                       "That is not CANNOT DETERMINE: an unexcused violation IS our defect "
@@ -552,8 +561,16 @@ def print_deliverable(drows, ddoc, tree):
                   + f"   -> {cs['blocking']} block fabrication")
             if cs.get("note"):
                 print(f"           {cs['note']}")
+            for cl, n in sorted(cs.get("unknown_classes", {}).items()):
+                print(f"           *** THE CLASSIFICATION PROPOSES A CLASS THIS GATE DOES NOT "
+                      f"KNOW: {cl!r}, on {n} violation(s).")
+                print(f"           Counted DRAWN-WRONG for now. If that class is real, it needs "
+                      f"defining in deliverable.json with its pointer requirement and whether it")
+                print(f"           blocks. Known classes: {', '.join(cs['known_classes'])}.")
             for x in cs["refused"][:3]:
                 print(f"           REFUSED {x}")
+            if len(cs["refused"]) > 3:
+                print(f"           ... and {len(cs['refused'])-3} more refusals (see the JSON)")
         if r["state"] != "GREEN":
             for chunk in (r["why"] or "").split(" ALSO: "):
                 print(f"           {chunk}")
@@ -1281,6 +1298,20 @@ def cmd_selftest(args):
               f"unknown loses its grounds - and nothing else would have noticed.")
         if not okc7: dfails.append("C-7")
 
+        # C-8  A CLASS THE GATE DOES NOT KNOW must be reported BY NAME, not absorbed.
+        # The board lane is closer to the violations than this lane is; if it needs a
+        # fifth class the gate has to be able to say so out loud.
+        write_claim("TOOLING-LIMITED", 0.0100)
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc8 = (r["unknown_classes"].get("TOOLING-LIMITED") == 1
+                and r["counts"]["DRAWN-WRONG"] == 2)
+        print(f"    [{'ok ' if okc8 else 'RED'}] C-8 an UNKNOWN class 'TOOLING-LIMITED' -> "
+              f"reported by name {r['unknown_classes']}, still DRAWN-WRONG "
+              f"{r['counts']['DRAWN-WRONG']} (must be both)")
+        print(f"          a gate that quietly absorbs a class it does not understand can never "
+              f"be told it needs a new one.")
+        if not okc8: dfails.append("C-8")
+
         write_claim("GENUINELY-TOUCHING", None)
         r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
         okc5 = r["counts"]["GENUINELY-TOUCHING"] == 1 and r["blocking"] == 1
@@ -1297,7 +1328,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 21 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 22 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS
