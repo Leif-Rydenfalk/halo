@@ -99,9 +99,16 @@ why. Both readings are recorded in `DISCARDED` at the bottom of this file.
 ===========================================================================
 THE PACKAGES ARE NOT THE REAL PACKAGES, AND THAT IS DELIBERATE
 ===========================================================================
-Apple's U1 is an **nRF52832-CIAA, WLCSP-50**. There is no sourced ball map for
-CIAA anywhere in this repository, and inventing 50 ball designators is exactly
-the failure DECISIONS.md D9 forbids. This sheet therefore uses KiCad's
+Apple's U1 is an **nRF52832-CIAA, WLCSP-50**. There is no COMPLETE sourced
+ball map for CIAA anywhere in this repository, and inventing 50 ball
+designators is exactly the failure DECISIONS.md D9 forbids.
+
+**TEN BALLS ARE SOURCED, AND THIS SHEET FIRST SAID NONE WERE.** O'Flynn's
+test-point table names D3, E2, F1, F4, G1, G3, H1, H2, H3 and H4 against real
+signals. Ten of fifty is not a ball map and does not become one, so the
+substitution below stands — but the claim "no ball map is sourced" was too
+strong, it was written before anyone opened the file, and the correction is
+recorded here rather than quietly applied. This sheet therefore uses KiCad's
 `MCU_Nordic:nRF52832-QFxx` — **the same die in the QFN-48 package** — so:
 
     * the netlist is correct BY SIGNAL NAME, which is what a netlist is for;
@@ -142,6 +149,7 @@ if WORKSHOP not in sys.path:
     sys.path.insert(0, os.path.join(WORKSHOP, "ce-pcb"))
 
 from cepcb.schematic import Schematic                              # noqa: E402
+from cepcb.schematic import MEASURED, INFERRED, CHOSEN            # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPLICA = os.path.dirname(HERE)
@@ -154,21 +162,40 @@ C0805 = "Capacitor_SMD:C_0805_2012Metric"
 R0402 = "Resistor_SMD:R_0402_1005Metric"
 L0402 = "Inductor_SMD:L_0402_1005Metric"
 
-MEASURED = "MEASURED"
-INFERRED = "INFERRED"
-CHOSEN = "CHOSEN"
-
+#: The three bases are ce-pcb's now, not this file's. They were declared here
+#: first; `Schematic.basis()` was added upstream on 2026-09-05 (P11) so that a
+#: MEASURED net has to name a file and a claim about it, and `check()` opens
+#: the file and compares. This design is that feature's first user.
 #: net name -> (basis, driver, loads, why). Written by N() as the sheet is
 #: built, so NETS.md is generated from the same statements that make the
 #: netlist and cannot describe a different circuit.
 NETS = {}
 
+#: net -> the anchor handed to basis(). Kept beside NETS so the NETS.md table
+#: keeps its four columns.
+ANCHORS = {}
 
-def N(name, basis, driver, loads, why):
+#: ce-designs/halo — anchors resolve against it.
+REPO = os.path.dirname(os.path.dirname(REPLICA))
+
+#: THE TWO DOCUMENTS EVERY MEASURED NET ON THIS SHEET RESTS ON, and nothing
+#: else does. Every string claimed against them is checked at build time by
+#: cepcb's basis resolver, so deleting the evidence breaks the build.
+A_OFLYNN = "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+A_TEARDOWN = "docs/REFERENCE-TEARDOWN.md"
+
+
+def N(name, basis, driver, loads, why, anchor=None, contains=None,
+      derived_from=None):
     """Record what a net IS, next to where it is wired.
 
     A net table maintained by hand in a second document is a net table that
     is wrong within a week. This one is the same call that documents it.
+
+    `anchor` + `contains` go to `cepcb.schematic.Schematic.basis()`, which
+    OPENS THE FILE and checks the claim. A MEASURED net with no anchor is
+    refused THERE, not here — a local wrapper that let MEASURED be reached by
+    typing would be the ratchet with a nicer face.
     """
     if basis not in (MEASURED, INFERRED, CHOSEN):
         raise SystemExit("net %s: basis %r is not one of the three." %
@@ -178,6 +205,8 @@ def N(name, basis, driver, loads, why):
             "net %s is described twice. One net, one basis, or the table "
             "means nothing." % name)
     NETS[name] = (basis, driver, loads, why)
+    ANCHORS[name] = {"anchor": anchor, "contains": contains,
+                     "derived_from": derived_from}
     return name
 
 
@@ -392,8 +421,13 @@ def build():
     N("VBAT_RAW", MEASURED, "BT1.1, the positive POWER finger",
       "D3 anode; R1 (sense divider for AIN0)",
       "Three sprung contacts with two positives is a direct observation "
-      "(REFERENCE-TEARDOWN 2.5, iFixit had the tag in their hands). WHICH "
-      "finger carries the current is O'Flynn's reading, not this lane's.")
+      "(REFERENCE-TEARDOWN 2.5, iFixit had the tag in their hands), and "
+      "O'Flynn labels the pads VCC1 and VCC2, '+3.0V input (1 of 2 - both "
+      "needed)'. WHICH of the two carries the logic current is NOT settled "
+      "by O'Flynn - he says both are needed and nothing about sensing - so "
+      "the power/sense split here comes from REFERENCE-TEARDOWN 2.5 and "
+      "could be the other way round.",
+      anchor=A_TEARDOWN, contains="**3 sprung contacts**")
     s.net("VBAT_RAW", "BT1.1", "D3.1", "R1.1")
 
     N("VBAT", CHOSEN, "D3 cathode",
@@ -409,12 +443,15 @@ def build():
       "REFERENCE-TEARDOWN 2.5: 'Both positives must see 3 V to boot; only "
       "the left powers the logic, the right is sensed at ~50 nA.' A ~50 nA "
       "sense current is a very large divider, which is why R3/R4 are "
-      "megohms and why their exact values are CANNOT DETERMINE.")
+      "megohms and why their exact values are CANNOT DETERMINE.",
+      anchor=A_TEARDOWN, contains="~50 nA")
     s.net("VBAT_SNS_P2", "BT1.2", "R3.1")
 
     N("GND", MEASURED, "BT1.3, the negative dome on the well floor",
       "every ground pin on this sheet",
-      "The negative contact is a direct observation.")
+      "The negative contact is a direct observation. O'Flynn labels the pad "
+      "GND and test point 7 lands on it.",
+      anchor=A_TEARDOWN, contains="negative on the well floor")
     # BT1.3 WAS MISSING HERE ON THE FIRST BUILD, and nc_unused() caught it:
     # the ground return of the entire tag had been DESCRIBED in the net table
     # above and never WIRED, so the sheet would have shipped with the battery
@@ -517,16 +554,27 @@ def build():
     s.net("V1V8", "U8.1")
     s.net("GND", "U8.3")
 
-    N("EN_PERIPH", CHOSEN, "U1.P0.15 (pin 18)", "U8.EN",
+    N("EN_PERIPH", CHOSEN, "U1.15 (P0.12)", "U8.EN",
       "WHICH GPIO is entirely this sheet's choice - Apple's assignment is "
-      "unknown and every nRF52832 GPIO could serve. THAT there is a gate "
-      "under firmware control is the part with an argument behind it: 2.3 uA "
-      "sleep with a 4 MB NOR on the same rail is not otherwise reachable.")
-    s.net("EN_PERIPH", "U1.18", "U8.2")
+      "unknown and every nRF52832 GPIO could serve. THAT THERE IS A GATE "
+      "UNDER FIRMWARE CONTROL IS NO LONGER AN ARGUMENT BUT A MEASUREMENT: "
+      "see V1V8_SW. It sat on P0.15 until O'Flynn's table showed that pad is "
+      "the flash's CIPO.",
+      derived_from="this sheet's own pin budget, after the measured flash "
+                   "bus took P0.11/P0.15/P0.16/P0.17")
+    s.net("EN_PERIPH", "U1.15", "U8.2")
 
-    N("V1V8_SW", CHOSEN, "U8.VOUT", "U3 flash VCC/nWP/nHOLD; U2 UWB VDD (DNP)",
-      "The gated branch. See EN_PERIPH for what is chosen and what is "
-      "argued.")
+    N("V1V8_SW", MEASURED, "U8.VOUT", "U3 flash VCC/nWP/nHOLD; U2 UWB VDD "
+      "(DNP); TP21",
+      "O'Flynn, in his own words: 'The nrf controls power to the SPI flash, "
+      "so you need to override it by supplying 1.8V on test point 21', and "
+      "'most of time the flash is powered off and thus the pins are "
+      "tri-stated'. THAT SETTLES THE ARGUMENT THIS SHEET HAD WITH iFIXIT BY "
+      "MEASUREMENT rather than by self-consistency: the flash is on a "
+      "switched 1.8 V rail the MCU commands. What is still CHOSEN is which "
+      "GPIO commands it (EN_PERIPH) and that the switch is an FPF2487.",
+      anchor=A_OFLYNN,
+      contains="The nrf controls power to the SPI flash")
     s.net("V1V8_SW", "U8.4")
 
     # U9 - the part nobody has identified, wired the only honest way.
@@ -562,8 +610,10 @@ def build():
                     "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. "
                     "Marking 'N52832 CIAAE0 2102JK' was read off the die "
                     "photograph by lane L3 - fully legible, three lines. "
-                    "CIAA is WLCSP-50 and NO SOURCED BALL MAP EXISTS IN THIS "
-                    "REPOSITORY, so this sheet uses the QFN-48 (QFAA) symbol "
+                    "CIAA is WLCSP-50 and NO COMPLETE BALL MAP IS SOURCED "
+                    "HERE - O'Flynn's table gives TEN of the fifty (D3, E2, "
+                    "F1, F4, G1, G3, H1, H2, H3, H4) - so this sheet uses "
+                    "the QFN-48 (QFAA) symbol "
                     "of the SAME DIE. The netlist is right by signal name; "
                     "the pin NUMBERS are QFAA's. Inventing 50 ball "
                     "designators is what DECISIONS.md D9 forbids.",
@@ -777,19 +827,37 @@ def build():
     s.net("V1V8_SW", "U3.8", "U3.3", "U3.7")
     s.net("GND", "U3.4", "U3.9")
 
-    N("SPI_SCK", CHOSEN, "U1.15 (P0.12)", "U3 SCLK; U2 SPI_SCK (DNP)",
-      "The bus exists - the flash holds BOTH the nRF firmware and the U1's "
-      "'Rose' firmware, so the MCU must be able to read it. WHICH GPIO is "
-      "this sheet's choice; on nRF52832 any SPIM instance routes to any pin.")
-    N("SPI_MOSI", CHOSEN, "U1.16 (P0.13)", "U3 SI/IO0; U2 SPI_MOSI (DNP)",
-      "Same.")
-    N("SPI_MISO", CHOSEN, "U3 SO/IO1 (and U2, DNP)", "U1.17 (P0.14)", "Same.")
-    N("FLASH_nCS", CHOSEN, "U1.14 (P0.11)", "U3 nCS",
-      "Separate chip selects for the flash and the UWB module is what makes "
-      "one bus serve two devices. Pin choice is this sheet's.")
-    s.net("SPI_SCK", "U1.15", "U3.6")
-    s.net("SPI_MOSI", "U1.16", "U3.5")
-    s.net("SPI_MISO", "U1.17", "U3.2")
+    # THESE FOUR WERE "CHOSEN" UNTIL THE ANCHOR REQUIREMENT MADE SOMEBODY
+    # OPEN THE FILE. O'Flynn's test-point table gives the flash bus by pad,
+    # by nRF BALL and by GPIO, and three of this sheet's four assignments
+    # were wrong. They are MEASURED now, and they are measured because a
+    # feature designed to stop MEASURED being typed forced a read of the
+    # source that was already being cited.
+    N("SPI_SCK", MEASURED, "U1.20 (P0.17, nRF ball G3)",
+      "U3 SCLK; U2 SPI_SCK (DNP); TP22",
+      "O'Flynn, test point 22: '1.8V SPI Flash - SCLK / nRF ball G3 "
+      "(P0.17)'. THIS SHEET FIRST DREW IT ON P0.12 AND THAT WAS WRONG.",
+      anchor=A_OFLYNN, contains="nRF ball G3 (P0.17)")
+    N("SPI_MOSI", MEASURED, "U1.19 (P0.16, nRF ball H3)",
+      "U3 SI/IO0; U2 SPI_MOSI (DNP); TP19",
+      "O'Flynn, test point 19: '1.8V SPI Flash - Data In (COPI) / nRF ball "
+      "H3 (P0.16)'. COPI is into the flash, so it is the MCU's output. This "
+      "sheet first drew it on P0.13.",
+      anchor=A_OFLYNN, contains="Data In (COPI) / nRF ball H3 (P0.16)")
+    N("SPI_MISO", MEASURED, "U3 SO/IO1 (and U2, DNP)",
+      "U1.18 (P0.15, nRF ball H4); TP20",
+      "O'Flynn, test point 20: '1.8V SPI Flash - Data Out (CIPO) /nRF ball "
+      "H4 (P0.15)'. This sheet first drew it on P0.14.",
+      anchor=A_OFLYNN, contains="Data Out (CIPO) /nRF ball H4 (P0.15)")
+    N("FLASH_nCS", MEASURED, "U1.14 (P0.11, nRF ball F4)", "U3 nCS; TP24",
+      "O'Flynn, test point 24: '1.8V SPI Flash - Chip Select (CS)/ nRF ball "
+      "F4 (P0.11)'. THE ONLY ONE OF THE FOUR THIS SHEET HAD RIGHT, and it "
+      "had it right by luck - it was CHOSEN, and a choice that happens to "
+      "match a measurement is still a choice until somebody checks.",
+      anchor=A_OFLYNN, contains="Chip Select (CS)/ nRF ball F4 (P0.11)")
+    s.net("SPI_SCK", "U1.20", "U3.6")
+    s.net("SPI_MOSI", "U1.19", "U3.5")
+    s.net("SPI_MISO", "U1.18", "U3.2")
     s.net("FLASH_nCS", "U1.14", "U3.1")
 
     # =====================================================================
@@ -937,17 +1005,24 @@ def build():
     s.net("AMP_GAIN", "U5.2", "R8.1")
     s.net("GND", "R8.2")
 
-    N("I2S_BCLK", CHOSEN, "U1.19 (P0.16)", "U5 BCLK",
+    N("I2S_BCLK", CHOSEN, "U1.16 (P0.13)", "U5 BCLK",
       "A class-D amplifier of this family takes I2S. THAT the MCU drives it "
-      "digitally follows from the part; WHICH PINS is this sheet's choice.")
-    N("I2S_LRCLK", CHOSEN, "U1.20 (P0.17)", "U5 LRCLK", "Same.")
-    N("I2S_DIN", CHOSEN, "U1.22 (P0.19)", "U5 DIN", "Same.")
+      "digitally follows from the part; WHICH PINS is this sheet's choice. "
+      "It sat on P0.16 until O'Flynn's table showed that pad is the flash's "
+      "COPI.",
+      derived_from="the part's own interface, on whatever pins the measured "
+                   "flash bus left free")
+    N("I2S_LRCLK", CHOSEN, "U1.17 (P0.14)", "U5 LRCLK",
+      "Same. It sat on P0.17, which is the flash's measured SCLK.",
+      derived_from="as I2S_BCLK")
+    N("I2S_DIN", CHOSEN, "U1.22 (P0.19)", "U5 DIN", "Same.",
+      derived_from="as I2S_BCLK")
     N("AMP_nSD", CHOSEN, "U1.23 (P0.20)", "U5 nSD_MODE",
       "Shutdown control. A tag that sleeps at 2.3 uA does not leave a "
       "class-D amplifier enabled, so a shutdown line is an argument; the pin "
       "is a choice.")
-    s.net("I2S_BCLK", "U1.19", "U5.16")
-    s.net("I2S_LRCLK", "U1.20", "U5.14")
+    s.net("I2S_BCLK", "U1.16", "U5.16")
+    s.net("I2S_LRCLK", "U1.17", "U5.14")
     s.net("I2S_DIN", "U1.22", "U5.1")
     s.net("AMP_nSD", "U1.23", "U5.4")
 
@@ -1037,12 +1112,26 @@ def build():
     # =====================================================================
     # BLOCK 13 - SWD and the glitch pad. THE ONLY MEASURED NET NAMES HERE.
     # =====================================================================
-    for ref, pin, net, note in (
+    # THE ANCHOR REQUIREMENT CORRECTED THE CITATION HERE TOO. Two of these
+    # four are given in O'Flynn's own table WITH THEIR nRF BALL, and two are
+    # not: his table says "35 | nRF ball F1 (SWCLK)" and "36 | nRF ball G1
+    # (SWDIO)" with no GPIO, because SWCLK and SWDIO are dedicated pads and
+    # have none. TP30 and TP31 carry both. Each row below claims the exact
+    # string that is in the file it names, and cepcb opens the file.
+    for ref, pin, net, note, anchor, claim in (
             ("TP30", "24", "nRESET",
-             "O'Flynn's TP30 = nRST. On nRF52832 that is P0.21/nRESET."),
-            ("TP35", "25", "SWDCLK", "O'Flynn's TP35 = SWCLK."),
-            ("TP36", "26", "SWDIO", "O'Flynn's TP36 = SWDIO."),
-            ("TP31", "21", "SWO", "O'Flynn's TP31 = SWO, P0.18 on this die."),
+             "O'Flynn's table, verbatim: '30 | nRF ball H1 (P0.21/nRST)'.",
+             A_OFLYNN, "nRF ball H1 (P0.21/nRST)"),
+            ("TP35", "25", "SWDCLK",
+             "O'Flynn's table, verbatim: '35 | nRF ball F1 (SWCLK)'. No GPIO "
+             "number, because SWCLK is a dedicated pad and has none.",
+             A_OFLYNN, "nRF ball F1 (SWCLK)"),
+            ("TP36", "26", "SWDIO",
+             "O'Flynn's table, verbatim: '36 | nRF ball G1 (SWDIO)'.",
+             A_OFLYNN, "nRF ball G1 (SWDIO)"),
+            ("TP31", "21", "SWO",
+             "O'Flynn's table, verbatim: '31 | nRF ball H2 (P0.18/SWO)'.",
+             A_OFLYNN, "nRF ball H2 (P0.18/SWO)"),
     ):
         s.part(ref, "Connector:TestPoint", value=net + " (O'Flynn " + ref + ")",
                group="test", footprint="TestPoint:TestPoint_Pad_D1.0mm",
@@ -1053,9 +1142,13 @@ def build():
                         "exposed test pads and O'Flynn published which pad "
                         "is which. APPROTECT is enabled on Apple's units, so "
                         "the pads are present and locked.",
-                        {"Source": "research/fetched/"
-                                   "A-oflynn-testpoints-and-glitch-repos.md"}))
-        N(net, MEASURED, "U1 pin " + pin, ref + " (exposed test pad)", note)
+                        {"Source": A_OFLYNN + " — the pad-to-BALL table, "
+                                   "checked at build time by cepcb's basis "
+                                   "resolver, which is how the first "
+                                   "citation here was found to be pointing "
+                                   "at the right file for the wrong reason"}))
+        N(net, MEASURED, "U1 pin " + pin, ref + " (exposed test pad)", note,
+          anchor=anchor, contains=claim)
         s.net(net, "U1." + pin, ref + ".1")
 
     s.part("TP28", "Connector:TestPoint", value="nRF CORE RAIL (DEC1) - "
@@ -1073,6 +1166,73 @@ def build():
                                "A-limitedresults-nrf52-approtect-bypass.md"}))
     s.net("DEC1", "TP28.1")
 
+    # THE REST OF O'FLYNN'S TABLE. Every one of these is a pad he named on a
+    # board he had, and they are the densest measured evidence this whole
+    # reconstruction has. They are placed so the net they land on carries the
+    # measurement rather than a footnote pointing at it.
+    for ref, net, claim, note in (
+            ("TP5", "VBAT_SNS_P2", "| 5   | VCC2 (Connects to VCC2 input)",
+             "O'Flynn: '5 | VCC2 (Connects to VCC2 input)'. WHICH of VCC1 "
+             "and VCC2 is the sense finger is NOT in his table - he says "
+             "only that both are needed - so the sense/power split is "
+             "REFERENCE-TEARDOWN's and this pad could be the other one."),
+            ("TP6", "VBAT_RAW", "| 6   | VCC1 (Connects to VCC1 input)",
+             "O'Flynn: '6 | VCC1 (Connects to VCC1 input)'. Same caveat."),
+            ("TP7", "GND", "| 7   | GND", "O'Flynn: '7 | GND'."),
+            ("TP19", "SPI_MOSI", "Data In (COPI) / nRF ball H3 (P0.16)",
+             "O'Flynn: the flash's COPI, on nRF ball H3."),
+            ("TP20", "SPI_MISO", "Data Out (CIPO) /nRF ball H4 (P0.15)",
+             "O'Flynn: the flash's CIPO, on nRF ball H4."),
+            ("TP21", "V1V8_SW", "| 21  | 1.8V SPI Flash VCC",
+             "O'Flynn: '21 | 1.8V SPI Flash VCC'. He forces the flash on by "
+             "applying 1.8 V HERE, which is the direct evidence that this "
+             "rail is switched and not the main one."),
+            ("TP22", "SPI_SCK", "nRF ball G3 (P0.17)",
+             "O'Flynn: the flash's SCLK, on nRF ball G3."),
+            ("TP24", "FLASH_nCS", "Chip Select (CS)/ nRF ball F4 (P0.11)",
+             "O'Flynn: the flash's chip select, on nRF ball F4."),
+            ("TP29", "GND", "| 29  | Apple Logo :) GND",
+             "O'Flynn: '29 | Apple Logo :) GND'. The Apple logo on the "
+             "silkscreen is a ground pad, which is the most Apple sentence "
+             "in the whole teardown."),
+            ("TP34", "V1V8", "| 34  | 1.8V from nRF",
+             "O'Flynn: '34 | 1.8V from nRF', VERBATIM AND AMBIGUOUS. It "
+             "could mean the 1.8 V rail probed near the nRF, or 1.8 V the "
+             "nRF itself sources. This sheet lands it on V1V8 and does not "
+             "claim to have resolved his wording."),
+    ):
+        s.part(ref, "Connector:TestPoint", value=net + " (O'Flynn " + ref + ")",
+               group="test", footprint="TestPoint:TestPoint_Pad_D1.0mm",
+               in_bom=False,
+               fields=B(None, "PLACEHOLDER-L12", note,
+                        {"Source": A_OFLYNN}))
+        s.net(net, ref + ".1")
+
+    # TP9 lands on a GPIO whose FUNCTION O'Flynn does not give. The pad and
+    # the ball are measured; what it does is not, and a test point on a net
+    # named after its function would invent one.
+    s.part("TP9", "Connector:TestPoint", value="P0.26 - FUNCTION CANNOT "
+           "DETERMINE", group="test",
+           footprint="TestPoint:TestPoint_Pad_D1.0mm", in_bom=False,
+           fields=B(None, "PLACEHOLDER-L12",
+                    "O'Flynn: '9 | nRF ball D3 (P0.26)'. He gives the pad "
+                    "and the ball and NOT the function, so this net is named "
+                    "for the pin and nothing else. TP8 IS DELIBERATELY "
+                    "ABSENT: his table says '8 | nRF ball E2 (P0.16)' while "
+                    "row 19 says the flash's COPI is 'nRF ball H3 (P0.16)'. "
+                    "TWO DIFFERENT BALLS CARRY THE SAME GPIO NUMBER and one "
+                    "of the two is a transcription error. This sheet takes "
+                    "the SPI block's assignment because its four balls "
+                    "H3/H4/G3/F4 form a coherent group, and records the "
+                    "conflict rather than resolving it.",
+                    {"Source": A_OFLYNN}))
+    N("TP9_P0.26", MEASURED, "U1.38 (P0.26, nRF ball D3)", "TP9",
+      "O'Flynn's table gives the pad and the ball. IT DOES NOT GIVE THE "
+      "FUNCTION, so this net is named after the pin and asserts nothing "
+      "about what Apple uses it for.",
+      anchor=A_OFLYNN, contains="nRF ball D3 (P0.26)")
+    s.net("TP9_P0.26", "U1.38", "TP9.1")
+
     s.power("VBAT_RAW", "VBAT", "V1V8", "V1V8_SW", "GND")
 
     # ---------------------------------------------------------------------
@@ -1080,12 +1240,38 @@ def build():
     # nobody opens next to KiCad.
     # ---------------------------------------------------------------------
     s.text("halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), "
-           "reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Not one net "
-           "here was read off a board. Every net carries a basis - MEASURED, "
-           "INFERRED or CHOSEN - and NETS.md beside this file lists all of "
-           "them. ONLY SEVEN OF 51 NETS ARE MEASURED: the three battery "
-           "contacts and the four SWD pads O'Flynn published. The other 44 "
-           "are 21 INFERRED and 23 CHOSEN.")
+           "reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Every net "
+           "carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md "
+           "beside this file lists all of them with the counts DERIVED, "
+           "never typed. 13 of 52 nets are MEASURED, and every one of those "
+           "names a FILE AND A STRING THAT MUST BE IN IT, checked at build "
+           "time. The other 39 are inference and choice.")
+    s.text("FOUR NETS ON THIS SHEET WERE WRONG UNTIL A CHECK FORCED SOMEBODY "
+           "TO OPEN THE FILE THEY ALREADY CITED. The flash bus was drawn on "
+           "P0.12/P0.13/P0.14 as a free CHOICE. O'Flynn's test-point table "
+           "gives it by pad, by nRF BALL and by GPIO: SCLK on P0.17 (ball "
+           "G3), COPI on P0.16 (H3), CIPO on P0.15 (H4), CS on P0.11 (F4). "
+           "Three of the four were wrong and the fourth was right by luck. "
+           "The bus is MEASURED now.")
+    s.text("TEN CIAA BALLS ARE SOURCED, AND FORTY ARE NOT. O'Flynn's table "
+           "names nRF ball designators for D3, E2, F1, F4, G1, G3, H1, H2, "
+           "H3 and H4. That is not a ball map and does not make one - the "
+           "package here is still the QFN-48 substitution - but it is ten "
+           "more than this sheet first claimed existed, and L12 should have "
+           "them when it draws the WLCSP land.")
+    s.text("A CONTRADICTION INSIDE O'FLYNN'S OWN TABLE, CARRIED NOT "
+           "RESOLVED: row 8 reads 'nRF ball E2 (P0.16)' and row 19 reads "
+           "'nRF ball H3 (P0.16)'. Two different balls with one GPIO number; "
+           "one is a transcription error. This sheet takes row 19 because "
+           "the SPI block's four balls H3/H4/G3/F4 are a coherent group, and "
+           "TP8 IS DELIBERATELY ABSENT rather than drawn on a guess.")
+    s.text("THE iFIXIT ARGUMENT IS NOW SETTLED BY MEASUREMENT, not by "
+           "self-consistency. O'Flynn, verbatim: 'The nrf controls power to "
+           "the SPI flash, so you need to override it by supplying 1.8V on "
+           "test point 21', and 'most of time the flash is powered off and "
+           "thus the pins are tri-stated'. The flash sits on a switched "
+           "1.8 V rail the MCU commands - which is what this sheet drew from "
+           "the argument that a load switch cannot gate its own controller.")
     s.text("U2 IS APPLE'S 'U1' UWB SiP AND IT IS DNP / UNPOPULATED. Apple "
            "does not sell it to anyone, at any price, with any lead time. "
            "That is not a sourcing problem, it is a does-not-exist-for-us "
@@ -1117,7 +1303,8 @@ def build():
            "power path.")
     s.text("THE PACKAGES ARE NOT APPLE'S PACKAGES. U1 is an nRF52832-CIAA, "
            "WLCSP-50, drawn with the QFN-48 (QFAA) symbol of the same die "
-           "because no CIAA ball map is sourced in this repository. U3 is a "
+           "because no COMPLETE CIAA ball map is sourced here (ten balls "
+           "are; forty are not). U3 is a "
            "WLCSP-10 drawn as WSON-8. U5 is a WLCSP drawn as TQFP-16. THE "
            "NETLIST IS RIGHT BY SIGNAL NAME AND THE PIN NUMBERS ARE NOT "
            "APPLE'S. Every part carries an FP-basis field; L12 owns the land "
@@ -1149,6 +1336,22 @@ def build():
            "gap that any photograph can close: a 100 nF and a 1 uF 0402 are "
            "visually identical.' A missing value stays missing. THIS BOARD "
            "IS NOT BUILDABLE AS DRAWN and saying so is the point.")
+
+    # HAND EVERY BASIS TO ce-pcb, WHICH OPENS THE FILES. Until 2026-09-05
+    # this file's basis table was a private dict and nothing checked it: a
+    # net could be promoted to MEASURED by editing a string. `basis()` is
+    # upstream now (P11) and refuses a MEASURED net with no resolvable
+    # anchor, and `check()` reads every anchor off disk and compares. The
+    # first run of it corrected four nets on this sheet.
+    s.evidence_root = REPO
+    for name in NETS:
+        kind = NETS[name][0]
+        a = ANCHORS.get(name) or {}
+        s.basis(name, kind, anchor=a.get("anchor"),
+                contains=a.get("contains"),
+                derived_from=(a.get("derived_from") or
+                              (NETS[name][4 - 1] if kind == INFERRED else None)),
+                note=NETS[name][3])
 
     s.unused_gpio = s.nc_unused()
     # NETS.md IS WRITTEN HERE, INSIDE build(), and not from __main__.
@@ -1316,8 +1519,10 @@ def write_nets_md(s, path):
     w("Counts: " + ", ".join("**%d %s**" % (counts.get(b, 0), b)
                              for b in (MEASURED, INFERRED, CHOSEN))
       + ".  **%d of %d nets are MEASURED**, and they are the only ones: "
-        "%s — the three battery contacts and the four SWD pads O'Flynn "
-        "published. Everything else on this board is reconstruction."
+        "%s. Every one of those carries an ANCHOR — a file and a string that "
+        "must be in it — which `cepcb.schematic.basis()` OPENS AND CHECKS at "
+        "build time, so none of them can be reached by editing a label. "
+        "Everything else on this board is reconstruction."
       % (len(meas), len(NETS), ", ".join("`%s`" % m for m in meas)))
     w("")
     w("## The nets")
@@ -1384,6 +1589,7 @@ if __name__ == "__main__":
 
     s.place()
     print("\n" + s.describe())
+    print(s.describe_bases())
     out = s.save(os.path.join(REPLICA, "out", "schematic",
                               s.name + ".kicad_sch"))
     print("\nwrote", out)

@@ -197,5 +197,58 @@
     "why_a_failing_report_does_not_turn_its_own_row_red": "the artifact is not the defect. Turning D6 red on its contents would conflate 'we have no DRC' with 'the DRC found things', and this project already has a standing rule against conflating could-not-build with could-not-verify. Contents become a GATE where something DEPENDS on them - which is exactly what the third leg does for D7 and D8.",
     "columns": "opens | current | source ok | ITS OWN VERDICT. The third column was labelled 'valid', which is the word that invited the misreading; it is now 'source ok'.",
     "notation": "nE = errors, nU = unconnected items. Warnings are reported in the row detail and do not gate."
+  },
+  "clearance_classification": {
+    "why": "42 of the Replica's 45 DRC violations are clearance errors on rows placed at MEASURED positions and sizes. An overlap there means one of three things and only one is a defect: Apple's metal genuinely is that close, OR our measurement could not separate two adjacent features, OR we drew something wrong. A gate that cannot tell them apart gets switched off for crying wolf - the same way an mtime-only freshness rule gets switched off the first time it calls a clean clone stale.",
+    "and_the_thing_it_must_never_become": "IF A VIOLATION CAN MOVE OUT OF DRAWN-WRONG BY EDITING A STRING, THE GATE BECOMES SOMETHING A LANE IMPROVES BY TYPING. So every excusing class carries a RESOLVABLE POINTER that this check resolves AND CHECKS SUPPORTS THE CLAIM. A pointer that resolves but does not support the claim is refused exactly like one that does not resolve.",
+    "the_default_is_the_honest_one": "DRAWN-WRONG needs no pointer and is what an UNCLASSIFIED violation falls back to. Silence means our fault, never Apple's. A lane that wants a violation excused must produce evidence; a lane that produces nothing gets the blame. The incentive runs the correct way round.",
+    "classes": {
+      "DRAWN-WRONG": {
+        "pointer_required": false,
+        "blocks_fabrication": true,
+        "means": "we placed something wrong. Our defect, and the default."
+      },
+      "MEASUREMENT-LIMITED": {
+        "pointer_required": true,
+        "blocks_fabrication": true,
+        "means": "the two features are closer together than our measurement could separate, so the overlap is an artifact of resolution rather than a placement error. NOT OUR DEFECT AND STILL NOT FABRICABLE - you cannot cut a board where two pads overlap, whatever the reason. It blocks, and it names a different fix: a measurement that CAN separate them, not a nudged pad.",
+        "pointer_must": "name the handoff rows for BOTH features, and those rows must exist. The measured gap must be at or inside the resolution floor below - a pointer that resolves while the gap sits OUTSIDE the floor does not support the claim and is refused."
+      },
+      "GENUINELY-TOUCHING": {
+        "pointer_required": true,
+        "blocks_fabrication": false,
+        "means": "the two features are the same net or the same physical feature, so there is no clearance to violate. The rule fired on a distinction that does not exist on Apple's board.",
+        "pointer_must": "name what establishes that Apple's own metal is continuous there."
+      }
+    },
+    "resolution_floor": {
+      "value_mm": 0.0606,
+      "derivation": "TWO genuine pixels at the coarser of this face's two genuine resolutions: 2 / 33 px/mm = 0.0606 mm. One pixel of edge-location uncertainty on each of the two facing edges.",
+      "why_not_the_registration_holdout": "The handoff's held-out registration error is 0.1256 mm, and using THAT as the floor would excuse roughly twice as many violations. It is the wrong number here: a global registration error is COMMON-MODE between two features measured in the SAME frame and very largely cancels out of the gap between them. Reaching for the larger number would have been the permissive direction dressed as rigour.",
+      "why_not_one_pixel": "one pixel would credit a single edge with perfect location while the other carries all the error. Two edges, one pixel each.",
+      "what_would_sharpen_it": "a measured edge-location repeatability on this face - two independent extractors on the same edges, the way the outline lanes measured 0.0158 mm median across 1182 shared rays on the other face. Nobody has done that here, so this floor is derived rather than measured, and it says so."
+    },
+    "expected_input": {
+      "glob": "**/*clearance-class*.json",
+      "produced_by": "the board lane, not this one. CONSUMED here, never re-derived.",
+      "schema": {
+        "schema": "halo/clearance-classification/1",
+        "drc_report": "<path to the DRC this classifies>",
+        "classified": [
+          {
+            "index": "<index into the DRC's violations[]>",
+            "class": "<one of the three>",
+            "measured_gap_mm": "<the actual separation the DRC reported>",
+            "evidence": {
+              "file": "<a file this check can resolve>",
+              "rows": [
+                "<row ids that must exist in it>"
+              ]
+            }
+          }
+        ]
+      },
+      "if_absent": "every violation falls back to DRAWN-WRONG and the row says the classification is absent. That is not CANNOT DETERMINE: an unexcused violation IS our defect until evidence says otherwise."
+    }
   }
 }

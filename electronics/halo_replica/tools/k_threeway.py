@@ -227,6 +227,102 @@ def read_verdict(paths, kind):
                            if str(v.get("severity", "error")).lower() == "error")
     return (err, unc)
 
+def classify_clearances(doc, drc_paths, roots, root=HALO):
+    """Split a DRC's violations into the three classes, REFUSING any excuse whose
+    pointer does not resolve or does not support the claim.
+
+    THE GUARD IS THE POINT. If a violation could move out of DRAWN-WRONG by editing a
+    string, this gate would be something a lane improves by typing - the ratchet again
+    with a nicer face, and worse than no gate because it looks like rigour. So an
+    excusing class must name evidence this function RESOLVES, and the evidence must
+    SUPPORT the claim: a pointer that resolves while the measured gap sits outside the
+    resolution floor is refused exactly like one that does not resolve at all.
+
+    DRAWN-WRONG is the default and needs no pointer. Silence means our fault, never
+    Apple's.
+    """
+    import glob as _glob
+    cfg = doc["clearance_classification"]
+    floor = cfg["resolution_floor"]["value_mm"]
+    classes = cfg["classes"]
+    if not drc_paths:
+        return None
+    # the DRC being classified: newest
+    best, bts = None, None
+    for p in drc_paths:
+        try:
+            dd = json.load(open(p))
+        except Exception:
+            continue
+        t = dd.get("date") or "0000"
+        if bts is None or t > bts:
+            best, bts, bpath = dd, t, p
+    if best is None:
+        return None
+    viol = [v for v in best.get("violations", [])
+            if str(v.get("severity", "error")).lower() == "error"]
+    hits = []
+    for base in roots:
+        hits += _glob.glob(os.path.join(base, cfg["expected_input"]["glob"]), recursive=True)
+    claims, cls_file = {}, None
+    for h in sorted(set(hits)):
+        try:
+            cd = json.load(open(h))
+        except Exception:
+            continue
+        if cd.get("schema") != "halo/clearance-classification/1":
+            continue
+        cls_file = os.path.relpath(h, root)
+        for c in cd.get("classified", []):
+            claims[c.get("index")] = c
+    out = {k: 0 for k in classes}
+    refused = []
+    for i, v in enumerate(viol):
+        c = claims.get(i)
+        if not c:
+            out["DRAWN-WRONG"] += 1; continue
+        cl = c.get("class")
+        if cl not in classes:
+            refused.append(f"violation {i}: class {cl!r} is not one of the three")
+            out["DRAWN-WRONG"] += 1; continue
+        if not classes[cl]["pointer_required"]:
+            out[cl] += 1; continue
+        ev = c.get("evidence") or {}
+        fp = os.path.join(root, ev.get("file", ""))
+        if not ev.get("file") or not os.path.exists(fp):
+            refused.append(f"violation {i}: {cl} names evidence {ev.get('file')!r} "
+                           f"which does not resolve")
+            out["DRAWN-WRONG"] += 1; continue
+        try:
+            ed = json.load(open(fp))
+            ids = {r.get("id") for r in ed.get("rows", [])}
+        except Exception:
+            refused.append(f"violation {i}: {cl}'s evidence file is not readable rows JSON")
+            out["DRAWN-WRONG"] += 1; continue
+        want = ev.get("rows") or []
+        missing = [r for r in want if r not in ids]
+        if not want or missing:
+            refused.append(f"violation {i}: {cl} names row(s) {missing or '(none)'} "
+                           f"absent from {ev['file']}")
+            out["DRAWN-WRONG"] += 1; continue
+        # THE POINTER RESOLVED. Does it SUPPORT the claim?
+        if cl == "MEASUREMENT-LIMITED":
+            gap = c.get("measured_gap_mm")
+            if gap is None or float(gap) > floor:
+                refused.append(f"violation {i}: MEASUREMENT-LIMITED claims a gap of {gap} mm, "
+                               f"OUTSIDE the {floor} mm resolution floor. The pointer resolves "
+                               f"and does not support the claim, which is refused the same way "
+                               f"as one that does not resolve.")
+                out["DRAWN-WRONG"] += 1; continue
+        out[cl] += 1
+    blocking = sum(n for k, n in out.items() if classes[k]["blocks_fabrication"])
+    return dict(drc=os.path.relpath(bpath, root), errors=len(viol), counts=out,
+                blocking=blocking, refused=refused, floor_mm=floor,
+                classification_file=cls_file,
+                note=("no classification file found - every error falls back to DRAWN-WRONG. "
+                      "That is not CANNOT DETERMINE: an unexcused violation IS our defect "
+                      "until evidence says otherwise." if cls_file is None else None))
+
 def check_deliverable(root=HALO, tree="replica", roots=None):
     """Existence AND currency. A row is green only when a file of the right kind opens
     AND is newer than every one of its sources.
@@ -394,6 +490,8 @@ def check_deliverable(root=HALO, tree="replica", roots=None):
                 bits.append(f"{unc}U")
             rec["own_verdict"] = " ".join(bits)
             rec["own_verdict_clean"] = (err == 0 and (k != "drc" or unc == 0))
+            if k == "drc":
+                rec["clearance_split"] = classify_clearances(doc, files[rec["id"]], roots, root)
             if not rec["own_verdict_clean"]:
                 rec["own_verdict_note"] = (
                     f"THIS ROW IS GREEN AS AN ARTIFACT AND THE THING IT GRADES IS NOT: "
@@ -428,6 +526,15 @@ def print_deliverable(drows, ddoc, tree):
         print(f"  [{mark}] {r['id']} {r['what']:<20} {e:>5} {f:>8} {v:>10} {ov:>16}")
         if r.get("own_verdict_note"):
             print(f"           {r['own_verdict_note']}")
+        cs = r.get("clearance_split")
+        if cs and cs["errors"]:
+            print(f"           clearance split ({cs['errors']} errors, floor {cs['floor_mm']} mm): "
+                  + "  ".join(f"{k} {v}" for k, v in cs["counts"].items())
+                  + f"   -> {cs['blocking']} block fabrication")
+            if cs.get("note"):
+                print(f"           {cs['note']}")
+            for x in cs["refused"][:3]:
+                print(f"           REFUSED {x}")
         if r["state"] != "GREEN":
             for chunk in (r["why"] or "").split(" ALSO: "):
                 print(f"           {chunk}")
@@ -671,6 +778,29 @@ def cmd_render(args):
     W("> **A report row being GREEN means:** " + f4["what_a_report_row_being_GREEN_means"] + "\n")
     W("> **And a failing report does not turn its own row red**, because " +
       f4["why_a_failing_report_does_not_turn_its_own_row_red"] + "\n")
+    cc = ddoc["clearance_classification"]
+    W("### The fifth state — whose fault a clearance violation is\n")
+    W(cc["why"] + "\n")
+    W("**" + cc["and_the_thing_it_must_never_become"] + "**\n")
+    W("**The default is the honest one.** " + cc["the_default_is_the_honest_one"] + "\n")
+    W("| class | pointer required | blocks fabrication | means |")
+    W("|---|:-:|:-:|---|")
+    for k, v in cc["classes"].items():
+        W(f"| **{k}** | {'yes' if v['pointer_required'] else 'no'} | "
+          f"{'**yes**' if v['blocks_fabrication'] else 'no'} | {v['means']} |")
+    W("")
+    rf = cc["resolution_floor"]
+    W(f"**Resolution floor: {rf['value_mm']} mm.** {rf['derivation']} "
+      f"*Not the registration hold-out:* {rf['why_not_the_registration_holdout']} "
+      f"*Not one pixel:* {rf['why_not_one_pixel']} *What would sharpen it:* "
+      f"{rf['what_would_sharpen_it']}\n")
+    for r in drows:
+        cs = r.get("clearance_split")
+        if cs and cs["errors"]:
+            W(f"**Current split of {cs['errors']} clearance errors in `{cs['drc']}`:** "
+              + " · ".join(f"{k} **{v}**" for k, v in cs["counts"].items())
+              + f" — {cs['blocking']} block fabrication."
+              + (f" {cs['note']}" if cs.get("note") else "") + "\n")
     W("**The rule.** " + ddoc["the_rule"] + "\n")
     W("**Anti-gaming.** " + ddoc["anti_gaming"] + "\n")
     W("Why each is required, in the row's own words:\n")
@@ -1045,6 +1175,76 @@ def cmd_selftest(args):
         if not okv3: dfails.append("V-3")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+    # ---- C-breaks  THE CLEARANCE CLASSIFIER'S ANTI-RELABELLING GUARD.
+    # If a violation can leave DRAWN-WRONG by editing a string, this gate is something a
+    # lane improves by typing. C-4 is the one that matters: a pointer that RESOLVES but
+    # does not SUPPORT the claim must be refused exactly like one that does not resolve.
+    print("  C-breaks  clearance classification, in a temporary tree:")
+    tmp = tempfile.mkdtemp(prefix="k_threeway-clr-")
+    try:
+        lane = os.path.join(tmp, "lane"); os.makedirs(lane)
+        ddoc = json.load(open(DELIV))
+        drcp = os.path.join(lane, "c.drc.json")
+        json.dump({"$schema": "https://schemas.kicad.org/drc.v1.json", "date": "2026-01-01T00:00:00",
+                   "violations": [{"severity": "error"}, {"severity": "error"}],
+                   "unconnected_items": []}, open(drcp, "w"))
+        evp = os.path.join(lane, "rows.json")
+        json.dump({"rows": [{"id": "A1"}, {"id": "A2"}]}, open(evp, "w"))
+        roots_ = [lane]
+
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc1 = r["counts"]["DRAWN-WRONG"] == 2 and r["classification_file"] is None
+        print(f"    [{'ok ' if okc1 else 'RED'}] C-1 no classification file -> DRAWN-WRONG "
+              f"{r['counts']['DRAWN-WRONG']} of 2 (must be 2 - silence means OUR fault)")
+        if not okc1: dfails.append("C-1")
+
+        def write_claim(cls, gap, evfile="rows.json", rows=("A1", "A2")):
+            json.dump({"schema": "halo/clearance-classification/1", "drc_report": "c.drc.json",
+                       "classified": [{"index": 0, "class": cls, "measured_gap_mm": gap,
+                                       "evidence": {"file": os.path.join("lane", evfile),
+                                                    "rows": list(rows)}}]},
+                      open(os.path.join(lane, "c-clearance-class.json"), "w"))
+
+        write_claim("MEASUREMENT-LIMITED", 0.0500)
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc2 = r["counts"]["MEASUREMENT-LIMITED"] == 1 and r["counts"]["DRAWN-WRONG"] == 1
+        print(f"    [{'ok ' if okc2 else 'RED'}] C-2 gap 0.0500 mm, pointer resolves -> "
+              f"MEASUREMENT-LIMITED {r['counts']['MEASUREMENT-LIMITED']} (must be 1)")
+        if not okc2: dfails.append("C-2")
+
+        write_claim("MEASUREMENT-LIMITED", 0.0500, evfile="does-not-exist.json")
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc3 = r["counts"]["MEASUREMENT-LIMITED"] == 0 and r["counts"]["DRAWN-WRONG"] == 2
+        print(f"    [{'ok ' if okc3 else 'RED'}] C-3 SAME claim, pointer does not resolve -> "
+              f"refused, DRAWN-WRONG {r['counts']['DRAWN-WRONG']} (must be 2)")
+        if not okc3: dfails.append("C-3")
+
+        write_claim("MEASUREMENT-LIMITED", 0.0500, rows=("A1", "A9"))
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc3b = r["counts"]["MEASUREMENT-LIMITED"] == 0
+        print(f"    [{'ok ' if okc3b else 'RED'}] C-3b pointer resolves, names a row that is NOT "
+              f"in it -> refused (must be 0 excused)")
+        if not okc3b: dfails.append("C-3b")
+
+        write_claim("MEASUREMENT-LIMITED", 0.0900)          # outside the 0.0606 floor
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc4 = (r["counts"]["MEASUREMENT-LIMITED"] == 0 and r["counts"]["DRAWN-WRONG"] == 2
+                and any("does not support" in x for x in r["refused"]))
+        print(f"    [{'ok ' if okc4 else 'RED'}] C-4 THE ONE THAT MATTERS: pointer RESOLVES, gap "
+              f"0.0900 mm is OUTSIDE the 0.0606 floor -> refused, DRAWN-WRONG "
+              f"{r['counts']['DRAWN-WRONG']} (must be 2)")
+        print(f"          resolving is not supporting. Without this the excuse is a string.")
+        if not okc4: dfails.append("C-4")
+
+        write_claim("GENUINELY-TOUCHING", None)
+        r = classify_clearances(ddoc, [drcp], roots_, root=tmp)
+        okc5 = r["counts"]["GENUINELY-TOUCHING"] == 1 and r["blocking"] == 1
+        print(f"    [{'ok ' if okc5 else 'RED'}] C-5 GENUINELY-TOUCHING accepted and does NOT "
+              f"block -> blocking {r['blocking']} of 2 (must be 1)")
+        if not okc5: dfails.append("C-5")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     fails.extend(dfails)
 
     print()
@@ -1053,7 +1253,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 13 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 19 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS

@@ -18,7 +18,7 @@ epistemic content of this document.
 | `INFERRED` | required by the part's own datasheet family once the part is accepted. Wrong only if the part identification is wrong |
 | `CHOSEN` | this sheet picked it. Apple's assignment is unknown and a different one would be equally consistent with every photograph. **Never cite one of these as a finding about Apple.** |
 
-Counts: **7 MEASURED**, **21 INFERRED**, **23 CHOSEN**.  **7 of 51 nets are MEASURED**, and they are the only ones: `GND`, `SWDCLK`, `SWDIO`, `SWO`, `VBAT_RAW`, `VBAT_SNS_P2`, `nRESET` — the three battery contacts and the four SWD pads O'Flynn published. Everything else on this board is reconstruction.
+Counts: **13 MEASURED**, **21 INFERRED**, **18 CHOSEN**.  **13 of 52 nets are MEASURED**, and they are the only ones: `FLASH_nCS`, `GND`, `SPI_MISO`, `SPI_MOSI`, `SPI_SCK`, `SWDCLK`, `SWDIO`, `SWO`, `TP9_P0.26`, `V1V8_SW`, `VBAT_RAW`, `VBAT_SNS_P2`, `nRESET`. Every one of those carries an ANCHOR — a file and a string that must be in it — which `cepcb.schematic.basis()` OPENS AND CHECKS at build time, so none of them can be reached by editing a label. Everything else on this board is reconstruction.
 
 ## The nets
 
@@ -37,44 +37,45 @@ Counts: **7 MEASURED**, **21 INFERRED**, **23 CHOSEN**.  **7 of 51 nets are MEAS
 | `DEC3` (2 pins) | **INFERRED** | U1 internal regulator, pin 33 | its decoupling capacitor | The DEC pins are the on-die regulator's decoupling nodes. That they need capacitors is the part's own requirement; the values are CANNOT DETERMINE. |
 | `DEC4` (3 pins) | **INFERRED** | U1 internal regulator, pin 46 | its decoupling capacitor and L2 from DCC | The DEC pins are the on-die regulator's decoupling nodes. That they need capacitors is the part's own requirement; the values are CANNOT DETERMINE. |
 | `EN_BUCK` (2 pins) | **CHOSEN** | VBAT through R7 | U6.EN | Nothing in the record says how the buck is enabled. Tied always-on here because a tag with no rail cannot enable anything. |
-| `EN_PERIPH` (2 pins) | **CHOSEN** | U1.P0.15 (pin 18) | U8.EN | WHICH GPIO is entirely this sheet's choice - Apple's assignment is unknown and every nRF52832 GPIO could serve. THAT there is a gate under firmware control is the part with an argument behind it: 2.3 uA sleep with a 4 MB NOR on the same rail is not otherwise reachable. |
-| `FLASH_nCS` (2 pins) | **CHOSEN** | U1.14 (P0.11) | U3 nCS | Separate chip selects for the flash and the UWB module is what makes one bus serve two devices. Pin choice is this sheet's. |
-| `GND` (41 pins) | **MEASURED** | BT1.3, the negative dome on the well floor | every ground pin on this sheet | The negative contact is a direct observation. |
-| `I2S_BCLK` (2 pins) | **CHOSEN** | U1.19 (P0.16) | U5 BCLK | A class-D amplifier of this family takes I2S. THAT the MCU drives it digitally follows from the part; WHICH PINS is this sheet's choice. |
+| `EN_PERIPH` (2 pins) | **CHOSEN** | U1.15 (P0.12) | U8.EN | WHICH GPIO is entirely this sheet's choice - Apple's assignment is unknown and every nRF52832 GPIO could serve. THAT THERE IS A GATE UNDER FIRMWARE CONTROL IS NO LONGER AN ARGUMENT BUT A MEASUREMENT: see V1V8_SW. It sat on P0.15 until O'Flynn's table showed that pad is the flash's CIPO. |
+| `FLASH_nCS` (3 pins) | **MEASURED** | U1.14 (P0.11, nRF ball F4) | U3 nCS; TP24 | O'Flynn, test point 24: '1.8V SPI Flash - Chip Select (CS)/ nRF ball F4 (P0.11)'. THE ONLY ONE OF THE FOUR THIS SHEET HAD RIGHT, and it had it right by luck - it was CHOSEN, and a choice that happens to match a measurement is still a choice until somebody checks. |
+| `GND` (43 pins) | **MEASURED** | BT1.3, the negative dome on the well floor | every ground pin on this sheet | The negative contact is a direct observation. O'Flynn labels the pad GND and test point 7 lands on it. |
+| `I2S_BCLK` (2 pins) | **CHOSEN** | U1.16 (P0.13) | U5 BCLK | A class-D amplifier of this family takes I2S. THAT the MCU drives it digitally follows from the part; WHICH PINS is this sheet's choice. It sat on P0.16 until O'Flynn's table showed that pad is the flash's COPI. |
 | `I2S_DIN` (2 pins) | **CHOSEN** | U1.22 (P0.19) | U5 DIN | Same. |
-| `I2S_LRCLK` (2 pins) | **CHOSEN** | U1.20 (P0.17) | U5 LRCLK | Same. |
+| `I2S_LRCLK` (2 pins) | **CHOSEN** | U1.17 (P0.14) | U5 LRCLK | Same. It sat on P0.17, which is the flash's measured SCLK. |
 | `NFC1` (2 pins) | **INFERRED** | U1.11 (NFC1/P0.09) | C6 | The NFC-A tag peripheral is the SoC's own, on pins P0.09/P0.10. There is NO separate NFC chip in an AirTag - that deletes a line most clone BOMs carry. |
 | `NFC2` (2 pins) | **INFERRED** | U1.12 (NFC2/P0.10) | C7 | Same. |
 | `NFC_COIL_A` (2 pins) | **INFERRED** | C6 | ANT2 pin 1 | Series tuning into the coil. See ANT2's open conflict about what that annulus actually is. |
 | `NFC_COIL_B` (2 pins) | **INFERRED** | C7 | ANT2 pin 2 | Same. |
-| `SPI_MISO` (3 pins) | **CHOSEN** | U3 SO/IO1 (and U2, DNP) | U1.17 (P0.14) | Same. |
-| `SPI_MOSI` (3 pins) | **CHOSEN** | U1.16 (P0.13) | U3 SI/IO0; U2 SPI_MOSI (DNP) | Same. |
-| `SPI_SCK` (3 pins) | **CHOSEN** | U1.15 (P0.12) | U3 SCLK; U2 SPI_SCK (DNP) | The bus exists - the flash holds BOTH the nRF firmware and the U1's 'Rose' firmware, so the MCU must be able to read it. WHICH GPIO is this sheet's choice; on nRF52832 any SPIM instance routes to any pin. |
+| `SPI_MISO` (4 pins) | **MEASURED** | U3 SO/IO1 (and U2, DNP) | U1.18 (P0.15, nRF ball H4); TP20 | O'Flynn, test point 20: '1.8V SPI Flash - Data Out (CIPO) /nRF ball H4 (P0.15)'. This sheet first drew it on P0.14. |
+| `SPI_MOSI` (4 pins) | **MEASURED** | U1.19 (P0.16, nRF ball H3) | U3 SI/IO0; U2 SPI_MOSI (DNP); TP19 | O'Flynn, test point 19: '1.8V SPI Flash - Data In (COPI) / nRF ball H3 (P0.16)'. COPI is into the flash, so it is the MCU's output. This sheet first drew it on P0.13. |
+| `SPI_SCK` (4 pins) | **MEASURED** | U1.20 (P0.17, nRF ball G3) | U3 SCLK; U2 SPI_SCK (DNP); TP22 | O'Flynn, test point 22: '1.8V SPI Flash - SCLK / nRF ball G3 (P0.17)'. THIS SHEET FIRST DREW IT ON P0.12 AND THAT WAS WRONG. |
 | `SPK_DIV` (3 pins) | **CHOSEN** | R9/R10 divider on SPK_P | U7 non-inverting input | Entirely this sheet's reconstruction of U7's role. |
 | `SPK_N` (2 pins) | **INFERRED** | U5 OUTN | LS1 pin 2 | Same. |
 | `SPK_P` (3 pins) | **INFERRED** | U5 OUTP | LS1 pin 1; R9 (sense divider) | A class-D bridge drives the coil differentially. Inferred from the part family. |
 | `SPK_SENSE` (3 pins) | **CHOSEN** | U7 output (unity buffer) | U1.40 (P0.28/AIN4) | Same. Wired as a follower - output to inverting input - so the drawing is at least self-consistent. |
-| `SWDCLK` (2 pins) | **MEASURED** | U1 pin 25 | TP35 (exposed test pad) | O'Flynn's TP35 = SWCLK. |
-| `SWDIO` (2 pins) | **MEASURED** | U1 pin 26 | TP36 (exposed test pad) | O'Flynn's TP36 = SWDIO. |
-| `SWO` (2 pins) | **MEASURED** | U1 pin 21 | TP31 (exposed test pad) | O'Flynn's TP31 = SWO, P0.18 on this die. |
+| `SWDCLK` (2 pins) | **MEASURED** | U1 pin 25 | TP35 (exposed test pad) | O'Flynn's table, verbatim: '35 | nRF ball F1 (SWCLK)'. No GPIO number, because SWCLK is a dedicated pad and has none. |
+| `SWDIO` (2 pins) | **MEASURED** | U1 pin 26 | TP36 (exposed test pad) | O'Flynn's table, verbatim: '36 | nRF ball G1 (SWDIO)'. |
+| `SWO` (2 pins) | **MEASURED** | U1 pin 21 | TP31 (exposed test pad) | O'Flynn's table, verbatim: '31 | nRF ball H2 (P0.18/SWO)'. |
 | `SW_BUCK` (2 pins) | **INFERRED** | U6.SW | L1 | A buck with an external wirewound inductor switches into it. Which inductor is the buck's is bom.json's 'almost certainly, given its position' - position, again, not a trace. |
+| `TP9_P0.26` (2 pins) | **MEASURED** | U1.38 (P0.26, nRF ball D3) | TP9 | O'Flynn's table gives the pad and the ball. IT DOES NOT GIVE THE FUNCTION, so this net is named after the pin and asserts nothing about what Apple uses it for. |
 | `U9_OUT_DESTINATION_UNKNOWN` (1 pins) | **CHOSEN** | U9.OUT? | NOTHING ON THIS SHEET | A one-terminal net, deliberately. The public record contains no statement about what U9 drives. What would settle it: a die-shot, a decapped board, or continuity on a live unit. |
 | `UWB_IRQ` (2 pins) | **CHOSEN** | U2 IRQ (DNP) | U1.28 (P0.23) | Same. |
 | `UWB_RF` (3 pins) | **CHOSEN** | U2 RF (DNP) | ANT3; J1 centre | THE WEAKEST NET ON THIS SHEET AND IT IS LABELLED SO. bom.json J1: 'its position beside the UWB module is consistent with a UWB conducted-test port, but THE NET IT LANDS ON IS NOT ESTABLISHED'. Worse: UNK-B sits between U2 and J1 and is 'consistent with an RF switch, filter or balun'. If UNK-B is a switch then J1 and ANT3 are NOT one net and this net is wrong in a way this sheet cannot detect. |
 | `UWB_nCS` (2 pins) | **CHOSEN** | U1.27 (P0.22) | U2 SPI_nCS (DNP) | See SPI_SCK. Every UWB control line here is CHOSEN and lands on a part that is not populated. |
 | `UWB_nRESET` (2 pins) | **CHOSEN** | U1.29 (P0.24) | U2 nRESET (DNP) | Same. |
-| `V1V8` (16 pins) | **INFERRED** | U6.VOUT through L1 | U1 (nRF52832) VDD x3; U4 accelerometer; U7 op-amp V+; U8.VIN; C10-C13 | 1.8 V because the flash Apple fitted is a 1.65-2.0 V part (O'Flynn read GD25LQ32C off the live chip over SPI with a J-Flash) and the teardown names the buck 3 V -> 1.8 V. The nRF52832's own range is 1.7-3.6 V, so 1.8 V is legal for it too. |
-| `V1V8_SW` (5 pins) | **CHOSEN** | U8.VOUT | U3 flash VCC/nWP/nHOLD; U2 UWB VDD (DNP) | The gated branch. See EN_PERIPH for what is chosen and what is argued. |
+| `V1V8` (17 pins) | **INFERRED** | U6.VOUT through L1 | U1 (nRF52832) VDD x3; U4 accelerometer; U7 op-amp V+; U8.VIN; C10-C13 | 1.8 V because the flash Apple fitted is a 1.65-2.0 V part (O'Flynn read GD25LQ32C off the live chip over SPI with a J-Flash) and the teardown names the buck 3 V -> 1.8 V. The nRF52832's own range is 1.7-3.6 V, so 1.8 V is legal for it too. |
+| `V1V8_SW` (6 pins) | **MEASURED** | U8.VOUT | U3 flash VCC/nWP/nHOLD; U2 UWB VDD (DNP); TP21 | O'Flynn, in his own words: 'The nrf controls power to the SPI flash, so you need to override it by supplying 1.8V on test point 21', and 'most of time the flash is powered off and thus the pins are tri-stated'. THAT SETTLES THE ARGUMENT THIS SHEET HAD WITH iFIXIT BY MEASUREMENT rather than by self-consistency: the flash is on a switched 1.8 V rail the MCU commands. What is still CHOSEN is which GPIO commands it (EN_PERIPH) and that the switch is an FPF2487. |
 | `VBAT` (11 pins) | **CHOSEN** | D3 cathode | C1-C5 bulk; U6.VIN (buck); U9.IN; U5.VDD (amplifier) | The rail behind D24's diode. That the bulk sits BEHIND the diode rather than in front of it is this sheet's choice and it is the choice that makes the diode work: hold-up capacitance in front of a blocking diode holds up the cell, not the load. |
-| `VBAT_RAW` (3 pins) | **MEASURED** | BT1.1, the positive POWER finger | D3 anode; R1 (sense divider for AIN0) | Three sprung contacts with two positives is a direct observation (REFERENCE-TEARDOWN 2.5, iFixit had the tag in their hands). WHICH finger carries the current is O'Flynn's reading, not this lane's. |
+| `VBAT_RAW` (4 pins) | **MEASURED** | BT1.1, the positive POWER finger | D3 anode; R1 (sense divider for AIN0) | Three sprung contacts with two positives is a direct observation (REFERENCE-TEARDOWN 2.5, iFixit had the tag in their hands), and O'Flynn labels the pads VCC1 and VCC2, '+3.0V input (1 of 2 - both needed)'. WHICH of the two carries the logic current is NOT settled by O'Flynn - he says both are needed and nothing about sensing - so the power/sense split here comes from REFERENCE-TEARDOWN 2.5 and could be the other way round. |
 | `VBAT_SNS_1` (3 pins) | **INFERRED** | R1/R2 divider on VBAT_RAW | U1.4 (P0.02/AIN0) | The FIRST positive is sensed. Both positives being sensed is the measured fact; the divider and the ADC pin are this sheet's shape for it. |
 | `VBAT_SNS_2` (3 pins) | **INFERRED** | R3/R4 divider on VBAT_SNS_P2 | U1.5 (P0.03/AIN1) | The SECOND positive is sensed, and THIS IS THE POINT OF THE WHOLE BLOCK. Pull the cell and both dividers collapse in well under a millisecond while C1-C5 hold VBAT up for seconds - which is exactly the window the five-removals factory reset counts in. |
-| `VBAT_SNS_P2` (2 pins) | **MEASURED** | BT1.2, the positive SENSE finger | R3 (divider to AIN1) | REFERENCE-TEARDOWN 2.5: 'Both positives must see 3 V to boot; only the left powers the logic, the right is sensed at ~50 nA.' A ~50 nA sense current is a very large divider, which is why R3/R4 are megohms and why their exact values are CANNOT DETERMINE. |
+| `VBAT_SNS_P2` (3 pins) | **MEASURED** | BT1.2, the positive SENSE finger | R3 (divider to AIN1) | REFERENCE-TEARDOWN 2.5: 'Both positives must see 3 V to boot; only the left powers the logic, the right is sensed at ~50 nA.' A ~50 nA sense current is a very large divider, which is why R3/R4 are megohms and why their exact values are CANNOT DETERMINE. |
 | `XC1` (3 pins) | **INFERRED** | U1.34 (XC1) | X1 pin 1, C18 | The HFXO goes on the HFXO pins. Inferred from the part, not traced. |
 | `XC2` (3 pins) | **INFERRED** | U1.35 (XC2) | X1 pin 2, C19 | Same. |
 | `XL1` (3 pins) | **INFERRED** | U1.2 (P0.00/XL1) | X2 pin 1, C20 | The LFXO goes on the LFXO pins. On nRF52832 these are P0.00/P0.01, which is why the two lowest GPIO are unavailable for anything else. |
 | `XL2` (3 pins) | **INFERRED** | U1.3 (P0.01/XL2) | X2 pin 2, C21 | Same. |
-| `nRESET` (2 pins) | **MEASURED** | U1 pin 24 | TP30 (exposed test pad) | O'Flynn's TP30 = nRST. On nRF52832 that is P0.21/nRESET. |
+| `nRESET` (2 pins) | **MEASURED** | U1 pin 24 | TP30 (exposed test pad) | O'Flynn's table, verbatim: '30 | nRF ball H1 (P0.21/nRST)'. |
 
 ## Consistency with the netlist itself
 

@@ -119,9 +119,9 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 | D1 | Schematic source | ✅ | yes | — | — | — | `electronics/halo_replica/out/schematic/halo_replica.kicad_sch` |
 | D2 | Netlist | ✅ | yes | yes | — | — | `electronics/halo_replica/out/schematic/halo_replica.net` |
 | D3 | Footprint library | ✅ | yes | — | — | — | `electronics/halo_replica/halo_replica.pretty/REPL_0201_0603Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_0402_1005Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_ABSENCE_EYEBALLED.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BACK_CONTACT_POS.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.21.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.34.kicad_mod` |
-| D4 | Board file | ✅ | yes | yes | yes | — | `electronics/halo_replica/pcb/out/halo_replica.kicad_pcb` |
+| D4 | Board file | 🔴 | yes | **NO** | yes | — | STALE: 180 s older than D1 schematic source (2026-09-05T15:08:36 mtime vs 2026-09-05T15:11:36 mtime) -- oldest member electronics/halo_replica/pcb/out/halo_replica.kicad_pcb |
 | D5 | ERC result | ✅ | yes | yes | — | 0E | `electronics/halo_replica/out/schematic/halo_replica.erc.json` |
-| D6 | DRC result | 🔴 | yes | **NO** | yes | **42E 0U** | STALE: 609 s older than D4 board file (2026-09-05T14:57:15 embedded vs 2026-09-05T15:07:24 mtime) -- oldest member electronics/halo_replica/pcb/out/halo_replica.drc.json |
+| D6 | DRC result | ✅ | yes | yes | yes | **58E 0U** | `electronics/halo_replica/pcb/out/halo_replica.drc.json` |
 | D7 | Gerbers | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
 | D8 | Drill file | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
 
@@ -136,6 +136,24 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 > **A report row being GREEN means:** the report EXISTS, OPENS, is NEWER than the thing it grades, and came from a source that had itself passed. It says NOTHING about what the report FOUND. A DRC listing 42 errors is a perfectly good ARTIFACT and a perfectly bad BOARD - different objects, and this table now shows both.
 
 > **And a failing report does not turn its own row red**, because the artifact is not the defect. Turning D6 red on its contents would conflate 'we have no DRC' with 'the DRC found things', and this project already has a standing rule against conflating could-not-build with could-not-verify. Contents become a GATE where something DEPENDS on them - which is exactly what the third leg does for D7 and D8.
+
+### The fifth state — whose fault a clearance violation is
+
+42 of the Replica's 45 DRC violations are clearance errors on rows placed at MEASURED positions and sizes. An overlap there means one of three things and only one is a defect: Apple's metal genuinely is that close, OR our measurement could not separate two adjacent features, OR we drew something wrong. A gate that cannot tell them apart gets switched off for crying wolf - the same way an mtime-only freshness rule gets switched off the first time it calls a clean clone stale.
+
+**IF A VIOLATION CAN MOVE OUT OF DRAWN-WRONG BY EDITING A STRING, THE GATE BECOMES SOMETHING A LANE IMPROVES BY TYPING. So every excusing class carries a RESOLVABLE POINTER that this check resolves AND CHECKS SUPPORTS THE CLAIM. A pointer that resolves but does not support the claim is refused exactly like one that does not resolve.**
+
+**The default is the honest one.** DRAWN-WRONG needs no pointer and is what an UNCLASSIFIED violation falls back to. Silence means our fault, never Apple's. A lane that wants a violation excused must produce evidence; a lane that produces nothing gets the blame. The incentive runs the correct way round.
+
+| class | pointer required | blocks fabrication | means |
+|---|:-:|:-:|---|
+| **DRAWN-WRONG** | no | **yes** | we placed something wrong. Our defect, and the default. |
+| **MEASUREMENT-LIMITED** | yes | **yes** | the two features are closer together than our measurement could separate, so the overlap is an artifact of resolution rather than a placement error. NOT OUR DEFECT AND STILL NOT FABRICABLE - you cannot cut a board where two pads overlap, whatever the reason. It blocks, and it names a different fix: a measurement that CAN separate them, not a nudged pad. |
+| **GENUINELY-TOUCHING** | yes | no | the two features are the same net or the same physical feature, so there is no clearance to violate. The rule fired on a distinction that does not exist on Apple's board. |
+
+**Resolution floor: 0.0606 mm.** TWO genuine pixels at the coarser of this face's two genuine resolutions: 2 / 33 px/mm = 0.0606 mm. One pixel of edge-location uncertainty on each of the two facing edges. *Not the registration hold-out:* The handoff's held-out registration error is 0.1256 mm, and using THAT as the floor would excuse roughly twice as many violations. It is the wrong number here: a global registration error is COMMON-MODE between two features measured in the SAME frame and very largely cancels out of the gap between them. Reaching for the larger number would have been the permissive direction dressed as rigour. *Not one pixel:* one pixel would credit a single edge with perfect location while the other carries all the error. Two edges, one pixel each. *What would sharpen it:* a measured edge-location repeatability on this face - two independent extractors on the same edges, the way the outline lanes measured 0.0158 mm median across 1182 shared rays on the other face. Nobody has done that here, so this floor is derived rather than measured, and it says so.
+
+**Current split of 58 clearance errors in `electronics/halo_replica/pcb/out/halo_replica.drc.json`:** DRAWN-WRONG **58** · MEASUREMENT-LIMITED **0** · GENUINELY-TOUCHING **0** — 58 block fabrication. no classification file found - every error falls back to DRAWN-WRONG. That is not CANNOT DETERMINE: an unexcused violation IS our defect until evidence says otherwise.
 
 **The rule.** A ROW IS GREEN ONLY WHEN A FILE EXISTS THAT THE RELEVANT TOOL CAN ACTUALLY OPEN. A path that exists is not an artifact. Every row therefore carries a FORMAT PROBE - a string the real format must contain - and an empty file, a stub, or a file of the wrong kind at the right name all stay RED. The selftest watches each of those three cases fail on purpose, because a check that only ever goes red proves nothing about its own ability to go green.
 

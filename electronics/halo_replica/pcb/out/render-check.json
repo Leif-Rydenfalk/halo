@@ -1,0 +1,34 @@
+{
+ "tool": "tools/f_render.py",
+ "results": [
+  {
+   "side": "top",
+   "png": "pcb/out/halo_replica-top.png",
+   "n": 4000,
+   "median_hue_deg": 240.0,
+   "median_saturation": 0.273,
+   "median_value": 11.0,
+   "fraction_saturated_green": 0.0,
+   "bar": {
+    "max_value": 140,
+    "max_saturation": 0.35
+   },
+   "verdict": "PASS"
+  },
+  {
+   "side": "bottom",
+   "png": "pcb/out/halo_replica-bottom.png",
+   "n": 4000,
+   "median_hue_deg": 240.0,
+   "median_saturation": 0.2,
+   "median_value": 10.0,
+   "fraction_saturated_green": 0.0,
+   "bar": {
+    "max_value": 140,
+    "max_saturation": 0.35
+   },
+   "verdict": "PASS"
+  }
+ ],
+ "verdict": "PASS"
+}

@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T14:57:15",
+    "date": "2026-09-05T15:09:04",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -35,23 +35,23 @@
     "unconnected_items": [],
     "violations": [
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0571 mm)",
+            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B010 på F.Cu",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 17.687,
+                        "y": 21.307829
                     },
-                    "uuid": "ecdc2ebe-eebc-420e-831a-d20dc740cf81"
+                    "uuid": "2f1e1aca-6603-417c-8b40-04cd47a057fb"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B019 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B009 på F.Cu",
                     "pos": {
-                        "x": 5.699,
-                        "y": 13.913829
+                        "x": 15.823,
+                        "y": 21.539829
                     },
-                    "uuid": "38d8074c-4cf4-44a3-a8dd-6485e9aa62c3"
+                    "uuid": "2fec8b18-4768-4b3e-bffa-ac5adab03fcf"
                 }
             ],
             "severity": "error",
@@ -61,12 +61,35 @@
             "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B034 på F.Cu",
                     "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
+                        "x": 18.062,
+                        "y": 1.608829
                     },
-                    "uuid": "f34078fb-742a-40ba-985d-1f0ba260eff9"
+                    "uuid": "871adea7-d10d-40aa-acfe-5d6ba1cf619d"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av B035 på F.Cu",
+                    "pos": {
+                        "x": 18.812,
+                        "y": 1.773829
+                    },
+                    "uuid": "ad4eb7f5-7031-4003-a70b-c1477fe2b984"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0119 mm)",
+            "items": [
+                {
+                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
+                    "pos": {
+                        "x": 7.394,
+                        "y": 7.569829
+                    },
+                    "uuid": "a02f4e0b-ca84-4cb6-a8d6-34ffcc1638b2"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
@@ -74,7 +97,53 @@
                         "x": 3.804,
                         "y": 7.801829
                     },
-                    "uuid": "1947f528-aad9-45b5-9b06-3c63cfa43c92"
+                    "uuid": "a57744c1-595b-42c3-b798-d5bd31080a30"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0571 mm)",
+            "items": [
+                {
+                    "description": "Lödyta 1 [<no net>] av B019 på F.Cu",
+                    "pos": {
+                        "x": 5.699,
+                        "y": 13.913829
+                    },
+                    "uuid": "3b3b7852-ea64-46ea-9651-4198c2af0aad"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "pos": {
+                        "x": 5.921,
+                        "y": 15.118829
+                    },
+                    "uuid": "e25be731-c639-4857-882a-cca9dce1592a"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
+                    "pos": {
+                        "x": 21.479,
+                        "y": 16.434829
+                    },
+                    "uuid": "f41eb33c-f6c4-4eaa-a727-53dd2f9727ce"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
+                    "pos": {
+                        "x": 23.612,
+                        "y": 14.877829
+                    },
+                    "uuid": "f7c323bb-c55d-452c-8a08-82abbccfba2f"
                 }
             ],
             "severity": "error",
@@ -89,7 +158,7 @@
                         "x": 6.977,
                         "y": 20.056829
                     },
-                    "uuid": "b882c126-2774-464b-87d4-1b75be6a3812"
+                    "uuid": "a2bb82db-3825-4008-b17b-5ba7bc6f0286"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B026 på F.Cu",
@@ -97,7 +166,7 @@
                         "x": 7.883,
                         "y": 19.076829
                     },
-                    "uuid": "8ba67e66-7013-4c8c-a543-a76cc298323b"
+                    "uuid": "deb3e48f-52bc-4ae6-9f22-3139ba1fc93d"
                 }
             ],
             "severity": "error",
@@ -107,20 +176,43 @@
             "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B046 på F.Cu",
                     "pos": {
-                        "x": 21.479,
-                        "y": 16.434829
+                        "x": 6.306,
+                        "y": 15.840829
                     },
-                    "uuid": "1eb8c4f1-7d97-485b-a635-74273a215f91"
+                    "uuid": "9422bcb7-54d5-4b36-bf51-0fb6222f282b"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
                     "pos": {
-                        "x": 23.612,
-                        "y": 14.877829
+                        "x": 5.921,
+                        "y": 15.118829
                     },
-                    "uuid": "ec9fd3d5-5550-4488-afdf-ff57d100c751"
+                    "uuid": "e25be731-c639-4857-882a-cca9dce1592a"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "pos": {
+                        "x": 3.173,
+                        "y": 10.362829
+                    },
+                    "uuid": "2ac97a50-9c71-4726-a0fa-e64426e9168b"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
+                    "pos": {
+                        "x": 3.804,
+                        "y": 7.801829
+                    },
+                    "uuid": "a57744c1-595b-42c3-b798-d5bd31080a30"
                 }
             ],
             "severity": "error",
@@ -135,7 +227,7 @@
                         "x": 4.936,
                         "y": 14.265829
                     },
-                    "uuid": "c920bd36-ad09-48d1-8332-e7a255de1baf"
+                    "uuid": "30e4ab0e-d6ff-4ca7-b049-f9a0503389da"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
@@ -143,122 +235,30 @@
                         "x": 5.921,
                         "y": 15.118829
                     },
-                    "uuid": "ecdc2ebe-eebc-420e-831a-d20dc740cf81"
+                    "uuid": "e25be731-c639-4857-882a-cca9dce1592a"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B009 på F.Cu",
+                    "description": "Fotavtryck: D003",
                     "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
+                        "x": 8.131,
+                        "y": 9.631829
                     },
-                    "uuid": "2e3a498a-7b6b-43c1-8bec-117abd64676d"
+                    "uuid": "045e1b4c-cb8b-45cc-bc7c-d654302f98e5"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B010 på F.Cu",
-                    "pos": {
-                        "x": 17.687,
-                        "y": 21.307829
-                    },
-                    "uuid": "59994c69-7d9a-48d8-8080-d4f2b4ec870e"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
-                    "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
-                    },
-                    "uuid": "ecdc2ebe-eebc-420e-831a-d20dc740cf81"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B046 på F.Cu",
-                    "pos": {
-                        "x": 6.306,
-                        "y": 15.840829
-                    },
-                    "uuid": "1b109c10-4d61-4e7d-84e3-bc744a447135"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0119 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "1947f528-aad9-45b5-9b06-3c63cfa43c92"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
+                    "description": "Fotavtryck: B007",
                     "pos": {
                         "x": 7.394,
                         "y": 7.569829
                     },
-                    "uuid": "12cf3120-c2ef-48f1-912e-cb45d6fc1737"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B035 på F.Cu",
-                    "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
-                    },
-                    "uuid": "16761a22-cf99-45be-b6a5-1f6f5b5c4dbc"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B034 på F.Cu",
-                    "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
-                    },
-                    "uuid": "0b1f339d-4d57-48b7-9299-800239ece089"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B003",
-                    "pos": {
-                        "x": 9.545,
-                        "y": 5.814829
-                    },
-                    "uuid": "0494ab63-ad92-4074-9730-320fe5406ff0"
-                },
-                {
-                    "description": "Fotavtryck: B024",
-                    "pos": {
-                        "x": 7.51,
-                        "y": 5.533829
-                    },
-                    "uuid": "de80cf15-70be-4ccd-a61d-ec7e4dc65298"
+                    "uuid": "062314d8-e08f-4b35-a530-e8816acc6b34"
                 }
             ],
             "severity": "error",
@@ -268,20 +268,20 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B017",
+                    "description": "Fotavtryck: D003",
                     "pos": {
-                        "x": 4.936,
-                        "y": 14.265829
+                        "x": 8.131,
+                        "y": 9.631829
                     },
-                    "uuid": "28c88268-f06f-4e26-98db-ff8c4707ef92"
+                    "uuid": "045e1b4c-cb8b-45cc-bc7c-d654302f98e5"
                 },
                 {
-                    "description": "Fotavtryck: D002",
+                    "description": "Fotavtryck: B020",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 7.666,
+                        "y": 10.729829
                     },
-                    "uuid": "51d2914a-74eb-482c-be1a-10f9e0d4c82b"
+                    "uuid": "5026fae2-261d-453e-883f-1ee6698790f5"
                 }
             ],
             "severity": "error",
@@ -291,43 +291,20 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B017",
+                    "description": "Fotavtryck: B007",
                     "pos": {
-                        "x": 4.936,
-                        "y": 14.265829
+                        "x": 7.394,
+                        "y": 7.569829
                     },
-                    "uuid": "28c88268-f06f-4e26-98db-ff8c4707ef92"
+                    "uuid": "062314d8-e08f-4b35-a530-e8816acc6b34"
                 },
                 {
-                    "description": "Fotavtryck: B019",
+                    "description": "Fotavtryck: B005",
                     "pos": {
-                        "x": 5.699,
-                        "y": 13.913829
+                        "x": 3.804,
+                        "y": 7.801829
                     },
-                    "uuid": "aa69b8d0-1384-4f33-a1be-0f9ee0545105"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B009",
-                    "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
-                    },
-                    "uuid": "297d7afc-f323-45ca-90d4-19d686f897c0"
-                },
-                {
-                    "description": "Fotavtryck: B010",
-                    "pos": {
-                        "x": 17.687,
-                        "y": 21.307829
-                    },
-                    "uuid": "7bbf6dcf-2fad-4c18-9b10-1da7f3e8ca35"
+                    "uuid": "d51a3922-9df0-449c-9d7f-122348eb36e7"
                 }
             ],
             "severity": "error",
@@ -342,7 +319,7 @@
                         "x": 21.479,
                         "y": 16.434829
                     },
-                    "uuid": "50ee831b-8a63-443c-bcec-0cf22c7f2a72"
+                    "uuid": "16301b1e-471e-4daa-8c82-e261f9ec8325"
                 },
                 {
                     "description": "Fotavtryck: B013",
@@ -350,7 +327,7 @@
                         "x": 23.612,
                         "y": 14.877829
                     },
-                    "uuid": "7e4ba4b6-890f-405f-8343-e49f425fb414"
+                    "uuid": "bd651ab6-19ed-419c-95a7-7295f4232461"
                 }
             ],
             "severity": "error",
@@ -359,21 +336,21 @@
         {
             "description": "Courtyards overlap",
             "items": [
-                {
-                    "description": "Fotavtryck: D002",
-                    "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
-                    },
-                    "uuid": "51d2914a-74eb-482c-be1a-10f9e0d4c82b"
-                },
                 {
                     "description": "Fotavtryck: B046",
                     "pos": {
                         "x": 6.306,
                         "y": 15.840829
                     },
-                    "uuid": "617ac84e-5168-4a45-8fb6-a25f89c27e49"
+                    "uuid": "16f3cab5-3eee-49a6-bc56-379e09b3c109"
+                },
+                {
+                    "description": "Fotavtryck: D002",
+                    "pos": {
+                        "x": 5.921,
+                        "y": 15.118829
+                    },
+                    "uuid": "f485141c-901d-4743-9b50-0fc4109e3015"
                 }
             ],
             "severity": "error",
@@ -383,12 +360,265 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: D002",
+                    "description": "Fotavtryck: B002",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 18.533,
+                        "y": 3.778829
                     },
-                    "uuid": "51d2914a-74eb-482c-be1a-10f9e0d4c82b"
+                    "uuid": "1cfbcd5f-4d92-46be-865c-2921ed55e34b"
+                },
+                {
+                    "description": "Fotavtryck: B034",
+                    "pos": {
+                        "x": 18.062,
+                        "y": 1.608829
+                    },
+                    "uuid": "4fe7035e-d7ae-4e27-b5d5-4856c3abd2bc"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B002",
+                    "pos": {
+                        "x": 18.533,
+                        "y": 3.778829
+                    },
+                    "uuid": "1cfbcd5f-4d92-46be-865c-2921ed55e34b"
+                },
+                {
+                    "description": "Fotavtryck: B035",
+                    "pos": {
+                        "x": 18.812,
+                        "y": 1.773829
+                    },
+                    "uuid": "b0c95b6b-2386-4f06-ba97-cbdfab126753"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: KP012",
+                    "pos": {
+                        "x": 7.535,
+                        "y": 9.631829
+                    },
+                    "uuid": "2ddbe0b2-7857-4097-8614-b9f3a35cf00d"
+                },
+                {
+                    "description": "Fotavtryck: KP013",
+                    "pos": {
+                        "x": 7.521,
+                        "y": 10.913829
+                    },
+                    "uuid": "af3226df-5432-4ce7-81fc-3f9c3da3bf17"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: KP012",
+                    "pos": {
+                        "x": 7.535,
+                        "y": 9.631829
+                    },
+                    "uuid": "2ddbe0b2-7857-4097-8614-b9f3a35cf00d"
+                },
+                {
+                    "description": "Fotavtryck: KP011",
+                    "pos": {
+                        "x": 7.55,
+                        "y": 8.353829
+                    },
+                    "uuid": "ce388edd-d0f4-4a88-b54b-c5e7350a3e49"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B010",
+                    "pos": {
+                        "x": 17.687,
+                        "y": 21.307829
+                    },
+                    "uuid": "316567c7-84f9-4621-8f57-e1fcc3662f13"
+                },
+                {
+                    "description": "Fotavtryck: B009",
+                    "pos": {
+                        "x": 15.823,
+                        "y": 21.539829
+                    },
+                    "uuid": "c0c903f3-8e9a-4f96-be45-1e913e4c0eb1"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B030",
+                    "pos": {
+                        "x": 6.977,
+                        "y": 20.056829
+                    },
+                    "uuid": "3d79ff29-f258-46a4-9ad7-3ca2ac664d24"
+                },
+                {
+                    "description": "Fotavtryck: B029",
+                    "pos": {
+                        "x": 7.612,
+                        "y": 20.554829
+                    },
+                    "uuid": "576ab45c-6ca7-4c15-9fbc-13106333394a"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B030",
+                    "pos": {
+                        "x": 6.977,
+                        "y": 20.056829
+                    },
+                    "uuid": "3d79ff29-f258-46a4-9ad7-3ca2ac664d24"
+                },
+                {
+                    "description": "Fotavtryck: B026",
+                    "pos": {
+                        "x": 7.883,
+                        "y": 19.076829
+                    },
+                    "uuid": "981130c7-29fb-40ed-8789-515ab0ccfe31"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B034",
+                    "pos": {
+                        "x": 18.062,
+                        "y": 1.608829
+                    },
+                    "uuid": "4fe7035e-d7ae-4e27-b5d5-4856c3abd2bc"
+                },
+                {
+                    "description": "Fotavtryck: B035",
+                    "pos": {
+                        "x": 18.812,
+                        "y": 1.773829
+                    },
+                    "uuid": "b0c95b6b-2386-4f06-ba97-cbdfab126753"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B029",
+                    "pos": {
+                        "x": 7.612,
+                        "y": 20.554829
+                    },
+                    "uuid": "576ab45c-6ca7-4c15-9fbc-13106333394a"
+                },
+                {
+                    "description": "Fotavtryck: B026",
+                    "pos": {
+                        "x": 7.883,
+                        "y": 19.076829
+                    },
+                    "uuid": "981130c7-29fb-40ed-8789-515ab0ccfe31"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: KP000",
+                    "pos": {
+                        "x": 22.625,
+                        "y": 11.070829
+                    },
+                    "uuid": "606caeff-bf3c-4221-a7b4-c66281a9257d"
+                },
+                {
+                    "description": "Fotavtryck: KP042",
+                    "pos": {
+                        "x": 22.618,
+                        "y": 12.363829
+                    },
+                    "uuid": "b1762544-6e1c-4a5b-8245-46dcd4076bcb"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: KP016",
+                    "pos": {
+                        "x": 7.505,
+                        "y": 12.184829
+                    },
+                    "uuid": "72ab60c6-5c47-4a02-8803-75af42087206"
+                },
+                {
+                    "description": "Fotavtryck: KP013",
+                    "pos": {
+                        "x": 7.521,
+                        "y": 10.913829
+                    },
+                    "uuid": "af3226df-5432-4ce7-81fc-3f9c3da3bf17"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B017",
+                    "pos": {
+                        "x": 4.936,
+                        "y": 14.265829
+                    },
+                    "uuid": "7b294660-5ea8-49cb-bd8e-0341b357a689"
                 },
                 {
                     "description": "Fotavtryck: B019",
@@ -396,7 +626,7 @@
                         "x": 5.699,
                         "y": 13.913829
                     },
-                    "uuid": "aa69b8d0-1384-4f33-a1be-0f9ee0545105"
+                    "uuid": "c3675150-766e-442c-a198-dd69f9cd47c4"
                 }
             ],
             "severity": "error",
@@ -406,20 +636,43 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B011",
+                    "description": "Fotavtryck: B017",
                     "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
+                        "x": 4.936,
+                        "y": 14.265829
                     },
-                    "uuid": "5b0932c8-523d-4217-8b32-433ecd258aac"
+                    "uuid": "7b294660-5ea8-49cb-bd8e-0341b357a689"
                 },
                 {
-                    "description": "Fotavtryck: B005",
+                    "description": "Fotavtryck: D002",
                     "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
+                        "x": 5.921,
+                        "y": 15.118829
                     },
-                    "uuid": "a952ce05-00a1-4f35-bd7a-b68aae7955b4"
+                    "uuid": "f485141c-901d-4743-9b50-0fc4109e3015"
+                }
+            ],
+            "severity": "error",
+            "type": "courtyards_overlap"
+        },
+        {
+            "description": "Courtyards overlap",
+            "items": [
+                {
+                    "description": "Fotavtryck: B024",
+                    "pos": {
+                        "x": 7.51,
+                        "y": 5.533829
+                    },
+                    "uuid": "7d4d0479-669a-4ef0-8781-f564b4d126fa"
+                },
+                {
+                    "description": "Fotavtryck: B003",
+                    "pos": {
+                        "x": 9.545,
+                        "y": 5.814829
+                    },
+                    "uuid": "977c676f-3abf-4b65-862d-0fdb585eef36"
                 }
             ],
             "severity": "error",
@@ -434,7 +687,7 @@
                         "x": 7.605,
                         "y": 16.729829
                     },
-                    "uuid": "5f740208-e3f2-4935-8a59-7ef6c7d306eb"
+                    "uuid": "87657d6f-b5bb-402f-8f86-b469fca56f9c"
                 },
                 {
                     "description": "Fotavtryck: B025",
@@ -442,7 +695,7 @@
                         "x": 8.556,
                         "y": 17.560829
                     },
-                    "uuid": "d8ce5276-02e6-40d8-89b0-aab3f018ae28"
+                    "uuid": "e2346315-3874-4e2a-aeb9-7ec50028d479"
                 }
             ],
             "severity": "error",
@@ -451,113 +704,21 @@
         {
             "description": "Courtyards overlap",
             "items": [
-                {
-                    "description": "Fotavtryck: B035",
-                    "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
-                    },
-                    "uuid": "682e0972-ab4c-4c33-9db1-3f255150a128"
-                },
-                {
-                    "description": "Fotavtryck: B034",
-                    "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
-                    },
-                    "uuid": "79416d0a-6856-425f-9b65-37bbaf4413d9"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B035",
-                    "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
-                    },
-                    "uuid": "682e0972-ab4c-4c33-9db1-3f255150a128"
-                },
-                {
-                    "description": "Fotavtryck: B002",
-                    "pos": {
-                        "x": 18.533,
-                        "y": 3.778829
-                    },
-                    "uuid": "b02af81b-3e24-426d-b412-c92425458734"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B030",
-                    "pos": {
-                        "x": 6.977,
-                        "y": 20.056829
-                    },
-                    "uuid": "6f47a79c-e7f7-4221-b4b5-8b2207163987"
-                },
-                {
-                    "description": "Fotavtryck: B029",
-                    "pos": {
-                        "x": 7.612,
-                        "y": 20.554829
-                    },
-                    "uuid": "7215a439-d8e7-4d32-b782-b881b8234275"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B030",
-                    "pos": {
-                        "x": 6.977,
-                        "y": 20.056829
-                    },
-                    "uuid": "6f47a79c-e7f7-4221-b4b5-8b2207163987"
-                },
                 {
                     "description": "Fotavtryck: B026",
                     "pos": {
                         "x": 7.883,
                         "y": 19.076829
                     },
-                    "uuid": "aa198f40-3044-4675-ab38-ec57c17e755b"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
-                {
-                    "description": "Fotavtryck: B029",
-                    "pos": {
-                        "x": 7.612,
-                        "y": 20.554829
-                    },
-                    "uuid": "7215a439-d8e7-4d32-b782-b881b8234275"
+                    "uuid": "981130c7-29fb-40ed-8789-515ab0ccfe31"
                 },
                 {
-                    "description": "Fotavtryck: B026",
+                    "description": "Fotavtryck: B025",
                     "pos": {
-                        "x": 7.883,
-                        "y": 19.076829
+                        "x": 8.556,
+                        "y": 17.560829
                     },
-                    "uuid": "aa198f40-3044-4675-ab38-ec57c17e755b"
+                    "uuid": "e2346315-3874-4e2a-aeb9-7ec50028d479"
                 }
             ],
             "severity": "error",
@@ -567,43 +728,20 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B034",
+                    "description": "Fotavtryck: B011",
                     "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
+                        "x": 3.173,
+                        "y": 10.362829
                     },
-                    "uuid": "79416d0a-6856-425f-9b65-37bbaf4413d9"
+                    "uuid": "a1e0f97d-628b-406a-a986-4fdbd3a3f498"
                 },
-                {
-                    "description": "Fotavtryck: B002",
-                    "pos": {
-                        "x": 18.533,
-                        "y": 3.778829
-                    },
-                    "uuid": "b02af81b-3e24-426d-b412-c92425458734"
-                }
-            ],
-            "severity": "error",
-            "type": "courtyards_overlap"
-        },
-        {
-            "description": "Courtyards overlap",
-            "items": [
                 {
                     "description": "Fotavtryck: B005",
                     "pos": {
                         "x": 3.804,
                         "y": 7.801829
                     },
-                    "uuid": "a952ce05-00a1-4f35-bd7a-b68aae7955b4"
-                },
-                {
-                    "description": "Fotavtryck: B007",
-                    "pos": {
-                        "x": 7.394,
-                        "y": 7.569829
-                    },
-                    "uuid": "bf982e69-ced0-4d66-ae6e-630895b517ff"
+                    "uuid": "d51a3922-9df0-449c-9d7f-122348eb36e7"
                 }
             ],
             "severity": "error",
@@ -613,20 +751,20 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B026",
+                    "description": "Fotavtryck: KP042",
                     "pos": {
-                        "x": 7.883,
-                        "y": 19.076829
+                        "x": 22.618,
+                        "y": 12.363829
                     },
-                    "uuid": "aa198f40-3044-4675-ab38-ec57c17e755b"
+                    "uuid": "b1762544-6e1c-4a5b-8245-46dcd4076bcb"
                 },
                 {
-                    "description": "Fotavtryck: B025",
+                    "description": "Fotavtryck: KP041",
                     "pos": {
-                        "x": 8.556,
-                        "y": 17.560829
+                        "x": 22.6,
+                        "y": 13.646829
                     },
-                    "uuid": "d8ce5276-02e6-40d8-89b0-aab3f018ae28"
+                    "uuid": "c3689654-2923-437b-b4cf-6687c058def6"
                 }
             ],
             "severity": "error",
@@ -636,20 +774,20 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B007",
+                    "description": "Fotavtryck: KP010",
                     "pos": {
-                        "x": 7.394,
-                        "y": 7.569829
+                        "x": 7.568,
+                        "y": 7.079829
                     },
-                    "uuid": "bf982e69-ced0-4d66-ae6e-630895b517ff"
+                    "uuid": "bc61b7df-cbbf-4d72-aeeb-bb2eeb13ae2a"
                 },
                 {
-                    "description": "Fotavtryck: D003",
+                    "description": "Fotavtryck: KP011",
                     "pos": {
-                        "x": 8.131,
-                        "y": 9.631829
+                        "x": 7.55,
+                        "y": 8.353829
                     },
-                    "uuid": "daec19e2-06dc-40d6-8ef7-7f41244e8a61"
+                    "uuid": "ce388edd-d0f4-4a88-b54b-c5e7350a3e49"
                 }
             ],
             "severity": "error",
@@ -659,43 +797,43 @@
             "description": "Courtyards overlap",
             "items": [
                 {
-                    "description": "Fotavtryck: B020",
+                    "description": "Fotavtryck: B019",
                     "pos": {
-                        "x": 7.666,
-                        "y": 10.729829
+                        "x": 5.699,
+                        "y": 13.913829
                     },
-                    "uuid": "c9f1fe6d-a736-4153-b448-9e8b24f48511"
+                    "uuid": "c3675150-766e-442c-a198-dd69f9cd47c4"
                 },
                 {
-                    "description": "Fotavtryck: D003",
+                    "description": "Fotavtryck: D002",
                     "pos": {
-                        "x": 8.131,
-                        "y": 9.631829
+                        "x": 5.921,
+                        "y": 15.118829
                     },
-                    "uuid": "daec19e2-06dc-40d6-8ef7-7f41244e8a61"
+                    "uuid": "f485141c-901d-4743-9b50-0fc4109e3015"
                 }
             ],
             "severity": "error",
             "type": "courtyards_overlap"
         },
         {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4734 mm)",
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4775 mm)",
             "items": [
                 {
                     "description": "Segment på Edge.Cuts",
                     "pos": {
-                        "x": 15.280524,
-                        "y": 5.744775
+                        "x": 9.280023,
+                        "y": 9.50256
                     },
-                    "uuid": "560e3e8c-b9af-47c6-8fef-f6bfbb9dd218"
+                    "uuid": "dd90d1d6-dd90-417e-8b54-23cf0ef2d57c"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B006 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
                     "pos": {
-                        "x": 16.532,
-                        "y": 3.385829
+                        "x": 7.394,
+                        "y": 7.569829
                     },
-                    "uuid": "6bbb5532-5a44-4839-a5d9-09876c1eeb88"
+                    "uuid": "a02f4e0b-ca84-4cb6-a8d6-34ffcc1638b2"
                 }
             ],
             "severity": "error",
@@ -710,7 +848,7 @@
                         "x": 20.229638,
                         "y": 18.08086
                     },
-                    "uuid": "3aa0a5a8-a427-4128-892a-fdd8475c51f8"
+                    "uuid": "32d7da96-da58-4532-bf04-a269ace05096"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
@@ -718,30 +856,30 @@
                         "x": 21.479,
                         "y": 16.434829
                     },
-                    "uuid": "1eb8c4f1-7d97-485b-a635-74273a215f91"
+                    "uuid": "f41eb33c-f6c4-4eaa-a727-53dd2f9727ce"
                 }
             ],
             "severity": "error",
             "type": "copper_edge_clearance"
         },
         {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4734 mm)",
             "items": [
                 {
                     "description": "Segment på Edge.Cuts",
                     "pos": {
-                        "x": 5.122533,
-                        "y": 20.594512
+                        "x": 15.280524,
+                        "y": 5.744775
                     },
-                    "uuid": "4dabd16b-41de-4697-a463-5b37ef01de5b"
+                    "uuid": "7cf4390c-9507-45ae-9229-32765ac1ea0f"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B006 på F.Cu",
                     "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
+                        "x": 16.532,
+                        "y": 3.385829
                     },
-                    "uuid": "f34078fb-742a-40ba-985d-1f0ba260eff9"
+                    "uuid": "0bfa4bfb-2581-4a6b-952b-52768d0f7352"
                 }
             ],
             "severity": "error",
@@ -756,7 +894,7 @@
                         "x": 9.001986,
                         "y": 14.903282
                     },
-                    "uuid": "6c082a63-00c9-4ec8-8378-44263598b76f"
+                    "uuid": "3d846ea8-a030-4e4e-8ccb-feee9b109cf6"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B004 på F.Cu",
@@ -764,7 +902,30 @@
                         "x": 7.605,
                         "y": 16.729829
                     },
-                    "uuid": "34b2d6f4-3663-46a0-8208-874b8b99a864"
+                    "uuid": "bf126892-2458-47b6-89b7-68b2ac8f0556"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 5.122533,
+                        "y": 20.594512
+                    },
+                    "uuid": "3c7c8e16-4b4a-40ea-b49b-0741e9a506d1"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "pos": {
+                        "x": 3.173,
+                        "y": 10.362829
+                    },
+                    "uuid": "2ac97a50-9c71-4726-a0fa-e64426e9168b"
                 }
             ],
             "severity": "error",
@@ -779,7 +940,7 @@
                         "x": 22.208524,
                         "y": 13.767921
                     },
-                    "uuid": "5e6a2fa2-69ac-45a1-871e-acce3085aa42"
+                    "uuid": "c9f4e589-53ca-418b-8936-978272c9f78c"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
@@ -787,30 +948,7 @@
                         "x": 23.612,
                         "y": 14.877829
                     },
-                    "uuid": "ec9fd3d5-5550-4488-afdf-ff57d100c751"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4328 mm)",
-            "items": [
-                {
-                    "description": "Båge på Edge.Cuts",
-                    "pos": {
-                        "x": 14.4439,
-                        "y": 12.14705
-                    },
-                    "uuid": "5259bf08-0509-4d01-90f0-8f49bb6414e0"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "1947f528-aad9-45b5-9b06-3c63cfa43c92"
+                    "uuid": "f7c323bb-c55d-452c-8a08-82abbccfba2f"
                 }
             ],
             "severity": "error",
@@ -825,7 +963,7 @@
                         "x": 6.592769,
                         "y": 2.318158
                     },
-                    "uuid": "6da79b0c-a672-4b6b-8906-d56c8f2773c8"
+                    "uuid": "73a385a6-1449-4dbc-ad3a-4d38ad1f3261"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B015 på F.Cu",
@@ -833,30 +971,30 @@
                         "x": 11.258,
                         "y": 1.576829
                     },
-                    "uuid": "b4e86056-a93f-49dc-a712-55d56c86e540"
+                    "uuid": "8f6e0fe5-7d33-411a-9ae9-cd3f1a409336"
                 }
             ],
             "severity": "error",
             "type": "copper_edge_clearance"
         },
         {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4775 mm)",
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4328 mm)",
             "items": [
                 {
-                    "description": "Segment på Edge.Cuts",
+                    "description": "Båge på Edge.Cuts",
                     "pos": {
-                        "x": 9.280023,
-                        "y": 9.50256
+                        "x": 14.4439,
+                        "y": 12.14705
                     },
-                    "uuid": "92920456-fb61-40db-9cc3-b98362085db3"
+                    "uuid": "993cb0e0-a242-4e19-b939-09c71bbcfd3c"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
+                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
                     "pos": {
-                        "x": 7.394,
-                        "y": 7.569829
+                        "x": 3.804,
+                        "y": 7.801829
                     },
-                    "uuid": "12cf3120-c2ef-48f1-912e-cb45d6fc1737"
+                    "uuid": "a57744c1-595b-42c3-b798-d5bd31080a30"
                 }
             ],
             "severity": "error",
@@ -871,7 +1009,7 @@
                         "x": 6.592769,
                         "y": 2.318158
                     },
-                    "uuid": "6da79b0c-a672-4b6b-8906-d56c8f2773c8"
+                    "uuid": "73a385a6-1449-4dbc-ad3a-4d38ad1f3261"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av D004 på F.Cu",
@@ -879,7 +1017,237 @@
                         "x": 13.999,
                         "y": -0.385171
                     },
-                    "uuid": "137d8af4-2f04-4d26-bf09-d983bcbf085f"
+                    "uuid": "ddfdac0a-bd24-4e3d-a3bc-dbe5024cd920"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4412 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 21.109082,
+                        "y": 16.857493
+                    },
+                    "uuid": "799a04e4-e830-4236-bd23-b80eff096cfb"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP037 på B.Cu",
+                    "pos": {
+                        "x": 21.774,
+                        "y": 16.518829
+                    },
+                    "uuid": "40894af7-9fe8-4361-b7d7-c0cafe69db10"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 20.958005,
+                        "y": 14.637716
+                    },
+                    "uuid": "9c5a8870-5482-4267-a403-dcd60996a421"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP039 på B.Cu",
+                    "pos": {
+                        "x": 22.121,
+                        "y": 15.114829
+                    },
+                    "uuid": "fd5831a7-8ea6-429f-ad25-71f246a5c894"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Båge på Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "e896b63c-9a2d-4dbf-a654-23cf91892fbf"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP001 på B.Cu",
+                    "pos": {
+                        "x": 26.818,
+                        "y": 9.979829
+                    },
+                    "uuid": "95b31a6a-140b-4e9a-9feb-8f595119ff45"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0074 mm)",
+            "items": [
+                {
+                    "description": "Båge på Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "e896b63c-9a2d-4dbf-a654-23cf91892fbf"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP002 på B.Cu",
+                    "pos": {
+                        "x": 26.21,
+                        "y": 8.257829
+                    },
+                    "uuid": "f80b6f9c-a935-4d91-80ec-68bdd2fad2b6"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4062 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 21.42543,
+                        "y": 10.448141
+                    },
+                    "uuid": "dd027e3a-2a74-441c-9062-25bfe80b4cd6"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP000 på B.Cu",
+                    "pos": {
+                        "x": 22.625,
+                        "y": 11.070829
+                    },
+                    "uuid": "b816a30e-4a44-4a70-857a-5feec5a29c60"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4393 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 20.35816,
+                        "y": 18.017235
+                    },
+                    "uuid": "66ac88df-c292-48ee-b91a-bb569a43f9bb"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP035 på B.Cu",
+                    "pos": {
+                        "x": 20.96,
+                        "y": 17.587829
+                    },
+                    "uuid": "6033ca8e-e0aa-4d20-93d8-4f86f64a6ec0"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4533 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 18.996406,
+                        "y": 18.691371
+                    },
+                    "uuid": "53c2cdd2-70d0-4eec-abb7-42e1bee51de4"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP032 på B.Cu",
+                    "pos": {
+                        "x": 19.618,
+                        "y": 18.265829
+                    },
+                    "uuid": "583d2fea-9804-4217-b090-656fe2d7a5ee"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 21.052089,
+                        "y": 12.169829
+                    },
+                    "uuid": "3b094fed-1000-42ed-ab49-212aacb0c302"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP042 på B.Cu",
+                    "pos": {
+                        "x": 22.618,
+                        "y": 12.363829
+                    },
+                    "uuid": "93b000f0-1a3a-4ede-ad28-965e1bf4efd8"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment på Edge.Cuts",
+                    "pos": {
+                        "x": 22.208524,
+                        "y": 13.767921
+                    },
+                    "uuid": "c9f4e589-53ca-418b-8936-978272c9f78c"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP041 på B.Cu",
+                    "pos": {
+                        "x": 22.6,
+                        "y": 13.646829
+                    },
+                    "uuid": "1fe19bc4-25e4-4e3d-9668-5e793de6ffe1"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.3603 mm)",
+            "items": [
+                {
+                    "description": "Båge på Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "e896b63c-9a2d-4dbf-a654-23cf91892fbf"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av KP003 på B.Cu",
+                    "pos": {
+                        "x": 25.425,
+                        "y": 7.498829
+                    },
+                    "uuid": "44adf080-95d0-456d-adf8-4456f7fb4a99"
                 }
             ],
             "severity": "error",
@@ -894,7 +1262,7 @@
                         "x": 21.479,
                         "y": 16.434829
                     },
-                    "uuid": "1eb8c4f1-7d97-485b-a635-74273a215f91"
+                    "uuid": "f41eb33c-f6c4-4eaa-a727-53dd2f9727ce"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
@@ -902,30 +1270,7 @@
                         "x": 23.612,
                         "y": 14.877829
                     },
-                    "uuid": "ec9fd3d5-5550-4488-afdf-ff57d100c751"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "1947f528-aad9-45b5-9b06-3c63cfa43c92"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
-                    "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
-                    },
-                    "uuid": "f34078fb-742a-40ba-985d-1f0ba260eff9"
+                    "uuid": "f7c323bb-c55d-452c-8a08-82abbccfba2f"
                 }
             ],
             "severity": "error",
@@ -940,7 +1285,7 @@
                         "x": 18.062,
                         "y": 1.608829
                     },
-                    "uuid": "0b1f339d-4d57-48b7-9299-800239ece089"
+                    "uuid": "871adea7-d10d-40aa-acfe-5d6ba1cf619d"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B035 på F.Cu",
@@ -948,7 +1293,30 @@
                         "x": 18.812,
                         "y": 1.773829
                     },
-                    "uuid": "16761a22-cf99-45be-b6a5-1f6f5b5c4dbc"
+                    "uuid": "ad4eb7f5-7031-4003-a70b-c1477fe2b984"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
+            "items": [
+                {
+                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "pos": {
+                        "x": 3.173,
+                        "y": 10.362829
+                    },
+                    "uuid": "2ac97a50-9c71-4726-a0fa-e64426e9168b"
+                },
+                {
+                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
+                    "pos": {
+                        "x": 3.804,
+                        "y": 7.801829
+                    },
+                    "uuid": "a57744c1-595b-42c3-b798-d5bd31080a30"
                 }
             ],
             "severity": "error",
@@ -963,7 +1331,7 @@
                         "x": 15.823,
                         "y": 21.539829
                     },
-                    "uuid": "2e3a498a-7b6b-43c1-8bec-117abd64676d"
+                    "uuid": "2fec8b18-4768-4b3e-bffa-ac5adab03fcf"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B010 på F.Cu",
@@ -971,7 +1339,7 @@
                         "x": 17.687,
                         "y": 21.307829
                     },
-                    "uuid": "59994c69-7d9a-48d8-8080-d4f2b4ec870e"
+                    "uuid": "2f1e1aca-6603-417c-8b40-04cd47a057fb"
                 }
             ],
             "severity": "error",
@@ -986,7 +1354,7 @@
                         "x": 6.306,
                         "y": 15.840829
                     },
-                    "uuid": "1b109c10-4d61-4e7d-84e3-bc744a447135"
+                    "uuid": "9422bcb7-54d5-4b36-bf51-0fb6222f282b"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
@@ -994,7 +1362,7 @@
                         "x": 5.921,
                         "y": 15.118829
                     },
-                    "uuid": "ecdc2ebe-eebc-420e-831a-d20dc740cf81"
+                    "uuid": "e25be731-c639-4857-882a-cca9dce1592a"
                 }
             ],
             "severity": "error",
@@ -1009,7 +1377,7 @@
                         "x": 21.052089,
                         "y": 12.169829
                     },
-                    "uuid": "326171bd-36e6-4842-a282-c2ee0175bbff"
+                    "uuid": "3b094fed-1000-42ed-ab49-212aacb0c302"
                 },
                 {
                     "description": "Textruta för fotavtryck SILK1 (REPLICA)",
@@ -1017,7 +1385,7 @@
                         "x": 24.3,
                         "y": 12.169829
                     },
-                    "uuid": "53927c43-1641-420e-8450-2a3853eb12c0"
+                    "uuid": "6b37621c-78aa-49a4-bc5e-64b67e07961f"
                 }
             ],
             "severity": "warning",
@@ -1032,7 +1400,7 @@
                         "x": 15.0,
                         "y": 21.469829
                     },
-                    "uuid": "c310dc99-694b-49c2-b4f3-276eecc45e20"
+                    "uuid": "c7cca525-b8e5-4213-8544-cc9eb04c4e92"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B009 på F.Cu",
@@ -1040,7 +1408,7 @@
                         "x": 15.823,
                         "y": 21.539829
                     },
-                    "uuid": "2e3a498a-7b6b-43c1-8bec-117abd64676d"
+                    "uuid": "2fec8b18-4768-4b3e-bffa-ac5adab03fcf"
                 }
             ],
             "severity": "warning",
@@ -1055,7 +1423,7 @@
                         "x": 5.7,
                         "y": 12.169829
                     },
-                    "uuid": "ed370a50-120f-4d7b-a4f8-2b1da238cad3"
+                    "uuid": "ca2edc00-3904-4d63-ab35-02873ca30348"
                 },
                 {
                     "description": "Lödyta 1 [<no net>] av B008 på F.Cu",
@@ -1063,7 +1431,7 @@
                         "x": 5.544,
                         "y": 11.526829
                     },
-                    "uuid": "e0edd5d9-4a28-46b3-a15e-0f26da6fe539"
+                    "uuid": "84c85bd8-19db-475c-ae47-3ba95c78cdbf"
                 }
             ],
             "severity": "warning",

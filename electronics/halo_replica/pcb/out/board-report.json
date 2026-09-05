@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 59
  },
- "written_utc": "2026-09-05T07:07:24.873958Z",
+ "written_utc": "2026-09-05T07:08:36.887699Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
@@ -13,6 +13,21 @@
  "thickness_mm_as_drawn": 0.3,
  "fabrication_delta": "L4 measured 0.30 mm is below PCBWay's 0.40 mm four-layer floor and JLCPCB's 0.40 mm minimum. The Replica AS DRAWN cannot be ordered at either house. That is a fact about US, not about Apple. The two numbers are never fused.",
  "surface_finish": "gold-bearing \u2014 ENIG or another immersion/electroless-gold finish",
+ "soldermask": {
+  "drawn": "black",
+  "apple": "CANNOT DETERMINE",
+  "apple_bound": "dark and neutral \u2014 not green, not blue, not red, not white",
+  "note": "The measurement bounds Apple's mask to 'dark and neutral' and cannot go finer. Black is the nearest orderable colour to that bound at both houses and is recorded as a CHOICE within the measured bound, not as Apple's colour.",
+  "write": {
+   "state": "written and reloaded",
+   "soldermask": "black",
+   "copper_finish": "ENIG",
+   "thicknesses_written": false,
+   "why_no_thicknesses": "the 0.30 mm total is settled; how it divides between copper weight and core is NOT MEASURED, and a plausible division would be invented numbers in the same font as the measured ones",
+   "how_verified": "the file was reloaded with pcbnew.LoadBoard and the colour token read back out of it",
+   "ce_pcb_gap": "pcbnew 10.0.6 exposes no BOARD_STACKUP_ITEM and cepcb.Board.rules() writes netclasses only, so there is no API path to a mask colour. Reported upward (P11), not patched privately."
+  }
+ },
  "outer_edge": {
   "degenerate_primitives_dropped": 0,
   "drawn_outer_diameter_mm": 25.1593,

@@ -334,6 +334,82 @@ def _text(board, s, x_mm, y_mm, layer, size=0.4, rot=0.0):
 
 
 # ---------------------------------------------------------------------------
+def write_stackup_colour(pcb_path, mask, finish, layers):
+    """Put the soldermask colour and the finish into the board's stackup.
+
+    THIS IS A HAND EDIT OF THE SAVED FILE AND IT SAYS SO. `pcbnew` 10.0.6's
+    SWIG binding exposes no BOARD_STACKUP_ITEM at all -- checked, the symbol
+    is absent from the module -- and `cepcb.Board.rules()` writes netclasses
+    only, so there is no API path to a mask colour from Python. Setting
+    `board._rules["soldermask_colour"]` was tried first and is a SILENT
+    NO-OP: `_write_project` iterates a fixed key list and drops anything
+    else, so the board would have stayed KiCad-default green with a line of
+    code claiming otherwise. That is a capability gap in ce-pcb and is
+    reported upward rather than patched privately.
+
+    So the block is written into the s-expression, and then the file is
+    RELOADED WITH pcbnew and the colour READ BACK. A write that the kernel
+    silently rejects is the same class of failure as the no-op it replaces.
+    """
+    with open(pcb_path, "r", encoding="utf-8") as f:
+        txt = f.read()
+    if '(stackup' in txt:
+        return {"state": "already present, not overwritten"}
+    inner = ["In1.Cu", "In2.Cu"] if layers == 4 else []
+    rows = ['    (layer "F.SilkS" (type "Top Silk Screen"))',
+            '    (layer "F.Paste" (type "Top Solder Paste"))',
+            '    (layer "F.Mask" (type "Top Solder Mask") (color "%s"))' % mask,
+            '    (layer "F.Cu" (type "copper"))']
+    for i, l in enumerate(inner):
+        rows.append('    (layer "dielectric %d" (type "core") '
+                    '(material "FR4") (epsilon_r 4.5) (loss_tangent 0.02))'
+                    % (i + 1))
+        rows.append('    (layer "%s" (type "copper"))' % l)
+    rows.append('    (layer "dielectric %d" (type "core") (material "FR4") '
+                '(epsilon_r 4.5) (loss_tangent 0.02))' % (len(inner) + 1))
+    rows += ['    (layer "B.Cu" (type "copper"))',
+             '    (layer "B.Mask" (type "Bottom Solder Mask") (color "%s"))'
+             % mask,
+             '    (layer "B.Paste" (type "Bottom Solder Paste"))',
+             '    (layer "B.SilkS" (type "Bottom Silk Screen"))',
+             '    (copper_finish "%s")' % finish,
+             '    (dielectric_constraints no)']
+    block = "  (stackup\n" + "\n".join(rows) + "\n  )\n"
+    # NO LAYER THICKNESSES ARE WRITTEN. The 0.30 mm total is settled; how it
+    # divides between copper weight and core is NOT MEASURED anywhere, and a
+    # plausible division typed here would be four invented numbers wearing
+    # the same font as the measured ones.
+    i = txt.index("(setup")
+    j = txt.index("\n", i) + 1
+    txt = txt[:j] + block + txt[j:]
+    with open(pcb_path, "w", encoding="utf-8") as f:
+        f.write(txt)
+
+    import pcbnew
+    rb = pcbnew.LoadBoard(pcb_path)
+    if rb is None:
+        raise SystemExit("KiCad refused the board after the stackup block "
+                         "was written. The edit is rejected, not kept.")
+    with open(pcb_path, "r", encoding="utf-8") as f:
+        back = f.read()
+    ok = ('(color "%s")' % mask) in back
+    return {"state": "written and reloaded" if ok else "NOT CONFIRMED",
+            "soldermask": mask,
+            "copper_finish": finish,
+            "thicknesses_written": False,
+            "why_no_thicknesses": "the 0.30 mm total is settled; how it "
+                                  "divides between copper weight and core is "
+                                  "NOT MEASURED, and a plausible division "
+                                  "would be invented numbers in the same "
+                                  "font as the measured ones",
+            "how_verified": "the file was reloaded with pcbnew.LoadBoard and "
+                            "the colour token read back out of it",
+            "ce_pcb_gap": "pcbnew 10.0.6 exposes no BOARD_STACKUP_ITEM and "
+                          "cepcb.Board.rules() writes netclasses only, so "
+                          "there is no API path to a mask colour. Reported "
+                          "upward (P11), not patched privately."}
+
+
 def read_netlist():
     """The seam with lane L11. A READ, never a retype. Three verdicts."""
     if not os.path.isdir(SCHDIR):
@@ -552,10 +628,11 @@ def main():
     # at 0.14 saturation is inside white-balance error, so calling it purple
     # would be reading a camera setting as a material property.
     mask = stack["replica_as_drawn"]["soldermask"]
-    b._rules["soldermask_colour"] = mask
+    finish = stack["replica_as_drawn"]["finish"]
 
     os.makedirs(OUT, exist_ok=True)
     b.save(PCB)
+    mask_state = write_stackup_colour(PCB, mask, finish, layers)
 
     report = {
         "board": "halo_replica",
@@ -573,6 +650,13 @@ def main():
         "fabrication_delta": bj["parameters"]["thickness_mm"][
             "fabrication_delta"],
         "surface_finish": stack["apple"]["surface_finish"]["value"],
+        "soldermask": {
+            "drawn": mask,
+            "apple": stack["apple"]["soldermask_colour"]["verdict"],
+            "apple_bound": stack["apple"]["soldermask_colour"]["bounded_to"],
+            "note": stack["replica_as_drawn"]["soldermask_note"],
+            "write": mask_state,
+        },
         "outer_edge": ometa,
         "pocket": pmeta,
         "edge_cuts": {"arcs": n_arc, "segments": n_seg,
@@ -703,8 +787,9 @@ def main():
           % (placed_back["gold_pad"], placed_back["contact_position"]))
     for rid, why in refused_back:
         print("         REFUSED %-6s %s" % (rid, why[:90]))
-    print("MASK   %s — a CHOICE inside the measured bound 'dark and "
-          "neutral'. Apple's colour stays CANNOT DETERMINE." % mask)
+    print("MASK   %s, finish %s — %s. A CHOICE inside the measured bound "
+          "'dark and neutral'; Apple's colour stays CANNOT DETERMINE."
+          % (mask, finish, mask_state["state"]))
     print("ABSENT BY NAME, and nothing is drawn there:")
     for r in absent:
         print("         %-6s %-28s %s" % (r["id"], r.get("name"),

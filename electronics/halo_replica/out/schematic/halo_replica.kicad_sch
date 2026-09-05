@@ -9811,7 +9811,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO SOURCED BALL MAP EXISTS IN THIS REPOSITORY, so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids."
+		(property "Note" "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO COMPLETE BALL MAP IS SOURCED HERE - O'Flynn's table gives TEN of the fifty (D3, E2, F1, F4, G1, G3, H1, H2, H3, H4) - so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids."
 			(at 241.3 118.11 0)
 			(effects
 				(font
@@ -10378,7 +10378,7 @@
 		)
 		(uuid "8aeaad9d-d4b6-5475-8f2e-767afe40bd64")
 	)
-	(global_label "SPI_SCK"
+	(global_label "EN_PERIPH"
 		(shape bidirectional)
 		(at 266.7 62.23 0)
 		(effects
@@ -10409,7 +10409,7 @@
 		)
 		(uuid "4de35b66-6f45-51a5-9940-58c4b2bc3378")
 	)
-	(global_label "SPI_MOSI"
+	(global_label "I2S_BCLK"
 		(shape bidirectional)
 		(at 266.7 64.77 0)
 		(effects
@@ -10440,7 +10440,7 @@
 		)
 		(uuid "de3f4959-80e9-5767-bec0-e584a9b3ee2f")
 	)
-	(global_label "SPI_MISO"
+	(global_label "I2S_LRCLK"
 		(shape bidirectional)
 		(at 266.7 67.31 0)
 		(effects
@@ -10471,7 +10471,7 @@
 		)
 		(uuid "c2e28204-6027-57ac-9723-b109a8a0edc8")
 	)
-	(global_label "EN_PERIPH"
+	(global_label "SPI_MISO"
 		(shape bidirectional)
 		(at 266.7 69.85 0)
 		(effects
@@ -10502,7 +10502,7 @@
 		)
 		(uuid "72fc3ca4-3976-5c50-a030-5abd8c1fd87f")
 	)
-	(global_label "I2S_BCLK"
+	(global_label "SPI_MOSI"
 		(shape bidirectional)
 		(at 266.7 72.39 0)
 		(effects
@@ -10533,7 +10533,7 @@
 		)
 		(uuid "1c642116-dd97-5867-856f-5b0b6b158931")
 	)
-	(global_label "I2S_LRCLK"
+	(global_label "SPI_SCK"
 		(shape bidirectional)
 		(at 266.7 74.93 0)
 		(effects
@@ -11053,9 +11053,36 @@
 		(at 264.16 92.71)
 		(uuid "b019a134-82fa-5981-800c-130e31fe4187")
 	)
-	(no_connect
-		(at 264.16 95.25)
-		(uuid "ce9707ee-6e46-5aa0-9c80-d8bc00fc7b28")
+	(wire
+		(pts
+			(xy 264.16 95.25)
+			(xy 266.7 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae8e2f76-88fb-5db9-b1f1-fe6c682c2ef2")
+	)
+	(global_label "TP9_P0.26"
+		(shape bidirectional)
+		(at 266.7 95.25 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "eb268321-4c1c-53e4-9e0f-0131cbda48a8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 266.7 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 	)
 	(no_connect
 		(at 264.16 97.79)
@@ -20247,7 +20274,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "O'Flynn's TP30 = nRST. On nRF52832 that is P0.21/nRESET. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
+		(property "Note" "O'Flynn's table, verbatim: '30 | nRF ball H1 (P0.21/nRST)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
 			(at 299.72 325.12 0)
 			(effects
 				(font
@@ -20257,7 +20284,7 @@
 				(hide yes)
 			)
 		)
-		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason"
 			(at 299.72 325.12 0)
 			(effects
 				(font
@@ -20387,7 +20414,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "O'Flynn's TP35 = SWCLK. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
+		(property "Note" "O'Flynn's table, verbatim: '35 | nRF ball F1 (SWCLK)'. No GPIO number, because SWCLK is a dedicated pad and has none. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
 			(at 299.72 351.79 0)
 			(effects
 				(font
@@ -20397,7 +20424,7 @@
 				(hide yes)
 			)
 		)
-		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason"
 			(at 299.72 351.79 0)
 			(effects
 				(font
@@ -20527,7 +20554,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "O'Flynn's TP36 = SWDIO. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
+		(property "Note" "O'Flynn's table, verbatim: '36 | nRF ball G1 (SWDIO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
 			(at 330.2 325.12 0)
 			(effects
 				(font
@@ -20537,7 +20564,7 @@
 				(hide yes)
 			)
 		)
-		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason"
 			(at 330.2 325.12 0)
 			(effects
 				(font
@@ -20667,7 +20694,7 @@
 				(hide yes)
 			)
 		)
-		(property "Note" "O'Flynn's TP31 = SWO, P0.18 on this die. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
+		(property "Note" "O'Flynn's table, verbatim: '31 | nRF ball H2 (P0.18/SWO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked."
 			(at 327.66 351.79 0)
 			(effects
 				(font
@@ -20677,7 +20704,7 @@
 				(hide yes)
 			)
 		)
-		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason"
 			(at 327.66 351.79 0)
 			(effects
 				(font
@@ -20862,6 +20889,1824 @@
 		(uuid "3f5875ae-49f3-5352-aba5-328ccb0543f9")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 358.14 322.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 365.76 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "0af0c925-2846-5ef9-8b36-5cf5ef19c362")
+		(property "Reference" "TP5"
+			(at 365.76 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "VBAT_SNS_P2 (O'Flynn TP5)"
+			(at 365.76 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 365.76 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 365.76 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 365.76 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 365.76 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 365.76 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '5 | VCC2 (Connects to VCC2 input)'. WHICH of VCC1 and VCC2 is the sense finger is NOT in his table - he says only that both are needed - so the sense/power split is REFERENCE-TEARDOWN's and this pad could be the other one."
+			(at 365.76 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 365.76 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "9a7d41b9-0bde-566d-a4f8-d7790c5bde0b")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 365.76 346.71)
+			(xy 365.76 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d4312c74-a577-59cd-8da0-1e27b854a573")
+	)
+	(global_label "VBAT_SNS_P2"
+		(shape bidirectional)
+		(at 365.76 349.25 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "e3adf0c0-c4ae-52f4-875d-f78f0234bbc8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 365.76 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 405.13 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "5706d48a-2d6f-5992-adb9-2a8bb78bc2e1")
+		(property "Reference" "TP6"
+			(at 405.13 311.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "VBAT_RAW (O'Flynn TP6)"
+			(at 405.13 313.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 405.13 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 405.13 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '6 | VCC1 (Connects to VCC1 input)'. Same caveat."
+			(at 405.13 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 405.13 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e7008798-e30d-57c3-8c8c-43a22e81c8a4")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP6")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 405.13 320.04)
+			(xy 405.13 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f4232198-fa40-5c6b-b6d3-30590383792f")
+	)
+	(wire
+		(pts
+			(xy 405.13 322.58)
+			(xy 405.13 320.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4841fdf9-71fd-57b2-a29d-e8bc0d0ae1de")
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 405.13 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "ecd6ac0d-d342-5186-a2c4-1e0071c6a7db")
+		(property "Reference" "#PWR45"
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "VBAT_RAW"
+			(at 405.13 316.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 405.13 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e48dc3c7-f221-5965-b9b1-f098d4c61a7d")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "#PWR45")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 398.78 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "39527f3d-917f-5bac-8321-d3787bdde5c3")
+		(property "Reference" "TP7"
+			(at 398.78 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GND (O'Flynn TP7)"
+			(at 398.78 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 398.78 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 398.78 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 398.78 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 398.78 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 398.78 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '7 | GND'."
+			(at 398.78 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 398.78 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "89e0168a-6219-5255-870a-c12c914b053d")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP7")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 398.78 346.71)
+			(xy 398.78 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "69792e9b-c206-5fff-a6f5-d423c946c2d5")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 398.78 349.25 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "8bbe18e4-1258-5579-8a6f-ac93ff216086")
+		(property "Reference" "#PWR46"
+			(at 398.78 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 398.78 353.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 398.78 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 398.78 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 398.78 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ca6c8bcb-5d14-5b01-bdda-90516f1e5510")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "#PWR46")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 440.69 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "7f8c2b2a-7c99-55c4-9953-875a7145814d")
+		(property "Reference" "TP19"
+			(at 440.69 311.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SPI_MOSI (O'Flynn TP19)"
+			(at 440.69 313.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 440.69 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 440.69 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 440.69 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 440.69 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 440.69 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: the flash's COPI, on nRF ball H3."
+			(at 440.69 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 440.69 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "5f5e2844-76b1-5f19-b730-ba27d982d32e")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP19")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 440.69 320.04)
+			(xy 440.69 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3abc18ac-2e09-5b80-94e6-51f1255cdfd5")
+	)
+	(global_label "SPI_MOSI"
+		(shape bidirectional)
+		(at 440.69 322.58 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "efa84adb-3849-5213-9cca-ece08d9b117b")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 440.69 322.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 440.69 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "6cb09dcf-30e5-5cb3-85c6-3268d3850252")
+		(property "Reference" "TP20"
+			(at 440.69 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SPI_MISO (O'Flynn TP20)"
+			(at 440.69 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 440.69 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 440.69 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 440.69 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 440.69 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 440.69 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: the flash's CIPO, on nRF ball H4."
+			(at 440.69 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 440.69 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4e3fb9c6-c578-5c28-b6f3-8d0875b495b0")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP20")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 440.69 346.71)
+			(xy 440.69 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cf2ea02-c3b6-529a-b926-56921c158135")
+	)
+	(global_label "SPI_MISO"
+		(shape bidirectional)
+		(at 440.69 349.25 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "430d3b82-de94-5a3f-a38c-86a1d4c5dadd")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 440.69 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 474.98 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "2d8838e0-92e7-5790-bc1f-1c73ef08f054")
+		(property "Reference" "TP21"
+			(at 474.98 311.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "V1V8_SW (O'Flynn TP21)"
+			(at 474.98 313.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 474.98 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 474.98 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '21 | 1.8V SPI Flash VCC'. He forces the flash on by applying 1.8 V HERE, which is the direct evidence that this rail is switched and not the main one."
+			(at 474.98 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 474.98 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4d0de03a-84b9-5458-aa8a-2d4adafee88d")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP21")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 474.98 320.04)
+			(xy 474.98 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "85dcd797-7ca7-5351-8148-b5eb7712f387")
+	)
+	(wire
+		(pts
+			(xy 474.98 322.58)
+			(xy 474.98 320.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f76ee0f-66c5-5138-b4ba-c48c21bd2533")
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 474.98 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "feefc2d8-05dc-5ff9-9a2e-a68e85857a37")
+		(property "Reference" "#PWR47"
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "V1V8_SW"
+			(at 474.98 316.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 474.98 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "00f2881b-6cbf-5258-95b9-f9d550eea0ac")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "#PWR47")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 474.98 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "ce41d286-f626-5023-a158-56248f44f7d7")
+		(property "Reference" "TP22"
+			(at 474.98 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SPI_SCK (O'Flynn TP22)"
+			(at 474.98 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 474.98 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 474.98 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 474.98 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 474.98 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 474.98 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: the flash's SCLK, on nRF ball G3."
+			(at 474.98 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 474.98 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "2eee94c8-60dc-5d4d-9413-938912758033")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP22")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 474.98 346.71)
+			(xy 474.98 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e2c37238-02a3-5884-bb73-6518a02ed02c")
+	)
+	(global_label "SPI_SCK"
+		(shape bidirectional)
+		(at 474.98 349.25 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "5d7b63d6-29dc-5227-9cb9-4050030cb3d7")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 474.98 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 510.54 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "e6c8012d-727a-5f98-ad94-1d67a4194622")
+		(property "Reference" "TP24"
+			(at 510.54 311.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "FLASH_nCS (O'Flynn TP24)"
+			(at 510.54 313.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 510.54 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 510.54 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 510.54 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 510.54 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 510.54 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: the flash's chip select, on nRF ball F4."
+			(at 510.54 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 510.54 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "40995063-6e2c-50b1-8c7a-e767dcb650d3")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP24")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 510.54 320.04)
+			(xy 510.54 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "77b7bd0d-bb59-5241-92b8-fef43337d82a")
+	)
+	(global_label "FLASH_nCS"
+		(shape bidirectional)
+		(at 510.54 322.58 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "396f7979-ed6f-542f-89c6-07967b4a2d49")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 510.54 322.58 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 504.19 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "2e4de165-d22e-5561-94c5-3540b1d08b02")
+		(property "Reference" "TP29"
+			(at 504.19 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "GND (O'Flynn TP29)"
+			(at 504.19 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 504.19 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 504.19 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 504.19 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 504.19 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 504.19 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '29 | Apple Logo :) GND'. The Apple logo on the silkscreen is a ground pad, which is the most Apple sentence in the whole teardown."
+			(at 504.19 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 504.19 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3c46120f-fb3e-5673-a17f-87862d9003e6")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP29")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 504.19 346.71)
+			(xy 504.19 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a14c34d-f024-50d2-bea8-8ce95d753834")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 504.19 349.25 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "6919dc61-d15b-5afa-aff0-47dc461e275b")
+		(property "Reference" "#PWR48"
+			(at 504.19 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 504.19 353.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 504.19 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 504.19 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 504.19 349.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a213a4f0-1179-51e2-ac80-19ed1c0a486d")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "#PWR48")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 543.56 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "faaa0d53-65d1-5882-84a0-fbff22d03365")
+		(property "Reference" "TP34"
+			(at 543.56 311.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "V1V8 (O'Flynn TP34)"
+			(at 543.56 313.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 543.56 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 543.56 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '34 | 1.8V from nRF', VERBATIM AND AMBIGUOUS. It could mean the 1.8 V rail probed near the nRF, or 1.8 V the nRF itself sources. This sheet lands it on V1V8 and does not claim to have resolved his wording."
+			(at 543.56 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 543.56 325.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "67c876f3-d717-5fcf-807f-7dd3ab6ec5af")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP34")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 543.56 320.04)
+			(xy 543.56 322.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1aebd59b-9223-530e-a795-fa51b13877ab")
+	)
+	(wire
+		(pts
+			(xy 543.56 322.58)
+			(xy 543.56 320.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "462261ba-22da-5bc3-9082-b887350771b7")
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 543.56 320.04 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "beb9716a-0842-5f5d-b687-75abbff04168")
+		(property "Reference" "#PWR49"
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "V1V8"
+			(at 543.56 316.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 543.56 320.04 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a7b38304-e076-5f0c-9114-5732399ad38c")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "#PWR49")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 548.64 346.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "d9a051f3-5878-5d60-b987-238bcf3861aa")
+		(property "Reference" "TP9"
+			(at 548.64 337.82 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "P0.26 - FUNCTION CANNOT DETERMINE"
+			(at 548.64 340.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "TestPoint:TestPoint_Pad_D1.0mm"
+			(at 548.64 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 548.64 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 548.64 346.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "BOM line" "NOT IN bom.json - see Note"
+			(at 548.64 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "FP-basis" "PLACEHOLDER-L12"
+			(at 548.64 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Note" "O'Flynn: '9 | nRF ball D3 (P0.26)'. He gives the pad and the ball and NOT the function, so this net is named for the pin and nothing else. TP8 IS DELIBERATELY ABSENT: his table says '8 | nRF ball E2 (P0.16)' while row 19 says the flash's COPI is 'nRF ball H3 (P0.16)'. TWO DIFFERENT BALLS CARRY THE SAME GPIO NUMBER and one of the two is a transcription error. This sheet takes the SPI block's assignment because its four balls H3/H4/G3/F4 form a coherent group, and records the conflict rather than resolving it."
+			(at 548.64 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Source" "research/fetched/A-oflynn-testpoints-and-glitch-repos.md"
+			(at 548.64 351.79 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "4174a86e-e6fe-5af4-9c2a-8e4b801e9af9")
+		)
+		(instances
+			(project "halo_replica"
+				(path "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c"
+					(reference "TP9")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 548.64 346.71)
+			(xy 548.64 349.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a8593016-1bf1-531c-993a-ecb35439333c")
+	)
+	(global_label "TP9_P0.26"
+		(shape bidirectional)
+		(at 548.64 349.25 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "72baa234-2411-53e2-95c4-24f5b1b2c85a")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 548.64 349.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -21451,7 +23296,7 @@
 		)
 		(uuid "712c6fc3-9a57-569b-a0b1-0fbaa32c626e")
 	)
-	(text "halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Not one net here was read off a board. Every net carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md beside this file lists all of them. ONLY SEVEN OF 51 NETS ARE MEASURED: the three battery contacts and the four SWD pads O'Flynn published. The other 44 are 21 INFERRED and 23 CHOSEN."
+	(text "halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Every net carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md beside this file lists all of them with the counts DERIVED, never typed. 13 of 52 nets are MEASURED, and every one of those names a FILE AND A STRING THAT MUST BE IN IT, checked at build time. The other 39 are inference and choice."
 		(exclude_from_sim no)
 		(at 12.7 388.62 0)
 		(effects
@@ -21462,7 +23307,7 @@
 		)
 		(uuid "6d601796-40dd-5dab-bac9-54e3ddfb70ca")
 	)
-	(text "U2 IS APPLE'S 'U1' UWB SiP AND IT IS DNP / UNPOPULATED. Apple does not sell it to anyone, at any price, with any lead time. That is not a sourcing problem, it is a does-not-exist-for-us problem, and Precision Finding is therefore a GAP and not a to-do. Its pin NUMBERS on this sheet are invented: no pinout for this module has ever been published, so its land pattern does not exist and NOTHING MAY BE FABRICATED FROM IT."
+	(text "FOUR NETS ON THIS SHEET WERE WRONG UNTIL A CHECK FORCED SOMEBODY TO OPEN THE FILE THEY ALREADY CITED. The flash bus was drawn on P0.12/P0.13/P0.14 as a free CHOICE. O'Flynn's test-point table gives it by pad, by nRF BALL and by GPIO: SCLK on P0.17 (ball G3), COPI on P0.16 (H3), CIPO on P0.15 (H4), CS on P0.11 (F4). Three of the four were wrong and the fourth was right by luck. The bus is MEASURED now."
 		(exclude_from_sim no)
 		(at 12.7 391.16 0)
 		(effects
@@ -21473,7 +23318,7 @@
 		)
 		(uuid "756efe2d-f99d-5e0c-94ab-87c07d6641b3")
 	)
-	(text "NAME COLLISION: on this sheet U1 is the NORDIC MCU and U2 is the Apple UWB part, following bom.json and REFERENCE-TEARDOWN. The press calls the Apple part 'the U1'. Never write bare U1 about it."
+	(text "TEN CIAA BALLS ARE SOURCED, AND FORTY ARE NOT. O'Flynn's table names nRF ball designators for D3, E2, F1, F4, G1, G3, H1, H2, H3 and H4. That is not a ball map and does not make one - the package here is still the QFN-48 substitution - but it is ten more than this sheet first claimed existed, and L12 should have them when it draws the WLCSP land."
 		(exclude_from_sim no)
 		(at 12.7 393.7 0)
 		(effects
@@ -21484,7 +23329,7 @@
 		)
 		(uuid "c27a08f0-3320-5ee4-b9e0-e118b053e5e0")
 	)
-	(text "U4 IS CANNOT DETERMINE. Two visually identical metal-lid parts are on the board and neither is confidently the accelerometer; no marking is readable at any magnification available here. 'BMA280' is a teardown assertion this project failed to corroborate. The symbol is generic and the value field says so."
+	(text "A CONTRADICTION INSIDE O'FLYNN'S OWN TABLE, CARRIED NOT RESOLVED: row 8 reads 'nRF ball E2 (P0.16)' and row 19 reads 'nRF ball H3 (P0.16)'. Two different balls with one GPIO number; one is a transcription error. This sheet takes row 19 because the SPI block's four balls H3/H4/G3/F4 are a coherent group, and TP8 IS DELIBERATELY ABSENT rather than drawn on a guess."
 		(exclude_from_sim no)
 		(at 12.7 396.24 0)
 		(effects
@@ -21495,7 +23340,7 @@
 		)
 		(uuid "450d7bd6-d353-5b99-bd7c-3e467bbc85a1")
 	)
-	(text "U9 IS CANNOT DETERMINE, INCLUDING ITS FUNCTION. Marking '1A8 / 1950'. Its output is deliberately wired to NOTHING, because the record does not say what it feeds and a wire to a plausible load would be this sheet inventing a circuit."
+	(text "THE iFIXIT ARGUMENT IS NOW SETTLED BY MEASUREMENT, not by self-consistency. O'Flynn, verbatim: 'The nrf controls power to the SPI flash, so you need to override it by supplying 1.8V on test point 21', and 'most of time the flash is powered off and thus the pins are tri-stated'. The flash sits on a switched 1.8 V rail the MCU commands - which is what this sheet drew from the argument that a load switch cannot gate its own controller."
 		(exclude_from_sim no)
 		(at 12.7 398.78 0)
 		(effects
@@ -21506,7 +23351,7 @@
 		)
 		(uuid "a343f8bd-11a9-5653-8207-dff3f3319e22")
 	)
-	(text "D3 IS AN ADDITION, NOT AN OBSERVATION (DECISIONS.md D24). nRF52832 product spec 42.10: a strong NFC field can push current BACKWARDS into the supply through parasitic diodes and ESD structures, and a CR2032 does not tolerate return current. A phone on the tag is a strong field by design. COST: a Schottky drops a few hundred mV against a cell already tracked to 68 mV of end-of-life droop; an ideal-diode controller drops millivolts and costs money. No photograph here shows a diode in Apple's power path."
+	(text "U2 IS APPLE'S 'U1' UWB SiP AND IT IS DNP / UNPOPULATED. Apple does not sell it to anyone, at any price, with any lead time. That is not a sourcing problem, it is a does-not-exist-for-us problem, and Precision Finding is therefore a GAP and not a to-do. Its pin NUMBERS on this sheet are invented: no pinout for this module has ever been published, so its land pattern does not exist and NOTHING MAY BE FABRICATED FROM IT."
 		(exclude_from_sim no)
 		(at 12.7 401.32 0)
 		(effects
@@ -21517,7 +23362,7 @@
 		)
 		(uuid "992f5496-7480-549d-8a80-5946df965117")
 	)
-	(text "THE PACKAGES ARE NOT APPLE'S PACKAGES. U1 is an nRF52832-CIAA, WLCSP-50, drawn with the QFN-48 (QFAA) symbol of the same die because no CIAA ball map is sourced in this repository. U3 is a WLCSP-10 drawn as WSON-8. U5 is a WLCSP drawn as TQFP-16. THE NETLIST IS RIGHT BY SIGNAL NAME AND THE PIN NUMBERS ARE NOT APPLE'S. Every part carries an FP-basis field; L12 owns the land patterns."
+	(text "NAME COLLISION: on this sheet U1 is the NORDIC MCU and U2 is the Apple UWB part, following bom.json and REFERENCE-TEARDOWN. The press calls the Apple part 'the U1'. Never write bare U1 about it."
 		(exclude_from_sim no)
 		(at 12.7 403.86 0)
 		(effects
@@ -21528,7 +23373,7 @@
 		)
 		(uuid "ffa3b941-87f6-501d-bbc6-9a53f4d49b76")
 	)
-	(text "THIS SHEET DEPARTS FROM iFIXIT ON ONE THING AND SAYS SO: iFixit has the load switch U8 gating 'U1 + flash' where U1 is the MCU. A load switch whose enable comes from the MCU it powers can never be turned on. Here U8 gates the FLASH and the UWB module and the MCU sits on the 1.8 V rail directly."
+	(text "U4 IS CANNOT DETERMINE. Two visually identical metal-lid parts are on the board and neither is confidently the accelerometer; no marking is readable at any magnification available here. 'BMA280' is a teardown assertion this project failed to corroborate. The symbol is generic and the value field says so."
 		(exclude_from_sim no)
 		(at 12.7 406.4 0)
 		(effects
@@ -21539,7 +23384,7 @@
 		)
 		(uuid "192746c1-2bb6-5772-8ec4-7b3b49e87168")
 	)
-	(text "FOUR PARTS THAT ARE ON THE REAL BOARD AND NOT ON THIS SHEET, because placing a part asserts what it is: D1/D2 (marking K11, a matched pair - part AND function CANNOT DETERMINE), CT1 (marking '6X A75', blue body - and 'blue' is a colour, not a technology), UNK-A (large matte-black rectangle, no marking at all) and UNK-B (pale ceramic square between U2 and J1 - if it is an RF switch then this sheet's UWB_RF net is wrong)."
+	(text "U9 IS CANNOT DETERMINE, INCLUDING ITS FUNCTION. Marking '1A8 / 1950'. Its output is deliberately wired to NOTHING, because the record does not say what it feeds and a wire to a plausible load would be this sheet inventing a circuit."
 		(exclude_from_sim no)
 		(at 12.7 408.94 0)
 		(effects
@@ -21550,7 +23395,7 @@
 		)
 		(uuid "6b97de60-b8f4-55dd-88c4-bb2ed990547a")
 	)
-	(text "J1 REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A U.FL/IPEX-class coaxial receptacle is unambiguous at 5x on the component face of O'Flynn's retail unit. Two documents in this repository are wrong and this schematic is where that became unavoidable."
+	(text "D3 IS AN ADDITION, NOT AN OBSERVATION (DECISIONS.md D24). nRF52832 product spec 42.10: a strong NFC field can push current BACKWARDS into the supply through parasitic diodes and ESD structures, and a CR2032 does not tolerate return current. A phone on the tag is a strong field by design. COST: a Schottky drops a few hundred mV against a cell already tracked to 68 mV of end-of-life droop; an ideal-diode controller drops millivolts and costs money. No photograph here shows a diode in Apple's power path."
 		(exclude_from_sim no)
 		(at 12.7 411.48 0)
 		(effects
@@ -21561,7 +23406,7 @@
 		)
 		(uuid "1ef8c54a-490a-5b64-9f85-af7a5d71dcd4")
 	)
-	(text "TP1 AND TP38 ARE DELIBERATELY ABSENT. The fine coil leads land there; REFERENCE-TEARDOWN 2.4 calls them the VOICE COIL's joints and Apple's own arrow in FCC photo 5 labels that annulus the NFC ANTENNA. Both cannot be true and this sheet does not pick a winner."
+	(text "THE PACKAGES ARE NOT APPLE'S PACKAGES. U1 is an nRF52832-CIAA, WLCSP-50, drawn with the QFN-48 (QFAA) symbol of the same die because no COMPLETE CIAA ball map is sourced here (ten balls are; forty are not). U3 is a WLCSP-10 drawn as WSON-8. U5 is a WLCSP drawn as TQFP-16. THE NETLIST IS RIGHT BY SIGNAL NAME AND THE PIN NUMBERS ARE NOT APPLE'S. Every part carries an FP-basis field; L12 owns the land patterns."
 		(exclude_from_sim no)
 		(at 12.7 414.02 0)
 		(effects
@@ -21572,7 +23417,7 @@
 		)
 		(uuid "6f77321e-7aae-5074-8b3e-4c5603a347e4")
 	)
-	(text "EVERY CAPACITOR AND RESISTOR VALUE ON THIS SHEET IS CANNOT DETERMINE, and that is not laziness. bom.json: 'This is not a gap that any photograph can close: a 100 nF and a 1 uF 0402 are visually identical.' A missing value stays missing. THIS BOARD IS NOT BUILDABLE AS DRAWN and saying so is the point."
+	(text "THIS SHEET DEPARTS FROM iFIXIT ON ONE THING AND SAYS SO: iFixit has the load switch U8 gating 'U1 + flash' where U1 is the MCU. A load switch whose enable comes from the MCU it powers can never be turned on. Here U8 gates the FLASH and the UWB module and the MCU sits on the 1.8 V rail directly."
 		(exclude_from_sim no)
 		(at 12.7 416.56 0)
 		(effects
@@ -21582,6 +23427,50 @@
 			(justify left bottom)
 		)
 		(uuid "530016b1-990e-59eb-8d83-f12746e22a09")
+	)
+	(text "FOUR PARTS THAT ARE ON THE REAL BOARD AND NOT ON THIS SHEET, because placing a part asserts what it is: D1/D2 (marking K11, a matched pair - part AND function CANNOT DETERMINE), CT1 (marking '6X A75', blue body - and 'blue' is a colour, not a technology), UNK-A (large matte-black rectangle, no marking at all) and UNK-B (pale ceramic square between U2 and J1 - if it is an RF switch then this sheet's UWB_RF net is wrong)."
+		(exclude_from_sim no)
+		(at 12.7 419.1 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "245d352e-93af-539a-bb87-2a3bd274d2d0")
+	)
+	(text "J1 REFUTES 'CONNECTORS: NONE ANYWHERE', which REFERENCE-TEARDOWN 2.5 states and SPEC.md repeats. A U.FL/IPEX-class coaxial receptacle is unambiguous at 5x on the component face of O'Flynn's retail unit. Two documents in this repository are wrong and this schematic is where that became unavoidable."
+		(exclude_from_sim no)
+		(at 12.7 421.64 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1cbb028e-2af0-503d-a0f3-d71bded44b79")
+	)
+	(text "TP1 AND TP38 ARE DELIBERATELY ABSENT. The fine coil leads land there; REFERENCE-TEARDOWN 2.4 calls them the VOICE COIL's joints and Apple's own arrow in FCC photo 5 labels that annulus the NFC ANTENNA. Both cannot be true and this sheet does not pick a winner."
+		(exclude_from_sim no)
+		(at 12.7 424.18 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1baf174f-6831-5241-8316-0b1b86241dc5")
+	)
+	(text "EVERY CAPACITOR AND RESISTOR VALUE ON THIS SHEET IS CANNOT DETERMINE, and that is not laziness. bom.json: 'This is not a gap that any photograph can close: a 100 nF and a 1 uF 0402 are visually identical.' A missing value stays missing. THIS BOARD IS NOT BUILDABLE AS DRAWN and saying so is the point."
+		(exclude_from_sim no)
+		(at 12.7 426.72 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "72a08426-0723-5c67-bc76-1cb711991ac9")
 	)
 	(sheet_instances
 		(path "/"

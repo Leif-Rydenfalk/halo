@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic/halo_replica.kicad_sch")
-		(date "2026-09-05T15:07:23")
+		(date "2026-09-05T15:11:44")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -3764,6 +3764,708 @@
 			)
 		)
 		(comp
+			(ref "TP5")
+			(value "VBAT_SNS_P2 (O'Flynn TP5)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: '5 | VCC2 (Connects to VCC2 input)'. WHICH of VCC1 and VCC2 is the sense finger is NOT in his table - he says only that both are needed - so the sense/power split is REFERENCE-TEARDOWN's and this pad could be the other one.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: '5 | VCC2 (Connects to VCC2 input)'. WHICH of VCC1 and VCC2 is the sense finger is NOT in his table - he says only that both are needed - so the sense/power split is REFERENCE-TEARDOWN's and this pad could be the other one.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "0af0c925-2846-5ef9-8b36-5cf5ef19c362")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP6")
+			(value "VBAT_RAW (O'Flynn TP6)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: '6 | VCC1 (Connects to VCC1 input)'. Same caveat.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: '6 | VCC1 (Connects to VCC1 input)'. Same caveat.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "5706d48a-2d6f-5992-adb9-2a8bb78bc2e1")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP7")
+			(value "GND (O'Flynn TP7)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: '7 | GND'.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: '7 | GND'.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "39527f3d-917f-5bac-8321-d3787bdde5c3")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP9")
+			(value "P0.26 - FUNCTION CANNOT DETERMINE")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: '9 | nRF ball D3 (P0.26)'. He gives the pad and the ball and NOT the function, so this net is named for the pin and nothing else. TP8 IS DELIBERATELY ABSENT: his table says '8 | nRF ball E2 (P0.16)' while row 19 says the flash's COPI is 'nRF ball H3 (P0.16)'. TWO DIFFERENT BALLS CARRY THE SAME GPIO NUMBER and one of the two is a transcription error. This sheet takes the SPI block's assignment because its four balls H3/H4/G3/F4 form a coherent group, and records the conflict rather than resolving it.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: '9 | nRF ball D3 (P0.26)'. He gives the pad and the ball and NOT the function, so this net is named for the pin and nothing else. TP8 IS DELIBERATELY ABSENT: his table says '8 | nRF ball E2 (P0.16)' while row 19 says the flash's COPI is 'nRF ball H3 (P0.16)'. TWO DIFFERENT BALLS CARRY THE SAME GPIO NUMBER and one of the two is a transcription error. This sheet takes the SPI block's assignment because its four balls H3/H4/G3/F4 form a coherent group, and records the conflict rather than resolving it.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "d9a051f3-5878-5d60-b987-238bcf3861aa")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP19")
+			(value "SPI_MOSI (O'Flynn TP19)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: the flash's COPI, on nRF ball H3.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: the flash's COPI, on nRF ball H3.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "7f8c2b2a-7c99-55c4-9953-875a7145814d")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP20")
+			(value "SPI_MISO (O'Flynn TP20)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: the flash's CIPO, on nRF ball H4.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: the flash's CIPO, on nRF ball H4.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "6cb09dcf-30e5-5cb3-85c6-3268d3850252")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP21")
+			(value "V1V8_SW (O'Flynn TP21)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: '21 | 1.8V SPI Flash VCC'. He forces the flash on by applying 1.8 V HERE, which is the direct evidence that this rail is switched and not the main one.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: '21 | 1.8V SPI Flash VCC'. He forces the flash on by applying 1.8 V HERE, which is the direct evidence that this rail is switched and not the main one.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2d8838e0-92e7-5790-bc1f-1c73ef08f054")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP22")
+			(value "SPI_SCK (O'Flynn TP22)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: the flash's SCLK, on nRF ball G3.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: the flash's SCLK, on nRF ball G3.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "ce41d286-f626-5023-a158-56248f44f7d7")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP24")
+			(value "FLASH_nCS (O'Flynn TP24)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn: the flash's chip select, on nRF ball F4.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn: the flash's chip select, on nRF ball F4.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "e6c8012d-727a-5f98-ad94-1d67a4194622")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
 			(ref "TP28")
 			(value "nRF CORE RAIL (DEC1) - THE GLITCH PAD")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
@@ -3842,8 +4544,8 @@
 			)
 		)
 		(comp
-			(ref "TP30")
-			(value "nRESET (O'Flynn TP30)")
+			(ref "TP29")
+			(value "GND (O'Flynn TP29)")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
 			(datasheet "~")
 			(description "test point")
@@ -3853,7 +4555,7 @@
 				(field
 					(name "FP-basis") "PLACEHOLDER-L12")
 				(field
-					(name "Note") "O'Flynn's TP30 = nRST. On nRF52832 that is P0.21/nRESET. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+					(name "Note") "O'Flynn: '29 | Apple Logo :) GND'. The Apple logo on the silkscreen is a ground pad, which is the most Apple sentence in the whole teardown.")
 				(field
 					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
 				(field
@@ -3878,11 +4580,89 @@
 			)
 			(property
 				(name "Note")
-				(value "O'Flynn's TP30 = nRST. On nRF52832 that is P0.21/nRESET. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(value "O'Flynn: '29 | Apple Logo :) GND'. The Apple logo on the silkscreen is a ground pad, which is the most Apple sentence in the whole teardown.")
 			)
 			(property
 				(name "Source")
 				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "2e4de165-d22e-5561-94c5-3540b1d08b02")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP30")
+			(value "nRESET (O'Flynn TP30)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn's table, verbatim: '30 | nRF ball H1 (P0.21/nRST)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn's table, verbatim: '30 | nRF ball H1 (P0.21/nRST)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 			)
 			(property
 				(name "Sheetname")
@@ -3931,9 +4711,9 @@
 				(field
 					(name "FP-basis") "PLACEHOLDER-L12")
 				(field
-					(name "Note") "O'Flynn's TP31 = SWO, P0.18 on this die. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+					(name "Note") "O'Flynn's table, verbatim: '31 | nRF ball H2 (P0.18/SWO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
 				(field
-					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 				(field
 					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
 				(field
@@ -3956,11 +4736,11 @@
 			)
 			(property
 				(name "Note")
-				(value "O'Flynn's TP31 = SWO, P0.18 on this die. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(value "O'Flynn's table, verbatim: '31 | nRF ball H2 (P0.18/SWO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
 			)
 			(property
 				(name "Source")
-				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 			)
 			(property
 				(name "Sheetname")
@@ -3998,8 +4778,8 @@
 			)
 		)
 		(comp
-			(ref "TP35")
-			(value "SWDCLK (O'Flynn TP35)")
+			(ref "TP34")
+			(value "V1V8 (O'Flynn TP34)")
 			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
 			(datasheet "~")
 			(description "test point")
@@ -4009,7 +4789,7 @@
 				(field
 					(name "FP-basis") "PLACEHOLDER-L12")
 				(field
-					(name "Note") "O'Flynn's TP35 = SWCLK. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+					(name "Note") "O'Flynn: '34 | 1.8V from nRF', VERBATIM AND AMBIGUOUS. It could mean the 1.8 V rail probed near the nRF, or 1.8 V the nRF itself sources. This sheet lands it on V1V8 and does not claim to have resolved his wording.")
 				(field
 					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
 				(field
@@ -4034,11 +4814,89 @@
 			)
 			(property
 				(name "Note")
-				(value "O'Flynn's TP35 = SWCLK. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(value "O'Flynn: '34 | 1.8V from nRF', VERBATIM AND AMBIGUOUS. It could mean the 1.8 V rail probed near the nRF, or 1.8 V the nRF itself sources. This sheet lands it on V1V8 and does not claim to have resolved his wording.")
 			)
 			(property
 				(name "Source")
 				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+			)
+			(property
+				(name "Sheetname")
+				(value "halo_replica")
+			)
+			(property
+				(name "Sheetfile")
+				(value "halo_replica.kicad_sch")
+			)
+			(property
+				(name "exclude_from_bom")
+			)
+			(property
+				(name "ki_keywords")
+				(value "test point tp")
+			)
+			(property
+				(name "ki_fp_filters")
+				(value "Pin* Test*")
+			)
+			(sheetpath
+				(names "/")
+				(tstamps "/")
+			)
+			(tstamps "faaa0d53-65d1-5882-84a0-fbff22d03365")
+			(units
+				(unit
+					(name "A")
+					(pins
+						(pin
+							(num "1")
+						)
+					)
+				)
+			)
+		)
+		(comp
+			(ref "TP35")
+			(value "SWDCLK (O'Flynn TP35)")
+			(footprint "TestPoint:TestPoint_Pad_D1.0mm")
+			(datasheet "~")
+			(description "test point")
+			(fields
+				(field
+					(name "BOM line") "NOT IN bom.json - see Note")
+				(field
+					(name "FP-basis") "PLACEHOLDER-L12")
+				(field
+					(name "Note") "O'Flynn's table, verbatim: '35 | nRF ball F1 (SWCLK)'. No GPIO number, because SWCLK is a dedicated pad and has none. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(field
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
+				(field
+					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
+				(field
+					(name "Datasheet") "~")
+				(field
+					(name "Description") "test point")
+			)
+			(libsource
+				(lib "Connector")
+				(part "TestPoint")
+				(description "test point")
+			)
+			(property
+				(name "BOM line")
+				(value "NOT IN bom.json - see Note")
+			)
+			(property
+				(name "FP-basis")
+				(value "PLACEHOLDER-L12")
+			)
+			(property
+				(name "Note")
+				(value "O'Flynn's table, verbatim: '35 | nRF ball F1 (SWCLK)'. No GPIO number, because SWCLK is a dedicated pad and has none. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+			)
+			(property
+				(name "Source")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 			)
 			(property
 				(name "Sheetname")
@@ -4087,9 +4945,9 @@
 				(field
 					(name "FP-basis") "PLACEHOLDER-L12")
 				(field
-					(name "Note") "O'Flynn's TP36 = SWDIO. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+					(name "Note") "O'Flynn's table, verbatim: '36 | nRF ball G1 (SWDIO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
 				(field
-					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+					(name "Source") "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 				(field
 					(name "Footprint") "TestPoint:TestPoint_Pad_D1.0mm")
 				(field
@@ -4112,11 +4970,11 @@
 			)
 			(property
 				(name "Note")
-				(value "O'Flynn's TP36 = SWDIO. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
+				(value "O'Flynn's table, verbatim: '36 | nRF ball G1 (SWDIO)'. THESE FOUR ARE THE ONLY NETS ON THIS SHEET WHOSE NAMES WERE READ OFF THE HARDWARE: SWD is on exposed test pads and O'Flynn published which pad is which. APPROTECT is enabled on Apple's units, so the pads are present and locked.")
 			)
 			(property
 				(name "Source")
-				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md")
+				(value "research/fetched/A-oflynn-testpoints-and-glitch-repos.md — the pad-to-BALL table, checked at build time by cepcb's basis resolver, which is how the first citation here was found to be pointing at the right file for the wrong reason")
 			)
 			(property
 				(name "Sheetname")
@@ -4173,7 +5031,7 @@
 				(field
 					(name "Marking") "N52832 CIAAE0 2102JK")
 				(field
-					(name "Note") "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO SOURCED BALL MAP EXISTS IN THIS REPOSITORY, so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids.")
+					(name "Note") "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO COMPLETE BALL MAP IS SOURCED HERE - O'Flynn's table gives TEN of the fifty (D3, E2, F1, F4, G1, G3, H1, H2, H3, H4) - so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids.")
 				(field
 					(name "Real package") "WLCSP-50, 90 nm")
 				(field
@@ -4214,7 +5072,7 @@
 			)
 			(property
 				(name "Note")
-				(value "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO SOURCED BALL MAP EXISTS IN THIS REPOSITORY, so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids.")
+				(value "THE PART IS CERTAIN AND THE PACKAGE IS SUBSTITUTED. Marking 'N52832 CIAAE0 2102JK' was read off the die photograph by lane L3 - fully legible, three lines. CIAA is WLCSP-50 and NO COMPLETE BALL MAP IS SOURCED HERE - O'Flynn's table gives TEN of the fifty (D3, E2, F1, F4, G1, G3, H1, H2, H3, H4) - so this sheet uses the QFN-48 (QFAA) symbol of the SAME DIE. The netlist is right by signal name; the pin NUMBERS are QFAA's. Inventing 50 ball designators is what DECISIONS.md D9 forbids.")
 			)
 			(property
 				(name "Real package")
@@ -6870,8 +7728,8 @@
 			(class "Default")
 			(node
 				(ref "U1")
-				(pin "18")
-				(pinfunction "P0.15_18")
+				(pin "15")
+				(pinfunction "P0.12_15")
 				(pintype "bidirectional")
 			)
 			(node
@@ -6885,6 +7743,12 @@
 			(code "15")
 			(name "FLASH_nCS")
 			(class "Default")
+			(node
+				(ref "TP24")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
 			(node
 				(ref "U1")
 				(pin "14")
@@ -7030,6 +7894,18 @@
 				(pintype "passive")
 			)
 			(node
+				(ref "TP29")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP7")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
 				(pin "31")
 				(pinfunction "VSS_31")
@@ -7132,8 +8008,8 @@
 			(class "Default")
 			(node
 				(ref "U1")
-				(pin "19")
-				(pinfunction "P0.16_19")
+				(pin "16")
+				(pinfunction "P0.13_16")
 				(pintype "bidirectional")
 			)
 			(node
@@ -7166,8 +8042,8 @@
 			(class "Default")
 			(node
 				(ref "U1")
-				(pin "20")
-				(pinfunction "P0.17_20")
+				(pin "17")
+				(pinfunction "P0.14_17")
 				(pintype "bidirectional")
 			)
 			(node
@@ -7244,9 +8120,15 @@
 			(name "SPI_MISO")
 			(class "Default")
 			(node
+				(ref "TP20")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
-				(pin "17")
-				(pinfunction "P0.14_17")
+				(pin "18")
+				(pinfunction "P0.15_18")
 				(pintype "bidirectional")
 			)
 			(node
@@ -7267,9 +8149,15 @@
 			(name "SPI_MOSI")
 			(class "Default")
 			(node
+				(ref "TP19")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
-				(pin "16")
-				(pinfunction "P0.13_16")
+				(pin "19")
+				(pinfunction "P0.16_19")
 				(pintype "bidirectional")
 			)
 			(node
@@ -7290,9 +8178,15 @@
 			(name "SPI_SCK")
 			(class "Default")
 			(node
+				(ref "TP22")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
 				(ref "U1")
-				(pin "15")
-				(pinfunction "P0.12_15")
+				(pin "20")
+				(pinfunction "P0.17_20")
 				(pintype "bidirectional")
 			)
 			(node
@@ -7460,6 +8354,23 @@
 		)
 		(net
 			(code "35")
+			(name "TP9_P0.26")
+			(class "Default")
+			(node
+				(ref "TP9")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
+			(node
+				(ref "U1")
+				(pin "38")
+				(pinfunction "P0.26_38")
+				(pintype "bidirectional")
+			)
+		)
+		(net
+			(code "36")
 			(name "U9_OUT_DESTINATION_UNKNOWN")
 			(class "Default")
 			(node
@@ -7470,7 +8381,7 @@
 			)
 		)
 		(net
-			(code "36")
+			(code "37")
 			(name "UWB_IRQ")
 			(class "Default")
 			(node
@@ -7487,7 +8398,7 @@
 			)
 		)
 		(net
-			(code "37")
+			(code "38")
 			(name "UWB_RF")
 			(class "Default")
 			(node
@@ -7510,7 +8421,7 @@
 			)
 		)
 		(net
-			(code "38")
+			(code "39")
 			(name "UWB_nCS")
 			(class "Default")
 			(node
@@ -7527,7 +8438,7 @@
 			)
 		)
 		(net
-			(code "39")
+			(code "40")
 			(name "UWB_nRESET")
 			(class "Default")
 			(node
@@ -7544,7 +8455,7 @@
 			)
 		)
 		(net
-			(code "40")
+			(code "41")
 			(name "V1V8")
 			(class "Default")
 			(node
@@ -7581,6 +8492,12 @@
 			(node
 				(ref "R6")
 				(pin "2")
+				(pintype "passive")
+			)
+			(node
+				(ref "TP34")
+				(pin "1")
+				(pinfunction "1_1")
 				(pintype "passive")
 			)
 			(node
@@ -7639,9 +8556,15 @@
 			)
 		)
 		(net
-			(code "41")
+			(code "42")
 			(name "V1V8_SW")
 			(class "Default")
+			(node
+				(ref "TP21")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
 			(node
 				(ref "U2")
 				(pin "1")
@@ -7674,7 +8597,7 @@
 			)
 		)
 		(net
-			(code "42")
+			(code "43")
 			(name "VBAT")
 			(class "Default")
 			(node
@@ -7739,7 +8662,7 @@
 			)
 		)
 		(net
-			(code "43")
+			(code "44")
 			(name "VBAT_RAW")
 			(class "Default")
 			(node
@@ -7759,9 +8682,15 @@
 				(pin "1")
 				(pintype "passive")
 			)
+			(node
+				(ref "TP6")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
 		)
 		(net
-			(code "44")
+			(code "45")
 			(name "VBAT_SNS_1")
 			(class "Default")
 			(node
@@ -7782,7 +8711,7 @@
 			)
 		)
 		(net
-			(code "45")
+			(code "46")
 			(name "VBAT_SNS_2")
 			(class "Default")
 			(node
@@ -7803,7 +8732,7 @@
 			)
 		)
 		(net
-			(code "46")
+			(code "47")
 			(name "VBAT_SNS_P2")
 			(class "Default")
 			(node
@@ -7817,9 +8746,15 @@
 				(pin "1")
 				(pintype "passive")
 			)
+			(node
+				(ref "TP5")
+				(pin "1")
+				(pinfunction "1_1")
+				(pintype "passive")
+			)
 		)
 		(net
-			(code "47")
+			(code "48")
 			(name "XC1")
 			(class "Default")
 			(node
@@ -7841,7 +8776,7 @@
 			)
 		)
 		(net
-			(code "48")
+			(code "49")
 			(name "XC2")
 			(class "Default")
 			(node
@@ -7863,7 +8798,7 @@
 			)
 		)
 		(net
-			(code "49")
+			(code "50")
 			(name "XL1")
 			(class "Default")
 			(node
@@ -7885,7 +8820,7 @@
 			)
 		)
 		(net
-			(code "50")
+			(code "51")
 			(name "XL2")
 			(class "Default")
 			(node
@@ -7907,7 +8842,7 @@
 			)
 		)
 		(net
-			(code "51")
+			(code "52")
 			(name "nRESET")
 			(class "Default")
 			(node
@@ -7924,7 +8859,7 @@
 			)
 		)
 		(net
-			(code "52")
+			(code "53")
 			(name "unconnected-(U1-NC-Pad44)")
 			(class "Default")
 			(node
@@ -7935,7 +8870,7 @@
 			)
 		)
 		(net
-			(code "53")
+			(code "54")
 			(name "unconnected-(U1-P0.04{slash}AIN2-Pad6)")
 			(class "Default")
 			(node
@@ -7946,7 +8881,7 @@
 			)
 		)
 		(net
-			(code "54")
+			(code "55")
 			(name "unconnected-(U1-P0.05{slash}AIN3-Pad7)")
 			(class "Default")
 			(node
@@ -7957,24 +8892,13 @@
 			)
 		)
 		(net
-			(code "55")
+			(code "56")
 			(name "unconnected-(U1-P0.25-Pad37)")
 			(class "Default")
 			(node
 				(ref "U1")
 				(pin "37")
 				(pinfunction "P0.25_37")
-				(pintype "bidirectional+no_connect")
-			)
-		)
-		(net
-			(code "56")
-			(name "unconnected-(U1-P0.26-Pad38)")
-			(class "Default")
-			(node
-				(ref "U1")
-				(pin "38")
-				(pinfunction "P0.26_38")
 				(pintype "bidirectional+no_connect")
 			)
 		)

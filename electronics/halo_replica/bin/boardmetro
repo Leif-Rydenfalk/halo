@@ -113,14 +113,29 @@ def frame_control(cx, cy, r, W, H, tol=1.5):
 def v_circle(a):
     np = _np()
     path, im = _img(a.image)
-    arr = np.asarray(im.convert("L")).astype(float)
+    full = np.asarray(im.convert("L")).astype(float)
+    FH, FW = full.shape
+    ox = oy = 0
+    if getattr(a, "region", None):
+        x0, y0, x1, y1 = a.region
+        if not (0 <= x0 < x1 <= FW and 0 <= y0 < y1 <= FH):
+            die_cannot(f"region {a.region} outside image {FW}x{FH}")
+        arr = full[y0:y1, x0:x1]
+        ox, oy = x0, y0
+    else:
+        arr = full
     H, W = arr.shape
     from scipy import ndimage as ndi
     med = ndi.median_filter(arr, size=a.ground_window)
     cand = (arr < a.dark) & (med > a.ground)
     ys, xs = np.nonzero(cand)
-    print(f"INPUT  image={os.path.basename(path)}  {W}x{H}")
+    print(f"INPUT  image={os.path.basename(path)}  {FW}x{FH}"
+          + (f"  region [{ox}:{ox+W},{oy}:{oy+H}] ({W}x{H} px)" if a.region else "  (whole image)"))
     print(f"       method=dark(<{a.dark}) on bright ground(median{a.ground_window}>{a.ground}), Kasa+IRLS band {a.band}px")
+    if a.region:
+        print("       NOTE with --region the SEARCH FRAME is the region, so the frame "
+              "control tests tangency to the REGION's edges - which is the right test: a "
+              "circle that fills the box you drew is a measurement of the box.")
     if len(ys) < a.min_pixels:
         die_cannot(f"only {len(ys)} candidate pixels, need {a.min_pixels}",
                    hint="loosen --dark / --ground, or this image has no such feature")
@@ -131,7 +146,9 @@ def v_circle(a):
     frac, occ36, unif = shape_evidence(xs, ys, cx, cy, r, keep)
     th = np.degrees(np.arctan2(ys[keep] - cy, xs[keep] - cx)) % 360
     occupied = int((np.histogram(th, bins=12, range=(0, 360))[0] > 0).sum())
-    print(f"RESULT centre=({cx:.2f},{cy:.2f}) px  r={r:.2f} px  inliers={int(keep.sum())}/{len(xs)}")
+    print(f"RESULT centre=({cx+ox:.2f},{cy+oy:.2f}) px in the SOURCE image  r={r:.2f} px  "
+          f"inliers={int(keep.sum())}/{len(xs)}"
+          + (f"   [region-local centre ({cx:.2f},{cy:.2f})]" if a.region else ""))
     print(f"       residual sd={sd:.3f} px  p95|res|={float(np.percentile(np.abs(res),95)):.3f} px")
     print(f"       angular coverage {occupied}/12 of 30deg bins")
     print(f"SHAPE  inlier fraction {frac:.3f} (need >={a.min_inlier_frac})  "
@@ -167,8 +184,11 @@ def v_circle(a):
         print(f"       NOTE any absolute mm derived from this inherits whatever error is in "
               f"the {a.mm} mm figure. Ratios do not.")
     if a.json_out:
-        json.dump({"image": os.path.basename(path), "image_w": W, "image_h": H,
-                   "cx_px": cx, "cy_px": cy, "r_px": r, "inliers": int(keep.sum()),
+        json.dump({"image": os.path.basename(path), "image_w": FW, "image_h": FH,
+                   "region": list(a.region) if a.region else None,
+                   "cx_px": cx + ox, "cy_px": cy + oy,
+                   "cx_px_region_local": cx, "cy_px_region_local": cy,
+                   "r_px": r, "inliers": int(keep.sum()),
                    "residual_sd_px": sd, "angular_bins_occupied": occupied,
                    "method": f"dark<{a.dark} on median{a.ground_window}>{a.ground}, Kasa+IRLS",
                    "frame_control": ctrl or "passed"},
@@ -406,6 +426,83 @@ def v_selftest(a):
             f"- uniformity is low and that is CORRECT, which is why it is not a default gate")
     else:
         rec("a CLIPPED circle is still accepted", False, "synthetic clip left no pixels")
+
+    # (nfail is computed at the END, after every case - see below. It used to be
+    # computed here, so any case added after this line could not turn the suite red:
+    # a selftest that cannot fail, in the selftest. L8 2026-09-05.)
+    # 14 --region: the centre must come back in SOURCE pixels, not region-local.
+    # L8 2026-09-05. An origin that is not added back is the classic form of E07 s14 -
+    # the break and the check on opposite sides of a coordinate change - and it would
+    # put a real connector 1500 px from where it is with nothing looking wrong.
+    from PIL import Image as _I2
+    big = np.full((900, 1200), 240, dtype=np.uint8)
+    cx_t, cy_t, r_t = 800.0, 620.0, 60.0
+    yy, xx = np.mgrid[0:900, 0:1200]
+    rr = np.hypot(xx - cx_t, yy - cy_t)
+    big[(rr > r_t - 1.2) & (rr < r_t + 1.2)] = 30   # a THIN ring: a 6 px-wide one puts
+    # only ~2/3 of its own pixels inside the 2 px IRLS band and is refused by the inlier
+    # gate, which is the gate working correctly and not a region bug. Watched happen.
+    p = os.path.join(tmp, "region.png"); _I2.fromarray(big).save(p)
+
+    class _A:
+        image = p; dark = 190.0; ground = 225.0; ground_window = 15; band = 2.0
+        min_pixels = 100; min_arcs = 3; max_residual = 2.0; min_inlier_frac = 0.85
+        min_uniformity = 0.0; mm = None; expect_frame = False; json_out = None
+        region = None
+    A = _A(); A.json_out = os.path.join(tmp, "region.json")
+    A.region = [660, 480, 940, 760]          # generous: circle well inside the box
+    import io, contextlib
+    buf = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(buf):
+            v_circle(A)
+        got = json.load(open(A.json_out))
+        derr = math.hypot(got["cx_px"] - cx_t, got["cy_px"] - cy_t)
+        rerr = abs(got["r_px"] - r_t)
+        local_ok = abs(got["cx_px_region_local"] - (cx_t - 660)) < 1.0
+        rec("--region returns the centre in SOURCE pixels",
+            derr < 1.0 and rerr < 1.0 and local_ok,
+            f"source centre ({got['cx_px']:.2f},{got['cy_px']:.2f}) vs true "
+            f"({cx_t},{cy_t}), err {derr:.3f} px; r={got['r_px']:.2f} (true {r_t}); "
+            f"region-local x {got['cx_px_region_local']:.2f} (true {cx_t-660})")
+    except SystemExit as e:
+        rec("--region returns the centre in SOURCE pixels", False,
+            f"exited {e.code}: {buf.getvalue().strip()[-200:]}")
+
+    # 15 DELIBERATE BREAK: draw the region tight around the circle. The frame control
+    # must FIRE, because with --region the box IS the search frame - "the answer is the
+    # box" for circle. Fired on purpose so it is known to work.
+    A2 = _A(); A2.json_out = None
+    A2.region = [int(cx_t - r_t), int(cy_t - r_t),
+                 int(cx_t + r_t + 1), int(cy_t + r_t + 1)]
+    buf2 = io.StringIO()
+    code = None
+    try:
+        with contextlib.redirect_stdout(buf2):
+            v_circle(A2)
+        code = EX_PASS
+    except SystemExit as e:
+        code = e.code
+    out2 = buf2.getvalue()
+    frame_fired = "NEGATIVE CONTROL FIRED" in out2
+    refused = code != EX_PASS
+    rec("a --region drawn tight around the circle is REFUSED", refused,
+        ("refused, exit %s, by: %s" % (code, "the frame control" if frame_fired
+         else out2.strip().split(chr(10))[-2] if len(out2.strip().split(chr(10))) > 1
+         else out2.strip()))
+        if refused else "PUBLISHED a number for a circle that fills its own search box")
+    # And the honest second half: which control caught it. WITH --region a box this tight
+    # starves the median-filter ground estimate, so the INLIER FRACTION gate fires first
+    # and the frame control never runs. The refusal is right and its stated reason is not
+    # the one the box deserved. Recorded as a KNOWN ORDERING, asserted so that a future
+    # change which makes the frame control fire here goes red HERE and gets read, rather
+    # than silently altering what the tool says about a box.
+    rec("...and the reason is the inlier-fraction gate, not the frame control "
+        "(a KNOWN ORDERING, asserted so a change to it is noticed)",
+        refused and not frame_fired,
+        "inlier fraction fired first, as it does whenever --region starves the ground "
+        "estimate. If this ever goes red the frame control started reaching this case "
+        "and the docstring above must be rewritten, not the assertion.")
 
     nfail = sum(1 for _, ok, _ in results if not ok)
     print(f"\n{len(results)-nfail}/{len(results)} passed, {nfail} failed")
@@ -680,6 +777,10 @@ def main():
                         "complete ring is expected; a clipped circle legitimately fails it. "
                         "Angular completeness is not circularity - inlier fraction is the shape test")
     c.add_argument("--mm", type=float, default=None, help="known diameter in mm, to emit a scale")
+    c.add_argument("--region", type=int, nargs=4, default=None, metavar=("X0","Y0","X1","Y1"),
+                   help="search only this box. Centre is reported in SOURCE pixels; the "
+                        "frame control then tests tangency to the REGION, because the box "
+                        "you drew IS the search frame.")
     c.add_argument("--expect-frame", action="store_true", help="you MEAN to measure the crop marker")
     c.add_argument("--json-out")
     s = sub.add_parser("scale-ruler"); s.add_argument("image")
