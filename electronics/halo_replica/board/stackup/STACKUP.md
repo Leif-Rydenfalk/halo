@@ -204,6 +204,36 @@ the floor.**
   populated, split and covered in test points. Apple's FCC-reported gains
   (−3.2 dBi BLE, −1.6/−0.6 dBi UWB) are not what such a board produces.
 
+### The hole is now smaller, and HDI turned out not to rescue 6 layers
+
+*Added 2026-09-05, closing handoff item 2. It does not change the count — §1
+counted it — it changes how strong the arithmetic that agreed was.*
+
+PCBWay publishes HDI floors, verbatim: *"the minimum core thickness for laser
+blind vias is 0.1mm"* and *"the minimum PP thickness for laser blind vias is
+0.06mm"*
+([hdi-pcb.html](https://www.pcbway.com/hdi-pcb.html), fetched 2026-09-05).
+
+**The surprise: HDI is not thinner.** Its minimum core is the *same* 0.10 mm as
+stocked rigid FR-4, and its minimum laser-drillable prepreg at 0.060 mm is
+**thicker** than the 0.050 mm type-106 used in `fr4-thin`. So:
+
+```
+$ s_stackup_budget.py bounds 0.30
+hdi-pcbway-published  4      1     2   0.220   0.060     0.280   0.300-0.320    FITS
+hdi-pcbway-published  6      2     3   0.380   0.084     0.464   0.484-0.504    DOES NOT FIT
+```
+
+**6-layer HDI is worse than 6-layer thin FR-4** — 0.464 mm of laminate against
+0.448 mm. At *every* construction whose material thicknesses anybody publishes,
+**6 layers does not fit in 0.30 mm.**
+
+The `hdi-ultrathin` rows **stay null**. Any-layer HDI with cores below any
+published prototype floor is a real thing that Apple's suppliers run, and no
+page giving such a number has been fetched. What narrowed is the gap between
+"published capability" and "unpublished", not the gap itself. And this settles
+the arithmetic only — it does not raise the confidence of any neighbouring row.
+
 **The hole that was left open, honestly.** The upper bound assumes stocked
 rigid FR-4 with a 0.10 mm core floor; Apple's suppliers are not prototype
 houses. The `hdi-ultrathin` rows in `materials.json` are **deliberately null**
@@ -408,14 +438,13 @@ priority order:
    and would bear on copper weights and on how aggressive 0.30 mm was for Apple.
    The images are already fetchable; `s_layerprobe.py` has the registration
    boxes.
-2. **The HDI capability page.** Reading one published page giving a minimum core
-   and prepreg thickness would fill the deliberately-null `hdi-ultrathin` rows
-   in `materials.json` and let `s_stackup_budget.py bounds` evaluate that
-   construction instead of exiting 2. It no longer decides the layer count —
-   §1 did that — but it would say whether 0.30 mm was comfortable or aggressive
-   *for Apple*, which is currently unanswerable. Two attempts died on a 404 and
-   a socket error; neither host was retried. **Published pages only** — a number
-   behind an account is CANNOT DETERMINE.
+2. ~~**The HDI capability page.**~~ **DONE 2026-09-05** — see §2. PCBWay's
+   published HDI floors are in `materials.json` as `hdi-pcbway-published`, and
+   the result is that HDI does *not* rescue 6 layers. Three further pages
+   (Würth, Hemeixin, NextPCB) publish no dielectric minima; two of them invite
+   you to email their engineers, which this lane does not do. **What is still
+   missing is an any-layer HDI floor below 0.10 mm**, and `hdi-ultrathin` stays
+   null until a page gives one.
 3. **Confirm the nRF52832-CIAA ball array** against Nordic's datasheet, to firm
    up the §2 lower bound. That fetch returned a redirect that was not followed:
    `http://docs.nordicsemi.com/r/bundle/ps_nrf52832/page/pin.html`. The bound
