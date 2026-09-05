@@ -299,6 +299,83 @@ def _synth_edge(tmp, bow_px, noise=1.5, n=1600, name='e.png'):
     return p, (0, 0, n, h)
 
 
+def sagitta_for_k(axis, box, W, H, k, n=400):
+    """Predicted sagitta of a STRAIGHT line at this edge's place in the frame, after
+    a radial distortion r' = r(1 + k*rn^2) with rn = r/(W/2) about the frame centre.
+    Computed numerically rather than in closed form, so the model in the docstring
+    and the model in the code cannot drift apart."""
+    x0, y0, x1, y1 = box
+    cx, cy = W/2.0, H/2.0
+    if axis == 'h':
+        t = np.linspace(x0, x1, n); e = np.full(n, (y0+y1)/2.0)
+        X, Y = t, e
+    else:
+        t = np.linspace(y0, y1, n); e = np.full(n, (x0+x1)/2.0)
+        X, Y = e, t
+    dx, dy = X-cx, Y-cy
+    rn = np.hypot(dx, dy)/(W/2.0)
+    f = 1.0 + k*rn**2
+    Xd, Yd = cx + dx*f, cy + dy*f
+    obs = Yd if axis == 'h' else Xd
+    tc = (t-t.mean())/max(t.std(), 1e-9)
+    c2 = np.polyfit(tc, obs, 2)[0]
+    return float(abs(c2)*((tc.max()-tc.min())/2.0)**2), float(np.sign(c2))
+
+
+def solve_k(axis, box, W, H, target_sag, lo=-0.5, hi=0.0, iters=60):
+    """Bisect for the k whose predicted sagitta matches the measured one. Negative
+    k is barrel."""
+    f = lambda k: sagitta_for_k(axis, box, W, H, k)[0] - target_sag
+    if f(lo)*f(hi) > 0:
+        return None
+    for _ in range(iters):
+        mid = 0.5*(lo+hi)
+        if f(lo)*f(mid) <= 0: hi = mid
+        else: lo = mid
+    return 0.5*(lo+hi)
+
+
+def run_solvek(a):
+    print("c_distortion solve-k")
+    print("  Each MEASURED edge is asked what single barrel coefficient would produce the")
+    print("  bow it shows. Two edges in one frame are two INDEPENDENT routes to one number.")
+    print("  WHAT WOULD HAVE TO HAPPEN FOR THEM TO DISAGREE: the two edges sit at different")
+    print("  radii and different orientations, so a bow caused by anything OTHER than a")
+    print("  single radial term about the frame centre - a tilted rule, a scanner artifact,")
+    print("  a bent rule - implies different k. Agreement is therefore a real check and not")
+    print("  an arithmetic identity.")
+    out = {}
+    for n in (a.edge and [a.edge] or list(EDGES)):
+        spec, t, e, kept, disc, c = measure(n, a.min_grad)
+        if c is None or c['z'] < 3.0:
+            print("\n  %-15s skipped: %s" % (n, 'no usable edge' if c is None else
+                                             'bow does not clear its null (z=%+.1f)' % c['z']))
+            out[n] = dict(skipped=True, z=(c or {}).get('z'))
+            continue
+        H_, W_ = gray(os.path.join(IMGDIR, spec['image'])).shape
+        k = solve_k(spec['axis'], spec['box'], W_, H_, c['sagitta_px'])
+        out[n] = dict(image=spec['image'], sagitta_px=c['sagitta_px'], k=k,
+                      z=c['z'], W=W_, H=H_)
+        print("\n  %-15s sagitta %.3f px  ->  k = %s"
+              % (n, c['sagitta_px'], ('%.5f' % k) if k is not None else 'no solution in range'))
+    for img in sorted({v.get('image') for v in out.values() if v.get('k') is not None}):
+        ks = [(n, v['k']) for n, v in out.items() if v.get('image') == img and v.get('k')]
+        if len(ks) == 2:
+            k0, k1 = ks[0][1], ks[1][1]
+            spread = abs(k0-k1)/abs(0.5*(k0+k1))
+            print("\n  AGREEMENT in %s: k = %.5f (%s) and %.5f (%s), %.0f%% apart"
+                  % (img, k0, ks[0][0], k1, ks[1][0], 100*spread))
+            print("  -> %s" % ("the two edges agree on ONE barrel coefficient"
+                               if spread < 0.5 else
+                               "the two edges do NOT agree - a single radial term does not "
+                               "explain both, so at least one bow has another cause"))
+            out.setdefault('_agreement', {})[img] = dict(k=[k0, k1], spread=spread,
+                                                         agree=bool(spread < 0.5))
+    if a.json_out:
+        with open(a.json_out, 'w') as fh: json.dump(out, fh, indent=1)
+        print("\n  wrote %s" % a.json_out)
+    return PASS
+
 def run_selftest(a):
     print("c_distortion selftest - synthetic edges with known answers, and deliberate breaks")
     tmp = tempfile.mkdtemp(prefix='c_distortion-selftest-')
@@ -343,6 +420,31 @@ def run_selftest(a):
     rec(c1['sign'] != c2['sign'],
         "the SIGN follows the direction of the bow: %+d for +3 px, %+d for -3 px"
         % (c1['sign'], c2['sign']))
+
+    # THE k-INVERSION, round-tripped. Without this, a disagreement between two
+    # edges could be my arithmetic rather than the photograph - and on 2026-09-05
+    # it WAS a disagreement (photo 7's two edges implied k 9.7x apart), which is
+    # only publishable as a finding if the inversion is known to be sound.
+    W_, H_ = 2134, 1600
+    K_TRUE = -0.030
+    ok_rt = True
+    for nm, (ax, bx) in {'bottom': ('h', (400, 1111, 2000, 1151)),
+                         'right': ('v', (1503, 100, 1543, 900))}.items():
+        sg, _ = sagitta_for_k(ax, bx, W_, H_, K_TRUE)
+        kk = solve_k(ax, bx, W_, H_, sg)
+        ok_rt &= (kk is not None and abs(kk-K_TRUE) < 0.002)
+    rec(ok_rt,
+        "k INVERSION round-trips on BOTH edge geometries: k=%.3f -> sagitta -> k "
+        "recovered to within 0.002 for the bottom and right edges alike" % K_TRUE)
+    sg_b, _ = sagitta_for_k('h', (400, 1111, 2000, 1151), W_, H_, K_TRUE)
+    sg_r, _ = sagitta_for_k('v', (1503, 100, 1543, 900), W_, H_, K_TRUE)
+    kb = solve_k('h', (400, 1111, 2000, 1151), W_, H_, sg_b)
+    kr = solve_k('v', (1503, 100, 1543, 900), W_, H_, sg_r)
+    spread = abs(kb-kr)/abs(0.5*(kb+kr))
+    rec(spread < 0.05,
+        "the AGREEMENT test CAN pass: two edges generated from ONE k=%.3f come back "
+        "%.1f%% apart (sagittas %.2f and %.2f px are very different, so agreement is "
+        "not an identity)" % (K_TRUE, 100*spread, sg_b, sg_r))
 
     # THE RADIAL-CONSISTENCY LOGIC, tested against constructed inputs. It was
     # wrong on its first real run - it demanded OPPOSITE signs and pronounced
@@ -404,9 +506,14 @@ def main():
     p.add_argument('--edge', default=None, choices=list(EDGES))
     p.add_argument('--min-grad', type=float, default=6.0)
     p.add_argument('--json-out', default=None)
+    q = sub.add_parser('solve-k')
+    q.add_argument('--edge', default=None, choices=list(EDGES))
+    q.add_argument('--min-grad', type=float, default=6.0)
+    q.add_argument('--json-out', default=None)
     sub.add_parser('doctor'); sub.add_parser('selftest')
     a = ap.parse_args()
-    return {'edge': run_edge, 'doctor': run_doctor, 'selftest': run_selftest}[a.verb](a)
+    return {'edge': run_edge, 'solve-k': run_solvek,
+            'doctor': run_doctor, 'selftest': run_selftest}[a.verb](a)
 
 
 if __name__ == '__main__':

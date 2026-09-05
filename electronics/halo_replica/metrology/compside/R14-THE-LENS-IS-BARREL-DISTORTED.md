@@ -1,5 +1,16 @@
 # R14 — one of R11's three candidates is now measured: **photo 7's lens is barrel-distorted**
 
+> **⚠ THIS FILE'S HEADLINE IS WRONG — read [R15](R15-NOT-SIMPLE-BARREL-R14-CORRECTED.md).**
+> The sign test below passed and I published on it. The **magnitude** test, which this file
+> never ran, fails: photo 7's bottom edge implies a barrel coefficient of **k = −0.00646**
+> and its right edge **k = −0.06259**, **163 % apart**. No single radial term produces both,
+> so this is **not** simple radial lens distortion and the verdict returns to **CANNOT
+> DETERMINE**. "Both edges bow away from the centre" is necessary for radial distortion and
+> nowhere near sufficient — it has two outcomes and one is 50 % likely by chance. The
+> measurements of the individual edges below are unaffected and still stand; only the
+> conclusion drawn from them is withdrawn.
+
+
 *halo Replica, lane L2, 2026-09-05. New instrument: `tools/c_distortion.py`.*
 
 > **SIDE CONVENTION. FRONT = the COMPONENT side** (Apple's FCC caption "MLB – Front").

@@ -1,0 +1,36 @@
+{
+ "photo6-bottom": {
+  "skipped": true,
+  "z": 2.584020332751482
+ },
+ "photo6-right": {
+  "skipped": true,
+  "z": 0.8017797737255613
+ },
+ "photo7-bottom": {
+  "image": "fcc-BCGA2187-internal-photo-7.jpg",
+  "sagitta_px": 1.1366154065438345,
+  "k": -0.006459785031849031,
+  "z": 5.10998085532177,
+  "W": 2134,
+  "H": 1600
+ },
+ "photo7-right": {
+  "image": "fcc-BCGA2187-internal-photo-7.jpg",
+  "sagitta_px": 4.310138370190473,
+  "k": -0.06258986126198368,
+  "z": 6.553967246077925,
+  "W": 2134,
+  "H": 1600
+ },
+ "_agreement": {
+  "fcc-BCGA2187-internal-photo-7.jpg": {
+   "k": [
+    -0.006459785031849031,
+    -0.06258986126198368
+   ],
+   "spread": 1.6257889574489537,
+   "agree": false
+  }
+ }
+}
