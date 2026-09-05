@@ -1355,3 +1355,62 @@ written into `TOOLS-THAT-LIE.md` for `pgrep -f freerouting`, and I walked into i
 anyway — while relaunching a solve, which is exactly when believing a phantom
 process would have made me *not* relaunch. The correct check is
 `ps -axo comm=` and matching the **executable name**, which returned nothing.
+
+## D28 · The antenna mode has never been identified on the real board
+
+**2026-09-05, from six converged solves.** All three retune generations have now
+finished honestly at the 0.5λ boundary, bare and passive. One row separates them
+completely:
+
+| case | f_series (GHz) | gain (dBi) | **mode_identified** |
+|---|---|---|---|
+| meander9-bare | 2.6763 | — | **1** |
+| meander9-passive | 2.0669 | −3.39 | **0** |
+| rt1-bare | 2.7058 | −1.46 | **1** |
+| rt1-passive | 2.3730 | −11.81 | **0** |
+| rt2-bare | 2.6630 | −1.52 | **1** |
+| rt2-passive | 1.3532 | −9.18 | **0** |
+
+**Every bare case identifies its mode; no passive case ever has.** The passive
+case is the board that gets fabricated — it is the one carrying the NFC coil and
+the land. So **no frequency this project has quoted from a passive case is a
+confirmed antenna mode**, and that includes rows in the convergence table.
+
+**The coupling is not the constant D26 recorded it as:**
+
+| | bare | passive | shift |
+|---|---|---|---|
+| meander9 | 2.6763 | 2.0669 | −609 MHz |
+| rt1 | 2.7058 | 2.3730 | −333 MHz |
+| rt2 | 2.6630 | 1.3532 | **−1310 MHz** |
+
+The bare resonances sit within **43 MHz** of one another across a −15% / +5%
+conductor range. The passive ones wander over **1310 MHz** on the same geometry
+changes. A fixed parasitic load cannot produce that. Two coupled resonators can,
+and the split's dependence on their frequency separation has exactly this shape.
+It also explains the extractor's behaviour: with two zeros present it reports
+whichever lands lowest, and which one that is changes with length — so the
+passive "series resonance" is not tracking one physical thing at all.
+
+**D26 is superseded on this point.** It recorded the coil as costing a fixed
+668 MHz. It does not; the cost ranges 333–1310 MHz and depends on the element.
+The coil and the element are one coupled system, not an antenna with a
+correction term.
+
+**The decision.** Stop retuning the element. Six solves have demonstrated that
+moving one resonator of a coupled pair moves both zeros unpredictably — that is
+the table above, not a calibration error. The order is now:
+
+1. **Solve the NFC coil alone** and find its self-resonance. If it is near
+   2.44 GHz that is the entire problem, and it is a coil-geometry fix.
+2. **Decouple or detune** — move the coil's self-resonance out of band, or cut
+   the coupling (spacing, orientation, a ground fence).
+3. **Only then** tune the element, on passive geometry, and require
+   `mode_identified` = 1 before quoting any frequency.
+
+**And the standing rule that comes out of it:** never quote `f_series_res_GHz`
+from a case whose `mode_identified` is 0. That is a number the extractor
+produced, not a mode anyone confirmed. When mode identification fails the
+frequency row is **CANNOT DETERMINE**, not a value. See `CONCERNS.md` C-7 and
+`docs/TOOLS-THAT-LIE.md` §10 for the related defect — a retune premise that was
+a prediction wearing the word *measured*.
