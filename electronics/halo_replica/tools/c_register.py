@@ -375,6 +375,106 @@ def landmark_field(H, src, tgt, step=14, patch=15, search=5,
     return kept, disc, tex_all
 
 
+def fit_poly2(P, Q):
+    """*** A DISCARDED ROUTE. NOT WIRED TO ANY VERB. Kept so it is not retried. ***
+
+    Least-squares 2nd-order polynomial, target px -> source px: 12 parameters
+    against a homography's 8.  It was written to separate two causes of the
+    homography misfit that R08 measured on the BACK face - a smooth geometric
+    cause (a board that is not flat, or uncorrected lens distortion) from a
+    component-wise one (two different physical boards whose parts sit in slightly
+    different places) - on the reasoning that a low-order model absorbs the first
+    and cannot absorb the second.
+
+    IT FAILED ITS OWN POSITIVE CONTROL, 2026-09-05, and is therefore not used.
+    Given a 5% radial warp INJECTED ON PURPOSE, poly2's held-out error came out
+    WORSE than the homography's, under both splits:
+        extrapolating (K=2):  3.759 px  vs the homography's 3.393 px
+        interpolating (K=4):  1.834 px  vs the homography's 1.473 px
+    With ~60 noisy landmarks the four extra parameters cost more than the warp
+    they were meant to capture.  A discriminator that cannot see a defect planted
+    for it to see is not a discriminator, and shipping it would have meant reading
+    "poly2 did not help" on the real data as evidence about the BOARD when it is
+    only evidence about the METHOD.  The cause of the back face's azimuthal misfit
+    stays CANNOT DETERMINE.  `validate --coherence` asks a related question
+    without adding any parameters at all.
+    """
+    x, y = P[:, 0], P[:, 1]
+    # centre and scale the design matrix, or the x^2 column is ~1e6 and the
+    # normal equations lose the linear terms to rounding
+    mx, my = x.mean(), y.mean()
+    sx = max(x.std(), 1e-9); sy = max(y.std(), 1e-9)
+    u, v = (x-mx)/sx, (y-my)/sy
+    A = np.column_stack([np.ones_like(u), u, v, u*u, u*v, v*v])
+    if A.shape[0] < A.shape[1] + 2:
+        return None
+    cu, *_ = np.linalg.lstsq(A, Q[:, 0], rcond=None)
+    cv, *_ = np.linalg.lstsq(A, Q[:, 1], rcond=None)
+    return ('poly2', cu, cv, mx, my, sx, sy)
+
+
+def apply_model(M, X, Y):
+    """Evaluate either model at target coordinates."""
+    if isinstance(M, tuple) and M[0] == 'poly2':
+        _, cu, cv, mx, my, sx, sy = M
+        u, v = (np.asarray(X)-mx)/sx, (np.asarray(Y)-my)/sy
+        A = np.column_stack([np.ones_like(u), u, v, u*u, u*v, v*v])
+        return A @ cu, A @ cv
+    return apply_H(M, X, Y)
+
+
+def residual_coherence(P, Q, k=4, trials=400, seed=11):
+    """Is the misfit SMOOTH or COMPONENT-WISE? - asked without adding a parameter.
+
+    Fit the homography on ALL landmarks, take each one's residual VECTOR, and
+    measure how well it agrees with the mean residual of its k nearest
+    NEIGHBOURS, itself excluded.  A smooth geometric cause - a board that is not
+    flat, uncorrected lens distortion - moves neighbouring points TOGETHER, so
+    the field is spatially coherent.  Parts sitting in different places on two
+    different physical boards move independently, so it is not.
+
+    Statistic: the mean over landmarks of the cosine-weighted projection of each
+    residual onto its neighbourhood mean, normalised - a Moran's-I in spirit.
+
+    THE CONTROL, and it is the whole reason this is trustworthy: the SAME
+    statistic is recomputed with the residuals PERMUTED among the positions,
+    hundreds of times.  Permutation destroys every spatial relationship and keeps
+    the residual magnitudes exactly as they are, so the null says what this
+    statistic reads on a field with no structure at all.  A value that does not
+    stand clear of that null is not coherence.
+
+    Returns (I, null_mean, null_sd, z).  It does NOT return a cause: a coherent
+    field is consistent with a warp AND with a uniformly displaced region, and
+    this cannot separate those.
+    """
+    H = fit_homography_dlt(P, Q)
+    px, py = apply_H(H, P[:, 0], P[:, 1])
+    R = np.column_stack([Q[:, 0]-px, Q[:, 1]-py])
+    n = len(P)
+    if n < k+4:
+        return None
+    d = np.hypot(P[:, 0][:, None]-P[:, 0][None, :], P[:, 1][:, None]-P[:, 1][None, :])
+    np.fill_diagonal(d, np.inf)
+    nb = np.argsort(d, axis=1)[:, :k]
+
+    def stat(Rv):
+        Rc = Rv - Rv.mean(axis=0)
+        num = 0.0
+        den = float((Rc*Rc).sum())
+        for i in range(n):
+            num += float((Rc[i]*Rc[nb[i]].mean(axis=0)).sum())
+        return num/den if den > 0 else 0.0
+
+    I = stat(R)
+    rng = np.random.default_rng(seed)
+    null = np.empty(trials)
+    for t in range(trials):
+        null[t] = stat(R[rng.permutation(n)])
+    m, sd = float(null.mean()), float(null.std())
+    z = (I-m)/sd if sd > 0 else float('nan')
+    return dict(I=float(I), null_mean=m, null_sd=sd, z=float(z), k=k, trials=trials, n=n)
+
+
 def fit_homography_dlt(P, Q):
     """Least-squares homography mapping P (target px) -> Q (source px)."""
     A = []
@@ -600,19 +700,28 @@ def run_validate(a):
             a0, a1 = float(edges[i]), float(edges[i+1])
             held = (rad >= a0) & (rad <= a1) if i == K-1 else (rad >= a0) & (rad < a1)
         else:
-            a0, a1 = 360.0*i/K, 360.0*(i+1)/K
-            held = (th >= a0) & (th < a1)
+            off = float(getattr(a, 'split_offset', 0.0) or 0.0)
+            a0, a1 = 360.0*i/K + off, 360.0*(i+1)/K + off
+            tha = (th - off) % 360.0
+            held = (tha >= 360.0*i/K) & (tha < 360.0*(i+1)/K)
         fit = ~held
         if held.sum() < 4 or fit.sum() < 12:
             folds.append(dict(sector=[a0, a1], n_held=int(held.sum()),
                               verdict='CANNOT DETERMINE', why='too few landmarks in fold'))
             continue
-        Hf = fit_homography_dlt(P[fit], Q[fit])
-        px, py = apply_H(Hf, P[held][:, 0], P[held][:, 1])
+        fitmodel = getattr(a, 'fit_model', 'homography')
+        Hf = fit_poly2(P[fit], Q[fit]) if fitmodel == 'poly2' else fit_homography_dlt(P[fit], Q[fit])
+        if Hf is None:
+            folds.append(dict(sector=[a0, a1], n_held=int(held.sum()),
+                              verdict='CANNOT DETERMINE',
+                              why='too few landmarks to fit %s' % fitmodel))
+            continue
+        px, py = apply_model(Hf, P[held][:, 0], P[held][:, 1])
         err_ds = np.hypot(px-Q[held][:, 0], py-Q[held][:, 1])   # downsampled-source px
         # ds-source px per target px, so the error can be quoted in the frame the
         # ruler actually lives in, and only then converted to millimetres.
-        s_ds = math.sqrt(abs(np.linalg.det(Hf[:2, :2])))
+        Hlin = fit_homography_dlt(P[fit], Q[fit])
+        s_ds = math.sqrt(abs(np.linalg.det(Hlin[:2, :2])))
         err_tgt = err_ds/s_ds if s_ds > 0 else np.full_like(err_ds, np.nan)
         # PER-LANDMARK held-out residuals.  The RMS alone cannot tell a transform
         # that is uniformly a little wrong from one that is right everywhere except
@@ -634,8 +743,8 @@ def run_validate(a):
                           p95_target_px=float(np.percentile(err_tgt, 95)),
                           rms_mm=float(np.sqrt((err_tgt**2).mean())/ppm) if ppm else None,
                           p95_mm=float(np.percentile(err_tgt, 95)/ppm) if ppm else None))
-    print("  split=%s  K=%d   (angular = sectors in degrees; radial = annuli in target px)"
-          % (split, K))
+    print("  split=%s  K=%d  fit-model=%s   (angular = sectors in degrees; radial = "
+          "annuli in target px)" % (split, K, getattr(a, 'fit_model', 'homography')))
     print("  %-16s %5s %10s %10s %9s %9s"
           % ('held-out band', 'n', 'RMS src px', 'RMS tgt px', 'RMS mm', 'p95 mm'))
     ok = []
@@ -647,6 +756,21 @@ def run_validate(a):
         print("  %5.0f-%-9.0f %5d %10.2f %10.3f %9.4f %9.4f"
               % (f['sector'][0], f['sector'][1], f['n_held'],
                  f['rms_source_px'], f['rms_target_px'], f['rms_mm'], f['p95_mm']))
+    coh = residual_coherence(P, Q)
+    if coh:
+        print("  RESIDUAL COHERENCE  I = %+.4f   null %.4f +- %.4f over %d permutations"
+              "   z = %+.1f" % (coh['I'], coh['null_mean'], coh['null_sd'],
+                                coh['trials'], coh['z']))
+        if coh['z'] > 3.0:
+            print("                      SPATIALLY COHERENT: neighbouring landmarks miss "
+                  "TOGETHER, so the misfit is a smooth field, not independent per-part "
+                  "scatter. It does NOT say which smooth cause.")
+        elif coh['z'] < 1.5:
+            print("                      NOT distinguishable from a field with no spatial "
+                  "structure at all - consistent with independent per-landmark error.")
+        else:
+            print("                      between the two - CANNOT DETERMINE.")
+
     verdict = PASS; why = []
     if not ok:
         verdict = CANNOT; why.append('no fold had enough landmarks')
@@ -665,10 +789,13 @@ def run_validate(a):
                side_convention="FRONT = component side (Apple FCC 'MLB - Front')",
                source=src.view['path'], target=tgt.view['path'],
                scale_basis=tgt.view['px_per_mm_basis'], px_per_mm=ppm,
-               model=a.model, ncc=stages[-1]['ncc'], split=split, folds_k=K, folds=folds,
+               model=a.model, fit_model=getattr(a, 'fit_model', 'homography'),
+               ncc=stages[-1]['ncc'], split=split, folds_k=K,
+               split_offset_deg=float(getattr(a, 'split_offset', 0.0) or 0.0), folds=folds,
                worst_holdout_rms_mm=worst,
                worst_holdout_p95_mm=(max(f['p95_mm'] for f in ok) if ok else None),
                tolerance_mm=a.tol_mm,
+               residual_coherence=coh,
                landmarks_kept=len(lm), landmarks_discarded=disc,
                verdict=V[verdict], why=why)
     if a.json_out:
@@ -766,14 +893,16 @@ def run_selftest(a):
         P = np.array([[l['tx'], l['ty']] for l in lm2])
         Q = np.array([apply_H(H, l['tx']+l['dx'], l['ty']+l['dy']) for l in lm2])
         th = np.array([l['theta_deg'] for l in lm2])
-        def worst_rms(Pp, Qq):
+        def worst_rms(Pp, Qq, fitter=None, K=4):
+            fitter = fitter or fit_homography_dlt
             w = 0.0
-            for i in range(4):
-                a0, a1 = 90.0*i, 90.0*(i+1)
+            for i in range(K):
+                a0, a1 = 360.0/K*i, 360.0/K*(i+1)
                 held = (th >= a0) & (th < a1); fit = ~held
-                if held.sum() < 4 or fit.sum() < 12: continue
-                Hf = fit_homography_dlt(Pp[fit], Qq[fit])
-                px, py = apply_H(Hf, Pp[held][:, 0], Pp[held][:, 1])
+                if held.sum() < 4 or fit.sum() < 14: continue
+                Hf = fitter(Pp[fit], Qq[fit])
+                if Hf is None: continue
+                px, py = apply_model(Hf, Pp[held][:, 0], Pp[held][:, 1])
                 w = max(w, float(np.sqrt(((px-Qq[held][:, 0])**2+(py-Qq[held][:, 1])**2).mean())))
             return w
         clean = worst_rms(P, Q)
@@ -791,8 +920,22 @@ def run_selftest(a):
             "HOLD-OUT goes RED on a radial warp a homography CANNOT absorb "
             "(max point move %.2f px): clean %.3f px -> broken %.3f px"
             % (moved, clean, bad))
-    else:
-        rec(False, "hold-out break test could not run: only %d landmarks" % len(lm2))
+        # 6 & 7: the COHERENCE statistic, both directions.  A statistic that only
+        # ever goes up is a decoration; these two say it moves for the right reason.
+        rngc = np.random.default_rng(19)
+        Qi = Q + rngc.normal(0, 1.2, Q.shape)          # independent per-landmark scatter
+        ci = residual_coherence(P, Qi)
+        rec(ci is not None and abs(ci['z']) < 3.0,
+            "COHERENCE stays at its null for INDEPENDENT per-landmark scatter: "
+            "I=%+.4f null %.4f+-%.4f z=%+.1f" % (ci['I'], ci['null_mean'],
+                                                 ci['null_sd'], ci['z']))
+        cc = Q.mean(axis=0); dd = Q - cc
+        Rn2 = np.hypot(dd[:, 0], dd[:, 1]).max()
+        Qs = cc + dd*(1.0 + 0.05*(np.hypot(dd[:, 0], dd[:, 1])/Rn2)**2)[:, None]
+        cs = residual_coherence(P, Qs)
+        rec(cs is not None and cs['z'] > 3.0,
+            "COHERENCE RISES for a genuinely SMOOTH warp: I=%+.4f null %.4f+-%.4f "
+            "z=%+.1f" % (cs['I'], cs['null_mean'], cs['null_sd'], cs['z']))
     ok = sum(1 for r in results if r)
     print("\n%d/%d passed, %d failed" % (ok, len(results), len(results)-ok))
     print("synthetic inputs kept at %s" % tmp)
@@ -866,6 +1009,11 @@ def main():
                    help='fit must beat its worst wrong-rotation null by this factor')
     q = sub.add_parser('validate'); common(q)
     q.add_argument('--folds', type=int, default=4)
+    q.add_argument('--split-offset', type=float, default=0.0,
+                   help='rotate the angular fold boundaries by this many degrees. '
+                        'A failure that FOLLOWS a fixed region of the board is a '
+                        'property of that region; one that moves with the boundaries '
+                        'is a property of the split.')
     q.add_argument('--split', default='angular', choices=['angular', 'radial'],
                    help='angular = hold out a sector; radial = hold out an annulus, '
                         'which forces EXTRAPOLATION rather than interpolation and is '

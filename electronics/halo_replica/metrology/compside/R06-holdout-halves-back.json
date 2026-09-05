@@ -7,6 +7,7 @@
  "scale_basis": "metrology/scale-at-board-photo7.json - m_scale_at at the board (932,752), bottom rule and right rule routes 0.45% apart, halfrange 0.0339 px/mm. THE SCALE IS MEASURED AT THE BOARD, not at the rule, so it does not carry the 1.29% rule-to-board error. *** THE ASSUMPTION THIS SHARES WITH ITS OWN HELD-OUT CONTROL: that the 920- sample board and the 820- production board have the same dimensions. A uniform dimensional difference between them is absorbed into the fitted scale and leaves the held-out residual COMPLETELY UNCHANGED, because the check divides both sides by the same number. Registration consistency is not scale accuracy. What would settle it: a caliper on one board of each part number. ***",
  "px_per_mm": 15.0719,
  "model": "homography",
+ "fit_model": "homography",
  "ncc": 0.5066064121452601,
  "split": "angular",
  "folds_k": 2,
@@ -753,6 +754,15 @@
  "worst_holdout_rms_mm": 0.7050274490777445,
  "worst_holdout_p95_mm": 1.1112386363207156,
  "tolerance_mm": 0.2,
+ "residual_coherence": {
+  "I": 0.07345635223876355,
+  "null_mean": -0.016523890062201868,
+  "null_sd": 0.06560808127822716,
+  "z": 1.3714810820237546,
+  "k": 4,
+  "trials": 400,
+  "n": 58
+ },
  "landmarks_kept": 58,
  "landmarks_discarded": {
   "on_boundary": 45,

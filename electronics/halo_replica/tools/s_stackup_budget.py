@@ -15,7 +15,7 @@ Verbs
   doctor    — is the material table usable? Every row must carry a source.
   budget    — minimum buildable thickness for one (construction, layer count)
   bounds    — for a target thickness, the layer counts each construction can build
-  selftest  — 14 deliberate breaks, each of which MUST go red
+  selftest  — 17 deliberate breaks, each of which MUST go red
 
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
 
@@ -171,6 +171,82 @@ def cmd_solve(m, target, layers):
     return PASS
 
 
+
+def read_board_stackup(path):
+    """What a .kicad_pcb DECLARES: board thickness and copper layer count.
+
+    Read with a regex rather than pcbnew on purpose: this must run under the
+    system python with no KiCad import, so it can be a cheap gate anywhere. It
+    reads the two declarations a fabricator is quoted from and nothing else.
+    """
+    import re
+    with open(path) as fh:
+        t = fh.read()
+    m = re.search(r"\(general\b[^)]*?\(thickness\s+([\d.]+)\)", t, re.S)
+    thickness = float(m.group(1)) if m else None
+    cu = sorted(set(re.findall(r'"(F\.Cu|B\.Cu|In\d+\.Cu)"', t)))
+    return {"declared_thickness_mm": thickness, "copper_layers": len(cu), "layer_names": cu}
+
+
+def cmd_verify(path, spec_path=None):
+    """Does the board DECLARE the stackup this lane established?
+
+    KiCad defaults a new board to 1.6 mm. That default is silent, survives
+    routing, survives export, and is what a fabricator quotes from. It already
+    bit halo_rev_a once -- lane B1: 'this board carried that default until
+    ce-fab's DFM report printed the thickness it had measured; a fab quoting
+    from an uncorrected file would have built a board nearly three times too
+    thick for its enclosure.' This is the check that makes that loud.
+    """
+    import json as _json
+    import os as _os
+    spec_path = spec_path or _os.path.join(_os.path.dirname(_os.path.abspath(__file__)),
+                                           "..", "board", "stackup", "stackup.json")
+    try:
+        spec = _json.load(open(spec_path))["replica_as_drawn"]
+    except Exception as e:                                    # noqa: BLE001
+        print(f"CANNOT DETERMINE — could not read the as-drawn spec: {e}")
+        return CANNOT
+    if not _os.path.exists(path):
+        print(f"CANNOT DETERMINE — {path} is not on disk")
+        return CANNOT
+    got = read_board_stackup(path)
+    want_t = spec.get("board_thickness_mm")
+    want_l = spec.get("layer_count")
+
+    print(f"board   {path}")
+    print(f"spec    board/stackup/stackup.json  replica_as_drawn\n")
+    rows, worst = [], PASS
+    for name, g, w, unit in (("board thickness", got["declared_thickness_mm"], want_t, "mm"),
+                             ("copper layers", got["copper_layers"], want_l, "")):
+        if g is None:
+            v, why = CANNOT, "the board declares no value"
+        elif w is None:
+            v, why = CANNOT, "the spec states no value, so there is nothing to compare"
+        elif abs(g - w) < 1e-9:
+            v, why = PASS, "declared value matches the as-drawn spec"
+        else:
+            v = FAIL
+            why = f"declared {g}{unit}, as-drawn is {w}{unit}"
+            if unit == "mm" and w:
+                why += f" — {g / w:.2f}x"
+            if unit == "mm" and abs(g - 1.6) < 1e-9:
+                why += ". 1.6 mm is KiCad's DEFAULT: this reads as never set, not as chosen"
+        rows.append((name, g, w, v, why))
+        worst = max(worst, v) if not (v == CANNOT and worst == FAIL) else worst
+        if v == FAIL:
+            worst = FAIL
+    for name, g, w, v, why in rows:
+        print(f"  {['PASS','FAIL','CANNOT DETERMINE'][v]:<17}{name:<18}declared={g!r:<8}spec={w!r}")
+        print(f"                    {why}")
+    print()
+    print({PASS: "PASS — the board declares the stackup this lane established.",
+           FAIL: "FAIL — a fabricator quotes from the BOARD, not from the document. "
+                 "The as-drawn number is not what would be built.",
+           CANNOT: "CANNOT DETERMINE — and that is not a pass."}[worst])
+    return worst
+
+
 def cmd_doctor(m):
     bad, ok, nulls = [], 0, []
     for group, rows in m.items():
@@ -269,7 +345,7 @@ def cmd_selftest():
         else:
             n_fail += 1
 
-    print("s_stackup_budget selftest — 14 deliberate breaks\n")
+    print("s_stackup_budget selftest — 17 deliberate breaks\n")
 
     # 1. The null-row refusal actually fires.
     check("hdi-ultrathin has null cores -> CannotDetermine, not a default",
@@ -354,6 +430,40 @@ def cmd_selftest():
           lambda: sorted({r["prepreg"].split("x")[1] for r in solve(m, 0.60)}
                          - {"106", "1080", "2116", "7628"}), [])
 
+    # 15. THE LIVE FINDING: the Replica fab board declares KiCad's 1.6 mm
+    #     default against a 0.30 mm as-drawn spec.
+    import os as _os
+    here = _os.path.dirname(_os.path.abspath(__file__))
+    rb = _os.path.join(here, "..", "fab", "out", "halo_replica_fab.kicad_pcb")
+    if _os.path.exists(rb):
+        got = read_board_stackup(rb)
+        check("the Replica fab board declares 1.6 mm, not 0.30",
+              lambda: got["declared_thickness_mm"], 1.6)
+        # and its LAYER count is right, so this is not a board that is simply wrong
+        check("the same board's layer count IS correct at 4",
+              lambda: got["copper_layers"], 4)
+
+    # 16. NEGATIVE CONTROL: a board that matches the spec must PASS. Without
+    #     this, verify could be a function that returns FAIL.
+    import tempfile as _tf
+    with _tf.NamedTemporaryFile("w", suffix=".kicad_pcb", delete=False) as fh:
+        fh.write('(kicad_pcb (general (thickness 0.3)) (layers (0 "F.Cu" signal)'
+                 ' (4 "In1.Cu" signal) (6 "In2.Cu" signal) (2 "B.Cu" signal)))')
+        good = fh.name
+    check("a board matching the spec PASSES (verify is not FAIL-always)",
+          lambda: cmd_verify_quiet(good), PASS)
+    _os.unlink(good)
+
+    # 17. THE OTHER DIRECTION, and it was missing. Cases 15/16 read the board
+    #     directly and confirm a GOOD board passes; neither could catch a
+    #     cmd_verify that returns PASS for everything. Deleting the comparison
+    #     left all sixteen green while the Replica board reported PASS at
+    #     1.6 mm against a 0.30 mm spec. A control that can only fail in one
+    #     direction is half a control.
+    if _os.path.exists(rb):
+        check("the Replica board FAILS verify (verify is not PASS-always)",
+              lambda: cmd_verify_quiet(rb), FAIL)
+
     print(f"\n{n_pass} ok, {n_fail} red")
     return PASS if n_fail == 0 else FAIL
 
@@ -364,6 +474,13 @@ def _try_raises(fn):
     except CannotDetermine:
         return True
     return False
+
+
+def cmd_verify_quiet(path):
+    import io
+    import contextlib
+    with contextlib.redirect_stdout(io.StringIO()):
+        return cmd_verify(path)
 
 
 def cmd_doctor_quiet(m):
@@ -386,6 +503,11 @@ def main(argv):
     if verb == "bounds":
         target = float(argv[2]) if len(argv) > 2 else 0.30
         return cmd_bounds(m, target)
+    if verb == "verify":
+        if len(argv) < 3:
+            print("CANNOT DETERMINE — verify needs a .kicad_pcb path")
+            return CANNOT
+        return cmd_verify(argv[2])
     if verb == "solve":
         return cmd_solve(m, float(argv[2]) if len(argv) > 2 else 0.60,
                          int(argv[3]) if len(argv) > 3 else 4)

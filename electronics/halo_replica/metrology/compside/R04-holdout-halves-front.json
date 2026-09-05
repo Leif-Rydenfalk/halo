@@ -7,6 +7,7 @@
  "scale_basis": "metrology/scale-at-board-photo6.json - m_scale_at AT THE BOARD (952,678), bottom-rule and right-rule routes 0.228% apart, halfrange 0.0179 px/mm (lane L1, M02). THE SCALE IS TAKEN AT THE BOARD, not at either rule.",
  "px_per_mm": 15.685,
  "model": "homography",
+ "fit_model": "homography",
  "ncc": 0.6860564010523944,
  "split": "angular",
  "folds_k": 2,
@@ -951,6 +952,15 @@
  "worst_holdout_rms_mm": 0.12980054488452372,
  "worst_holdout_p95_mm": 0.22659339082099272,
  "tolerance_mm": 0.2,
+ "residual_coherence": {
+  "I": 0.14598528694340834,
+  "null_mean": -0.010022943371682184,
+  "null_sd": 0.04880777937318701,
+  "z": 3.196380419650787,
+  "k": 4,
+  "trials": 400,
+  "n": 80
+ },
  "landmarks_kept": 80,
  "landmarks_discarded": {
   "no_texture": 179,

@@ -45,7 +45,9 @@ ships a board full of something else. So:
 import csv
 import os
 import re
+import shutil
 import sys
+import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPLICA = os.path.dirname(HERE)
@@ -158,8 +160,16 @@ def run(sch=None, root=None, names=None, out=None, verbose=True):
     sch = sch or SCH
     if not os.path.exists(sch):
         return {"verdict": CANNOT, "why": "no fab schematic at %s" % sch}
-    bom = bom_from_sch(sch, out=os.path.join(
-        os.path.dirname(out or OUT), "_bom-tmp.csv"), verbose=False)
+    # The intermediate BOM goes to a TEMP DIRECTORY, not beside the real
+    # output. Writing it next to the deliverable put `_bom-tmp.csv` into the
+    # repository, where the next reader has to work out whether a file named
+    # "tmp" is one of the files they are meant to send to a fab.
+    tmpdir = tempfile.mkdtemp(prefix="lcsc-bom-")
+    try:
+        bom = bom_from_sch(sch, out=os.path.join(tmpdir, "bom.csv"),
+                           verbose=False)
+    finally:
+        shutil.rmtree(tmpdir, ignore_errors=True)
     rows, missing = load_pulls(root, names)
 
     resolved, unresolved = [], []
@@ -211,7 +221,6 @@ def run(sch=None, root=None, names=None, out=None, verbose=True):
 # ==========================================================================
 
 def self_test():
-    import tempfile
     ok = True
 
     def case(name, mpn, lines, want_code, want_in_why):
