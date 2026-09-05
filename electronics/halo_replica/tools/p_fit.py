@@ -373,10 +373,13 @@ def fit_hole(P, ppm):
     """
     from scipy.optimize import least_squares
     mx, my = P[:, 0].mean(), P[:, 1].mean()
-    lo = [mx - 300, my - 300, 300, 300, 1.5, -3.2]
-    hi = [mx + 300, my + 300, 1200, 1200, 6.0, 3.2]
-    se = least_squares(_se_resid, [mx, my, 730, 700, 2.5, 0.0], args=(P,), bounds=(lo, hi))
-    ci = least_squares(_ci_resid, [mx, my, 730], args=(P,))
+    # Bounds are derived from the POINTS' own scale, never from a pixel constant. They
+    # were hardcoded for one photograph's ~730 px hole and refused a 108 px one outright.
+    r0 = float(np.median(np.hypot(P[:, 0] - mx, P[:, 1] - my)))
+    lo = [mx - 0.4 * r0, my - 0.4 * r0, 0.4 * r0, 0.4 * r0, 1.5, -3.2]
+    hi = [mx + 0.4 * r0, my + 0.4 * r0, 1.7 * r0, 1.7 * r0, 6.0, 3.2]
+    se = least_squares(_se_resid, [mx, my, r0, r0, 2.5, 0.0], args=(P,), bounds=(lo, hi))
+    ci = least_squares(_ci_resid, [mx, my, r0], args=(P,))
     se_sd = float(_se_resid(se.x, P).std()) / ppm
     ci_sd = float(_ci_resid(ci.x, P).std()) / ppm
     real_gain = 1.0 - se_sd / ci_sd
@@ -387,7 +390,9 @@ def fit_hole(P, ppm):
     R0 = ci.x[2]
     noise = rng.normal(0, ci_sd * ppm, len(P))
     Q = np.c_[mx + (R0 + noise) * np.cos(th), my + (R0 + noise) * np.sin(th)]
-    se2 = least_squares(_se_resid, [mx, my, R0, R0, 2.5, 0.0], args=(Q,), bounds=(lo, hi))
+    lo2 = [mx - 0.4 * R0, my - 0.4 * R0, 0.4 * R0, 0.4 * R0, 1.5, -3.2]
+    hi2 = [mx + 0.4 * R0, my + 0.4 * R0, 1.7 * R0, 1.7 * R0, 6.0, 3.2]
+    se2 = least_squares(_se_resid, [mx, my, R0, R0, 2.5, 0.0], args=(Q,), bounds=(lo2, hi2))
     ci2 = least_squares(_ci_resid, [mx, my, R0], args=(Q,))
     floor = 1.0 - float(_se_resid(se2.x, Q).std()) / float(_ci_resid(ci2.x, Q).std())
 
