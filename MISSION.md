@@ -14,6 +14,17 @@ Leif, 2026-09-03, verbatim:
 Verbatim: *"dont stop until its fully manufacturable and youve tested it out
 wiht the jlcpcb api and sent it and gotten feedback back or a real quota"*
 
+Extended the same day, verbatim: *"…and you have simulated it properly and you
+have shown me renders of the latest design + the documents in the browser"*.
+
+So four conditions, all external to our own opinion of the work: it is
+manufacturable, a factory has answered on our files, the simulation is honest,
+and **Leif can see it** — the current renders and the current documents, in a
+browser, without asking anyone. That last one is not decoration: a design nobody
+can look at is how this project spent a day building a functional equivalent
+while its own comparison data said otherwise, and Leif caught it by looking at
+pictures.
+
 So "done" is no longer a self-assessment. It is **an external party looking at
 our files and answering** — a real quotation, or a rejection naming what is
 wrong with them. That is a far better test than any check we write, because a
