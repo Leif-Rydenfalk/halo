@@ -1319,3 +1319,39 @@ identical output. A test whose negative result is indistinguishable from a broke
 instrument is not a test, and this one would have failed toward the more
 interesting answer. It needs a cross-section or a resolving X-ray. The tool is
 committed with its residual check going red rather than deleted.
+
+## D26k — rt2 is the best antenna result yet, and it was killed before writing a verdict
+
+The second retune, `halo-rev-a-2g4-rt2-passive`, is the closest any case has come
+and it did not survive to record itself.
+
+| | the three cases that refuted three hypotheses | **rt2** |
+|---|---|---|
+| best residual | −34.87 dB, floored | **−39.13 dB** |
+| timesteps | 460,000, capped | **37,224** |
+| scratch written | ~9 GB each | ~1 GB |
+
+Criterion is −40 dB, so it fell **0.87 dB short** — but it got 4.3 dB deeper than
+the floor that eliminated the mesh, the passive copper and the meander density,
+and it did so in **8 % of the timesteps**. The energy decayed monotonically over
+the run: −12.07, −23.05, −30.43, −34.52, −35.02, reaching −39.13.
+
+**No `verdict.json` was written and the log ends mid-run rather than at a
+completion line.** It was killed, not finished. Relaunched detached so it
+survives a turn boundary — which is the failure that took it.
+
+**Two reading errors worth recording, one mine and one caught before it
+travelled.** The supervisor's monitor fired "scratch plateau — stopped short",
+which reads as converged early; it did not relay that, because rt1 plateaued the
+same way and FAILED, so a low plateau is ambiguous in this family between
+converging and aborting. And it first read the energy as *rising* from the last
+three log lines — three consecutive samples near a floor oscillate, and over the
+whole run it decays.
+
+**Mine: I read two peer Claude sessions as running solvers, twice, from
+`ps | grep openEMS`.** Every session's command line here contains its entire
+brief, so a brief that mentions openEMS matches. This is the same trap already
+written into `TOOLS-THAT-LIE.md` for `pgrep -f freerouting`, and I walked into it
+anyway — while relaunching a solve, which is exactly when believing a phantom
+process would have made me *not* relaunch. The correct check is
+`ps -axo comm=` and matching the **executable name**, which returned nothing.
