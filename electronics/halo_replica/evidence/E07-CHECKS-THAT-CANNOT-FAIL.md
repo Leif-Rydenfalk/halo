@@ -819,3 +819,48 @@ expectation. *"The number I expected is the number I saw."*
 this catalogue had no entry for. The observation is preserved, marked never-to-be-drawn, **as the
 thing a later blind measurement gets compared against** — and a separate lane now runs the count
 without being told the number, because **there is only one first look.**
+
+## 31 · An allow-list controls WHICH FILES are read, not WHAT IS INSIDE THEM
+
+**Found by verifying a containment rather than by reasoning about it — and the leak was in this
+very document, in the one file the protocol marks *required*.**
+
+To count the rim joints without knowing the expected answer, the lane that had already seen it
+wrote a protocol naming ten permitted files, on an argument worth keeping: **a deny-list has to be
+complete to work; an allow-list does not.** It grepped the repo first and found the withheld figure
+in **more than twenty files**, including a selftest that builds a synthetic rim carrying a specific
+number of pads, and log files quoting a document title.
+
+It then flagged the honest residual risk: **blindness enforced by a lane's compliance is
+undetectable if broken, because a contaminated count and a clean one look identical.** So the
+allow-list was applied to the **filesystem** instead — a git worktree with every other file deleted,
+leaving eleven files and the images.
+
+**Then the result was grepped, and §4 of this document twice stated a count of synthetic pads used
+in a rim-detection positive control.** Those numbers described a *synthetic* rim and had nothing to
+do with the withheld figure — **but a number of pads, in a rim-detection context, read by a lane
+counting rim features, is a leak regardless of what it refers to.**
+
+**The allow-list protects against files you did not think of. It does nothing about a leak inside a
+file you deliberately included** — and the required file is exactly the one nobody re-reads for
+contamination, because its inclusion was the deliberate part.
+
+Redacted to `N` in the blind working tree only; the copy on `main` is untouched and correct.
+
+**The transferable rule: after applying a containment, GREP THE RESULT. Verifying the artefact is
+not the same as reasoning about the rule that produced it** — which is the same distinction this
+whole catalogue keeps arriving at from different directions.
+
+---
+
+## And the escalation that produced it: compliance → structure
+
+| level | what enforces the blindness | detectable if broken? |
+|---|---|---|
+| instruction | the lane not reading forbidden files | **no** |
+| tool refusal | `d_rim step`/`probe` exit 2 without an explicit flag, seeds quarantined out of the docstring | partly |
+| **filesystem** | the files are **absent** from the working copy | **structurally** |
+
+The first level is where this started. **The lane that wrote the protocol argued its own protocol
+down** — naming the gap rather than defending the work — and proposed the third level itself.
+Taking that suggestion cost one worktree and caught a real leak within minutes.
