@@ -1,0 +1,185 @@
+{
+  "$ce_fab_submit": 1,
+  "generated": "2026-09-05T09:55:08Z",
+  "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+  "fab": "JLCPCB",
+  "transport": "manual",
+  "qty": [
+    5,
+    30
+  ],
+  "assembly": true,
+  "interface": {
+    "portal": "https://api.jlcpcb.com/",
+    "gateway": "https://open.jlcpcb.com",
+    "browser_upload": "https://cart.jlcpcb.com/quote",
+    "approval": "To apply for API access, please visit api.jlcpcb.com. Please be aware that not all applications will be approved; each application undergoes a review based on the partner's previous orders at JLCPCB, company and business situation.",
+    "read_on": "2026-09-05",
+    "sources": [
+      {
+        "id": "portal",
+        "url": "https://api.jlcpcb.com/",
+        "retrieved": "2026-09-05",
+        "how": "plain curl; <title> is 'JLCPCB API Platform - Automate and Streamline PCB, SMT Stencil, and 3D Printing Orders'",
+        "note": "Nuxt SPA. Its config blob names client_id 'OVERSEAS_OPEN_PLATFORM' and CAS_BASE_URL passport.jlcpcb.com. The /docs/* pages render their bodies client-side behind a sign-in, so the endpoint table is not readable by curl."
+      },
+      {
+        "id": "gateway",
+        "url": "https://open.jlcpcb.com",
+        "retrieved": "2026-09-05",
+        "how": "POST with and without an Authorization header",
+        "note": "Live. 400 'The request authorization cannot be empty.' with no header; 401 'application not exists' with a well-formed JOP header carrying an unknown appid. Authenticates before routing, so path existence is not probeable from outside."
+      },
+      {
+        "id": "apply",
+        "url": "https://jlcpcb.com/help/article/jlcpcb-online-api-available-now",
+        "retrieved": "2026-09-05",
+        "how": "plain curl; the article body was read out of the articleDetail record inside the page's __NUXT__ payload",
+        "note": "First-party statement of the approval criteria. See APPROVAL."
+      },
+      {
+        "id": "sdk-shape",
+        "url": "https://github.com/i2cjak/jlcpcb_api",
+        "retrieved": "2026-09-05",
+        "how": "raw.githubusercontent.com, src/jlcpcb_api/{auth,client,models}.py",
+        "note": "THIRD PARTY, not JLCPCB. Self-described as 'reverse-engineered from the Java SDK JARs'. Source of the URI strings and of the signing recipe. Everything taken from here is marked unverified until a credentialed call proves it."
+      }
+    ]
+  },
+  "package": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
+  "gates": [
+    {
+      "id": "G1-board",
+      "verdict": "PASS",
+      "what": "the board file exists",
+      "why": "halo_rev_a.kicad_pcb, sha256 8b512ff678f80532\u2026, modified 2026-09-04T23:54:19Z"
+    },
+    {
+      "id": "G2-present",
+      "verdict": "PASS",
+      "what": "the package holds the files the fab needs",
+      "why": "gerber zip = halo_rev_a-gerber-jlc.zip, BOM.csv = halo_rev_a-BOM.csv, CPL.csv = halo_rev_a-CPL.csv"
+    },
+    {
+      "id": "G3-fresh",
+      "verdict": "FAIL",
+      "what": "no artifact predates the board",
+      "why": "3 of 3 artifact(s) are older than halo_rev_a.kicad_pcb, the worst by 6,461 s (1.8 h). They were exported from a board that is no longer on disk. Re-export (`fab jlc`) or pass --rebuild.",
+      "stale": [
+        {
+          "file": "halo_rev_a-gerber-jlc.zip",
+          "label": "gerber zip",
+          "seconds_older_than_board": 6459.9,
+          "artifact_mtime": "2026-09-04T22:06:39Z"
+        },
+        {
+          "file": "halo_rev_a-BOM.csv",
+          "label": "BOM.csv",
+          "seconds_older_than_board": 6461.0,
+          "artifact_mtime": "2026-09-04T22:06:38Z"
+        },
+        {
+          "file": "halo_rev_a-CPL.csv",
+          "label": "CPL.csv",
+          "seconds_older_than_board": 6461.0,
+          "artifact_mtime": "2026-09-04T22:06:38Z"
+        }
+      ]
+    },
+    {
+      "id": "G4-identity",
+      "verdict": "PASS",
+      "what": "the zip describes the same stackup as the board",
+      "why": "4 copper gerbers in the zip, 4 copper layers in the board",
+      "copper_files": [
+        "halo_rev_a.G2L",
+        "halo_rev_a.G3L",
+        "halo_rev_a.GBL",
+        "halo_rev_a.GTL"
+      ]
+    },
+    {
+      "id": "G5-routed",
+      "verdict": "FAIL",
+      "what": "the board is fully routed",
+      "why": "83 unconnected item(s). `fab dfm` is right not to FAIL on this \u2014 there is no copper to measure against a capability \u2014 but a fab builds what you send, and this is not a finished board.",
+      "unconnected_items": 83
+    },
+    {
+      "id": "G6-dfm",
+      "verdict": "FAIL",
+      "what": "inside the fab's published capabilities",
+      "why": "2 rule(s) FAIL: smd_pad_min, smt_min_package",
+      "failing": [
+        "smd_pad_min",
+        "smt_min_package"
+      ]
+    },
+    {
+      "id": "G7-sourced",
+      "verdict": "PASS",
+      "what": "every placed part has an LCSC number",
+      "why": "23 BOM lines, all sourceable"
+    }
+  ],
+  "facts": {
+    "board": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+    "board_sha256": "8b512ff678f80532c8b71b5a8df5b02a67e4a97590143de6f7b39fca105a9f68",
+    "board_mtime": "2026-09-04T23:54:19Z",
+    "package": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board",
+    "files": {
+      "gerber zip": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-gerber-jlc.zip",
+      "BOM.csv": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-BOM.csv",
+      "CPL.csv": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/out/release/board/halo_rev_a-CPL.csv"
+    },
+    "staleness": [
+      {
+        "file": "halo_rev_a-gerber-jlc.zip",
+        "label": "gerber zip",
+        "seconds_older_than_board": 6459.9,
+        "artifact_mtime": "2026-09-04T22:06:39Z"
+      },
+      {
+        "file": "halo_rev_a-BOM.csv",
+        "label": "BOM.csv",
+        "seconds_older_than_board": 6461.0,
+        "artifact_mtime": "2026-09-04T22:06:38Z"
+      },
+      {
+        "file": "halo_rev_a-CPL.csv",
+        "label": "CPL.csv",
+        "seconds_older_than_board": 6461.0,
+        "artifact_mtime": "2026-09-04T22:06:38Z"
+      }
+    ],
+    "zip_entries": 13,
+    "zip_copper_layers": 4,
+    "zip_sha256": "785ba4563771164226110ffa005c6e10a5a5674a95dc920488dc908de891423b",
+    "board_copper_layers": 4,
+    "dfm": {
+      "verdict": "FAIL",
+      "counts": {
+        "PASS": 26,
+        "FAIL": 2,
+        "CANNOT DETERMINE": 0
+      },
+      "unconnected_items": 83,
+      "drc_error": null,
+      "rule_set_title": "JLCPCB 4-layer FR4, 1 oz outer / 0.5 oz inner \u2014 published capability limits"
+    },
+    "assembly": {
+      "verdict": "PASS",
+      "unmatched": [],
+      "bom_lines": 23
+    }
+  },
+  "submitted": false,
+  "refused_by": [
+    "G3-fresh",
+    "G5-routed",
+    "G6-dfm"
+  ],
+  "verdict": "FAIL",
+  "why": "refused at G3-fresh, G5-routed, G6-dfm \u2014 3 of 3 artifact(s) are older than halo_rev_a.kicad_pcb, the worst by 6,461 s (1.8 h). They were exported from a board that is no longer on disk. Re-export (`fab jlc`) or pass --rebuild.; 83 unconnected item(s). `fab dfm` is right not to FAIL on this \u2014 there is no copper to measure against a capability \u2014 but a fab builds what you send, and this is not a finished board.; 2 rule(s) FAIL: smd_pad_min,",
+  "note": "A gate that went red found something. Fix the board or the package; do not pass --force to make a report green. --force sends anyway ONLY over CANNOT DETERMINE, never over a FAIL."
+}

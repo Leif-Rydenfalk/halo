@@ -1,0 +1,1993 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-05T17:55:14",
+    "ignored_checks": [
+        {
+            "description": "Footprint has no courtyard defined",
+            "key": "missing_courtyard"
+        },
+        {
+            "description": "Track endpoint not centered on via",
+            "key": "track_not_centered_on_via"
+        },
+        {
+            "description": "Tuning profile track geometries",
+            "key": "tuning_profile_track_geometries"
+        },
+        {
+            "description": "Footprint doesn't match symbol's footprint filters",
+            "key": "footprint_filters_mismatch"
+        },
+        {
+            "description": "Footprint component type doesn't match footprint pads",
+            "key": "footprint_type_mismatch"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "schematic_parity": [],
+    "source": "halo_rev_a.kicad_pcb",
+    "unconnected_items": [
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av C2 på F.Cu",
+                    "pos": {
+                        "x": 8.692891,
+                        "y": 14.908197
+                    },
+                    "uuid": "cd7dac36-66b9-45fd-8046-45e0e403ddd3"
+                },
+                {
+                    "description": "Via [VDD] på F.Cu - B.Cu",
+                    "pos": {
+                        "x": 10.520869,
+                        "y": 15.77219
+                    },
+                    "uuid": "2c12ccec-e3cc-413e-9665-e581b6990e04"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av C1 på F.Cu",
+                    "pos": {
+                        "x": 9.733764,
+                        "y": 9.605283
+                    },
+                    "uuid": "9160df52-dae8-439f-8c21-ede450c7159a"
+                },
+                {
+                    "description": "Lödyta 10 [VDD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 11.6
+                    },
+                    "uuid": "39dbcf96-d3ab-48b6-b4c7-9f0fc25b5235"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 10 [VDD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 11.6
+                    },
+                    "uuid": "39dbcf96-d3ab-48b6-b4c7-9f0fc25b5235"
+                },
+                {
+                    "description": "Ledare [VDD] på F.Cu, längd 0.7200 mm",
+                    "pos": {
+                        "x": 9.612938,
+                        "y": 12.70367
+                    },
+                    "uuid": "3a6ffe15-bcbf-456b-879c-11dd77b4f0d9"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Ledare [VDD] på B.Cu, längd 1.7000 mm",
+                    "pos": {
+                        "x": 13.0,
+                        "y": 24.6
+                    },
+                    "uuid": "2b7a8930-43b6-42bc-93a5-45688d0c7c9f"
+                },
+                {
+                    "description": "Via [VDD] på F.Cu - B.Cu",
+                    "pos": {
+                        "x": 12.827284,
+                        "y": 21.978537
+                    },
+                    "uuid": "94b76baf-d387-4f45-a824-aabaab1fbc44"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av R7 på F.Cu",
+                    "pos": {
+                        "x": 13.728414,
+                        "y": 17.654225
+                    },
+                    "uuid": "2e8078be-9030-4b2f-8713-30e2bf2ad2ed"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av R5 på F.Cu",
+                    "pos": {
+                        "x": 12.092646,
+                        "y": 17.622673
+                    },
+                    "uuid": "ba83cbd8-ef63-480d-b8be-8fb43011a823"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av R7 på F.Cu",
+                    "pos": {
+                        "x": 13.728414,
+                        "y": 17.654225
+                    },
+                    "uuid": "2e8078be-9030-4b2f-8713-30e2bf2ad2ed"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av C3 på F.Cu",
+                    "pos": {
+                        "x": 16.266236,
+                        "y": 16.394717
+                    },
+                    "uuid": "6d1b5642-84bb-474c-b263-64147dbfbd90"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av R8 på F.Cu",
+                    "pos": {
+                        "x": 13.867863,
+                        "y": 19.248137
+                    },
+                    "uuid": "c3b5bdec-bfd3-45d2-824e-6cb2e05c1df6"
+                },
+                {
+                    "description": "Via [VDD] på F.Cu - B.Cu",
+                    "pos": {
+                        "x": 15.006539,
+                        "y": 20.329356
+                    },
+                    "uuid": "0cceea13-4a9a-4a9d-8d49-641bba17d64d"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av R8 på F.Cu",
+                    "pos": {
+                        "x": 13.867863,
+                        "y": 19.248137
+                    },
+                    "uuid": "c3b5bdec-bfd3-45d2-824e-6cb2e05c1df6"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av R7 på F.Cu",
+                    "pos": {
+                        "x": 13.728414,
+                        "y": 17.654225
+                    },
+                    "uuid": "2e8078be-9030-4b2f-8713-30e2bf2ad2ed"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 36 [VDD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 15.2
+                    },
+                    "uuid": "061bfd15-0dc2-4a8e-b219-7ed5af79ceaf"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av C3 på F.Cu",
+                    "pos": {
+                        "x": 16.266236,
+                        "y": 16.394717
+                    },
+                    "uuid": "6d1b5642-84bb-474c-b263-64147dbfbd90"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av TP1 på F.Cu",
+                    "pos": {
+                        "x": 16.391718,
+                        "y": 13.237172
+                    },
+                    "uuid": "7d7b82d2-2c09-4f71-a4d2-e9004b98e0c5"
+                },
+                {
+                    "description": "Lödyta 36 [VDD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 15.2
+                    },
+                    "uuid": "061bfd15-0dc2-4a8e-b219-7ed5af79ceaf"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av TP1 på F.Cu",
+                    "pos": {
+                        "x": 16.391718,
+                        "y": 13.237172
+                    },
+                    "uuid": "7d7b82d2-2c09-4f71-a4d2-e9004b98e0c5"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av R10 på F.Cu",
+                    "pos": {
+                        "x": 19.168155,
+                        "y": 14.321464
+                    },
+                    "uuid": "79697fbd-1b78-4ea0-b90f-aeebe1ce239f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av J1 på F.Cu",
+                    "pos": {
+                        "x": 17.064169,
+                        "y": 22.25868
+                    },
+                    "uuid": "c8df875b-8fb4-4d0f-adcd-a1b05e172cff"
+                },
+                {
+                    "description": "Ledare [VDD] på B.Cu, längd 0.7200 mm",
+                    "pos": {
+                        "x": 14.881512,
+                        "y": 21.038418
+                    },
+                    "uuid": "7b1f0728-82a7-437e-b696-e274f4b2863c"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av C4 på F.Cu",
+                    "pos": {
+                        "x": 17.307109,
+                        "y": 11.091803
+                    },
+                    "uuid": "d052d7da-58a4-490d-9f15-e410a5fd99dd"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av TP1 på F.Cu",
+                    "pos": {
+                        "x": 16.391718,
+                        "y": 13.237172
+                    },
+                    "uuid": "7d7b82d2-2c09-4f71-a4d2-e9004b98e0c5"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av C4 på F.Cu",
+                    "pos": {
+                        "x": 17.307109,
+                        "y": 11.091803
+                    },
+                    "uuid": "d052d7da-58a4-490d-9f15-e410a5fd99dd"
+                },
+                {
+                    "description": "Lödyta 22 [VDD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 14.5875,
+                        "y": 10.075
+                    },
+                    "uuid": "1bac1bfc-1d96-4b4e-a8b0-0359140a6876"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VDD] av C9 på B.Cu",
+                    "pos": {
+                        "x": 21.350476,
+                        "y": 13.707642
+                    },
+                    "uuid": "9c3a00a3-3d42-4269-8464-95431d937806"
+                },
+                {
+                    "description": "Lödyta 1 [VDD] av R10 på F.Cu",
+                    "pos": {
+                        "x": 19.168155,
+                        "y": 14.321464
+                    },
+                    "uuid": "79697fbd-1b78-4ea0-b90f-aeebe1ce239f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 4 [I2C_SDA] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.302284,
+                        "y": 19.898537
+                    },
+                    "uuid": "be58fe9e-e450-4ab4-b34a-b3e5b03fdbec"
+                },
+                {
+                    "description": "Lödyta 2 [I2C_SDA] av R8 på F.Cu",
+                    "pos": {
+                        "x": 13.230299,
+                        "y": 19.303917
+                    },
+                    "uuid": "80f62030-5888-4b7d-b9e5-d8ffcbaabbd7"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [I2C_SDA] av R8 på F.Cu",
+                    "pos": {
+                        "x": 13.230299,
+                        "y": 19.303917
+                    },
+                    "uuid": "80f62030-5888-4b7d-b9e5-d8ffcbaabbd7"
+                },
+                {
+                    "description": "Lödyta 19 [I2C_SDA] av U1 på B.Cu",
+                    "pos": {
+                        "x": 13.3875,
+                        "y": 10.075
+                    },
+                    "uuid": "cfebeaa1-7a17-4f74-a9f1-eda0fabf8661"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 19 [I2C_SDA] av U1 på B.Cu",
+                    "pos": {
+                        "x": 13.3875,
+                        "y": 10.075
+                    },
+                    "uuid": "cfebeaa1-7a17-4f74-a9f1-eda0fabf8661"
+                },
+                {
+                    "description": "Lödyta 1 [I2C_SDA] av TP8 på F.Cu",
+                    "pos": {
+                        "x": 8.226011,
+                        "y": 7.880524
+                    },
+                    "uuid": "66adfe20-d236-4f64-b2d9-9e002ee01f31"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 40 [PIEZO_N] av U1 på B.Cu",
+                    "pos": {
+                        "x": 14.1875,
+                        "y": 15.925
+                    },
+                    "uuid": "46695c4d-de1c-4836-be12-f6bf4efeba78"
+                },
+                {
+                    "description": "Lödyta 1 [PIEZO_N] av TP6 på F.Cu",
+                    "pos": {
+                        "x": 19.348347,
+                        "y": 10.563098
+                    },
+                    "uuid": "e05b646b-520a-4aef-89c1-bb3a334be966"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [PIEZO_N] av TP6 på F.Cu",
+                    "pos": {
+                        "x": 19.348347,
+                        "y": 10.563098
+                    },
+                    "uuid": "e05b646b-520a-4aef-89c1-bb3a334be966"
+                },
+                {
+                    "description": "Lödyta 2 [PIEZO_N] av LS1 på F.Cu",
+                    "pos": {
+                        "x": 9.047391,
+                        "y": 3.436168
+                    },
+                    "uuid": "261c5608-49e6-435f-ad6c-5aa1429fb4b4"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [nRESET] av J1 på F.Cu",
+                    "pos": {
+                        "x": 18.951757,
+                        "y": 20.559088
+                    },
+                    "uuid": "236c0049-a2d6-4eca-9f2e-049a98786400"
+                },
+                {
+                    "description": "Lödyta 2 [nRESET] av R10 på F.Cu",
+                    "pos": {
+                        "x": 19.002511,
+                        "y": 14.939656
+                    },
+                    "uuid": "2b780156-4aca-4b13-9335-1e9828f3f524"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [nRESET] av R10 på F.Cu",
+                    "pos": {
+                        "x": 19.002511,
+                        "y": 14.939656
+                    },
+                    "uuid": "2b780156-4aca-4b13-9335-1e9828f3f524"
+                },
+                {
+                    "description": "Lödyta 30 [nRESET] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 12.8
+                    },
+                    "uuid": "601be129-44ef-405a-b0e6-27a4fe4588da"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 25 [SWDIO] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 10.8
+                    },
+                    "uuid": "b5e67d56-28af-4272-b117-9853f350c106"
+                },
+                {
+                    "description": "Lödyta 2 [SWDIO] av J1 på F.Cu",
+                    "pos": {
+                        "x": 18.007963,
+                        "y": 21.408884
+                    },
+                    "uuid": "6006f652-679d-4e21-bc60-0cb7add8278f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 26 [SWDCLK] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 11.2
+                    },
+                    "uuid": "3aacbe28-0544-4708-92e0-7ffcf5d5f97c"
+                },
+                {
+                    "description": "Lödyta 4 [SWDCLK] av J1 på F.Cu",
+                    "pos": {
+                        "x": 19.895551,
+                        "y": 19.709292
+                    },
+                    "uuid": "b5698bd5-eeb3-4a9e-a158-651e41c4f064"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Zon [GND] på In1.Cu, prioritetsnivå 0",
+                    "pos": {
+                        "x": 25.25,
+                        "y": 13.0
+                    },
+                    "uuid": "d6ca645c-f549-4d15-a07d-c6e6fa9e4dbe"
+                },
+                {
+                    "description": "Zon [GND] på F.Cu, prioritetsnivå 0",
+                    "pos": {
+                        "x": 25.25,
+                        "y": 13.0
+                    },
+                    "uuid": "5ca2135d-0cf9-4351-aa8f-311eb12a4e87"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 49 [GND] av U1 på B.Cu",
+                    "pos": {
+                        "x": 13.1875,
+                        "y": 13.0
+                    },
+                    "uuid": "24725c11-b75e-4ace-a405-23b7aad012bc"
+                },
+                {
+                    "description": "Lödyta 44 [GND] av U1 på B.Cu",
+                    "pos": {
+                        "x": 12.5875,
+                        "y": 15.925
+                    },
+                    "uuid": "e30bf937-2d8c-49c0-ac88-b3486214651f"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Ledare [GND] på F.Cu, längd 1.2500 mm",
+                    "pos": {
+                        "x": 21.803328,
+                        "y": 11.128795
+                    },
+                    "uuid": "625982b8-3ec1-4891-8694-76928f150c55"
+                },
+                {
+                    "description": "Lödyta 2 [GND] av BT1 på B.Cu",
+                    "pos": {
+                        "x": 23.0459,
+                        "y": 7.2
+                    },
+                    "uuid": "23cb290f-c6bf-42fe-97fa-b2bce4a665f6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 18 [SWO] av U1 på B.Cu",
+                    "pos": {
+                        "x": 12.9875,
+                        "y": 10.075
+                    },
+                    "uuid": "b4b005de-c9ab-4f48-bab4-8a6a5381ad2a"
+                },
+                {
+                    "description": "Lödyta 6 [SWO] av J1 på F.Cu",
+                    "pos": {
+                        "x": 21.783139,
+                        "y": 18.0097
+                    },
+                    "uuid": "fa540caf-d35a-4251-a23d-a48db6fe7a9e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [NFC2] av C25 på F.Cu",
+                    "pos": {
+                        "x": 7.38404,
+                        "y": 10.127128
+                    },
+                    "uuid": "493a4bfc-c756-48ab-8d7d-5884cdd0176b"
+                },
+                {
+                    "description": "Ledare [NFC2] på B.Cu, längd 0.6274 mm",
+                    "pos": {
+                        "x": 3.716191,
+                        "y": 8.450952
+                    },
+                    "uuid": "b1ea4a6b-1e98-4bfd-a07b-8754469691ea"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 4 [NFC2] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 14.0
+                    },
+                    "uuid": "ad8de527-3dac-4744-8075-487374ab0af4"
+                },
+                {
+                    "description": "Lödyta 1 [NFC2] av C25 på F.Cu",
+                    "pos": {
+                        "x": 7.38404,
+                        "y": 10.127128
+                    },
+                    "uuid": "493a4bfc-c756-48ab-8d7d-5884cdd0176b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Ledare [NFC2] på B.Cu, längd 0.6218 mm",
+                    "pos": {
+                        "x": 12.141875,
+                        "y": 23.209671
+                    },
+                    "uuid": "3ee3bc21-299d-4a7e-b02e-d587c05c1ba9"
+                },
+                {
+                    "description": "Lödyta 1 [NFC2] av TP11 på F.Cu",
+                    "pos": {
+                        "x": 12.163772,
+                        "y": 20.956175
+                    },
+                    "uuid": "fa7d8f5d-e5b2-4fb1-a66d-c2048f140e19"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [DECD] av C5 på F.Cu",
+                    "pos": {
+                        "x": 16.394717,
+                        "y": 9.733764
+                    },
+                    "uuid": "f280990b-c26f-4b63-ba58-1c5ab5a9f0c6"
+                },
+                {
+                    "description": "Lödyta 45 [DECD] av U1 på B.Cu",
+                    "pos": {
+                        "x": 12.1875,
+                        "y": 15.925
+                    },
+                    "uuid": "cedd6b1a-1024-4afa-be3c-48b2d910034e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [DECD] av C6 på F.Cu",
+                    "pos": {
+                        "x": 17.620388,
+                        "y": 8.705304
+                    },
+                    "uuid": "66cd92a9-ad15-46f4-a8a0-322b472dcca6"
+                },
+                {
+                    "description": "Lödyta 1 [DECD] av C5 på F.Cu",
+                    "pos": {
+                        "x": 16.394717,
+                        "y": 9.733764
+                    },
+                    "uuid": "f280990b-c26f-4b63-ba58-1c5ab5a9f0c6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [DECD] av L1 på B.Cu",
+                    "pos": {
+                        "x": 19.195384,
+                        "y": 8.813845
+                    },
+                    "uuid": "6be54b22-44f2-45a5-9ecc-bf225d08edf3"
+                },
+                {
+                    "description": "Lödyta 1 [DECD] av C7 på F.Cu",
+                    "pos": {
+                        "x": 18.846059,
+                        "y": 7.676844
+                    },
+                    "uuid": "b9c73123-06bc-440c-b1c1-d30628ab5b0e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [DECD] av L1 på B.Cu",
+                    "pos": {
+                        "x": 19.195384,
+                        "y": 8.813845
+                    },
+                    "uuid": "6be54b22-44f2-45a5-9ecc-bf225d08edf3"
+                },
+                {
+                    "description": "Lödyta 1 [DECD] av C6 på F.Cu",
+                    "pos": {
+                        "x": 17.620388,
+                        "y": 8.705304
+                    },
+                    "uuid": "66cd92a9-ad15-46f4-a8a0-322b472dcca6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Ledare [NFC1] på B.Cu, längd 0.6455 mm",
+                    "pos": {
+                        "x": 3.309471,
+                        "y": 8.61382
+                    },
+                    "uuid": "a8a8ce04-0026-4e35-85da-09dda641dffb"
+                },
+                {
+                    "description": "Lödyta 1 [NFC1] av C24 på F.Cu",
+                    "pos": {
+                        "x": 8.769681,
+                        "y": 10.927128
+                    },
+                    "uuid": "8a507c20-f5cb-4a46-bfbd-52eb3bf68c9e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [NFC1] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 14.4
+                    },
+                    "uuid": "bd7fb2ed-2193-4f1d-ae83-0e2349f60b38"
+                },
+                {
+                    "description": "Lödyta 1 [NFC1] av C24 på F.Cu",
+                    "pos": {
+                        "x": 8.769681,
+                        "y": 10.927128
+                    },
+                    "uuid": "8a507c20-f5cb-4a46-bfbd-52eb3bf68c9e"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [NFC1] av TP10 på F.Cu",
+                    "pos": {
+                        "x": 20.781,
+                        "y": 13.5441
+                    },
+                    "uuid": "3d141cd5-2ad0-4762-807d-8e7fd9edd5e7"
+                },
+                {
+                    "description": "Ledare [NFC1] på B.Cu, längd 0.6355 mm",
+                    "pos": {
+                        "x": 23.412477,
+                        "y": 14.112588
+                    },
+                    "uuid": "5996937d-c59a-4988-94c1-c7df4006d241"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [RF_50] av C22 på F.Cu",
+                    "pos": {
+                        "x": 13.674773,
+                        "y": 3.518593
+                    },
+                    "uuid": "bb4a79c3-66a2-4f32-b152-fc7b3982d52d"
+                },
+                {
+                    "description": "Lödyta 1 [RF_50] av C20 på F.Cu",
+                    "pos": {
+                        "x": 11.165397,
+                        "y": 6.964552
+                    },
+                    "uuid": "b5826bb6-f31e-4323-b1fb-9a2ab0e167cd"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [RF_50] av L4 på F.Cu",
+                    "pos": {
+                        "x": 16.991368,
+                        "y": 6.174945
+                    },
+                    "uuid": "0938c6f8-1621-4537-a1ba-e91afc1a7c43"
+                },
+                {
+                    "description": "Lödyta 1 [RF_50] av L10 på F.Cu",
+                    "pos": {
+                        "x": 17.177437,
+                        "y": 4.461767
+                    },
+                    "uuid": "df4d1cb5-d6f1-42fd-962b-cc12cd9eaf25"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [RF_50] av L10 på F.Cu",
+                    "pos": {
+                        "x": 17.177437,
+                        "y": 4.461767
+                    },
+                    "uuid": "df4d1cb5-d6f1-42fd-962b-cc12cd9eaf25"
+                },
+                {
+                    "description": "Lödyta 1 [RF_50] av C22 på F.Cu",
+                    "pos": {
+                        "x": 13.674773,
+                        "y": 3.518593
+                    },
+                    "uuid": "bb4a79c3-66a2-4f32-b152-fc7b3982d52d"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [RF_A] av L2 på F.Cu",
+                    "pos": {
+                        "x": 15.489059,
+                        "y": 9.000377
+                    },
+                    "uuid": "8c6214ff-a71f-488c-ab85-606fcd444cde"
+                },
+                {
+                    "description": "Lödyta 1 [RF_A] av L3 på F.Cu",
+                    "pos": {
+                        "x": 15.675128,
+                        "y": 7.287199
+                    },
+                    "uuid": "ba99d2cd-d811-4311-8a18-d614d4582351"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [RF_A] av L3 på F.Cu",
+                    "pos": {
+                        "x": 15.675128,
+                        "y": 7.287199
+                    },
+                    "uuid": "ba99d2cd-d811-4311-8a18-d614d4582351"
+                },
+                {
+                    "description": "Lödyta 1 [RF_A] av C18 på F.Cu",
+                    "pos": {
+                        "x": 13.340282,
+                        "y": 6.701063
+                    },
+                    "uuid": "0020cda0-f806-4418-99f5-527e921b641d"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [RF_B] av L3 på F.Cu",
+                    "pos": {
+                        "x": 16.240214,
+                        "y": 7.587661
+                    },
+                    "uuid": "c2099631-f8f8-4dfd-ac3a-65237d005638"
+                },
+                {
+                    "description": "Lödyta 1 [RF_B] av L4 på F.Cu",
+                    "pos": {
+                        "x": 16.426282,
+                        "y": 5.874483
+                    },
+                    "uuid": "478f0ec2-dbb0-4acd-b625-2f3b7b46b157"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [RF_B] av L4 på F.Cu",
+                    "pos": {
+                        "x": 16.426282,
+                        "y": 5.874483
+                    },
+                    "uuid": "478f0ec2-dbb0-4acd-b625-2f3b7b46b157"
+                },
+                {
+                    "description": "Lödyta 1 [RF_B] av C19 på F.Cu",
+                    "pos": {
+                        "x": 13.507528,
+                        "y": 5.109828
+                    },
+                    "uuid": "2c3bfb49-d1e0-485c-a8af-5672eb576ae6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [RF_ANT] av L2 på F.Cu",
+                    "pos": {
+                        "x": 14.923973,
+                        "y": 8.699915
+                    },
+                    "uuid": "78d7e0cf-b1cd-4656-b2b8-29ff6271ffa0"
+                },
+                {
+                    "description": "Lödyta 1 [RF_ANT] av C23 på F.Cu",
+                    "pos": {
+                        "x": 13.173037,
+                        "y": 8.292298
+                    },
+                    "uuid": "253488ba-0be8-46b5-9b5c-30f88b41d88b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 31 [RF_ANT] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 13.2
+                    },
+                    "uuid": "c28c0345-1188-4757-b466-a589d28e16fb"
+                },
+                {
+                    "description": "Lödyta 1 [RF_ANT] av L2 på F.Cu",
+                    "pos": {
+                        "x": 14.923973,
+                        "y": 8.699915
+                    },
+                    "uuid": "78d7e0cf-b1cd-4656-b2b8-29ff6271ffa0"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [ANT_FEED] av C21 på F.Cu",
+                    "pos": {
+                        "x": 10.778322,
+                        "y": 5.412079
+                    },
+                    "uuid": "174eec77-b126-4f15-9769-9be55979c5e8"
+                },
+                {
+                    "description": "Ledare [ANT_FEED] på F.Cu, längd 0.9358 mm",
+                    "pos": {
+                        "x": 11.599476,
+                        "y": 1.593646
+                    },
+                    "uuid": "c958fec6-1cd9-44bc-ab30-897ff762bfce"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Ledare [ANT_FEED] på F.Cu, längd 0.4080 mm",
+                    "pos": {
+                        "x": 19.009855,
+                        "y": 2.729088
+                    },
+                    "uuid": "ee13830b-0184-421b-9237-83ece9e72a79"
+                },
+                {
+                    "description": "Lödyta 2 [ANT_FEED] av L10 på F.Cu",
+                    "pos": {
+                        "x": 17.742523,
+                        "y": 4.762229
+                    },
+                    "uuid": "28eec70c-cf2b-4cf1-86ce-6dacb7fe9046"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VBAT_SNS] av C13 på F.Cu",
+                    "pos": {
+                        "x": 4.090956,
+                        "y": 19.628827
+                    },
+                    "uuid": "31a414f3-c4c1-42f7-8d0f-42cbd36f5c88"
+                },
+                {
+                    "description": "Lödyta 1 [VBAT_SNS] av R2 på F.Cu",
+                    "pos": {
+                        "x": 5.4016,
+                        "y": 18.711105
+                    },
+                    "uuid": "f9058ad6-7ca1-47ae-9ef0-ffc8c88f7b9b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [VBAT_SNS] av R2 på F.Cu",
+                    "pos": {
+                        "x": 5.4016,
+                        "y": 18.711105
+                    },
+                    "uuid": "f9058ad6-7ca1-47ae-9ef0-ffc8c88f7b9b"
+                },
+                {
+                    "description": "Lödyta 2 [VBAT_SNS] av R1 på F.Cu",
+                    "pos": {
+                        "x": 6.345155,
+                        "y": 17.269125
+                    },
+                    "uuid": "d8db2e63-4ebc-4ebb-8193-dbed51ccd349"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [VBAT_SNS] av R1 på F.Cu",
+                    "pos": {
+                        "x": 6.345155,
+                        "y": 17.269125
+                    },
+                    "uuid": "d8db2e63-4ebc-4ebb-8193-dbed51ccd349"
+                },
+                {
+                    "description": "Lödyta 1 [VBAT_SNS] av TP7 på F.Cu",
+                    "pos": {
+                        "x": 6.61009,
+                        "y": 15.325737
+                    },
+                    "uuid": "69c1259f-79ef-439c-b516-fefbf172d7b1"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 5 [VBAT_SNS] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 13.6
+                    },
+                    "uuid": "a6224221-4acb-4606-ad1d-f65a8bac1896"
+                },
+                {
+                    "description": "Lödyta 1 [VBAT_SNS] av TP7 på F.Cu",
+                    "pos": {
+                        "x": 6.61009,
+                        "y": 15.325737
+                    },
+                    "uuid": "69c1259f-79ef-439c-b516-fefbf172d7b1"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [SPI_SCK] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 14.5
+                    },
+                    "uuid": "93dd5761-b68b-41d7-9691-bf9cfbfd8121"
+                },
+                {
+                    "description": "Lödyta 12 [SPI_SCK] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 10.8
+                    },
+                    "uuid": "fd834e7f-b695-4f6d-a953-f2bae2eb97d9"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 4 [SPI_MOSI] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 13.5
+                    },
+                    "uuid": "77050564-f766-4e9f-9059-e8b70310ef57"
+                },
+                {
+                    "description": "Lödyta 13 [SPI_MOSI] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.9875,
+                        "y": 10.075
+                    },
+                    "uuid": "942fa3b5-33f8-4353-a0c5-4a363048b64d"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 5 [SPI_MISO] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 12.5
+                    },
+                    "uuid": "f8d36fa0-3078-4924-9f21-c05b76047bc6"
+                },
+                {
+                    "description": "Lödyta 15 [SPI_MISO] av U1 på B.Cu",
+                    "pos": {
+                        "x": 11.7875,
+                        "y": 10.075
+                    },
+                    "uuid": "e4d5d819-49a9-47a6-aad9-08b8e65d6b43"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 6 [UWB_CS] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 11.5
+                    },
+                    "uuid": "e9037b1d-e9ef-4d6b-94f9-37b4e5fa357b"
+                },
+                {
+                    "description": "Lödyta 23 [UWB_CS] av U1 på B.Cu",
+                    "pos": {
+                        "x": 14.9875,
+                        "y": 10.075
+                    },
+                    "uuid": "133eeea0-262b-4cc1-91bb-09a39d4777e6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 7 [UWB_IRQ] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 10.5
+                    },
+                    "uuid": "0553b6c8-e237-4ec6-b0a8-48968682b7fd"
+                },
+                {
+                    "description": "Lödyta 24 [UWB_IRQ] av U1 på B.Cu",
+                    "pos": {
+                        "x": 15.3875,
+                        "y": 10.075
+                    },
+                    "uuid": "8f888a9e-6dbf-467b-b9ba-a60eea3086d0"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 8 [UWB_RST] av J2 på F.Cu",
+                    "pos": {
+                        "x": 1.9,
+                        "y": 9.5
+                    },
+                    "uuid": "16627dbc-014c-4ef3-a313-d808d2b94740"
+                },
+                {
+                    "description": "Lödyta 27 [UWB_RST] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 11.6
+                    },
+                    "uuid": "f47cfbb5-83e6-4e8e-8b6c-8a95ff387898"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [I2C_SCL] av TP9 på F.Cu",
+                    "pos": {
+                        "x": 9.078599,
+                        "y": 19.038428
+                    },
+                    "uuid": "44656da6-3d1a-4e21-b1fc-49719ff4e1f6"
+                },
+                {
+                    "description": "Lödyta 1 [I2C_SCL] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.302284,
+                        "y": 21.398537
+                    },
+                    "uuid": "32dfc6cb-fffc-4419-bff2-c6d6fc41af41"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [I2C_SCL] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.302284,
+                        "y": 21.398537
+                    },
+                    "uuid": "32dfc6cb-fffc-4419-bff2-c6d6fc41af41"
+                },
+                {
+                    "description": "Lödyta 2 [I2C_SCL] av R7 på F.Cu",
+                    "pos": {
+                        "x": 13.09085,
+                        "y": 17.710005
+                    },
+                    "uuid": "b7a04b3f-345d-4483-bd2c-b1ee5b9cd6ed"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [I2C_SCL] av R7 på F.Cu",
+                    "pos": {
+                        "x": 13.09085,
+                        "y": 17.710005
+                    },
+                    "uuid": "b7a04b3f-345d-4483-bd2c-b1ee5b9cd6ed"
+                },
+                {
+                    "description": "Lödyta 17 [I2C_SCL] av U1 på B.Cu",
+                    "pos": {
+                        "x": 12.5875,
+                        "y": 10.075
+                    },
+                    "uuid": "0e2d0380-fb88-4345-a50e-d47c92217d8b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [PIEZO_P] av TP5 på F.Cu",
+                    "pos": {
+                        "x": 12.120015,
+                        "y": 9.715852
+                    },
+                    "uuid": "7cc556e7-b30a-41fc-baad-1731b91dfcae"
+                },
+                {
+                    "description": "Lödyta 1 [PIEZO_P] av R9 på F.Cu",
+                    "pos": {
+                        "x": 9.008632,
+                        "y": 6.174945
+                    },
+                    "uuid": "5a07e8da-e193-49f3-9985-6f146583e876"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 39 [PIEZO_P] av U1 på B.Cu",
+                    "pos": {
+                        "x": 14.5875,
+                        "y": 15.925
+                    },
+                    "uuid": "b9cbb88b-278e-4940-9130-34cd9d9146f2"
+                },
+                {
+                    "description": "Lödyta 1 [PIEZO_P] av TP5 på F.Cu",
+                    "pos": {
+                        "x": 12.120015,
+                        "y": 9.715852
+                    },
+                    "uuid": "7cc556e7-b30a-41fc-baad-1731b91dfcae"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [PIEZO_DRV] av LS1 på F.Cu",
+                    "pos": {
+                        "x": 7.281495,
+                        "y": 4.375112
+                    },
+                    "uuid": "95290983-2e62-4e77-8496-72875f64718b"
+                },
+                {
+                    "description": "Lödyta 2 [PIEZO_DRV] av R9 på F.Cu",
+                    "pos": {
+                        "x": 9.573718,
+                        "y": 5.874483
+                    },
+                    "uuid": "4fc4911a-9a9b-4728-8aa8-24afe372f5db"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 33 [DECA] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 14.0
+                    },
+                    "uuid": "fce741aa-d8ad-4bdb-be3f-e487b655e721"
+                },
+                {
+                    "description": "Lödyta 43 [DECA] av U1 på B.Cu",
+                    "pos": {
+                        "x": 12.9875,
+                        "y": 15.925
+                    },
+                    "uuid": "6abb8cac-84ad-4882-bd8b-9b3a0bbe043b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [DECA] av C8 på F.Cu",
+                    "pos": {
+                        "x": 17.230319,
+                        "y": 15.072872
+                    },
+                    "uuid": "ccd97a22-ff35-4287-b86f-59e3a43e53f4"
+                },
+                {
+                    "description": "Lödyta 33 [DECA] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 14.0
+                    },
+                    "uuid": "fce741aa-d8ad-4bdb-be3f-e487b655e721"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [SNS_EN] av C13 på F.Cu",
+                    "pos": {
+                        "x": 3.723868,
+                        "y": 19.104569
+                    },
+                    "uuid": "144f2fce-289c-4cce-8c40-5c1127a14e54"
+                },
+                {
+                    "description": "Lödyta 2 [SNS_EN] av R2 på F.Cu",
+                    "pos": {
+                        "x": 5.034512,
+                        "y": 18.186847
+                    },
+                    "uuid": "f9670ce9-dcf2-479f-8413-7d6b4f3b476b"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [SNS_EN] av R2 på F.Cu",
+                    "pos": {
+                        "x": 5.034512,
+                        "y": 18.186847
+                    },
+                    "uuid": "f9670ce9-dcf2-479f-8413-7d6b4f3b476b"
+                },
+                {
+                    "description": "Lödyta 6 [SNS_EN] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 13.2
+                    },
+                    "uuid": "6f59a0ed-a7be-4878-a064-4c0e79e81459"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [ACC_SA0] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.302284,
+                        "y": 20.398537
+                    },
+                    "uuid": "555c3ccc-e8c0-4123-b98b-43f5f8edb7b8"
+                },
+                {
+                    "description": "Lödyta 1 [ACC_SA0] av R6 på F.Cu",
+                    "pos": {
+                        "x": 11.678536,
+                        "y": 19.168155
+                    },
+                    "uuid": "2426aa24-1b38-4591-8291-d7996f45556a"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [VBAT_SNS_HI] av BT1 på B.Cu",
+                    "pos": {
+                        "x": 2.9541,
+                        "y": 7.2
+                    },
+                    "uuid": "38681915-8675-4cdd-bf64-26c10c332f8e"
+                },
+                {
+                    "description": "Lödyta 1 [VBAT_SNS_HI] av R1 på F.Cu",
+                    "pos": {
+                        "x": 6.712243,
+                        "y": 17.793383
+                    },
+                    "uuid": "19e2db2e-6db8-4088-a394-4294f2397094"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [ACC_CS] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.302284,
+                        "y": 20.898537
+                    },
+                    "uuid": "a8ea0ed5-792d-4892-8c6c-29ecf69ed377"
+                },
+                {
+                    "description": "Lödyta 2 [ACC_CS] av R5 på F.Cu",
+                    "pos": {
+                        "x": 11.474454,
+                        "y": 17.457029
+                    },
+                    "uuid": "f7eae965-a852-46d8-b0f6-d3a00864ef92"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XL1] av X1 på B.Cu",
+                    "pos": {
+                        "x": 7.895728,
+                        "y": 10.121947
+                    },
+                    "uuid": "dbd893b6-3005-4650-8044-41b3923be4af"
+                },
+                {
+                    "description": "Lödyta 1 [XL1] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 15.2
+                    },
+                    "uuid": "3ac5748f-223d-4478-af0b-b3e27d306d64"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XL1] av C14 på B.Cu",
+                    "pos": {
+                        "x": 8.942394,
+                        "y": 5.130092
+                    },
+                    "uuid": "2e20fa2e-9222-4b2d-966d-e566e2c0f249"
+                },
+                {
+                    "description": "Lödyta 1 [XL1] av X1 på B.Cu",
+                    "pos": {
+                        "x": 7.895728,
+                        "y": 10.121947
+                    },
+                    "uuid": "dbd893b6-3005-4650-8044-41b3923be4af"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 2 [XL2] av X1 på B.Cu",
+                    "pos": {
+                        "x": 6.497746,
+                        "y": 8.049353
+                    },
+                    "uuid": "d8403346-196f-4f23-b13d-454bfbf3ecb6"
+                },
+                {
+                    "description": "Lödyta 2 [XL2] av U1 på B.Cu",
+                    "pos": {
+                        "x": 10.2625,
+                        "y": 14.8
+                    },
+                    "uuid": "9adea676-af04-4209-9317-6e19c198f3ed"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XL2] av C15 på B.Cu",
+                    "pos": {
+                        "x": 7.568828,
+                        "y": 5.939154
+                    },
+                    "uuid": "c8b604fd-442c-47d5-9711-d85ff84d79bd"
+                },
+                {
+                    "description": "Lödyta 2 [XL2] av X1 på B.Cu",
+                    "pos": {
+                        "x": 6.497746,
+                        "y": 8.049353
+                    },
+                    "uuid": "d8403346-196f-4f23-b13d-454bfbf3ecb6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XC1] av C16 på B.Cu",
+                    "pos": {
+                        "x": 18.400601,
+                        "y": 19.280563
+                    },
+                    "uuid": "41d5e0cb-9623-4471-b035-20f61bd4a07d"
+                },
+                {
+                    "description": "Lödyta 1 [XC1] av X2 på B.Cu",
+                    "pos": {
+                        "x": 19.534902,
+                        "y": 15.818782
+                    },
+                    "uuid": "51c54ee7-d0e8-45d0-b29b-bf4c2a74a938"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XC1] av X2 på B.Cu",
+                    "pos": {
+                        "x": 19.534902,
+                        "y": 15.818782
+                    },
+                    "uuid": "51c54ee7-d0e8-45d0-b29b-bf4c2a74a938"
+                },
+                {
+                    "description": "Lödyta 34 [XC1] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 14.4
+                    },
+                    "uuid": "f167a792-7017-46c5-a690-61248d166f22"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 12 [ACC_INT1] av U2 på B.Cu",
+                    "pos": {
+                        "x": 11.814784,
+                        "y": 21.411037
+                    },
+                    "uuid": "543b766c-53bc-4b3b-a430-4e6f9bf2a031"
+                },
+                {
+                    "description": "Lödyta 20 [ACC_INT1] av U1 på B.Cu",
+                    "pos": {
+                        "x": 13.7875,
+                        "y": 10.075
+                    },
+                    "uuid": "8daac1ad-37bf-4a05-899d-d58283b207ea"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 11 [ACC_INT2] av U2 på B.Cu",
+                    "pos": {
+                        "x": 12.314784,
+                        "y": 21.411037
+                    },
+                    "uuid": "f4b93fed-e7d1-496b-8875-9c05a625607d"
+                },
+                {
+                    "description": "Lödyta 21 [ACC_INT2] av U1 på B.Cu",
+                    "pos": {
+                        "x": 14.1875,
+                        "y": 10.075
+                    },
+                    "uuid": "10d3329c-02e9-4d48-b8a0-18c018a364cd"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 1 [XC2] av C17 på B.Cu",
+                    "pos": {
+                        "x": 17.285931,
+                        "y": 20.12364
+                    },
+                    "uuid": "c34d9cda-01f0-4021-9132-9da5f9e6c38c"
+                },
+                {
+                    "description": "Lödyta 3 [XC2] av X2 på B.Cu",
+                    "pos": {
+                        "x": 19.282274,
+                        "y": 17.581218
+                    },
+                    "uuid": "56bf9111-85a7-4519-8194-aa8a74ec29ec"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 3 [XC2] av X2 på B.Cu",
+                    "pos": {
+                        "x": 19.282274,
+                        "y": 17.581218
+                    },
+                    "uuid": "56bf9111-85a7-4519-8194-aa8a74ec29ec"
+                },
+                {
+                    "description": "Lödyta 35 [XC2] av U1 på B.Cu",
+                    "pos": {
+                        "x": 16.1125,
+                        "y": 14.8
+                    },
+                    "uuid": "86052465-f81d-4cfa-844f-e318108ebcb3"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        },
+        {
+            "description": "Missing connection between items",
+            "items": [
+                {
+                    "description": "Lödyta 46 [DCC] av U1 på B.Cu",
+                    "pos": {
+                        "x": 11.7875,
+                        "y": 15.925
+                    },
+                    "uuid": "3b62bf9c-e1f6-4270-8318-b23402721675"
+                },
+                {
+                    "description": "Lödyta 1 [DCC] av L1 på B.Cu",
+                    "pos": {
+                        "x": 17.988864,
+                        "y": 7.801455
+                    },
+                    "uuid": "005fb659-0fc2-4bae-897b-e537f5704ed6"
+                }
+            ],
+            "severity": "error",
+            "type": "unconnected_items"
+        }
+    ],
+    "violations": [
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Ledare [ANT_FEED] på F.Cu, längd 0.4846 mm",
+                    "pos": {
+                        "x": 10.593611,
+                        "y": 1.345847
+                    },
+                    "uuid": "7d5a1c30-5113-49f6-bff6-5174a72a574a"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Ledare [NFC1] på B.Cu, längd 0.6524 mm",
+                    "pos": {
+                        "x": 23.101696,
+                        "y": 9.323283
+                    },
+                    "uuid": "20966860-b211-4cf7-8274-fdf3e58f661b"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        },
+        {
+            "description": "Track has unconnected end",
+            "items": [
+                {
+                    "description": "Ledare [NFC2] på B.Cu, längd 0.6142 mm",
+                    "pos": {
+                        "x": 18.840529,
+                        "y": 4.73419
+                    },
+                    "uuid": "bd78b375-b683-422d-b4d7-d7ccdafa2d41"
+                }
+            ],
+            "severity": "warning",
+            "type": "track_dangling"
+        }
+    ]
+}

@@ -1,0 +1,199 @@
+{
+  "$ce_fab_interface": 1,
+  "generated": "2026-09-05T09:55:06Z",
+  "fab": "JLCPCB",
+  "read_on": "2026-09-05",
+  "portal": "https://api.jlcpcb.com/",
+  "gateway": "https://open.jlcpcb.com",
+  "docs": "https://api.jlcpcb.com/docs/api-list",
+  "browser_upload": "https://cart.jlcpcb.com/quote",
+  "approval": "To apply for API access, please visit api.jlcpcb.com. Please be aware that not all applications will be approved; each application undergoes a review based on the partner's previous orders at JLCPCB, company and business situation.",
+  "credentials": {
+    "verdict": "CANNOT DETERMINE",
+    "have_credentials": false,
+    "missing_env": [
+      "JLCPCB_APP_ID",
+      "JLCPCB_ACCESS_KEY",
+      "JLCPCB_SECRET_KEY"
+    ],
+    "why": "no JLCPCB OpenAPI credentials on this machine",
+    "how_to_get_them": "To apply for API access, please visit api.jlcpcb.com. Please be aware that not all applications will be approved; each application undergoes a review based on the partner's previous orders at JLCPCB, company and business situation.",
+    "portal": "https://api.jlcpcb.com/",
+    "note": "ce-fab does not prompt for these, does not read them from any file it did not write, and does not create an account. A person applies at the portal with an existing JLCPCB account and an order history."
+  },
+  "endpoints": [
+    {
+      "id": "pcb.upload_gerber",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/uploadGerber",
+      "what": "upload the gerber zip; returns a file handle the other calls take",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.calculate",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/calculate",
+      "what": "THE QUOTE. price a board from an uploaded gerber + a craft spec",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.audit",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/audit/get",
+      "what": "JLCPCB's engineering review of the files \u2014 the rejection reasons",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.wip",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/wip/get",
+      "what": "production progress of a placed order",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.order_detail",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/order/detail",
+      "what": "an order by batch number",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.impedance_templates",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/getImpedanceTemplateSettingList",
+      "what": "the controlled-impedance stackup templates JLCPCB will quote",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.stencil_price_config",
+      "method": "GET",
+      "uri": "/overseas/openapi/pcb/getSteelPriceConfig",
+      "what": "stencil price config",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "pcb.create_order",
+      "method": "POST",
+      "uri": "/overseas/openapi/pcb/create",
+      "what": "PLACES AN ORDER AND SPENDS MONEY \u2014 forbidden in this package",
+      "forbidden": true,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "component.library_list",
+      "method": "POST",
+      "uri": "/overseas/openapi/component/getComponentLibraryList",
+      "what": "the parts library, paged",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "component.by_code",
+      "method": "POST",
+      "uri": "/overseas/openapi/component/getComponentDetailByCode",
+      "what": "parts by LCSC code",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "component.info",
+      "method": "POST",
+      "uri": "/overseas/openapi/component/getComponentInfos",
+      "what": "part detail",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    },
+    {
+      "id": "component.private_stock",
+      "method": "POST",
+      "uri": "/overseas/openapi/component/getPrivateComponentLibrary",
+      "what": "your own consigned stock held at JLCPCB",
+      "forbidden": false,
+      "verified": false,
+      "verified_why_not": "the gateway authenticates before it routes: a real URI and a nonsense URI both answer 400 'authorization cannot be empty'"
+    }
+  ],
+  "forbidden": {
+    "/overseas/openapi/pcb/create": "places a PCB order and charges the account",
+    "/overseas/openapi/tdp/api/order/create": "places a 3D-printing order and charges the account"
+  },
+  "sources": [
+    {
+      "id": "portal",
+      "url": "https://api.jlcpcb.com/",
+      "retrieved": "2026-09-05",
+      "how": "plain curl; <title> is 'JLCPCB API Platform - Automate and Streamline PCB, SMT Stencil, and 3D Printing Orders'",
+      "note": "Nuxt SPA. Its config blob names client_id 'OVERSEAS_OPEN_PLATFORM' and CAS_BASE_URL passport.jlcpcb.com. The /docs/* pages render their bodies client-side behind a sign-in, so the endpoint table is not readable by curl."
+    },
+    {
+      "id": "gateway",
+      "url": "https://open.jlcpcb.com",
+      "retrieved": "2026-09-05",
+      "how": "POST with and without an Authorization header",
+      "note": "Live. 400 'The request authorization cannot be empty.' with no header; 401 'application not exists' with a well-formed JOP header carrying an unknown appid. Authenticates before routing, so path existence is not probeable from outside."
+    },
+    {
+      "id": "apply",
+      "url": "https://jlcpcb.com/help/article/jlcpcb-online-api-available-now",
+      "retrieved": "2026-09-05",
+      "how": "plain curl; the article body was read out of the articleDetail record inside the page's __NUXT__ payload",
+      "note": "First-party statement of the approval criteria. See APPROVAL."
+    },
+    {
+      "id": "sdk-shape",
+      "url": "https://github.com/i2cjak/jlcpcb_api",
+      "retrieved": "2026-09-05",
+      "how": "raw.githubusercontent.com, src/jlcpcb_api/{auth,client,models}.py",
+      "note": "THIRD PARTY, not JLCPCB. Self-described as 'reverse-engineered from the Java SDK JARs'. Source of the URI strings and of the signing recipe. Everything taken from here is marked unverified until a credentialed call proves it."
+    }
+  ],
+  "probe": {
+    "request": {
+      "method": "POST",
+      "url": "https://open.jlcpcb.com/overseas/openapi/pcb/calculate",
+      "uri": "/overseas/openapi/pcb/calculate",
+      "body": "{}",
+      "string_to_sign": "POST\n/overseas/openapi/pcb/calculate\n1788602106\nPa3QhcLD3ElDEP4GiA6sQ1aLgCoN0XD3\n{}\n",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "JOP appid=\"ce-fab-probe\",accesskey=\"<elided>\",timestamp=\"1788602106\",nonce=\"Pa3QhcLD3ElDEP4GiA6sQ1aLgCoN0XD3\",signature=\"<hmac-sha256 elided>\""
+      }
+    },
+    "sent": true,
+    "retrieved": "2026-09-05T09:55:06Z",
+    "http_status": 401,
+    "trace_id": "315938da46874d9db49f519afce03e7c",
+    "raw": "{\"code\":401,\"success\":false,\"message\":\"application not exists\"}",
+    "code": 401,
+    "message": "application not exists",
+    "data": null,
+    "verdict": "CANNOT DETERMINE",
+    "why": "transport reaches JLCPCB; no approved app, so no quote. the gateway parsed our JOP Authorization header and answered 401 'application not exists' \u2014 the header shape is right and the wall is the missing approved app",
+    "uri": "/overseas/openapi/pcb/calculate",
+    "credentials": "synthetic (deliberately invalid)",
+    "gateway": "https://open.jlcpcb.com",
+    "transport": "PASS",
+    "transport_why": "the gateway parsed our JOP Authorization header and answered 401 'application not exists' \u2014 the header shape is right and the wall is the missing approved app"
+  },
+  "verdict": "CANNOT DETERMINE",
+  "why": "transport reaches JLCPCB; no approved app, so no quote. the gateway parsed our JOP Authorization header and answered 401 'application not exists' \u2014 the header shape is right and the wall is the missing approved app"
+}
