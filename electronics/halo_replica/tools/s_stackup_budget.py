@@ -15,7 +15,7 @@ Verbs
   doctor    — is the material table usable? Every row must carry a source.
   budget    — minimum buildable thickness for one (construction, layer count)
   bounds    — for a target thickness, the layer counts each construction can build
-  selftest  — 25 deliberate breaks, each of which MUST go red
+  selftest  — 27 deliberate breaks, each of which MUST go red
 
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
 
@@ -57,6 +57,36 @@ def _row(m, group, key):
     return float(r["mm"])
 
 
+def provenance(m, construction):
+    """Which rows of a construction are INFERENCES rather than published.
+
+    This exists because the tag was not travelling. materials.json marks
+    outer_finished_copper.thin and copper_foil.0.33oz as `inference`, both are
+    pulled by fr4-thin, and fr4-thin carries this lane's entire upper bound --
+    yet STACKUP.md quoted its laminate totals with no tag attached. A caveat
+    that stays in the data file while the number walks out on its own is the
+    shape this lane criticised in someone else's document on the same day:
+    an UNVERIFIED tag the next paragraph reasons past is camouflage, because a
+    reader who sees the tag concludes the author was careful and stops checking.
+
+    So provenance now travels WITH the number, computed rather than remembered.
+    Reported split, because the split matters: this lane's strongest claim is
+    about DIELECTRIC alone -- "6 layers needs 0.350 mm of dielectric before a
+    micron of copper" -- and the dielectric rows are all published. Only the
+    copper, and therefore only the laminate TOTAL, leans on an inference.
+    """
+    c = m["constructions"][construction]
+    out = {"dielectric": [], "copper": []}
+    for grp, key, bucket in (("core", c["core"], "dielectric"),
+                             ("prepreg", c["prepreg"], "dielectric"),
+                             ("outer_finished_copper", c["outer"], "copper"),
+                             ("copper_foil", c["inner_foil"], "copper")):
+        row = m.get(grp, {}).get(key)
+        if isinstance(row, dict) and row.get("kind") == "inference":
+            out[bucket].append(f"{grp}.{key}")
+    return out
+
+
 def budget(m, construction, layers):
     """Minimum laminate thickness (copper + dielectric, no soldermask) for
     `layers` copper layers built in `construction`. Raises CannotDetermine."""
@@ -95,6 +125,7 @@ def budget(m, construction, layers):
         "outer_cu_mm": outer, "inner_cu_mm": inner,
         "copper_mm": round(copper, 4),
         "laminate_mm": round(dielectric + copper, 4),
+        "inferred": provenance(m, construction),
     }
 
 
@@ -335,7 +366,7 @@ def cmd_bounds(m, target):
     print(f"TARGET {target:.3f} mm total board thickness")
     print("Laminate = copper + dielectric. Soldermask is shown SEPARATELY as a")
     print("range because no fabricator page giving a film thickness was fetched.\n")
-    print(f"{'construction':<16}{'N':>3}{'cores':>7}{'preg':>6}{'diel':>8}{'Cu':>8}{'laminate':>10}{'+mask':>16}   verdict")
+    print(f"{'construction':<16}{'N':>3}{'cores':>7}{'preg':>6}{'diel':>8}{'Cu':>8}{'laminate':>10}{'+mask':>16}  src  verdict")
     any_cannot = False
     fits = {}
     for name in m["constructions"]:
@@ -353,10 +384,32 @@ def cmd_bounds(m, target):
             verdict = "FITS" if lo <= target else ("MARGINAL" if b["laminate_mm"] <= target else "DOES NOT FIT")
             if verdict == "FITS":
                 fits[name].append(n)
+            inf = b["inferred"]
+            tag = ("D!" if inf["dielectric"] else "  ") + ("C!" if inf["copper"] else "  ")
             print(f"{name:<16}{n:>3}{b['cores']:>7}{b['prepreg_sheets']:>6}"
                   f"{b['dielectric_mm']:>8.3f}{b['copper_mm']:>8.3f}{b['laminate_mm']:>10.3f}"
-                  f"{lo:>8.3f}-{hi:<7.3f}  {verdict}")
+                  f"{lo:>8.3f}-{hi:<7.3f} {tag}  {verdict}")
     print()
+    allinf = {}
+    for name in m["constructions"]:
+        if name.startswith("_"):
+            continue
+        try:
+            pv = provenance(m, name)
+        except KeyError:
+            continue
+        if pv["dielectric"] or pv["copper"]:
+            allinf[name] = pv
+    if allinf:
+        print("  PROVENANCE — C! = the COPPER rows include an inference, so the")
+        print("  laminate TOTAL leans on one. D! = the DIELECTRIC does too.")
+        for name, pv in allinf.items():
+            for b in ("dielectric", "copper"):
+                if pv[b]:
+                    print(f"    {name:<22}{b:<12}{', '.join(pv[b])}")
+        print("  No construction below carries D!, so every DIELECTRIC-only")
+        print("  statement rests on published thicknesses alone.")
+        print()
     for name, ns in fits.items():
         if ns:
             print(f"  {name:<16} can build {ns} inside {target:.3f} mm")
@@ -403,7 +456,7 @@ def cmd_selftest():
         else:
             n_fail += 1
 
-    print("s_stackup_budget selftest — 25 deliberate breaks\n")
+    print("s_stackup_budget selftest — 27 deliberate breaks\n")
 
     # 1. The null-row refusal actually fires.
     check("hdi-ultrathin has null cores -> CannotDetermine, not a default",
@@ -540,6 +593,16 @@ def cmd_selftest():
     if _os.path.exists(rb):
         check("the Replica board FAILS verify (verify is not PASS-always)",
               lambda: cmd_verify_quiet(rb), FAIL)
+
+    # 23. PROVENANCE MUST TRAVEL, AND MUST DISCRIMINATE. fr4-thin pulls two
+    #     inference rows through its COPPER and none through its dielectric;
+    #     fr4-economy pulls none at all. If both came back the same the tag
+    #     would be decoration.
+    check("fr4-thin's copper is flagged as inferred, its dielectric is not",
+          lambda: provenance(m, "fr4-thin"),
+          {"dielectric": [], "copper": ["outer_finished_copper.thin", "copper_foil.0.33oz"]})
+    check("fr4-economy carries no inference at all (the tag discriminates)",
+          lambda: provenance(m, "fr4-economy"), {"dielectric": [], "copper": []})
 
     # ---- as-ordered: the anti-tautology controls --------------------------
     # A lane that writes the spec it is measured against has measured nothing.

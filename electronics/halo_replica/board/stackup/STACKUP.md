@@ -182,6 +182,23 @@ fr4-thin          8      3     4   0.500   0.122     0.622   0.642-0.662    DOES
 hdi-ultrathin     *   CANNOT DETERMINE — core.ultrathin_hdi has no thickness
 ```
 
+**Provenance, and it now travels with the number.** `materials.json` tags
+`outer_finished_copper.thin` and `copper_foil.0.33oz` as **inferences** — the
+first is arithmetic on a foil weight with no fabricator page behind it, the
+second is IPC-4562's nominal 12 µm, not fetched. **`fr4-thin` pulls both**, and
+`fr4-thin` carries this lane's entire upper bound. That tag was sitting in
+`materials.json` and **was not reaching this page** until an audit on
+2026-09-05 — the exact shape this lane criticised in someone else's document on
+the same day. `bounds` now prints `C!` against every row whose copper leans on
+an inference, so the caveat cannot walk away from the number again.
+
+**What that does and does not touch.** It touches the **laminate totals**
+(0.274, 0.448, 0.622 mm). It does **not** touch the dielectric column: `core`
+and `prepreg` are published rows in every construction, and no row carries
+`D!`. So the load-bearing sentence below — *0.350 mm of dielectric alone,
+before a micron of copper* — rests on published thicknesses only, which is why
+it was written that way.
+
 **Upper bound.** Six layers needs 2 cores and 3 prepreg sheets. At the
 published thin end of stocked rigid FR-4 — 0.10 mm core, 0.050 mm type-106
 prepreg — that is **0.350 mm of dielectric alone**, already over target before
