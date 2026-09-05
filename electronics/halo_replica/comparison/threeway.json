@@ -967,13 +967,13 @@
       "axis": "Debug access and test points",
       "group": "interfaces",
       "apple": {
-        "value": "About 38 numbered pads on the BACK face, reachable after popping the cover. SWD fully exposed on TP30/TP35/TP36 with SWO on TP31; the SPI flash fully exposed on TP19-TP24; APPROTECT enabled but DEFEATED by a voltage glitch on TP28. UNDOCUMENTED BY APPLE — the numbering is Colin O'Flynn's.",
-        "state": "PRIMARY",
-        "source": "spec/comparison.json components row 20 and pcb row 8.",
+        "value": "About 38 numbered pads on the BACK face, reachable after popping the cover. SWD fully exposed on TP30/TP35/TP36 with SWO on TP31; the SPI flash fully exposed on TP19-TP24; APPROTECT enabled but DEFEATED by a voltage glitch on TP28. UNDOCUMENTED BY APPLE - the numbering is Colin O'Flynn's. *** MEASURED BY THIS LANE 2026-09-05: 43 circular gold pads located on that face, MEDIAN DIAMETER 0.5985 mm, interquartile range 0.034 mm = 5.7% of the median. ***",
+        "state": "PRIMARY for the pinout; the pad GEOMETRY is now MEASURED",
+        "source": "spec/comparison.json components row 20 and pcb row 8 for the pinout. The pad diameter is metrology/backface-pads.json - k_backface pads at 69.557 px/mm, gold colour AND circular shape, 55 gold components rejected on shape. Negative control: 0 pads found off the board. Positive control: Colin O'Flynn's 2021 annotation, an EXTERNAL reference made with no knowledge of this detector - his label positions sit a median 0.462 mm from a detection against 1.973 mm for 4000 random points on the same annulus, a 4.27x separation against a 2.00x floor.",
         "anchor": {
-          "file": "spec/comparison.json",
-          "path": "components.19.verdict",
-          "expect": "DIVERGED"
+          "file": "electronics/halo_replica/metrology/backface-pads.json",
+          "path": "diameter_mm.median",
+          "expect": 0.5984730662071152
         }
       },
       "rev_a": {
@@ -987,12 +987,13 @@
         }
       },
       "replica": {
-        "value": "NOT DRAWN — the TP field is on Apple's BACK face.",
-        "state": "CANNOT DETERMINE — face not drawn",
-        "source": "board/CLOSING.md.",
+        "value": "The TP FIELD IS NOT DRAWN - it is on Apple's BACK face. But that face is no longer unmeasured: it has a validated scale (69.557 px/mm, held out at 0.1256 mm) and 43 of its pads are located at a measured 0.598 mm diameter. The gap is now DRAWING work, not metrology work.",
+        "state": "NOT DRAWN - but the face is measured and the inputs exist",
+        "source": "board/CLOSING.md; metrology/backface-pads.json; evidence/E08.",
         "anchor": {
-          "file": "electronics/halo_replica/board/out/compare-front.png",
-          "exists": true
+          "file": "electronics/halo_replica/metrology/backface-pads.json",
+          "path": "n_pads",
+          "expect": 43
         }
       },
       "better": {
@@ -1006,6 +1007,11 @@
           "on": "F",
           "winner": "CANNOT DETERMINE",
           "why": "the Replica has not drawn the face, so it cannot be scored. The pad count is knowable — oflynn-frontside-tpnames.jpg carries all 38 already annotated — which makes this an unstarted job rather than a measurement limit."
+        },
+        {
+          "on": "F",
+          "winner": "n/a",
+          "why": "APPLE'S TEST-PAD DIAMETER IS NOW A NUMBER: 0.598 mm median over 43 pads, spread 5.7%. Nothing in this repo had it. halo_rev_a's 11 named test points have no published pad diameter in any file this lane read, so the two still cannot be compared on pad geometry - but the Apple side of that row is no longer empty, and it was empty this morning."
         }
       ],
       "fidelity": {
@@ -1015,7 +1021,7 @@
         },
         "replica": {
           "verdict": "UNSTARTED",
-          "note": "the TP field is on Apple's BACK face, never drawn"
+          "note": "the TP field is on Apple's BACK face, not drawn - but the face now has a validated scale and 43 located pads, so this is unfinished drawing rather than unfinished measurement"
         }
       }
     },
@@ -1458,7 +1464,10 @@
         "prior": "'AE1 - a rim inverted-F... ce-rf models +0.521 dBi, 3.7 dB above Apple's published figure'",
         "now": "CONTRADICTED BY rev_a's OWN FILE on both halves. Topology: board.py builds 'the meandered quarter-wave monopole' and the owner describes a nine-tooth meander. Performance: board.py's WHAT THIS BOARD DOES NOT CLAIM section says the element is a parametric placeholder, that lane T3's round-board cases resonate at 4.0 and 5.8 GHz instead of 2.44 on a different outline, and that 'Its S11 is CANNOT DETERMINE until ce-rf measures THIS copper. It is not asserted to work.'",
         "why_it_matters": "IT IS THE ONE ROW WHERE THE PRIOR PAGE CLAIMS rev_a BEATS APPLE ON A PHYSICAL NUMBER, and rev_a's own source file withdraws it. Apple's -3.2 dBi is a measurement of a shipped antenna; +0.521 dBi is a model of a placeholder. Comparing them was never valid.",
-        "not_fixed_here": "halo_rev_a and spec/comparison.json belong to other live sessions. Read, not written. Routed to the orchestrator."
+        "not_fixed_here": "halo_rev_a and spec/comparison.json belong to other live sessions. Read, not written. Routed to the orchestrator.",
+        "RESOLVED": "CORRECTED UPSTREAM THE SAME DAY. This lane routed the finding through the orchestrator to halo-cb, who withdrew the claim in commit 43616d2, 'withdraw the +0.521 dBi antenna claim - the board's own source contradicts it'. spec/comparison.json components row 15 now reads WITHDRAWN and grades halo's antenna CANNOT DETERMINE, stating that the figure was a model of a parametric placeholder on a diameter-30 study outline that is not this board, and that differencing a measurement against a model of a placeholder 'produces a headline, not a result'. ce-rf is solving the real copper now. THE DISAGREEMENT IS RECORDED RATHER THAN DELETED: it was real, it was found by reading rev_a's own file against the generated page, and the page is now right.",
+        "anchor_note": "the two quotes this lane originally anchored - '3.7 dB above Apple's published figure' and 'a rim inverted-F ETCHED' - are GONE from spec/comparison.json, and k_threeway check went RED on both when they went. That is the anchor checker doing the one job it exists for: an upstream source moved under a citation and the document said so instead of quietly continuing to claim it.",
+        "still_open": "The NAMING is not settled. board.py still calls AE1 'the meandered quarter-wave monopole' (l.820), 'the inverted-F drawn here' (l.86) and 'an inverted-L monopole' (l.324). The withdrawn text names no topology at all, so the four-names problem is now a three-names problem inside one file. Routed, not corrected here."
       }
     ],
     "what_this_file_adds_that_the_prior_one_could_not": [
@@ -1485,19 +1494,15 @@
       },
       {
         "file": "spec/comparison.json",
-        "quote": "3.7 dB above Apple's published figure",
-        "claim": "the prior page does claim rev_a beats Apple's antenna by 3.7 dB"
-      },
-      {
-        "file": "spec/comparison.json",
-        "quote": "a rim inverted-F ETCHED",
-        "claim": "the prior page does call AE1 an inverted-F"
-      },
-      {
-        "file": "spec/comparison.json",
         "path": "pcb.2.verdict",
         "expect": "CANNOT DETERMINE",
         "claim": "the prior page does grade the layer count CANNOT DETERMINE"
+      },
+      {
+        "file": "spec/comparison.json",
+        "path": "components.14.halo.text",
+        "expect": "WITHDRAWN 2026-09-05. halo's antenna number is CANNOT DETERMINE. The +0.521 dBi figure was a model of a PARAMETRIC PLACEHOLDER on a Ø30 mm study outline that is not this board — board.py says so itself under its own heading 'what this board does not claim'. And the comparison was never valid on its own terms: Apple's -3.2 dBi is a MEASURED figure for a SHIPPED antenna in an FCC test report. Differencing a measurement against a model of a placeholder produces a headline, not a result. ce-rf is solving THIS copper now.",
+        "claim": "the prior page's antenna claim is now WITHDRAWN - the correction this lane routed"
       }
     ]
   }

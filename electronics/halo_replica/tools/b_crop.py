@@ -9,13 +9,13 @@ crop is what is in the photograph.
 import sys
 from PIL import Image
 
-src, x0, y0, x1, y1, scale, out = sys.argv[1:8]
-x0, y0, x1, y1 = (int(v) for v in (x0, y0, x1, y1))
-scale = float(scale)
-im = Image.open(src).crop((x0, y0, x1, y1))
-im = im.resize((int(im.width * scale), int(im.height * scale)), Image.LANCZOS)
-im.save(out)
-print(f"{out} {im.size} from {src}[{x0}:{x1},{y0}:{y1}] x{scale}")
+def crop(src, x0, y0, x1, y1, scale, out):
+    """Lanczos crop+upscale. Nothing else is done to the pixels."""
+    im = Image.open(src).crop((x0, y0, x1, y1))
+    im = im.resize((int(im.width * scale), int(im.height * scale)), Image.LANCZOS)
+    im.save(out)
+    print(f"{out} {im.size} from {src}[{x0}:{x1},{y0}:{y1}] x{scale}")
+    return im
 
 
 def grid(src, x0, y0, x1, y1, scale, out, step=50):
@@ -37,3 +37,11 @@ def grid(src, x0, y0, x1, y1, scale, out, step=50):
             d.text((2, py + 2), str(gy), fill=(0, 255, 255))
     im.save(out)
     print(f"{out} {im.size} grid step {step} src px")
+
+
+if __name__ == "__main__":
+    # L8 2026-09-05: this block used to run at IMPORT time, so `from b_crop import
+    # grid` crashed with a bare-argv unpack. Importing a helper must not execute a
+    # CLI. Behaviour of the command line itself is unchanged.
+    _src, _x0, _y0, _x1, _y1, _scale, _out = sys.argv[1:8]
+    crop(_src, int(_x0), int(_y0), int(_x1), int(_y1), float(_scale), _out)

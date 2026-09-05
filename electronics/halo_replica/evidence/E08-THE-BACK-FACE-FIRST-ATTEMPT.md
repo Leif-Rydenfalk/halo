@@ -232,6 +232,78 @@ rests on M01's numbers alone. This attempt did not confirm them and did not over
 
 ---
 
+## 4c · The pads — the one thing on this face that IS measured
+
+Reordered ahead of the capacitors by the orchestrator, for the right reason: the
+capacitors would move a BOM line, but the pads and contacts move **the picture**, and
+`oflynn-frontside-tpnames.jpg` supplies **a positive control that cannot be made easy** —
+Colin O'Flynn numbered every pad in 2021, with no knowledge of this detector, and his
+positions can therefore disagree with it.
+
+That image is the **same photograph rescaled**: measured **NCC 0.9993** against the
+full-resolution frame with the red annotation pixels masked out. So the mapping is exact
+and the annotation is genuinely external.
+
+| | |
+|---|---|
+| **circular gold pads found** | **43** (55 gold components rejected on shape) |
+| **median diameter** | **0.5985 mm** |
+| spread | IQR 0.034 mm = **5.7 % of the median**, p25 0.573 / p75 0.607 |
+| resolution | 20–25 **genuine** px across at M06's 33–42 genuine px/mm — a resolved feature, not an interpolation |
+| **negative control** | the same detector off the board, r > 1000 px: **0 pads.** It can come back empty |
+| **positive control** | O'Flynn's label positions sit a median **0.462 mm** from a detection; **4000 random points on the same annulus sit 1.973 mm** away. **Separation 4.27×**, floor 2.00× |
+
+**The null is the load-bearing part of that positive control.** O'Flynn writes each number
+*beside* its pad rather than on it, and this annulus is dense enough that any point is near
+something — so a small absolute distance would have proved nothing. Only the comparison
+against chance does.
+
+**Shape is what selects a pad, never colour.** The colour criterion alone catches every
+gold feature on the board — which is exactly what defeated the coil in §4b, in the same
+frame, on the same day. Nothing in this section rests on colour alone, and that is a
+direct consequence of that failure rather than a precaution written in advance.
+
+**Apple's test-pad diameter is now a number and it was not one this morning.** It is fed
+back into `THREE-WAY.md` row 17. `halo_rev_a`'s 11 named test points have no published pad
+diameter in any file this lane read, so the two still cannot be compared on pad geometry —
+but the Apple side of that row is no longer empty.
+
+## 4d · The battery contacts — and a gate that passed for the wrong reason, twice caught
+
+**CANNOT DETERMINE.** Three attempts, and each was stopped by a control rather than by
+inspection.
+
+A stamped contact is **grey**, so the gold criterion cannot find these at all; they are
+selected on being bright **and unsaturated**. The overexposed centre dome qualifies too and
+is **excluded by name** — M01 §4 already records that the saturated white core is the
+magnet/dome assembly — rather than by a size threshold picked to make the answer come out.
+
+1. **Plain nearest-neighbour association walked uphill.** O'Flynn writes each name *above*
+   the feature it names, so the nearest neutral metal to the text is the rim, not the
+   contact. Caught by the VCC area-symmetry check at **83.3 %**.
+2. **Associating downward fixed the direction and the symmetry check then passed at
+   10.9 % — for the wrong reason.** The pair it accepted sits at **r 10.63 mm and
+   r 8.07 mm**. Apple's two positive tabs are one part in one symmetric scheme; those are
+   two unrelated features whose *areas* happened to agree. **Area is one number, and two
+   wrong features can share it.**
+3. **So the gate was given the geometry the scheme actually requires** — same radius,
+   mirrored about the board's vertical axis. It now fires: **radius difference 2.567 mm
+   against a 0.600 floor, midpoint 4.231 mm off axis against a 1.200 floor.**
+
+**Nothing is published as a contact dimension.** Recorded for the next attempt: an operator
+probe of this same frame found a pair at (965, 661) and (1315, 657) — areas 1.625 and
+1.680 mm² (**3.4 %** apart), radii 7.94 and 7.68 mm (**0.26 mm** apart), midpoint **0.98 mm**
+off axis — which satisfies all three constraints. **It is an eyeballed seed, not a
+measurement**, and the association that reaches it automatically has not been written.
+
+**And one thing is not separable in this frame at all, stated rather than glossed:** whether
+the measured extent is the **board pad** or the **sprung contact sitting on it**. This
+photograph shows the board assembled in the shell and the two are coincident in plan view.
+**FCC internal photo 4** shows the battery cavity with the contacts and no board, and is the
+frame that would separate them.
+
+---
+
 ## 5 · Status
 
 | # | quantity | verdict |
@@ -243,3 +315,6 @@ rests on M01's numbers alone. This attempt did not confirm them and did not over
 | 5 | can the refiner separate a part from ordinary board here | **NO** — 3 of 6 control seeds admitted |
 | 6 | the coil, re-measured at 69.557 px/mm | **CANNOT DETERMINE** — L1's copper threshold does not transfer out of the 26 mm crop; separation 1.37× against a 2.00× floor |
 | 7 | do the two scale routes (O'Flynn's tilde vs the FCC rulers) agree | **NOT TESTED.** The instrument that would have tested it failed first |
+| 8 | the round gold pads on this face | **MEASURED — 43 pads, median Ø 0.5985 mm, IQR 5.7 %.** Negative control empty off the board; positive control 4.27× against chance |
+| 9 | the three battery contacts | **CANNOT DETERMINE** — the association is unsolved and the symmetry gate fires at 2.567 mm radius difference |
+| 10 | board pad vs sprung contact | **NOT SEPARABLE** in an assembled frame. FCC internal photo 4 would separate them |
