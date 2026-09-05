@@ -1675,6 +1675,29 @@ So the three options, and none of them is this lane's to take:
    0.30 mm is a function of where the arm sits. ce-rf owns that and is solving
    on the present geometry.
 
+4. **Let the pad's escape cross 0.30 mm of the shadow, and nothing else.**
+   Measured while looking for a way out: the shadow's OUTER limit is
+   `min(arm_out + 0.30, R - 0.05) = 12.500`, and the pad's own outer edge is at
+   **12.200** — the same radius as the arm's outer copper. Beyond r 12.500 the
+   arm's shadow has ended and `antenna-ground-clearance` forbids only vias and
+   pours, **not tracks**. So a B.Cu track leaving the pad radially outward
+   spends **0.30 mm** inside the shadow, reaches free copper at r 12.55, runs
+   circumferentially to theta 8 (out of the 13..107 sector, 4.8 mm), takes a
+   via there, and comes back in on F.Cu. The rule broken is 0.30 mm of a
+   0.20 mm-wide track, attached to a 2.40 x 1.20 mm pad that is already inside
+   the same shadow by exemption. **It is the smallest intervention of the
+   four** — and it still adds ~5 mm of B.Cu and ~2.6 mm of F.Cu copper in the
+   annulus within 2.5 mm of the element's start, which ce-rf would have to
+   model. Lane B2 did not take it, because "the exempted pad is already there"
+   is exactly the argument that let the coil walk under the arm in D26a.
+
+Also worth knowing before option 1 is costed: `SPOKE_ANGLES = (90, 210, 330)`
+is in `design.py` line 217 and it is not only the fingers — line 425 builds the
+carrier's **PCB seat deck spokes** from the same tuple. The spokes currently
+sit 30 degrees off the keying notches; rotating the contacts onto 0/120/240
+puts the seat-deck spokes ON the notches, which is where the carrier's key
+engages. So option 1 is a carrier redesign, not a rotation.
+
 Until it is decided the board carries **one** unconnected item and it is the
 battery's ground return, so `fab submit`'s G5-routed gate cannot pass. It is
 recorded in `board.py` as `ROUTER_SKIP_PINS["BT1-2"]` with this reason, which
