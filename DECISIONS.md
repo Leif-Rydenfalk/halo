@@ -1169,3 +1169,114 @@ column: **6 hit the cap and none has a short to the ground pour; 12 converged an
 side — a quarter-wave boundary sets a reflection floor, a well-radiating shorted
 inverted-F decays below it and converges anyway, and a 2.47 Ω coplanar monopole
 never gets there.
+
+## D26i — halo has an antenna number at last, and it does NOT beat Apple's −3.2 dBi
+
+D26c is closed. The three halo cases were re-solved at the new default
+`airbox_pad_mm = C0/f0/2`, and **every one of them converged — none ever had.**
+Run log: `ce-rf/out/_t3c/README.md`.
+
+| case | 0.250 λ (void) | **0.500 λ** | wall |
+|---|---|---|---|
+| `validation-staircase-straight` | 398 970 CAP | **5 547** | 667.3 → **31 s** |
+| `halo-rev-a-2g4-meander4-bare` | 459 459 CAP | **8 613** | 1786.6 → **121 s** |
+| `halo-rev-a-2g4-meander9-bare` | 459 800 CAP | **8 500** | 1694.2 → **111 s** |
+| `halo-rev-a-2g4-meander9-passive` | 459 100 CAP | **47 400** | 2012.9 → **381 s** |
+
+**THE ANSWER**, `halo-rev-a-2g4-meander9-passive` — the shipping element with
+the NFC winding and BT1's negative contact land as passive copper — at
+`sim.farfield_f_GHz` 2.4418 GHz:
+
+| radiation efficiency | total efficiency | directivity | **gain** | realized gain |
+|---|---|---|---|---|
+| 26.16 % | 12.75 % | 2.433 dBi | **−3.391 dBi** | −6.512 dBi |
+
+**Apple's filed maximum gain is −3.2 dBi. halo measures −3.391 dBi. It is
+0.19 dB short and it does not beat it.** `gain_dBi` is the comparable figure
+because Apple's is a matched number; realized gain, which is what a radio sees
+with no matching network, is −6.512 dBi, and the best BUILDABLE network cerf
+can fit only reaches −4.954 dB worst-in-band against the spec's −6 dB assert.
+
+**The "+0.521 dBi against Apple's −3.2 dBi" recorded elsewhere in this project
+is a different antenna on a different board** — `halo-round-rim-ifa`, a rim IFA
+on the Ø30 × 1.0 mm study puck. It never was rev A's number.
+
+**Why halo is short, in one number: the element resonates at 2.0669 GHz**,
+16 % below the BLE band, so 2.44 GHz is off-resonance and every figure above
+is a measurement of an antenna used in the wrong place. Its bare control
+resonates at **2.6763 GHz**, 7.8 % above. **The NFC winding pulls the element
+down by 22.8 % and neither end lands in 2.400–2.4835 GHz.** A retune through
+`ce-rf/tools/retune_for_board.py` is the difference between −3.391 dBi and
+whatever this element can actually do.
+
+**`mode_identified` is 0.0 on the shipping element for a different reason than
+D26h recorded, and D26h's 2.72 Ω was the wrong geometry.**
+
+| case | zeros | R at each | `mode_identified` |
+|---|---|---|---|
+| `meander4-bare` (not what ships) | 1 | 2.697 Ω | 0.0 — none in the 3–30 Ω band |
+| `meander9-bare` | 1 | **3.300 Ω** | **1.0** |
+| `meander9-passive` (ships) | 3 | 4.09 / 7.19 / 12.87 Ω | 0.0 — **all three qualify** |
+
+The shipping element's failure is **ambiguity, not absence**: three things in
+the model look like radiators and the spec cannot say which is the antenna.
+That is a spec fix (narrow `mode_select.within_GHz`), not a design fix.
+
+**And the fix generalises off this board, where it moved the ANSWER and not
+just the convergence.** `validation-staircase-straight`, a 12 mm strip monopole
+in vacuum at 6 GHz on a different mesh, converged 21.5× faster — and its
+`f_series_res` moved 3.7476 → **4.6875 GHz (+25.1 %)**, its R 30.567 → **52.863 Ω
+(+72.9 %)**. On halo the same change moved things 0.09 %, which is what made
+the old results look merely unconverged. **Every quarter-wave result in
+`ce-rf/out/` is void as an ANSWER, not only as a convergence record.**
+
+## D26j — how much room the radiator needs, measured: 3.29 Ω → 9.71 Ω, and 10 Ω is still out of reach
+
+D26h said the element "is too small a radiator to present a usable resistance"
+in the annulus it has. That is a claim about ROOM, so it predicts a direction.
+Five solves, ONE variable — the ground pour radius, top and bottom together —
+with the decision rule (`MOVE_FACTOR` 2.0, `FLAT_RATIO` 1.30, `CONTROL_TOL`
+25 %, targets 3.00 and 10.00 Ω) committed in
+`ce-rf/tools/room_study_verdict.py` **before any of the five started**.
+
+| pour R | gap to element | `f_series_res` | **R at it** | `mode_identified` |
+|---|---|---|---|---|
+| **9.74310 as built** | 1.44891 mm | 2.6761 GHz | **3.2911 Ω** | 1.0 |
+| 8.50000 | 2.69201 mm | 2.7844 GHz | **5.4601 Ω** | 1.0 |
+| 7.00000 | 4.19201 mm | 2.8459 GHz | **7.3218 Ω** | 1.0 |
+| 5.50000 | 5.69201 mm | 2.9227 GHz | **8.6861 Ω** | 1.0 |
+| 4.00000 | 7.19201 mm | 3.0570 GHz | **9.7058 Ω** | 1.0 |
+
+**VERDICT: D26h SURVIVES.** Monotone rising, **2.949×** the control at the
+largest gap. The resistance IS set by the space around this element.
+
+**The control reproduces the published parent to −0.27 %** (3.2911 against
+3.3000 Ω), which is what pays for the study: all five move the ground feed tab
+to y = 0.00 so it cannot detach from a shrunken pour, and the control shows
+that change costs a quarter of one percent.
+
+**What it buys, what it costs, where it runs out — the decision, with numbers
+on both sides:**
+
+- **3.00 Ω, the radiator band's floor, is ALREADY MET as built** on the
+  nine-tooth element. D26h's 2.72 Ω belongs to the four-tooth geometry that no
+  longer ships.
+- **Pour R8.50 doubles it to 5.46 Ω; pour R7.00 reaches 7.32 Ω.**
+- **The cost is the copper under the battery.** A CR2032 is Ø20.00, so its
+  footprint reaches R10.0 and the as-built R9.74310 is *already* inside it.
+  R8.50 leaves the cell overhanging ground by 1.50 mm, R7.00 by 3.00 mm.
+- **10.00 Ω — `mode_select.near_R_ohm`, stated in advance in all three specs —
+  is NOT REACHED WITHIN THE SWEEP.** The largest measured resistance is
+  9.7058 Ω at a pour of R4.00, an island smaller than the battery and not a
+  buildable board. The tool interpolates between measured points and
+  **refuses to extrapolate**, because an extrapolated "how much room would it
+  need" becomes a design decision three documents later.
+- **A second cost pointing the same way as everything else here: the
+  resonance RISES with room**, 2.6761 → 3.0570 GHz, **14.2 %** across the
+  sweep. The element already resonates high; room makes it worse, and any
+  bought has to be paid back in conductor length.
+
+**So: room is a real lever and it is not a sufficient one.** Getting this
+element to the 10 Ω the specs expect is out of reach of the pour on a 26 mm
+disc, which is the measured form of what Apple did differently — they did not
+etch the antenna in board copper at all.
