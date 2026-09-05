@@ -21,5 +21,6 @@
     "phi_deg": 175.10060799533565,
     "major_dia_mm": 15.906158258595216,
     "mean_dia_mm": 14.96893781448499
-  }
+  },
+  "scale_correction_L1_M08_2026-09-05": "px_per_mm 15.8875 is the FCC-6 BOTTOM RULE's value AT THE RULE. At the BOARD, M02 measures 15.6850 px/mm by two routes agreeing to 0.23%. Any mm in this file derived from 15.8875 is 1.29% SMALL. Transferred source scale 107.686 -> 106.313 px/mm. The 15.8875 value is correct as a measurement OF THE RULE; using it AT THE BOARD was not."
 }

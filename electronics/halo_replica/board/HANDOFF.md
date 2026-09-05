@@ -1,3 +1,9 @@
+> **⚠ SCALE CORRECTION (L1/M08, 2026-09-05):** any millimetre in this file derived from
+> **15.8875 px/mm** (FCC photo 6 bottom rule) is **1.29 % small**. That is the rule's value
+> **at the rule**, near the frame edge; **at the board** M02 measures **15.6850 px/mm**, by two
+> routes agreeing to 0.23 %. Transferred source scale **107.686 → 106.313 px/mm**. The 15.8875
+> figure is CORRECT as a measurement *of the rule* — what was wrong was using it *at the board*.
+
 # L5 BOARD BUILD — handoff, 2026-09-05 (stood down at fleet quota RED)
 
 **FRONT = COMPONENT SIDE** (Apple FCC caption "MLB - Front"). O'Flynn's "frontside" is

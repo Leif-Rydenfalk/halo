@@ -218,3 +218,55 @@ solder — and is **blind to dark IC bodies**. The nRF52832 is not among the 95.
 list that is arguably correct; for a placement list it is a gap, and it is the gap that matters
 most for the deliverable, because the dark packages are what make the photograph read as an
 AirTag at all.
+
+## 11 · A number that measures the operator, not the board — "the answer is the box"
+
+L1's third dark-package attempt stated a region of interest and ran Otsu inside it. **It returns
+an answer, and the answer is the box.** Padding the ROI 0 / 20 / 40 / 60 px gave **3.35 / 3.98 /
+4.09 / 4.50 mm for the same package** — a **34 % swing driven entirely by the choice of box**,
+touching the ROI edge at every padding.
+
+**This is M01's "394 px was the crop frame" in a new costume**, and it would have passed
+unnoticed on a single run. The tell is the same one: a result that tracks a parameter of the
+*search* rather than a property of the *subject*.
+
+**The general test: sweep the arbitrary parameter and see whether the answer moves with it.**
+L1 now does this everywhere — and it is what converted the UWB can from one number into an
+honest split: short side **3.56–3.67 mm, stable at 2.9 %, MEASURED**; long side **15.6 %
+ROI-dependent, CANNOT DETERMINE**, with 6.735 mm as a lower bound.
+
+## 12 · An assertion in a deliberate break that could not fire
+
+L1's merge-detection break asserted "the merged blob must be 3× bigger than the package". **It
+cannot fire**: the search box caps the blob at the ROI's own area, so a fully merged blob and a
+3×-too-big one are *the same number*. Caught only because it went red when the merge had
+actually happened.
+
+**Correct evidence of merging: the blob fills the WHOLE ROI — 100.0 % against the control's
+82.9 %.** A deliberate break is itself a check, and it needs the same audit as the check it
+tests.
+
+---
+
+## The cross-validation that came free, and is the strongest result in this lane
+
+The nRF52832-CIAA positive control measured **3.218 × 2.940 mm** against a published
+**2.956 × 3.226 mm** — long **−0.23 %**, short **−0.54 %**, aspect **+0.31 %**. The candidate is
+selected as the **most rectangular** in the search box, *not* the closest to the published size,
+because selecting on the answer would make the control agree with itself.
+
+**And it validates the scale, which nobody designed it to do.** That size is reached with the
+*registration-derived* 106.313 px/mm; making the nRF exactly its published size would need
+106.06 px/mm — **0.23 % away**. **A steel rule in a different photograph carried through a
+homography, and a package dimension from a datasheet, agree to 0.23 % with neither fitted to the
+other.** Applying this lane's own rule: each could have disagreed, and the assumption they share
+is only that the board is rigid.
+
+Consequence: **L3's nRF-derived 110.3 px/mm is +3.9 % against two agreeing routes and must be
+re-derived.** Its 0.4 % aspect agreement still stands — aspect is scale-free — so the
+segmentation was sound and the *scale it inferred* was not.
+
+And it resolves the UWB puzzle: L3's 20.8 mm² was **physically impossible**, not a meaningful
+coincidence, since TechInsights' U1 *die* is 20.58 mm² and a SiP must exceed its die. L1's
+rectangle (23.98–28.92 mm²) sits comfortably above it. **The near-equality was a box that
+stopped short** — family 11 again.
