@@ -64,6 +64,23 @@ gauge study.
 
 ---
 
+### C-5 · I quoted a beat-Apple antenna number the board's own source withdraws
+**Raised 2026-09-05.** I told Leif more than once that halo's antenna measures
++0.521 dBi against Apple's filed −3.2 dBi, 3.7 dB better. The replica lane read
+both files and found `board.py` says, under its own heading *what this board does
+not claim*, that the element is a **parametric placeholder** whose S11 is
+CANNOT DETERMINE until the real copper is solved.
+
+Worse, the comparison was never valid even had the number been right. Apple's
+−3.2 dBi is a **measured** figure for a **shipped** antenna in a regulatory test
+report. Ours was a **model** of a **placeholder** on a **different outline**.
+Differencing those produces a headline, not a result — and it is the same defect
+as every other entry in `docs/TOOLS-THAT-LIE.md`, committed by me rather than by
+a tool.
+
+Withdrawn from `spec/comparison.json`. halo has **no antenna number** until the
+solve on the real board returns.
+
 ## CLOSED
 
 ### C-0 · halo was not a copy of the AirTag

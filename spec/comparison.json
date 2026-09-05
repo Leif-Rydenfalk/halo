@@ -1,1363 +1,1363 @@
 {
-  "$halo": 1,
-  "schema": "halo/comparison/1",
-  "lane": "C1",
-  "generated_by": "tools/gen_comparison.py",
-  "leif_verbatim": "create comparisions between the real apple airtag and ours and show me eveyrthing. we must do a detailed pcb comparison and component comparison. first step is recreating it exactly.",
-  "target": {
-    "product": "Apple AirTag, first generation",
-    "model": "A2187",
-    "fcc_id": "BCGA2187",
-    "dossier": "research/01-airtag-hardware.md",
-    "note": "Every Apple-side fact on this page is transcribed from that dossier with its own confidence tag carried through. Where the dossier says a thing is inferred or unverified, this page says so too. Nothing was re-researched by this lane; two things were re-READ off the photographs, and where that reading differs from the dossier it is marked."
-  },
-  "verdict_vocabulary": [
-    [
-      "SAME",
-      "the same part, or the same scheme built the same way. No design difference."
-    ],
-    [
-      "EQUIVALENT",
-      "a different part doing the same job to the same specification. Chosen for sourcing, not for design reasons."
-    ],
-    [
-      "DIVERGED",
-      "a deliberate design difference with a numbered decision behind it. Includes parts halo DELETED because their function moved somewhere else."
-    ],
-    [
-      "MISSING",
-      "the function is absent from halo and nothing in halo replaces it."
-    ],
-    [
-      "ADDED",
-      "halo has it and the AirTag does not. Counted separately; it is not a divergence from Apple, it is a departure from Apple."
-    ]
+ "$halo": 1,
+ "schema": "halo/comparison/1",
+ "lane": "C1",
+ "generated_by": "tools/gen_comparison.py",
+ "leif_verbatim": "create comparisions between the real apple airtag and ours and show me eveyrthing. we must do a detailed pcb comparison and component comparison. first step is recreating it exactly.",
+ "target": {
+  "product": "Apple AirTag, first generation",
+  "model": "A2187",
+  "fcc_id": "BCGA2187",
+  "dossier": "research/01-airtag-hardware.md",
+  "note": "Every Apple-side fact on this page is transcribed from that dossier with its own confidence tag carried through. Where the dossier says a thing is inferred or unverified, this page says so too. Nothing was re-researched by this lane; two things were re-READ off the photographs, and where that reading differs from the dossier it is marked."
+ },
+ "verdict_vocabulary": [
+  [
+   "SAME",
+   "the same part, or the same scheme built the same way. No design difference."
   ],
-  "components": [
-    {
-      "n": 1,
-      "function": "MCU + BLE radio + NFC tag — the brain",
-      "apple": {
-        "refdes": "U1",
-        "part": "Nordic nRF52832-CIAA (nRF52832CIAAE)",
-        "package": "WLCSP-50, 90 nm, 3.0 x 3.2 mm",
-        "marking": "N52832 CIAAE0 2102JK",
-        "side": "back",
-        "conf": "primary",
-        "source": "research/01 §3 U1 — Catley, iFixit, TechInsights; marking read off oflynn-backside-fullres.jpeg"
-      },
-      "halo": {
-        "refs": [
-          "U1"
-        ]
-      },
-      "verdict": "DIVERGED",
-      "decision": "D12",
-      "why": "The nRF54L10 brings Bluetooth Channel Sounding, which ranges tag-to-tag at 6-10 cm without a second radio, and it costs 61 cents LESS than the nRF52832 it replaces.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "Yes. nRF52832-CIAA is a live catalogue part; D12 priced it at $2.81 at a hundred.",
-        "stack": "WLCSP-50 is 3.0 x 3.2 mm against the QFN-48's 5.0 x 5.0 mm, so it FREES board area — but a WLCSP at 0.35 mm pitch needs finer design rules than this 0.127 mm / 0.09 mm board is quoted at, and the escape would have to be re-solved.",
-        "cost": "+$0.61 per unit at a hundred (D12's own figures: $2.81 for the nRF52832 against $2.20/$2.59 for the nRF54L05/L10).",
-        "schedule": "A full re-layout of the SoC block and a firmware port back to nRF52 — which is the direction every existing Find My implementation already runs, so the firmware half gets EASIER, not harder.",
-        "loses": "Channel Sounding, and with it peer-to-peer ranging between Leif's own devices — the one capability D1 says no consumer tag offers at all."
-      }
-    },
-    {
-      "n": 2,
-      "function": "Ultra-wideband transceiver",
-      "apple": {
-        "refdes": "U2",
-        "part": "Apple U1 (die TMKA75, TSMC 16 nm) in a USI SiP module",
-        "package": "shield-can SiP, ~20.58 mm² die",
-        "marking": "none legible; Apple's own FCC internal photo 6 labels this position \"UWB Module\"",
-        "side": "back",
-        "conf": "teardown",
-        "source": "research/01 §3 U2 — Catley (die marking via siliconpr0n), iFixit, TechInsights"
-      },
-      "halo": {
-        "text": "NOT FITTED. J2 reserves eight SMD lands just inboard of the board edge (VDD, GND, SPI SCK/MOSI/MISO) as a stuffing option — a stub, not a DW3110 land pattern, because no sourced DW3110 pin table exists in this repo.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D1, D12",
-      "why": "There is no ultra-wideband transceiver you can buy a hundred of: DW3110 shows 30 in stock, DW3220 shows 9, and the DW1000/DW3210/DW3120/DWM3000 all show zero — so the ranging function moved into the SoC's own radio instead.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": true,
-        "buyable": "NO, AT ANY PRICE. The U1 is Apple-custom silicon in a USI system-in-package and is not sold to anyone. There is no drop-in and no grey channel for it. This is the single hard wall in the whole project.",
-        "stack": "n/a",
-        "cost": "n/a — not a money question.",
-        "schedule": "n/a.",
-        "loses": "Nothing halo has. The nearest CATEGORY substitute is a Qorvo/NXP DW3xxx, which D12 priced at +$8.86 per tag and which is neither pin-, protocol- nor Find-My-compatible; its driver licence also carries a Qorvo-silicon-only field-of-use clause that cannot sit inside AGPL firmware."
-      }
-    },
-    {
-      "n": 3,
-      "function": "Precision Finding — walk-up direction from an iPhone",
-      "apple": {
-        "refdes": "—",
-        "part": "Apple U1 + ANT3 + the 'Rose' coprocessor firmware, commanded over the 'Durian' L2CAP path",
-        "package": "—",
-        "marking": "—",
-        "side": "—",
-        "conf": "teardown",
-        "source": "research/01 §4 and §8 — SEEMOO's opcode list; the U1 holds its own 64-bit processor and side-loads its firmware from the shared flash"
-      },
-      "halo": {
-        "text": "ABSENT. Nothing in halo does this and nothing can.",
-        "refs": []
-      },
-      "verdict": "MISSING",
-      "decision": "D1, D5",
-      "why": "Precision Finding needs Apple's silicon AND Apple's blessing — the MFi programme's terms make the specification Apple Confidential, so reading it and publishing an implementation cannot both happen.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "NO. Two independent walls: the U1 is not sold, and the certified path additionally needs a per-unit Apple Token burned at an MFi factory.",
-        "stack": "n/a",
-        "cost": "n/a.",
-        "schedule": "n/a.",
-        "loses": "—"
-      }
-    },
-    {
-      "n": 4,
-      "function": "Firmware storage — external non-volatile memory",
-      "apple": {
-        "refdes": "U3",
-        "part": "GigaDevice GD25LE32D (iFixit) or GD25LQ32C/GD25LQ32DLIGR (O'Flynn) — 32 Mbit (4 MB) SPI NOR, 1.8 V",
-        "package": "WLCSP-10",
-        "marking": "none read; O'Flynn identified it from the 10-pad WLCSP pinout, J-Flash detected GD25LQ32C",
-        "side": "back",
-        "conf": "primary, but the two teardowns name DIFFERENT part numbers",
-        "source": "research/01 §3 U3 — iFixit and O'Flynn disagree on the exact suffix"
-      },
-      "halo": {
-        "text": "DELETED. No external memory of any kind. Firmware lives in the nRF54L10's own 1.022 MB flash — measured at 13,164 bytes used, 1.27 percent.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D18",
-      "why": "Apple needed 4 MB off-die because the U1's own 'Rose' firmware is staged there too; with no U1 and 1.27 percent of the SoC's internal flash used, an external NOR would be a part, a bus and a power gate carrying nothing.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": false,
-        "buyable": "The FAMILY is catalogue and costs cents. The exact part is NOT settled: iFixit says GD25LE32D, O'Flynn says GD25LQ32C, and those are different order codes. An exact recreation cannot choose between them from the public record.",
-        "stack": "A WLCSP-10 is small, but every square millimetre of the top face inside Ø21.2 mm has only 0.400 mm of clearance under the piezo diaphragm, and the bottom face is over the cell. Four SPI nets plus a gated 1.8 V rail would have to be routed on a board already carrying 255 track segments and 49 vias.",
-        "cost": "Cents for the part; this lane did not fetch a price and does not invent one.",
-        "schedule": "A schematic block, a re-layout of the SoC's south side, and a firmware driver for a memory holding 1.27 percent of what already fits on-die.",
-        "loses": "Nothing. It would be dead weight."
-      }
-    },
-    {
-      "n": 5,
-      "function": "3-axis accelerometer — motion wake, anti-stalking detection",
-      "apple": {
-        "refdes": "U4",
-        "part": "Bosch Sensortec BMA280 (iFixit writes \"BMA28x\")",
-        "package": "metal-lid LGA, 2.0 x 2.0 x 0.95 mm",
-        "marking": "none legible in any photograph in images/airtag",
-        "side": "back",
-        "conf": "teardown",
-        "source": "research/01 §3 U4 — Catley, iFixit, EDN"
-      },
-      "halo": {
-        "refs": [
-          "U2"
-        ]
-      },
-      "verdict": "EQUIVALENT",
-      "decision": null,
-      "why": "Same job, chosen on one number: 50 nA in its lowest-power mode, which is what a coin cell budget turns on.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "The part number is public and Bosch still lists the BMA280; NO STOCK OR PRICE WAS FETCHED by this lane, so its availability today is CANNOT DETERMINE.",
-        "stack": "The BMA280's 2.0 x 2.0 mm LGA and the LIS2DW12's 2.0 x 2.0 mm LGA-12 are the same body size, so the stack does not care. The PINOUT is not the same and the land pattern would be redrawn.",
-        "cost": "Unknown — not fetched. halo's LIS2DW12TR is $0.74 at a thousand.",
-        "schedule": "One footprint, one driver.",
-        "loses": "The BMA280's sleep current is not on file here, so whether the swap costs or saves current is CANNOT DETERMINE."
-      }
-    },
-    {
-      "n": 6,
-      "function": "Audio amplifier — drives the sounder",
-      "apple": {
-        "refdes": "U5",
-        "part": "Maxim MAX98357A class-D digital audio amp (iFixit writes MAX98357B)",
-        "package": "WLCSP",
-        "marking": "none legible in any photograph in images/airtag",
-        "side": "back",
-        "conf": "teardown",
-        "source": "research/01 §3 U5 — Catley and iFixit, who name different suffixes"
-      },
-      "halo": {
-        "text": "DELETED. Two SoC GPIO driven anti-phase into the bender, through R9 (100 R series damping).",
-        "refs": [
-          "R9"
-        ]
-      },
-      "verdict": "DIVERGED",
-      "decision": "D11a",
-      "why": "A bridge-tied class-D swings about 6 Vpp from a 3 V cell and two GPIO driven anti-phase swing the SAME 6 Vpp; what the amplifier bought was CURRENT, and a piezo bender is capacitive — 1.43 mA peak at 21 nF and 3.6 kHz, inside nRF54L high-drive.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": false,
-        "buyable": "The family is catalogue. WHICH PART is not settled — Catley says MAX98357A, iFixit says MAX98357B.",
-        "stack": "A WLCSP plus its bypass on a top face with 0.400 mm of clearance, or a bottom face already carrying the SoC, both crystals, the accelerometer, the inductor and four bulk capacitors.",
-        "cost": "Not fetched; not invented.",
-        "schedule": "A schematic block, an I²S link the firmware does not have, and a re-layout.",
-        "loses": "Nothing, and it would make the sounder WORSE: the amplifier was the right part for Apple's 8 Ω voice coil and is the wrong part for a capacitive bender. Restoring it only makes sense together with row 13, the voice coil."
-      }
-    },
-    {
-      "n": 7,
-      "function": "Main DC-DC buck — 3 V cell to the 1.8 V system rail",
-      "apple": {
-        "refdes": "U6",
-        "part": "TI TPS62746, 300 mA step-down converter",
-        "package": "small, metal-lid",
-        "marking": "98C0051 / TPS746 — and this lane re-read it: the text is WHITE BOARD LEGEND alongside a silver metal-lid part, not a marking printed on the package. The identification stands; the description of where the text sits does not.",
-        "side": "back",
-        "conf": "primary",
-        "source": "research/01 §3 U6 — Catley, iFixit; legend read off oflynn-backside-fullres.jpeg by this lane"
-      },
-      "halo": {
-        "text": "DELETED as a separate part. The nRF54L10's integrated DC-DC does the job with one external inductor, L1.",
-        "refs": [
-          "L1"
-        ]
-      },
-      "verdict": "DIVERGED",
-      "decision": "D12",
-      "why": "The SoC that D12 chose has the converter on-die; keeping a separate buck would be paying for a second copy of something already inside U1.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "Yes — TPS62746 is a live TI catalogue part. No price fetched by this lane.",
-        "stack": "One more IC plus its own inductor and output capacitance on a 62-footprint Ø26 mm board.",
-        "cost": "Not fetched. The part it replaces, L1 (TDK MLZ1608M4R7WT000), is $0.042 at a thousand — so this is a strict addition, not a swap.",
-        "schedule": "A power-tree redesign: the SoC would have to be run from an external rail instead of its own converter.",
-        "loses": "Nothing. It is pure duplication."
-      }
-    },
-    {
-      "n": 8,
-      "function": "Op-amp — speaker feedback / analog conditioning",
-      "apple": {
-        "refdes": "U7",
-        "part": "TI TLV9001IDPWR, 1 MHz rail-to-rail I/O op-amp",
-        "package": "small SC-70 class",
-        "marking": "none legible in any photograph in images/airtag",
-        "side": "back",
-        "conf": "teardown",
-        "source": "research/01 §3 U7 — Catley, iFixit"
-      },
-      "halo": {
-        "text": "DELETED. There is no analog audio path to condition: the drive is two digital pins.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D11a",
-      "why": "The op-amp exists to serve a voice coil that halo does not have; with a bender driven straight off GPIO there is no analog node in the sounder path at all.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "Yes, catalogue, cents. No price fetched by this lane.",
-        "stack": "One more small package on a full board.",
-        "cost": "Not fetched.",
-        "schedule": "Conditional on rows 6 and 13 — it has nothing to do until the amplifier and the coil come back.",
-        "loses": "Nothing."
-      }
-    },
-    {
-      "n": 9,
-      "function": "Load switch / over-voltage protection — gates power to the UWB module and the flash",
-      "apple": {
-        "refdes": "U8",
-        "part": "onsemi FPF2487",
-        "package": "small",
-        "marking": "none legible in any photograph in images/airtag",
-        "side": "back",
-        "conf": "teardown",
-        "source": "research/01 §3 U8 — iFixit"
-      },
-      "halo": {
-        "text": "DELETED. Nothing left to gate: the two loads it switched, the UWB module and the SPI flash, are both gone.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D1, D18",
-      "why": "A power gate with no gated load is a part, a net and a leakage path for nothing.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "Yes, catalogue. No price fetched.",
-        "stack": "One more package.",
-        "cost": "Not fetched.",
-        "schedule": "Conditional on rows 2 and 4 returning first.",
-        "loses": "Nothing."
-      }
-    },
-    {
-      "n": 10,
-      "function": "Secondary regulator / LDO — probably the flash's 1.8 V",
-      "apple": {
-        "refdes": "U9",
-        "part": "UNIDENTIFIED. iFixit lists only \"Likely onsemi DC-DC\" and \"Likely TI DC-DC\".",
-        "package": "SOT-23 class",
-        "marking": "0561 / 1A8 / 1950 — read off oflynn-backside-fullres.jpeg by this lane, confirming the dossier",
-        "side": "back",
-        "conf": "unverified — the dossier marks this row unverified and it stays unverified here",
-        "source": "research/01 §3 U9"
-      },
-      "halo": {
-        "text": "DELETED with the flash it fed.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D18",
-      "why": "It regulated a rail for a memory halo does not have.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "CANNOT BE ORDERED — nobody has identified the part. \"1A8\" and \"1950\" are a marking code and a date code, not an order code, and no public teardown resolves them. An exact recreation would have to reverse-engineer the function from the net it sits on.",
-        "stack": "n/a until it is identified.",
-        "cost": "CANNOT DETERMINE.",
-        "schedule": "Package decapsulation or a marking-code database this repo does not have.",
-        "loses": "Nothing."
-      }
-    },
-    {
-      "n": 11,
-      "function": "HF crystal — the radio reference",
-      "apple": {
-        "refdes": "X1",
-        "part": "32 MHz crystal. MANUFACTURER AND PART NUMBER UNKNOWN.",
-        "package": "2-pad SMD",
-        "marking": "T320 / RBEV — read off oflynn-backside-fullres.jpeg by this lane",
-        "side": "back",
-        "conf": "primary for the marking, none for the part number",
-        "source": "research/01 §3 X1 — Catley"
-      },
-      "halo": {
-        "refs": [
-          "X2"
-        ]
-      },
-      "verdict": "EQUIVALENT",
-      "decision": null,
-      "why": "Same function, same frequency; halo's is specified at CL 8 pF ±10 ppm because that is what the SoC's datasheet asks for.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "NOT AS SUCH. \"T320 / RBEV\" is a vendor marking nobody has resolved to a manufacturer part number. You can buy A 32 MHz crystal; you cannot buy APPLE'S 32 MHz crystal, because the public record does not say what it is.",
-        "stack": "Apple's can is smaller than halo's 2016; matching the footprint means guessing the body size off a photograph.",
-        "cost": "CANNOT DETERMINE.",
-        "schedule": "n/a.",
-        "loses": "Nothing measurable — a crystal is a crystal at this level of detail."
-      }
-    },
-    {
-      "n": 12,
-      "function": "LF crystal — the 32.768 kHz timing the key rotation depends on",
-      "apple": {
-        "refdes": "X2",
-        "part": "32.768 kHz crystal. MANUFACTURER AND PART NUMBER UNKNOWN.",
-        "package": "metal can, gold-rimmed, roughly 3.2 x 1.5 mm",
-        "marking": "A048L — read off oflynn-backside-fullres.jpeg by this lane",
-        "side": "back",
-        "conf": "primary for the marking, none for the part number",
-        "source": "research/01 §3 X2 — Catley"
-      },
-      "halo": {
-        "refs": [
-          "X1"
-        ]
-      },
-      "verdict": "EQUIVALENT",
-      "decision": null,
-      "why": "Same function; halo's Epson part is a JLCPCB Basic part so it carries no feeder fee.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "NOT AS SUCH — same reason as row 11. \"A048L\" resolves to no published part number.",
-        "stack": "Body sizes look comparable; not measured.",
-        "cost": "CANNOT DETERMINE.",
-        "schedule": "n/a.",
-        "loses": "Nothing measurable."
-      }
-    },
-    {
-      "n": 13,
-      "function": "Bulk energy storage — hold-up through the battery-removal reset, and speaker transients",
-      "apple": {
-        "refdes": "C1–C5",
-        "part": "5 x 100 uF electrolytic/tantalum. NO PART NUMBER PUBLISHED.",
-        "package": "large SMD bricks around the front rim",
-        "marking": "J107S — read off oflynn-frontside-fullres.jpeg by this lane; all five located and counted",
-        "side": "front",
-        "conf": "primary for the count and the marking, none for the part",
-        "source": "research/01 §3 C1–C5 — Catley, EDN"
-      },
-      "halo": {
-        "refs": [
-          "C9",
-          "C10",
-          "C11",
-          "C12"
-        ],
-        "note": "4 x 10 uF 0402 = 40 uF, against Apple's 500 uF. One twelfth of the bulk."
-      },
-      "verdict": "DIVERGED",
-      "decision": "D17, D22",
-      "why": "A 100 uF part is a brick and the top face inside Ø21.2 mm allows a 0.400 mm body, so Apple's rim capacitors do not physically fit under halo's diaphragm gap; halo's four sit on the BOTTOM face over the cell where 0.578 mm is allowed and they clear by 0.028 mm.",
-      "exact": {
-        "rank": "expensive",
-        "mpn_public": false,
-        "buyable": "The VALUE is buyable; the PART is not identified — \"J107S\" is a marking, not an order code, and no teardown names the manufacturer.",
-        "stack": "THIS IS THE BLOCKING ONE. No 100 uF capacitor exists at the 0.33 mm body height that D22 measured as the ceiling on the top face, and Apple mounts its five on the FRONT rim of an annular board that halo does not have. Fitting them means the annular outline (row PCB-4) and the carrier come back too.",
-        "cost": "CANNOT DETERMINE for the part. The stack cost is the whole of D17's 1.742 mm recovery.",
-        "schedule": "A full mechanical re-budget, not a BOM change.",
-        "loses": "Whether 40 uF holds halo up long enough for a five-removals reset is NOT MEASURED here — the VBAT_SNS net and TP7 exist for exactly that test and the test has not been run. CANNOT DETERMINE."
-      }
-    },
-    {
-      "n": 14,
-      "function": "Decoupling, matching and discrete passives",
-      "apple": {
-        "refdes": "—",
-        "part": "0201/0402 R, L, C including the antenna matching networks, plus K11-marked Schottky diode pairs mid-ring. NO VALUES PUBLISHED.",
-        "package": "0201 and 0402",
-        "marking": "K11 on the diode pairs; the passives carry none",
-        "side": "both",
-        "conf": "primary for their existence, none for their values",
-        "source": "research/01 §3 — O'Flynn/Catley photographs"
-      },
-      "halo": {
-        "class_of": true,
-        "text": "SAME PACKAGE CLASSES, for the same reason Apple used them. The counts below are read off the resolved bill of materials, not asserted: 0201 dominates and the only 0402s are the four bulk capacitors on the bottom face, which is the one place the height allowance reaches 0.578 mm. The 2.4 GHz matching network is NORDIC'S reference values, not a copy of Apple's — Apple's values are published nowhere.",
-        "refs": [
-          "C18",
-          "L2",
-          "C20"
-        ]
-      },
-      "verdict": "EQUIVALENT",
-      "decision": "D22",
-      "why": "Same package classes for the same reason — height, not money: an 0201 body is 0.33 mm and fits the 0.400 mm allowance, an 0402 body is 0.55 mm and misses by 0.15 mm.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "The parts are catalogue; APPLE'S VALUES ARE NOT PUBLISHED ANYWHERE. No teardown reads a matching network off the board. An exact recreation would have to measure every passive on a physical AirTag.",
-        "stack": "Already matched.",
-        "cost": "$0 — halo is already in the same package classes.",
-        "schedule": "Would need a physical part, an LCR meter and a lot of desoldering.",
-        "loses": "—"
-      }
-    },
-    {
-      "n": 15,
-      "function": "2.4 GHz antenna",
-      "apple": {
-        "refdes": "ANT1",
-        "part": "Inverted-F, LASER-DIRECT-STRUCTURED onto the plastic antenna carrier and soldered to pads at the board edge. Max gain -3.2 dBi.",
-        "package": "LDS trace on a moulded interconnect device",
-        "marking": "Apple's own FCC internal photo 6 labels the position \"Bluetooth Antenna\"",
-        "side": "on the carrier, not on the board",
-        "conf": "primary",
-        "source": "research/01 §3 ANT1 — Catley and Apple's FCC BLE test report E1V2"
-      },
-      "halo": {
-        "text": "AE1 — a rim inverted-F ETCHED IN THE BOARD'S OWN COPPER on the Ø26.00 outline. No carrier, no solder joint. ce-rf models +0.521 dBi, 3.7 dB above Apple's published figure.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D9, D16",
-      "why": "Etched copper is free, travels inside the KiCad design block, and cannot tear off — Apple's carrier antennas are attached by six solder joints that break when the board is lifted.",
-      "exact": {
-        "rank": "expensive",
-        "mpn_public": false,
-        "buyable": "The GEOMETRY is not published — no teardown traces the LDS pattern. And LDS is a PROCESS, not a part: it needs a moulded thermoplastic carrier doped with an LDS additive, a laser-structuring pass and an electroless plating line.",
-        "stack": "It brings the plastic carrier back, and with it the soldered board-to-carrier joints, and D17's flat-inside shell would have to become Apple's carrier-plus-shell pair.",
-        "cost": "CANNOT DETERMINE — no LDS quote was retrieved by this lane or by any other in this repo. For scale, D13 prices a single-cavity aluminium tool for ONE plain moulding at $1,500-3,000 and two-shot tooling at $45,000-95,000; an LDS carrier needs its own tool plus the structuring and plating steps on top.",
-        "schedule": "Tooling lead time plus a process qualification, against etched copper which ships on the same panel as the board.",
-        "loses": "3.7 dB of modelled gain, by Apple's own published number against ce-rf's."
-      }
-    },
-    {
-      "n": 16,
-      "function": "13.56 MHz NFC antenna",
-      "apple": {
-        "refdes": "ANT2",
-        "part": "LDS coil on the carrier with a return trace on the far side of the plastic and a via at each end. In the front photograph the central coil images as WOUND COPPER WIRE, not as a printed trace — this lane records that reading and does not resolve it against the dossier.",
-        "package": "coil on the carrier, around the magnet well",
-        "marking": "Apple's FCC internal photo 5 labels the position \"NFC Antenna\"",
-        "side": "front / carrier",
-        "conf": "primary for its existence and position; the winding technique is a CONFLICT between the dossier's LDS description and what this lane sees in the photograph",
-        "source": "research/01 §3 ANT2; oflynn-frontside-26mm-cropped.jpg read by this lane"
-      },
-      "halo": {
-        "text": "AE2 — a 2-turn coil ETCHED on the outer annulus, ce-rf measures 0.2449 uH, tuned by C24/C25.",
-        "refs": [
-          "C24",
-          "C25"
-        ]
-      },
-      "verdict": "DIVERGED",
-      "decision": "D9",
-      "why": "Same reason as the BLE antenna: copper on the board needs no carrier and no solder joint — and halo's annulus between the cell can and the contact lands is 0.70 mm wide, which holds two turns, not five, so the coil is eight times smaller than Nordic's reference and the tuning capacitors are eight times larger.",
-      "exact": {
-        "rank": "expensive",
-        "mpn_public": false,
-        "buyable": "Geometry not published. Same LDS process problem as row 15 — or, if the photograph is right and it is wound wire, a hand-wound coil and a bonding step.",
-        "stack": "Brings back the carrier and the central magnet well the coil is wound around.",
-        "cost": "CANNOT DETERMINE.",
-        "schedule": "As row 15.",
-        "loses": "Nothing measured. halo's coil inductance is modelled, Apple's is one of lane G's six open bench measurements and has never been measured by anyone in public."
-      }
-    },
-    {
-      "n": 17,
-      "function": "6.5–8 GHz UWB antenna",
-      "apple": {
-        "refdes": "ANT3",
-        "part": "Integral patch, LDS on the carrier. Gain -1.6 dBi at 6.5 GHz, -0.6 dBi at 8 GHz.",
-        "package": "LDS trace on the carrier",
-        "marking": "Apple's FCC internal photo 6 labels the position \"UWB Antenna\"",
-        "side": "on the carrier",
-        "conf": "primary",
-        "source": "research/01 §3 ANT3 — Catley and Apple's FCC UWB test report E2V3"
-      },
-      "halo": {
-        "text": "ABSENT. No UWB radio, so no UWB antenna.",
-        "refs": []
-      },
-      "verdict": "MISSING",
-      "decision": "D1, D12",
-      "why": "It feeds a transceiver that cannot be bought.",
-      "exact": {
-        "rank": "impossible",
-        "mpn_public": false,
-        "buyable": "Pointless without row 2, which is impossible.",
-        "stack": "n/a",
-        "cost": "n/a.",
-        "schedule": "n/a.",
-        "loses": "—"
-      }
-    },
-    {
-      "n": 18,
-      "function": "The sounder",
-      "apple": {
-        "refdes": "SPK",
-        "part": "A copper VOICE COIL glued to the plastic dome, moving against a FIXED CENTRAL MAGNET — the whole housing is the diaphragm. Driven by the MAX98357A across TP1 and TP38. NOT A PART ANYONE SELLS.",
-        "package": "custom motor assembly: coil + rare-earth magnet + the shell",
-        "marking": "—",
-        "side": "centre front, through the board's central hole",
-        "conf": "primary",
-        "source": "research/01 §5 — iFixit (\"the AirTag's body is essentially a speaker driver\"), Catley; iFixit measured 78-80 dB at about 13 cm"
-      },
-      "halo": {
-        "text": "LS1 — a BARE Ø20.0 x 0.21 mm piezo bender BONDED TO THE INSIDE OF THE SHELL, driven anti-phase from two GPIO. Same trick, catalogue part.",
-        "refs": [],
-        "price_from": "cost.sounder"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D11a, D20",
-      "why": "Apple's answer is not buyable and a housed buzzer is 3.5 mm tall against the ~1.5 mm available, so halo keeps Apple's IDEA — the housing is the radiating surface — with a part a fifth of a millimetre thick.",
-      "exact": {
-        "rank": "expensive",
-        "mpn_public": false,
-        "buyable": "NO. There is no order code for Apple's motor. You would specify a coil (wire gauge, turns, former, bond), source a rare-earth magnet and a magnet well, and qualify a glue bond to a moulded dome — a custom assembly with its own tooling and its own line step.",
-        "stack": "It brings back the central magnet and the coil that D17 DELETED — the two parts whose removal freed the 1.742 mm halo spent on the 0.60 mm board and the 0.680 mm diaphragm gap. It also re-opens the annular board outline, because the magnet needs the hole.",
-        "cost": "CANNOT DETERMINE for the assembly. For scale, D11 priced the alternative — a real micro-speaker — at about $5.45, which is more than the rest of halo's board; halo's bender is $0.369 at a thousand.",
-        "schedule": "The longest single item in this table: a custom electro-acoustic part, its tooling, and an acoustic qualification.",
-        "loses": "It would ADD about 3.2 g — D17 measures halo at 7.8 g against the AirTag's 11 g and names Apple's motor as the whole difference. And iFixit found the piezo rivals were \"just as much, if not more, noise\": Apple chose the coil for sound QUALITY, not for volume, and halo is not selling sound quality."
-      },
-      "inconsistency": "electronics/halo_rev_a/schematic.py still carries LS1 = Murata 7BB-20-3, the part D20 declares end-of-life with zero authorized stock beyond 38 pieces at TTI. spec/bom-resolved.json resolves the line to the Same Sky CEB-2021 and marks it RESOLVED BY REPLACEMENT. The schematic has not caught up. Lane C1 does not own electronics/ and reports this rather than fixing it."
-    },
-    {
-      "n": 19,
-      "function": "Power source and battery contacts",
-      "apple": {
-        "refdes": "BATT",
-        "part": "CR2032 3 V lithium coin cell (Panasonic in the FCC test unit), on THREE sprung metal contacts: one negative on the floor of the well, two positive tabs on the wall. BOTH positives must see 3 V to boot; the left one powers the electronics, the right one is sensed at about 50 nA. NO CONNECTORS ANYWHERE ON THE PRODUCT.",
-        "package": "stamped sprung contacts",
-        "marking": "—",
-        "side": "front / battery well",
-        "conf": "primary",
-        "source": "research/01 §2.2 and §6 — FCC internal photo 4; Catley; O'Flynn"
-      },
-      "halo": {
-        "text": "BT1 — CR2032 on THREE sprung C5191 fingers on halo's own three-pad land pattern (no bought holder exists under 2 mm). Pad 1 VDD at 12 o'clock, pads 2 and 3 at 4 and 8 o'clock. The third pad is VBAT_SNS_HI through a 4.7 M / 4.7 M divider — 319 nA at 3 V against Apple's ~50 nA. No connectors on the board either.",
-        "refs": [
-          "R1",
-          "R2"
-        ]
-      },
-      "verdict": "SAME",
-      "decision": null,
-      "why": "Apple's scheme reproduced: three contacts, two rails, one of them sensed rather than loaded, and not a connector on the product.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": true,
-        "buyable": "The cell is a CR2032 either way. The CONTACTS are stamped metal on both products and neither is a catalogue part.",
-        "stack": "Already matched.",
-        "cost": "The sense divider is the only numeric difference: 4.7 M / 4.7 M draws 319 nA against Apple's ~50 nA. Two resistor values close it — 30 M / 30 M would reach 50 nA.",
-        "schedule": "One BOM edit, if it is worth 269 nA on a 2-microamp budget.",
-        "loses": "—"
-      }
-    },
-    {
-      "n": 20,
-      "function": "Debug access",
-      "apple": {
-        "refdes": "TP19–TP36",
-        "part": "Bare test pads. SWD fully exposed on TP30 (nRST) / TP35 (SWCLK) / TP36 (SWDIO) with SWO on TP31; the SPI flash fully exposed on TP19-TP24. APPROTECT is enabled but defeated by a voltage glitch on TP28. UNDOCUMENTED BY APPLE — the numbering is Colin O'Flynn's, not Apple's.",
-        "package": "bare copper pads",
-        "marking": "none — the names come from O'Flynn's map",
-        "side": "front",
-        "conf": "primary",
-        "source": "research/01 §7.1 — O'Flynn's test-point map, the de-facto standard"
-      },
-      "halo": {
-        "text": "J1 — a Tag-Connect TC2030 SWD footprint with a PUBLISHED PINOUT, plus 11 named test points (TP1-TP11), including SEPARATE FORCE AND SENSE pads on VDD and GND so a microamp sleep measurement is a genuine four-wire one, and two ASYMMETRIC fiducials so a Ø26 mm circle has a datum at all.",
-        "refs": []
-      },
-      "verdict": "DIVERGED",
-      "decision": "D6",
-      "why": "D6 point 3: certified tags from eufy and Motorola ship debug pads on the board but undocumented, and halo's differentiator is that ours is a header with a pinout.",
-      "exact": {
-        "rank": "cheap",
-        "mpn_public": false,
-        "buyable": "Bare pads cost nothing. Reproducing APPLE'S map exactly would mean matching a 38-pad numbering scheme invented by a third party for a board layout halo does not share.",
-        "stack": "Free.",
-        "cost": "$0. It is a documentation choice, not a part choice.",
-        "schedule": "n/a.",
-        "loses": "The four-wire force/sense pairs, which exist because a two-wire measurement puts the probe's own contact resistance in series with a single-digit-microamp reading."
-      }
-    },
-    {
-      "n": 21,
-      "function": "Google Find Hub broadcast",
-      "apple": {
-        "refdes": "—",
-        "part": "ABSENT. The AirTag broadcasts on Apple's network only.",
-        "package": "—",
-        "marking": "—",
-        "side": "—",
-        "conf": "primary",
-        "source": "research/04 — no shipping product advertises both networks at once"
-      },
-      "halo": {
-        "text": "Both networks transmit in the SAME advertising event on all three channels. 2,888 bytes of flash and 116 of RAM. Written from Google's published specification byte for byte against its Tables 15 and 17.",
-        "refs": []
-      },
-      "verdict": "ADDED",
-      "decision": "D7, D19",
-      "why": "Lane B found no open-source implementation of the Google network's tag side anywhere; halo appears to be the first.",
-      "exact": {
-        "rank": "n/a",
-        "mpn_public": false,
-        "buyable": "—",
-        "stack": "—",
-        "cost": "—",
-        "schedule": "—",
-        "loses": "—"
-      }
-    },
-    {
-      "n": 22,
-      "function": "Peer-to-peer ranging between your own tags",
-      "apple": {
-        "refdes": "—",
-        "part": "ABSENT. The AirTag ranges to a PHONE, never to another AirTag.",
-        "package": "—",
-        "marking": "—",
-        "side": "—",
-        "conf": "primary",
-        "source": "research/01 §4; research/08"
-      },
-      "halo": {
-        "text": "Bluetooth Channel Sounding on the nRF54L10, specified at 6-20 cm line of sight and sub-metre in a real room on a 30 second update, with the accelerometer's orientation vector attached to every range. Tags report RAW RANGES with quality metadata, never solved positions.",
-        "refs": []
-      },
-      "verdict": "ADDED",
-      "decision": "D12",
-      "why": "This is the capability Leif actually asked for, and Apple's Precision Finding does not provide it at any price.",
-      "exact": {
-        "rank": "n/a",
-        "mpn_public": false,
-        "buyable": "—",
-        "stack": "—",
-        "cost": "—",
-        "schedule": "—",
-        "loses": "NOT MEASURED on halo hardware — the 6-10 cm figure is a published study of eight nRF54L15 devices by others, and verification debt V8 needs two real boards."
-      }
-    }
+  [
+   "EQUIVALENT",
+   "a different part doing the same job to the same specification. Chosen for sourcing, not for design reasons."
   ],
-  "pcb": [
-    {
-      "n": 1,
-      "property": "Bare board outer diameter",
-      "apple": {
-        "value": "~26 mm",
-        "source": "research/01 §2 — Catley's 26 mm disassembled envelope; O'Flynn's own 26 mm circle drawn on frontside-26mm-cropped.jpg",
-        "conf": "primary for the envelope, unverified for the exact figure"
-      },
-      "halo": {
-        "measure": {
-          "path": "out/verify/dfm-jlc-4layer.json",
-          "pointer": "board_facts.size_mm"
-        },
-        "fmt": "%.4f x %.4f mm",
-        "note": "the bounding extent of the Edge_Cuts geometry, measured by `fab dfm` and cross-checked on the exported Gerber (720 points)"
-      },
-      "verdict": "SAME",
-      "decision": null,
-      "why": "26.0000 mm on the major axis, inside Apple's stated ~26 mm. The minor axis is 25.6138 mm because three 26-degree keying notches cut to R12.60."
-    },
-    {
-      "n": 2,
-      "property": "Board thickness",
-      "apple": {
-        "value": "0.30 mm",
-        "source": "research/01 §2 — O'Flynn, verbatim: \"it's 0.3mm PCB so I'm pretty sure I broke some solder joints getting it out\"",
-        "conf": "primary"
-      },
-      "halo": {
-        "measure": {
-          "path": "out/verify/dfm-jlc-4layer.json",
-          "pointer": "board_facts.thickness_mm"
-        },
-        "fmt": "%.2f mm",
-        "note": "read off the board's own stackup by `fab dfm`, not typed"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D17",
-      "why": "TWICE Apple's, deliberately. D11a's piezo deletes Apple's magnet and voice coil, which returns 1.742 mm to the stack, and lane M spent part of it on a board that does not break when you handle it — the failure O'Flynn reports in the sentence above."
-    },
-    {
-      "n": 3,
-      "property": "Layer count",
-      "apple": {
-        "value": "NOT PUBLISHED. 4 is inferred from a 0.3 mm two-sided assembly with routed nets on both faces, and the dossier marks the inference UNVERIFIED. stacksmashing hosts merged layer pictures but states no count.",
-        "source": "research/01 §2",
-        "conf": "unverified"
-      },
-      "halo": {
-        "measure": {
-          "path": "out/verify/dfm-jlc-4layer.json",
-          "pointer": "board_facts.copper_layers"
-        },
-        "fmt": "%d layers",
-        "note": "read off the .kicad_pcb stackup by ce-fab's own parser during `fab dfm`"
-      },
-      "verdict": "CANNOT DETERMINE",
-      "decision": null,
-      "why": "halo's 4 is measured; Apple's 4 is a guess nobody has confirmed. Two numbers that agree are not a match when one of them was never established — this row cannot be graded and is not graded."
-    },
-    {
-      "n": 4,
-      "property": "Board shape",
-      "apple": {
-        "value": "ANNULAR — a round board with a large central hole carrying the magnet and the voice coil. Visible in every teardown photograph.",
-        "source": "research/01 §2 — iFixit, O'Flynn, FCC MLB photos",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "SOLID DISC. No central hole. Three 26-degree keying notches cut to R12.60 on the rim.",
-        "note": "read off the Edge_Cuts geometry"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D11a, D17",
-      "why": "The hole exists to hold a magnet and a coil that halo deleted; with a bender bonded to the shell there is nothing to put in it, and the SoC sits in the middle instead. This is the divergence every other mechanical difference hangs off."
-    },
-    {
-      "n": 5,
-      "property": "Populated sides",
-      "apple": {
-        "value": "2. Front: battery contacts, voice-coil pads TP1/TP38, magnet well, NFC coil, the five 100 uF caps, the test-point field. Back: every IC, both crystals, the UWB module.",
-        "source": "research/01 §2 and §2.1 — O'Flynn's front/back photographs",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "2. Bottom (B.Cu): the SoC, the accelerometer, both crystals, the four bulk capacitors, the DC-DC inductor, the NFC coil and the three battery contacts. Top (F.Cu): the passives, the 2.4 GHz antenna, the test points, the SWD footprint and the UWB stub.",
-        "note": "read off the .kicad_pcb footprint layers"
-      },
-      "verdict": "SAME",
-      "decision": null,
-      "why": "Same strategy — silicon on one face, interface on the other — with the faces assigned differently because halo's cell sits against the bottom, not the front."
-    },
-    {
-      "n": 6,
-      "property": "Connectors",
-      "apple": {
-        "value": "NONE, ANYWHERE. Every off-board connection is a spring contact or a soldered tab: 3 battery contacts, 6 antenna solder joints (\"4x at upper center and 2x bottom left-of-center\"), 2 voice-coil joints.",
-        "source": "research/01 §2.2 — O'Flynn's tear-off joint count",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "NONE either. Three sprung battery fingers, two piezo wire lands, and zero antenna joints because the antennas are etched in the board.",
-        "note": "read off the schematic's connector-less contract"
-      },
-      "verdict": "SAME",
-      "decision": null,
-      "why": "Same principle, and halo goes further: it has six fewer solder joints than Apple because the antennas are copper on the board rather than metal on a carrier."
-    },
-    {
-      "n": 7,
-      "property": "How the antennas attach",
-      "apple": {
-        "value": "THREE antennas LASER-DIRECT-STRUCTURED onto the plastic carrier and SOLDERED to pads at the board edge. NFC has an extra return trace on the far side of the plastic with a via at each end. The board is soldered to the plastic tray and the antenna joints TEAR if you lift it: \"Removing the PCB is likely to cause damage due to the thin PCB and being soldered to the plastic tray.\"",
-        "source": "research/01 §2 and §2.2 — Catley, O'Flynn",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "TWO antennas ETCHED IN THE BOARD'S OWN COPPER. Zero solder joints, zero carrier, and the copper travels inside the KiCad design block so an integrator gets the routed antenna with the schematic.",
-        "note": "AE1 rim inverted-F on F.Cu; AE2 two-turn coil on B.Cu"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D9, D16",
-      "why": "TOGETHER WITH THE THICKNESS, THE DEEPEST DIVERGENCE IN THE PROJECT. Apple's scheme buys antenna volume outside the board at the cost of a tool, a plating line and six joints that break; halo's buys reproducibility and a distributable design block at the cost of antenna volume. D16 also names the limit: a design block carries no design rules, so halo's Ø37.31 mm keep-out has to travel as WORDS an integrator reads and applies — a block that places perfect copper into a host that floods ground over the antenna is worse than no block at all, because it looks correct."
-    },
-    {
-      "n": 8,
-      "property": "Test points",
-      "apple": {
-        "value": "About 38 numbered pads, reachable after popping the back cover without removing the PCB — but the numbering is Colin O'Flynn's, not Apple's, and Apple documents none of it. SWD on TP30/35/36 + SWO on 31; the SPI flash on TP19-24; the glitch pad on TP28.",
-        "source": "research/01 §7.1",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "11 named test points with a published net and a stated reason each, plus a TC2030 SWD footprint and two asymmetric fiducials. TP1/TP2 are VDD force and sense, TP3/TP4 GND force and sense.",
-        "note": "read off the schematic's TESTPOINTS table"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D6",
-      "why": "Fewer pads, every one named and published. The force/sense pairs are the substantive difference: sleep current here is single-digit microamps and a two-wire measurement puts the probe's own contact resistance in series with the thing being measured."
-    },
-    {
-      "n": 9,
-      "property": "Board identity marking",
-      "apple": {
-        "value": "Silkscreen `820-01736-A` on the front, `920-08283-01` on the NFC-antenna side, plus a manufacturing data code (`2920 17` = week 29 of 2020, batch 17) and a lone `C`. Regional codes: US 2920/3020/3120, EU 5220, Asia 1021.",
-        "source": "research/01 §2 — Catley; all three read off oflynn-frontside-26mm-cropped.jpg by this lane",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "M1 — a DataMatrix serial mark on the probed face.",
-        "note": "read off the board's footprint list"
-      },
-      "verdict": "EQUIVALENT",
-      "decision": null,
-      "why": "Both carry a board identity and a per-unit trace; Apple's is human-readable silkscreen, halo's is machine-readable."
-    },
-    {
-      "n": 10,
-      "property": "Controlled impedance on the RF feed",
-      "apple": {
-        "value": "NOT PUBLISHED. No teardown states a stackup, a dielectric height or a trace width.",
-        "source": "research/01 §2 — the layer count itself is unpublished",
-        "conf": "unverified"
-      },
-      "halo": {
-        "value": "0.127 mm trace, computed 51.93 Ω (Hammerstad-Jensen) / 50.26 Ω (IPC-2141) on PCBWay build #35, about 49-50 Ω under solder mask. At JLCPCB the impedance is UNCONTROLLED at 0.60 mm and the number to hand the factory is a RANGE, 47-66 Ω.",
-        "note": "D21, two independent closed forms 1.7 Ω apart"
-      },
-      "verdict": "CANNOT DETERMINE",
-      "decision": "D21",
-      "why": "Apple's side of this row does not exist in public, so there is nothing to compare against. halo's own number is stated with its class of accuracy: a closed form of the ±10 percent class, not a 2D field solve and not a TDR."
-    },
-    {
-      "n": 11,
-      "property": "Copper content",
-      "apple": {
-        "value": "NOT PUBLISHED. TechInsights states only that the radio ICs occupy \"less than 30 mm², or 6%, of the entire available PCB area\".",
-        "source": "research/01 §11",
-        "conf": "secondary"
-      },
-      "halo": {
-        "measure": {
-          "path": "out/verify/dfm-jlc-4layer.json",
-          "pointer": "board_facts"
-        },
-        "fmt": "footprints/vias/tracks",
-        "note": "counted by `fab dfm` off the .kicad_pcb"
-      },
-      "verdict": "CANNOT DETERMINE",
-      "decision": null,
-      "why": "halo's counts are measured; Apple publishes one derived percentage and no counts. Not comparable."
-    },
-    {
-      "n": 12,
-      "property": "Board-to-enclosure attachment",
-      "apple": {
-        "value": "SOLDERED TO THE PLASTIC TRAY. Destructive to remove.",
-        "source": "research/01 §2 — Catley",
-        "conf": "primary"
-      },
-      "halo": {
-        "value": "Not soldered to anything. The board drops into the carrier; the piezo bonds to the SHELL, not to the carrier, because the shell is the diaphragm.",
-        "note": "D17"
-      },
-      "verdict": "DIVERGED",
-      "decision": "D17",
-      "why": "A serviceable board and a repairable product, against an assembly that cannot be taken apart without breaking the antenna joints."
-    }
+  [
+   "DIVERGED",
+   "a deliberate design difference with a numbered decision behind it. Includes parts halo DELETED because their function moved somewhere else."
   ],
-  "locate": {
-    "note": "What this lane can find with its own eyes in the photographs in images/airtag, and what it cannot. LOCATED means a marking was read or Apple's own FCC exhibit labels that position. CANNOT LOCATE means the part is in the dossier's bill of materials and this lane cannot point at it in any photograph in the repo. No part is called located on the strength of the dossier alone.",
-    "rows": [
-      {
-        "part": "nRF52832",
-        "verdict": "LOCATED",
-        "evidence": "marking `N52832 CIAAE0 2102JK` read directly off oflynn-backside-fullres.jpeg at approximately (1210, 795) px"
-      },
-      {
-        "part": "32 MHz crystal",
-        "verdict": "LOCATED",
-        "evidence": "marking `T320 / RBEV` read at (940, 1055) px — but the marking resolves to no manufacturer part number"
-      },
-      {
-        "part": "32.768 kHz crystal",
-        "verdict": "LOCATED",
-        "evidence": "marking `A048L`, rotated 180°, read at (1128, 590) px — same caveat, no part number"
-      },
-      {
-        "part": "TPS62746 buck",
-        "verdict": "LOCATED WITH A CORRECTION",
-        "evidence": "the text `98C0051` / `TPS746` at (2090, 910) px is WHITE BOARD LEGEND beside a silver metal-lid part at (1900, 845) px, not a marking printed on a package. The identification stands; the dossier's description of it as a package marking does not."
-      },
-      {
-        "part": "Apple U1 UWB module",
-        "verdict": "LOCATED",
-        "evidence": "the large shield can at (1170, 2640) px, whose position matches the \"UWB Module\" label on Apple's own FCC internal photo 6"
-      },
-      {
-        "part": "the `1A8` / `1950` SOT (dossier U9)",
-        "verdict": "LOCATED BUT UNIDENTIFIED",
-        "evidence": "markings `0561`, `1A8`, `1950` read at (655, 1700) px. The dossier marks this row UNVERIFIED and it stays unverified — a marking is not a part number."
-      },
-      {
-        "part": "the `6X A75` part",
-        "verdict": "LOCATED BUT UNIDENTIFIED",
-        "evidence": "blue package, marking `6X A75` read at (792, 1465) px. The dossier calls it a tantalum capacitor; nothing in the repo confirms that."
-      },
-      {
-        "part": "five 100 uF bulk capacitors",
-        "verdict": "LOCATED — ALL FIVE",
-        "evidence": "five `J107S`-marked bricks counted around the front rim of oflynn-frontside-26mm-cropped.jpg. The count matches the dossier exactly. `J107S` is a marking, not an order code."
-      },
-      {
-        "part": "NFC coil",
-        "verdict": "LOCATED, WITH A CONFLICT",
-        "evidence": "wound copper is plainly visible around the magnet well in the front photograph. The dossier describes ANT2 as an LDS trace on the carrier. This lane reports both readings and resolves neither."
-      },
-      {
-        "part": "battery contacts",
-        "verdict": "LOCATED",
-        "evidence": "the sprung metal assembly at 12 o'clock on the front photograph; FCC internal photo 4 shows the same three contacts from the battery-well side"
-      },
-      {
-        "part": "board part number and data code",
-        "verdict": "LOCATED",
-        "evidence": "`820-01736-A`, `2920 17` and a lone `C` all read directly off oflynn-frontside-26mm-cropped.jpg"
-      },
-      {
-        "part": "LDS antenna segments on the carrier",
-        "verdict": "LOCATED BY APPLE'S OWN LABEL",
-        "evidence": "grey metallised patches on the plastic carrier in the front photograph; Apple's FCC internal photo 6 names four of these positions Bluetooth Antenna, Bluetooth Module, UWB Module and UWB Antenna. Which patch is which is Apple's claim, not this lane's measurement."
-      },
-      {
-        "part": "GD25 SPI NOR flash (U3)",
-        "verdict": "CANNOT LOCATE",
-        "evidence": "a WLCSP-10 with no legible marking. Nothing in any photograph in images/airtag distinguishes it from the other unmarked small packages."
-      },
-      {
-        "part": "MAX98357A audio amplifier (U5)",
-        "verdict": "CANNOT LOCATE",
-        "evidence": "WLCSP, no legible marking, no third-party annotation in the repo places it"
-      },
-      {
-        "part": "TLV9001 op-amp (U7)",
-        "verdict": "CANNOT LOCATE",
-        "evidence": "no legible marking"
-      },
-      {
-        "part": "FPF2487 load switch (U8)",
-        "verdict": "CANNOT LOCATE",
-        "evidence": "no legible marking"
-      },
-      {
-        "part": "BMA280 accelerometer (U4)",
-        "verdict": "CANNOT LOCATE — TWO CANDIDATES",
-        "evidence": "there are two unmarked metal-lid parts on the back side, at (1900, 845) px and (522, 1670) px. The dossier says one of them is the accelerometer. This lane cannot say which and does not guess."
-      },
-      {
-        "part": "the large unmarked black IC on the back side",
-        "verdict": "PRESENT, UNIDENTIFIED",
-        "evidence": "a moulded package with no marking at all, sitting between the two metal-lid parts at (572, 1417) px. It images at roughly 3 mm on a side, but that is an ESTIMATE off a photograph with no scale reference and an oblique view, not a measurement. It is the largest unidentified part on the board and the dossier does not account for it by name."
-      },
-      {
-        "part": "matching networks and discrete passives",
-        "verdict": "CANNOT IDENTIFY",
-        "evidence": "visible as 0201/0402 bodies throughout; no values are published by anyone and none can be read from a photograph"
-      }
-    ]
-  },
-  "labels": {
-    "scale_note": "SCALE, stated rather than assumed. The two LEFT-HAND halo panels and the Apple FRONT panel are all cropped to the same 26 mm square and rendered at the same pixel size, 36.9 px/mm, so a millimetre is a millimetre across them — but the two scales are not the same KIND of number. halo's is MEASURED: 26.0000 mm on the major axis, read off the Edge_Cuts geometry of its own board file. Apple's is CITED: O'Flynn named his crop `frontside-26mm-cropped` and images/airtag/CATALOG.md records it as \"cropped to the ~26 mm PCB diameter\". The tilde is his and it is carried through — a circle least-squares fitted to the outermost feature in that frame comes out at 825 px across, which on the cited scale is 27.22 mm, consistent with a plastic carrier ring around a 26 mm board but not a confirmation of it. So: the two boards are the same diameter to the precision anyone has published, and no tighter comparison is available from any source in this repo. Apple's BACK photograph has NO scale reference of any kind — it is oblique, and a circular board images 2 460 x 2 760 px in it, an 11 percent difference between the axes. It is shown to fit, and no scale bar is drawn on it.",
-    "apple_front": [
-      {
-        "t": "NFC coil (wound copper)",
-        "x": 0.478,
-        "y": 0.489,
-        "lx": 0.2,
-        "ly": 0.34
-      },
-      {
-        "t": "magnet well — the hole in the board",
-        "x": 0.478,
-        "y": 0.489,
-        "lx": 0.8,
-        "ly": 0.42
-      },
-      {
-        "t": "100 uF bulk, 'J107S' (1 of 5)",
-        "x": 0.062,
-        "y": 0.505,
-        "lx": 0.055,
-        "ly": 0.13
-      },
-      {
-        "t": "100 uF (2 of 5)",
-        "x": 0.087,
-        "y": 0.589,
-        "lx": 0.045,
-        "ly": 0.74
-      },
-      {
-        "t": "100 uF (3 of 5)",
-        "x": 0.15,
-        "y": 0.791,
-        "lx": 0.3,
-        "ly": 0.885
-      },
-      {
-        "t": "100 uF (4 of 5)",
-        "x": 0.928,
-        "y": 0.522,
-        "lx": 0.875,
-        "ly": 0.16
-      },
-      {
-        "t": "100 uF (5 of 5)",
-        "x": 0.831,
-        "y": 0.791,
-        "lx": 0.955,
-        "ly": 0.9
-      },
-      {
-        "t": "3 sprung battery contacts",
-        "x": 0.505,
-        "y": 0.155,
-        "lx": 0.5,
-        "ly": 0.035
-      },
-      {
-        "t": "silkscreen 820-01736-A",
-        "x": 0.494,
-        "y": 0.783,
-        "lx": 0.52,
-        "ly": 0.985
-      },
-      {
-        "t": "data code 2920 17",
-        "x": 0.711,
-        "y": 0.747,
-        "lx": 0.74,
-        "ly": 0.66
-      },
-      {
-        "t": "LDS antenna on the plastic carrier",
-        "x": 0.878,
-        "y": 0.322,
-        "lx": 0.9,
-        "ly": 0.045
-      }
-    ],
-    "apple_back": [
-      {
-        "t": "nRF52832 'N52832 CIAAE0 2102JK'",
-        "x": 0.415,
-        "y": 0.233,
-        "lx": 0.1,
-        "ly": 0.055
-      },
-      {
-        "t": "32 MHz xtal 'T320 RBEV'",
-        "x": 0.322,
-        "y": 0.309,
-        "lx": 0.045,
-        "ly": 0.235
-      },
-      {
-        "t": "32.768 kHz 'A048L'",
-        "x": 0.387,
-        "y": 0.173,
-        "lx": 0.93,
-        "ly": 0.045
-      },
-      {
-        "t": "board legend '98C0051 / TPS746' -> TPS62746",
-        "x": 0.717,
-        "y": 0.267,
-        "lx": 0.93,
-        "ly": 0.145
-      },
-      {
-        "t": "Apple U1 UWB module (shield can)",
-        "x": 0.401,
-        "y": 0.774,
-        "lx": 0.16,
-        "ly": 0.955
-      },
-      {
-        "t": "unmarked black IC — NOT IDENTIFIED",
-        "x": 0.196,
-        "y": 0.415,
-        "lx": 0.03,
-        "ly": 0.5
-      },
-      {
-        "t": "metal-lid part — accelerometer? CANNOT SAY",
-        "x": 0.179,
-        "y": 0.489,
-        "lx": 0.02,
-        "ly": 0.635
-      },
-      {
-        "t": "'6X A75' — unidentified",
-        "x": 0.272,
-        "y": 0.429,
-        "lx": 0.44,
-        "ly": 0.455
-      },
-      {
-        "t": "'1A8 / 1950' SOT — unidentified",
-        "x": 0.225,
-        "y": 0.498,
-        "lx": 0.4,
-        "ly": 0.585
-      }
-    ],
-    "halo_top": [
-      {
-        "ref": "AE1",
-        "t": "AE1 — 2.4 GHz inverted-F, ETCHED COPPER",
-        "lx": 0.93,
-        "ly": 0.1
-      },
-      {
-        "ref": "J1",
-        "t": "J1 — TC2030 SWD, documented pinout",
-        "lx": 0.93,
-        "ly": 0.9
-      },
-      {
-        "ref": "J2",
-        "t": "J2 — reserved UWB stub, not fitted",
-        "lx": 0.04,
-        "ly": 0.62
-      },
-      {
-        "ref": "LS1",
-        "t": "LS1 — piezo bender wire lands",
-        "lx": 0.14,
-        "ly": 0.045
-      },
-      {
-        "ref": "M1",
-        "t": "M1 — DataMatrix serial",
-        "lx": 0.95,
-        "ly": 0.36
-      },
-      {
-        "ref": "L10",
-        "t": "2.4 GHz pi network",
-        "lx": 0.72,
-        "ly": 0.045
-      },
-      {
-        "ref": "TP1",
-        "t": "TP1/TP2 — VDD force and sense",
-        "lx": 0.6,
-        "ly": 0.5
-      },
-      {
-        "ref": "R1",
-        "t": "R1/R2 — cell-removal sense divider",
-        "lx": 0.06,
-        "ly": 0.83
-      }
-    ],
-    "halo_bottom": [
-      {
-        "ref": "U1",
-        "t": "U1 — nRF54L10 QFN-48: MCU + BLE + Channel Sounding + NFC",
-        "lx": 0.12,
-        "ly": 0.055
-      },
-      {
-        "ref": "U2",
-        "t": "U2 — LIS2DW12 accelerometer",
-        "lx": 0.28,
-        "ly": 0.985
-      },
-      {
-        "ref": "X1",
-        "t": "X1 — 32.768 kHz",
-        "lx": 0.94,
-        "ly": 0.3
-      },
-      {
-        "ref": "X2",
-        "t": "X2 — 32 MHz",
-        "lx": 0.06,
-        "ly": 0.66
-      },
-      {
-        "ref": "L1",
-        "t": "L1 — DC-DC inductor (the buck is INSIDE U1)",
-        "lx": 0.03,
-        "ly": 0.4
-      },
-      {
-        "ref": "C9",
-        "t": "C9–C12 — 4 × 10 µF bulk (Apple: 5 × 100 µF)",
-        "lx": 0.03,
-        "ly": 0.6
-      },
-      {
-        "ref": "AE2",
-        "t": "AE2 — NFC coil feed (the coil is the two etched rings)",
-        "lx": 0.03,
-        "ly": 0.2
-      },
-      {
-        "ref": "BT1",
-        "t": "BT1 — 3 sprung battery contacts (this is pad 1)",
-        "lx": 0.9,
-        "ly": 0.93,
-        "xy_mm": [
-          13.0,
-          24.6
-        ]
-      }
-    ]
-  },
-  "bom_identification": {
-    "note": "The AirTag bill of materials as the dossier lists it in §3, graded on ONE question: could you place an order for this exact line? This is the table that answers 'first step is recreating it exactly'.",
-    "rows": [
-      {
-        "line": "U1 — nRF52832-CIAA",
-        "state": "ORDERABLE",
-        "why": "full part number published and confirmed by three independent teardowns"
-      },
-      {
-        "line": "U2 — Apple U1 UWB module",
-        "state": "IDENTIFIED BUT UNBUYABLE",
-        "why": "Apple-custom die in a USI SiP, not sold to anyone at any price"
-      },
-      {
-        "line": "U3 — GD25 32 Mbit SPI NOR",
-        "state": "AMBIGUOUS",
-        "why": "iFixit says GD25LE32D, O'Flynn says GD25LQ32C — different order codes, and the public record does not choose"
-      },
-      {
-        "line": "U4 — Bosch BMA280",
-        "state": "ORDERABLE",
-        "why": "part number published; iFixit hedges to 'BMA28x' but Catley and EDN name the BMA280"
-      },
-      {
-        "line": "U5 — Maxim MAX98357A",
-        "state": "AMBIGUOUS",
-        "why": "Catley says MAX98357A, iFixit says MAX98357B"
-      },
-      {
-        "line": "U6 — TI TPS62746",
-        "state": "ORDERABLE",
-        "why": "board legend TPS746 read directly, and two teardowns agree"
-      },
-      {
-        "line": "U7 — TI TLV9001IDPWR",
-        "state": "ORDERABLE",
-        "why": "full order code published by Catley"
-      },
-      {
-        "line": "U8 — onsemi FPF2487",
-        "state": "ORDERABLE",
-        "why": "named by iFixit"
-      },
-      {
-        "line": "U9 — '1A8' / '1950' SOT",
-        "state": "UNIDENTIFIED",
-        "why": "no teardown resolves the marking; iFixit says only 'likely a DC-DC'"
-      },
-      {
-        "line": "X1 — 32 MHz crystal",
-        "state": "UNIDENTIFIED",
-        "why": "'T320 / RBEV' is a marking, not an order code"
-      },
-      {
-        "line": "X2 — 32.768 kHz crystal",
-        "state": "UNIDENTIFIED",
-        "why": "'A048L' is a marking, not an order code"
-      },
-      {
-        "line": "C1-C5 — 5 x 100 uF",
-        "state": "UNIDENTIFIED",
-        "why": "'J107S' is a marking; the value is known, the part is not"
-      },
-      {
-        "line": "passives — 0201/0402 R, L, C and the matching networks",
-        "state": "UNIDENTIFIED",
-        "why": "no values are published by anybody; nothing can be read off a photograph"
-      },
-      {
-        "line": "ANT1 — BLE inverted-F, LDS on carrier",
-        "state": "UNIDENTIFIED",
-        "why": "geometry not published; only the -3.2 dBi gain is, in Apple's own FCC report"
-      },
-      {
-        "line": "ANT2 — NFC coil on carrier",
-        "state": "UNIDENTIFIED",
-        "why": "geometry not published; inductance never measured by anyone in public"
-      },
-      {
-        "line": "ANT3 — UWB patch, LDS on carrier",
-        "state": "UNIDENTIFIED",
-        "why": "geometry not published; only the -1.6/-0.6 dBi gains are"
-      },
-      {
-        "line": "SPK — voice coil + magnet + shell",
-        "state": "NOT A PART",
-        "why": "a custom motor assembly with no order code anywhere; D11a: 'not a part anyone sells'"
-      },
-      {
-        "line": "BATT — CR2032",
-        "state": "ORDERABLE",
-        "why": "a commodity cell; the FCC test unit's was a Panasonic"
-      }
-    ]
-  },
-  "residual": [
-    "The Apple U1 ultra-wideband module, and with it Precision Finding. Not sold, at any price, to anyone. This is the wall the dossier names and nothing in this comparison moves it.",
-    "Appearing in the stock Find My app. Needs a per-unit Apple Token burned at an MFi factory, and D5 records why halo cannot take that route: reading the MFi specification and publishing an implementation cannot both happen.",
-    "Nine of the eighteen bill-of-materials lines have NO PUBLIC PART NUMBER. That is the real ceiling on 'recreating it exactly', and it is higher than the U1 wall."
+  [
+   "MISSING",
+   "the function is absent from halo and nothing in halo replaces it."
+  ],
+  [
+   "ADDED",
+   "halo has it and the AirTag does not. Counted separately; it is not a divergence from Apple, it is a departure from Apple."
   ]
+ ],
+ "components": [
+  {
+   "n": 1,
+   "function": "MCU + BLE radio + NFC tag — the brain",
+   "apple": {
+    "refdes": "U1",
+    "part": "Nordic nRF52832-CIAA (nRF52832CIAAE)",
+    "package": "WLCSP-50, 90 nm, 3.0 x 3.2 mm",
+    "marking": "N52832 CIAAE0 2102JK",
+    "side": "back",
+    "conf": "primary",
+    "source": "research/01 §3 U1 — Catley, iFixit, TechInsights; marking read off oflynn-backside-fullres.jpeg"
+   },
+   "halo": {
+    "refs": [
+     "U1"
+    ]
+   },
+   "verdict": "DIVERGED",
+   "decision": "D12",
+   "why": "The nRF54L10 brings Bluetooth Channel Sounding, which ranges tag-to-tag at 6-10 cm without a second radio, and it costs 61 cents LESS than the nRF52832 it replaces.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "Yes. nRF52832-CIAA is a live catalogue part; D12 priced it at $2.81 at a hundred.",
+    "stack": "WLCSP-50 is 3.0 x 3.2 mm against the QFN-48's 5.0 x 5.0 mm, so it FREES board area — but a WLCSP at 0.35 mm pitch needs finer design rules than this 0.127 mm / 0.09 mm board is quoted at, and the escape would have to be re-solved.",
+    "cost": "+$0.61 per unit at a hundred (D12's own figures: $2.81 for the nRF52832 against $2.20/$2.59 for the nRF54L05/L10).",
+    "schedule": "A full re-layout of the SoC block and a firmware port back to nRF52 — which is the direction every existing Find My implementation already runs, so the firmware half gets EASIER, not harder.",
+    "loses": "Channel Sounding, and with it peer-to-peer ranging between Leif's own devices — the one capability D1 says no consumer tag offers at all."
+   }
+  },
+  {
+   "n": 2,
+   "function": "Ultra-wideband transceiver",
+   "apple": {
+    "refdes": "U2",
+    "part": "Apple U1 (die TMKA75, TSMC 16 nm) in a USI SiP module",
+    "package": "shield-can SiP, ~20.58 mm² die",
+    "marking": "none legible; Apple's own FCC internal photo 6 labels this position \"UWB Module\"",
+    "side": "back",
+    "conf": "teardown",
+    "source": "research/01 §3 U2 — Catley (die marking via siliconpr0n), iFixit, TechInsights"
+   },
+   "halo": {
+    "text": "NOT FITTED. J2 reserves eight SMD lands just inboard of the board edge (VDD, GND, SPI SCK/MOSI/MISO) as a stuffing option — a stub, not a DW3110 land pattern, because no sourced DW3110 pin table exists in this repo.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D1, D12",
+   "why": "There is no ultra-wideband transceiver you can buy a hundred of: DW3110 shows 30 in stock, DW3220 shows 9, and the DW1000/DW3210/DW3120/DWM3000 all show zero — so the ranging function moved into the SoC's own radio instead.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": true,
+    "buyable": "NO, AT ANY PRICE. The U1 is Apple-custom silicon in a USI system-in-package and is not sold to anyone. There is no drop-in and no grey channel for it. This is the single hard wall in the whole project.",
+    "stack": "n/a",
+    "cost": "n/a — not a money question.",
+    "schedule": "n/a.",
+    "loses": "Nothing halo has. The nearest CATEGORY substitute is a Qorvo/NXP DW3xxx, which D12 priced at +$8.86 per tag and which is neither pin-, protocol- nor Find-My-compatible; its driver licence also carries a Qorvo-silicon-only field-of-use clause that cannot sit inside AGPL firmware."
+   }
+  },
+  {
+   "n": 3,
+   "function": "Precision Finding — walk-up direction from an iPhone",
+   "apple": {
+    "refdes": "—",
+    "part": "Apple U1 + ANT3 + the 'Rose' coprocessor firmware, commanded over the 'Durian' L2CAP path",
+    "package": "—",
+    "marking": "—",
+    "side": "—",
+    "conf": "teardown",
+    "source": "research/01 §4 and §8 — SEEMOO's opcode list; the U1 holds its own 64-bit processor and side-loads its firmware from the shared flash"
+   },
+   "halo": {
+    "text": "ABSENT. Nothing in halo does this and nothing can.",
+    "refs": []
+   },
+   "verdict": "MISSING",
+   "decision": "D1, D5",
+   "why": "Precision Finding needs Apple's silicon AND Apple's blessing — the MFi programme's terms make the specification Apple Confidential, so reading it and publishing an implementation cannot both happen.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "NO. Two independent walls: the U1 is not sold, and the certified path additionally needs a per-unit Apple Token burned at an MFi factory.",
+    "stack": "n/a",
+    "cost": "n/a.",
+    "schedule": "n/a.",
+    "loses": "—"
+   }
+  },
+  {
+   "n": 4,
+   "function": "Firmware storage — external non-volatile memory",
+   "apple": {
+    "refdes": "U3",
+    "part": "GigaDevice GD25LE32D (iFixit) or GD25LQ32C/GD25LQ32DLIGR (O'Flynn) — 32 Mbit (4 MB) SPI NOR, 1.8 V",
+    "package": "WLCSP-10",
+    "marking": "none read; O'Flynn identified it from the 10-pad WLCSP pinout, J-Flash detected GD25LQ32C",
+    "side": "back",
+    "conf": "primary, but the two teardowns name DIFFERENT part numbers",
+    "source": "research/01 §3 U3 — iFixit and O'Flynn disagree on the exact suffix"
+   },
+   "halo": {
+    "text": "DELETED. No external memory of any kind. Firmware lives in the nRF54L10's own 1.022 MB flash — measured at 13,164 bytes used, 1.27 percent.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D18",
+   "why": "Apple needed 4 MB off-die because the U1's own 'Rose' firmware is staged there too; with no U1 and 1.27 percent of the SoC's internal flash used, an external NOR would be a part, a bus and a power gate carrying nothing.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": false,
+    "buyable": "The FAMILY is catalogue and costs cents. The exact part is NOT settled: iFixit says GD25LE32D, O'Flynn says GD25LQ32C, and those are different order codes. An exact recreation cannot choose between them from the public record.",
+    "stack": "A WLCSP-10 is small, but every square millimetre of the top face inside Ø21.2 mm has only 0.400 mm of clearance under the piezo diaphragm, and the bottom face is over the cell. Four SPI nets plus a gated 1.8 V rail would have to be routed on a board already carrying 255 track segments and 49 vias.",
+    "cost": "Cents for the part; this lane did not fetch a price and does not invent one.",
+    "schedule": "A schematic block, a re-layout of the SoC's south side, and a firmware driver for a memory holding 1.27 percent of what already fits on-die.",
+    "loses": "Nothing. It would be dead weight."
+   }
+  },
+  {
+   "n": 5,
+   "function": "3-axis accelerometer — motion wake, anti-stalking detection",
+   "apple": {
+    "refdes": "U4",
+    "part": "Bosch Sensortec BMA280 (iFixit writes \"BMA28x\")",
+    "package": "metal-lid LGA, 2.0 x 2.0 x 0.95 mm",
+    "marking": "none legible in any photograph in images/airtag",
+    "side": "back",
+    "conf": "teardown",
+    "source": "research/01 §3 U4 — Catley, iFixit, EDN"
+   },
+   "halo": {
+    "refs": [
+     "U2"
+    ]
+   },
+   "verdict": "EQUIVALENT",
+   "decision": null,
+   "why": "Same job, chosen on one number: 50 nA in its lowest-power mode, which is what a coin cell budget turns on.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "The part number is public and Bosch still lists the BMA280; NO STOCK OR PRICE WAS FETCHED by this lane, so its availability today is CANNOT DETERMINE.",
+    "stack": "The BMA280's 2.0 x 2.0 mm LGA and the LIS2DW12's 2.0 x 2.0 mm LGA-12 are the same body size, so the stack does not care. The PINOUT is not the same and the land pattern would be redrawn.",
+    "cost": "Unknown — not fetched. halo's LIS2DW12TR is $0.74 at a thousand.",
+    "schedule": "One footprint, one driver.",
+    "loses": "The BMA280's sleep current is not on file here, so whether the swap costs or saves current is CANNOT DETERMINE."
+   }
+  },
+  {
+   "n": 6,
+   "function": "Audio amplifier — drives the sounder",
+   "apple": {
+    "refdes": "U5",
+    "part": "Maxim MAX98357A class-D digital audio amp (iFixit writes MAX98357B)",
+    "package": "WLCSP",
+    "marking": "none legible in any photograph in images/airtag",
+    "side": "back",
+    "conf": "teardown",
+    "source": "research/01 §3 U5 — Catley and iFixit, who name different suffixes"
+   },
+   "halo": {
+    "text": "DELETED. Two SoC GPIO driven anti-phase into the bender, through R9 (100 R series damping).",
+    "refs": [
+     "R9"
+    ]
+   },
+   "verdict": "DIVERGED",
+   "decision": "D11a",
+   "why": "A bridge-tied class-D swings about 6 Vpp from a 3 V cell and two GPIO driven anti-phase swing the SAME 6 Vpp; what the amplifier bought was CURRENT, and a piezo bender is capacitive — 1.43 mA peak at 21 nF and 3.6 kHz, inside nRF54L high-drive.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": false,
+    "buyable": "The family is catalogue. WHICH PART is not settled — Catley says MAX98357A, iFixit says MAX98357B.",
+    "stack": "A WLCSP plus its bypass on a top face with 0.400 mm of clearance, or a bottom face already carrying the SoC, both crystals, the accelerometer, the inductor and four bulk capacitors.",
+    "cost": "Not fetched; not invented.",
+    "schedule": "A schematic block, an I²S link the firmware does not have, and a re-layout.",
+    "loses": "Nothing, and it would make the sounder WORSE: the amplifier was the right part for Apple's 8 Ω voice coil and is the wrong part for a capacitive bender. Restoring it only makes sense together with row 13, the voice coil."
+   }
+  },
+  {
+   "n": 7,
+   "function": "Main DC-DC buck — 3 V cell to the 1.8 V system rail",
+   "apple": {
+    "refdes": "U6",
+    "part": "TI TPS62746, 300 mA step-down converter",
+    "package": "small, metal-lid",
+    "marking": "98C0051 / TPS746 — and this lane re-read it: the text is WHITE BOARD LEGEND alongside a silver metal-lid part, not a marking printed on the package. The identification stands; the description of where the text sits does not.",
+    "side": "back",
+    "conf": "primary",
+    "source": "research/01 §3 U6 — Catley, iFixit; legend read off oflynn-backside-fullres.jpeg by this lane"
+   },
+   "halo": {
+    "text": "DELETED as a separate part. The nRF54L10's integrated DC-DC does the job with one external inductor, L1.",
+    "refs": [
+     "L1"
+    ]
+   },
+   "verdict": "DIVERGED",
+   "decision": "D12",
+   "why": "The SoC that D12 chose has the converter on-die; keeping a separate buck would be paying for a second copy of something already inside U1.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "Yes — TPS62746 is a live TI catalogue part. No price fetched by this lane.",
+    "stack": "One more IC plus its own inductor and output capacitance on a 62-footprint Ø26 mm board.",
+    "cost": "Not fetched. The part it replaces, L1 (TDK MLZ1608M4R7WT000), is $0.042 at a thousand — so this is a strict addition, not a swap.",
+    "schedule": "A power-tree redesign: the SoC would have to be run from an external rail instead of its own converter.",
+    "loses": "Nothing. It is pure duplication."
+   }
+  },
+  {
+   "n": 8,
+   "function": "Op-amp — speaker feedback / analog conditioning",
+   "apple": {
+    "refdes": "U7",
+    "part": "TI TLV9001IDPWR, 1 MHz rail-to-rail I/O op-amp",
+    "package": "small SC-70 class",
+    "marking": "none legible in any photograph in images/airtag",
+    "side": "back",
+    "conf": "teardown",
+    "source": "research/01 §3 U7 — Catley, iFixit"
+   },
+   "halo": {
+    "text": "DELETED. There is no analog audio path to condition: the drive is two digital pins.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D11a",
+   "why": "The op-amp exists to serve a voice coil that halo does not have; with a bender driven straight off GPIO there is no analog node in the sounder path at all.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "Yes, catalogue, cents. No price fetched by this lane.",
+    "stack": "One more small package on a full board.",
+    "cost": "Not fetched.",
+    "schedule": "Conditional on rows 6 and 13 — it has nothing to do until the amplifier and the coil come back.",
+    "loses": "Nothing."
+   }
+  },
+  {
+   "n": 9,
+   "function": "Load switch / over-voltage protection — gates power to the UWB module and the flash",
+   "apple": {
+    "refdes": "U8",
+    "part": "onsemi FPF2487",
+    "package": "small",
+    "marking": "none legible in any photograph in images/airtag",
+    "side": "back",
+    "conf": "teardown",
+    "source": "research/01 §3 U8 — iFixit"
+   },
+   "halo": {
+    "text": "DELETED. Nothing left to gate: the two loads it switched, the UWB module and the SPI flash, are both gone.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D1, D18",
+   "why": "A power gate with no gated load is a part, a net and a leakage path for nothing.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "Yes, catalogue. No price fetched.",
+    "stack": "One more package.",
+    "cost": "Not fetched.",
+    "schedule": "Conditional on rows 2 and 4 returning first.",
+    "loses": "Nothing."
+   }
+  },
+  {
+   "n": 10,
+   "function": "Secondary regulator / LDO — probably the flash's 1.8 V",
+   "apple": {
+    "refdes": "U9",
+    "part": "UNIDENTIFIED. iFixit lists only \"Likely onsemi DC-DC\" and \"Likely TI DC-DC\".",
+    "package": "SOT-23 class",
+    "marking": "0561 / 1A8 / 1950 — read off oflynn-backside-fullres.jpeg by this lane, confirming the dossier",
+    "side": "back",
+    "conf": "unverified — the dossier marks this row unverified and it stays unverified here",
+    "source": "research/01 §3 U9"
+   },
+   "halo": {
+    "text": "DELETED with the flash it fed.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D18",
+   "why": "It regulated a rail for a memory halo does not have.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "CANNOT BE ORDERED — nobody has identified the part. \"1A8\" and \"1950\" are a marking code and a date code, not an order code, and no public teardown resolves them. An exact recreation would have to reverse-engineer the function from the net it sits on.",
+    "stack": "n/a until it is identified.",
+    "cost": "CANNOT DETERMINE.",
+    "schedule": "Package decapsulation or a marking-code database this repo does not have.",
+    "loses": "Nothing."
+   }
+  },
+  {
+   "n": 11,
+   "function": "HF crystal — the radio reference",
+   "apple": {
+    "refdes": "X1",
+    "part": "32 MHz crystal. MANUFACTURER AND PART NUMBER UNKNOWN.",
+    "package": "2-pad SMD",
+    "marking": "T320 / RBEV — read off oflynn-backside-fullres.jpeg by this lane",
+    "side": "back",
+    "conf": "primary for the marking, none for the part number",
+    "source": "research/01 §3 X1 — Catley"
+   },
+   "halo": {
+    "refs": [
+     "X2"
+    ]
+   },
+   "verdict": "EQUIVALENT",
+   "decision": null,
+   "why": "Same function, same frequency; halo's is specified at CL 8 pF ±10 ppm because that is what the SoC's datasheet asks for.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "NOT AS SUCH. \"T320 / RBEV\" is a vendor marking nobody has resolved to a manufacturer part number. You can buy A 32 MHz crystal; you cannot buy APPLE'S 32 MHz crystal, because the public record does not say what it is.",
+    "stack": "Apple's can is smaller than halo's 2016; matching the footprint means guessing the body size off a photograph.",
+    "cost": "CANNOT DETERMINE.",
+    "schedule": "n/a.",
+    "loses": "Nothing measurable — a crystal is a crystal at this level of detail."
+   }
+  },
+  {
+   "n": 12,
+   "function": "LF crystal — the 32.768 kHz timing the key rotation depends on",
+   "apple": {
+    "refdes": "X2",
+    "part": "32.768 kHz crystal. MANUFACTURER AND PART NUMBER UNKNOWN.",
+    "package": "metal can, gold-rimmed, roughly 3.2 x 1.5 mm",
+    "marking": "A048L — read off oflynn-backside-fullres.jpeg by this lane",
+    "side": "back",
+    "conf": "primary for the marking, none for the part number",
+    "source": "research/01 §3 X2 — Catley"
+   },
+   "halo": {
+    "refs": [
+     "X1"
+    ]
+   },
+   "verdict": "EQUIVALENT",
+   "decision": null,
+   "why": "Same function; halo's Epson part is a JLCPCB Basic part so it carries no feeder fee.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "NOT AS SUCH — same reason as row 11. \"A048L\" resolves to no published part number.",
+    "stack": "Body sizes look comparable; not measured.",
+    "cost": "CANNOT DETERMINE.",
+    "schedule": "n/a.",
+    "loses": "Nothing measurable."
+   }
+  },
+  {
+   "n": 13,
+   "function": "Bulk energy storage — hold-up through the battery-removal reset, and speaker transients",
+   "apple": {
+    "refdes": "C1–C5",
+    "part": "5 x 100 uF electrolytic/tantalum. NO PART NUMBER PUBLISHED.",
+    "package": "large SMD bricks around the front rim",
+    "marking": "J107S — read off oflynn-frontside-fullres.jpeg by this lane; all five located and counted",
+    "side": "front",
+    "conf": "primary for the count and the marking, none for the part",
+    "source": "research/01 §3 C1–C5 — Catley, EDN"
+   },
+   "halo": {
+    "refs": [
+     "C9",
+     "C10",
+     "C11",
+     "C12"
+    ],
+    "note": "4 x 10 uF 0402 = 40 uF, against Apple's 500 uF. One twelfth of the bulk."
+   },
+   "verdict": "DIVERGED",
+   "decision": "D17, D22",
+   "why": "A 100 uF part is a brick and the top face inside Ø21.2 mm allows a 0.400 mm body, so Apple's rim capacitors do not physically fit under halo's diaphragm gap; halo's four sit on the BOTTOM face over the cell where 0.578 mm is allowed and they clear by 0.028 mm.",
+   "exact": {
+    "rank": "expensive",
+    "mpn_public": false,
+    "buyable": "The VALUE is buyable; the PART is not identified — \"J107S\" is a marking, not an order code, and no teardown names the manufacturer.",
+    "stack": "THIS IS THE BLOCKING ONE. No 100 uF capacitor exists at the 0.33 mm body height that D22 measured as the ceiling on the top face, and Apple mounts its five on the FRONT rim of an annular board that halo does not have. Fitting them means the annular outline (row PCB-4) and the carrier come back too.",
+    "cost": "CANNOT DETERMINE for the part. The stack cost is the whole of D17's 1.742 mm recovery.",
+    "schedule": "A full mechanical re-budget, not a BOM change.",
+    "loses": "Whether 40 uF holds halo up long enough for a five-removals reset is NOT MEASURED here — the VBAT_SNS net and TP7 exist for exactly that test and the test has not been run. CANNOT DETERMINE."
+   }
+  },
+  {
+   "n": 14,
+   "function": "Decoupling, matching and discrete passives",
+   "apple": {
+    "refdes": "—",
+    "part": "0201/0402 R, L, C including the antenna matching networks, plus K11-marked Schottky diode pairs mid-ring. NO VALUES PUBLISHED.",
+    "package": "0201 and 0402",
+    "marking": "K11 on the diode pairs; the passives carry none",
+    "side": "both",
+    "conf": "primary for their existence, none for their values",
+    "source": "research/01 §3 — O'Flynn/Catley photographs"
+   },
+   "halo": {
+    "class_of": true,
+    "text": "SAME PACKAGE CLASSES, for the same reason Apple used them. The counts below are read off the resolved bill of materials, not asserted: 0201 dominates and the only 0402s are the four bulk capacitors on the bottom face, which is the one place the height allowance reaches 0.578 mm. The 2.4 GHz matching network is NORDIC'S reference values, not a copy of Apple's — Apple's values are published nowhere.",
+    "refs": [
+     "C18",
+     "L2",
+     "C20"
+    ]
+   },
+   "verdict": "EQUIVALENT",
+   "decision": "D22",
+   "why": "Same package classes for the same reason — height, not money: an 0201 body is 0.33 mm and fits the 0.400 mm allowance, an 0402 body is 0.55 mm and misses by 0.15 mm.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "The parts are catalogue; APPLE'S VALUES ARE NOT PUBLISHED ANYWHERE. No teardown reads a matching network off the board. An exact recreation would have to measure every passive on a physical AirTag.",
+    "stack": "Already matched.",
+    "cost": "$0 — halo is already in the same package classes.",
+    "schedule": "Would need a physical part, an LCR meter and a lot of desoldering.",
+    "loses": "—"
+   }
+  },
+  {
+   "n": 15,
+   "function": "2.4 GHz antenna",
+   "apple": {
+    "refdes": "ANT1",
+    "part": "Inverted-F, LASER-DIRECT-STRUCTURED onto the plastic antenna carrier and soldered to pads at the board edge. Max gain -3.2 dBi.",
+    "package": "LDS trace on a moulded interconnect device",
+    "marking": "Apple's own FCC internal photo 6 labels the position \"Bluetooth Antenna\"",
+    "side": "on the carrier, not on the board",
+    "conf": "primary",
+    "source": "research/01 §3 ANT1 — Catley and Apple's FCC BLE test report E1V2"
+   },
+   "halo": {
+    "text": "WITHDRAWN 2026-09-05. halo's antenna number is CANNOT DETERMINE. The +0.521 dBi figure was a model of a PARAMETRIC PLACEHOLDER on a Ø30 mm study outline that is not this board — board.py says so itself under its own heading 'what this board does not claim'. And the comparison was never valid on its own terms: Apple's -3.2 dBi is a MEASURED figure for a SHIPPED antenna in an FCC test report. Differencing a measurement against a model of a placeholder produces a headline, not a result. ce-rf is solving THIS copper now.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D9, D16",
+   "why": "Etched copper is free, travels inside the KiCad design block, and cannot tear off — Apple's carrier antennas are attached by six solder joints that break when the board is lifted.",
+   "exact": {
+    "rank": "expensive",
+    "mpn_public": false,
+    "buyable": "The GEOMETRY is not published — no teardown traces the LDS pattern. And LDS is a PROCESS, not a part: it needs a moulded thermoplastic carrier doped with an LDS additive, a laser-structuring pass and an electroless plating line.",
+    "stack": "It brings the plastic carrier back, and with it the soldered board-to-carrier joints, and D17's flat-inside shell would have to become Apple's carrier-plus-shell pair.",
+    "cost": "CANNOT DETERMINE — no LDS quote was retrieved by this lane or by any other in this repo. For scale, D13 prices a single-cavity aluminium tool for ONE plain moulding at $1,500-3,000 and two-shot tooling at $45,000-95,000; an LDS carrier needs its own tool plus the structuring and plating steps on top.",
+    "schedule": "Tooling lead time plus a process qualification, against etched copper which ships on the same panel as the board.",
+    "loses": "3.7 dB of modelled gain, by Apple's own published number against ce-rf's."
+   }
+  },
+  {
+   "n": 16,
+   "function": "13.56 MHz NFC antenna",
+   "apple": {
+    "refdes": "ANT2",
+    "part": "LDS coil on the carrier with a return trace on the far side of the plastic and a via at each end. In the front photograph the central coil images as WOUND COPPER WIRE, not as a printed trace — this lane records that reading and does not resolve it against the dossier.",
+    "package": "coil on the carrier, around the magnet well",
+    "marking": "Apple's FCC internal photo 5 labels the position \"NFC Antenna\"",
+    "side": "front / carrier",
+    "conf": "primary for its existence and position; the winding technique is a CONFLICT between the dossier's LDS description and what this lane sees in the photograph",
+    "source": "research/01 §3 ANT2; oflynn-frontside-26mm-cropped.jpg read by this lane"
+   },
+   "halo": {
+    "text": "AE2 — a 2-turn coil ETCHED on the outer annulus, ce-rf measures 0.2449 uH, tuned by C24/C25.",
+    "refs": [
+     "C24",
+     "C25"
+    ]
+   },
+   "verdict": "DIVERGED",
+   "decision": "D9",
+   "why": "Same reason as the BLE antenna: copper on the board needs no carrier and no solder joint — and halo's annulus between the cell can and the contact lands is 0.70 mm wide, which holds two turns, not five, so the coil is eight times smaller than Nordic's reference and the tuning capacitors are eight times larger.",
+   "exact": {
+    "rank": "expensive",
+    "mpn_public": false,
+    "buyable": "Geometry not published. Same LDS process problem as row 15 — or, if the photograph is right and it is wound wire, a hand-wound coil and a bonding step.",
+    "stack": "Brings back the carrier and the central magnet well the coil is wound around.",
+    "cost": "CANNOT DETERMINE.",
+    "schedule": "As row 15.",
+    "loses": "Nothing measured. halo's coil inductance is modelled, Apple's is one of lane G's six open bench measurements and has never been measured by anyone in public."
+   }
+  },
+  {
+   "n": 17,
+   "function": "6.5–8 GHz UWB antenna",
+   "apple": {
+    "refdes": "ANT3",
+    "part": "Integral patch, LDS on the carrier. Gain -1.6 dBi at 6.5 GHz, -0.6 dBi at 8 GHz.",
+    "package": "LDS trace on the carrier",
+    "marking": "Apple's FCC internal photo 6 labels the position \"UWB Antenna\"",
+    "side": "on the carrier",
+    "conf": "primary",
+    "source": "research/01 §3 ANT3 — Catley and Apple's FCC UWB test report E2V3"
+   },
+   "halo": {
+    "text": "ABSENT. No UWB radio, so no UWB antenna.",
+    "refs": []
+   },
+   "verdict": "MISSING",
+   "decision": "D1, D12",
+   "why": "It feeds a transceiver that cannot be bought.",
+   "exact": {
+    "rank": "impossible",
+    "mpn_public": false,
+    "buyable": "Pointless without row 2, which is impossible.",
+    "stack": "n/a",
+    "cost": "n/a.",
+    "schedule": "n/a.",
+    "loses": "—"
+   }
+  },
+  {
+   "n": 18,
+   "function": "The sounder",
+   "apple": {
+    "refdes": "SPK",
+    "part": "A copper VOICE COIL glued to the plastic dome, moving against a FIXED CENTRAL MAGNET — the whole housing is the diaphragm. Driven by the MAX98357A across TP1 and TP38. NOT A PART ANYONE SELLS.",
+    "package": "custom motor assembly: coil + rare-earth magnet + the shell",
+    "marking": "—",
+    "side": "centre front, through the board's central hole",
+    "conf": "primary",
+    "source": "research/01 §5 — iFixit (\"the AirTag's body is essentially a speaker driver\"), Catley; iFixit measured 78-80 dB at about 13 cm"
+   },
+   "halo": {
+    "text": "LS1 — a BARE Ø20.0 x 0.21 mm piezo bender BONDED TO THE INSIDE OF THE SHELL, driven anti-phase from two GPIO. Same trick, catalogue part.",
+    "refs": [],
+    "price_from": "cost.sounder"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D11a, D20",
+   "why": "Apple's answer is not buyable and a housed buzzer is 3.5 mm tall against the ~1.5 mm available, so halo keeps Apple's IDEA — the housing is the radiating surface — with a part a fifth of a millimetre thick.",
+   "exact": {
+    "rank": "expensive",
+    "mpn_public": false,
+    "buyable": "NO. There is no order code for Apple's motor. You would specify a coil (wire gauge, turns, former, bond), source a rare-earth magnet and a magnet well, and qualify a glue bond to a moulded dome — a custom assembly with its own tooling and its own line step.",
+    "stack": "It brings back the central magnet and the coil that D17 DELETED — the two parts whose removal freed the 1.742 mm halo spent on the 0.60 mm board and the 0.680 mm diaphragm gap. It also re-opens the annular board outline, because the magnet needs the hole.",
+    "cost": "CANNOT DETERMINE for the assembly. For scale, D11 priced the alternative — a real micro-speaker — at about $5.45, which is more than the rest of halo's board; halo's bender is $0.369 at a thousand.",
+    "schedule": "The longest single item in this table: a custom electro-acoustic part, its tooling, and an acoustic qualification.",
+    "loses": "It would ADD about 3.2 g — D17 measures halo at 7.8 g against the AirTag's 11 g and names Apple's motor as the whole difference. And iFixit found the piezo rivals were \"just as much, if not more, noise\": Apple chose the coil for sound QUALITY, not for volume, and halo is not selling sound quality."
+   },
+   "inconsistency": "electronics/halo_rev_a/schematic.py still carries LS1 = Murata 7BB-20-3, the part D20 declares end-of-life with zero authorized stock beyond 38 pieces at TTI. spec/bom-resolved.json resolves the line to the Same Sky CEB-2021 and marks it RESOLVED BY REPLACEMENT. The schematic has not caught up. Lane C1 does not own electronics/ and reports this rather than fixing it."
+  },
+  {
+   "n": 19,
+   "function": "Power source and battery contacts",
+   "apple": {
+    "refdes": "BATT",
+    "part": "CR2032 3 V lithium coin cell (Panasonic in the FCC test unit), on THREE sprung metal contacts: one negative on the floor of the well, two positive tabs on the wall. BOTH positives must see 3 V to boot; the left one powers the electronics, the right one is sensed at about 50 nA. NO CONNECTORS ANYWHERE ON THE PRODUCT.",
+    "package": "stamped sprung contacts",
+    "marking": "—",
+    "side": "front / battery well",
+    "conf": "primary",
+    "source": "research/01 §2.2 and §6 — FCC internal photo 4; Catley; O'Flynn"
+   },
+   "halo": {
+    "text": "BT1 — CR2032 on THREE sprung C5191 fingers on halo's own three-pad land pattern (no bought holder exists under 2 mm). Pad 1 VDD at 12 o'clock, pads 2 and 3 at 4 and 8 o'clock. The third pad is VBAT_SNS_HI through a 4.7 M / 4.7 M divider — 319 nA at 3 V against Apple's ~50 nA. No connectors on the board either.",
+    "refs": [
+     "R1",
+     "R2"
+    ]
+   },
+   "verdict": "SAME",
+   "decision": null,
+   "why": "Apple's scheme reproduced: three contacts, two rails, one of them sensed rather than loaded, and not a connector on the product.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": true,
+    "buyable": "The cell is a CR2032 either way. The CONTACTS are stamped metal on both products and neither is a catalogue part.",
+    "stack": "Already matched.",
+    "cost": "The sense divider is the only numeric difference: 4.7 M / 4.7 M draws 319 nA against Apple's ~50 nA. Two resistor values close it — 30 M / 30 M would reach 50 nA.",
+    "schedule": "One BOM edit, if it is worth 269 nA on a 2-microamp budget.",
+    "loses": "—"
+   }
+  },
+  {
+   "n": 20,
+   "function": "Debug access",
+   "apple": {
+    "refdes": "TP19–TP36",
+    "part": "Bare test pads. SWD fully exposed on TP30 (nRST) / TP35 (SWCLK) / TP36 (SWDIO) with SWO on TP31; the SPI flash fully exposed on TP19-TP24. APPROTECT is enabled but defeated by a voltage glitch on TP28. UNDOCUMENTED BY APPLE — the numbering is Colin O'Flynn's, not Apple's.",
+    "package": "bare copper pads",
+    "marking": "none — the names come from O'Flynn's map",
+    "side": "front",
+    "conf": "primary",
+    "source": "research/01 §7.1 — O'Flynn's test-point map, the de-facto standard"
+   },
+   "halo": {
+    "text": "J1 — a Tag-Connect TC2030 SWD footprint with a PUBLISHED PINOUT, plus 11 named test points (TP1-TP11), including SEPARATE FORCE AND SENSE pads on VDD and GND so a microamp sleep measurement is a genuine four-wire one, and two ASYMMETRIC fiducials so a Ø26 mm circle has a datum at all.",
+    "refs": []
+   },
+   "verdict": "DIVERGED",
+   "decision": "D6",
+   "why": "D6 point 3: certified tags from eufy and Motorola ship debug pads on the board but undocumented, and halo's differentiator is that ours is a header with a pinout.",
+   "exact": {
+    "rank": "cheap",
+    "mpn_public": false,
+    "buyable": "Bare pads cost nothing. Reproducing APPLE'S map exactly would mean matching a 38-pad numbering scheme invented by a third party for a board layout halo does not share.",
+    "stack": "Free.",
+    "cost": "$0. It is a documentation choice, not a part choice.",
+    "schedule": "n/a.",
+    "loses": "The four-wire force/sense pairs, which exist because a two-wire measurement puts the probe's own contact resistance in series with a single-digit-microamp reading."
+   }
+  },
+  {
+   "n": 21,
+   "function": "Google Find Hub broadcast",
+   "apple": {
+    "refdes": "—",
+    "part": "ABSENT. The AirTag broadcasts on Apple's network only.",
+    "package": "—",
+    "marking": "—",
+    "side": "—",
+    "conf": "primary",
+    "source": "research/04 — no shipping product advertises both networks at once"
+   },
+   "halo": {
+    "text": "Both networks transmit in the SAME advertising event on all three channels. 2,888 bytes of flash and 116 of RAM. Written from Google's published specification byte for byte against its Tables 15 and 17.",
+    "refs": []
+   },
+   "verdict": "ADDED",
+   "decision": "D7, D19",
+   "why": "Lane B found no open-source implementation of the Google network's tag side anywhere; halo appears to be the first.",
+   "exact": {
+    "rank": "n/a",
+    "mpn_public": false,
+    "buyable": "—",
+    "stack": "—",
+    "cost": "—",
+    "schedule": "—",
+    "loses": "—"
+   }
+  },
+  {
+   "n": 22,
+   "function": "Peer-to-peer ranging between your own tags",
+   "apple": {
+    "refdes": "—",
+    "part": "ABSENT. The AirTag ranges to a PHONE, never to another AirTag.",
+    "package": "—",
+    "marking": "—",
+    "side": "—",
+    "conf": "primary",
+    "source": "research/01 §4; research/08"
+   },
+   "halo": {
+    "text": "Bluetooth Channel Sounding on the nRF54L10, specified at 6-20 cm line of sight and sub-metre in a real room on a 30 second update, with the accelerometer's orientation vector attached to every range. Tags report RAW RANGES with quality metadata, never solved positions.",
+    "refs": []
+   },
+   "verdict": "ADDED",
+   "decision": "D12",
+   "why": "This is the capability Leif actually asked for, and Apple's Precision Finding does not provide it at any price.",
+   "exact": {
+    "rank": "n/a",
+    "mpn_public": false,
+    "buyable": "—",
+    "stack": "—",
+    "cost": "—",
+    "schedule": "—",
+    "loses": "NOT MEASURED on halo hardware — the 6-10 cm figure is a published study of eight nRF54L15 devices by others, and verification debt V8 needs two real boards."
+   }
+  }
+ ],
+ "pcb": [
+  {
+   "n": 1,
+   "property": "Bare board outer diameter",
+   "apple": {
+    "value": "~26 mm",
+    "source": "research/01 §2 — Catley's 26 mm disassembled envelope; O'Flynn's own 26 mm circle drawn on frontside-26mm-cropped.jpg",
+    "conf": "primary for the envelope, unverified for the exact figure"
+   },
+   "halo": {
+    "measure": {
+     "path": "out/verify/dfm-jlc-4layer.json",
+     "pointer": "board_facts.size_mm"
+    },
+    "fmt": "%.4f x %.4f mm",
+    "note": "the bounding extent of the Edge_Cuts geometry, measured by `fab dfm` and cross-checked on the exported Gerber (720 points)"
+   },
+   "verdict": "SAME",
+   "decision": null,
+   "why": "26.0000 mm on the major axis, inside Apple's stated ~26 mm. The minor axis is 25.6138 mm because three 26-degree keying notches cut to R12.60."
+  },
+  {
+   "n": 2,
+   "property": "Board thickness",
+   "apple": {
+    "value": "0.30 mm",
+    "source": "research/01 §2 — O'Flynn, verbatim: \"it's 0.3mm PCB so I'm pretty sure I broke some solder joints getting it out\"",
+    "conf": "primary"
+   },
+   "halo": {
+    "measure": {
+     "path": "out/verify/dfm-jlc-4layer.json",
+     "pointer": "board_facts.thickness_mm"
+    },
+    "fmt": "%.2f mm",
+    "note": "read off the board's own stackup by `fab dfm`, not typed"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D17",
+   "why": "TWICE Apple's, deliberately. D11a's piezo deletes Apple's magnet and voice coil, which returns 1.742 mm to the stack, and lane M spent part of it on a board that does not break when you handle it — the failure O'Flynn reports in the sentence above."
+  },
+  {
+   "n": 3,
+   "property": "Layer count",
+   "apple": {
+    "value": "NOT PUBLISHED. 4 is inferred from a 0.3 mm two-sided assembly with routed nets on both faces, and the dossier marks the inference UNVERIFIED. stacksmashing hosts merged layer pictures but states no count.",
+    "source": "research/01 §2",
+    "conf": "unverified"
+   },
+   "halo": {
+    "measure": {
+     "path": "out/verify/dfm-jlc-4layer.json",
+     "pointer": "board_facts.copper_layers"
+    },
+    "fmt": "%d layers",
+    "note": "read off the .kicad_pcb stackup by ce-fab's own parser during `fab dfm`"
+   },
+   "verdict": "CANNOT DETERMINE",
+   "decision": null,
+   "why": "halo's 4 is measured; Apple's 4 is a guess nobody has confirmed. Two numbers that agree are not a match when one of them was never established — this row cannot be graded and is not graded."
+  },
+  {
+   "n": 4,
+   "property": "Board shape",
+   "apple": {
+    "value": "ANNULAR — a round board with a large central hole carrying the magnet and the voice coil. Visible in every teardown photograph.",
+    "source": "research/01 §2 — iFixit, O'Flynn, FCC MLB photos",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "SOLID DISC. No central hole. Three 26-degree keying notches cut to R12.60 on the rim.",
+    "note": "read off the Edge_Cuts geometry"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D11a, D17",
+   "why": "The hole exists to hold a magnet and a coil that halo deleted; with a bender bonded to the shell there is nothing to put in it, and the SoC sits in the middle instead. This is the divergence every other mechanical difference hangs off."
+  },
+  {
+   "n": 5,
+   "property": "Populated sides",
+   "apple": {
+    "value": "2. Front: battery contacts, voice-coil pads TP1/TP38, magnet well, NFC coil, the five 100 uF caps, the test-point field. Back: every IC, both crystals, the UWB module.",
+    "source": "research/01 §2 and §2.1 — O'Flynn's front/back photographs",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "2. Bottom (B.Cu): the SoC, the accelerometer, both crystals, the four bulk capacitors, the DC-DC inductor, the NFC coil and the three battery contacts. Top (F.Cu): the passives, the 2.4 GHz antenna, the test points, the SWD footprint and the UWB stub.",
+    "note": "read off the .kicad_pcb footprint layers"
+   },
+   "verdict": "SAME",
+   "decision": null,
+   "why": "Same strategy — silicon on one face, interface on the other — with the faces assigned differently because halo's cell sits against the bottom, not the front."
+  },
+  {
+   "n": 6,
+   "property": "Connectors",
+   "apple": {
+    "value": "NONE, ANYWHERE. Every off-board connection is a spring contact or a soldered tab: 3 battery contacts, 6 antenna solder joints (\"4x at upper center and 2x bottom left-of-center\"), 2 voice-coil joints.",
+    "source": "research/01 §2.2 — O'Flynn's tear-off joint count",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "NONE either. Three sprung battery fingers, two piezo wire lands, and zero antenna joints because the antennas are etched in the board.",
+    "note": "read off the schematic's connector-less contract"
+   },
+   "verdict": "SAME",
+   "decision": null,
+   "why": "Same principle, and halo goes further: it has six fewer solder joints than Apple because the antennas are copper on the board rather than metal on a carrier."
+  },
+  {
+   "n": 7,
+   "property": "How the antennas attach",
+   "apple": {
+    "value": "THREE antennas LASER-DIRECT-STRUCTURED onto the plastic carrier and SOLDERED to pads at the board edge. NFC has an extra return trace on the far side of the plastic with a via at each end. The board is soldered to the plastic tray and the antenna joints TEAR if you lift it: \"Removing the PCB is likely to cause damage due to the thin PCB and being soldered to the plastic tray.\"",
+    "source": "research/01 §2 and §2.2 — Catley, O'Flynn",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "TWO antennas ETCHED IN THE BOARD'S OWN COPPER. Zero solder joints, zero carrier, and the copper travels inside the KiCad design block so an integrator gets the routed antenna with the schematic.",
+    "note": "AE1 rim inverted-F on F.Cu; AE2 two-turn coil on B.Cu"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D9, D16",
+   "why": "TOGETHER WITH THE THICKNESS, THE DEEPEST DIVERGENCE IN THE PROJECT. Apple's scheme buys antenna volume outside the board at the cost of a tool, a plating line and six joints that break; halo's buys reproducibility and a distributable design block at the cost of antenna volume. D16 also names the limit: a design block carries no design rules, so halo's Ø37.31 mm keep-out has to travel as WORDS an integrator reads and applies — a block that places perfect copper into a host that floods ground over the antenna is worse than no block at all, because it looks correct."
+  },
+  {
+   "n": 8,
+   "property": "Test points",
+   "apple": {
+    "value": "About 38 numbered pads, reachable after popping the back cover without removing the PCB — but the numbering is Colin O'Flynn's, not Apple's, and Apple documents none of it. SWD on TP30/35/36 + SWO on 31; the SPI flash on TP19-24; the glitch pad on TP28.",
+    "source": "research/01 §7.1",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "11 named test points with a published net and a stated reason each, plus a TC2030 SWD footprint and two asymmetric fiducials. TP1/TP2 are VDD force and sense, TP3/TP4 GND force and sense.",
+    "note": "read off the schematic's TESTPOINTS table"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D6",
+   "why": "Fewer pads, every one named and published. The force/sense pairs are the substantive difference: sleep current here is single-digit microamps and a two-wire measurement puts the probe's own contact resistance in series with the thing being measured."
+  },
+  {
+   "n": 9,
+   "property": "Board identity marking",
+   "apple": {
+    "value": "Silkscreen `820-01736-A` on the front, `920-08283-01` on the NFC-antenna side, plus a manufacturing data code (`2920 17` = week 29 of 2020, batch 17) and a lone `C`. Regional codes: US 2920/3020/3120, EU 5220, Asia 1021.",
+    "source": "research/01 §2 — Catley; all three read off oflynn-frontside-26mm-cropped.jpg by this lane",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "M1 — a DataMatrix serial mark on the probed face.",
+    "note": "read off the board's footprint list"
+   },
+   "verdict": "EQUIVALENT",
+   "decision": null,
+   "why": "Both carry a board identity and a per-unit trace; Apple's is human-readable silkscreen, halo's is machine-readable."
+  },
+  {
+   "n": 10,
+   "property": "Controlled impedance on the RF feed",
+   "apple": {
+    "value": "NOT PUBLISHED. No teardown states a stackup, a dielectric height or a trace width.",
+    "source": "research/01 §2 — the layer count itself is unpublished",
+    "conf": "unverified"
+   },
+   "halo": {
+    "value": "0.127 mm trace, computed 51.93 Ω (Hammerstad-Jensen) / 50.26 Ω (IPC-2141) on PCBWay build #35, about 49-50 Ω under solder mask. At JLCPCB the impedance is UNCONTROLLED at 0.60 mm and the number to hand the factory is a RANGE, 47-66 Ω.",
+    "note": "D21, two independent closed forms 1.7 Ω apart"
+   },
+   "verdict": "CANNOT DETERMINE",
+   "decision": "D21",
+   "why": "Apple's side of this row does not exist in public, so there is nothing to compare against. halo's own number is stated with its class of accuracy: a closed form of the ±10 percent class, not a 2D field solve and not a TDR."
+  },
+  {
+   "n": 11,
+   "property": "Copper content",
+   "apple": {
+    "value": "NOT PUBLISHED. TechInsights states only that the radio ICs occupy \"less than 30 mm², or 6%, of the entire available PCB area\".",
+    "source": "research/01 §11",
+    "conf": "secondary"
+   },
+   "halo": {
+    "measure": {
+     "path": "out/verify/dfm-jlc-4layer.json",
+     "pointer": "board_facts"
+    },
+    "fmt": "footprints/vias/tracks",
+    "note": "counted by `fab dfm` off the .kicad_pcb"
+   },
+   "verdict": "CANNOT DETERMINE",
+   "decision": null,
+   "why": "halo's counts are measured; Apple publishes one derived percentage and no counts. Not comparable."
+  },
+  {
+   "n": 12,
+   "property": "Board-to-enclosure attachment",
+   "apple": {
+    "value": "SOLDERED TO THE PLASTIC TRAY. Destructive to remove.",
+    "source": "research/01 §2 — Catley",
+    "conf": "primary"
+   },
+   "halo": {
+    "value": "Not soldered to anything. The board drops into the carrier; the piezo bonds to the SHELL, not to the carrier, because the shell is the diaphragm.",
+    "note": "D17"
+   },
+   "verdict": "DIVERGED",
+   "decision": "D17",
+   "why": "A serviceable board and a repairable product, against an assembly that cannot be taken apart without breaking the antenna joints."
+  }
+ ],
+ "locate": {
+  "note": "What this lane can find with its own eyes in the photographs in images/airtag, and what it cannot. LOCATED means a marking was read or Apple's own FCC exhibit labels that position. CANNOT LOCATE means the part is in the dossier's bill of materials and this lane cannot point at it in any photograph in the repo. No part is called located on the strength of the dossier alone.",
+  "rows": [
+   {
+    "part": "nRF52832",
+    "verdict": "LOCATED",
+    "evidence": "marking `N52832 CIAAE0 2102JK` read directly off oflynn-backside-fullres.jpeg at approximately (1210, 795) px"
+   },
+   {
+    "part": "32 MHz crystal",
+    "verdict": "LOCATED",
+    "evidence": "marking `T320 / RBEV` read at (940, 1055) px — but the marking resolves to no manufacturer part number"
+   },
+   {
+    "part": "32.768 kHz crystal",
+    "verdict": "LOCATED",
+    "evidence": "marking `A048L`, rotated 180°, read at (1128, 590) px — same caveat, no part number"
+   },
+   {
+    "part": "TPS62746 buck",
+    "verdict": "LOCATED WITH A CORRECTION",
+    "evidence": "the text `98C0051` / `TPS746` at (2090, 910) px is WHITE BOARD LEGEND beside a silver metal-lid part at (1900, 845) px, not a marking printed on a package. The identification stands; the dossier's description of it as a package marking does not."
+   },
+   {
+    "part": "Apple U1 UWB module",
+    "verdict": "LOCATED",
+    "evidence": "the large shield can at (1170, 2640) px, whose position matches the \"UWB Module\" label on Apple's own FCC internal photo 6"
+   },
+   {
+    "part": "the `1A8` / `1950` SOT (dossier U9)",
+    "verdict": "LOCATED BUT UNIDENTIFIED",
+    "evidence": "markings `0561`, `1A8`, `1950` read at (655, 1700) px. The dossier marks this row UNVERIFIED and it stays unverified — a marking is not a part number."
+   },
+   {
+    "part": "the `6X A75` part",
+    "verdict": "LOCATED BUT UNIDENTIFIED",
+    "evidence": "blue package, marking `6X A75` read at (792, 1465) px. The dossier calls it a tantalum capacitor; nothing in the repo confirms that."
+   },
+   {
+    "part": "five 100 uF bulk capacitors",
+    "verdict": "LOCATED — ALL FIVE",
+    "evidence": "five `J107S`-marked bricks counted around the front rim of oflynn-frontside-26mm-cropped.jpg. The count matches the dossier exactly. `J107S` is a marking, not an order code."
+   },
+   {
+    "part": "NFC coil",
+    "verdict": "LOCATED, WITH A CONFLICT",
+    "evidence": "wound copper is plainly visible around the magnet well in the front photograph. The dossier describes ANT2 as an LDS trace on the carrier. This lane reports both readings and resolves neither."
+   },
+   {
+    "part": "battery contacts",
+    "verdict": "LOCATED",
+    "evidence": "the sprung metal assembly at 12 o'clock on the front photograph; FCC internal photo 4 shows the same three contacts from the battery-well side"
+   },
+   {
+    "part": "board part number and data code",
+    "verdict": "LOCATED",
+    "evidence": "`820-01736-A`, `2920 17` and a lone `C` all read directly off oflynn-frontside-26mm-cropped.jpg"
+   },
+   {
+    "part": "LDS antenna segments on the carrier",
+    "verdict": "LOCATED BY APPLE'S OWN LABEL",
+    "evidence": "grey metallised patches on the plastic carrier in the front photograph; Apple's FCC internal photo 6 names four of these positions Bluetooth Antenna, Bluetooth Module, UWB Module and UWB Antenna. Which patch is which is Apple's claim, not this lane's measurement."
+   },
+   {
+    "part": "GD25 SPI NOR flash (U3)",
+    "verdict": "CANNOT LOCATE",
+    "evidence": "a WLCSP-10 with no legible marking. Nothing in any photograph in images/airtag distinguishes it from the other unmarked small packages."
+   },
+   {
+    "part": "MAX98357A audio amplifier (U5)",
+    "verdict": "CANNOT LOCATE",
+    "evidence": "WLCSP, no legible marking, no third-party annotation in the repo places it"
+   },
+   {
+    "part": "TLV9001 op-amp (U7)",
+    "verdict": "CANNOT LOCATE",
+    "evidence": "no legible marking"
+   },
+   {
+    "part": "FPF2487 load switch (U8)",
+    "verdict": "CANNOT LOCATE",
+    "evidence": "no legible marking"
+   },
+   {
+    "part": "BMA280 accelerometer (U4)",
+    "verdict": "CANNOT LOCATE — TWO CANDIDATES",
+    "evidence": "there are two unmarked metal-lid parts on the back side, at (1900, 845) px and (522, 1670) px. The dossier says one of them is the accelerometer. This lane cannot say which and does not guess."
+   },
+   {
+    "part": "the large unmarked black IC on the back side",
+    "verdict": "PRESENT, UNIDENTIFIED",
+    "evidence": "a moulded package with no marking at all, sitting between the two metal-lid parts at (572, 1417) px. It images at roughly 3 mm on a side, but that is an ESTIMATE off a photograph with no scale reference and an oblique view, not a measurement. It is the largest unidentified part on the board and the dossier does not account for it by name."
+   },
+   {
+    "part": "matching networks and discrete passives",
+    "verdict": "CANNOT IDENTIFY",
+    "evidence": "visible as 0201/0402 bodies throughout; no values are published by anyone and none can be read from a photograph"
+   }
+  ]
+ },
+ "labels": {
+  "scale_note": "SCALE, stated rather than assumed. The two LEFT-HAND halo panels and the Apple FRONT panel are all cropped to the same 26 mm square and rendered at the same pixel size, 36.9 px/mm, so a millimetre is a millimetre across them — but the two scales are not the same KIND of number. halo's is MEASURED: 26.0000 mm on the major axis, read off the Edge_Cuts geometry of its own board file. Apple's is CITED: O'Flynn named his crop `frontside-26mm-cropped` and images/airtag/CATALOG.md records it as \"cropped to the ~26 mm PCB diameter\". The tilde is his and it is carried through — a circle least-squares fitted to the outermost feature in that frame comes out at 825 px across, which on the cited scale is 27.22 mm, consistent with a plastic carrier ring around a 26 mm board but not a confirmation of it. So: the two boards are the same diameter to the precision anyone has published, and no tighter comparison is available from any source in this repo. Apple's BACK photograph has NO scale reference of any kind — it is oblique, and a circular board images 2 460 x 2 760 px in it, an 11 percent difference between the axes. It is shown to fit, and no scale bar is drawn on it.",
+  "apple_front": [
+   {
+    "t": "NFC coil (wound copper)",
+    "x": 0.478,
+    "y": 0.489,
+    "lx": 0.2,
+    "ly": 0.34
+   },
+   {
+    "t": "magnet well — the hole in the board",
+    "x": 0.478,
+    "y": 0.489,
+    "lx": 0.8,
+    "ly": 0.42
+   },
+   {
+    "t": "100 uF bulk, 'J107S' (1 of 5)",
+    "x": 0.062,
+    "y": 0.505,
+    "lx": 0.055,
+    "ly": 0.13
+   },
+   {
+    "t": "100 uF (2 of 5)",
+    "x": 0.087,
+    "y": 0.589,
+    "lx": 0.045,
+    "ly": 0.74
+   },
+   {
+    "t": "100 uF (3 of 5)",
+    "x": 0.15,
+    "y": 0.791,
+    "lx": 0.3,
+    "ly": 0.885
+   },
+   {
+    "t": "100 uF (4 of 5)",
+    "x": 0.928,
+    "y": 0.522,
+    "lx": 0.875,
+    "ly": 0.16
+   },
+   {
+    "t": "100 uF (5 of 5)",
+    "x": 0.831,
+    "y": 0.791,
+    "lx": 0.955,
+    "ly": 0.9
+   },
+   {
+    "t": "3 sprung battery contacts",
+    "x": 0.505,
+    "y": 0.155,
+    "lx": 0.5,
+    "ly": 0.035
+   },
+   {
+    "t": "silkscreen 820-01736-A",
+    "x": 0.494,
+    "y": 0.783,
+    "lx": 0.52,
+    "ly": 0.985
+   },
+   {
+    "t": "data code 2920 17",
+    "x": 0.711,
+    "y": 0.747,
+    "lx": 0.74,
+    "ly": 0.66
+   },
+   {
+    "t": "LDS antenna on the plastic carrier",
+    "x": 0.878,
+    "y": 0.322,
+    "lx": 0.9,
+    "ly": 0.045
+   }
+  ],
+  "apple_back": [
+   {
+    "t": "nRF52832 'N52832 CIAAE0 2102JK'",
+    "x": 0.415,
+    "y": 0.233,
+    "lx": 0.1,
+    "ly": 0.055
+   },
+   {
+    "t": "32 MHz xtal 'T320 RBEV'",
+    "x": 0.322,
+    "y": 0.309,
+    "lx": 0.045,
+    "ly": 0.235
+   },
+   {
+    "t": "32.768 kHz 'A048L'",
+    "x": 0.387,
+    "y": 0.173,
+    "lx": 0.93,
+    "ly": 0.045
+   },
+   {
+    "t": "board legend '98C0051 / TPS746' -> TPS62746",
+    "x": 0.717,
+    "y": 0.267,
+    "lx": 0.93,
+    "ly": 0.145
+   },
+   {
+    "t": "Apple U1 UWB module (shield can)",
+    "x": 0.401,
+    "y": 0.774,
+    "lx": 0.16,
+    "ly": 0.955
+   },
+   {
+    "t": "unmarked black IC — NOT IDENTIFIED",
+    "x": 0.196,
+    "y": 0.415,
+    "lx": 0.03,
+    "ly": 0.5
+   },
+   {
+    "t": "metal-lid part — accelerometer? CANNOT SAY",
+    "x": 0.179,
+    "y": 0.489,
+    "lx": 0.02,
+    "ly": 0.635
+   },
+   {
+    "t": "'6X A75' — unidentified",
+    "x": 0.272,
+    "y": 0.429,
+    "lx": 0.44,
+    "ly": 0.455
+   },
+   {
+    "t": "'1A8 / 1950' SOT — unidentified",
+    "x": 0.225,
+    "y": 0.498,
+    "lx": 0.4,
+    "ly": 0.585
+   }
+  ],
+  "halo_top": [
+   {
+    "ref": "AE1",
+    "t": "AE1 — 2.4 GHz inverted-F, ETCHED COPPER",
+    "lx": 0.93,
+    "ly": 0.1
+   },
+   {
+    "ref": "J1",
+    "t": "J1 — TC2030 SWD, documented pinout",
+    "lx": 0.93,
+    "ly": 0.9
+   },
+   {
+    "ref": "J2",
+    "t": "J2 — reserved UWB stub, not fitted",
+    "lx": 0.04,
+    "ly": 0.62
+   },
+   {
+    "ref": "LS1",
+    "t": "LS1 — piezo bender wire lands",
+    "lx": 0.14,
+    "ly": 0.045
+   },
+   {
+    "ref": "M1",
+    "t": "M1 — DataMatrix serial",
+    "lx": 0.95,
+    "ly": 0.36
+   },
+   {
+    "ref": "L10",
+    "t": "2.4 GHz pi network",
+    "lx": 0.72,
+    "ly": 0.045
+   },
+   {
+    "ref": "TP1",
+    "t": "TP1/TP2 — VDD force and sense",
+    "lx": 0.6,
+    "ly": 0.5
+   },
+   {
+    "ref": "R1",
+    "t": "R1/R2 — cell-removal sense divider",
+    "lx": 0.06,
+    "ly": 0.83
+   }
+  ],
+  "halo_bottom": [
+   {
+    "ref": "U1",
+    "t": "U1 — nRF54L10 QFN-48: MCU + BLE + Channel Sounding + NFC",
+    "lx": 0.12,
+    "ly": 0.055
+   },
+   {
+    "ref": "U2",
+    "t": "U2 — LIS2DW12 accelerometer",
+    "lx": 0.28,
+    "ly": 0.985
+   },
+   {
+    "ref": "X1",
+    "t": "X1 — 32.768 kHz",
+    "lx": 0.94,
+    "ly": 0.3
+   },
+   {
+    "ref": "X2",
+    "t": "X2 — 32 MHz",
+    "lx": 0.06,
+    "ly": 0.66
+   },
+   {
+    "ref": "L1",
+    "t": "L1 — DC-DC inductor (the buck is INSIDE U1)",
+    "lx": 0.03,
+    "ly": 0.4
+   },
+   {
+    "ref": "C9",
+    "t": "C9–C12 — 4 × 10 µF bulk (Apple: 5 × 100 µF)",
+    "lx": 0.03,
+    "ly": 0.6
+   },
+   {
+    "ref": "AE2",
+    "t": "AE2 — NFC coil feed (the coil is the two etched rings)",
+    "lx": 0.03,
+    "ly": 0.2
+   },
+   {
+    "ref": "BT1",
+    "t": "BT1 — 3 sprung battery contacts (this is pad 1)",
+    "lx": 0.9,
+    "ly": 0.93,
+    "xy_mm": [
+     13.0,
+     24.6
+    ]
+   }
+  ]
+ },
+ "bom_identification": {
+  "note": "The AirTag bill of materials as the dossier lists it in §3, graded on ONE question: could you place an order for this exact line? This is the table that answers 'first step is recreating it exactly'.",
+  "rows": [
+   {
+    "line": "U1 — nRF52832-CIAA",
+    "state": "ORDERABLE",
+    "why": "full part number published and confirmed by three independent teardowns"
+   },
+   {
+    "line": "U2 — Apple U1 UWB module",
+    "state": "IDENTIFIED BUT UNBUYABLE",
+    "why": "Apple-custom die in a USI SiP, not sold to anyone at any price"
+   },
+   {
+    "line": "U3 — GD25 32 Mbit SPI NOR",
+    "state": "AMBIGUOUS",
+    "why": "iFixit says GD25LE32D, O'Flynn says GD25LQ32C — different order codes, and the public record does not choose"
+   },
+   {
+    "line": "U4 — Bosch BMA280",
+    "state": "ORDERABLE",
+    "why": "part number published; iFixit hedges to 'BMA28x' but Catley and EDN name the BMA280"
+   },
+   {
+    "line": "U5 — Maxim MAX98357A",
+    "state": "AMBIGUOUS",
+    "why": "Catley says MAX98357A, iFixit says MAX98357B"
+   },
+   {
+    "line": "U6 — TI TPS62746",
+    "state": "ORDERABLE",
+    "why": "board legend TPS746 read directly, and two teardowns agree"
+   },
+   {
+    "line": "U7 — TI TLV9001IDPWR",
+    "state": "ORDERABLE",
+    "why": "full order code published by Catley"
+   },
+   {
+    "line": "U8 — onsemi FPF2487",
+    "state": "ORDERABLE",
+    "why": "named by iFixit"
+   },
+   {
+    "line": "U9 — '1A8' / '1950' SOT",
+    "state": "UNIDENTIFIED",
+    "why": "no teardown resolves the marking; iFixit says only 'likely a DC-DC'"
+   },
+   {
+    "line": "X1 — 32 MHz crystal",
+    "state": "UNIDENTIFIED",
+    "why": "'T320 / RBEV' is a marking, not an order code"
+   },
+   {
+    "line": "X2 — 32.768 kHz crystal",
+    "state": "UNIDENTIFIED",
+    "why": "'A048L' is a marking, not an order code"
+   },
+   {
+    "line": "C1-C5 — 5 x 100 uF",
+    "state": "UNIDENTIFIED",
+    "why": "'J107S' is a marking; the value is known, the part is not"
+   },
+   {
+    "line": "passives — 0201/0402 R, L, C and the matching networks",
+    "state": "UNIDENTIFIED",
+    "why": "no values are published by anybody; nothing can be read off a photograph"
+   },
+   {
+    "line": "ANT1 — BLE inverted-F, LDS on carrier",
+    "state": "UNIDENTIFIED",
+    "why": "geometry not published; only the -3.2 dBi gain is, in Apple's own FCC report"
+   },
+   {
+    "line": "ANT2 — NFC coil on carrier",
+    "state": "UNIDENTIFIED",
+    "why": "geometry not published; inductance never measured by anyone in public"
+   },
+   {
+    "line": "ANT3 — UWB patch, LDS on carrier",
+    "state": "UNIDENTIFIED",
+    "why": "geometry not published; only the -1.6/-0.6 dBi gains are"
+   },
+   {
+    "line": "SPK — voice coil + magnet + shell",
+    "state": "NOT A PART",
+    "why": "a custom motor assembly with no order code anywhere; D11a: 'not a part anyone sells'"
+   },
+   {
+    "line": "BATT — CR2032",
+    "state": "ORDERABLE",
+    "why": "a commodity cell; the FCC test unit's was a Panasonic"
+   }
+  ]
+ },
+ "residual": [
+  "The Apple U1 ultra-wideband module, and with it Precision Finding. Not sold, at any price, to anyone. This is the wall the dossier names and nothing in this comparison moves it.",
+  "Appearing in the stock Find My app. Needs a per-unit Apple Token burned at an MFi factory, and D5 records why halo cannot take that route: reading the MFi specification and publishing an implementation cannot both happen.",
+  "Nine of the eighteen bill-of-materials lines have NO PUBLIC PART NUMBER. That is the real ceiling on 'recreating it exactly', and it is higher than the U1 wall."
+ ]
 }
