@@ -487,6 +487,26 @@ def main():
 
     b = Board("halo_replica", outline=poly, layers=layers,
               title="halo Replica MLB — reconstruction from photographs")
+
+    # THE THICKNESS, READ FROM THE SPEC RATHER THAN TYPED. Without this the board
+    # carried KiCad's default 1.6 mm against an as-drawn 0.30 mm — 5.33x — and it
+    # reached the file a fabricator quotes from. A default nobody overrode is not
+    # a decision. This is the METROLOGY branch, so it takes the as-drawn number
+    # exactly; the fab branch departs deliberately and records why separately.
+    import json as _json, os as _os
+    _sp = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                        "halo_replica", "board", "stackup", "stackup.json")
+    if not _os.path.exists(_sp):
+        _sp = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                            "board", "stackup", "stackup.json")
+    _t = float(_json.load(open(_sp))["replica_as_drawn"]["board_thickness_mm"])
+    b.thickness(_t, why="the as-drawn Replica spec, read from stackup.json "
+                        "replica_as_drawn.board_thickness_mm - never typed here")
+    if abs(b.board_thickness() - _t) > 1e-6:
+        raise SystemExit("THICKNESS REFUSED: board reads back %.4f mm, spec %.4f mm"
+                         % (b.board_thickness(), _t))
+    print("THICKNESS  board declares %.2f mm, read back from the board "
+          "(as-drawn spec)" % b.board_thickness())
     libinfo = _register_library()
 
     n_arc, n_seg, n_pocket = _edge_shapes(b, shapes, pocket_segs, walls)

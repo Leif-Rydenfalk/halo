@@ -104,6 +104,24 @@ for g in sorted(by_group):
 # rather than converging on a bad answer.
 BACK_SIDE = {"BT1"}
 b = Board("halo_replica_fab", diameter=D_BOARD, layers=4)
+
+# THE THICKNESS A FABRICATOR QUOTES FROM. Without this line the board carried
+# KiCad's default 1.6 mm — 5.33x the 0.30 mm the Replica is drawn to — and it
+# was found by another lane sweeping every board in the tree, not by anything
+# here. A default nobody overrode is not a decision; it is what survives when
+# nobody looks, and it is what reaches the fab.
+#
+# 0.8 mm rather than 0.30 mm, and that is a DEPARTURE, not the spec:
+# MEASURED 2026-09-05 in JLCPCB's live quote configurator, at 4 layers the
+# Thickness row offers 0.8/1.0/1.2/1.6/2.0 and GREYS OUT 0.4 and 0.6. Clicking
+# the greyed value does nothing; switching to 2 layers re-enables 0.4, so the
+# disable tracks layer count and is a real constraint. This board is 4 layers,
+# so 0.8 mm is the thinnest orderable — 0.50 mm from Apple, and recorded as such
+# in fab/README.md's departures table.
+T_BOARD = 0.8
+b.thickness(T_BOARD, why="thinnest orderable at 4 layers at JLCPCB, measured "
+                         "2026-09-05 in the live configurator; the Replica is "
+                         "drawn to 0.30 mm, which no 4-layer process here offers")
 # `at=` is in the board's own frame - origin at the corner of the bounding box,
 # NOT at the disc centre. `coords` is centred on (0,0). Add the centre, or every
 # part is placed hypot(15,15) = 21.21 mm away from where it was meant to go.
@@ -211,6 +229,14 @@ if _off:
           f"footprints read back OUTSIDE the Ø{2*_er:.2f} mm Edge.Cuts circle at "
           f"({_ecx:.2f},{_ecy:.2f}): {sorted(_off)[:6]}")
     raise SystemExit(1)
+_t_read = b.board_thickness()
+if abs(_t_read - T_BOARD) > 1e-6:
+    print(f"THICKNESS  REFUSED: asked for {T_BOARD} mm, the board declares "
+          f"{_t_read} mm. 1.6 mm means it was never set — that is KiCad's "
+          f"default and it is what a fabricator would quote from.")
+    raise SystemExit(1)
+print(f"THICKNESS  board declares {_t_read} mm (read back from the board), "
+      f"{_t_read - 0.30:+.2f} mm from the 0.30 mm the Replica is drawn to")
 print(f"ONBOARD    45/45 footprints read back inside Edge.Cuts "
       f"(Ø{2*_er:.2f} mm at {_ecx:.2f},{_ecy:.2f}) - measured from the board")
 placed = sorted(set(pos) | BACK_SIDE)

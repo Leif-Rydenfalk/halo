@@ -12,6 +12,27 @@ non-zero sizes, twenty-odd files. That package would have been uploaded.
 """
 import os, subprocess, sys, zipfile, shutil, json
 
+# ---------------------------------------------------------------------------
+# WHAT JLCPCB WILL ACTUALLY ACCEPT, MEASURED IN THEIR LIVE QUOTE CONFIGURATOR
+# on 2026-09-05 — not read off a capability page, because the capability page
+# does not resolve it. It lists FR4 generally as 0.4/0.6/0.8/1.0/1.2/1.6/2.0 AND
+# lists four-layer as 0.8/1.0/1.2/1.6, and those two statements disagree.
+#
+# Measured by uploading a real package and reading the Thickness row:
+#   4 layers -> 0.8 1.0 1.2 1.6 2.0     0.4 and 0.6 GREYED OUT
+#   2 layers -> 0.4 0.8 1.0 1.2 1.6 2.0        0.6 greyed
+# Negative control: clicking 0.4mm at 4 layers does nothing, the selection stays
+# on 1.6 — it is disabled, not merely unstyled.
+# Positive control: switching 4 -> 2 layers RE-ENABLES 0.4mm in the same page
+# with no reload, so the disable tracks layer count and is a real constraint.
+#
+# This exists because a zip named "jlc_0.4mm" for a 4-layer board is a file that
+# gets uploaded and refused. Refusing to write it here is cheaper than finding
+# out at the vendor.
+JLC_THICKNESS = {2: {"0.4","0.8","1.0","1.2","1.6","2.0"},
+                 4: {"0.8","1.0","1.2","1.6","2.0"}}
+JLC_MEASURED  = "2026-09-05, live cart.jlcpcb.com/quote configurator"
+
 LAYERS = ["F.Cu","In1.Cu","In2.Cu","B.Cu","F.Mask","B.Mask",
           "F.Silkscreen","B.Silkscreen","F.Paste","B.Paste","Edge.Cuts","F.Fab","B.Fab"]
 PCB = os.path.expanduser("~/dev/ce-workshop/ce-pcb/bin/pcb")
@@ -24,7 +45,27 @@ def main():
     if len(sys.argv) < 3:
         print(__doc__); return 2
     board, outdir = sys.argv[1], sys.argv[2]
-    ths = sys.argv[sys.argv.index("--thickness")+1:] if "--thickness" in sys.argv else ["0.4","0.8"]
+    ths = sys.argv[sys.argv.index("--thickness")+1:] if "--thickness" in sys.argv else ["0.8"]
+    allow = "--allow-unorderable" in sys.argv
+    ths = [t for t in ths if not t.startswith("--")]
+    n_layers = 4
+    okset = JLC_THICKNESS.get(n_layers)
+    bad = [t for t in ths if okset and t not in okset]
+    if bad and not allow:
+        print(f"REFUSED: {', '.join(bad)} mm is NOT orderable at {n_layers} layers "
+              f"at JLCPCB.\n"
+              f"  Measured {JLC_MEASURED}: at {n_layers} layers the Thickness row "
+              f"offers {' '.join(sorted(okset))} and greys out the rest.\n"
+              f"  Clicking the greyed value does nothing; switching to 2 layers "
+              f"re-enables 0.4, so it is a real constraint and not styling.\n"
+              f"  Orderable here: {' '.join(sorted(okset))}\n"
+              f"  PCBWay documents 0.40 mm at 4 layers (medium difficulty) — that is a\n"
+              f"  DOCUMENTATION claim, never put through their order form. If you want\n"
+              f"  the package anyway for a different vendor: --allow-unorderable")
+        return 1
+    if bad and allow:
+        print(f"NOTE: writing {', '.join(bad)} mm although JLCPCB does not offer it at "
+              f"{n_layers} layers (measured {JLC_MEASURED}). For another vendor only.")
     if not os.path.exists(board): print(f"CANNOT DETERMINE: no board at {board}"); return 2
     gdir = os.path.join(outdir, "gerber")
     shutil.rmtree(gdir, ignore_errors=True); os.makedirs(gdir, exist_ok=True)
@@ -66,6 +107,13 @@ def main():
                 f"  surface finish  ENIG preferred (Apple's is gold-bearing; measured, see stackup.json)\n"
                 f"  min trace/space 0.09/0.09 mm or wider — inside JLC's 4-layer capability\n"
                 f"  min via         0.25 mm pad / 0.15 mm drill\n"
+                f"\nORDERABLE AT JLCPCB AT 4 LAYERS: "
+                f"{' '.join(sorted(JLC_THICKNESS[4]))} mm\n"
+                f"  measured {JLC_MEASURED} — 0.4 and 0.6 mm are greyed out at 4\n"
+                f"  layers and clicking them does nothing; they re-enable at 2 layers.\n"
+                f"  Selecting 0.4 mm also FORCES ENIG (HASL is greyed — you cannot\n"
+                f"  hot-air-level a board that thin), collapses Material Type to\n"
+                f"  FR4 TG135 alone, and took a 5-off order from $4.10 to about $66.\n"
                 f"\nNOBODY HAS BUILT ONE. This board has never been powered on.\n")
         zips.append(z); print(f"ZIP      {z}  ({os.path.getsize(z)/1024:.0f} KB)")
 
