@@ -126,6 +126,13 @@ def main():
                                                   "outline-fit-oflynn.json"))
     ap.add_argument("--handoff", default=os.path.join(REPL, "metrology",
                                                       "HANDOFF-positions-front.json"))
+    ap.add_argument("--apple-profile", default=os.path.join(
+        REPL, "metrology", "outline-raw-oflynn-front.json"),
+        help="APPLE'S OWN SILHOUETTE, as measured off this photograph by L1 in this "
+             "same frame. It is used instead of re-thresholding the crop because the "
+             "crop contains dark background furniture -- wooden blocks above and below "
+             "the board -- that no luma threshold can separate from the board, and "
+             "which inflated Apple's measured diameter by 3.2 pct. Stated, not hidden.")
     ap.add_argument("--px-per-mm", type=float, default=48.0,
                     help="the ONE shared scale of the montage")
     ap.add_argument("--margin-mm", type=float, default=1.0)
@@ -184,27 +191,50 @@ def main():
     if ours.size != ph.size:
         ours = ours.resize(ph.size, Image.LANCZOS)
 
-    # ---- X1
+    # ---- OURS: measured off the finished panel, so this tests the DRAWING
     mo = board_mask(np.asarray(ours.convert("L")).astype(float))
-    mp = board_mask(np.asarray(ph.convert("L")).astype(float))
-    if mo is None or mp is None:
-        say("X2 FIRED: no board silhouette in one of the panels.")
+    if mo is None:
+        say("X2 FIRED: no board silhouette in our panel.")
         sys.exit(CANNOT)
     _, _, oth, orad = radial(mo)
-    _, _, pth, prad = radial(mp)
-    od = 2 * np.nanmean(orad) / a.px_per_mm
-    pd = 2 * np.nanmean(prad) / a.px_per_mm
+    ours_mm = orad / a.px_per_mm
+    if a.break_rotation:
+        # X3 must reach X4 as well as X5. Panel 1 is rendered by a subprocess that knows
+        # nothing about the break, so the break is applied to the profile read off it.
+        # Without this line X4 sat at 0.413 mm under a 12 deg rotation and the control
+        # was a decoration on that number.
+        ours_mm = np.interp((oth + a.break_rotation) % 360, oth, ours_mm, period=360)
+
+    # ---- APPLE'S: L1's measurement of THIS photograph, in THIS frame.
+    # Re-thresholding the crop was tried and rejected: the wooden blocks in the
+    # photograph's background merge into the board blob and inflated Apple's
+    # diameter by 3.20%. That is a defect in the instrument, not a disagreement
+    # about the board, and swapping in a worse instrument to make a number look
+    # better would be the same error in the other direction.
+    ap_raw = json.load(open(a.apple_profile))
+    art = np.array(ap_raw["outer_r_theta"], float)
+    a_th, a_r = art[:, 0], art[:, 1] / ppm_ph
+    tt = np.concatenate([a_th - 360, a_th, a_th + 360])
+    vv = np.concatenate([a_r, a_r, a_r])
+    apple_mm = np.interp(oth, tt, vv)
+    near = np.min(np.abs(((oth[:, None] - tt[None, :] + 180) % 360) - 180), axis=1)
+    apple_mm = np.where(near <= 1.0, apple_mm, np.nan)   # never interpolate a gap
+    say(f"Apple's silhouette: L1's own measurement of this photograph, "
+        f"{len(a_th)} rays; {int(np.isnan(apple_mm).sum())}/{len(oth)} comparison rays "
+        f"fall in a measurement gap and are DROPPED, not interpolated")
+
+    pth = oth
+    od = 2 * np.nanmean(np.where(np.isfinite(apple_mm), ours_mm, np.nan))
+    pd = 2 * np.nanmean(apple_mm)
     x1 = abs(od - pd) / pd <= 0.01
     say(f"X1 scale match: OURS 2 x mean r {od:.3f} mm | APPLE'S {pd:.3f} mm | "
         f"delta {abs(od-pd)/pd*100:.2f}% -> {'ok' if x1 else 'FIRED'}")
 
-    # ---- X4: our fitted outline against the photograph's own silhouette
-    ours_r = np.interp(pth, oth, orad, period=360)
-    resid = (ours_r - prad) / a.px_per_mm
+    resid = ours_mm - apple_mm
     good = np.isfinite(resid)
     rms = float(np.sqrt(np.nanmean(resid[good] ** 2)))
     p95 = float(np.nanpercentile(np.abs(resid[good]), 95))
-    say(f"X4 outline residual over {good.sum()} rays: RMS {rms:.3f} mm, "
+    say(f"X4 outline residual (OUR DRAWN PANEL vs Apple's measured silhouette) over {good.sum()} rays: RMS {rms:.3f} mm, "
         f"p95 {p95:.3f} mm, max {np.nanmax(np.abs(resid[good])):.3f} mm")
 
     # ---- X5 COMPONENT LANDING, with its negative control
@@ -297,6 +327,10 @@ def main():
         (f"X1 scale match        OURS {od:.3f} mm   APPLE'S {pd:.3f} mm   "
          f"delta {abs(od-pd)/pd*100:.2f}%   (registration is by construction, "
          f"nothing was fitted to make these agree)", INK),
+        ("Apple's silhouette is L1's measurement of THIS photograph in THIS frame. "
+         "Re-thresholding the crop was tried and REJECTED: the wooden blocks behind "
+         "the board merge into it and inflated Apple's diameter by 3.20%.",
+         (110, 110, 114)),
         ("", INK),
         (f"outer diameter {od_p['value']:.3f} mm AS DRAWN - {od_p['state']}; "
          f"bound {od_p['bound_mm'][0]}-{od_p['bound_mm'][1]} mm and if it moves it "

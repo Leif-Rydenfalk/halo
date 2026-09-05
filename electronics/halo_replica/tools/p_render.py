@@ -183,7 +183,7 @@ def rrect(d, cx, cy, L, S, ang_deg, fill, outline=None, w=1):
     d.polygon(pts, fill=fill, outline=outline, width=w)
 
 
-def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None):
+def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None, break_drop=0):
     k = (board["parameters"]["outer_diameter_mm"]["value"]
          / fit["outer"]["circle_diameter_mm"])          # THE one scale parameter
     th, r_mm, unmeas = outer_poly(fit)
@@ -218,6 +218,11 @@ def draw(board, fit, handoff, ppm, margin_mm, caption, quiet_angle=None):
 
     angles = orientation_table()
     comps, skipped, gaps = load_components(handoff, angles)
+    if break_drop:
+        # R5 break: silently lose markers AFTER the flags were honoured, which is what
+        # a real drawing bug looks like. The row count stays whole, so the accounting
+        # identity is what has to catch it.
+        comps = comps[:-break_drop]
 
     n_sized = n_pos = n_susp = 0
     for c in comps:
@@ -460,15 +465,12 @@ def main():
     ap.add_argument("--break-scale", type=float, default=None,
                     help="multiply the DRAW scale only, and watch R3 fire")
     ap.add_argument("--break-drop", type=int, default=0,
-                    help="silently drop N component rows, and watch R5 fire")
+                    help="silently lose N markers at DRAW time, and watch R5 fire")
     a = ap.parse_args()
 
     board = json.load(open(a.board))
     fit = json.load(open(a.fit))
     handoff = json.load(open(a.handoff))
-    if a.break_drop:
-        handoff = dict(handoff)
-        handoff["rows"] = handoff["rows"][:-a.break_drop]
 
     say("INPUT")
     say(f"  board.json   {os.path.relpath(a.board, ROOT)}")
@@ -481,7 +483,8 @@ def main():
     say("")
 
     ppm = a.px_per_mm * (a.break_scale or 1.0)
-    im, Rmax, info = draw(board, fit, handoff, ppm, a.margin_mm, not a.no_caption)
+    im, Rmax, info = draw(board, fit, handoff, ppm, a.margin_mm, not a.no_caption,
+                          break_drop=a.break_drop)
     say(f"scale parameter k = {info['k']:.6f}  "
         f"(drawn OD {board['parameters']['outer_diameter_mm']['value']} mm / "
         f"fitted OD {fit['outer']['circle_diameter_mm']:.4f} mm)")

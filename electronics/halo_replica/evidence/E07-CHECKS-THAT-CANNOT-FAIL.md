@@ -270,3 +270,53 @@ And it resolves the UWB puzzle: L3's 20.8 mm² was **physically impossible**, no
 coincidence, since TechInsights' U1 *die* is 20.58 mm² and a SiP must exceed its die. L1's
 rectangle (23.98–28.92 mm²) sits comfortably above it. **The near-equality was a box that
 stopped short** — family 11 again.
+
+## 13 · A similarity you manufactured by transcription — the colour-sampling trap
+
+The board lane proposed sampling **median RGB from Apple's photograph inside each marker** and
+painting our parts that colour, to fix "ours reads as a schematic". It asked, correctly, whether
+that was a measurement or an invention.
+
+**It is a measurement — and that is not the problem.** The problem is that it makes the
+comparison **circular**. Paint our board with pixels taken from Apple's photograph, set the two
+side by side, and they *must* agree on colour, because we copied it. Leif's test is whether ours
+looks like theirs; **a similarity manufactured by transcription measures nothing.**
+
+This would have been the most *visually persuasive* instance of the whole family, which is
+exactly what makes it the most dangerous — every other entry here is caught by a number, this one
+is caught only by asking where the agreement came from.
+
+**Ruling:** the primary comparison stays **uncoloured** — that is the render Leif's test applies
+to. A coloured version may exist as a **separate** file, labelled on its face that appearance was
+sampled from Apple's photograph and that the panel cannot be used to judge colour fidelity, and
+no similarity metric may touch it.
+
+**The non-circular fix is to colour by part TYPE** — ENIG gold for a pad, silver for a can, olive
+or white for an MLCC — from a palette derived from the material rather than from the target
+image. That **can disagree** with the photograph, which is what makes it worth drawing.
+
+**And the honest cause is not colour at all:** ours reads as a schematic mostly because we do not
+*know what most of these parts are*. A palette cannot fix that, and must not be allowed to paper
+over the identification gap.
+
+---
+
+## The state of the deliverable when this was written
+
+`board/out/compare-front.png` — ours | Apple's | overlay at one shared 48 px/mm, **registration
+by construction rather than by alignment**, so nothing was fitted to make the panels agree.
+
+**The one number that matters:** median luma under our 97 markers **185.0**, against **60.0** at
+4000 random annulus positions; **42.3 % of markers above the random 90th percentile against 10 %
+by construction — 4.23× enrichment.** The random draw is the negative control and it is printed
+on the picture. The positions are not decoration.
+
+**What is still wrong, worst first, in the board lane's own assessment:** Apple's centre hole has
+a step/notch at 3–5 o'clock that our fitted superellipse rounds straight over, so our line runs
+through Apple's board material there — a real geometric miss. The dark regions are **empty**, and
+knowingly so. Ours reads as a schematic. The grey rim material is absent (no geometry exists for
+it — CANNOT DETERMINE). The outer outline overshoots at 2–4 o'clock, fit residual sd 0.277 mm
+with 55.8 % of rays inside ±0.15 mm (a plain circle gives 0.563 mm / 43.6 %). And **X1 is firing
+at 3.20 % and the montage exits FAIL** — diagnosed as the instrument, not the board: dark wooden
+blocks in the photograph's background merge into the thresholded silhouette. **Not loosened. A
+failing check that names its own cause is worth more than a passing one.**
