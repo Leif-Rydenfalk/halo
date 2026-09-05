@@ -138,6 +138,25 @@ def strict_eq(got, want):
     return type(got) is type(want) and got == want
 
 # ------------------------------------------------------- the deliverable check
+# THREE LEGS, AND THEY ARE THE SAME LESSON THREE TIMES.
+#   EXISTS   - a file of the right kind is here and the tool can open it
+#   CURRENT  - it is newer than every one of its sources
+#   VALID    - its source PASSED ITS OWN CHECKS at the time it was cut
+# EXISTENCE IS ADJACENT TO CURRENCY, AND CURRENCY IS ADJACENT TO VALIDITY. Each
+# assertion is satisfied by something NEXT TO what we actually want, and each one alone
+# reads as evidence. This is not belt-and-braces: an artifact can independently be
+# absent, be stale, or be a faithful cut of a board that was never fit to cut - and the
+# third is the worst, because the first two assertions wave it through.
+#
+# WHY AN EMBEDDED TIMESTAMP IS PREFERRED OVER mtime, and this argument is what keeps the
+# check alive rather than merely correct: A FRESH CHECKOUT SCRAMBLES EVERY MTIME ON DISK.
+# An mtime-only rule calls an entire correct repository stale the first time anyone
+# clones it, and a rule that cries wolf on a clean clone gets switched off within a week.
+# Every row therefore prefers a stamp the generating tool wrote into its own output and
+# records which kind it used.
+#
+# AND WHY A MISSING SOURCE IS CANNOT DETERMINE RATHER THAN RED: a rule that is always red
+# is a rule people learn to skip.
 # The counter in threeway.json measures distance FROM APPLE. This measures DISTANCE
 # FROM A DELIVERABLE, and the project ran a whole day without it: 130 measurement
 # files, 40 measuring tools, and nothing KiCad can open. A row here is GREEN only when
@@ -172,7 +191,43 @@ def _iso(t):
     import datetime as _dt
     return _dt.datetime.fromisoformat(t.split("+")[0])
 
-def check_deliverable(root=HALO, tree="replica"):
+def read_verdict(paths, kind):
+    """(errors, unconnected, why) from a KiCad DRC/ERC report. None,None if unreadable.
+
+    ONLY severity 'error' counts against the verdict; warnings are reported and do not
+    block. UNCONNECTED ITEMS ARE COUNTED SEPARATELY AND DO BLOCK a fabrication set,
+    because an unrouted net is not a warning about a board, it is a board that does not
+    work.
+    """
+    # THE NEWEST REPORT ONLY. The first version SUMMED every matching file, which across
+    # halo_rev_a's tree meant adding up several reports of several different boards and
+    # returning 1016 errors that belonged to none of them. A verdict is a property of ONE
+    # run against ONE board; a sum over runs is a number adjacent to a verdict.
+    best, bts = None, None
+    for p in paths:
+        try:
+            d = json.load(open(p))
+        except Exception:
+            continue
+        t = d.get("date") or "0000"
+        if bts is None or t > bts:
+            best, bts = d, t
+    if best is None:
+        return None, None
+    err = unc = 0
+    seen = True
+    for d in (best,):
+        if kind == "drc":
+            err += sum(1 for v in d.get("violations", [])
+                       if str(v.get("severity", "error")).lower() == "error")
+            unc += len(d.get("unconnected_items", []))
+        else:
+            for sh in d.get("sheets", []):
+                err += sum(1 for v in sh.get("violations", [])
+                           if str(v.get("severity", "error")).lower() == "error")
+    return (err, unc)
+
+def check_deliverable(root=HALO, tree="replica", roots=None):
     """Existence AND currency. A row is green only when a file of the right kind opens
     AND is newer than every one of its sources.
 
@@ -181,7 +236,11 @@ def check_deliverable(root=HALO, tree="replica"):
     """
     import glob as _glob
     doc = json.load(open(DELIV))
-    roots = [os.path.join(root, r) for r in doc["trees"][tree]["roots"]]
+    if roots is None:
+        roots = [os.path.join(root, r) for r in doc["trees"][tree]["roots"]]
+    else:
+        roots = [os.path.abspath(r) for r in roots]
+        doc["trees"].setdefault(tree, {"label": ", ".join(roots), "apply_copy_guard": False})
     out, stamps = [], {}
     specs = {r["id"]: r for r in doc["rows"]}
 
@@ -207,7 +266,15 @@ def check_deliverable(root=HALO, tree="replica"):
                 reasons.append(f"{rel}: does not open as {row['what'].lower()} - "
                                f"no {row['probe']!r} in its first 4 KB")
                 continue
-            ref = row.get("refuse_if_sha256_matches")
+            # SCOPED TO THE REPLICA TREE. The guard refuses a file identical to
+            # halo_rev_a's - which is right when checking the Replica and NONSENSE when
+            # the tree being checked IS halo_rev_a, where those files are the originals.
+            # Found by running the check against rev_a for the first time: it refused
+            # rev_a's own schematic and netlist as copies of themselves. A guard that is
+            # correct in one context and wrong in another is still wrong; scope is part
+            # of the assertion, not decoration around it.
+            ref = (row.get("refuse_if_sha256_matches")
+                   if doc["trees"][tree].get("apply_copy_guard", True) else None)
             if ref:
                 rp = os.path.join(HALO, ref)
                 if os.path.exists(rp) and _sha256(rp) == _sha256(h):
@@ -228,6 +295,7 @@ def check_deliverable(root=HALO, tree="replica"):
         # a SOURCE is as new as its NEWEST member
         newest = max(ts, key=lambda t: _iso(t[0][0]))
         stamps[row["id"]] = (newest[0][0], newest[0][1])
+        rec["_files"] = opened
         rec.update(exists="GREEN", opened=[os.path.relpath(h, root) for h in opened][:6],
                    n_opened=len(opened),
                    own_stamp=oldest[0][0], own_stamp_kind=oldest[0][1],
@@ -261,8 +329,83 @@ def check_deliverable(root=HALO, tree="replica"):
                        why="STALE: " + "; ".join(stale) +
                            f" -- oldest member {rec['oldest_member']}")
         else:
-            rec.update(state="GREEN", fresh="FRESH")
+            rec.update(fresh="FRESH", state="GREEN")
+
+    # pass 3: VALIDITY - did the source pass its own checks at the time it was cut?
+    files = {r["id"]: r.get("_files", []) for r in out}
+    for rec in out:
+        spec = specs[rec["id"]]
+        pre = spec.get("precondition")
+        rec["valid"] = "n/a" if not pre else None
+        if not pre or rec.get("exists") != "GREEN":
+            continue
+        vrow = pre["row"]
+        if not files.get(vrow):
+            rec.update(state="CANNOT DETERMINE", valid="CANNOT DETERMINE",
+                       why=(f"opens and is current, but {vrow} "
+                            f"({specs[vrow]['what'].lower()}) does not exist, so nobody knows "
+                            f"whether its source was fit to cut. AN UNRUN CHECK IS NOT A "
+                            f"PASSED ONE."))
+            continue
+        err, unc = read_verdict(files[vrow], pre["kind"])
+        if err is None:
+            rec.update(state="CANNOT DETERMINE", valid="CANNOT DETERMINE",
+                       why=f"{vrow} exists but could not be read as a {pre['kind'].upper()} report")
+            continue
+        bad = []
+        if err:
+            bad.append(f"{err} error(s)")
+        if pre["kind"] == "drc" and unc:
+            bad.append(f"{unc} unconnected item(s)")
+        if bad:
+            extra = (f"cut from a source that FAILED its own checks: {vrow} reports "
+                     + " and ".join(bad) +
+                     ". It exists, it may even be current, and IT IS NOT BUILDABLE.")
+            # ACCUMULATE. An artifact can be stale AND invalid, and reporting only the
+            # last-computed reason hides one of two independent failures - which is the
+            # opposite of what a three-legged check is for.
+            rec.update(state="RED", valid="INVALID",
+                       why=((rec.get("why", "") + " ALSO: " + extra).strip()
+                            if rec.get("why") else extra))
+        else:
+            rec["valid"] = "VALID"
+            if rec.get("state") != "RED" and rec.get("state") != "CANNOT DETERMINE":
+                rec["state"] = "GREEN"
+    for rec in out:
+        rec.pop("_files", None)
     return doc, out
+
+def deliverable_verdict(drows):
+    g = [r for r in drows if r["state"] == "GREEN"]
+    red = [r for r in drows if r["state"] == "RED"]
+    cd = [r for r in drows if r["state"] == "CANNOT DETERMINE"]
+    v = "FAIL" if red else ("CANNOT DETERMINE" if cd else "PASS")
+    return v, g, red, cd
+
+def print_deliverable(drows, ddoc, tree):
+    exists = [r for r in drows if r.get("exists") == "GREEN"]
+    stale = [r for r in drows if r.get("fresh") == "STALE"]
+    L = {"GREEN": "yes", "RED": "no", "CANNOT DETERMINE": "?", "FRESH": "yes",
+         "STALE": "NO", "INVALID": "NO", "VALID": "yes", None: "-"}
+    print(f"  {'':7} {'':2} {'artifact':<20} {'opens':>5} {'current':>8} {'valid':>6}")
+    for r in drows:
+        mark = {"GREEN": "GREEN", "RED": "  RED",
+                "CANNOT DETERMINE": " CD  "}[r["state"]]
+        e = L.get(r.get("exists"), "-")
+        f = L.get(r.get("fresh"), "-") if r.get("fresh") not in (None, "n/a") else "n/a"
+        v = L.get(r.get("valid"), "-") if r.get("valid") not in (None, "n/a") else "n/a"
+        print(f"  [{mark}] {r['id']} {r['what']:<20} {e:>5} {f:>8} {v:>6}")
+        if r["state"] != "GREEN":
+            for chunk in (r["why"] or "").split(" ALSO: "):
+                print(f"           {chunk}")
+        else:
+            print(f"           {', '.join(r['opened'])[:170]}")
+    v, g, red, cd = deliverable_verdict(drows)
+    print(f"\n  tree: {ddoc['trees'][tree]['label']}")
+    print(f"  {len(exists)} of {len(drows)} artifacts EXIST AND OPEN; "
+          f"{len(stale)} of those are STALE; {len(g)} rows are green.")
+    print(f"  DELIVERABLE: {v}")
+    return v
 
 # --------------------------------------------------------------------- checking
 def check_cell(row_n, side, cell, root=HALO):
@@ -360,18 +503,11 @@ def cmd_check(args):
     print(f"\n{counts['PASS']} PASS  {counts['FAIL']} FAIL  {counts['CANNOT DETERMINE']} CANNOT DETERMINE")
     print(f"ANCHORS: {verdict}")
 
-    ddoc, drows = check_deliverable()
-    green = [r for r in drows if r["state"] == "GREEN"]
-    print(f"\nDELIVERABLE - can anyone open this design?")
-    for r in drows:
-        mark = "GREEN" if r["state"] == "GREEN" else "  RED"
-        tail = (", ".join(r["opened"]) if r["state"] == "GREEN" else r["why"])
-        print(f"  [{mark}] {r['id']} {r['what']:<20} {tail[:110]}")
-    dv = "PASS" if len(green) == len(drows) else "FAIL"
-    print(f"\n{len(green)} of {len(drows)} artifacts exist AND open.")
-    print(f"DELIVERABLE: {dv}")
+    ddoc, drows = check_deliverable(tree=getattr(args, "tree", "replica"))
+    print(f"\nDELIVERABLE - can anyone open this design, and is it CURRENT?")
+    dv = print_deliverable(drows, ddoc, getattr(args, "tree", "replica"))
     worst = "FAIL" if (verdict == "FAIL" or dv == "FAIL") else (
-        "CANNOT DETERMINE" if verdict == "CANNOT DETERMINE" else "PASS")
+        "CANNOT DETERMINE" if "CANNOT DETERMINE" in (verdict, dv) else "PASS")
     print(f"VERDICT: {worst}   (the worse of the two - a page that cites its sources "
           f"correctly about a design that does not exist is still not a design)")
     return EXIT[worst]
@@ -474,17 +610,24 @@ def cmd_render(args):
 
     ddoc, drows = check_deliverable()
     dgreen = [r for r in drows if r["state"] == "GREEN"]
+    dexist = [r for r in drows if r.get("exists") == "GREEN"]
+    dstale = [r for r in drows if r.get("fresh") == "STALE"]
     W("## Distance from a deliverable — the other axis of drift\n")
     W("*" + ddoc["why_this_exists"] + "*\n")
-    W(f"**{len(dgreen)} of {len(drows)} artifacts exist and open.**\n")
-    W("| | artifact | state | halo_rev_a | evidence |")
-    W("|---|---|:-:|---|---|")
-    for r, spec in zip(drows, ddoc["rows"]):
-        rv = spec.get("rev_a_has") or "**also absent**"
-        ev = (", ".join(f"`{o}`" for o in r["opened"]) if r["state"] == "GREEN"
-              else r["why"])
-        W(f"| {r['id']} | {r['what']} | {'✅' if r['state']=='GREEN' else '🔴'} | {rv} | {ev} |")
+    W(f"**{len(dexist)} of {len(drows)} artifacts exist and open. {len(dstale)} of those are "
+      f"STALE. {len(dgreen)} rows are green.**\n")
+    W("| | artifact | state | opens | current | evidence |")
+    W("|---|---|:-:|:-:|:-:|---|")
+    ICON = {"GREEN": "✅", "RED": "🔴", "CANNOT DETERMINE": "⚠️"}
+    for r in drows:
+        ev = (", ".join(f"`{o}`" for o in r["opened"]) if r["state"] == "GREEN" else r["why"])
+        op = "yes" if r.get("exists") == "GREEN" else "no"
+        fr = {"FRESH": "yes", "STALE": "**NO**", "CANNOT DETERMINE": "?"}.get(r.get("fresh"), "—")
+        W(f"| {r['id']} | {r['what']} | {ICON[r['state']]} | {op} | {fr} | {ev} |")
     W("")
+    W("**Freshness.** " + ddoc["freshness"]["why"] + "\n")
+    W("**The rule.** " + ddoc["freshness"]["the_rule"] + " " + ddoc["freshness"]["three_states"] + "\n")
+    W("**Timestamps.** " + ddoc["freshness"]["timestamp_strength"] + "\n")
     W("**The rule.** " + ddoc["the_rule"] + "\n")
     W("**Anti-gaming.** " + ddoc["anti_gaming"] + "\n")
     W("Why each is required, in the row's own words:\n")
@@ -692,7 +835,7 @@ def cmd_selftest(args):
     print("  D-breaks  the deliverable check, in a temporary tree:")
     dfails = []
     def dstate(tmp, rid):
-        _, rows = check_deliverable(root=tmp, lane_rel="lane")
+        _, rows = check_deliverable(root=tmp, tree="selftest")
         return {r["id"]: r for r in rows}[rid]
     tmp = tempfile.mkdtemp(prefix="k_threeway-deliv-")
     try:
@@ -700,27 +843,32 @@ def cmd_selftest(args):
         board = os.path.join(tmp, "lane", "x.kicad_pcb")
 
         r0 = dstate(tmp, "D4")
-        ok0 = r0["state"] == "RED"
-        print(f"    [{'ok ' if ok0 else 'RED'}] D-0 empty tree            -> {r0['state']} (must be RED)")
+        ok0 = r0.get("exists", "RED") == "RED"
+        print(f"    [{'ok ' if ok0 else 'RED'}] D-0 empty tree            -> exists={r0.get('exists','RED')} (must be RED)")
         if not ok0: dfails.append("D-0")
 
         open(board, "w").close()                       # EMPTY file, right name
         r1 = dstate(tmp, "D4")
-        ok1 = r1["state"] == "RED" and "EMPTY" in r1.get("why", "")
-        print(f"    [{'ok ' if ok1 else 'RED'}] D-1 empty x.kicad_pcb     -> {r1['state']} (must be RED) "
+        ok1 = r1.get("exists", "RED") == "RED" and "EMPTY" in r1.get("why", "")
+        print(f"    [{'ok ' if ok1 else 'RED'}] D-1 empty x.kicad_pcb     -> exists={r1.get('exists','RED')} (must be RED) "
               f"{r1.get('why','')[:60]}")
         if not ok1: dfails.append("D-1")
 
         open(board, "w").write("(kicad_sch\n  (version 1)\n)")   # WRONG format, right name
         r2 = dstate(tmp, "D4")
-        ok2 = r2["state"] == "RED" and "does not open" in r2.get("why", "")
-        print(f"    [{'ok ' if ok2 else 'RED'}] D-2 a SCHEMATIC named .kicad_pcb -> {r2['state']} (must be RED)")
+        ok2 = r2.get("exists", "RED") == "RED" and "does not open" in r2.get("why", "")
+        print(f"    [{'ok ' if ok2 else 'RED'}] D-2 a SCHEMATIC named .kicad_pcb -> exists={r2.get('exists','RED')} (must be RED)")
         if not ok2: dfails.append("D-2")
 
         open(board, "w").write("(kicad_pcb\n  (version 20260206)\n)")   # valid
         r3 = dstate(tmp, "D4")
-        ok3 = r3["state"] == "GREEN"
-        print(f"    [{'ok ' if ok3 else 'RED'}] D-3 a real board file     -> {r3['state']} (must be GREEN) "
+        # ASSERT ON `exists`, NOT on the combined state. Adding freshness made the combined
+        # state of a board with no schematic in the tree CANNOT DETERMINE - correctly - and
+        # that silently broke D-3 and D-4, which were only ever about whether the file
+        # OPENS. A break must assert the property it was written for, or the next change
+        # to an unrelated property retires it without anyone noticing.
+        ok3 = r3.get("exists") == "GREEN"
+        print(f"    [{'ok ' if ok3 else 'RED'}] D-3 a real board file     -> exists={r3.get('exists')} (must be GREEN) "
               f"- THE CHECK CAN GO GREEN, which is the half a red-by-default check hides")
         if not ok3: dfails.append("D-3")
 
@@ -728,12 +876,98 @@ def cmd_selftest(args):
         if os.path.exists(rev):
             shutil.copyfile(rev, board)                # ANTI-GAMING: rev_a's own board
             r4 = dstate(tmp, "D4")
-            ok4 = r4["state"] == "RED" and "halo_rev_a" in r4.get("why", "")
-            print(f"    [{'ok ' if ok4 else 'RED'}] D-4 halo_rev_a's board copied in -> {r4['state']} "
+            ok4 = r4.get("exists", "RED") == "RED" and "halo_rev_a" in r4.get("why", "")
+            print(f"    [{'ok ' if ok4 else 'RED'}] D-4 halo_rev_a's board copied in -> exists={r4.get('exists','RED')} "
                   f"(must be RED - the cheapest way to fake a pass)")
             if not ok4: dfails.append("D-4")
         else:
             print("    [ -- ] D-4 skipped: halo_rev_a's board file is not on disk to copy")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    # ---- FRESHNESS BREAKS. An artifact that OPENS is not an artifact that is CURRENT,
+    # and a pure existence test reads a stale one GREEN. All three outcomes are watched,
+    # including the CANNOT DETERMINE, because an artifact with no source to compare
+    # against is UNMEASURED and must not collapse into either of the other two.
+    print("  F-breaks  freshness, in a temporary tree:")
+    tmp = tempfile.mkdtemp(prefix="k_threeway-fresh-")
+    try:
+        lane = os.path.join(tmp, "lane"); os.makedirs(lane)
+        sch = os.path.join(lane, "x.kicad_sch")
+        drc = os.path.join(lane, "x.drc.json")
+        pcb = os.path.join(lane, "x.kicad_pcb")
+        mod = os.path.join(lane, "x.kicad_mod")
+        open(sch, "w").write("(kicad_sch (version 1))")
+        open(mod, "w").write('(footprint "F")')
+        open(pcb, "w").write("(kicad_pcb (version 1))")
+
+        # F-3 first: a DRC with NO board in the tree must be CANNOT DETERMINE.
+        os.remove(pcb)
+        open(drc, "w").write('{"$schema":"https://schemas.kicad.org/drc.v1.json",'
+                             '"date":"2026-09-05T10:00:00","violations":[],'
+                             '"unconnected_items":[]}')
+        r3 = dstate(tmp, "D6")
+        ok3 = r3.get("fresh") == "CANNOT DETERMINE"
+        print(f"    [{'ok ' if ok3 else 'RED'}] F-3 a DRC whose board is ABSENT -> fresh="
+              f"{r3.get('fresh')} (must be CANNOT DETERMINE, never STALE and never FRESH)")
+        if not ok3: dfails.append("F-3")
+
+        # F-1 a DRC NEWER than its board must be GREEN.
+        open(pcb, "w").write("(kicad_pcb (version 1))")
+        os.utime(pcb, (1757000000, 1757000000))          # 2025-09-04ish, old
+        r1 = dstate(tmp, "D6")
+        # ASSERT ON `fresh`, NOT on the combined state - AND I MADE THIS EXACT MISTAKE
+        # TWICE IN ONE SESSION, having already written the lesson into the D-break above.
+        # Adding the validity leg turned this row's combined state into CANNOT DETERMINE
+        # (no ERC in the fixture), which says nothing about the freshness this break
+        # exists to test. A break must assert the property it was written for, or the
+        # next change to an unrelated property silently retires it.
+        ok1 = r1.get("fresh") == "FRESH"
+        print(f"    [{'ok ' if ok1 else 'RED'}] F-1 a DRC NEWER than its board -> fresh="
+              f"{r1.get('fresh')} (must be FRESH)")
+        if not ok1: dfails.append("F-1")
+
+        # F-2 the SAME files, board touched forward: must go RED on staleness alone.
+        os.utime(pcb, (1789000000, 1789000000))          # far future relative to the DRC
+        r2 = dstate(tmp, "D6")
+        ok2 = r2.get("fresh") == "STALE" and r2["state"] in ("RED", "CANNOT DETERMINE")
+        print(f"    [{'ok ' if ok2 else 'RED'}] F-2 the SAME DRC, board touched forward -> "
+              f"fresh={r2.get('fresh')} (must be STALE)")
+        print(f"          nothing about the DRC changed - it still exists and still opens. "
+              f"THAT is the failure a pure existence test cannot see.")
+        if not ok2: dfails.append("F-2")
+        # V-1 / V-2  THE THIRD LEG: a gerber cut from a board that failed its own DRC.
+        # This is the artifact that passes BOTH other assertions - it exists, it opens,
+        # and it is newer than its board - and is still not a fabrication set.
+        gbr = os.path.join(lane, "x.gtl")
+        open(gbr, "w").write("%TF.CreationDate,2026-09-05T12:00:00*%\n%FSLAX45Y45*%\n")
+        open(drc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/drc.v1.json",
+                                         "date": "2026-09-05T11:00:00",
+                                         "violations": [], "unconnected_items": []}))
+        os.utime(pcb, (1757000000, 1757000000))
+        rv1 = dstate(tmp, "D7")
+        okv1 = rv1["state"] == "GREEN" and rv1.get("valid") == "VALID"
+        print(f"    [{'ok ' if okv1 else 'RED'}] V-1 gerber, board DRC clean -> {rv1['state']}"
+              f"/{rv1.get('valid')} (must be GREEN/VALID)")
+        if not okv1: dfails.append("V-1")
+
+        open(drc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/drc.v1.json",
+                                         "date": "2026-09-05T11:00:00", "violations": [],
+                                         "unconnected_items": [{"x": 1}, {"x": 2}]}))
+        rv2 = dstate(tmp, "D7")
+        okv2 = rv2["state"] == "RED" and rv2.get("valid") == "INVALID"
+        print(f"    [{'ok ' if okv2 else 'RED'}] V-2 THE SAME gerber, board has 2 unconnected "
+              f"nets -> {rv2['state']}/{rv2.get('valid')} (must be RED/INVALID)")
+        print(f"          the gerber did not change. It still exists, still opens, and is "
+              f"still NEWER than its board. Both other legs pass it.")
+        if not okv2: dfails.append("V-2")
+
+        os.remove(drc)
+        rv3 = dstate(tmp, "D7")
+        okv3 = rv3["state"] == "CANNOT DETERMINE"
+        print(f"    [{'ok ' if okv3 else 'RED'}] V-3 the DRC removed entirely -> {rv3['state']} "
+              f"(must be CANNOT DETERMINE - an unrun check is not a passed one)")
+        if not okv3: dfails.append("V-3")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     fails.extend(dfails)
@@ -744,7 +978,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 5 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 11 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS
@@ -753,18 +987,21 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     sub = p.add_subparsers(dest="cmd", required=True)
     c = sub.add_parser("check"); c.add_argument("-v", "--verbose", action="store_true")
+    c.add_argument("--tree", default="replica", choices=["replica", "rev_a"])
     sub.add_parser("render")
     sub.add_parser("selftest")
-    sub.add_parser("deliverable")
+    dp = sub.add_parser("deliverable")
+    dp.add_argument("--tree", default="replica", choices=["replica", "rev_a"])
+    dp.add_argument("--roots", nargs="+", default=None,
+                    help="run the same three legs against paths YOU name, from any repo. "
+                         "halo-cb: 'a check I have to be told about is one I will eventually "
+                         "not be told about.' Exits 0 PASS / 1 FAIL / 2 CANNOT DETERMINE.")
     a = p.parse_args()
     def cmd_deliverable(_a):
-        ddoc, drows = check_deliverable()
-        g = [r for r in drows if r["state"] == "GREEN"]
-        for r in drows:
-            print(f"  [{'GREEN' if r['state']=='GREEN' else '  RED'}] {r['id']} {r['what']:<20} "
-                  + (", ".join(r["opened"]) if r["state"] == "GREEN" else r["why"]))
-        print(f"\n{len(g)} of {len(drows)} artifacts exist AND open.")
-        return EX_PASS if len(g) == len(drows) else EX_FAIL
+        tree = "caller" if _a.roots else _a.tree
+        ddoc, drows = check_deliverable(tree=tree, roots=_a.roots)
+        v = print_deliverable(drows, ddoc, tree)
+        return EXIT[v]
     return {"check": cmd_check, "render": cmd_render, "selftest": cmd_selftest,
             "deliverable": cmd_deliverable}[a.cmd](a)
 

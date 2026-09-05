@@ -2,7 +2,7 @@
 	(version "E")
 	(design
 		(source "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/out/schematic/halo_replica.kicad_sch")
-		(date "2026-09-05T14:49:57")
+		(date "2026-09-05T14:59:39")
 		(tool "Eeschema 10.0.6")
 		(sheet
 			(number "1")
@@ -2437,7 +2437,7 @@
 		)
 		(comp
 			(ref "J1")
-			(value "U.FL / IPEX MHF RECEPTACLE")
+			(value "COAXIAL RF RECEPTACLE, U.FL/IPEX MHF-CLASS BY CONSTRUCTION - EXACT PART CANNOT DETERMINE")
 			(footprint "Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical")
 			(datasheet "~")
 			(description "coaxial connector (BNC, SMA, SMB, SMC, Cinch/RCA, LEMO, ...)")
@@ -5278,7 +5278,7 @@
 			(description "Two pin crystal")
 			(fields
 				(field
-					(name "BOM confidence") "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — that is ")
+					(name "BOM confidence") "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — Catley's")
 				(field
 					(name "BOM line") "X1")
 				(field
@@ -5305,7 +5305,7 @@
 			)
 			(property
 				(name "BOM confidence")
-				(value "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — that is ")
+				(value "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — Catley's")
 			)
 			(property
 				(name "BOM line")
@@ -5374,7 +5374,7 @@
 			(description "Two pin crystal")
 			(fields
 				(field
-					(name "BOM confidence") "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, untested.")
+					(name "BOM confidence") "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, now TESTED by package geometry and SUPPORTED (see X1_vs_X2_TEST). Its aspect 1.554 and 161")
 				(field
 					(name "BOM line") "X2")
 				(field
@@ -5401,7 +5401,7 @@
 			)
 			(property
 				(name "BOM confidence")
-				(value "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, untested.")
+				(value "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, now TESTED by package geometry and SUPPORTED (see X1_vs_X2_TEST). Its aspect 1.554 and 161")
 			)
 			(property
 				(name "BOM line")

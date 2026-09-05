@@ -833,7 +833,14 @@ def build():
                     "HIGH for the label - Apple labelled it in a regulatory "
                     "filing. CANNOT DETERMINE for the geometry. Its only "
                     "driver on this sheet is DNP."))
-    s.part("J1", "Connector:Conn_Coaxial", value="U.FL / IPEX MHF RECEPTACLE",
+    # The value said "U.FL / IPEX MHF RECEPTACLE" until x_schematic_check's C6
+    # fired on it: bom.json's J1 line begins "CANNOT DETERMINE — a U.FL /
+    # IPEX MHF-class receptacle by construction", and a value that names a
+    # family without naming the refusal reads as an identification. What is
+    # HIGH is that a coaxial receptacle is FITTED; which one it is, is not.
+    s.part("J1", "Connector:Conn_Coaxial",
+           value="COAXIAL RF RECEPTACLE, U.FL/IPEX MHF-CLASS BY "
+                 "CONSTRUCTION - EXACT PART CANNOT DETERMINE",
            group="uwb",
            footprint="Connector_Coaxial:U.FL_Hirose_U.FL-R-SMT-1_Vertical",
            fields=B("J1", "SUBSTITUTION",
@@ -1144,6 +1151,15 @@ def build():
            "IS NOT BUILDABLE AS DRAWN and saying so is the point.")
 
     s.unused_gpio = s.nc_unused()
+    # NETS.md IS WRITTEN HERE, INSIDE build(), and not from __main__.
+    # It was in __main__ first, and that left an ordering hazard with teeth:
+    # `bin/sch all` calls build() and save() itself and never runs __main__,
+    # so a rebuild through the normal entry point refreshed the schematic and
+    # left NETS.md describing the previous one. x_schematic_check's C4 caught
+    # the symptom (an ERC older than the schematic) the first time the two
+    # commands were run in the wrong order. Writing it here means there is no
+    # order to get wrong.
+    s.nets_md = write_nets_md(s, os.path.join(HERE, "NETS.md"))
     return s
 
 
@@ -1372,8 +1388,7 @@ if __name__ == "__main__":
                               s.name + ".kicad_sch"))
     print("\nwrote", out)
 
-    nets_md, missing, extra = write_nets_md(
-        s, os.path.join(HERE, "NETS.md"))
+    nets_md, missing, extra = s.nets_md
     print("wrote", nets_md)
     if missing or extra:
         print("NETS.md is INCOMPLETE: %d undescribed, %d stale"

@@ -62,14 +62,20 @@
         "D3"
       ],
       "timestamp_probe": null,
-      "timestamp_note": "A .kicad_pcb carries no creation timestamp, so mtime is all there is. WEAK on both sides. The board must postdate BOTH the schematic and the footprint library - a board rebuilt before a footprint was edited is stale even though nothing about it looks wrong."
+      "timestamp_note": "A .kicad_pcb carries no creation timestamp, so mtime is all there is. WEAK on both sides. The board must postdate BOTH the schematic and the footprint library - a board rebuilt before a footprint was edited is stale even though nothing about it looks wrong.",
+      "precondition": {
+        "row": "D5",
+        "kind": "erc",
+        "must": "0 errors",
+        "why": "A board built from a schematic that never passed ERC inherits the schematic's faults in copper, where they cost a fabrication run to find."
+      }
     },
     {
       "id": "D5",
       "what": "ERC result",
       "glob": "**/*erc*.json",
-      "probe": "erc",
-      "probe_is": "the schema key of a KiCad ERC report",
+      "probe": "schemas.kicad.org/erc",
+      "probe_is": "the KiCad ERC report's own $schema URL. It was the bare substring 'erc', which matches any JSON whose name or body happens to contain those three letters.",
       "why_it_is_required": "A schematic nobody ran the rule checker over is a claim, not a verified circuit. This project's own standard is that a check which never ran is verification debt.",
       "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.erc.json",
       "refuse_if_sha256_matches": null,
@@ -83,8 +89,8 @@
       "id": "D6",
       "what": "DRC result",
       "glob": "**/*drc*.json",
-      "probe": "drc",
-      "probe_is": "the schema key of a KiCad DRC report",
+      "probe": "schemas.kicad.org/drc",
+      "probe_is": "the KiCad DRC report's own $schema URL. IT WAS THE BARE SUBSTRING 'drc', which admitted drc-liveness.json and drc-liveness-per-item.json - files that are not DRC reports at all - and summing their contents produced a verdict of 1016 errors that belonged to no board.",
       "why_it_is_required": "Same argument one level down, and it is the row THREE-WAY.md row 23 turns on: halo_rev_a is a design that CAN be wrong and is measured to be wrong in four height rows. The Replica cannot be wrong in that sense at all, because there is nothing to check.",
       "rev_a_has": "electronics/halo_rev_a/out/drc.json",
       "refuse_if_sha256_matches": null,
@@ -92,7 +98,13 @@
         "D4"
       ],
       "timestamp_probe": "\"date\"\\s*:\\s*\"([0-9T:\\-]+)\"",
-      "timestamp_note": "KiCad's DRC report carries its own run date. EMBEDDED, strong, against D4's mtime. A DRC older than the board it grades is the most dangerous stale artifact here, because it reports PASS on copper it never saw."
+      "timestamp_note": "KiCad's DRC report carries its own run date. EMBEDDED, strong, against D4's mtime. A DRC older than the board it grades is the most dangerous stale artifact here, because it reports PASS on copper it never saw.",
+      "precondition": {
+        "row": "D5",
+        "kind": "erc",
+        "must": "0 errors",
+        "why": "A DRC on a board whose schematic never passed ERC grades the copper against a netlist that may itself be wrong."
+      }
     },
     {
       "id": "D7",
@@ -108,7 +120,13 @@
         "D4"
       ],
       "timestamp_probe": "TF\\.CreationDate,([0-9T:\\-]+)",
-      "timestamp_note": "Gerbers carry %TF.CreationDate. EMBEDDED, strong, against D4's mtime. GLOB CORRECTED 2026-09-05: it was **/*.gbr, which catches only the DRILL MAPS - a real KiCad gerber set is .gtl .gbl .g1 .g2 .gts .gbs .gto .gbo .gm1, none of which end in .gbr. The old glob would have called a set complete while seeing none of its copper layers."
+      "timestamp_note": "Gerbers carry %TF.CreationDate. EMBEDDED, strong, against D4's mtime. GLOB CORRECTED 2026-09-05: it was **/*.gbr, which catches only the DRILL MAPS - a real KiCad gerber set is .gtl .gbl .g1 .g2 .gts .gbs .gto .gbo .gm1, none of which end in .gbr. The old glob would have called a set complete while seeing none of its copper layers.",
+      "precondition": {
+        "row": "D6",
+        "kind": "drc",
+        "must": "0 errors AND 0 unconnected items",
+        "why": "A fabrication set cut from a board with unrouted nets is FRESH AND UNBUILDABLE. It passes existence and it passes freshness, and it is a WORSE artifact than a stale one precisely because both of the other assertions wave it through. halo-cb is deliberately NOT regenerating rev_a's gerbers for this reason - the board still has 28 unconnected nets - and that refusal is what exposed the third leg."
+      }
     },
     {
       "id": "D8",
@@ -124,7 +142,13 @@
         "D4"
       ],
       "timestamp_probe": "TF\\.CreationDate,([0-9T:\\-]+)",
-      "timestamp_note": "Excellon files carry the same TF.CreationDate comment. EMBEDDED, strong, against D4's mtime."
+      "timestamp_note": "Excellon files carry the same TF.CreationDate comment. EMBEDDED, strong, against D4's mtime.",
+      "precondition": {
+        "row": "D6",
+        "kind": "drc",
+        "must": "0 errors AND 0 unconnected items",
+        "why": "A fabrication set cut from a board with unrouted nets is FRESH AND UNBUILDABLE. It passes existence and it passes freshness, and it is a WORSE artifact than a stale one precisely because both of the other assertions wave it through. halo-cb is deliberately NOT regenerating rev_a's gerbers for this reason - the board still has 28 unconnected nets - and that refusal is what exposed the third leg."
+      }
     }
   ],
   "freshness": {
@@ -138,7 +162,8 @@
       "roots": [
         "electronics/halo_replica"
       ],
-      "label": "halo_replica"
+      "label": "halo_replica",
+      "apply_copy_guard": true
     },
     "rev_a": {
       "roots": [
@@ -147,7 +172,21 @@
         "out/verify"
       ],
       "label": "halo_rev_a",
-      "note": "rev_a's artifacts are spread across three roots - the board and schematic under electronics/halo_rev_a, the fabrication set under out/release/board/gerber, the checks under out/verify. Searching only the first is what led this lane to report, wrongly, that rev_a had no gerbers. IT HAS TWELVE. The conclusion survived for a different and worse reason: they are stale."
+      "note": "rev_a's artifacts are spread across three roots - the board and schematic under electronics/halo_rev_a, the fabrication set under out/release/board/gerber, the checks under out/verify. Searching only the first is what led this lane to report, wrongly, that rev_a had no gerbers. IT HAS TWELVE. The conclusion survived for a different and worse reason: they are stale.",
+      "apply_copy_guard": false
+    },
+    "selftest": {
+      "roots": [
+        "lane"
+      ],
+      "label": "a temporary tree, selftest only",
+      "apply_copy_guard": true
     }
-  }
+  },
+  "validity": {
+    "why": "THE THIRD LEG, and it is the same shape a third time. EXISTENCE IS ADJACENT TO CURRENCY, AND CURRENCY IS ADJACENT TO VALIDITY. Each assertion is satisfied by something NEXT TO what we actually want, and each one alone reads as evidence. Three legs is not belt-and-braces - they are three genuinely different properties one artifact can independently fail: it can be absent, it can be stale, and it can be a faithful cut of a board that was never fit to cut.",
+    "the_rule": "An artifact's SOURCE must have PASSED ITS OWN CHECKS. A gerber's precondition is the board's DRC verdict; a board's and a DRC's precondition is the schematic's ERC verdict. If that verdict is ABSENT rather than failing, the row is CANNOT DETERMINE and not green - an unrun check is not a passed one.",
+    "counted_how": "KiCad reports carry severities. Only severity 'error' counts against the verdict; warnings are reported and do not block. Unconnected items are counted separately and DO block a fabrication set, because an unrouted net is not a warning about a board, it is a board that does not work."
+  },
+  "callable_by_other_repos": "halo-cb: 'a check I have to be told about is one I will eventually not be told about.' So this is an instrument, not a section of our report: `k_threeway deliverable --roots <path> [<path> ...]` runs the same three legs against any tree a caller names, exits 0/1/2, and needs nothing from this lane."
 }

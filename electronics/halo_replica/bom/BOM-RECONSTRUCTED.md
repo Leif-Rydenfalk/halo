@@ -5,7 +5,7 @@
 
 *L3 — BOM identification, halo Replica, 2026-09-05. Reconstructed bill of materials — Apple AirTag A2187 (1st gen, FCC ID BCGA2187).*
 
-**Status:** SECOND PASS — every line present; package sizes MEASURED for the eight parts that could be isolated, PENDING for the rest. Halted mid-measurement by a fleet quota stand-down, not by a finished work item; see bom/HANDOFF-L3.md for exactly where it stopped.
+**Status:** THIRD PASS (L8, 2026-09-05) — the SCALE IS CORRECTED and every size re-derived on it. L3's 110.3 px/mm is RETRACTED: it was one segmentation of one part divided by one datasheet number, and three segmentations of that same part span 3.8%, so the datasheet route cannot pin a scale to better than about 2%. The scale now used is 106.313 px/mm, registration-derived from a steel rule in a DIFFERENT photograph carried through a validated homography — an external physical datum that no package outline enters. See `ruler`. X1 vs X2 has been TESTED and Catley's frequency assignment is SUPPORTED. UNK-A was attempted and REFUSED with a measured reason. The resolution boundary that decides which lines can ever carry a size is now stated once, at `resolution_limit`, instead of being rediscovered per line.
 
 **Checked by** `tools/b_bom_check.py` — six rules, each watched failing on
 purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
@@ -38,23 +38,23 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 | ref | function | part | package | size | marking READ | seen? | confidence |
 |---|---|---|---|---|---|---|---|
-| **U1** | MCU (Cortex-M4F) + BLE 5 radio + NFC-A tag peripheral | Nordic Semiconductor nRF52832, variant CIAA | WLCSP-50 | **MEASURED** — long_mm 3.226 mm, short_mm 2.956 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm | `N52832 CIAAE0 2102JK` | SEEN | HIGH |
-| **U2** | UWB transceiver (Precision Finding) | Apple U1 (die TMKA75) in a USI system-in-package | shielded SiP, rectangular metal can | **MEASURED** — long_mm 6.16 mm, short_mm 3.37 mm, long_px 679.4 mm, short_px 371.8 mm, aspect 1.827 mm | `CANNOT DETERMINE` | SEEN | HIGH that this can is the UWB module (Apple labelled it in a |
+| **U1** | MCU (Cortex-M4F) + BLE 5 radio + NFC-A tag peripheral | Nordic Semiconductor nRF52832, variant CIAA | WLCSP-50 | **MEASURED — and it is NO LONGER THE RULER. Use the published body when you need U1's size; use `ruler` when you need the scale.** — long_mm 3.34 mm, short_mm 3.072 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm, short_side_genuine_px [63.6, 84.2] mm | `N52832 CIAAE0 2102JK` | SEEN | HIGH |
+| **U2** | UWB transceiver (Precision Finding) | Apple U1 (die TMKA75) in a USI system-in-package | shielded SiP, rectangular metal can | **SHORT SIDE MEASURED** — short_mm [3.56, 3.665] mm, long_mm None mm, long_mm_lower_bound 6.735 mm, filled_area_mm2 [19.13, 22.87] mm, short_side_genuine_px [73.7, 97.5] mm | `CANNOT DETERMINE` | SEEN | HIGH that this can is the UWB module (Apple labelled it in a |
 | **U3** | firmware storage — holds the nRF firmware AND the Apple U1 'Rose' firmware, unen | GigaDevice GD25LQ32C-class 32 Mbit (4 MB) SPI NOR | WLCSP-10 (ten pads; centre pads absent) | **NOT YET MEASURED** | `CANNOT DETERMINE` | cited | MEDIUM — and the reason it is not LOW is worth stating: O'Fl |
-| **U4** | 3-axis accelerometer — motion wake, anti-stalk sound trigger | Bosch Sensortec BMA280 (asserted) | metal-lid LGA | **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.196, 'short_mm': 1.807, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215} mm, metal_lid_B_mid_left {'long_mm': 1.606, 'short_mm': 1.241, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.293} mm | `NONE VISIBLE` | SEEN | CANNOT DETERMINE which part is the accelerometer. LOW for 'B |
+| **U4** | 3-axis accelerometer — motion wake, anti-stalk sound trigger | Bosch Sensortec BMA280 (asserted) | metal-lid LGA | **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.278, 'short_mm': 1.875, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215, 'short_side_genuine_px': [38.8, 51.4]} mm, metal_lid_B_mid_left {'long_mm': 1.666, 'short_mm': 1.288, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.294, 'short_side_genuine_px': [26.7, 35.3]} mm | `NONE VISIBLE` | SEEN | CANNOT DETERMINE which part is the accelerometer. LOW for 'B |
 | **U5** | audio amplifier driving the voice coil | Maxim MAX98357A (asserted; iFixit wrote MAX98357B) | WLCSP | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW |
 | **U6** | main DC-DC buck, 3 V cell to 1.8 V rail | TI TPS62746 (asserted) | CANNOT DETERMINE | **CANNOT DETERMINE** | `NO PACKAGE MARKING WAS READ.` | cited | MEDIUM for 'there is a TPS746-family buck on this board' — a |
 | **U7** | op-amp in the speaker/analog path | TI TLV9001 (asserted) | CANNOT DETERMINE | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW |
 | **U8** | load switch / OVP gating power to the MCU and flash | onsemi FPF2487 (asserted by iFixit only) | CANNOT DETERMINE | **CANNOT DETERMINE** | `CANNOT DETERMINE` | cited | LOW. Single-source (iFixit) and not corroborated by Catley,  |
 | **U9** | secondary regulator / LDO (function itself inferred, not established) | CANNOT DETERMINE | leadless moulded package, roughly square, with a large round pin-1 dim | **NOT YET MEASURED** | `1A8 / 1950` | SEEN | CANNOT DETERMINE for the part number. HIGH only for 'a part  |
-| **X1** | clock crystal — assigned to 32 MHz (HFXO) by Catley | CANNOT DETERMINE — no manufacturer named anywhere | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **NOT YET MEASURED** | `T320 / RBEV` | SEEN | HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for t |
-| **X2** | clock crystal — assigned to 32.768 kHz (LFXO) by Catley | CANNOT DETERMINE | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **MEASURED** — long_mm 1.626 mm, short_mm 1.046 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm | `A048L` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM  |
+| **X1** | clock crystal — assigned to 32 MHz (HFXO) by Catley | CANNOT DETERMINE — no manufacturer named anywhere | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **MEASURED — and it is the first measurement in this project to TEST somebody else's claim rather than repeat it** — long_mm 2.466 mm, short_mm 1.989 mm, long_px 262.2 mm, short_px 211.5 mm, aspect 1.24 mm, short_side_genuine_px [41.2, 54.5] mm | `T320 / RBEV` | SEEN | HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for t |
+| **X2** | clock crystal — assigned to 32.768 kHz (LFXO) by Catley | CANNOT DETERMINE | seam-sealed ceramic package with a gold-plated seal ring and a metal l | **MEASURED** — long_mm 1.687 mm, short_mm 1.085 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm, short_side_genuine_px [22.5, 29.7] mm | `A048L` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM  |
 | **C1..C5** | bulk hold-up — keeps the tag alive for seconds after the battery is removed (thi | CANNOT DETERMINE — manufacturer and technology both unnamed | rectangular chip package, roughly 3:1 aspect, DARK body with light met | **NOT YET MEASURED** | `J107S` | SEEN | HIGH for the marking, the count of five and the location. ME |
 | **L1x** | inductor — almost certainly the buck's, given its position | CANNOT DETERMINE | WIREWOUND chip inductor. Individual turns of copper wire are directly  | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | HIGH that a wirewound chip inductor is fitted at this locati |
 | **J1** | coaxial RF connector — a conducted-measurement port. Its position beside the UWB | CANNOT DETERMINE — a U.FL / IPEX MHF-class receptacle by construction | circular RF receptacle: metal outer shell, four solder tabs, a dark di | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | HIGH that a coaxial RF receptacle is fitted at this location |
 | **D1, D2** | CANNOT DETERMINE. RESEARCH-A calls the K11-marked parts 'schottky pairs'; nothin | CANNOT DETERMINE | small two-terminal-looking moulded chip parts, a matched pair placed s | **NOT YET MEASURED** | `K11` | SEEN | HIGH for the marking and the pairing. CANNOT DETERMINE for t |
-| **CT1** | CANNOT DETERMINE. RESEARCH-A §2.1 describes 'a blue tantalum / 6X A75 cap'. | CANNOT DETERMINE | blue-bodied moulded chip package with a printed polarity/pin-1 dot | **MEASURED BUT NOT TRUSTED** — long_mm 0.82 mm, short_mm 0.82 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm | `6X A75` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part, the val |
-| **UNK-A** | CANNOT DETERMINE | CANNOT DETERMINE | large matte-black moulded rectangle, roughly 2:1 aspect, no marking of | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | CANNOT DETERMINE |
+| **CT1** | CANNOT DETERMINE. RESEARCH-A §2.1 describes 'a blue tantalum / 6X A75 cap'. | CANNOT DETERMINE | blue-bodied moulded chip package with a printed polarity/pin-1 dot | **MEASURED BUT NOT TRUSTED — unchanged by the scale correction** — long_mm 0.851 mm, short_mm 0.85 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm, short_side_genuine_px [17.6, 23.3] mm | `6X A75` | SEEN | HIGH for the marking. CANNOT DETERMINE for the part, the val |
+| **UNK-A** | CANNOT DETERMINE | CANNOT DETERMINE | large matte-black moulded rectangle, roughly 2:1 aspect, no marking of | **CANNOT DETERMINE — ATTEMPTED, and refused by its own controls** | `NONE VISIBLE` | SEEN | CANNOT DETERMINE |
 | **UNK-B** | CANNOT DETERMINE. Position — between the UWB module and the coaxial connector J1 | CANNOT DETERMINE | pale beige/ivory ceramic-looking square package with a single small da | **NOT YET MEASURED** | `NONE VISIBLE` | SEEN | CANNOT DETERMINE |
 | **R/C/L bulk** | decoupling, RF matching networks, pull-ups | CANNOT DETERMINE, individually and collectively | two-terminal chip passives, several distinct sizes present on both sid | **NOT YET MEASURED** | `NONE — chip passives of this size carry no marking` | SEEN | CANNOT DETERMINE for every individual value. This is not a g |
 | **ANT1** | BLE antenna, 2.4 GHz, inverted-F | Apple's own structure | printed onto the plastic carrier, per O'Flynn | **CANNOT DETERMINE** | `n/a` | SEEN | HIGH that Apple labels a Bluetooth antenna at that rim posit |
@@ -74,8 +74,7 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Nordic Semiconductor nRF52832, variant CIAA
 - **package** — WLCSP-50
-- **size** — **MEASURED** — long_mm 3.226 mm, short_mm 2.956 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm  
-  aspect 1.087 measured against 1.0914 published — 0.4 % apart
+- **size** — **MEASURED — and it is NO LONGER THE RULER. Use the published body when you need U1's size; use `ruler` when you need the scale.** — long_mm 3.34 mm, short_mm 3.072 mm, long_px 355.1 mm, short_px 326.6 mm, aspect 1.087 mm, short_side_genuine_px [63.6, 84.2] mm
 - **marking** — `N52832 CIAAE0 2102JK`, read by L3, off IMG-BACK crop [818:1432, 477:1125] at 2x
   - *legibility* — fully legible, three lines, laser-marked on dark blue silicon
 - **locatable in a photograph** — YES — Apple FRONT side, upper-left arc, immediately right of the T320/RBEV crystal and below the A048L crystal
@@ -90,8 +89,7 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Apple U1 (die TMKA75) in a USI system-in-package
 - **package** — shielded SiP, rectangular metal can
-- **size** — **MEASURED** — long_mm 6.16 mm, short_mm 3.37 mm, long_px 679.4 mm, short_px 371.8 mm, aspect 1.827 mm  
-  aspect 1.827. This part sits at the far rim, where the perspective systematic is largest, so quote the aspect and treat the millimetres as indicative. Noted for whoever picks this up: 6.16 x 3.37 = 20.8 mm^2, which is suspiciously equal to the 20.58 mm^2 that TechInsights report for the U1 DIE. A SiP module must be LARGER than its die, so either the coincidence is meaningless or the measurement captured less than the whole can. Do not repeat this number without re-measuring it.
+- **size** — **SHORT SIDE MEASURED** — short_mm [3.56, 3.665] mm, long_mm None mm, long_mm_lower_bound 6.735 mm, filled_area_mm2 [19.13, 22.87] mm, short_side_genuine_px [73.7, 97.5] mm
 - **marking** — `CANNOT DETERMINE`, read by L3, off IMG-BACK crop [700:1600, 2350:2950] at 2.5x
   - *legibility* — The can carries faint embossed characters and a fine cross-hatch texture. Individual glyph shapes are visible but this lane could not resolve them into text at any magnification available. NOT read.
 - **locatable in a photograph** — YES — Apple FRONT side, lower-left, the largest single object on the board. Corroborated by Apple's own arrow 'UWB Module' in FCC-6.
@@ -124,8 +122,8 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — Bosch Sensortec BMA280 (asserted)
 - **package** — metal-lid LGA
-- **size** — **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.196, 'short_mm': 1.807, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215} mm, metal_lid_B_mid_left {'long_mm': 1.606, 'short_mm': 1.241, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.293} mm  
-  A BMA280 is a SQUARE 2.0 x 2.0 mm LGA. Neither metal-lid part measures square: 1.215 and 1.293. Perspective in IMG-BACK could stretch a square to about 1.14 on its own, so 1.215 is arguably within reach of it and 1.293 is not comfortably so. Neither part's size CONFIRMS a BMA280, and lid B at 1.61 x 1.24 mm is too small to be one at all. This is a check that could have agreed and did not. It does not refute the accelerometer being on this board — it refutes the idea that anyone here has pointed at it.
+- **size** — **MEASURED — AND THE RESULT DOES NOT CORROBORATE THE BMA280** — metal_lid_A_beside_the_TPS746_legend {'long_mm': 2.278, 'short_mm': 1.875, 'long_px': 242.2, 'short_px': 199.3, 'aspect': 1.215, 'short_side_genuine_px': [38.8, 51.4]} mm, metal_lid_B_mid_left {'long_mm': 1.666, 'short_mm': 1.288, 'long_px': 177.1, 'short_px': 136.9, 'aspect': 1.294, 'short_side_genuine_px': [26.7, 35.3]} mm  
+  A BMA280 is a SQUARE 2.0 x 2.0 mm LGA. Neither lid measures square: aspects 1.215 and 1.293, and aspect is SCALE-FREE so the scale correction does not touch this conclusion at all. At 106.313 px/mm lid A is 2.278 x 1.875 mm and lid B is 1.666 x 1.288 mm; lid B is still too small to be a BMA280. The re-derivation made lid A LARGER and therefore slightly closer to 2.0 x 2.0 on its long axis and further on its short — it did not rescue the identification. This is a check that could have agreed and did not, before and after the correction. It does not refute an accelerometer being on the board; it refutes anyone here having pointed at it.
 - **marking** — `NONE VISIBLE`, read by L3, off IMG-BACK
   - *legibility* — The metal-lid parts carry a single dark dimple and no readable text at any magnification available.
 - **locatable in a photograph** — AMBIGUOUS, and this is a finding. IMG-BACK contains at least TWO visually identical bare-metal-lid parts with a single dark dimple: one at crop [1705:2450, 545:1100] (beside the 98C0051/TPS746 board legend) and one at crop [440:620, 1570:1780] (mid-left). RESEARCH-A §2.1 says 'a small metal-lid sensor (the BMA280 accelerometer)' as if there were one. This lane cannot say which of the two is the accelerometer, and neither can the literature as written.
@@ -221,13 +219,12 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE — no manufacturer named anywhere
 - **package** — seam-sealed ceramic package with a gold-plated seal ring and a metal lid, two visible pads; the classic SMD crystal package family
-- **size** — **NOT YET MEASURED**  
-  This is the measurement that would TEST Catley's assignment rather than repeat it. 32.768 kHz tuning-fork parts and 32 MHz AT-cut parts live in different package sizes and different aspect ratios. Measuring both X1 and X2 and comparing their aspect ratios is a real check with a possible FAIL.
+- **size** — **MEASURED — and it is the first measurement in this project to TEST somebody else's claim rather than repeat it** — long_mm 2.466 mm, short_mm 1.989 mm, long_px 262.2 mm, short_px 211.5 mm, aspect 1.24 mm, short_side_genuine_px [41.2, 54.5] mm
 - **marking** — `T320 / RBEV`, read by L3, off IMG-BACK crop [818:1432, 477:1125] at 2x
   - *legibility* — Both lines fully legible.
 - **locatable in a photograph** — YES — Apple FRONT side, immediately left-below the nRF52832.
 - **evidence class** — SILICON SEEN
-- **confidence** — HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — that is Catley's assignment and this lane has not yet tested it.
+- **confidence** — HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — Catley's assignment, now TESTED by package geometry and SUPPORTED (see X1_vs_X2_TEST). Tested-and-supported, not HIGH: a 2520 package is strongly skewed to MHz parts, not exclusive to them.
 - **what the marking establishes** — The two lines exist on this part. 'T320' is suggestive of 32.0 MHz but a top mark that looks like a frequency is not a frequency; crystal top marks are routinely lot codes.
 - **what it does NOT establish** — Frequency, load capacitance (which the Replica MUST have to match the nRF's internal caps), tolerance, or drift. All four are needed to build and none is available.
 - **what would settle it** — A crystal-vendor marking table, or measuring a live unit's clock.
@@ -237,13 +234,12 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE
 - **package** — seam-sealed ceramic package with a gold-plated seal ring and a metal lid; visibly a LONGER, narrower outline than X1 in the same photograph at the same scale
-- **size** — **MEASURED** — long_mm 1.626 mm, short_mm 1.046 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm  
-  aspect 1.554
+- **size** — **MEASURED** — long_mm 1.687 mm, short_mm 1.085 mm, long_px 179.3 mm, short_px 115.4 mm, aspect 1.554 mm, short_side_genuine_px [22.5, 29.7] mm
 - **marking** — `A048L`, read by L3, off IMG-BACK crop [818:1432, 477:1125] at 2x
   - *legibility* — Single line, fully legible.
 - **locatable in a photograph** — YES — Apple FRONT side, directly above the nRF52832.
 - **evidence class** — SILICON SEEN
-- **confidence** — HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, untested.
+- **confidence** — HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, now TESTED by package geometry and SUPPORTED (see X1_vs_X2_TEST). Its aspect 1.554 and 1610-code size are what a 32.768 kHz tuning-fork part looks like; neither is exclusive to one.
 - **what the marking establishes** — The one line exists on this part.
 - **what it does NOT establish** — Frequency, load capacitance, tolerance (a 32.768 kHz part's ppm rating sets the Find My timing budget), manufacturer.
 - **what would settle it** — As X1.
@@ -317,8 +313,8 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE
 - **package** — blue-bodied moulded chip package with a printed polarity/pin-1 dot
-- **size** — **MEASURED BUT NOT TRUSTED** — long_mm 0.82 mm, short_mm 0.82 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm  
-  square to 0.1 %, which for a two-terminal chip part is wrong-looking. The b-r segmentation most likely found only the blue body between two metallised ends rather than the whole package. Recorded as a suspect measurement, not promoted to a size.
+- **size** — **MEASURED BUT NOT TRUSTED — unchanged by the scale correction** — long_mm 0.851 mm, short_mm 0.85 mm, long_px 90.5 mm, short_px 90.4 mm, aspect 1.001 mm, short_side_genuine_px [17.6, 23.3] mm  
+  Square to 0.1%, which for a two-terminal chip part is wrong-looking, and aspect is scale-free so re-deriving changed nothing about why. The b-r segmentation most likely found only the blue body between two metallised ends rather than the whole package. Its short side is 16.6-22.0 genuine px, above the 10 px floor, so the refusal is about the segmentation and not about resolution. Recorded as suspect, not promoted to a size.
 - **marking** — `6X A75`, read by L3, off IMG-BACK crop [720:870, 1400:1550] at 8x
   - *legibility* — two short lines, legible
 - **locatable in a photograph** — YES — Apple FRONT side, mid-left, above the metal-lid part.
@@ -333,8 +329,7 @@ purpose by `--self-test`. Exit code is the verdict: 0 PASS, 1 FAIL,
 
 - **part** — CANNOT DETERMINE
 - **package** — large matte-black moulded rectangle, roughly 2:1 aspect, no marking of any kind, sitting over the mid-left cluster
-- **size** — **NOT YET MEASURED**  
-  This is the highest-value measurement on the board for closing a gap. If it measures like a WLCSP-10 it is a candidate for U3, the flash. If it is much larger it is not.
+- **size** — **CANNOT DETERMINE — ATTEMPTED, and refused by its own controls**
 - **marking** — `NONE VISIBLE`, read by L3, off IMG-BACK crop [380:800, 1250:1600] at 4x
   - *legibility* — no text at any magnification available
 - **locatable in a photograph** — YES — Apple FRONT side, mid-left, the largest unmarked object outside the UWB can.

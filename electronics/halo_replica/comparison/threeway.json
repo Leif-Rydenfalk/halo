@@ -1467,7 +1467,7 @@
         "not_fixed_here": "halo_rev_a and spec/comparison.json belong to other live sessions. Read, not written. Routed to the orchestrator.",
         "RESOLVED": "CORRECTED UPSTREAM THE SAME DAY. This lane routed the finding through the orchestrator to halo-cb, who withdrew the claim in commit 43616d2, 'withdraw the +0.521 dBi antenna claim - the board's own source contradicts it'. spec/comparison.json components row 15 now reads WITHDRAWN and grades halo's antenna CANNOT DETERMINE, stating that the figure was a model of a parametric placeholder on a diameter-30 study outline that is not this board, and that differencing a measurement against a model of a placeholder 'produces a headline, not a result'. ce-rf is solving the real copper now. THE DISAGREEMENT IS RECORDED RATHER THAN DELETED: it was real, it was found by reading rev_a's own file against the generated page, and the page is now right.",
         "anchor_note": "the two quotes this lane originally anchored - '3.7 dB above Apple's published figure' and 'a rim inverted-F ETCHED' - are GONE from spec/comparison.json, and k_threeway check went RED on both when they went. That is the anchor checker doing the one job it exists for: an upstream source moved under a citation and the document said so instead of quietly continuing to claim it.",
-        "still_open": "The NAMING is not settled. board.py still calls AE1 'the meandered quarter-wave monopole' (l.820), 'the inverted-F drawn here' (l.86) and 'an inverted-L monopole' (l.324). The withdrawn text names no topology at all, so the four-names problem is now a three-names problem inside one file. Routed, not corrected here."
+        "still_open": "RESOLVED TOO, 2026-09-05, commit b324645 'board.py: stop calling AE1 three different topologies in one file'. The element is now named ONCE - 'a meandered element, topology UNRESOLVED' - with a note recording that it had been called a meandered quarter-wave monopole, an inverted-F and an inverted-L monopole in three separate places, and that which of the three it behaves as depends on the counterpoise, which is not settled. THAT IS A BETTER OUTCOME THAN PICKING ONE NAME: the file now says the topology is open instead of asserting three answers. BOTH corrections this lane routed have landed."
       }
     ],
     "what_this_file_adds_that_the_prior_one_could_not": [
@@ -1488,11 +1488,6 @@
         "claim": "lane T3's round-board cases resonate off band, on a different outline"
       },
       {
-        "file": "electronics/halo_rev_a/board.py",
-        "quote": "the meandered quarter-wave monopole",
-        "claim": "board.py builds a meandered monopole"
-      },
-      {
         "file": "spec/comparison.json",
         "path": "pcb.2.verdict",
         "expect": "CANNOT DETERMINE",
@@ -1503,6 +1498,11 @@
         "path": "components.14.halo.text",
         "expect": "WITHDRAWN 2026-09-05. halo's antenna number is CANNOT DETERMINE. The +0.521 dBi figure was a model of a PARAMETRIC PLACEHOLDER on a Ø30 mm study outline that is not this board — board.py says so itself under its own heading 'what this board does not claim'. And the comparison was never valid on its own terms: Apple's -3.2 dBi is a MEASURED figure for a SHIPPED antenna in an FCC test report. Differencing a measurement against a model of a placeholder produces a headline, not a result. ce-rf is solving THIS copper now.",
         "claim": "the prior page's antenna claim is now WITHDRAWN - the correction this lane routed"
+      },
+      {
+        "file": "electronics/halo_rev_a/board.py",
+        "quote": "a meandered element, topology UNRESOLVED",
+        "claim": "AE1 is now named once, with its topology stated as open - the second correction this lane routed"
       }
     ]
   }

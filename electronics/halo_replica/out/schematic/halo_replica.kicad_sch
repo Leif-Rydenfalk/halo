@@ -12486,7 +12486,7 @@
 				(hide yes)
 			)
 		)
-		(property "BOM confidence" "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — that is "
+		(property "BOM confidence" "HIGH that the marking is T320 / RBEV. CANNOT DETERMINE for the manufacturer, the part number, the load capacitance and the tolerance. MEDIUM for 'this is the 32 MHz one' — Catley's"
 			(at 300.99 36.83 0)
 			(effects
 				(font
@@ -12690,7 +12690,7 @@
 				(hide yes)
 			)
 		)
-		(property "BOM confidence" "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, untested."
+		(property "BOM confidence" "HIGH for the marking. CANNOT DETERMINE for the part. MEDIUM for the frequency assignment, now TESTED by package geometry and SUPPORTED (see X1_vs_X2_TEST). Its aspect 1.554 and 161"
 			(at 300.99 64.77 0)
 			(effects
 				(font
@@ -16323,7 +16323,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "U.FL / IPEX MHF RECEPTACLE"
+		(property "Value" "COAXIAL RF RECEPTACLE, U.FL/IPEX MHF-CLASS BY CONSTRUCTION - EXACT PART CANNOT DETERMINE"
 			(at 441.96 96.52 0)
 			(effects
 				(font
