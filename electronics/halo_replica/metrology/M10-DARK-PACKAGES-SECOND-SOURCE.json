@@ -1,0 +1,104 @@
+{
+  "tool": "inline measurement by tools/p_dark.py parameters, L5b",
+  "question": "Does a second, independent, sharper source separate the neutral-black IC packages that M08 closed as CANNOT DETERMINE?",
+  "source": {
+    "url": "https://valkyrie.cdn.ifixit.com/media/2021/05/03133839/AirTags_48.jpg",
+    "retrieved_utc": "2026-09-05T02:07:30Z",
+    "stored_px": [
+      5234,
+      5234
+    ],
+    "licence": "LINK ONLY per images/airtag/CATALOG.md - iFixit teardown imagery, not clearly relicensable",
+    "vendored": false,
+    "handling": "fetched to a session scratchpad OUTSIDE the repository, measured, deleted. No image byte entered the repo. No account, no login, nothing sent."
+  },
+  "resolution": {
+    "probe": "tools/m_resolution_probe.py, the SAME probe on both, on comparable board regions",
+    "ifixit": {
+      "genuine_px_of_5234": "2167",
+      "frac_of_nyquist": 0.414,
+      "genuine_px_per_mm_approx": 70.3,
+      "stored_px_per_mm": 169.91
+    },
+    "oflynn": {
+      "genuine_px_of_2916": "1071",
+      "frac_of_nyquist": 0.367,
+      "genuine_px_per_mm_approx": 39.0,
+      "stored_px_per_mm": 106.31
+    },
+    "verdict": "the link-only source carries about 1.9x more GENUINE resolution at the board. That is a real gain, not stored-pixel inflation."
+  },
+  "looked_at": "native-resolution tiles: the nRF52832 laser marking is crisp, and the neutral-black packages 05XI 1A8 and 60LM 2405 have unmistakable straight boundaries against the soldermask. A human separates them easily.",
+  "patches": {
+    "package_05XI_1A8": {
+      "luma_median": 61.0,
+      "luma_p10": 52.0,
+      "luma_p90": 121.0,
+      "localsd_median": 9.936950328494238,
+      "localsd_p90": 24.325085277330306,
+      "box_px": [
+        2530,
+        3900,
+        2700,
+        4035
+      ]
+    },
+    "package_60LM_2405": {
+      "luma_median": 73.0,
+      "luma_p10": 39.0,
+      "luma_p90": 96.0,
+      "localsd_median": 4.217306056885956,
+      "localsd_p90": 23.556051482283113,
+      "box_px": [
+        2100,
+        3880,
+        2330,
+        4180
+      ]
+    },
+    "bare_soldermask_A": {
+      "luma_median": 52.0,
+      "luma_p10": 39.0,
+      "luma_p90": 159.10000000000036,
+      "localsd_median": 5.168574025243926,
+      "localsd_p90": 45.30416401141028,
+      "box_px": [
+        2160,
+        4333,
+        2260,
+        4400
+      ]
+    },
+    "bare_soldermask_B": {
+      "luma_median": 66.0,
+      "luma_p10": 42.0,
+      "luma_p90": 179.0,
+      "localsd_median": 11.942162952093014,
+      "localsd_p90": 52.51658793831822,
+      "box_px": [
+        2760,
+        3760,
+        2860,
+        3850
+      ]
+    },
+    "bare_soldermask_C": {
+      "luma_median": 145.0,
+      "luma_p10": 48.0,
+      "luma_p90": 187.0,
+      "localsd_median": 14.591324883826134,
+      "localsd_p90": 39.99337794300092,
+      "box_px": [
+        3000,
+        4100,
+        3100,
+        4190
+      ]
+    }
+  },
+  "verdict": "CANNOT DETERMINE, and the reason has MOVED",
+  "finding": "Neither LUMA nor LOCAL TEXTURE separates the packages from bare soldermask on this sharper source. Package luma medians 61 and 73 sit INSIDE the soldermask range 52-145; local-sd medians 9.94 and 4.22 sit inside the soldermask range 5.17-14.59. The p_dark.py threshold sweep returns ZERO candidates at every level from 70 to 120, for the same reason M08 gave: dark and smooth merges with bare soldermask and the whole board connects into one blob.",
+  "what_changed": "M08 CANNOT DETERMINE is now confirmed on an INDEPENDENT and 1.9x sharper source, so it is not an artefact of one photograph. But the gap is now a METHOD gap and not a SOURCE gap: the packages ARE visible, by their straight boundaries and coherent rectangular shape, and this test only ruled out intensity and texture.",
+  "named_next_step": "a BOUNDARY-based detector - straight-line detection and rectangle assembly - which is what a human eye is actually using here. Untried. It carries its own operator-dependence risk and would need the same sweep-stability admission rule. It would also need MIRROR-AWARE registration into this project frame: the iFixit image is left-right flipped, its silkscreen reads mirrored, and it carries NO scale of its own.",
+  "not_claimed": "no package position, size or count is published from this source. Nothing was drawn."
+}
