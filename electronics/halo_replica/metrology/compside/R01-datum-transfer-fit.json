@@ -122,6 +122,15 @@
   "discarded_total": 368,
   "residual_px_rms_in_sample": 1.0469052123518665
  },
+ "transferred_scale": {
+  "source_px_per_mm_mean": 107.68581095495132,
+  "source_px_per_mm_min": 106.78418564868652,
+  "source_px_per_mm_max": 108.54473109327103,
+  "source_px_per_mm_sd": 0.4457935617361214,
+  "spread_pct": 0.4139761383443657,
+  "n_samples": 79,
+  "inherits": "every error in the target's px/mm basis, quoted above, INCLUDING the 2.07% disagreement between photo 6's bottom and right rules"
+ },
  "verdict": "PASS",
  "why": []
 }
