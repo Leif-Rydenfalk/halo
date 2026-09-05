@@ -320,3 +320,72 @@ with 55.8 % of rays inside ±0.15 mm (a plain circle gives 0.563 mm / 43.6 %). A
 at 3.20 % and the montage exits FAIL** — diagnosed as the instrument, not the board: dark wooden
 blocks in the photograph's background merge into the thresholded silhouette. **Not loosened. A
 failing check that names its own cause is worth more than a passing one.**
+
+## 14 · A break severed from its subject by a process boundary
+
+Distinct from family 12 (an assertion inside a break that cannot fire). Here **the break was
+real, the check was real, and the break never reached the check.**
+
+- `X3` displaced the geometry, but **panel 1 is rendered by a subprocess that knows nothing
+  about the break**, so `X4` sat unmoved at 0.413 mm under a 12° rotation. The break was a
+  decoration on that number. Fixed; X4 now moves 0.413 → 0.470.
+- `R5`'s `--break-drop` **truncated the input rows**, so the accounting balanced and the check
+  had nothing to notice. Fixed to lose markers at draw time instead.
+
+**A break that runs in one process and a check that runs in another are not connected by
+intention.** Anywhere a deliberate break crosses a subprocess, a file write, or a regenerate
+step, verify the number on the far side actually moves.
+
+## 15 · A threshold that silently inverts when its reference goes negative
+
+The "does this model earn its extra parameters" gate read **gain > 2 × floor**, where the floor
+was the same improvement measured on a synthetic shape known to have no such feature.
+
+When the floor came out **negative**, `2 × floor` is *more negative*, so **the test passed on any
+positive gain whatsoever.** A ratio test against a signed reference inverts silently, and nothing
+in its output says so.
+
+**Fix:** demand an absolute margin as well — 5 % — not only a ratio.
+
+**And getting to that floor took two rejected controls.** The first returned **−3836 %** and was
+correctly binned as nonsense rather than reported. The rebuilt one returned **−221 %**, which
+turned out to be **the detector, not the control**: a line fitted to a short noisy arc comes out
+nearly tangential, `d/cos(θ−normal)` diverges at 90°, and such a "facet" throws its own radius to
+infinity inside its own arc. Facets more than 60° from their own normal are now refused *with
+that reason*. Final floor **−0.31 %** against a real gain of **40.53 %**.
+
+---
+
+## The corroboration that worked — control R7
+
+Set against the recurring failures, one clean success, and it came from asking two methods with
+**different blind spots** the same question.
+
+Markers falling outside the drawn outline is a self-consistency check that can fail. The board
+lane found **16 of 100 rows** beyond 0.95 of the *fitted outline radius*. L1 had independently
+flagged **14** as `on_rim_material_suspect`, by a *radial* criterion against the local edge
+radius. **Intersection 14. L1-only 0.** L1's set is strictly contained in the geometric one, and
+neither model was fitted to the other.
+
+The two extras are the interesting part. B011 at 0.9648 is marginal. **D004 at 1.0413 is a
+BLUE-body row outside the fitted outline — and L1's radial test ran on the 95 *bright* rows only,
+so it could never have flagged it.** A genuine 15th candidate, visible only because the two
+methods fail in different places. Reported, not chased, and not drawn as a confirmed part.
+
+## The finding that may reopen a closed verdict
+
+**Apple's centre hole is a routed pocket — arcs and straight walls — not a smooth curve.** Seven
+facets admitted; line inlier fraction **0.86–1.00** against the superellipse's **0.00 on the same
+arcs**; residual **0.3342 → 0.1987 mm**.
+
+**If that is right, the three disagreeing superellipse exponents were never noise.** L1 closed
+the hole as PARTIALLY DETERMINED because two photographs gave n=2.70 and n pinned at 2.00, and a
+refit gave 2.449 — reasoning that assumes the shape *is* a superellipse and the spread is
+measurement error. Under a pocket, **n is not a property of the hole at all**: it is whatever
+exponent best splits the difference across whichever facets each photograph sampled well, so two
+photographs would disagree **by construction**.
+
+**The test, and it can fail:** fit the pocket model to FCC photo 6's hole boundary — different
+photograph, different scale, different segmentation — and compare **facet angles, not n, and not
+residuals**. Agreement moves the hole from PARTIALLY DETERMINED to MEASURED. Disagreement leaves
+L1's verdict standing for a better reason than it currently has.
