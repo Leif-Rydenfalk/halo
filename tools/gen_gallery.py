@@ -270,10 +270,11 @@ def render_card(png, what, verdict, why, wide=False):
                 verdict, why, wide=wide, source=DESIGN_PY)
 
 
-def gallery_card(png, what, verdict, why, wide=True, source=None):
+def gallery_card(png, what, verdict, why, wide=True, source=None,
+                 cmd=None):
     return card(os.path.join(OUT, png), what,
-                "python3 tools/gen_gallery_figs.py", verdict, why, wide=wide,
-                source=source if source is not None else FIGS_PY)
+                cmd or "python3 tools/gen_gallery_figs.py", verdict, why,
+                wide=wide, source=source if source is not None else FIGS_PY)
 
 
 def board_render_card(png, wide=True):
@@ -494,7 +495,8 @@ SECTIONS = [
                          "markers are the element WITH the NFC winding "
                          "present — the condition it ships in; hollow ones "
                          "are bare controls",
-                         *traj_note(), source=TRAJ_PY),
+                         *traj_note(), source=TRAJ_PY,
+                         cmd="python3 tools/gen_antenna_trajectory.py"),
         ]
         + rf_cards("halo-rev-a-2g4-rt1-passive",
                    "LATEST — retune 1, the shipping element loaded, "
