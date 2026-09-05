@@ -883,3 +883,43 @@ The lane added a `mesh-plumbing` self-test group of five checks and watched four
 of them go red on a deliberate break, one reading *"0 of 13 antenna specs
 declaring min_cell_mm carry it into the model"* and naming the files. Checks in
 that app go 115 → 120.
+
+## D26c — the mesh hypothesis is REFUTED. halo has no antenna number, and this is the honest state
+
+`halo-rev-a-2g4-meander9-passive` completed at 05:04:07Z on the corrected mesh,
+the corrected pours and both passive conductors present. **It FAILED**, and the
+failure is clean rather than ambiguous:
+
+| assertion | result |
+|---|---|
+| `solver_converged` | **FAIL, 0.0** — it floored again |
+| `f_series_res_GHz` | **FAIL, 2.0701 GHz** against a 2.400–2.4835 band |
+| `mode_identified` | **FAIL, 0.0** — no candidate met both the reactance-zero and radiator-resistance tests |
+| `s11_worst_in_ble` | **FAIL, −4.81 dB** against −6 |
+| `gain_dBi` | **CANNOT DETERMINE** — no identified mode to report gain for |
+| `radiation_efficiency_physical` | **CANNOT DETERMINE**, same reason |
+| `eps_eff_implied` | PASS, 1.3148 |
+| `passive_copper_declared` | **PASS, 1.0** — the assertion added after the retraction is doing its job |
+
+**The mesh fix was the leading hypothesis and it is now refuted, not merely
+unproven.** D26b established that `min_cell_mm` was declared in thirteen specs
+and read by nothing, that fixing it cut the cell count by a third and lengthened
+the timestep 1.65×, and that the earlier failures were a floor rather than slow
+convergence. That was a real defect and fixing it was right. **It was not the
+cause of the floor.** A refuted hypothesis is a stronger result than an open one
+and is recorded as such.
+
+**What halo has, stated plainly: no antenna number.** Not a bad one — none. The
+figures that would matter, gain and efficiency, are CANNOT DETERMINE because
+nothing identified a radiator mode to compute them for. Every earlier figure is
+void (D26b). The +0.521 dBi that was reported to Leif is withdrawn (C-5).
+
+**What is now suspected**, and it must be tested rather than assumed after two
+wrong hypotheses in a row: the element may not be resonating in band **on this
+board at all**. A series resonance at 2.0701 GHz with no identifiable radiator
+mode is consistent with an element detuned by its surroundings rather than with
+a solver artefact — and the surroundings changed twice, when the coil moved and
+when the pours were cut back. The retune path exists
+(`ce-rf/tools/retune_for_board.py`, reporting quarter-wave target, tooth depth,
+arm inner radius and resulting coil gap, each absolute and as a fraction) and it
+is the next thing to try. **It is a hypothesis, not a conclusion.**
