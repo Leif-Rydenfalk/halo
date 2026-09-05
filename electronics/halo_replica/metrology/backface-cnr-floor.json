@@ -1,0 +1,14 @@
+{
+  "tool": "k_backface.py",
+  "verb": "calibrate",
+  "image": "images/airtag/oflynn-frontside-fullres.jpeg",
+  "n": 60,
+  "tried": 60,
+  "cnr_median": 116.12836118214452,
+  "cnr_p95": 970.7024193467745,
+  "cnr_max": 1340.8629817309459,
+  "margin": 1.0,
+  "min_cnr": 1341.86,
+  "verdict": "CANNOT DETERMINE - no null population exists on this face",
+  "basis": "z over 60 random annulus windows of oflynn-frontside-fullres.jpeg: median 116.1, p95 970.7, max 1340.9. NOT A NULL: there is no bare soldermask on this face - the 12 lowest-variance windows were rendered and looked at and every one still holds pads, silkscreen and an IC. No threshold is set from this. The z gate stays at its noise-exclusion value and the load-bearing controls are band-width match and window invariance."
+}

@@ -63,6 +63,9 @@ VIEWS = {
                         "stderr 0.0022 px/mm, split-half 0.33%. The RIGHT rule in the same "
                         "frame gives 15.5651 px/mm - a 2.07% disagreement that this tool "
                         "does NOT resolve and does not hide.",
+        px_per_mm_note="NOTE: this is the rule's value AT THE RULE. metrology/M02\n"
+                       "measures 15.6850 AT THE BOARD (two routes, 0.23% apart),\n"
+                       "1.29% lower. Pass --target-px-per-mm 15.6850 to use it.",
     ),
     'oflynn-front': dict(
         path='oflynn-backside-fullres.jpeg',
@@ -113,6 +116,11 @@ VIEWS = {
                         "COMPLETELY UNCHANGED, because the check divides both sides by the "
                         "same number. Registration consistency is not scale accuracy. What "
                         "would settle it: a caliper on one board of each part number. ***",
+        px_per_mm_note="NOTE: this value is ALREADY AT THE BOARD, not at the rule, so it\n"
+                       "carries no rule-to-board transfer error. Its two routes (bottom\n"
+                       "rule and right rule) disagree by 0.45%, not photo 6's 2.07%.\n"
+                       "The open risk here is a DIFFERENT one: this is the 920- sample\n"
+                       "board and the source is the 820- production board.",
     ),
 }
 
@@ -385,9 +393,15 @@ def apply_scale_override(tgt, a):
         if tgt.view.get('px_per_mm'):
             print("  SCALE BASIS  %.6f px/mm  [%s]" % (tgt.view['px_per_mm'],
                                                        tgt.view['px_per_mm_basis']))
-            print("               NOTE: this is the rule's value AT THE RULE. metrology/M02")
-            print("               measures 15.6850 AT THE BOARD (two routes, 0.23%% apart),")
-            print("               1.29%% lower. Pass --target-px-per-mm 15.6850 to use it.")
+            # The note is a property of THE VIEW, not a constant. It was hardcoded to
+            # photo 6's numbers and printed under every target, so pointing the tool at
+            # fcc7-back produced a correct scale with photo 6's provenance written over
+            # it - a right number wearing the wrong reason, which is the family
+            # docs/TOOLS-THAT-LIE.md is about. Fixed by L9, 2026-09-05.
+            n = tgt.view.get('px_per_mm_note')
+            if n:
+                for line in n.splitlines():
+                    print("               " + line)
         return
     tgt.view = dict(tgt.view)
     tgt.view['px_per_mm'] = a.target_px_per_mm
@@ -506,8 +520,8 @@ def run_fit(a):
             source_px_per_mm_sd=float(ppm_src.std()),
             spread_pct=float(100*ppm_src.std()/ppm_src.mean()),
             n_samples=int(ppm_src.size),
-            inherits="every error in the target's px/mm basis, quoted above, INCLUDING the "
-                     "2.07% disagreement between photo 6's bottom and right rules")
+            inherits="every error in the target's px/mm basis, which is: "
+                     + (tgt.view.get('px_per_mm_basis') or 'UNSTATED - no basis on this view'))
 
     verdict = PASS
     why = []

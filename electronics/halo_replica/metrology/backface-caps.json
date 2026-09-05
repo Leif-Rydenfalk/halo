@@ -1,0 +1,112 @@
+{
+  "tool": "k_backface.py",
+  "verb": "caps",
+  "lane": "L9",
+  "image": "images/airtag/oflynn-frontside-fullres.jpeg",
+  "px_per_mm": 69.55678686352425,
+  "px_per_mm_sd": 0.12737079096584514,
+  "scale_basis": "electronics/halo_replica/metrology/c_register-fit-back.json",
+  "genuine_px_per_mm_M06": "33-42 on this face; sizes are also quoted in genuine px",
+  "seeded_not_measured": "SEEDS are operator-read positions. Orientation, both dimensions and the centroid are MEASURED by refine().",
+  "parts": [],
+  "refused": [
+    {
+      "ref": "C1",
+      "why": "refused at 3 of 3 spans - span 1.6: the two bright bars are not the same width (21 vs 88 px, 76% apart) - not one part's two terminations; span 2.0: the two bright bars are not the same width (213 vs 126 px, 41% apart) - not one part's two terminations; span 2.4: the two bright bars are not the same width (219 vs 126 px, 42% apart) - not one part's two terminations"
+    },
+    {
+      "ref": "C2",
+      "why": "refused at 1 of 3 spans - span 1.6: the two bright bars are not the same width (40 vs 142 px, 72% apart) - not one part's two terminations"
+    },
+    {
+      "ref": "C3",
+      "why": "refused at 3 of 3 spans - span 1.6: the weaker termination does not stand clear of THIS WINDOW'S OWN row-permutation null: z=2.97 < 8.0 (integrated contrast 137, null 112+-8); span 2.0: the weaker termination does not stand clear of THIS WINDOW'S OWN row-permutation null: z=-1.15 < 8.0 (integrated contrast 91, null 98+-7); span 2.4: the weaker termination does not stand clear of THIS WINDOW'S OWN row-permutation null: z=-6.88 < 8.0 (integrated contrast 39, null 81+-6)"
+    },
+    {
+      "ref": "C4",
+      "why": "refused at 1 of 3 spans - span 1.6: the weaker termination does not stand clear of THIS WINDOW'S OWN row-permutation null: z=1.22 < 8.0 (integrated contrast 96, null 82+-12)"
+    },
+    {
+      "ref": "C5",
+      "why": "refused at 2 of 3 spans - span 1.6: the two bright bars are not the same width (214 vs 100 px, 53% apart) - not one part's two terminations; span 2.4: the two bright bars are not the same width (103 vs 235 px, 56% apart) - not one part's two terminations"
+    }
+  ],
+  "negative_control": {
+    "seeds": 6,
+    "admitted": 3,
+    "admitted_refs": [
+      "N4",
+      "N5",
+      "N6"
+    ]
+  },
+  "candidates_not_published": [
+    {
+      "ref": "C2",
+      "seed_px": [
+        447,
+        1455
+      ],
+      "per_span": [
+        {
+          "span_mm": 2.0,
+          "length_mm": 1.3633817486675037,
+          "width_mm": 3.2850856157046833,
+          "theta_deg": 168.0,
+          "z": 36.85200846573475
+        },
+        {
+          "span_mm": 2.4,
+          "length_mm": 1.3657777022250708,
+          "width_mm": 3.4360414098617915,
+          "theta_deg": 168.0,
+          "z": 45.614349911807174
+        }
+      ],
+      "admitted": false
+    },
+    {
+      "ref": "C4",
+      "seed_px": [
+        1917,
+        1237
+      ],
+      "per_span": [
+        {
+          "span_mm": 2.0,
+          "length_mm": 3.50791414138116,
+          "width_mm": 2.1996415720035736,
+          "theta_deg": 2.0,
+          "z": 66.04645886287867
+        },
+        {
+          "span_mm": 2.4,
+          "length_mm": 3.5730200334617943,
+          "width_mm": 2.8178414909326825,
+          "theta_deg": 2.0,
+          "z": 34.57422360872471
+        }
+      ],
+      "admitted": false
+    },
+    {
+      "ref": "C5",
+      "seed_px": [
+        1760,
+        1690
+      ],
+      "per_span": [
+        {
+          "span_mm": 2.0,
+          "length_mm": 3.464774433377099,
+          "width_mm": 2.12056948934985,
+          "theta_deg": 39.0,
+          "z": 58.82274934860023
+        }
+      ],
+      "admitted": false
+    }
+  ],
+  "summary": {},
+  "verdict": "FAIL"
+}
