@@ -196,13 +196,19 @@ coil (Catley's own suggested fix) — see `docs/ANTI-STALKING.md`.
 
 ### 2.5 Mechanical and connector-less interfaces
 
+> **Corrected 2026-09-05.** This section previously asserted "connectors: none
+> anywhere" and SPEC.md repeated it. That is refuted — see the connectors row.
+> The origin of the error is worth keeping: an absolute was written where a
+> qualified claim was meant, and the qualified version is both true and more
+> interesting than the absolute.
+
 | element | detail | verdict |
 |---|---|---|
 | battery contacts | **3 sprung contacts**: 1 negative on the well floor, **2 positive** tabs on the wall. **Both** positives must see 3 V to boot; only the left powers the logic, the right is sensed at **~50 nA** | **1:1** (the dual-sense is a nicety, cheap to copy) |
 | big pads under the terminals | **NOT connected** — the real contacts are the small pads under the tabs (O'Flynn) | note for anyone probing |
 | battery door | stainless-steel **press-and-twist** cover — the child-safety mechanism | **1:1** (D3 in DECISIONS.md; Reese's Law) |
 | housing join | front + back plastic on **3 clips + glue**; PCB is glued/soldered to the antenna tray | **SUB** — screws or snap-fit are friendlier for open hardware |
-| connectors | **none anywhere** | **1:1** — copy this |
+| connectors | **REFUTED 2026-09-05. There is one: a U.FL / IPEX-class coaxial receptacle, J1**, immediately right of the UWB can on the retail board 820-01736-A — metal shell, four solder tabs, dielectric annulus, gold centre contact, unambiguous at 5×, HIGH confidence. The claim was refuted by the photograph this very document cites, and it is now also contradicted by a part with a designator in an ERC-clean netlist. The sentence was almost certainly *meant* as **no off-board WIRING connectors**, which remains true and is still the interesting fact about the AirTag — no battery leads, no flex, no header. Written as an absolute it was false | **no off-board wiring: 1:1, copy it. The coaxial receptacle: a deliberate choice** — it is an RF test point and halo may or may not want one |
 
 ---
 
@@ -280,3 +286,52 @@ Architecture unchanged in principle — an nRF52-based clone stays faithful to b
 
 Nothing above is guessed. Where a number is not in a source it says **CANNOT DETERMINE** and names
 what would settle it.
+
+---
+
+## Corrections landed 2026-09-05 from the Replica lane's schematic work
+
+Three, all from instruments rather than from re-reading photographs.
+
+**1. U8 does not gate the MCU. Refuted by self-consistency alone.** iFixit's
+teardown says the load switch gates the processor as well as the flash. It
+cannot: **a load switch whose enable comes from the MCU it powers can never be
+turned on.** No better photograph is needed and none exists. So U8 gates the
+flash and the UWB subsystem only, and the MCU sits on the 1.8 V rail directly.
+This is the first correction in this project produced by pure reasoning rather
+than measurement, and it overturns a widely-repeated teardown claim.
+
+**2. The flash is GD25LQ32C, not GD25LE32D.** O'Flynn read the JEDEC identifier
+**out of the live chip over SPI**; iFixit identified it visually. An instrument
+reading the part beats a photograph of the part. iFixit's claim is recorded as
+rejected-with-reason rather than deleted.
+
+**3. TP1 and TP38 remain CANNOT DETERMINE and are deliberately off the Replica's
+schematic.** §2.4 of this document calls them the voice coil's solder joints;
+Apple's own FCC arrow calls that annulus the NFC antenna. Both cannot be true,
+the voice-coil attribution is this repository's own assertion rather than a
+quotation, and the dispute is what forced the retraction of the coil finding
+earlier today. The schematic lane declined to pick a winner, which was correct.
+
+## What the Replica's net basis annotation establishes, and it is the number that matters
+
+The Replica's schematic carries **57 parts, 51 nets, 186 pin connections** and
+passes its electrical rule check. But every net is labelled with **how it is
+known**:
+
+| basis | nets |
+|---|---|
+| **measured** | **7** |
+| inferred | 21 |
+| chosen | 23 |
+
+**Nobody has traced Apple's copper.** The seven measured nets are the three
+battery contacts and O'Flynn's four debug pads. The twenty-three *chosen* nets
+are **ours, not Apple's**, and nothing downstream may cite one as a finding about
+the AirTag. That distinction is being pushed into `ce-pcb` as a first-class
+feature under P11, so a design that quietly loses its basis annotations fails its
+own check rather than passing.
+
+**Every passive value on that sheet is CANNOT DETERMINE and stays so** — a 100 nF
+and a 1 µF in an 0402 body are visually identical. **The Replica is not buildable
+as drawn, and saying so is part of what it is for.**
