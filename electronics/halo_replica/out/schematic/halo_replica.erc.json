@@ -1,0 +1,145 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-05T14:49:18",
+    "ignored_checks": [
+        {
+            "description": "Global label only appears once in the schematic",
+            "key": "single_global_label"
+        },
+        {
+            "description": "Four connection points are joined together",
+            "key": "four_way_junction"
+        },
+        {
+            "description": "SPICE model issue",
+            "key": "simulation_model_issue"
+        },
+        {
+            "description": "Assigned footprint doesn't match footprint filters",
+            "key": "footprint_filter"
+        }
+    ],
+    "included_severities": [
+        "error",
+        "warning",
+        "exclusion"
+    ],
+    "kicad_version": "10.0.6",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/d37a6f13-35c0-5588-80c7-b5d0e76f2c1c",
+            "violations": [
+                {
+                    "description": "Pins of type Unspecified and Power input are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U5 Pin 17 [PAD, Unspecified, Line]",
+                            "pos": {
+                                "x": 0.4191,
+                                "y": 3.429
+                            },
+                            "uuid": "d5c0926d-0e98-59b2-b128-be82b39b448d"
+                        },
+                        {
+                            "description": "Symbol U5 Pin 3 [GND, Power input, Line]",
+                            "pos": {
+                                "x": 0.3683,
+                                "y": 3.429
+                            },
+                            "uuid": "7da53714-352a-59df-bf95-ab367684fdc7"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Label connected to only one pin",
+                    "items": [
+                        {
+                            "description": "Global Label 'U9_OUT_DESTINATION_UNKNOWN'",
+                            "pos": {
+                                "x": 1.6637,
+                                "y": 2.1717
+                            },
+                            "uuid": "8c9d0a37-1827-5a87-8e35-2b3bd7a2d6d3"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "isolated_pin_label"
+                },
+                {
+                    "description": "Pins of type Bidirectional and Power output are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U3 Pin 3 [~{WP}/IO2, Bidirectional, Line]",
+                            "pos": {
+                                "x": 3.8354,
+                                "y": 0.4445
+                            },
+                            "uuid": "b04fd82a-be38-50ac-9d51-e202460eb730"
+                        },
+                        {
+                            "description": "Symbol U8 Pin 4 [VOUT, Power output, Line]",
+                            "pos": {
+                                "x": 1.4478,
+                                "y": 1.8415
+                            },
+                            "uuid": "fdadf6af-f24b-5cf4-a88b-6372cd872270"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Pins of type Bidirectional and Power output are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U3 Pin 7 [~{HOLD}/~{RESET}/IO3, Bidirectional, Line]",
+                            "pos": {
+                                "x": 3.8354,
+                                "y": 0.4699
+                            },
+                            "uuid": "7b34ef82-b2b1-5cae-9a5d-3093fb7a6534"
+                        },
+                        {
+                            "description": "Symbol U8 Pin 4 [VOUT, Power output, Line]",
+                            "pos": {
+                                "x": 1.4478,
+                                "y": 1.8415
+                            },
+                            "uuid": "fdadf6af-f24b-5cf4-a88b-6372cd872270"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                },
+                {
+                    "description": "Pins of type Bidirectional and Power output are connected",
+                    "items": [
+                        {
+                            "description": "Symbol U4 Pin 6 [SDO/SA0, Bidirectional, Line]",
+                            "pos": {
+                                "x": 5.6769,
+                                "y": 0.2921
+                            },
+                            "uuid": "3337d158-3ce8-5467-85df-93f628759225"
+                        },
+                        {
+                            "description": "Symbol #PWR906 Pin 1 [Power output, Line]",
+                            "pos": {
+                                "x": 0.8128,
+                                "y": 3.6957
+                            },
+                            "uuid": "073df9bb-f700-5f2e-8774-929de280223a"
+                        }
+                    ],
+                    "severity": "warning",
+                    "type": "pin_to_pin"
+                }
+            ]
+        }
+    ],
+    "source": "halo_replica.kicad_sch"
+}

@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-05T06:41:53Z",
-  "git_rev": "2060fe0",
+  "generated_utc": "2026-09-05T06:49:30Z",
+  "git_rev": "f363666",
   "producer": "L9 THE COMPARISON lane",
   "side": "BACK = the BATTERY-CONTACT / COIL / TEST-POINT side. O'Flynn's frontside-fullres.jpeg IS this side. This is the face the Replica had NOT drawn (THREE-WAY.md row 24).",
   "source_image": "images/airtag/oflynn-frontside-fullres.jpeg",
@@ -30,6 +30,7 @@
     ],
     "note": "DO NOT QUOTE ANY POSITION TO 0.01 mm. The floor is 4-5 genuine px."
   },
+  "IF_YOU_MAP_A_REGISTERED_POSITION_YOURSELF_READ_THIS": "*** c_register's HOMOGRAPHY LANDS IN THE PRE-AVERAGED SOURCE FRAME, NOT IN FULL-RESOLUTION PIXELS. *** It downsamples the source to roughly the target's sampling so that warping is not aliasing a much finer image - for this pair the factor is fit['source']['pre_average'] = 5.13 - and H therefore returns coordinates in that reduced frame. MULTIPLY BY pre_average TO GET FULL-RES PIXELS. Omitting it put this file's board centre at (224, 235) instead of (1152, 1207), which was caught ONLY because it was visibly absurd. A 5% frame error would not have looked wrong and nothing downstream would have questioned it. Every position in `rows` below already has this applied; the warning is here for anyone mapping a NEW position through the same transform. This applies equally to the FRONT registration, which uses the same tool.",
   "THE_CAVEAT_UNDER_EVERY_MILLIMETRE_HERE": "*** THE SCALE COMES FROM A DIFFERENT PHYSICAL BOARD. *** FCC internal photo 7 is 920-08283-01, data code 3119 - a 2019 engineering build. O'Flynn's photograph, which every position here is measured in, is 820-01736-A, data code 2920 17 - 2020 production. A uniform dimensional difference between the two is ABSORBED INTO THE FITTED SCALE and leaves the held-out residual COMPLETELY UNCHANGED, because the check divides both sides by the same number. Registration consistency is not scale accuracy. It cannot be settled from this machine; a caliper on one board of each part number settles it. THE SAME CAVEAT ALREADY APPLIED, UNSTATED, TO THE FRONT HANDOFF's 106.313 px/mm.",
   "controls": {
     "negative": "the pad detector off the board (r>1000 px): 0 pads. It can come back empty.",

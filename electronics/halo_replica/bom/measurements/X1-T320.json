@@ -1,0 +1,163 @@
+{
+  "threshold": 114.1,
+  "separability": 0.842,
+  "pixels": 41487,
+  "long_px": 262.1637508303449,
+  "short_px": 211.5020140588889,
+  "angle_deg": 137.8,
+  "touches_box_edge": false,
+  "box_fill_fraction": 0.22,
+  "rectangularity": 0.748,
+  "components_found": 224,
+  "robust": {
+    "threshold": 114.1,
+    "rect_long_px": 262.1637508303449,
+    "rect_short_px": 211.5020140588889,
+    "median_long_px": 232.5,
+    "median_short_px": 206.3,
+    "p25_long_px": 228.2,
+    "p25_short_px": 172.3,
+    "median_aspect": 1.127,
+    "p25_aspect": 1.324,
+    "rect_aspect": 1.24,
+    "median_vs_p25_long_frac": 0.0186,
+    "median_vs_p25_short_frac": 0.1971,
+    "protrusion_long_frac": 0.1278,
+    "protrusion_short_frac": 0.0252,
+    "n_slices_long": 259,
+    "n_slices_short": 211
+  },
+  "pad_sweep": {
+    "rows": [
+      {
+        "pad": 0,
+        "box": [
+          700,
+          830,
+          1110,
+          1290
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 262.1637508303449,
+          "short_px": 211.5020140588889,
+          "angle_deg": 137.8,
+          "threshold": 114.1,
+          "separability": 0.842,
+          "rectangularity": 0.748,
+          "pixels": 41487,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 20,
+        "box": [
+          680,
+          810,
+          1130,
+          1310
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 262.16375083034495,
+          "short_px": 211.50201405888902,
+          "angle_deg": 137.8,
+          "threshold": 114.1,
+          "separability": 0.834,
+          "rectangularity": 0.748,
+          "pixels": 41487,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 40,
+        "box": [
+          660,
+          790,
+          1150,
+          1330
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 262.16375083034495,
+          "short_px": 211.5020140588889,
+          "angle_deg": 137.8,
+          "threshold": 114.1,
+          "separability": 0.83,
+          "rectangularity": 0.748,
+          "pixels": 41487,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "pad": 60,
+        "box": [
+          640,
+          770,
+          1170,
+          1350
+        ],
+        "clamped": false,
+        "result": {
+          "long_px": 258.7862695200764,
+          "short_px": 211.3884507696036,
+          "angle_deg": 137.8,
+          "threshold": 115.0,
+          "separability": 0.828,
+          "rectangularity": 0.757,
+          "pixels": 41397,
+          "touches_box_edge": false
+        }
+      }
+    ],
+    "summary": {
+      "n_pads": 4,
+      "n_usable": 4,
+      "pads": [
+        0,
+        20,
+        40,
+        60
+      ],
+      "long_px": {
+        "min": 258.7862695200764,
+        "max": 262.16375083034495,
+        "median": 262.16375083034495,
+        "spread_frac": 0.0129,
+        "stable": true
+      },
+      "short_px": {
+        "min": 211.3884507696036,
+        "max": 211.50201405888902,
+        "median": 211.5020140588889,
+        "spread_frac": 0.0005,
+        "stable": true
+      },
+      "aspect": {
+        "min": 1.224,
+        "max": 1.24,
+        "median": 1.24,
+        "spread_frac": 0.0124
+      },
+      "verdict": "STABLE",
+      "tolerance": 0.05
+    }
+  },
+  "px_per_mm": 106.31295578013115,
+  "long_mm": 2.466,
+  "short_mm": 1.989,
+  "aspect": 1.24,
+  "input": {
+    "image": "../../images/airtag/oflynn-backside-fullres.jpeg",
+    "box": [
+      700,
+      830,
+      1110,
+      1290
+    ],
+    "pick": "bright",
+    "channel": "lum",
+    "label": "X1 T320/RBEV",
+    "ruler_note": "106.313 px/mm, registration-derived (metrology/c_register-fit-boardscale.json, 79 samples, sd 0.440)"
+  }
+}

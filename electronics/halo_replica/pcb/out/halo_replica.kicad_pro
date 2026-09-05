@@ -1,0 +1,28 @@
+{
+  "board": {
+    "design_settings": {
+      "rules": {
+        "min_clearance": 0.075,
+        "min_track_width": 0.075,
+        "min_hole_clearance": 0.25,
+        "min_through_hole_diameter": 0.15,
+        "min_via_diameter": 0.25
+      }
+    }
+  },
+  "net_settings": {
+    "classes": [
+      {
+        "name": "Default",
+        "clearance": 0.075,
+        "track_width": 0.075,
+        "via_diameter": 0.25,
+        "via_drill": 0.15
+      }
+    ]
+  },
+  "meta": {
+    "filename": "halo_replica.kicad_pcb",
+    "version": 3
+  }
+}

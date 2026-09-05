@@ -139,6 +139,201 @@ def measure(arr, pick):
             "components_found": int(n)}
 
 
+def measure_at(arr, pick, t):
+    """The same extraction as measure(), at a CALLER-GIVEN threshold.
+
+    Split out because the threshold is the second arbitrary parameter in this
+    tool (the box is the first), and E07 s11's rule is to sweep an arbitrary
+    parameter rather than trust one value of it.
+    """
+    mask = arr > t if pick == "bright" else arr < t
+    if mask.sum() < 25:
+        return None
+    lab, n = ndimage.label(mask)
+    if n == 0:
+        return None
+    sizes = ndimage.sum(mask, lab, range(1, n + 1))
+    m = lab == (int(np.argmax(sizes)) + 1)
+    ys, xs = np.nonzero(m)
+    rect = min_area_rect(xs, ys)
+    if rect is None:
+        return None
+    H, W = arr.shape
+    return {"threshold": round(float(t), 2), "long_px": rect[0],
+            "short_px": rect[1], "angle_deg": round(float(rect[2]), 1),
+            "pixels": int(m.sum()),
+            "touches_box_edge": bool(xs.min() == 0 or ys.min() == 0 or
+                                     xs.max() == W - 1 or ys.max() == H - 1),
+            "rectangularity": round(float(m.sum()) / (rect[0] * rect[1]), 3)}
+
+
+def half_max(arr, pick, t_otsu, erode=6):
+    """Re-measure at the 50 % crossing between the part and its background.
+
+    WHY THIS EXISTS, measured 2026-09-05 (L8): Otsu picks the threshold that
+    maximises between-class variance, which is NOT the midpoint between the two
+    materials whenever the classes are unequally sized. On a photograph whose
+    edges are several pixels wide, a threshold off the midpoint moves the
+    extracted boundary OUTWARD or INWARD by a fixed number of pixels PER SIDE -
+    an ADDITIVE error that looks like a small percentage on a big part and a
+    large one on a small part.
+
+    The nRF52832-CIAA is the case that showed it. Its published body is
+    2.956 x 3.226 mm (Nordic PS v1.4 Table 132 p.541). At the registration scale
+    106.313 px/mm it should image 342.97 x 314.26 px; Otsu returns
+    355.10 x 326.60 px. The excess is +12.13 and +12.34 px - agreeing to 1.7 % in
+    PIXELS and only to 10.4 % in PERCENT. A scale error is multiplicative and
+    would agree in percent. This one is additive, so it is the outline, not the
+    ruler.
+
+    The 50 % crossing is the project's standing answer to this (E07's closing
+    note: a gradient PEAK carried 4.21 px of bias on a synthetic step, the 50 %
+    crossing 0.05 px). Foreground and background means are taken well inside and
+    well outside the Otsu blob, so the soft transition itself is excluded from
+    both.
+    """
+    m0 = arr > t_otsu if pick == "bright" else arr < t_otsu
+    lab, n = ndimage.label(m0)
+    if n == 0:
+        return None
+    sizes = ndimage.sum(m0, lab, range(1, n + 1))
+    core = lab == (int(np.argmax(sizes)) + 1)
+    inner = ndimage.binary_erosion(core, iterations=erode)
+    outer = ~ndimage.binary_dilation(core, iterations=erode)
+    if inner.sum() < 50 or outer.sum() < 50:
+        return None
+    fg = float(arr[inner].mean())
+    bg = float(arr[outer].mean())
+    t50 = (fg + bg) / 2.0
+    r = measure_at(arr, pick, t50)
+    if r is None:
+        return None
+    r.update({"fg_mean": round(fg, 2), "bg_mean": round(bg, 2),
+              "t50": round(t50, 2), "t_otsu": round(float(t_otsu), 2),
+              "otsu_offset_from_midpoint": round(float(t_otsu) - t50, 2),
+              "contrast": round(abs(fg - bg), 2)})
+    return r
+
+
+def robust_extent(arr, pick, t, min_bin=3):
+    """Median cross-section of the kept component, in its own rotated frame.
+
+    WHY, measured 2026-09-05 (L8): the minimum-area rectangle is set by the
+    EXTREME points of the blob, so anything that protrudes at a corner sets the
+    size. X1 (T320/RBEV) is soldered on four pads that stick out past the
+    package on all four corners and merge with it at this threshold: the
+    min-area rectangle reads 262.2 x 211.5 px at rectangularity 0.748, and
+    262.2 px is the pad-to-pad span, not the package. X2 (A048L) has no visible
+    protruding fillets and reads at rectangularity 0.802 - so comparing the two
+    parts' aspect ratios from min-area rectangles is NOT like for like, and the
+    Catley test turns on exactly that comparison.
+
+    A median does not care about four corners. For each 1-px slice across the
+    blob's own long axis, take the extent along the short axis; the median over
+    all slices is the body width. Symmetrically for the length. On a clean
+    rectangle the medians equal the extents, which is the selftest's negative
+    control: this estimator must not shrink a part that has nothing sticking out.
+
+    Reports both, plus the fraction by which the min-area rectangle exceeds the
+    medians - which is a direct, per-part measure of how much of the "size" is
+    protrusion.
+
+    THE LIMIT, and it is real: a median recovers the body only while the
+    protruding slices are FEWER THAN HALF of the slices on that axis. Selftest
+    case 15b is a deliberate case where they are not - four tabs each half the
+    body height - and there the median equals the rectangle and this estimator
+    CANNOT see the protrusion. The 25th percentile can, and both are reported;
+    when they disagree, the protrusion is large and the p25 is the body. Neither
+    is silently preferred, because choosing the statistic after seeing which
+    answer it gives is E07 s17.
+    """
+    mask = arr > t if pick == "bright" else arr < t
+    lab, n = ndimage.label(mask)
+    if n == 0:
+        return None
+    sizes = ndimage.sum(mask, lab, range(1, n + 1))
+    m = lab == (int(np.argmax(sizes)) + 1)
+    ys, xs = np.nonzero(m)
+    rect = min_area_rect(xs, ys)
+    if rect is None:
+        return None
+    long_px, short_px, ang = rect
+    a = math.radians(ang)
+    u = xs * math.cos(a) + ys * math.sin(a)
+    v = -xs * math.sin(a) + ys * math.cos(a)
+
+    def med_extent(along, across):
+        keys = np.round(along).astype(int)
+        order = np.argsort(keys)
+        keys, vals = keys[order], across[order]
+        bounds = np.searchsorted(keys, np.unique(keys), side="left")
+        bounds = np.append(bounds, len(keys))
+        widths = []
+        for i in range(len(bounds) - 1):
+            seg = vals[bounds[i]:bounds[i + 1]]
+            if len(seg) >= min_bin:
+                widths.append(seg.max() - seg.min() + 1.0)
+        if not widths:
+            return None, None, 0
+        return (float(np.median(widths)),
+                float(np.percentile(widths, 25)), len(widths))
+
+    med_short, p25_short, n_long_bins = med_extent(u, v)
+    med_long, p25_long, n_short_bins = med_extent(v, u)
+    if med_short is None or med_long is None:
+        return None
+    return {"threshold": round(float(t), 2),
+            "rect_long_px": long_px, "rect_short_px": short_px,
+            "median_long_px": round(med_long, 1),
+            "median_short_px": round(med_short, 1),
+            "p25_long_px": round(p25_long, 1),
+            "p25_short_px": round(p25_short, 1),
+            "median_aspect": round(med_long / med_short, 3),
+            "p25_aspect": round(p25_long / p25_short, 3),
+            "rect_aspect": round(long_px / short_px, 3),
+            "median_vs_p25_long_frac": round(med_long / p25_long - 1.0, 4),
+            "median_vs_p25_short_frac": round(med_short / p25_short - 1.0, 4),
+            "protrusion_long_frac": round(long_px / med_long - 1.0, 4),
+            "protrusion_short_frac": round(short_px / med_short - 1.0, 4),
+            "n_slices_long": n_long_bins, "n_slices_short": n_short_bins}
+
+
+def thr_sweep(arr, pick, t_otsu, n=9, span=0.6):
+    """Extent as a function of the threshold, across the part/background gap.
+
+    The companion to the box sweep: the threshold is the tool's OTHER arbitrary
+    parameter. If the extent barely moves across the whole gap, the edge is
+    sharp and any disagreement with another method is about WHICH PIXELS each
+    method calls the part, not about where the threshold sat. If it moves a lot,
+    the size is a threshold choice and must be reported as such.
+    """
+    hm = half_max(arr, pick, t_otsu)
+    if hm is None:
+        return None
+    fg, bg = hm["fg_mean"], hm["bg_mean"]
+    lo, hi = (min(fg, bg), max(fg, bg))
+    mid = (lo + hi) / 2.0
+    half = (hi - lo) / 2.0 * span
+    rows = []
+    for t in np.linspace(mid - half, mid + half, n):
+        r = measure_at(arr, pick, float(t))
+        rows.append({"t": round(float(t), 2),
+                     "long_px": None if r is None else r["long_px"],
+                     "short_px": None if r is None else r["short_px"],
+                     "clipped": None if r is None else r["touches_box_edge"]})
+    ok = [r for r in rows if r["long_px"] is not None and not r["clipped"]]
+    out = {"rows": rows, "t50": hm["t50"], "contrast": hm["contrast"],
+           "span_frac_of_contrast": span, "n_usable": len(ok)}
+    if len(ok) >= 2:
+        for axis in ("long_px", "short_px"):
+            v = np.array([r[axis] for r in ok], float)
+            out[axis] = {"min": float(v.min()), "max": float(v.max()),
+                         "range_px": round(float(v.max() - v.min()), 1),
+                         "px_per_luma": round(float(v.max() - v.min()) /
+                                              max(1e-9, (ok[-1]["t"] - ok[0]["t"])), 2)}
+    return out
+
+
 def channel(rgb, name):
     r, g, b = (rgb[..., i].astype(float) for i in range(3))
     if name == "lum":
@@ -280,6 +475,68 @@ def run(args):
         print(f"  FAIL — the component fills {r['box_fill_fraction']:.0%} of the "
               "box; there is no background left to define an edge against.")
         return 1
+    if getattr(args, "half_max", False):
+        hm = half_max(arr, args.pick, r["threshold"])
+        if hm is None:
+            print("  half-max: CANNOT DETERMINE — no clean interior/exterior to "
+                  "take the two class means from")
+        else:
+            print(f"  --- 50 % crossing (Otsu is not the midpoint) ---")
+            print(f"    part {hm['fg_mean']:.1f}  background {hm['bg_mean']:.1f}  "
+                  f"contrast {hm['contrast']:.1f}  ->  t50 {hm['t50']:.1f}, "
+                  f"Otsu {hm['t_otsu']:.1f} "
+                  f"({hm['otsu_offset_from_midpoint']:+.1f} off midpoint)")
+            print(f"    extent at t50: {hm['long_px']:.1f} x {hm['short_px']:.1f} px"
+                  f"   (Otsu gave {r['long_px']:.1f} x {r['short_px']:.1f}, "
+                  f"difference {hm['long_px']-r['long_px']:+.1f} / "
+                  f"{hm['short_px']-r['short_px']:+.1f} px)")
+            if hm["touches_box_edge"]:
+                print("    NOTE the t50 blob touches the box edge; widen --box "
+                      "before using this number")
+            r["half_max"] = hm
+    if getattr(args, "robust", False):
+        rb = robust_extent(arr, args.pick, r["threshold"])
+        if rb is None:
+            print("  robust extent: CANNOT DETERMINE")
+        else:
+            print("  --- median cross-section (min-area rect is set by extremes) ---")
+            print(f"    median {rb['median_long_px']:.1f} x "
+                  f"{rb['median_short_px']:.1f} px, aspect {rb['median_aspect']} "
+                  f"({rb['n_slices_long']} / {rb['n_slices_short']} slices)")
+            print(f"    p25    {rb['p25_long_px']:.1f} x "
+                  f"{rb['p25_short_px']:.1f} px, aspect {rb['p25_aspect']}")
+            if (abs(rb["median_vs_p25_long_frac"]) > 0.03 or
+                    abs(rb["median_vs_p25_short_frac"]) > 0.03):
+                print(f"    median and p25 DISAGREE "
+                      f"({rb['median_vs_p25_long_frac']*100:+.1f}% long, "
+                      f"{rb['median_vs_p25_short_frac']*100:+.1f}% short): the "
+                      "protrusion covers a large share of the slices, so the "
+                      "median may be carrying it. Report both.")
+            print(f"    min-area rect exceeds the medians by "
+                  f"{rb['protrusion_long_frac']*100:+.1f}% long, "
+                  f"{rb['protrusion_short_frac']*100:+.1f}% short "
+                  f"— that excess IS the protrusion (solder fillets, pads)")
+            r["robust"] = rb
+    if getattr(args, "thr_sweep", False):
+        ts = thr_sweep(arr, args.pick, r["threshold"])
+        if ts is None:
+            print("  threshold sweep: CANNOT DETERMINE")
+        else:
+            print("  --- threshold sweep (the OTHER arbitrary parameter) ---")
+            for row in ts["rows"]:
+                if row["long_px"] is None:
+                    print(f"    t {row['t']:6.1f}: nothing")
+                else:
+                    print(f"    t {row['t']:6.1f}: {row['long_px']:7.1f} x "
+                          f"{row['short_px']:6.1f} px"
+                          + ("  CLIPPED" if row["clipped"] else ""))
+            if "long_px" in ts:
+                print(f"    across the middle {ts['span_frac_of_contrast']:.0%} of a "
+                      f"{ts['contrast']:.1f}-unit contrast the long axis moves "
+                      f"{ts['long_px']['range_px']} px "
+                      f"({ts['long_px']['px_per_luma']} px per luma unit), the "
+                      f"short axis {ts['short_px']['range_px']} px")
+            r["thr_sweep"] = ts
     sweep = None
     if getattr(args, "pad_sweep", False):
         pads = [int(v) for v in args.pads.split(",")]
@@ -543,6 +800,69 @@ def self_test():
               "found it and the exit code did not carry it")
         fails += 1
 
+    # 14: the median cross-section must EQUAL the extent on a clean rectangle.
+    # This is the negative control for the robust estimator: it must not shrink a
+    # part that has nothing sticking out, or every size in the BOM moves.
+    clean = draw(180.0, 90.0, 0.0, size=400)
+    got = otsu(clean.astype(float).ravel())
+    rbc = robust_extent(clean, "bright", got[0])
+    if (abs(rbc["median_long_px"] - 180) / 180 < 0.03 and
+            abs(rbc["median_short_px"] - 90) / 90 < 0.03 and
+            abs(rbc["protrusion_long_frac"]) < 0.03):
+        print(f"  PASS  median cross-section EQUALS the extent on a clean "
+              f"rectangle: {rbc['median_long_px']:.0f}x{rbc['median_short_px']:.0f} "
+              f"px (true 180x90), protrusion {rbc['protrusion_long_frac']*100:+.1f}%")
+        passes += 1
+    else:
+        print(f"  FAIL  robust estimator distorts a clean rectangle: {rbc}")
+        fails += 1
+
+    # 15: THE CASE IT EXISTS FOR. Four corner tabs, exactly X1's solder fillets.
+    # The min-area rectangle must be badly inflated and the median must not be.
+    def _tabbed(halfy):
+        t2 = draw(180.0, 90.0, 0.0, size=400)
+        for sx in (-1, 1):
+            for sy in (-1, 1):
+                x, y = 200 + sx * 90, 200 + sy * 45
+                t2[max(0, y - halfy):y + halfy, max(0, x - 20):x + 20] = 235
+        return t2
+
+    tab = _tabbed(9)          # tabs 18 px on a 90 px side: X1's pads, roughly
+    rbt = robust_extent(tab, "bright", otsu(tab.astype(float).ravel())[0])
+    rect_err = abs(rbt["rect_long_px"] - 180) / 180
+    med_err = abs(rbt["median_long_px"] - 180) / 180
+    if rect_err > 0.15 and med_err < 0.05:
+        print(f"  PASS  corner tabs inflate the min-area rectangle to "
+              f"{rbt['rect_long_px']:.0f}x{rbt['rect_short_px']:.0f} px "
+              f"({rect_err*100:.0f}% long error) and the median holds at "
+              f"{rbt['median_long_px']:.0f}x{rbt['median_short_px']:.0f} px "
+              f"({med_err*100:.1f}% error) — this is X1's four solder pads")
+        passes += 1
+    else:
+        print(f"  FAIL  corner-tab case: rect_err={rect_err:.3f} "
+              f"med_err={med_err:.3f} {rbt}")
+        fails += 1
+
+    # 15b: THE STATED LIMIT. Tabs half the body height cover MORE than half the
+    # slices, so the median carries them and cannot see the protrusion. Asserted
+    # as a known limit so that a future change claiming otherwise goes red here.
+    big = _tabbed(22)
+    rbb = robust_extent(big, "bright", otsu(big.astype(float).ravel())[0])
+    med_blind = abs(rbb["median_long_px"] - rbb["rect_long_px"]) < 1.0
+    p25_sees = abs(rbb["p25_long_px"] - 180) / 180 < 0.05
+    if med_blind and p25_sees:
+        print(f"  PASS  stated limit holds: with tabs over half the slices the "
+              f"MEDIAN is blind ({rbb['median_long_px']:.0f} px = the rectangle) "
+              f"and the p25 still recovers the body "
+              f"({rbb['p25_long_px']:.0f} px, true 180). Both are reported and "
+              f"they disagree by "
+              f"{rbb['median_vs_p25_long_frac']*100:+.0f}%, which is the tell.")
+        passes += 1
+    else:
+        print(f"  FAIL  limit case: med_blind={med_blind} p25_sees={p25_sees} "
+              f"{rbb}")
+        fails += 1
+
     # 13: one padding is not a sweep. A single point must be CANNOT DETERMINE,
     # never STABLE — otherwise a sweep that silently collapsed to one box would
     # report the strongest possible verdict from no comparison at all.
@@ -578,6 +898,22 @@ def main():
                         "moves more than 5%% is reporting the BOX, not the part.")
     p.add_argument("--pads", default="0,20,40,60",
                    help="paddings in px for --pad-sweep (default 0,20,40,60)")
+    p.add_argument("--half-max", action="store_true",
+                   help="also report the extent at the 50%% crossing between the "
+                        "part and its background. Otsu is not the midpoint when "
+                        "the two classes differ in size, and on a soft edge that "
+                        "costs a FIXED number of px per side - additive, so it is "
+                        "worst on small parts. Measured on the nRF52832: Otsu "
+                        "reads +12.1/+12.3 px over the published body.")
+    p.add_argument("--robust", action="store_true",
+                   help="also report the MEDIAN cross-section in the part's own "
+                        "frame. The min-area rectangle is set by extremes, so "
+                        "corner solder fillets become the size; a median ignores "
+                        "them. Prints how much of the rectangle is protrusion.")
+    p.add_argument("--thr-sweep", action="store_true",
+                   help="extent across the middle 60%% of the part/background gap. "
+                        "Says whether the size is a threshold choice or a property "
+                        "of the edge.")
     p.add_argument("--overlay-png",
                    help="write the kept component outlined in green on the crop, "
                         "so the segmentation can be LOOKED at")

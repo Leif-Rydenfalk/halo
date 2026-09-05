@@ -1,0 +1,110 @@
+{
+ "board": "halo_replica",
+ "footprint_library": {
+  "library": "halo_replica",
+  "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
+  "footprints": 44
+ },
+ "written_utc": "2026-09-05T06:48:42.565141Z",
+ "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
+ "outer_diameter_mm_drawn": 25.1593,
+ "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
+ "layers": 4,
+ "thickness_mm_as_drawn": 0.3,
+ "fabrication_delta": "L4 measured 0.30 mm is below PCBWay's 0.40 mm four-layer floor and JLCPCB's 0.40 mm minimum. The Replica AS DRAWN cannot be ordered at either house. That is a fact about US, not about Apple. The two numbers are never fused.",
+ "surface_finish": "gold-bearing \u2014 ENIG or another immersion/electroless-gold finish",
+ "outer_edge": {
+  "drawn_outer_diameter_mm": 25.1593,
+  "fitted_circle_diameter_mm": 25.15928642974999,
+  "scale_applied": 1.000000539373406,
+  "circle_centre_mm": [
+   -0.5560911740632678,
+   -0.022775658031363215
+  ],
+  "chords_admitted": 4,
+  "chords_that_are_the_boundary": [
+   0,
+   1,
+   2,
+   3
+  ],
+  "arcs": 3,
+  "segments": 4
+ },
+ "pocket": {
+  "primitive": "superellipse n=2.4491 + 7 measured straight facets",
+  "n_exponent": 2.4490884572723735,
+  "two_a_mm": 13.496473992334026,
+  "two_b_mm": 13.282644163360558,
+  "phi_deg": 5.347184836145397,
+  "centre_mm": [
+   0.5688332674230122,
+   0.252133544989737
+  ],
+  "facets": 7,
+  "radial_step_walls": 14,
+  "walls_are_measured": false,
+  "walls_note": "A facet's arc ends where the boundary crosses 0.30 mm from the superellipse, NOT where the wall is. The wall POSITIONS ARE NOT MEASURED (board.json).",
+  "tessellation_step_deg": 0.5,
+  "tessellation_max_chord_error_mm": 0.032157,
+  "no_diameter_published": "This lane publishes NO centre-hole diameter. Three superellipse fits disagree on the exponent and in different directions (board.json).",
+  "min_radius_mm": 6.0698,
+  "max_radius_mm": 8.0171,
+  "segments": 748
+ },
+ "edge_cuts": {
+  "arcs": 3,
+  "segments": 4,
+  "pocket_segments": 748,
+  "radial_step_walls_also_on_Dwgs_User": 14
+ },
+ "netlist": "CANNOT DETERMINE \u2014 no schematic exists yet at /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/schematic/out. This board carries NO NETS and its copper connectivity is therefore UNKNOWN. Nothing was invented to fill the gap.",
+ "placed": {
+  "metal": 31,
+  "pos_only": 52,
+  "rim_suspect": 14,
+  "not_drawn": 3,
+  "eyeballed": 3
+ },
+ "placed_total": 103,
+ "handoff_rows": 100,
+ "refused_rows": [],
+ "absent_by_name": [
+  {
+   "id": "D000",
+   "name": "nRF52832_CIAA_control",
+   "verdict": "CANNOT DETERMINE",
+   "why": "1 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. "
+  },
+  {
+   "id": "D001",
+   "name": "black_9oclock",
+   "verdict": "CANNOT DETERMINE",
+   "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. "
+  },
+  {
+   "id": "D002",
+   "name": "plus_AKN_8H7",
+   "verdict": "CANNOT DETERMINE",
+   "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. "
+  },
+  {
+   "id": "D003",
+   "name": "black_05I_1A8",
+   "verdict": "CANNOT DETERMINE",
+   "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. "
+  },
+  {
+   "id": "D004",
+   "name": "black_diode_lower",
+   "verdict": "CANNOT DETERMINE",
+   "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. "
+  }
+ ],
+ "not_drawn_at_all": {
+  "antennas": "The three antennas are NOT on this PCB (evidence/E01). They live on a moulded carrier. No antennas in copper, ever.",
+  "coil": "WOUND MAGNET WIRE, ID 9.380 / OD 10.834 mm (L1). Not a trace, not copper on this board. Whether it is the NFC antenna or the voice coil is OPEN (evidence/E02).",
+  "rim_pads": "NOT DRAWN. The rim pad COUNT is CANNOT DETERMINE and closed (M03/M05). The withdrawn 15- and 13-pad candidate angle sets FAILED A POSITIVE CONTROL and must not be drawn.",
+  "U2_uwb_footprint": "IN THE LIBRARY, NOT PLACED. No handoff file gives the UWB can a measured centre, and its own remeasure swings 6.735 -> 7.891 mm on the operator's padding alone. Placing it would invent a position. The UNPOPULATED statement is on the board in silkscreen regardless (SILK2)."
+ }
+}

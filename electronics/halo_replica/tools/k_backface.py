@@ -1089,6 +1089,18 @@ def cmd_handoff(args):
                          registration_holdout_genuine_px=[round(0.1256 * GEN[0], 2),
                                                           round(0.1256 * GEN[1], 2)],
                          note="DO NOT QUOTE ANY POSITION TO 0.01 mm. The floor is 4-5 genuine px."),
+        IF_YOU_MAP_A_REGISTERED_POSITION_YOURSELF_READ_THIS=(
+            "*** c_register's HOMOGRAPHY LANDS IN THE PRE-AVERAGED SOURCE FRAME, NOT IN "
+            "FULL-RESOLUTION PIXELS. *** It downsamples the source to roughly the target's "
+            "sampling so that warping is not aliasing a much finer image - for this pair the "
+            "factor is fit['source']['pre_average'] = 5.13 - and H therefore returns "
+            "coordinates in that reduced frame. MULTIPLY BY pre_average TO GET FULL-RES "
+            "PIXELS. Omitting it put this file's board centre at (224, 235) instead of "
+            "(1152, 1207), which was caught ONLY because it was visibly absurd. A 5% frame "
+            "error would not have looked wrong and nothing downstream would have questioned "
+            "it. Every position in `rows` below already has this applied; the warning is here "
+            "for anyone mapping a NEW position through the same transform. This applies "
+            "equally to the FRONT registration, which uses the same tool."),
         THE_CAVEAT_UNDER_EVERY_MILLIMETRE_HERE=(
             "*** THE SCALE COMES FROM A DIFFERENT PHYSICAL BOARD. *** FCC internal photo 7 is "
             "920-08283-01, data code 3119 - a 2019 engineering build. O'Flynn's photograph, "

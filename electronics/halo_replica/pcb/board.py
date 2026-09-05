@@ -1,0 +1,415 @@
+"""halo Replica — the board. Annular, 4 layers, 0.30 mm, routed centre pocket.
+
+    cd ~/dev/ce-workshop
+    ce-pcb/bin/pcb ce-designs/halo/electronics/halo_replica/pcb/board.py
+
+LANE L12. Writes `pcb/out/halo_replica.kicad_pcb` and its project files.
+
+---------------------------------------------------------------------------
+WHAT THIS BOARD IS, AND WHAT IT IS NOT
+---------------------------------------------------------------------------
+It is a RECONSTRUCTION FROM PHOTOGRAPHS of Apple's AirTag MLB, drawn so that
+a KiCad user can open it, measure it and argue with it. It is NOT Apple's
+artwork, it is not a netlist, and it is not orderable (see THICKNESS below).
+
+Everything on it comes from a file in this repo and nothing on it was typed
+by eye. The four inputs, and none of them is re-derived here:
+
+  board/board.json                       the ONE scale parameter
+  board/outline/outline-fit-oflynn.json  circle + 4 chords, superellipse + 7
+                                         facets -- FITTED PRIMITIVES
+  metrology/HANDOFF-positions-front.json 100 measured rows, with the flags
+  metrology/uwb-can-remeasure.json       the UWB can's size BOUND
+
+---------------------------------------------------------------------------
+THE NETLIST IS NOT TYPED HERE, AND IT IS NOT INVENTED EITHER
+---------------------------------------------------------------------------
+halo_rev_a/board.py reads its netlist back out of its own schematic with
+`cepcb.schematic.netlist_of_sch` so copper and drawing cannot drift. This
+board does the same READ -- and today it comes back empty, because lane L11's
+schematic does not exist yet. That is reported as CANNOT DETERMINE on every
+run and NOT papered over with a hand-written net list. When
+`schematic/out/*.kicad_sch` appears, this file picks it up with no edit.
+
+A board with no nets is a board whose copper connectivity is unknown. Said
+once, here, and once again on every run.
+
+---------------------------------------------------------------------------
+THICKNESS: THE NUMBER THAT MAKES THIS UNORDERABLE, AND IT DOES NOT MOVE
+---------------------------------------------------------------------------
+0.30 mm as-drawn, 4 layers. L4 measured PCBWay's four-layer floor at 0.40 mm
+and JLCPCB's minimum at 0.40 mm. THE REPLICA AS DRAWN CANNOT BE ORDERED AT
+EITHER HOUSE. That is a fact about US, not about Apple, and the two are
+never fused: the drawing is not moved to 0.40 to make a quote come back.
+The fabrication delta is recorded in board/stackup/stackup.json and printed
+here, separately, every run.
+
+---------------------------------------------------------------------------
+THE FOUR THINGS THAT MAKE THIS A REPLICA AND NOT A DISC
+---------------------------------------------------------------------------
+  1  ANNULAR, with a ROUTED CENTRE POCKET -- a superellipse with 7 measured
+     straight facets and radial step walls, not a circle, not a smooth
+     curve, and above all not a solid disc.
+  2  The OD is a BOUND (24.95-26.34 mm) with a signed expectation that it
+     moves DOWN. It is a PARAMETER read from board.json, never a literal.
+  3  WAFER-SCALE AND 0201 in the library, because that is what Apple used.
+  4  U2, the Apple U1 UWB module, is UNPOPULATED and the board says so in
+     silkscreen.
+
+---------------------------------------------------------------------------
+AND THE ONE THING THAT MUST NOT HAPPEN: A GAP FILLED BY EYE
+---------------------------------------------------------------------------
+Five dark bodies on this board are CANNOT DETERMINE at a MEASURED contrast
+limit -- the photograph needs a 100-160 luma boundary step and they present
+1-26. The largest package on the board is one of them. Nothing is drawn
+there. The board will look sparse in the dark areas and that is the data
+being honest.
+
+An invented part is INVISIBLE in a render, which is exactly why it must not
+happen: the render is where a reviewer would catch anything else.
+"""
+import json
+import math
+import os
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+REPLICA = os.path.dirname(HERE)
+sys.path.insert(0, HERE)
+
+import footprints as FP                                        # noqa: E402
+import geometry as GEO                                         # noqa: E402
+
+from cepcb import Board                                        # noqa: E402
+from cepcb.board import _vec, MM                               # noqa: E402
+
+OUT = os.path.join(HERE, "out")
+PCB = os.path.join(OUT, "halo_replica.kicad_pcb")
+LIB = os.path.join(REPLICA, "halo_replica.pretty")
+LIBID = "halo_replica"
+
+HANDOFF = os.path.join(REPLICA, "metrology", "HANDOFF-positions-front.json")
+DARKPKG = os.path.join(REPLICA, "metrology", "darkpkg",
+                       "HANDOFF-darkpackages.json")
+BOARDJSON = os.path.join(REPLICA, "board", "board.json")
+STACKUP = os.path.join(REPLICA, "board", "stackup", "stackup.json")
+SCHDIR = os.path.join(REPLICA, "schematic", "out")
+
+# The board's origin sits here in cepcb's +Y-UP frame. Any value larger than
+# the outer radius keeps every coordinate positive; nothing depends on it.
+CX = CY = 15.0
+
+
+def to_board(x_mm, y_mm):
+    """Measurement frame (+y DOWN, origin = board centre) -> cepcb (+y UP).
+
+    ONE PLACE. Every position in this file goes through it and no other
+    conversion exists, because two sign conventions applied in two places is
+    how a mirrored board gets made.
+    """
+    return (CX + x_mm, CY - y_mm)
+
+
+# ---------------------------------------------------------------------------
+def _register_library():
+    """Make halo_replica.pretty resolvable to `place()`.
+
+    Uses `cepcb.register_library`, which THIS LANE ADDED to ce-pcb (P11)
+    after finding that halo_rev_a/board.py:118 and an earlier draft of this
+    file had both reached into the private `_LIB_CACHE` by hand. A capability
+    two designs write for themselves belongs in the app, with its
+    documentation, not copied a third time.
+    """
+    from cepcb import register_library
+    return register_library(LIBID, LIB)
+
+
+def _edge_shapes(board, shapes, pocket_segs, walls):
+    """Replace cepcb's tessellated Edge.Cuts with the FITTED PRIMITIVES."""
+    import pcbnew
+    pcb = board._pcb
+    for d in list(pcb.GetDrawings()):
+        if d.GetLayer() == pcbnew.Edge_Cuts:
+            pcb.Remove(d)
+
+    def P(p):
+        bx, by = to_board(p[0], p[1])
+        return _vec(bx, board._y(by))
+
+    n_arc = n_seg = 0
+    for s in shapes:
+        if s[0] == "arc":
+            _, p0, pm, p1, c, R = s
+            a = pcbnew.PCB_SHAPE(pcb)
+            a.SetShape(pcbnew.SHAPE_T_ARC)
+            # SetArcGeometry(start, mid, end) — the three-point form. There
+            # is no SetArcMid in KiCad 10's SWIG binding; setting start/end
+            # and hoping is how an arc silently becomes a chord.
+            a.SetArcGeometry(P(p0), P(pm), P(p1))
+            a.SetLayer(pcbnew.Edge_Cuts)
+            a.SetWidth(int(0.1 * MM))
+            pcb.Add(a)
+            n_arc += 1
+        else:
+            _, p0, p1, _i = s
+            g = pcbnew.PCB_SHAPE(pcb)
+            g.SetShape(pcbnew.SHAPE_T_SEGMENT)
+            g.SetStart(P(p0))
+            g.SetEnd(P(p1))
+            g.SetLayer(pcbnew.Edge_Cuts)
+            g.SetWidth(int(0.1 * MM))
+            pcb.Add(g)
+            n_seg += 1
+
+    n_pocket = 0
+    for (p0, p1) in pocket_segs:
+        g = pcbnew.PCB_SHAPE(pcb)
+        g.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        g.SetStart(P(p0))
+        g.SetEnd(P(p1))
+        g.SetLayer(pcbnew.Edge_Cuts)
+        g.SetWidth(int(0.1 * MM))
+        pcb.Add(g)
+        n_pocket += 1
+
+    # The radial step walls are ALSO drawn on a documentation layer, because
+    # their POSITIONS ARE NOT MEASURED and a fabrication output that does not
+    # say so is a fabrication output that lies by omission.
+    for (p0, p1) in walls:
+        g = pcbnew.PCB_SHAPE(pcb)
+        g.SetShape(pcbnew.SHAPE_T_SEGMENT)
+        g.SetStart(P(p0))
+        g.SetEnd(P(p1))
+        g.SetLayer(pcbnew.Dwgs_User)
+        g.SetWidth(int(0.05 * MM))
+        pcb.Add(g)
+    return n_arc, n_seg, n_pocket
+
+
+def _text(board, s, x_mm, y_mm, layer, size=0.4, rot=0.0):
+    import pcbnew
+    bx, by = to_board(x_mm, y_mm)
+    t = pcbnew.PCB_TEXT(board._pcb)
+    t.SetText(s)
+    t.SetPosition(_vec(bx, board._y(by)))
+    t.SetLayer(getattr(pcbnew, layer))
+    t.SetTextSize(pcbnew.VECTOR2I(int(size * MM), int(size * MM)))
+    t.SetTextThickness(int(size * 0.15 * MM))
+    if rot:
+        t.SetTextAngle(pcbnew.EDA_ANGLE(rot, pcbnew.DEGREES_T))
+    board._pcb.Add(t)
+    return t
+
+
+# ---------------------------------------------------------------------------
+def read_netlist():
+    """The seam with lane L11. A READ, never a retype. Three verdicts."""
+    if not os.path.isdir(SCHDIR):
+        return None, ("CANNOT DETERMINE — no schematic exists yet at %s. "
+                      "This board carries NO NETS and its copper "
+                      "connectivity is therefore UNKNOWN. Nothing was "
+                      "invented to fill the gap." % SCHDIR)
+    scs = [f for f in sorted(os.listdir(SCHDIR)) if f.endswith(".kicad_sch")]
+    if not scs:
+        return None, ("CANNOT DETERMINE — %s exists but holds no "
+                      ".kicad_sch." % SCHDIR)
+    path = os.path.join(SCHDIR, scs[0])
+    try:
+        from cepcb.schematic import netlist_of_sch
+        nets = netlist_of_sch(path)
+    except Exception as e:                                   # noqa: BLE001
+        return None, ("CANNOT DETERMINE — %s exists but could not be read "
+                      "as a netlist: %s" % (path, e))
+    return nets, "READ from %s — %d nets" % (path, len(nets))
+
+
+# ---------------------------------------------------------------------------
+def main():
+    bj = json.load(open(BOARDJSON))
+    stack = json.load(open(STACKUP))
+    handoff = json.load(open(HANDOFF))
+    dark = json.load(open(DARKPKG))
+
+    od = float(bj["parameters"]["outer_diameter_mm"]["value"])
+    bound = bj["parameters"]["outer_diameter_mm"]["bound_mm"]
+    layers = int(bj["parameters"]["layer_count"]["value"])
+    thick = float(bj["parameters"]["thickness_mm"]["value"])
+
+    shapes, ometa = GEO.outer()
+    pocket_segs, walls, pmeta = GEO.pocket()
+
+    # cepcb wants a walkable polygon for pours and stats. It is NOT what
+    # reaches Edge.Cuts — the primitives are, below — so its tessellation is
+    # bookkeeping, never geometry.
+    poly = []
+    for s in shapes:
+        if s[0] == "arc":
+            _, p0, pm, p1, c, R = s
+            a0 = math.degrees(math.atan2(p0[1] - c[1], p0[0] - c[0]))
+            a1 = math.degrees(math.atan2(p1[1] - c[1], p1[0] - c[0]))
+            span = (a1 - a0) % 360.0
+            n = max(2, int(span / 2.0))
+            for i in range(n):
+                a = math.radians(a0 + span * i / n)
+                poly.append(to_board(c[0] + R * math.cos(a),
+                                     c[1] + R * math.sin(a)))
+        else:
+            poly.append(to_board(s[1][0], s[1][1]))
+
+    b = Board("halo_replica", outline=poly, layers=layers,
+              title="halo Replica MLB — reconstruction from photographs")
+    libinfo = _register_library()
+
+    n_arc, n_seg, n_pocket = _edge_shapes(b, shapes, pocket_segs, walls)
+
+    nets, net_verdict = read_netlist()
+
+    # ---- placement ------------------------------------------------------
+    placed = {"metal": 0, "pos_only": 0, "rim_suspect": 0, "not_drawn": 0,
+              "eyeballed": 0}
+    refused = []
+    for row in handoff["rows"]:
+        cls = FP.classify(row)
+        rid = row["id"]
+        x, y = row["x_mm"], row["y_mm"]
+        if x is None or y is None:
+            refused.append((rid, "no position in the handoff"))
+            continue
+        if cls == "metal":
+            w = round(float(row["short_mm"]), 2)
+            L = round(float(row["long_mm"]), 2)
+            fpid = "%s:REPL_METAL_%s" % (LIBID, FP._fmt(w) + "x" + FP._fmt(L))
+            val = "MEASURED METAL %sx%s mm conf=%s" % (
+                FP._fmt(w), FP._fmt(L), row.get("confidence"))
+            rot = 0.0
+        elif cls == "pos_only":
+            fpid = "%s:REPL_POS_ONLY" % LIBID
+            val = "POSITION ONLY - SIZE NOT MEASURED (conf=%s)" % (
+                row.get("confidence"),)
+            rot = 0.0
+        elif cls == "rim_suspect":
+            fpid = "%s:REPL_RIM_SUSPECT" % LIBID
+            val = "RIM MATERIAL SUSPECT - MAY NOT BE A PART"
+            rot = 0.0
+        else:
+            fpid = "%s:REPL_NOT_DRAWN" % LIBID
+            val = (row.get("why") or "do_not_draw_as_component")[:110]
+            rot = 0.0
+        bx, by = to_board(x, y)
+        b.place(rid, fpid, at=(bx, by), rot=rot, value=val, anchor="origin")
+        placed[cls] += 1
+
+    # The eyeballed absences. measured:false, do_not_draw_as_measured:true,
+    # and BOTH are honoured: no copper, and the value field says so.
+    n_gap = 0
+    for g in handoff.get("known_gaps", []):
+        for pos in (g.get("position_eyeballed_mm") or []):
+            n_gap += 1
+            bx, by = to_board(pos[0], pos[1])
+            b.place("GAP%d" % n_gap, "%s:REPL_ABSENCE_EYEBALLED" % LIBID,
+                    at=(bx, by), anchor="origin",
+                    value="EYEBALLED ~1mm, measured:false — %s"
+                          % (g["what"][:80]))
+            placed["eyeballed"] += 1
+
+    # ---- what is ABSENT, named on the board -----------------------------
+    absent = [r for r in dark["rows"] if not r.get("measured")]
+
+    # ---- the legend -----------------------------------------------------
+    b.place("LGND", "%s:REPL_LEGEND_BOARD" % LIBID,
+            at=to_board(0, -17.5), anchor="origin", value="board legend")
+    # Silkscreen that is PHYSICALLY PRINTED, in the annulus, radial.
+    silk = [("REPL_SILK_REPLICA", 0.0, 9.6),
+            ("REPL_SILK_U2_DNP", 90.0, 9.6),
+            ("REPL_SILK_THICKNESS", 180.0, 9.6),
+            ("REPL_SILK_INCOMPLETE", 270.0, 9.6)]
+    for i, (fp, ang, r) in enumerate(silk):
+        px = r * math.cos(math.radians(ang))
+        py = r * math.sin(math.radians(ang))
+        b.place("SILK%d" % (i + 1), "%s:%s" % (LIBID, fp),
+                at=to_board(px, py), rot=-ang, anchor="origin",
+                value="silkscreen legend")
+
+    b.rules(clearance=0.075, track=0.075, via=0.25, via_drill=0.15)
+
+    os.makedirs(OUT, exist_ok=True)
+    b.save(PCB)
+
+    report = {
+        "board": "halo_replica",
+        "footprint_library": libinfo,
+        "written_utc": __import__("datetime").datetime.utcnow().isoformat()
+                       + "Z",
+        "pcb": PCB,
+        "outer_diameter_mm_drawn": od,
+        "outer_diameter_state": "BOUND %s-%s mm, and if it moves it moves "
+                                "DOWN. The drawn value is NOT a settled "
+                                "diameter and NOT an independent opinion on "
+                                "the OD." % (bound[0], bound[1]),
+        "layers": layers,
+        "thickness_mm_as_drawn": thick,
+        "fabrication_delta": bj["parameters"]["thickness_mm"][
+            "fabrication_delta"],
+        "surface_finish": stack["apple"]["surface_finish"]["value"],
+        "outer_edge": ometa,
+        "pocket": pmeta,
+        "edge_cuts": {"arcs": n_arc, "segments": n_seg,
+                      "pocket_segments": n_pocket,
+                      "radial_step_walls_also_on_Dwgs_User": len(walls)},
+        "netlist": net_verdict,
+        "placed": placed,
+        "placed_total": sum(placed.values()),
+        "handoff_rows": len(handoff["rows"]),
+        "refused_rows": refused,
+        "absent_by_name": [{"id": r["id"], "name": r.get("name"),
+                            "verdict": r.get("verdict"),
+                            "why": (r.get("why") or "")[:200]}
+                           for r in absent],
+        "not_drawn_at_all": {
+            "antennas": bj["not_drawn"]["antennas"],
+            "coil": bj["not_drawn"]["nfc_coil"],
+            "rim_pads": bj["not_drawn"]["rim_pads"],
+            "U2_uwb_footprint": "IN THE LIBRARY, NOT PLACED. No handoff file "
+                                "gives the UWB can a measured centre, and "
+                                "its own remeasure swings 6.735 -> 7.891 mm "
+                                "on the operator's padding alone. Placing it "
+                                "would invent a position. The UNPOPULATED "
+                                "statement is on the board in silkscreen "
+                                "regardless (SILK2).",
+        },
+    }
+    with open(os.path.join(OUT, "board-report.json"), "w") as f:
+        json.dump(report, f, indent=1)
+
+    print(b.describe())
+    print()
+    print("EDGE   outer: %d arcs + %d straight chords (circle D=%.4f mm "
+          "clipped, drawn value)" % (n_arc, n_seg, od))
+    print("       pocket: %s, %d segments, %d radial step walls "
+          "(POSITIONS NOT MEASURED)"
+          % (pmeta["primitive"], n_pocket, pmeta["radial_step_walls"]))
+    print("       tessellation max chord error %.4f mm at %.2f deg, against "
+          "a registration floor of %.4f mm"
+          % (pmeta["tessellation_max_chord_error_mm"],
+             pmeta["tessellation_step_deg"],
+             handoff["uncertainty"]["registration_holdout_mm"]))
+    print("STACK  %d layers COUNTED, %.2f mm as-drawn, %s"
+          % (layers, thick, stack["apple"]["surface_finish"]["value"]))
+    print("       %s" % bj["parameters"]["thickness_mm"]["fabrication_delta"])
+    print("NETS   %s" % net_verdict)
+    print("PLACED %d of %d handoff rows + %d eyeballed absences:"
+          % (sum(placed[k] for k in ("metal", "pos_only", "rim_suspect",
+                                     "not_drawn")),
+             len(handoff["rows"]), placed["eyeballed"]))
+    for k in ("metal", "pos_only", "rim_suspect", "not_drawn", "eyeballed"):
+        print("         %-12s %3d" % (k, placed[k]))
+    print("ABSENT BY NAME, and nothing is drawn there:")
+    for r in absent:
+        print("         %-6s %-28s %s" % (r["id"], r.get("name"),
+                                          r.get("verdict")))
+    print()
+    print("wrote %s" % PCB)
+    print("      %s" % os.path.join(OUT, "board-report.json"))
+
+
+main()

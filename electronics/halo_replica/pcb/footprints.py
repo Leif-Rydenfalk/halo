@@ -386,17 +386,31 @@ def uwb_module():
     return name, "\n".join(o)
 
 
-def legend(name, lines, width=None, tag="legend"):
-    """A block of board legend text. No copper, no courtyard obligations."""
-    descr = ("CLASS C [BOARD LEGEND] Text placed ON THE BOARD. Facts a "
-             "reader of the board itself must not have to open a document "
-             "to learn.")
+def legend(name, lines, layer="Cmts.User", size=0.32, tag="legend"):
+    """A block of board legend text. No copper, no courtyard obligations.
+
+    TWO LEGENDS EXIST AND THEY ARE NOT THE SAME OBJECT.
+
+      REPL_LEGEND_BOARD   the full block, on Cmts.User. It reaches the
+                          fabrication drawing and the person reading the
+                          board in KiCad. It is too wide for a 25 mm annulus
+                          and putting it in silkscreen would mean shrinking
+                          it to unreadable or running it off the board.
+      REPL_SILK_*         short lines that DO fit in the annulus, in
+                          F.SilkS, so they are physically printed on the
+                          board. The brief's requirement -- the UWB module
+                          is unpopulated and it SAYS SO ON THE BOARD -- is
+                          discharged by these, not by the block.
+    """
+    descr = ("CLASS C [BOARD LEGEND] Text placed ON THE BOARD, layer %s. "
+             "Facts a reader of the board itself must not have to open a "
+             "document to learn." % layer)
     o = _head(name, descr, "halo replica legend " + tag,
               "smd board_only exclude_from_pos_files exclude_from_bom")
     y = 0.0
     for ln in lines:
-        o.append(_fp_text(ln, 0, y, "F.SilkS", 0.32))
-        y += 0.55
+        o.append(_fp_text(ln, 0, y, layer, size))
+        y += size * 1.7
     o.append(")")
     return name, "\n".join(o)
 
@@ -475,6 +489,21 @@ def main():
         "NO ANTENNA IN COPPER - APPLE'S ARE ON A MOULDED CARRIER.",
         "RIM PAD COUNT CANNOT DETERMINE - NO RIM PADS DRAWN.",
     ]))
+
+    # The lines that must be PRINTED ON THE BOARD, not merely documented.
+    # Sized and split to fit inside a 6.4 mm annulus at 0.26 mm text.
+    pats.append(legend("REPL_SILK_U2_DNP",
+                       ["U2 UWB: DNP", "NEVER SOLD"],
+                       layer="F.SilkS", size=0.26, tag="silk uwb dnp"))
+    pats.append(legend("REPL_SILK_THICKNESS",
+                       ["0.30mm 4L", "NOT ORDERABLE"],
+                       layer="F.SilkS", size=0.26, tag="silk thickness"))
+    pats.append(legend("REPL_SILK_INCOMPLETE",
+                       ["KNOWINGLY", "INCOMPLETE"],
+                       layer="F.SilkS", size=0.26, tag="silk incomplete"))
+    pats.append(legend("REPL_SILK_REPLICA",
+                       ["halo REPLICA", "NOT APPLE ART"],
+                       layer="F.SilkS", size=0.26, tag="silk replica"))
 
     keep = {n + ".kicad_mod" for n, _ in pats}
     for f in sorted(os.listdir(OUT)):
