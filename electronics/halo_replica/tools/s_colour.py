@@ -30,7 +30,7 @@ Reporting hue without the fraction is how a grey pad passes for a gold one.
 
 Verbs
   measure <image> <label>:<x0>,<y0>,<x1>,<y1> ...
-  selftest   7 cases on the AirTag frame, including the negative controls that
+  selftest   12 cases on the AirTag frame, including the negative controls that
              the first version asserted and never ran
 
 Exit code IS the verdict: 0 PASS, 1 FAIL, 2 CANNOT DETERMINE.
@@ -127,7 +127,7 @@ def cmd_selftest():
         else:
             n_red += 1
 
-    print("s_colour selftest — 7 cases\n")
+    print("s_colour selftest — 12 cases\n")
     st = {k: stats(img, b) for k, b in REGIONS.items()}
 
     # POSITIVE CONTROL: the copper winding must read as bare metal AND as copper.
@@ -160,6 +160,41 @@ def cmd_selftest():
     check("the gap between bare metal and not-bare metal is wide and empty",
           f"bare min {bare*100:.1f}% vs not-bare max {notbare*100:.1f}%",
           bare - notbare > 0.35, "at least 35 points apart")
+
+    # ---- and now the DECISION FUNCTION, not just the statistics it eats ----
+    # Everything above asserts stats(). None of it calls verdict_for(). Measured
+    # 2026-09-05: deleting the fraction gate from verdict_for, and separately
+    # setting GOLD_MIN_HUE to 0 so every hue reads gold, left ALL SEVEN CASES
+    # GREEN -- because the cases were testing the numbers that go IN, not the
+    # decision made with them. Testing one layer below the thing you mean to
+    # protect is how a suite stays green while the tool stops working.
+    for k in ("grey_solder_NEG", "soldermask_NEG"):
+        v, why = verdict_for(st[k])
+        check(f"verdict_for REJECTS {k}, and says the FRACTION is why",
+              why[:46], "NOT bare metal" in why and "warm" in why,
+              "a reason naming the warm fraction")
+    for k in ("gold_rim_right", "gold_rim_left"):
+        v, why = verdict_for(st[k])
+        check(f"verdict_for calls {k} GOLD-bearing", why[:52], "GOLD-bearing" in why,
+              "a reason saying GOLD-bearing")
+    v, why = verdict_for(st["copper_winding_CONTROL"])
+    check("verdict_for calls the winding COPPER, not gold", why[:52],
+          "COPPER" in why, "a reason saying COPPER")
+
+    # AND THE COUNTERFACTUAL, which is the argument for the fraction gate.
+    # CORRECTED 2026-09-05: the first version of this case asserted that BOTH
+    # negative controls would be called gold on hue alone, and it went RED --
+    # my claim was wrong, not the code. Dark soldermask does sit inside the gold
+    # band at 52.9 deg; the grey solder fillet is 35.0 deg, which lands in the
+    # "between copper and gold, not called" band instead. So hue alone would
+    # have mislabelled ONE of the two as gold and refused to call the other.
+    # Neither outcome is acceptable and one is a false positive, which is
+    # enough -- but the honest statement is "one", not "both".
+    hue_only = {k: round(st[k][6], 1) for k in ("grey_solder_NEG", "soldermask_NEG")}
+    check("on HUE ALONE at least one negative control lands in the GOLD band",
+          hue_only,
+          sum(1 for h in hue_only.values() if h >= GOLD_MIN_HUE) >= 1,
+          f"at least one >= {GOLD_MIN_HUE} deg — soldermask at 52.9 is the false positive")
 
     print(f"\n{n_ok} ok, {n_red} red")
     return PASS if n_red == 0 else FAIL
