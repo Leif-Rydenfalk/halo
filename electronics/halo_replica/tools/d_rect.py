@@ -84,9 +84,18 @@ def _row_roll_null(D, rng):
     return np.take_along_axis(D, idx, axis=1)
 
 
-def _null_sd_table(D, rng, lens, sub=3):
-    """Robust sd of the line integral over each span length, measured on the null."""
+def _null_sd_table(D, rng, lens, Mcum=None, sub=3, half=1):
+    """Robust sd of the line integral over each span length, measured on the null.
+
+    Mcum is the cumulative of the VALIDITY mask along the same axis.  Without it
+    the estimate is taken over spans that lie partly or wholly off the board,
+    where the derivative is identically zero -- and once more than half the
+    samples are zero the median absolute deviation is ZERO, the z-scores go to
+    infinity, and every rectangle scores the same.  That was a real defect in this
+    file, found by pointing `score_rect` at a rectangle whose answer was known."""
     N = _row_roll_null(D, rng)
+    if half:
+        N = ndimage.uniform_filter1d(N, 2 * half + 1, axis=1) * (2 * half + 1)
     C = _cum0(N, 0)
     out = {}
     for L in lens:
@@ -94,6 +103,9 @@ def _null_sd_table(D, rng, lens, sub=3):
             out[L] = np.inf
             continue
         S = C[L::sub, :] - C[:-L:sub, :]
+        if Mcum is not None:
+            ok = (Mcum[L::sub, :] - Mcum[:-L:sub, :]) >= L - 1e-6
+            S = S[ok]
         s = S[np.isfinite(S)]
         if s.size < 32:
             out[L] = np.inf
@@ -134,21 +146,25 @@ def _pairs(idx, lo, hi):
     return I[k], J[k], d[k]
 
 
-def _best3(C, cols, r0, r1):
-    """Signed line integral at each of `cols`, taking the largest-magnitude of the
-    three adjacent lines, for every (r0,r1) span.  Returns (ncols, nspans)."""
-    n = C.shape[1] if C.ndim == 2 else 0
-    out = None
-    for o in (-1, 0, 1):
+def _band(C, cols, r0, r1, half=1):
+    """Signed line integral over a BAND of 2*half+1 adjacent lines.
+
+    A single column was the first version and it was wrong: the real boundary is
+    blurred across 2-4 px at this resolution and drifts by ~1 px along a long side
+    at a 2 deg angle step, so one column recovers a fraction of the step and a
+    long package edge loses to a short high-contrast pad edge.  Summing the band
+    recovers the whole step and tolerates the drift; the NULL is measured through
+    exactly the same band, so nothing is gained for free."""
+    out = 0.0
+    for o in range(-half, half + 1):
         c = np.clip(np.asarray(cols) + o, 0, C.shape[1] - 1)
-        v = C[r1][:, c].T - C[r0][:, c].T          # (ncols, nspans)
-        out = v if out is None else np.where(np.abs(v) > np.abs(out), v, out)
+        out = out + (C[r1][:, c].T - C[r0][:, c].T)
     return out
 
 
 def detect(lum, mask, ppm, *, angles=None, astep=2.0, smooth=1.0,
            min_mm=0.7, max_mm=9.0, z_thr=6.0, npeak=22, nms=3,
-           seed=20260905, ret_angles=False):
+           seed=20260905, band=1, polarity=None):
     """Rectangles supported by four straight, closed, polarity-consistent
     boundaries.  `ppm` is pixels per mm IN THE ARRAY GIVEN.
 
@@ -193,23 +209,26 @@ def detect(lum, mask, ppm, *, angles=None, astep=2.0, smooth=1.0,
         Dy = np.zeros_like(R); Dy[1:-1, :] = 0.5 * (R[2:, :] - R[:-2, :])
         Dx = np.where(Mr, Dx, 0.0); Dy = np.where(Mr, Dy, 0.0)
 
-        sdV = _null_sd_table(Dx, rng, lens)
-        sdH = _null_sd_table(Dy.T, rng, lens)
-        CV = _cum0(Dx, 0)
-        CH = _cum0(Dy, 1).T                # transpose so rows index the scan axis
         MV = _cum0(Mr.astype(float), 0)
         MH = _cum0(Mr.astype(float), 1).T
+        sdV = _null_sd_table(Dx, rng, lens, MV, half=band)
+        sdH = _null_sd_table(Dy.T, rng, lens, MH, half=band)
+        CV = _cum0(Dx, 0)
+        CH = _cum0(Dy, 1).T                # transpose so rows index the scan axis
 
+        Dxb = ndimage.uniform_filter1d(Dx, 2 * band + 1, axis=1) * (2 * band + 1)
+        Dyb = ndimage.uniform_filter1d(Dy, 2 * band + 1, axis=0) * (2 * band + 1)
+        CVb = _cum0(Dxb, 0); CHb = _cum0(Dyb, 1).T
         px = np.zeros(R.shape[1]); py = np.zeros(R.shape[0])
         for L in lens:
             if L >= R.shape[0] or not np.isfinite(sdV[L]):
                 continue
-            S = np.abs(CV[L:, :] - CV[:-L, :]) / sdV[L]
+            S = np.abs(CVb[L:, :] - CVb[:-L, :]) / sdV[L]
             S = np.where((MV[L:, :] - MV[:-L, :]) >= L - 1e-6, S, 0.0)
             px = np.maximum(px, S.max(axis=0))
             if L >= CH.shape[0]:
                 continue
-            T = np.abs(CH[L:, :] - CH[:-L, :]) / sdH[L]
+            T = np.abs(CHb[L:, :] - CHb[:-L, :]) / sdH[L]
             T = np.where((MH[L:, :] - MH[:-L, :]) >= L - 1e-6, T, 0.0)
             py = np.maximum(py, T.max(axis=0))
         cxs = np.array(_peaks(px, npeak, nms))
@@ -224,8 +243,8 @@ def detect(lum, mask, ppm, *, angles=None, astep=2.0, smooth=1.0,
         Cc, Dd = cys[Iy], cys[Jy]
 
         # (ncols, ny-pairs) and (nrows, nx-pairs)
-        Vv = _best3(CV, cxs, Cc, Dd)
-        Hh = _best3(CH, cys, A, B)
+        Vv = _band(CV, cxs, Cc, Dd, band)
+        Hh = _band(CH, cys, A, B, band)
         okV = ((MV[Dd][:, cxs].T - MV[Cc][:, cxs].T) >= Hp[None, :] - 1e-6)
         okH = ((MH[B][:, cys].T - MH[A][:, cys].T) >= Wp[None, :] - 1e-6)
 
@@ -241,6 +260,10 @@ def detect(lum, mask, ppm, *, angles=None, astep=2.0, smooth=1.0,
         sc = np.minimum(np.minimum(np.abs(Zl), np.abs(Zr)),
                         np.minimum(np.abs(Zt), np.abs(Zb)))
         sc = np.where(good & pol, sc, 0.0)
+        if polarity == "dark_inside":
+            sc = np.where((Zl < 0) & (Zt < 0), sc, 0.0)
+        elif polarity == "bright_inside":
+            sc = np.where((Zl > 0) & (Zt > 0), sc, 0.0)
         ii, jj = np.nonzero(sc >= z_thr)
         t = math.radians(th)
         for u, v in zip(ii, jj):
@@ -306,3 +329,149 @@ def synth(kind, n=420, ppm=26.0, seed=7, contrast=40.0, texture=18.0):
     elif kind == "flat":
         pass
     return ndimage.gaussian_filter(base, 0.8), mask, truth
+
+
+def maximal(rects, tol=0.72):
+    """Keep only rectangles NOT nested inside a larger admitted one.
+
+    A package outline has sub-features -- laser marking, lead frame, the pads under
+    it -- and each of those is itself a small high-contrast rectangle.  Scoring
+    alone prefers them, because a z-score grows with contrast linearly and with
+    edge length only as sqrt.  Nesting is the geometric fact that separates them,
+    and it does NOT select on size the way "take the biggest" would: a large
+    rectangle sitting beside a small one keeps both."""
+    out = []
+    for r in rects:
+        t = math.radians(r["theta_deg"])
+        nested = False
+        for q in rects:
+            if q is r or q["long_px"] * q["short_px"] <= 1.3 * r["long_px"] * r["short_px"]:
+                continue
+            tq = math.radians(q["theta_deg"])
+            dx, dy = r["cx"] - q["cx"], r["cy"] - q["cy"]
+            u = dx * math.cos(tq) + dy * math.sin(tq)
+            v = -dx * math.sin(tq) + dy * math.cos(tq)
+            if abs(u) <= tol * q["w_px"] / 2 and abs(v) <= tol * q["h_px"] / 2:
+                nested = True
+                break
+        if not nested:
+            out.append(r)
+    return out
+
+
+def score_rect(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, smooth=1.0,
+               band=1, seed=20260905, refine=0):
+    """Score ONE stated rectangle.  A diagnostic, not a detector: it answers
+    'would the scorer have accepted this if the candidate generator had proposed
+    it?', which separates a scoring failure from a proposal failure."""
+    rng = np.random.default_rng(seed)
+    H, W = lum.shape
+    rad = int(math.ceil(0.5 * math.hypot(H, W))) + 8
+    Lp = np.pad(lum, ((rad, rad), (rad, rad)), mode="edge")
+    Mp = np.pad(mask.astype(float), ((rad, rad), (rad, rad)), mode="constant")
+    cxp, cyp = cx + rad, cy + rad
+    if smooth > 0:
+        Lp = ndimage.gaussian_filter(Lp, smooth)
+    R = ndimage.rotate(Lp, theta_deg, reshape=False, order=1, mode="nearest")
+    Mr = ndimage.rotate(Mp, theta_deg, reshape=False, order=1, mode="constant") > 0.995
+    # where the centre lands after rotating about the array centre
+    c0 = (Lp.shape[1] - 1) / 2.0, (Lp.shape[0] - 1) / 2.0
+    t = math.radians(theta_deg)
+    ux, uy = cxp - c0[0], cyp - c0[1]
+    rx = ux * math.cos(t) + uy * math.sin(t) + c0[0]
+    ry = -ux * math.sin(t) + uy * math.cos(t) + c0[1]
+    Dx = np.zeros_like(R); Dx[:, 1:-1] = 0.5 * (R[:, 2:] - R[:, :-2])
+    Dy = np.zeros_like(R); Dy[1:-1, :] = 0.5 * (R[2:, :] - R[:-2, :])
+    Dx = np.where(Mr, Dx, 0.0); Dy = np.where(Mr, Dy, 0.0)
+    lens = [max(2, int(round(v))) for v in (h_px, w_px)]
+    MV = _cum0(Mr.astype(float), 0); MH = _cum0(Mr.astype(float), 1).T
+    sdV = _null_sd_table(Dx, rng, lens, MV, half=band)
+    sdH = _null_sd_table(Dy.T, rng, lens, MH, half=band)
+    CV = _cum0(Dx, 0); CH = _cum0(Dy, 1).T
+    a, b = int(round(rx - w_px / 2)), int(round(rx + w_px / 2))
+    c, d = int(round(ry - h_px / 2)), int(round(ry + h_px / 2))
+    best = None
+    for da in range(-refine, refine + 1):
+        for db in range(-refine, refine + 1):
+            for dc in range(-refine, refine + 1):
+                for dd in range(-refine, refine + 1):
+                    A, B, C_, D_ = a + da, b + db, c + dc, d + dd
+                    zl = float(_band(CV, [A], np.array([C_]), np.array([D_]), band)[0, 0]) / sdV[lens[0]]
+                    zr = float(_band(CV, [B], np.array([C_]), np.array([D_]), band)[0, 0]) / sdV[lens[0]]
+                    zt = float(_band(CH, [C_], np.array([A]), np.array([B]), band)[0, 0]) / sdH[lens[1]]
+                    zb = float(_band(CH, [D_], np.array([A]), np.array([B]), band)[0, 0]) / sdH[lens[1]]
+                    pol = (zl < 0 < zr and zt < 0 < zb) or (zr < 0 < zl and zb < 0 < zt)
+                    sc = min(abs(zl), abs(zr), abs(zt), abs(zb)) if pol else 0.0
+                    if best is None or sc > best["score"]:
+                        best = dict(score=sc, z=[zl, zr, zt, zb], w_px=B - A, h_px=D_ - C_,
+                                    sdV=sdV[lens[0]], sdH=sdH[lens[1]])
+    return best
+
+
+def score_grid(lum, mask, ppm, cx0, cy0, *, angles, wmm, hmm, rad_px=34, smooth=1.0,
+               band=2, seed=20260905, stride=1):
+    """Exhaustive local search: score EVERY rectangle near a stated centre, at
+    every stated angle and size, with no peak-picking in the way.
+
+    `detect` proposes candidate edges by peak-picking, which prefers short
+    high-contrast strokes (laser marking) over a long faint package boundary.
+    This function removes that stage entirely, so a disagreement between the two
+    localises the failure: if score_grid finds the outline and detect does not,
+    the defect is in PROPOSAL, not in SCORING."""
+    rng = np.random.default_rng(seed)
+    best = None
+    R0 = int(math.ceil(max(wmm) * ppm + max(hmm) * ppm)) + rad_px + 12
+    y0, y1 = int(cy0) - R0, int(cy0) + R0
+    x0, x1 = int(cx0) - R0, int(cx0) + R0
+    py = (max(0, -y0), max(0, y1 - lum.shape[0]))
+    px_ = (max(0, -x0), max(0, x1 - lum.shape[1]))
+    Lp = np.pad(lum, (py, px_), mode="edge")
+    Mp = np.pad(mask.astype(float), (py, px_), mode="constant")
+    Lc = Lp[y0 + py[0]:y1 + py[0], x0 + px_[0]:x1 + px_[0]]
+    Mc = Mp[y0 + py[0]:y1 + py[0], x0 + px_[0]:x1 + px_[0]]
+    if smooth > 0:
+        Lc = ndimage.gaussian_filter(Lc, smooth)
+    for th in angles:
+        R = ndimage.rotate(Lc, th, reshape=False, order=1, mode="nearest")
+        Mr = ndimage.rotate(Mc, th, reshape=False, order=1, mode="constant") > 0.995
+        Mr = ndimage.binary_erosion(Mr, np.ones((5, 5)))
+        Dx = np.zeros_like(R); Dx[:, 1:-1] = 0.5 * (R[:, 2:] - R[:, :-2])
+        Dy = np.zeros_like(R); Dy[1:-1, :] = 0.5 * (R[2:, :] - R[:-2, :])
+        Dx = np.where(Mr, Dx, 0.0); Dy = np.where(Mr, Dy, 0.0)
+        MV = _cum0(Mr.astype(float), 0); MH = _cum0(Mr.astype(float), 1).T
+        lens = sorted({max(2, int(round(v * ppm))) for v in list(wmm) + list(hmm)})
+        sdV = _null_sd_table(Dx, rng, lens, MV, half=band)
+        sdH = _null_sd_table(Dy.T, rng, lens, MH, half=band)
+        CV = _cum0(Dx, 0); CH = _cum0(Dy, 1).T
+        c = R0                                   # centre of the crop, both axes
+        offs = np.arange(-rad_px, rad_px + 1, stride)
+        for w in wmm:
+            W = int(round(w * ppm))
+            for h in hmm:
+                Hh = int(round(h * ppm))
+                A = c + offs - W // 2; B = A + W
+                C_ = c + offs - Hh // 2; D_ = C_ + Hh
+                if A.min() < 1 or B.max() >= R.shape[1] - 1:
+                    continue
+                if C_.min() < 1 or D_.max() >= R.shape[0] - 1:
+                    continue
+                zl = _band(CV, A, C_, D_, band) / _sd_of(sdV, lens, Hh)   # (nx, ny)
+                zr = _band(CV, B, C_, D_, band) / _sd_of(sdV, lens, Hh)
+                zt = (_band(CH, C_, A, B, band) / _sd_of(sdH, lens, W)).T
+                zb = (_band(CH, D_, A, B, band) / _sd_of(sdH, lens, W)).T
+                pol = ((zl < 0) & (zr > 0) & (zt < 0) & (zb > 0)) | \
+                      ((zl > 0) & (zr < 0) & (zt > 0) & (zb < 0))
+                sc = np.where(pol, np.minimum(np.minimum(np.abs(zl), np.abs(zr)),
+                                              np.minimum(np.abs(zt), np.abs(zb))), 0.0)
+                i, j = np.unravel_index(np.argmax(sc), sc.shape)
+                if best is None or sc[i, j] > best["score"]:
+                    t = math.radians(th)
+                    ux, uy = float(offs[i]), float(offs[j])
+                    best = dict(score=float(sc[i, j]), theta_deg=float(th),
+                                w_px=float(W), h_px=float(Hh),
+                                long_px=float(max(W, Hh)), short_px=float(min(W, Hh)),
+                                cx=cx0 + ux * math.cos(t) - uy * math.sin(t),
+                                cy=cy0 + ux * math.sin(t) + uy * math.cos(t),
+                                z=[float(zl[i, j]), float(zr[i, j]),
+                                   float(zt[i, j]), float(zb[i, j])])
+    return best

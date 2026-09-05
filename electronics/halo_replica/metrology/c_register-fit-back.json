@@ -129,7 +129,7 @@
   "source_px_per_mm_sd": 0.12737079096584514,
   "spread_pct": 0.18311770383493475,
   "n_samples": 79,
-  "inherits": "every error in the target's px/mm basis, quoted above, INCLUDING the 2.07% disagreement between photo 6's bottom and right rules"
+  "inherits": "every error in the target's px/mm basis, which is: metrology/scale-at-board-photo7.json - m_scale_at at the board (932,752), bottom rule and right rule routes 0.45% apart, halfrange 0.0339 px/mm. THE SCALE IS MEASURED AT THE BOARD, not at the rule, so it does not carry the 1.29% rule-to-board error. *** THE ASSUMPTION THIS SHARES WITH ITS OWN HELD-OUT CONTROL: that the 920- sample board and the 820- production board have the same dimensions. A uniform dimensional difference between them is absorbed into the fitted scale and leaves the held-out residual COMPLETELY UNCHANGED, because the check divides both sides by the same number. Registration consistency is not scale accuracy. What would settle it: a caliper on one board of each part number. ***"
  },
  "verdict": "PASS",
  "why": []
