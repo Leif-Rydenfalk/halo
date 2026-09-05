@@ -95,8 +95,21 @@ it cannot answer."** That was wrong, and wrong in the way that matters most:
 The /4 and /6 controls separated cleanly the whole time (0.227 and 0.180 against
 0.289), which proves the probe works. I had built a tool that reported CANNOT
 DETERMINE precisely when it had measured something, and I would have believed it
-if I had not read the ladder. Fixed: the verdict now reads the *first* step that
-costs detail, and only reports CANNOT DETERMINE when **no** step separates.
+if I had not read the ladder.
+
+**The defect named precisely:** the requirement that the ladder be *monotonic*
+was an assumption smuggled into the verdict logic rather than being part of the
+physics. The physics says only that destroying resolution cannot *add* detail;
+it does not say every step must cost some. Fixed: the verdict reads the *first*
+step that costs detail, and reports CANNOT DETERMINE only when **no** step
+separates.
+
+**A tool that reports CANNOT DETERMINE when it has measured something is rarer
+and harder to catch than the reverse, because the output is the safe-looking one
+and nobody audits a refusal.** M06 §"a verdict rule keyed to the wrong thing"
+records a second instance in this same tool, where a correct 0.992 measurement
+was printed under the label "ALREADY SOFT". Both have the same shape: the
+measurement was right and the sentence printed over it was not.
 
 ## 5. Status
 
