@@ -1,3 +1,21 @@
+> **⚠ HOLD-OUT SUPERSEDED (L2, 2026-09-05, later the same day) — see
+> [R08](R08-THE-HOLDOUT-WAS-OPTIMISTIC.md).** The "0.103 mm, worst of four folds" headline
+> below is an **INTERPOLATION** error: with four 90° folds, three quarters of the board
+> still surround every held-out sector, so the fit never extrapolates. Holding out a
+> **half** gives **0.1298 mm RMS / 0.2266 mm p95** on this FRONT pair. Quote **0.130 mm**
+> for the transform and **0.227 mm** for any single position. (The same test applied to the
+> BACK pair, added later by L9, degrades 5.6× and FAILS: 0.705 mm. R08 has it.)
+
+> **⚠ THE CAVEAT THIS FILE ORIGINALLY OMITTED (L2, 2026-09-05).** *The two photographs are
+> of TWO DIFFERENT PHYSICAL BOARDS.* `fcc6-front` is the FCC sample **920-08283-01**, data
+> code 3119, a 2019 engineering build; `oflynn-front` is the retail unit **820-01736-A**,
+> data code 2920 17, 2020 production. A **uniform** size difference between them is absorbed
+> into the fitted scale and leaves every number below completely unchanged — **registration
+> consistency is not scale accuracy.** A **non-uniform** layout difference is not absorbed,
+> so the smooth 0.13 mm hold-out is genuine evidence the two builds share a component layout
+> to about that tolerance. The project states this caveat in M01, E01, E08, STACKUP.md,
+> bom.json and both handoffs; it was missing from the file that publishes the transfer.
+
 > **⚠ SCALE CORRECTION (L1/M08, 2026-09-05):** any millimetre in this file derived from
 > **15.8875 px/mm** (FCC photo 6 bottom rule) is **1.29 % small**. That is the rule's value
 > **at the rule**, near the frame edge; **at the board** M02 measures **15.6850 px/mm**, by two
