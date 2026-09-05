@@ -107,3 +107,22 @@ what I told Leif was wrong.
 **What settles it:** DC resistance across TP1/TP38 on a live unit, or a
 photograph of the front dome's inner face. Neither is available here — this one
 needs a physical AirTag.
+
+### C-6 · A stale rule-check was reporting PASS on a board that does not exist
+**Raised 2026-09-05 by the replica lane, confirmed by re-running it.** The
+design-rule report in the release pack was **17,616 seconds — 4.9 hours — older
+than the board**. A stale gerber wastes a fabrication run and is at least
+visible as a bad board; **a stale rule-check reports PASS on copper it never
+saw**, nothing about it looks wrong, and a green rule-check is precisely what a
+release gate reads. It fails earlier and far more quietly.
+
+**And re-running it exposed something else: there are three artifacts here and no
+two describe the same copper.** The source board that `board.py` regenerates is
+**unrouted at 83 unconnected**. The routed board is a **separate derived file at
+28**. The gerbers are older than both. The "28 unconnected" figure I have been
+reporting is the routed file; anyone cutting a package from the source board
+would get the 83.
+
+Fresh reports now sit in `out/verify/`. The row cannot move until routing reaches
+zero, the source and routed files stop diverging, and the package passes a
+freshness gate against the board it was actually cut from.
