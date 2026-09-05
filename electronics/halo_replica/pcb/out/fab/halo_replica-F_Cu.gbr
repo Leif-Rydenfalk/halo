@@ -1,0 +1,281 @@
+G04 NOT FOR FABRICATION. halo REPLICA - a reconstruction from photographs.*
+G04 1. 0.30 mm at 4 layers is BELOW PCBWay's 0.40 mm four-layer floor and*
+G04    JLCPCB's 0.40 mm minimum. AS DRAWN THIS CANNOT BE ORDERED AT EITHER*
+G04    HOUSE. The drawing is not moved to suit a process.*
+G04 2. The board's own DRC HAS ERRORS. See drc-classification.json:*
+G04    they are classified, not cleared, because moving a MEASURED position*
+G04    to satisfy a design rule would falsify a measurement.*
+G04 3. NO NETLIST BINDING. 65 nets read from the schematic, ZERO pads*
+G04    attached. The copper's connectivity is UNKNOWN and every passive*
+G04    value is CANNOT DETERMINE.*
+G04 4. U1 (nRF52832 WLCSP-50) has NO LAND PATTERN - the ball map is CANNOT*
+G04    DETERMINE. U2 (Apple U1 UWB) is UNPOPULATED and has none either.*
+G04 5. The outer diameter is a BOUND, 24.95-26.34 mm. The drawn value is*
+G04    not a settled diameter, and if it moves it moves DOWN.*
+G04 Board SHA-256 at cut time: a702e352c01dc2ccc85a5cb39cbec9d49c424269e2e13b2c3e06ee0da39cb86f*
+G04 Cut by tools/f_fab.py at 2026-09-05T07:21:42Z*
+%TF.GenerationSoftware,KiCad,Pcbnew,10.0.6*%
+%TF.CreationDate,2026-09-05T15:21:41+08:00*%
+%TF.ProjectId,halo_replica,68616c6f-5f72-4657-906c-6963612e6b69,rev?*%
+%TF.SameCoordinates,Original*%
+%TF.FileFunction,Copper,L1,Top*%
+%TF.FilePolarity,Positive*%
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW 10.0.6) date 2026-09-05 15:21:41*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+G04 Aperture macros list*
+%AMRotRect*
+0 Rectangle, with rotation*
+0 The origin of the aperture is its center*
+0 $1 length*
+0 $2 width*
+0 $3 Rotation angle, in degrees counterclockwise*
+0 Add horizontal line*
+21,1,$1,$2,0,0,$3*%
+G04 Aperture macros list end*
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD10RotRect,1.250000X1.260000X40.087443*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD11RotRect,0.540000X0.940000X35.336130*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD12RotRect,0.600000X0.900000X28.807750*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD13RotRect,0.910000X1.180000X295.200000*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD14RotRect,0.980000X5.400000X297.907669*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD15RotRect,0.550000X0.730000X322.954608*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD16RotRect,0.690000X1.400000X26.589382*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD17RotRect,2.050000X2.540000X350.427271*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD18RotRect,0.780000X4.470000X61.068250*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD19RotRect,0.700000X1.490000X292.164967*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD20RotRect,0.510000X0.700000X335.736334*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD21RotRect,0.560000X0.710000X323.366228*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD22RotRect,1.310000X1.640000X273.265219*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD23RotRect,0.790000X4.490000X350.104498*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD24RotRect,0.800000X1.570000X303.474112*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD25RotRect,1.020000X3.210000X319.700040*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD26RotRect,0.550000X1.340000X25.767080*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD27RotRect,0.510000X1.530000X4.300000*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD28RotRect,0.620000X1.400000X18.997898*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD29RotRect,2.250000X2.690000X325.163383*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD30RotRect,1.720000X2.320000X348.555914*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD31RotRect,0.680000X1.510000X84.216688*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD32RotRect,1.150000X3.880000X324.816120*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD33RotRect,1.210000X2.870000X76.994853*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD34RotRect,0.740000X1.590000X310.329500*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD35RotRect,0.800000X1.620000X304.411625*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD36RotRect,0.750000X1.520000X318.465608*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD37RotRect,0.940000X0.950000X86.300000*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD38RotRect,0.810000X1.950000X279.189119*%
+%TD*%
+%TA.AperFunction,SMDPad,CuDef*%
+%ADD39RotRect,1.400000X1.710000X357.546846*%
+%TD*%
+G04 APERTURE END LIST*
+D10*
+%TO.P,B011,1*%
+%TO.N,N/C*%
+X3173000Y-10362829D03*
+%TD*%
+D11*
+%TO.P,B035,1*%
+%TO.N,N/C*%
+X18812000Y-1773829D03*
+%TD*%
+D12*
+%TO.P,B028,1*%
+%TO.N,N/C*%
+X8173000Y-3515829D03*
+%TD*%
+D13*
+%TO.P,D002,1*%
+%TO.N,N/C*%
+X5921000Y-15118829D03*
+%TD*%
+D14*
+%TO.P,B004,1*%
+%TO.N,N/C*%
+X7605000Y-16729829D03*
+%TD*%
+D15*
+%TO.P,B030,1*%
+%TO.N,N/C*%
+X6977000Y-20056829D03*
+%TD*%
+D16*
+%TO.P,B014,1*%
+%TO.N,N/C*%
+X25323000Y-8177829D03*
+%TD*%
+D17*
+%TO.P,B002,1*%
+%TO.N,N/C*%
+X18533000Y-3778829D03*
+%TD*%
+D18*
+%TO.P,B007,1*%
+%TO.N,N/C*%
+X7394000Y-7569829D03*
+%TD*%
+D19*
+%TO.P,B046,1*%
+%TO.N,N/C*%
+X6306000Y-15840829D03*
+%TD*%
+D20*
+%TO.P,B034,1*%
+%TO.N,N/C*%
+X18062000Y-1608829D03*
+%TD*%
+D21*
+%TO.P,B029,1*%
+%TO.N,N/C*%
+X7612000Y-20554829D03*
+%TD*%
+D22*
+%TO.P,B009,1*%
+%TO.N,N/C*%
+X15823000Y-21539829D03*
+%TD*%
+D23*
+%TO.P,B006,1*%
+%TO.N,N/C*%
+X16532000Y-3385829D03*
+%TD*%
+D24*
+%TO.P,B025,1*%
+%TO.N,N/C*%
+X8556000Y-17560829D03*
+%TD*%
+D25*
+%TO.P,B064,1*%
+%TO.N,N/C*%
+X21479000Y-16434829D03*
+%TD*%
+D26*
+%TO.P,B019,1*%
+%TO.N,N/C*%
+X5699000Y-13913829D03*
+%TD*%
+D27*
+%TO.P,D004,1*%
+%TO.N,N/C*%
+X13999000Y385171D03*
+%TD*%
+D28*
+%TO.P,B017,1*%
+%TO.N,N/C*%
+X4936000Y-14265829D03*
+%TD*%
+D29*
+%TO.P,B003,1*%
+%TO.N,N/C*%
+X9545000Y-5814829D03*
+%TD*%
+D30*
+%TO.P,B010,1*%
+%TO.N,N/C*%
+X17687000Y-21307829D03*
+%TD*%
+D31*
+%TO.P,B020,1*%
+%TO.N,N/C*%
+X7666000Y-10729829D03*
+%TD*%
+D32*
+%TO.P,B005,1*%
+%TO.N,N/C*%
+X3804000Y-7801829D03*
+%TD*%
+D33*
+%TO.P,B013,1*%
+%TO.N,N/C*%
+X23612000Y-14877829D03*
+%TD*%
+D34*
+%TO.P,B023,1*%
+%TO.N,N/C*%
+X22839000Y-19922829D03*
+%TD*%
+D35*
+%TO.P,B026,1*%
+%TO.N,N/C*%
+X7883000Y-19076829D03*
+%TD*%
+D36*
+%TO.P,B024,1*%
+%TO.N,N/C*%
+X7510000Y-5533829D03*
+%TD*%
+D37*
+%TO.P,D003,1*%
+%TO.N,N/C*%
+X8131000Y-9631829D03*
+%TD*%
+D38*
+%TO.P,B015,1*%
+%TO.N,N/C*%
+X11258000Y-1576829D03*
+%TD*%
+D39*
+%TO.P,B008,1*%
+%TO.N,N/C*%
+X5544000Y-11526829D03*
+%TD*%
+M02*

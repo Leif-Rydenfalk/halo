@@ -1,0 +1,60 @@
+G04 NOT FOR FABRICATION. halo REPLICA - a reconstruction from photographs.*
+G04 1. 0.30 mm at 4 layers is BELOW PCBWay's 0.40 mm four-layer floor and*
+G04    JLCPCB's 0.40 mm minimum. AS DRAWN THIS CANNOT BE ORDERED AT EITHER*
+G04    HOUSE. The drawing is not moved to suit a process.*
+G04 2. The board's own DRC HAS ERRORS. See drc-classification.json:*
+G04    they are classified, not cleared, because moving a MEASURED position*
+G04    to satisfy a design rule would falsify a measurement.*
+G04 3. NO NETLIST BINDING. 65 nets read from the schematic, ZERO pads*
+G04    attached. The copper's connectivity is UNKNOWN and every passive*
+G04    value is CANNOT DETERMINE.*
+G04 4. U1 (nRF52832 WLCSP-50) has NO LAND PATTERN - the ball map is CANNOT*
+G04    DETERMINE. U2 (Apple U1 UWB) is UNPOPULATED and has none either.*
+G04 5. The outer diameter is a BOUND, 24.95-26.34 mm. The drawn value is*
+G04    not a settled diameter, and if it moves it moves DOWN.*
+G04 Board SHA-256 at cut time: a702e352c01dc2ccc85a5cb39cbec9d49c424269e2e13b2c3e06ee0da39cb86f*
+G04 Cut by tools/f_fab.py at 2026-09-05T07:21:42Z*
+%TF.GenerationSoftware,KiCad,Pcbnew,10.0.6*%
+%TF.CreationDate,2026-09-05T15:21:41+08:00*%
+%TF.ProjectId,halo_replica,68616c6f-5f72-4657-906c-6963612e6b69,rev?*%
+%TF.SameCoordinates,Original*%
+%TF.FileFunction,OtherDrawing,Comment*%
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW 10.0.6) date 2026-09-05 15:21:41*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+%ADD10C,0.050000*%
+G04 APERTURE END LIST*
+D10*
+X16633183Y-5854781D02*
+X16592910Y-6010503D01*
+X18020034Y-6368399D02*
+X18144370Y-6129551D01*
+X18379370Y-6196813D02*
+X18657537Y-5705155D01*
+X18518149Y-18928131D02*
+X18449562Y-18796377D01*
+X19624537Y-6355990D02*
+X19422747Y-6609674D01*
+X20404733Y-17669725D02*
+X20619225Y-17887995D01*
+X20639549Y-7437686D02*
+X20210236Y-7797922D01*
+X20958005Y-14637716D02*
+X21948287Y-15047904D01*
+X21052089Y-12169829D02*
+X22350354Y-12169829D01*
+X21271848Y-16242815D02*
+X21426287Y-16343109D01*
+X21425430Y-10448141D02*
+X22206832Y-10238765D01*
+X21806421Y-15489543D02*
+X21726235Y-15450434D01*
+X22208524Y-13767921D02*
+X21294847Y-13565363D01*
+X22334352Y-11139054D02*
+X21347052Y-11277810D01*
+M02*

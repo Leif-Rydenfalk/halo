@@ -1,0 +1,28 @@
+M48
+; NOT FOR FABRICATION. halo REPLICA - a reconstruction from photographs.
+; 1. 0.30 mm at 4 layers is BELOW PCBWay's 0.40 mm four-layer floor and
+;    JLCPCB's 0.40 mm minimum. AS DRAWN THIS CANNOT BE ORDERED AT EITHER
+;    HOUSE. The drawing is not moved to suit a process.
+; 2. The board's own DRC HAS ERRORS. See drc-classification.json:
+;    they are classified, not cleared, because moving a MEASURED position
+;    to satisfy a design rule would falsify a measurement.
+; 3. NO NETLIST BINDING. 65 nets read from the schematic, ZERO pads
+;    attached. The copper's connectivity is UNKNOWN and every passive
+;    value is CANNOT DETERMINE.
+; 4. U1 (nRF52832 WLCSP-50) has NO LAND PATTERN - the ball map is CANNOT
+;    DETERMINE. U2 (Apple U1 UWB) is UNPOPULATED and has none either.
+; 5. The outer diameter is a BOUND, 24.95-26.34 mm. The drawn value is
+;    not a settled diameter, and if it moves it moves DOWN.
+; Board SHA-256 at cut time: a702e352c01dc2ccc85a5cb39cbec9d49c424269e2e13b2c3e06ee0da39cb86f
+; Cut by tools/f_fab.py at 2026-09-05T07:21:42Z
+; DRILL file KiCad 10.0.6 date 2026-09-05T15:21:42
+; FORMAT={-:-/ absolute / metric / decimal}
+; #@! TF.CreationDate,2026-09-05T15:21:42+08:00
+; #@! TF.GenerationSoftware,Kicad,Pcbnew,10.0.6
+; #@! TF.FileFunction,MixedPlating,1,4
+FMAT,2
+METRIC
+%
+G90
+G05
+M30

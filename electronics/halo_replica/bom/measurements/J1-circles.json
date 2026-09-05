@@ -1,0 +1,141 @@
+{
+  "image": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "down": 2,
+  "bar": 1.51,
+  "sd_floor": 6.56133155923482,
+  "rows": [
+    {
+      "closure": 6.49,
+      "cx_px": 1802.0,
+      "cy_px": 2716.0,
+      "d_mm": 1.0,
+      "inlier_frac": 0.925,
+      "noncirc": 0.3832,
+      "a4": 0.2068,
+      "contrast_luma": 7.1,
+      "shape": null
+    },
+    {
+      "closure": 3.64,
+      "cx_px": 1648.0,
+      "cy_px": 2736.0,
+      "d_mm": 0.4,
+      "inlier_frac": null,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 3.05,
+      "cx_px": 1638.0,
+      "cy_px": 2610.0,
+      "d_mm": 0.6,
+      "inlier_frac": 0.235,
+      "noncirc": 0.8978,
+      "a4": 0.459,
+      "contrast_luma": 50.8,
+      "shape": null
+    },
+    {
+      "closure": 2.2,
+      "cx_px": 1952.0,
+      "cy_px": 2884.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.134,
+      "noncirc": 0.2895,
+      "a4": 0.0279,
+      "contrast_luma": 146.7,
+      "shape": null
+    },
+    {
+      "closure": 2.12,
+      "cx_px": 1860.0,
+      "cy_px": 2668.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.097,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.96,
+      "cx_px": 1780.0,
+      "cy_px": 2782.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.099,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.89,
+      "cx_px": 1764.0,
+      "cy_px": 2660.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.13,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.89,
+      "cx_px": 1630.0,
+      "cy_px": 2810.0,
+      "d_mm": 0.4,
+      "inlier_frac": null,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.89,
+      "cx_px": 1786.0,
+      "cy_px": 2638.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.145,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.68,
+      "cx_px": 1966.0,
+      "cy_px": 2638.0,
+      "d_mm": 0.6,
+      "inlier_frac": 0.317,
+      "noncirc": 0.2623,
+      "a4": 0.1006,
+      "contrast_luma": 177.7,
+      "shape": null
+    },
+    {
+      "closure": 1.65,
+      "cx_px": 1698.0,
+      "cy_px": 2768.0,
+      "d_mm": 0.4,
+      "inlier_frac": null,
+      "noncirc": null,
+      "a4": null,
+      "contrast_luma": null,
+      "shape": "UNMEASURED"
+    },
+    {
+      "closure": 1.59,
+      "cx_px": 1946.0,
+      "cy_px": 2796.0,
+      "d_mm": 0.4,
+      "inlier_frac": 0.16,
+      "noncirc": 0.2667,
+      "a4": 0.0415,
+      "contrast_luma": 107.7,
+      "shape": null
+    }
+  ]
+}

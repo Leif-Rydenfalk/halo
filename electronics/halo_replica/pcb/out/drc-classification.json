@@ -1,0 +1,454 @@
+{
+ "tool": "tools/f_drc_classify.py",
+ "run": {
+  "drc_json": "pcb/out/halo_replica.drc.json",
+  "drc_sha256_16": "99c82e2ec0ae5748",
+  "drc_mtime": 1788592901.4219377,
+  "board_sha256_16": "a702e352c01dc2cc",
+  "board_mtime": 1788592898.9984102,
+  "board_is_older_than_drc": true
+ },
+ "counts": {
+  "MEASUREMENT-LIMITED": 14,
+  "BOUND-LIMITED": 19,
+  "GENUINELY-TOUCHING": 0,
+  "OUR-ERROR": 0
+ },
+ "classes": {
+  "MEASUREMENT-LIMITED": [
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0,
+    "refs": [
+     "B013",
+     "B064"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0000 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0000 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Actual 0.0000 mm means the two rows' MINIMUM-AREA RECTANGLES overlap. The segmentation reports SEPARATE connected components, so the blobs do not overlap; a rotated rect contains background, and the overlap is in the representation rather than in Apple's copper."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0,
+    "refs": [
+     "B009",
+     "B010"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0000 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0000 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Actual 0.0000 mm means the two rows' MINIMUM-AREA RECTANGLES overlap. The segmentation reports SEPARATE connected components, so the blobs do not overlap; a rotated rect contains background, and the overlap is in the representation rather than in Apple's copper."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0679,
+    "refs": [
+     "B026",
+     "B030"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0679 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0679 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Two features this close cannot be separated by this evidence base."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0,
+    "refs": [
+     "B034",
+     "B035"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0000 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0000 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Actual 0.0000 mm means the two rows' MINIMUM-AREA RECTANGLES overlap. The segmentation reports SEPARATE connected components, so the blobs do not overlap; a rotated rect contains background, and the overlap is in the representation rather than in Apple's copper."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0,
+    "refs": [
+     "B005",
+     "B011"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0000 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0000 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Actual 0.0000 mm means the two rows' MINIMUM-AREA RECTANGLES overlap. The segmentation reports SEPARATE connected components, so the blobs do not overlap; a rotated rect contains background, and the overlap is in the representation rather than in Apple's copper."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0119,
+    "refs": [
+     "B005",
+     "B007"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0119 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0119 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Two features this close cannot be separated by this evidence base."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0,
+    "refs": [
+     "B046",
+     "D002"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0000 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0000 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Actual 0.0000 mm means the two rows' MINIMUM-AREA RECTANGLES overlap. The segmentation reports SEPARATE connected components, so the blobs do not overlap; a rotated rect contains background, and the overlap is in the representation rather than in Apple's copper."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0571,
+    "refs": [
+     "B019",
+     "D002"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0571 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0571 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Two features this close cannot be separated by this evidence base."
+   },
+   {
+    "type": "clearance",
+    "severity": "error",
+    "rule_mm": 0.075,
+    "actual_mm": 0.0068,
+    "refs": [
+     "B017",
+     "D002"
+    ],
+    "description": "\u00d6vertr\u00e4delse av isolationsavst\u00e5nd/frig\u00e5ng ( frig\u00e5ng 0.0750 mm; faktisk 0.0068 mm)",
+    "floor_mm": 0.1029,
+    "genuine_px_per_mm": [
+     20.7,
+     27.4
+    ],
+    "why": "actual 0.0068 mm is at or below the front handoff's own registration_holdout_mm of 0.1029 (20.7-27.4 genuine px/mm). Two features this close cannot be separated by this evidence base."
+   },
+   {
+    "type": "solder_mask_bridge",
+    "severity": "error",
+    "rule_mm": null,
+    "actual_mm": null,
+    "refs": [
+     "B009",
+     "B010"
+    ],
+    "description": "\u00d6ppning i framsidans l\u00f6dmask \u00f6verbryggar objekt fr\u00e5n olika n\u00e4t",
+    "inherits_from": "the clearance violation on the same pair, which is MEASUREMENT-LIMITED",
+    "why": "KiCad reports a mask bridge with NO distance, so it carries no number of its own. It does not need one: a bridge between these two lands is the same physical fact as the clearance violation between the same two lands, and that one is measurement-limited. Inherited, and the inheritance is recorded rather than assumed."
+   },
+   {
+    "type": "solder_mask_bridge",
+    "severity": "error",
+    "rule_mm": null,
+    "actual_mm": null,
+    "refs": [
+     "B005",
+     "B011"
+    ],
+    "description": "\u00d6ppning i framsidans l\u00f6dmask \u00f6verbryggar objekt fr\u00e5n olika n\u00e4t",
+    "inherits_from": "the clearance violation on the same pair, which is MEASUREMENT-LIMITED",
+    "why": "KiCad reports a mask bridge with NO distance, so it carries no number of its own. It does not need one: a bridge between these two lands is the same physical fact as the clearance violation between the same two lands, and that one is measurement-limited. Inherited, and the inheritance is recorded rather than assumed."
+   },
+   {
+    "type": "solder_mask_bridge",
+    "severity": "error",
+    "rule_mm": null,
+    "actual_mm": null,
+    "refs": [
+     "B013",
+     "B064"
+    ],
+    "description": "\u00d6ppning i framsidans l\u00f6dmask \u00f6verbryggar objekt fr\u00e5n olika n\u00e4t",
+    "inherits_from": "the clearance violation on the same pair, which is MEASUREMENT-LIMITED",
+    "why": "KiCad reports a mask bridge with NO distance, so it carries no number of its own. It does not need one: a bridge between these two lands is the same physical fact as the clearance violation between the same two lands, and that one is measurement-limited. Inherited, and the inheritance is recorded rather than assumed."
+   },
+   {
+    "type": "solder_mask_bridge",
+    "severity": "error",
+    "rule_mm": null,
+    "actual_mm": null,
+    "refs": [
+     "B046",
+     "D002"
+    ],
+    "description": "\u00d6ppning i framsidans l\u00f6dmask \u00f6verbryggar objekt fr\u00e5n olika n\u00e4t",
+    "inherits_from": "the clearance violation on the same pair, which is MEASUREMENT-LIMITED",
+    "why": "KiCad reports a mask bridge with NO distance, so it carries no number of its own. It does not need one: a bridge between these two lands is the same physical fact as the clearance violation between the same two lands, and that one is measurement-limited. Inherited, and the inheritance is recorded rather than assumed."
+   },
+   {
+    "type": "solder_mask_bridge",
+    "severity": "error",
+    "rule_mm": null,
+    "actual_mm": null,
+    "refs": [
+     "B034",
+     "B035"
+    ],
+    "description": "\u00d6ppning i framsidans l\u00f6dmask \u00f6verbryggar objekt fr\u00e5n olika n\u00e4t",
+    "inherits_from": "the clearance violation on the same pair, which is MEASUREMENT-LIMITED",
+    "why": "KiCad reports a mask bridge with NO distance, so it carries no number of its own. It does not need one: a bridge between these two lands is the same physical fact as the clearance violation between the same two lands, and that one is measurement-limited. Inherited, and the inheritance is recorded rather than assumed."
+   }
+  ],
+  "BOUND-LIMITED": [
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0,
+    "refs": [
+     "B011"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0000 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4703,
+    "refs": [
+     "B004"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4703 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4775,
+    "refs": [
+     "B007"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4775 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4734,
+    "refs": [
+     "B006"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4734 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4585,
+    "refs": [
+     "B064"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4585 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4468,
+    "refs": [
+     "D004"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4468 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4328,
+    "refs": [
+     "B005"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4328 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.2429,
+    "refs": [
+     "B013"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.2429 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.184,
+    "refs": [
+     "B015"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.1840 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4393,
+    "refs": [
+     "KP035"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4393 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0,
+    "refs": [
+     "KP001"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0000 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0,
+    "refs": [
+     "KP039"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0000 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4412,
+    "refs": [
+     "KP037"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4412 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0,
+    "refs": [
+     "KP042"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0000 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4533,
+    "refs": [
+     "KP032"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4533 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0,
+    "refs": [
+     "KP041"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0000 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.4062,
+    "refs": [
+     "KP000"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.4062 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.3603,
+    "refs": [
+     "KP003"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.3603 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   },
+   {
+    "type": "copper_edge_clearance",
+    "severity": "error",
+    "rule_mm": 0.5,
+    "actual_mm": 0.0074,
+    "refs": [
+     "KP002"
+    ],
+    "description": "Regel\u00f6vertr\u00e4delse f\u00f6r m\u00f6nsterkortets kantmarginal (m\u00f6nsterkortsinst\u00e4llningarnas begr\u00e4nsningar f\u00f6r kanter frig\u00e5ng 0.5000 mm; faktisk 0.0074 mm)",
+    "why": "measured against the OUTLINE, whose diameter is a BOUND (24.95-26.34 mm), not a number. The signed expectation is that it moves DOWN, so this gets WORSE as the bound resolves \u2014 it cannot be waited out. The 0.5 mm rule is KiCad's default and is NOT a fab spec this lane chose."
+   }
+  ],
+  "GENUINELY-TOUCHING": [],
+  "OUR-ERROR": []
+ },
+ "rule": "DO NOT MOVE A MEASURED POSITION TO SATISFY A DESIGN RULE. These are classified, not cleared.",
+ "genuinely_touching_method": "empty by method: per-pair contiguity evidence does not exist in this evidence base"
+}

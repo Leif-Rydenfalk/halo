@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 59
  },
- "written_utc": "2026-09-05T07:17:42.957766Z",
+ "written_utc": "2026-09-05T07:21:39.008118Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",

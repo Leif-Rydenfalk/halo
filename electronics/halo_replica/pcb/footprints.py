@@ -112,6 +112,33 @@ NRF_BALLS = 50            # "WLCSP-50", bom.json U1
 NRF_BALL_D = 0.25         # land diameter. CHOICE: 0.625 x pitch, the usual
                           # NSMD ratio for 0.4 mm CSP. Labelled a choice.
 
+# TEN BALL DESIGNATORS ARE SOURCED. FORTY ARE NOT. That ratio is the point.
+#
+# Colin O'Flynn's test-point table gives pad, BALL and GPIO per row, and ten
+# of the nRF52832-CIAA's fifty balls appear in it. They are labelled on the
+# fabrication layer from that source; the other 46 grid positions carry no
+# designator at all, so the gap is VISIBLE ON THE DRAWING rather than hidden
+# behind a generated A1..H7 grid that would have looked equally authoritative.
+#
+# TEN OF FIFTY IS NOT A BALL MAP. This changes nothing about the land
+# pattern: U1 is still not landed, the six depopulated positions are still
+# CANNOT DETERMINE, and these ten are not licence to generate the other
+# forty.
+#
+# ONE CONTRADICTION IN THE SOURCE, CARRIED AND NOT RESOLVED: its row 8 says
+# ball E2 is P0.16 and its row 19 says ball H3 is P0.16. Two balls, one GPIO,
+# one transcription error. Lane L11 takes row 19 because H3/H4/G3/F4 form a
+# coherent flash-bus group; E2 is marked DISPUTED here and drawn as such.
+NRF_SOURCED_BALLS = {
+    "H3": "P0.16 flash COPI", "H4": "P0.15 flash CIPO",
+    "G3": "P0.17 flash SCLK", "F4": "P0.11 flash CS",
+    "H1": "nRST", "H2": "SWO", "F1": "SWCLK", "G1": "SWDIO",
+    "D3": "sourced, signal not recorded here",
+    "E2": "P0.16 DISPUTED — the source also gives P0.16 as H3",
+}
+NRF_BALL_SOURCE = ("Colin O'Flynn's AirTag test-point table (pad, ball and "
+                   "GPIO per row), via lane L11, 2026-09-05")
+
 
 def _fmt(v):
     return ("%.4f" % float(v)).rstrip("0").rstrip(".") or "0"
@@ -281,20 +308,41 @@ def wlcsp_nrf_no_lands():
              "ARE DEPOPULATED IS CANNOT DETERMINE -- no ball map exists in "
              "this repo and KiCad's 179 Package_CSP footprints hold no "
              "nRF52832 WLCSP. The A1 corner is unknown too: the placement "
-             "angle is a min-area-rect long side, modulo 180 deg."
+             "angle is a min-area-rect long side, modulo 180 deg. TEN "
+             "designators (%s) are SOURCED from %s and are ringed and "
+             "labelled; the other %d positions carry NO designator, so the "
+             "gap is visible on the drawing instead of hidden behind a "
+             "generated grid. Ten of fifty is not a ball map."
              % (_fmt(NRF_BODY_LONG), _fmt(NRF_BODY_SHORT), _fmt(NRF_PITCH),
-                nrows * ncols, NRF_BALLS, nrows * ncols - NRF_BALLS))
+                nrows * ncols, NRF_BALLS, nrows * ncols - NRF_BALLS,
+                ", ".join(sorted(NRF_SOURCED_BALLS)), NRF_BALL_SOURCE,
+                nrows * ncols - len(NRF_SOURCED_BALLS)))
     o = _head(name, descr, "halo replica wlcsp nrf52832 refused no copper",
               "smd board_only exclude_from_pos_files exclude_from_bom")
+    letters = "ABCDEFGHJKLMNP"
     x0 = -(ncols - 1) * NRF_PITCH / 2.0
     y0 = -(nrows - 1) * NRF_PITCH / 2.0
+    labelled = 0
     for r in range(nrows):
         for c in range(ncols):
-            o.append(_circle(x0 + c * NRF_PITCH, y0 + r * NRF_PITCH,
-                             NRF_BALL_D / 2.0, "F.Fab", 0.03))
+            bx, by = x0 + c * NRF_PITCH, y0 + r * NRF_PITCH
+            o.append(_circle(bx, by, NRF_BALL_D / 2.0, "F.Fab", 0.03))
+            ball = "%s%d" % (letters[r], c + 1)
+            if ball in NRF_SOURCED_BALLS:
+                # SOURCED. Marked with a second ring and its designator, so a
+                # reader can see at a glance which ten of the fifty rest on a
+                # source and which do not.
+                o.append(_circle(bx, by, NRF_BALL_D / 2.0 + 0.05, "F.Fab",
+                                 0.03))
+                o.append(_fp_text(ball, bx, by - 0.22, "F.Fab", 0.15))
+                labelled += 1
     o += _rect(0, 0, NRF_BODY_SHORT, NRF_BODY_LONG, "F.Fab", 0.06)
     o.append(_fp_text("U1 WLCSP-50 - NO LANDS, BALL MAP CANNOT DETERMINE",
                       0, NRF_BODY_LONG / 2.0 + 0.45, "F.Fab", 0.30))
+    o.append(_fp_text("%d of %d designators SOURCED (%s); the rest are "
+                      "UNLABELLED because they are unknown"
+                      % (labelled, NRF_BALLS, NRF_BALL_SOURCE),
+                      0, NRF_BODY_LONG / 2.0 + 0.80, "F.Fab", 0.18))
     o.append(")")
     return name, "\n".join(o)
 
