@@ -93,6 +93,41 @@ retail.
 | R1, R2 `0201WMF4704TEE` | 20,010 | 10,142 | **51,300** | 2.6× |
 | U1 `NRF54L10-QFAA-R7` | 10,000 | 927 | **14,956** | 1.5× |
 
+---
+
+### Re-read 11 hours later: the count of failing lines is 3, not 4 — and the "−54 %" was not a trend
+
+*Added by lane L8, 2026-09-05. **Nothing above is retracted.** Every figure on this page is
+correct at the second it was read; these are the same two endpoints read again, and one of them
+moved a long way.*
+
+| part | need @10k | snapshot 09-03 | S2, 2026-09-04T23:31Z | L8, 2026-09-05T10:33Z | |
+|---|--:|--:|--:|--:|---|
+| `C3911055` L3/L4 3.5 nH | 20,004 | 18,376 | LCSC 8,040 · **JLC 8,441** | LCSC 22,960 · **JLC 23,309** | **2.76× — now CLEARS** |
+| `C44800139` U1 | 10,000 | 212 | LCSC 671 · **JLC 927** | LCSC 697 · **JLC 953** | 1.03× — still short |
+
+Same codes, same two endpoints, same channels, eleven hours apart. `C3911055` was restocked by
+roughly 15,000 pieces overnight and now covers its 20,004 need with margin. **So the "four
+failing lines" above are three as of 2026-09-05T10:33:37Z** — U1, R1/R2 `C778408` and
+C20/C21 `C237424` — and this page's §4b arithmetic for L3/L4 describes a shortage that has
+since closed.
+
+**And the `−54 % in two days` on L3/L4 was two points, not a trend.** The third point reversed
+it: 18,376 on 09-03, 8,441 on 09-04, 23,309 on 09-05. A passive at this volume moves on reel
+arrivals, not on a slope, and a percentage change between two reads of a volatile quantity
+invites a reader to extrapolate something that is not there. The U1 row is the opposite and is
+the one worth watching: 212 → 927 → 953 is small, consistent, and nowhere near 10,000 on any
+read, which is why it and not L3/L4 is the standing risk.
+
+**The rule this page already states is the reason both readings stand:** a stock figure carries
+its endpoint and the second it was read, or it is not a measurement. Two lanes disagreeing about
+"live stock" without timestamps would have looked like one of them being wrong; with timestamps
+it is simply a restock, and both numbers are usable.
+
+*Raw: `out/verify/alternates-live-2026-09-05.json` (S2, 23:31Z) and `spec/bom-resolved.json`
+(L8, 10:33Z). Neither was re-fetched to write this note.*
+
+
 **So the deliverable this lane was asked for — a qualified alternate per failing line — is answered
 by four rows that need no alternate.** The alternates are in §3 anyway, because a second source is
 worth having whether or not it is needed today, and because they are the answer if consignment is
