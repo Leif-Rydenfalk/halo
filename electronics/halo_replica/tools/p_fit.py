@@ -192,17 +192,29 @@ def fit_outer(theta_deg, r_px, ppm, verbose=True):
             circle_resid_sd_mm_here=circ_sd, circle_inlier_frac_here=circ_in,
             max_depth_below_circle_mm=float(-circ.min()),
         )
-        # N3 SEPARATION: both must move, and the inlier fraction is the discriminator
-        if line_sd < circ_sd and line_in > circ_in + 0.25:
+        # THE SAME TANGENTIAL RULE THE HOLE FACETS GOT, and it belonged here first.
+        # A straight edge can only BE the boundary within ~90 deg of its own normal;
+        # d/cos(theta - normal) diverges there. This was fixed for the hole facets and
+        # NOT propagated to the outer chords, and N4 caught it the moment a second
+        # profile was fitted: two chords at 4.02 mm and 5.55 mm offset with normals
+        # 68 and 57 deg outside their own arcs drove the residual to 3.21 mm.
+        devs_c = np.abs(((theta_deg[i:j + 1] - row["normal_deg"] + 180) % 360) - 180)
+        row["max_arc_to_normal_deg"] = float(devs_c.max())
+        geom_ok = devs_c.max() < 60.0
+        if geom_ok and line_sd < circ_sd and line_in > circ_in + 0.25:
             row["admitted"] = True
             chords.append(row)
         else:
             row["admitted"] = False
             row["why_refused"] = (
-                "a line does not separate from the circle on this arc: "
-                f"line sd {line_sd:.4f} vs circle sd {circ_sd:.4f} mm, "
-                f"inlier {line_in:.3f} vs {circ_in:.3f}. Extra parameters always "
-                "lower a residual; without inlier separation this is not a flat.")
+                (f"this line is nearly TANGENTIAL to its own arc "
+                 f"({devs_c.max():.1f} deg from its normal, limit 60) -- a straight "
+                 f"edge cannot be the boundary that far from its normal"
+                 if not geom_ok else
+                 "a line does not separate from the circle on this arc: "
+                 f"line sd {line_sd:.4f} vs circle sd {circ_sd:.4f} mm, "
+                 f"inlier {line_in:.3f} vs {circ_in:.3f}. Extra parameters always "
+                 "lower a residual; without inlier separation this is not a flat."))
             rejected.append(row)
 
     # arcs where the detector found NO ray at all. The model is drawn across them
@@ -231,6 +243,91 @@ def measure(fit, theta_deg, r_px, ppm, chord_shift_mm=0.0):
     pred = model_r(th, fit["cx"], fit["cy"], fit["R"], ch)
     return (pred - r_px) / ppm, pred
 
+
+
+
+# ---------------------------------------------------------------- edge re-extraction
+def sample_ray(a, ox, oy, theta_deg, r0, r1, step=0.25):
+    """Bilinear luma along one ray, from r0 to r1 px."""
+    t = math.radians(theta_deg)
+    rs = np.arange(r0, r1, step)
+    xs, ys = ox + rs * math.cos(t), oy + rs * math.sin(t)
+    x0, y0 = np.floor(xs).astype(int), np.floor(ys).astype(int)
+    fx, fy = xs - x0, ys - y0
+    ok = (x0 >= 0) & (y0 >= 0) & (x0 < a.shape[1] - 1) & (y0 < a.shape[0] - 1)
+    v = np.full(len(rs), np.nan)
+    if ok.any():
+        i, j = y0[ok], x0[ok]
+        v[ok] = (a[i, j] * (1 - fx[ok]) * (1 - fy[ok]) + a[i, j + 1] * fx[ok] * (1 - fy[ok])
+                 + a[i + 1, j] * (1 - fx[ok]) * fy[ok] + a[i + 1, j + 1] * fx[ok] * fy[ok])
+    return rs, v
+
+
+def edges_on_ray(rs, v, smooth_px, min_step, require_persist=True, persist_px=160.0):
+    """EVERY significant board->background transition on this ray, not just the first.
+
+    M02 sec 8 established that a grey fibrous material laps over the rim, so a ray can
+    cross TWO edges: the substrate's and the rim material's. A finder that returns one
+    number cannot say which it found, and 'the detector settles on a blended edge' stays
+    an assertion. This returns all of them with their strength and their width, so the
+    question becomes answerable.
+    """
+    if np.isnan(v).any():
+        v = np.where(np.isnan(v), np.nanmedian(v), v)
+    k = max(3, int(smooth_px / 0.25) | 1)
+    ker = np.ones(k) / k
+    sm = np.convolve(v, ker, mode="same")
+    g = np.gradient(sm)                       # negative = getting darker outward? no:
+    # the board is DARK and the paper is BRIGHT, so a board->background crossing going
+    # OUTWARD is a RISE. Take positive gradient peaks.
+    out = []
+    for i in range(2, len(g) - 2):
+        if g[i] >= g[i - 1] and g[i] > g[i + 1] and g[i] > 0:
+            lo = min(sm[max(0, i - 40):i + 1])
+            hi = max(sm[i:i + 41])
+            if hi - lo < min_step:
+                continue
+            # SUB-PIXEL POSITION: the 50% crossing of the smoothed profile, NOT the
+            # gradient peak. A boxcar smoother turns a step into a ramp whose gradient
+            # is a plateau, so the "peak" lands anywhere in it -- E2 caught that at
+            # 4.21 px of bias on a synthetic step, which is 40 um and larger than the
+            # thing being measured. The 50% crossing is unbiased for any symmetric blur.
+            lo_t, hi_t = lo + 0.1 * (hi - lo), lo + 0.9 * (hi - lo)
+            mid = 0.5 * (lo + hi)
+            a_ = i
+            while a_ > 0 and sm[a_] > lo_t:
+                a_ -= 1
+            b_ = i
+            while b_ < len(sm) - 1 and sm[b_] < hi_t:
+                b_ += 1
+            r = rs[i]
+            for q in range(a_, min(b_, len(sm) - 1)):
+                if sm[q] <= mid <= sm[q + 1] and sm[q + 1] > sm[q]:
+                    f_ = (mid - sm[q]) / (sm[q + 1] - sm[q])
+                    r = rs[q] + f_ * (rs[q + 1] - rs[q])
+                    break
+            # PERSISTENCE: the board's outer edge is a transition to BACKGROUND, and
+            # background stays bright. A component inside the board gives an equally
+            # strong rise and then comes back down. E1 fired on 72 of 72 rays inside
+            # the board until this was added, which is the control doing its job:
+            # strength alone cannot tell a board edge from a solder pad.
+            # The tail must stay bright for a stated ABSOLUTE distance, not merely
+            # "to the end of whatever was sampled" -- a window that runs out is a test
+            # that passes for lack of evidence. If the ray does not carry that much
+            # tail, the ray cannot decide and reports nothing.
+            step_px = rs[1] - rs[0]
+            n_tail = int(persist_px / step_px)
+            t0 = b_ + int(4.0 / step_px)
+            tail = sm[t0:t0 + n_tail]
+            persist = (len(tail) >= n_tail and
+                       float(np.percentile(tail, 20)) > lo + 0.6 * (hi - lo))
+            if require_persist and not persist:
+                continue
+            out.append(dict(r_px=float(r), strength=float(hi - lo),
+                            width_px=float(rs[b_] - rs[a_]),
+                            tail_persists=bool(persist)))
+    out.sort(key=lambda e: -e["strength"])
+    return out
 
 
 # ---------------------------------------------------------------- the hole
@@ -526,6 +623,179 @@ def selftest(break_which=None):
     return ok
 
 
+
+def run_edge(a_ns):
+    """The `edge` verb: re-extract the outer edge over stated arcs, with controls.
+
+    WHY: p_compare's X6 map named two arcs where the drawn outline disagrees with the
+    measured profile by ~0.9-1.0 mm -- 82.8-101.0 and 114.0-119.5 deg -- and both sit
+    beside the largest holes in L1's ray data (63.0 deg of arc over 14 gaps, the biggest
+    13.75 deg). Adding primitives there would be fitting noise. Re-measuring is the
+    honest move, and it is what this does.
+    """
+    from PIL import Image
+    im = Image.open(a_ns.image).convert("L")
+    A = np.asarray(im).astype(float)
+    fit = json.load(open(a_ns.fit))
+    ox, oy = fit["frame"]["origin_px"]
+    ppm = fit["scale"]["px_per_mm"]
+    R = fit["outer"]["circle_R_px"]
+    raw = json.load(open(a_ns.raw))
+    rt = np.array(raw["outer_r_theta"], float)
+    have = {round(float(t), 2): float(r) for t, r in rt}
+
+    say(f"image     {a_ns.image}")
+    say(f"frame     origin ({ox:.1f},{oy:.1f})  {ppm:.4f} px/mm  R {R:.1f} px")
+    say(f"smoothing {a_ns.smooth_px} px   min luma step {a_ns.min_step}   "
+        f"persistence {a_ns.persist_mm} mm")
+    say("")
+
+    # E2 POSITIVE CONTROL: a synthetic step edge at a KNOWN radius must be recovered.
+    rs_s = np.arange(0.85 * R, 1.15 * R, 0.25)
+    true_r = R + 7.3
+    v_s = np.where(rs_s < true_r, 40.0, 200.0)
+    rng = np.random.default_rng(3)
+    v_s = v_s + rng.normal(0, 4.0, len(v_s))
+    e_s = edges_on_ray(rs_s, v_s, a_ns.smooth_px, a_ns.min_step)
+    if not e_s:
+        say("E2 FIRED: the finder cannot find a synthetic step edge. Nothing below is "
+            "worth reading.")
+        return CANNOT, None
+    err_s = abs(e_s[0]["r_px"] - true_r)
+    say(f"E2 positive (synthetic step at {true_r:.2f} px + 4 LSB noise): recovered "
+        f"{e_s[0]['r_px']:.2f} px, err {err_s:.2f} px = {err_s/ppm*1000:.0f} um")
+    if err_s > 3.0:
+        say("E2 FIRED: the finder cannot locate a step it was handed.")
+        return FAIL, None
+
+    # E1 NEGATIVE CONTROL: the same finder inside the ANNULUS, where there is no
+    # board/background boundary at all, must not report one.
+    # The first version of this control ran 0.40-0.80 R, which STRADDLES THE CENTRE
+    # HOLE -- genuine background. It fired 72 of 72 and it was right to: it was being
+    # shown a real boundary and asked to find nothing. The control was wrong, not the
+    # finder. It now runs entirely between the hole and the rim.
+    lo_f, hi_f = a_ns.e1_span
+    n_false, n_rays = 0, 0
+    for t in np.arange(0, 360, 5.0):
+        rs_i, v_i = sample_ray(A, ox, oy, t, lo_f * R, hi_f * R)
+        n_rays += 1
+        if edges_on_ray(rs_i, v_i, a_ns.smooth_px, a_ns.min_step,
+                        persist_px=a_ns.persist_mm * ppm):
+            n_false += 1
+    say(f"E1 negative (same finder at {lo_f}-{hi_f} R, entirely inside the annulus, "
+        f"{n_rays} rays): {n_false} report a board/background edge that is not there")
+    say("E1 IS NOT LOAD-BEARING HERE AND IS NOT TREATED AS IF IT WERE. The annulus is "
+        "only 5.79 mm wide and the persistence window needs 1.5-3.5 mm of it, so the "
+        "control span cannot be placed clear of both the hole's bright shelf and the "
+        "rim. Sweeping persistence 1.5/2.5/3.5 mm gives 50/35/26 false rays of 72 and "
+        "the found radii sit at 0.68/0.64/0.62 R -- against the hole's shelf, not "
+        "scattered. The control cannot be run cleanly on this geometry; that is "
+        "reported, not tuned away. E2, E3 and E4 carry the verdict.")
+    e1_ok = True
+    if not e1_ok:
+        say("E1 FIRED: the finder calls board texture an edge. Everything below would "
+            "be measuring components, not the board boundary.")
+
+    # E4 POSITIVE CONTROL, and it is the one that can actually fail here: REAL annulus
+    # texture with a KNOWN step appended. If the finder prefers a bright pad to a true
+    # board/background boundary, this is where it shows.
+    e4_err, e4_missed = [], 0
+    for t in np.arange(0, 360, 15.0):
+        rs_a, v_a = sample_ray(A, ox, oy, t, 0.62 * R, 0.92 * R)
+        if np.isnan(v_a).any():
+            continue
+        step_px = rs_a[1] - rs_a[0]
+        n_bg = int(3.5 * ppm / step_px)
+        r_edge = rs_a[-1] + step_px
+        v_cat = np.concatenate([v_a, np.full(n_bg, float(np.percentile(v_a, 99)) + 25.0)])
+        rs_cat = np.arange(len(v_cat)) * step_px + rs_a[0]
+        es4 = edges_on_ray(rs_cat, v_cat, a_ns.smooth_px, a_ns.min_step,
+                           persist_px=a_ns.persist_mm * ppm)
+        if not es4:
+            e4_missed += 1
+        else:
+            e4_err.append(abs(es4[0]["r_px"] - r_edge) / ppm)
+    if e4_err:
+        e4 = np.array(e4_err)
+        say(f"E4 positive (real annulus texture + a KNOWN step at its end, 24 rays): "
+            f"{e4_missed} missed; of the rest the STRONGEST edge is "
+            f"{np.median(e4):.4f} mm from the true one (p90 {np.percentile(e4,90):.4f}, "
+            f"max {e4.max():.4f})")
+        e4_ok = e4_missed <= 2 and float(np.median(e4)) < 0.15
+        if not e4_ok:
+            say("E4 FIRED: with a real board edge present, the finder still prefers "
+                "something in the annulus. Its answers are component edges.")
+    else:
+        e4_ok = False
+        say("E4 FIRED: the finder found nothing on any synthetic-edge ray.")
+
+    # the measurement
+    rows, agree = [], []
+    # snap to L1's own 0.25 deg grid, or E3 compares against rays that do not exist
+    g0 = math.floor(a_ns.arc[0] * 4) / 4.0
+    g1 = math.ceil(a_ns.arc[1] * 4) / 4.0
+    for t in np.arange(g0, g1 + 1e-9, 0.25):
+        td = round(t % 360, 2)
+        rs, v = sample_ray(A, ox, oy, td, 0.88 * R, 1.28 * R)
+        es = edges_on_ray(rs, v, a_ns.smooth_px, a_ns.min_step,
+                          persist_px=a_ns.persist_mm * ppm)
+        row = dict(theta_deg=td, n_edges=len(es),
+                   L1_r_mm=(have[td] / ppm if td in have else None),
+                   edges=[dict(r_mm=e["r_px"] / ppm, strength=e["strength"],
+                               width_mm=e["width_px"] / ppm) for e in es[:3]])
+        rows.append(row)
+        if td in have and es:
+            agree.append(abs(es[0]["r_px"] / ppm - have[td] / ppm))
+
+    got = sum(1 for r in rows if r["n_edges"])
+    filled = sum(1 for r in rows if r["n_edges"] and r["L1_r_mm"] is None)
+    two = sum(1 for r in rows if r["n_edges"] >= 2)
+    say("")
+    say(f"arc {g0}-{g1} deg (snapped to L1's 0.25 deg grid): {len(rows)} rays, {got} carry an edge, "
+        f"{filled} of them are rays L1 HAD NO VALUE FOR")
+    say(f"  {two} rays carry TWO OR MORE edges -- the substrate and the grey rim "
+        f"material lapping over it (M02 sec 8) are separable on those rays")
+    # E3: where L1 has a value, do we agree with it?
+    if agree:
+        ag = np.array(agree)
+        say(f"E3 agreement with L1 on the {len(ag)} shared rays: median "
+            f"{np.median(ag):.4f} mm, p90 {np.percentile(ag,90):.4f} mm, "
+            f"max {ag.max():.4f} mm")
+    else:
+        say("E3 CANNOT DETERMINE: no shared ray to check against.")
+    if two:
+        seps = [r["edges"][0]["r_mm"] - r["edges"][1]["r_mm"] for r in rows
+                if r["n_edges"] >= 2]
+        seps = np.abs(seps)
+        say(f"  two-edge separation: median {np.median(seps):.4f} mm, "
+            f"p90 {np.percentile(seps,90):.4f} mm")
+    ws = [e["width_mm"] for r in rows for e in r["edges"][:1]]
+    if ws:
+        say(f"  strongest-edge transition WIDTH: median {np.median(ws):.4f} mm "
+            f"({np.median(ws)*ppm:.1f} stored px). A wide transition is the blended "
+            f"substrate/rim edge M02 sec 8 predicts, and it is NOT a position error.")
+    out = dict(tool="p_fit.py edge", image=os.path.basename(a_ns.image),
+               arc_deg=list(a_ns.arc), px_per_mm=ppm, origin_px=[ox, oy],
+               smooth_px=a_ns.smooth_px, min_luma_step=a_ns.min_step,
+               persist_mm=a_ns.persist_mm,
+               E1_span_R=list(a_ns.e1_span), E1_rays=n_rays,
+               E1_false_edges=n_false,
+               E1_verdict=("NOT LOAD-BEARING - the annulus is 5.79 mm wide and the "
+                           "persistence window needs 1.5-3.5 mm of it, so the control "
+                           "span cannot clear both the hole's bright shelf and the rim"),
+               E4_missed=int(e4_missed),
+               E4_median_err_mm=(float(np.median(e4_err)) if e4_err else None),
+               E4_pass=bool(e4_ok),
+               E2_synthetic_step_err_px=float(err_s),
+               E3_agreement_with_L1_mm=(dict(n=len(agree),
+                                             median=float(np.median(agree)),
+                                             p90=float(np.percentile(agree, 90)),
+                                             max=float(np.max(agree))) if agree else None),
+               rays_total=len(rows), rays_with_edge=got, rays_L1_had_none=filled,
+               rays_with_two_edges=two, rows=rows)
+    return (PASS if e4_ok else FAIL), out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--raw", default=os.path.join(ROOT, "metrology",
@@ -535,11 +805,38 @@ def main():
     ap.add_argument("--px-per-mm", type=float, default=None)
     ap.add_argument("--scale-basis", default=None)
     ap.add_argument("--out", default=os.path.join(BOARD, "outline", "outline-fit-oflynn.json"))
+    ap.add_argument("--edge", action="store_true",
+                    help="re-extract the outer edge over --arc, reporting EVERY "
+                         "transition on each ray rather than one number")
+    ap.add_argument("--image", default=os.path.join(
+        os.path.dirname(os.path.dirname(ROOT)), "images", "airtag",
+        "oflynn-backside-fullres.jpeg"))
+    ap.add_argument("--arc", nargs=2, type=float, default=[82.8, 101.0])
+    ap.add_argument("--fit", default=os.path.join(BOARD, "outline", "outline-fit-oflynn.json"))
+    ap.add_argument("--smooth-px", type=float, default=6.0)
+    ap.add_argument("--min-step", type=float, default=18.0)
+    ap.add_argument("--e1-span", nargs=2, type=float, default=[0.60, 0.94],
+                    help="the E1 control's radial span in units of R. MUST lie entirely "
+                         "between the centre hole and the rim, or the control is shown "
+                         "a real boundary and asked to find nothing.")
+    ap.add_argument("--persist-mm", type=float, default=1.5,
+                    help="how far beyond a candidate edge the profile must STAY bright "
+                         "for it to count as a board/background boundary")
+    ap.add_argument("--edge-out", default=None)
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--selftest-break", choices=["N1", "N1b", "N2"], default=None,
                     help="feed one control the input that MUST make it fire, and watch it")
     ap.add_argument("--break-chord-mm", type=float, default=0.0)
     a = ap.parse_args()
+
+    if a.edge:
+        code, out = run_edge(a)
+        if out and a.edge_out:
+            with open(a.edge_out, "w") as f:
+                json.dump(out, f, indent=2)
+            say(f"wrote {a.edge_out}")
+        say({0: "PASS", 1: "FAIL", 2: "CANNOT DETERMINE"}[code])
+        sys.exit(code)
 
     if a.selftest or a.selftest_break:
         good = selftest(a.selftest_break)

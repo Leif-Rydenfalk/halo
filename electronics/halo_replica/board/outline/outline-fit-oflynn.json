@@ -1,6 +1,6 @@
 {
   "tool": "p_fit.py",
-  "run_utc": "2026-09-05T01:43:51Z",
+  "run_utc": "2026-09-05T02:01:10Z",
   "lane": "L5 BOARD BUILD",
   "what_this_is": "FITTED MANUFACTURABLE PRIMITIVES, not samples. The raw per-degree profile lives in metrology/outline-raw-oflynn-front.json and is NEVER merged into this file.",
   "side_convention": "the side carrying the SoC and the shield can",
@@ -14,7 +14,7 @@
   },
   "scale": {
     "px_per_mm": 106.31295578013115,
-    "basis": "M02 at board, transferred"
+    "basis": "M02 at the board, transferred"
   },
   "source_raw": "metrology/outline-raw-oflynn-front.json",
   "rays": 1194,
@@ -49,6 +49,7 @@
         "circle_resid_sd_mm_here": 0.29157083377386933,
         "circle_inlier_frac_here": 0.0,
         "max_depth_below_circle_mm": 1.7878470308157364,
+        "max_arc_to_normal_deg": 22.51747333915975,
         "admitted": true
       },
       {
@@ -68,6 +69,7 @@
         "circle_resid_sd_mm_here": 0.13939218754839233,
         "circle_inlier_frac_here": 0.0,
         "max_depth_below_circle_mm": 0.824847050886662,
+        "max_arc_to_normal_deg": 15.046524292189417,
         "admitted": true
       },
       {
@@ -87,6 +89,7 @@
         "circle_resid_sd_mm_here": 0.09920927241143071,
         "circle_inlier_frac_here": 0.0,
         "max_depth_below_circle_mm": 0.6973956467772545,
+        "max_arc_to_normal_deg": 5.7508824485055925,
         "admitted": true
       },
       {
@@ -106,6 +109,7 @@
         "circle_resid_sd_mm_here": 0.07671412943171552,
         "circle_inlier_frac_here": 0.020833333333333332,
         "max_depth_below_circle_mm": 0.40630521047672685,
+        "max_arc_to_normal_deg": 7.384766769685939,
         "admitted": true
       }
     ],

@@ -242,3 +242,62 @@ the basis the verdict rests on, and the verdict should be restated on two, not t
 
 **Correction to commit `74cf6dd`'s message:** it says 47 % of the circle counts as a
 match. The measured figure the tool prints is **36 %**. The conclusion is unchanged.
+
+---
+
+## Re-extracting the two worst arcs — what it settled, and what it did not
+
+`p_fit.py --edge` re-measures the outer edge on the sharper photograph, reporting **every**
+board→background transition on each ray rather than one number, because M02 §8 says a grey
+fibrous material laps over the rim and a finder that returns one value cannot say which
+edge it found.
+
+**Edge position is the 50 % crossing of the smoothed profile, not the gradient peak.**
+E2 caught the gradient peak at **4.21 px of bias** on a synthetic step — 40 µm, larger
+than the thing being measured — because a boxcar smoother turns a step into a ramp whose
+gradient is a plateau. The 50 % crossing is unbiased for any symmetric blur: **0.05 px.**
+
+### The two arcs, answered
+
+| arc | mine − fit | L1 − fit | reading |
+|---|---|---|---|
+| **82.75–101.0°** (X6's 0.901 mm bulge) | **+0.556 mm** | +0.674 mm | **the bulge is REAL.** A second, independent extractor moves it only 0.119 mm inward. It is not a detector artefact — it is board, or the grey rim material lapping over it, and **this lane cannot separate those.** The model has no feature there. |
+| **101.0–123.0°** (X6's 0.979 mm dent, containing the 13.75° data gap) | −0.127 mm | −0.691 mm | **the dent is largely a detector artefact.** 74 rays L1 had no value for are now filled and they sit near the fit. **Refusing to model a flat across that gap was right.** |
+
+### Whole-circle re-extraction: 246 gaps filled, 16 µm median agreement — and the fit got WORSE
+
+One instrument over all 1440 rays: **1428 carry an edge** against L1's 1194, **246 of them
+rays L1 had no value for**. On the 1182 shared rays the two independent extractors agree to
+a **median 0.0158 mm** (p90 0.638, max 1.613). Sixteen microns between two extractors that
+were never tuned to each other is the cross-check.
+
+**And the refit is worse, so the profile was NOT replaced.** circle+chords on my profile:
+sd **0.4914 mm**, 51.8 % inliers, against L1's 0.2771 mm / 55.8 %. **N4 fired** — displacing
+the chords 0.30 mm made the fit *better*, so the chords were not describing that profile —
+and `p_fit.py` refused to write the file. The gaps are gaps because the edge is genuinely
+ambiguous there; filling them adds rays where my extractor's own E4 control puts the gross
+failure rate near 10 % (p90 0.19 mm, max 3.76 mm). **The negative result is the finding.**
+
+### N4 caught a defect I had already fixed once and failed to propagate
+
+The near-tangential guard — a straight edge cannot be the boundary more than 60° from its
+own normal, because `d/cos(θ−n)` diverges at 90° — was added to the **hole facets** and
+**not to the outer chords**. Fitting a second profile exposed it immediately: two chords at
+4.02 mm and 5.55 mm offset, 73° and 63° from their own arcs, drove the residual to
+**3.21 mm**. The guard is now in both. It changes nothing on the L1 profile (0.2771 mm,
+4 chords, unchanged), so it is a pure guard.
+
+### E1 is reported, not tuned, and it is not load-bearing
+
+The in-annulus negative control **cannot be run cleanly on this geometry**: the annulus is
+5.79 mm wide and the persistence window needs 1.5–3.5 mm of it, so the control span cannot
+clear both the hole's bright shelf and the rim. Persistence 1.5 / 2.5 / 3.5 mm gives
+50 / 35 / 26 false rays of 72, and the found radii sit at 0.68 / 0.64 / 0.62 R — **against
+the hole's shelf, not scattered.** Its first version ran 0.40–0.80 R, which straddles the
+centre hole — genuine background — and fired 72 of 72 **correctly**: it was shown a real
+boundary and asked to find nothing. The control was wrong, not the finder.
+
+**E4 replaces it and can fail:** real annulus texture with a known step appended, 24 rays,
+0 missed, median error **0.0015 mm** — but p90 0.19 mm and max 3.76 mm, so on roughly one
+ray in ten the finder still prefers something in the annulus to the true edge. That rate is
+published, not hidden, and it is why the whole-circle profile is noisier.
