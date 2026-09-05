@@ -13,14 +13,23 @@
 # The fix at source: one script that does BOTH — export, then check, and the
 # export only counts if the check exits 0. Run this, never `fab jlc` alone.
 #
-#   ce-designs/halo/tools/build_fabset.sh [--board out/halo_rev_a.kicad_pcb]
+#   ce-designs/halo/tools/build_fabset.sh [--board <board.kicad_pcb>]
+#                                         [--source <generator.py>]
+#
+# THE BOARD IT CUTS BY DEFAULT IS THE ROUTED ONE. `out/halo_rev_a.kicad_pcb` is
+# what board.py writes and it is UNROUTED; the copper a factory builds is in
+# `out/halo_rev_a-routed.kicad_pcb`. Cutting the pack from the source board
+# produces gerbers with no signal routing on them that pass every geometric
+# check in this script, because none of those checks asks whether the nets are
+# connected. `--board` still overrides.
 #
 # Exit 0: every gate PASS. Exit 1: a gate failed — the pack on disk says FAIL
 # in its own JSON and must not be re-indexed as READY.
 set -uo pipefail
 HALO="$(cd "$(dirname "$0")/.." && pwd)"
 WS="$(dirname "$(dirname "$HALO")")"
-BOARD="$HALO/electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+BOARD="$HALO/electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb"
+SOURCE="$HALO/electronics/halo_rev_a/board.py"
 PACK="$HALO/out/release/board"
 NETLIST="$HALO/electronics/halo_rev_a/out/halo_rev_a.net"
 VERIFY="$HALO/out/verify"
@@ -28,7 +37,8 @@ rc=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
-    --board) BOARD="$2"; shift 2 ;;
+    --board)  BOARD="$2";  shift 2 ;;
+    --source) SOURCE="$2"; shift 2 ;;
     *) echo "unknown arg $1" >&2; exit 3 ;;
   esac
 done
@@ -37,6 +47,7 @@ done
 mkdir -p "$VERIFY"
 
 echo "== 1/4 fab jlc: BOM + CPL + gerbers + drills from $BOARD"
+echo "   source of record: $SOURCE"
 ( cd "$WS" && ce-fab/bin/fab jlc "$BOARD" --out "$PACK" --check-against-kicad \
     > "$VERIFY/fab-jlc.log" 2>&1 )
 if [ $? -ne 0 ]; then
@@ -56,8 +67,17 @@ echo "== 2/4 check_fabset: read the pack back, cross-check vs the board"
 # 25.6138 x 26.0000 mm — 26.000 - 25.6138 = 0.386 mm is the notch depth at
 # the measured angle, not an oval board. A round-only check would grade the
 # keying as a defect. outline_matches_spec (26.0 ±0.5) still applies.
+# --source IS NOT OPTIONAL HERE, AND ITS ABSENCE WAS A REAL HOLE. check_fabset
+# grades a three-link chain — board.py -> .kicad_pcb -> gerbers — and F17 is
+# the first link. Without --source that row is CANNOT DETERMINE, which is not
+# a pass but reads like one in a 15-of-16 summary, and re-exporting the pack
+# would turn F11 green while the board itself was a revision behind its
+# generator. Measured 2026-09-05: the board's last commit was an ANCESTOR of
+# board.py's and every other row was green.
+[ -f "$SOURCE" ] || { echo "REFUSED: no source at $SOURCE" >&2; exit 3; }
 python3 "$HALO/tools/check_fabset.py" "$PACK" \
-  --board "$BOARD" --expect-layers 4 --expect-outline-mm 26.0 \
+  --board "$BOARD" --source "$SOURCE" \
+  --expect-layers 4 --expect-outline-mm 26.0 \
   --json "$PACK/fabset-check.json" || rc=1
 
 echo "== 3/4 check_bom_identity + check_lcsc_netlist + check_cpl_rotations"
