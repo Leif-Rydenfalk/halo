@@ -1013,3 +1013,101 @@ and the search moves to the port and feed. Either way a branch closes.
 
 This is a hypothesis, not a finding. It is recorded here so that if it is wrong
 it is wrong on the record, like the three above it.
+
+## D26f — the boundary WAS the cause. Half a wavelength converges in 8 415 timesteps where a quarter floored for 460 000
+
+*Lane T3, 2026-09-05. Three hypotheses were refuted here in a row. This is the
+fourth, and it is the first one that held.*
+
+**The test, one variable.** `halo-rev-a-2g4-meander4-bare` — the cheapest
+floored geometry, bare, four teeth, already characterised — re-solved at three
+air-box paddings with nothing else changed. `ce-rf/tools/emit_pad_study.py`
+derives all three specs from the parent by deep copy, prints the leaf-key diff
+and **exits 1 if anything outside an allow-list moved**; 27 leaf keys differ
+and every one is the padding, the far-field switch, the asserts or their prose.
+
+| pad | cells | timesteps | wall | residual | `solver_converged` |
+|---|---|---|---|---|---|
+| **0.250 λ** (30.591067 mm) | 1 071 648 | **460 000, capped** | 1783.9 s | 2.3600e-18, **floored** | **0.0 FAIL** |
+| **0.500 λ** (61.182134 mm) | 2 000 000 | **8 415** | **143.8 s** | 6.4000e-19 | **1.0 PASS** |
+| **1.000 λ** (122.364269 mm) | 4 451 698 | 8 600 | 336.2 s | 1.0200e-18 | **1.0 PASS** |
+
+`solver_converged = 1.0` has not happened once in this family before.
+
+**Two confounds, each closed by a number rather than an argument.**
+
+- **The Courant timestep never moved.** Smallest cell 0.15000 mm in all three,
+  set by the forced uniform mesh, so 460 000 timesteps is the *same physical
+  duration* in every row. The larger boxes did not win by running longer.
+- **The control reproduced the published run exactly.** All three study runs
+  set `sim.farfield = false` and the published run did not, so a
+  quarter-wavelength control was run to pay for that. It came back at
+  **2.3600e-18 against the published 2.3600e-18 — 0.00 % apart** — and with
+  identical `f_res` 4.27 GHz, `f_series_res` 2.4873 GHz, `s11_min` −1.5698 dB,
+  `eps_eff` 0.9103, `R_at_series_res` 2.4661 Ω. Not close: the same numbers.
+  The NF2FF box is a recorder and is now measured to be one.
+
+**The larger box is CHEAPER, not dearer** — 12.4× less wall clock at 1.87× the
+cells, because a run that converges stops. That is why the fix has no cost to
+weigh.
+
+**Half a wavelength is enough; a full one buys nothing.** `f_series_res` goes
+2.4873 → 2.4877 → 2.4896 GHz — 2.3 MHz, 0.09 %, across the whole sweep — and
+`R_at_series_res` goes 2.4661 → 2.7191 → 2.6748 Ω, where **the quarter wave is
+the outlier and the two larger boxes agree to 1.6 %**. That is convergence in
+the parameter, reached by 0.5 λ. A full wave costs 2.2× the cells and needs 2 %
+*more* timesteps because the domain is bigger.
+
+**The fix is in the core.** `cerf.fdtd.build_model`'s default padding is
+`C0/f0/2` as of `a3d78d2b`; the model carries `airbox_pad_source`, and the
+runner logs the padding **with its provenance** and warns below 0.499 λ naming
+this measurement. Provenance is in the log because `min_cell_mm` hid behind
+thirteen specs for months while the log printed a value and not where it came
+from (D26b).
+
+### What this means for everything already on disk
+
+**Every antenna run in `ce-rf/out/` was solved against a boundary now measured
+to be too close.** 20 of the 22 built models sit at exactly 0.250 λ. That
+includes the three cases that are this project's actual question — the
+nine-tooth element with the coil and the battery contact, its bare control, and
+the four-tooth element — and `validation-staircase-straight`, which floors at
+2.27e-17, the worst residual in the repo. **They are re-solvable, and faster
+than they were.** Until they are, halo still has no antenna number (D26c
+stands), and the 2.0701 GHz / 2.6744 GHz detuning result of D26d is a
+resonance-frequency reading whose boundary error is now bounded at 0.09 % by
+this study but which was still taken on the wrong boundary.
+
+### It reconciles the 18-of-18 split rather than contradicting it
+
+While the runs were in flight, `ce-rf/tools/floor_table.py` was written to read
+the energy trace of every case on disk, and found a perfect split: **6 runs hit
+the timestep cap and none of them has a short to the ground pour; 12 reached
+the criterion and 10 of them do** — the two exceptions being the only cases
+with no coplanar pour beside an isolated arm (a free-space dipole, and the
+openEMS tutorial patch whose ground is on the opposite face). That looked like
+a feed defect. It is the same boundary seen from the other side: a quarter-wave
+MUR sets a reflection floor, a well-radiating shorted IFA decays *below* that
+floor before it matters and converges anyway, and a coplanar monopole
+presenting **2.47 Ω** at resonance never gets there. Two observations, one
+cause.
+
+### What was wrong with the prediction, and it is worth saying
+
+The instruction that launched this test predicted the boundary would be
+*eliminated*, on the reasoning that a quarter wave is a common minimum and that
+20 of 22 models used it on both sides of the split. That reasoning was sound and
+the conclusion was wrong, which is the whole reason the test was run instead of
+argued. `ce-rf/tools/pad_study_verdict.py` had its criterion committed to disk
+while the control was 36 % of the way through, before any result existed — and
+that rule then had to be **amended**, because it assumed all three runs would
+floor and never enumerated the outcome that happened. A converged run has no
+floor. The amendment is stated as an amendment, above the original text, and
+neither the flatness window nor the movement factor was loosened.
+
+### Still open, and not this
+
+`mode_identified` is 0.0 in all three rows. The element presents **2.72 Ω** at
+its series resonance, below the 3–30 Ω radiator band the spec states in
+advance. That is a design question about a monopole in a 2.6 mm annulus, not a
+solver one, and it is the next thing this element has to answer.
