@@ -128,7 +128,15 @@ b = Board("halo_replica_fab", diameter=D_BOARD, layers=4)
 # 0.09 mm is JLCPCB's published 4-layer minimum trace/space. This is not a check
 # loosened to pass: it is the rule being set to the process we are actually
 # buying, instead of a number nobody chose.
-b.rules(clearance=0.09, track=0.127, via=0.6, via_drill=0.3,
+# VIA SIZE IS THE ESCAPE-ROUTING CONSTRAINT ON A 0.4 mm-PITCH QFN. With a
+# 0.6 mm via pad, freerouting left 5 nets unconnected and FOUR OF THE FIVE were
+# U1 pads - it could not get them out from under a 48-pin part. More passes do
+# not help: 30 passes and 120 passes both stopped at exactly 5 (251 s and 375 s),
+# which is the router saying it is finished rather than slow.
+# 0.45 mm pad / 0.30 mm drill is the DEFAULT option on JLCPCB's own quote page
+# ("Min via hole size/diameter: 0.3mm(0.4/0.45mm)", read there 2026-09-05), so
+# this costs nothing and returns 0.15 mm of channel width per via.
+b.rules(clearance=0.09, track=0.127, via=0.45, via_drill=0.3,
         why="JLCPCB 4-layer: 0.09 mm min trace/space; vias 0.6 mm pad / 0.3 mm "
             "drill. The previous 0.20 mm was KiCad's default and forbade U4's "
             "own 0.150 mm pad gaps.")
