@@ -282,8 +282,14 @@ def build():
                     "SYMBOL, so on this board the pin NUMBERS are the part's "
                     "own rather than merely right by signal name.",
                     {"Package delta": "QFN-48 6x6x0.9 mm vs Apple's "
-                                      "WLCSP-50 3.0x3.2x0.5 mm - this board "
-                                      "is NOT the size of an AirTag"}))
+                                      "WLCSP-50 3.0x3.2x0.5 mm. THIS BOARD "
+                                      "IS NOT THE SIZE OF AN AIRTAG, and it "
+                                      "is a FORK not a compromise: the "
+                                      "WLCSP fits Apple's ~6 mm annular ring "
+                                      "and cannot be landed; the QFN can be "
+                                      "landed and does not fit. No "
+                                      "arrangement is both. Carry this into "
+                                      "every downstream artifact."}))
 
     for pad in ("13", "36", "48"):
         s.net("VBAT", "U1." + pad)
@@ -652,6 +658,17 @@ def build():
            "this project's reconstruction, not an observation); the part "
            "marked 1A8/1950 (unidentified down to its function). None of "
            "them can be bought, placed, or justified on a board.")
+    s.text("THIS BOARD IS NOT THE SIZE OF AN AIRTAG, AND THAT IS A FORK "
+           "RATHER THAN A COMPROMISE. Dimensional fidelity and buildability "
+           "are in DIRECT CONFLICT here: Apple's WLCSP-50 fits the ~6 mm "
+           "annular ring and CANNOT BE LANDED, because no complete ball map "
+           "for it has ever been published. The QFN-48 is the same die, CAN "
+           "be landed, and is 6x6 mm - which does not fit that ring. There "
+           "is no arrangement that is both. THIS IS THE BUILDABLE BRANCH; "
+           "the dimensional branch is the metrology record in pcb/, where "
+           "the 0.30 mm board and the wafer-scale packages live. A person "
+           "holding a board that works but is the wrong shape should not "
+           "have to work out why.")
     s.text("THE FIVE-REMOVALS RESET IS NOT REPRODUCED. Apple has THREE "
            "sprung contacts with BOTH positives sensed. A catalogue CR2032 "
            "holder has two terminals, so this board senses one positive. A "
@@ -708,6 +725,10 @@ DEPARTURES = [
 ]
 
 NOT_VERIFIED = [
+    "NOBODY HAS BUILT ONE. Every line below and every claim on the sheet is "
+    "a paper claim. This is first in the list rather than last because it is "
+    "the one that matters most, and a reader who stops after one line should "
+    "stop after this one.",
     "No LCSC order code on any line. This lane did not pull a price ladder "
     "and a code with no pull date is a rumour. Every part carries a real MPN "
     "and the fab lane sources against it.",
@@ -719,7 +740,6 @@ NOT_VERIFIED = [
     "laid out. If the frequency is off, trim C15/C16 first.",
     "No thermal, no current budget and no sleep-current estimate has been "
     "computed for this board by this lane.",
-    "NOBODY HAS BUILT ONE. Every claim above is a paper claim.",
 ]
 
 

@@ -5393,7 +5393,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 22.86 149.86 0)
+		(at 66.04 30.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5401,278 +5401,6 @@
 		(dnp no)
 		(uuid "322dd6ce-78a8-568b-8bb0-f309dcd3097a")
 		(property "Reference" "C3"
-			(at 27.94 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100uF 6.3V X5R"
-			(at 27.94 151.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
-			(at 22.86 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 22.86 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 22.86 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 22.86 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CL21A107MQNNNNE"
-			(at 22.86 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Stands in for" "C1..C5"
-			(at 22.86 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Substitution basis" "DECISIONS.md D23 counts FIVE 100 uF bulk capacitors on Apple's board and this board keeps the count. On a coin cell they are what lets a class-D amplifier make a noise at all: the cell's internal resistance cannot supply the peak."
-			(at 22.86 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9033450e-3547-597c-a6e6-172b599c243d")
-		)
-		(pin "2"
-			(uuid "eec4e39e-60da-5ea7-a968-deb4f59d7e80")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "C3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 22.86 146.05)
-			(xy 22.86 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4d47af47-48ef-56b2-beb1-fa866f0ed13e")
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 22.86 143.51 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "e38e85fd-6909-5ca3-808c-b2f3dd56c0a6")
-		(property "Reference" "#PWR09"
-			(at 22.86 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "VBAT"
-			(at 22.86 139.7 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 22.86 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 22.86 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol"
-			(at 22.86 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a1ae7f12-a701-5486-b028-f4bd4163aeca")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR09")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 22.86 153.67)
-			(xy 22.86 156.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0d108286-0eac-5b19-96a6-f62a68cbaa95")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 22.86 156.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "24ccaa00-8432-58f6-86d4-2855274d6c54")
-		(property "Reference" "#PWR10"
-			(at 22.86 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 22.86 160.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 22.86 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 22.86 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol"
-			(at 22.86 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0532b8a4-293e-5cdc-a54d-2cdf9d47b3bb")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR10")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 66.04 30.48 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d62174b8-c58e-50ab-bdda-0c8546dd702d")
-		(property "Reference" "C4"
 			(at 71.12 29.21 0)
 			(effects
 				(font
@@ -5761,15 +5489,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "239875f5-064c-53d7-8a63-d7709e27500d")
+			(uuid "9033450e-3547-597c-a6e6-172b599c243d")
 		)
 		(pin "2"
-			(uuid "02c9b2b0-97ba-53ed-8d9d-cb9216bb1dcc")
+			(uuid "eec4e39e-60da-5ea7-a968-deb4f59d7e80")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "C4")
+					(reference "C3")
 					(unit 1)
 				)
 			)
@@ -5784,7 +5512,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "3c356cd8-ddd2-5763-928a-8c3c45666e7f")
+		(uuid "4d47af47-48ef-56b2-beb1-fa866f0ed13e")
 	)
 	(symbol
 		(lib_id "power:VCC")
@@ -5794,8 +5522,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "8d8e0a2c-9c03-5338-a231-a1c9d06eeb29")
-		(property "Reference" "#PWR11"
+		(uuid "e38e85fd-6909-5ca3-808c-b2f3dd56c0a6")
+		(property "Reference" "#PWR09"
 			(at 66.04 24.13 0)
 			(effects
 				(font
@@ -5844,12 +5572,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "16cb112d-2544-57c0-b8f2-b822b00fa029")
+			(uuid "a1ae7f12-a701-5486-b028-f4bd4163aeca")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR11")
+					(reference "#PWR09")
 					(unit 1)
 				)
 			)
@@ -5864,7 +5592,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "7633da45-41fb-5515-80da-c667447bd8a4")
+		(uuid "0d108286-0eac-5b19-96a6-f62a68cbaa95")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -5874,8 +5602,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "fcc24b22-a1ab-5e32-bae1-daf4304ea79e")
-		(property "Reference" "#PWR12"
+		(uuid "24ccaa00-8432-58f6-86d4-2855274d6c54")
+		(property "Reference" "#PWR10"
 			(at 66.04 36.83 0)
 			(effects
 				(font
@@ -5924,12 +5652,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "a1a6e006-9686-5a83-afc7-58c9ed118263")
+			(uuid "0532b8a4-293e-5cdc-a54d-2cdf9d47b3bb")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR12")
+					(reference "#PWR10")
 					(unit 1)
 				)
 			)
@@ -5943,8 +5671,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "15d8dd9b-be57-56f0-aaf6-56da570481fc")
-		(property "Reference" "C5"
+		(uuid "d62174b8-c58e-50ab-bdda-0c8546dd702d")
+		(property "Reference" "C4"
 			(at 71.12 59.69 0)
 			(effects
 				(font
@@ -6033,15 +5761,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "49bf4d7c-5874-5585-abe8-bd12d35c0935")
+			(uuid "239875f5-064c-53d7-8a63-d7709e27500d")
 		)
 		(pin "2"
-			(uuid "01fd18b6-0ca9-51ca-b958-323c3a66cf15")
+			(uuid "02c9b2b0-97ba-53ed-8d9d-cb9216bb1dcc")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "C5")
+					(reference "C4")
 					(unit 1)
 				)
 			)
@@ -6056,7 +5784,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "03a5bc6c-01a1-5abb-bf4d-97d18a91bb87")
+		(uuid "3c356cd8-ddd2-5763-928a-8c3c45666e7f")
 	)
 	(symbol
 		(lib_id "power:VCC")
@@ -6066,8 +5794,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "648b049a-64dc-5b88-b01a-4cecab9e5f72")
-		(property "Reference" "#PWR13"
+		(uuid "8d8e0a2c-9c03-5338-a231-a1c9d06eeb29")
+		(property "Reference" "#PWR11"
 			(at 66.04 54.61 0)
 			(effects
 				(font
@@ -6116,12 +5844,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "89c9d9b0-1ca7-572a-8d46-31337953ec69")
+			(uuid "16cb112d-2544-57c0-b8f2-b822b00fa029")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR13")
+					(reference "#PWR11")
 					(unit 1)
 				)
 			)
@@ -6136,7 +5864,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "f5054dbb-2ceb-5074-ad23-d1618ed097a0")
+		(uuid "7633da45-41fb-5515-80da-c667447bd8a4")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -6146,8 +5874,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "b6fe0442-0047-596b-9134-983d55987c84")
-		(property "Reference" "#PWR14"
+		(uuid "fcc24b22-a1ab-5e32-bae1-daf4304ea79e")
+		(property "Reference" "#PWR12"
 			(at 66.04 67.31 0)
 			(effects
 				(font
@@ -6196,6 +5924,278 @@
 			)
 		)
 		(pin "1"
+			(uuid "a1a6e006-9686-5a83-afc7-58c9ed118263")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "#PWR12")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 66.04 92.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "15d8dd9b-be57-56f0-aaf6-56da570481fc")
+		(property "Reference" "C5"
+			(at 71.12 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100uF 6.3V X5R"
+			(at 71.12 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric"
+			(at 66.04 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 66.04 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 66.04 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
+			(at 66.04 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL21A107MQNNNNE"
+			(at 66.04 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Stands in for" "C1..C5"
+			(at 66.04 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Substitution basis" "DECISIONS.md D23 counts FIVE 100 uF bulk capacitors on Apple's board and this board keeps the count. On a coin cell they are what lets a class-D amplifier make a noise at all: the cell's internal resistance cannot supply the peak."
+			(at 66.04 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "49bf4d7c-5874-5585-abe8-bd12d35c0935")
+		)
+		(pin "2"
+			(uuid "01fd18b6-0ca9-51ca-b958-323c3a66cf15")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "C5")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 66.04 88.9)
+			(xy 66.04 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03a5bc6c-01a1-5abb-bf4d-97d18a91bb87")
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 66.04 86.36 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "648b049a-64dc-5b88-b01a-4cecab9e5f72")
+		(property "Reference" "#PWR13"
+			(at 66.04 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "VBAT"
+			(at 66.04 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 66.04 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 66.04 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 66.04 86.36 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "89c9d9b0-1ca7-572a-8d46-31337953ec69")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "#PWR13")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 66.04 96.52)
+			(xy 66.04 99.06)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f5054dbb-2ceb-5074-ad23-d1618ed097a0")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 66.04 99.06 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "b6fe0442-0047-596b-9134-983d55987c84")
+		(property "Reference" "#PWR14"
+			(at 66.04 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 66.04 102.87 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 66.04 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 66.04 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 66.04 99.06 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
 			(uuid "10fd8647-6fa9-5e28-9ade-0cf6314b7d64")
 		)
 		(instances
@@ -6209,7 +6209,7 @@
 	)
 	(symbol
 		(lib_id "Power_Management:MIC94090YC6")
-		(at 81.28 93.98 0)
+		(at 81.28 124.46 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6217,7 +6217,7 @@
 		(dnp no)
 		(uuid "65e6ab49-5954-5fcb-a183-1f618316eb07")
 		(property "Reference" "U2"
-			(at 73.66 83.82 0)
+			(at 73.66 114.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6226,7 +6226,7 @@
 			)
 		)
 		(property "Value" "MIC94090YC6 (0.5 uA, 1.5 A)"
-			(at 73.66 86.36 0)
+			(at 73.66 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6235,7 +6235,7 @@
 			)
 		)
 		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
-			(at 81.28 93.98 0)
+			(at 81.28 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6245,7 +6245,7 @@
 			)
 		)
 		(property "Datasheet" "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MIC94090-1-2-3-4-5-High-Side-Load-Switches-for-Consumer-Applications-DS20006706.pdf"
-			(at 81.28 93.98 0)
+			(at 81.28 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6255,7 +6255,7 @@
 			)
 		)
 		(property "Description" "High Side Load Switches for Consumer Applications, 1.7..5.5V, 1.2A, 130mΩ, Fast Turn On, SC-70-6"
-			(at 81.28 93.98 0)
+			(at 81.28 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6265,7 +6265,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 81.28 106.68 0)
+			(at 81.28 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6275,7 +6275,7 @@
 			)
 		)
 		(property "MPN" "MIC94090YC6"
-			(at 81.28 106.68 0)
+			(at 81.28 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6285,7 +6285,7 @@
 			)
 		)
 		(property "NOTE" "On this sheet U2 is the LOAD SWITCH. On the fidelity sheet U2 is Apple's UWB module, which is not on this board. Do not carry a U2 reference between the two sheets."
-			(at 81.28 106.68 0)
+			(at 81.28 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6295,7 +6295,7 @@
 			)
 		)
 		(property "Stands in for" "U8"
-			(at 81.28 106.68 0)
+			(at 81.28 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6305,7 +6305,7 @@
 			)
 		)
 		(property "Substitution basis" "Stands in for the FPF2487-class load switch. O'Flynn MEASURED that the nRF controls power to the SPI flash and that the flash is off most of the time - that is why sleep is microamps, and it is the one power idea on Apple's board worth copying exactly. The MIC94090's 0.5 uA quiescent is what makes it worth having."
-			(at 81.28 106.68 0)
+			(at 81.28 137.16 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6343,8 +6343,8 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 91.44)
-			(xy 91.44 91.44)
+			(xy 88.9 121.92)
+			(xy 91.44 121.92)
 		)
 		(stroke
 			(width 0)
@@ -6354,7 +6354,7 @@
 	)
 	(global_label "VFLASH"
 		(shape bidirectional)
-		(at 91.44 91.44 0)
+		(at 91.44 121.92 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6363,7 +6363,7 @@
 		)
 		(uuid "be1e4f09-1ac4-5268-82e6-4f469cdb2d85")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 91.44 91.44 0)
+			(at 91.44 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6374,8 +6374,8 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 101.6)
-			(xy 81.28 104.14)
+			(xy 81.28 132.08)
+			(xy 81.28 134.62)
 		)
 		(stroke
 			(width 0)
@@ -6385,7 +6385,7 @@
 	)
 	(global_label "GND"
 		(shape bidirectional)
-		(at 81.28 104.14 270)
+		(at 81.28 134.62 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6394,7 +6394,7 @@
 		)
 		(uuid "5349e0ff-eac9-57ff-bd56-bc84d49a197f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 81.28 104.14 0)
+			(at 81.28 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6404,13 +6404,13 @@
 		)
 	)
 	(no_connect
-		(at 86.36 93.98)
+		(at 86.36 124.46)
 		(uuid "1d3a799e-f858-5bef-ab20-c956241afaaf")
 	)
 	(wire
 		(pts
-			(xy 73.66 91.44)
-			(xy 71.12 91.44)
+			(xy 73.66 121.92)
+			(xy 71.12 121.92)
 		)
 		(stroke
 			(width 0)
@@ -6420,7 +6420,7 @@
 	)
 	(global_label "VBAT"
 		(shape bidirectional)
-		(at 71.12 91.44 180)
+		(at 71.12 121.92 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6429,7 +6429,7 @@
 		)
 		(uuid "bd46afb8-1350-594e-97ab-83a0b51ec105")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 71.12 91.44 0)
+			(at 71.12 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6440,8 +6440,8 @@
 	)
 	(wire
 		(pts
-			(xy 81.28 101.6)
-			(xy 81.28 104.14)
+			(xy 81.28 132.08)
+			(xy 81.28 134.62)
 		)
 		(stroke
 			(width 0)
@@ -6451,7 +6451,7 @@
 	)
 	(global_label "GND"
 		(shape bidirectional)
-		(at 81.28 104.14 270)
+		(at 81.28 134.62 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6460,7 +6460,7 @@
 		)
 		(uuid "17726235-828b-5b1e-96e9-6e5cb06647cf")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 81.28 104.14 0)
+			(at 81.28 134.62 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6471,8 +6471,8 @@
 	)
 	(wire
 		(pts
-			(xy 73.66 93.98)
-			(xy 71.12 93.98)
+			(xy 73.66 124.46)
+			(xy 71.12 124.46)
 		)
 		(stroke
 			(width 0)
@@ -6482,7 +6482,7 @@
 	)
 	(global_label "FLASH_PWR_EN"
 		(shape bidirectional)
-		(at 71.12 93.98 180)
+		(at 71.12 124.46 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6491,7 +6491,7 @@
 		)
 		(uuid "fcd4bab2-b6d7-5420-9617-45da62b123f3")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 71.12 93.98 0)
+			(at 71.12 124.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6502,7 +6502,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 68.58 128.27 0)
+		(at 128.27 30.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6510,7 +6510,7 @@
 		(dnp no)
 		(uuid "cb65eb89-db11-518e-9240-4dae3e9c91ae")
 		(property "Reference" "C6"
-			(at 73.66 127 0)
+			(at 133.35 29.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6519,7 +6519,7 @@
 			)
 		)
 		(property "Value" "1uF 16V X7R"
-			(at 73.66 129.54 0)
+			(at 133.35 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6528,7 +6528,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 68.58 128.27 0)
+			(at 128.27 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6538,7 +6538,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 68.58 128.27 0)
+			(at 128.27 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6548,7 +6548,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 68.58 128.27 0)
+			(at 128.27 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6558,7 +6558,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 68.58 137.16 0)
+			(at 128.27 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6568,7 +6568,7 @@
 			)
 		)
 		(property "MPN" "CL05A105KA5NNNC"
-			(at 68.58 137.16 0)
+			(at 128.27 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6578,7 +6578,7 @@
 			)
 		)
 		(property "Stands in for" "nothing - added by the fab variant"
-			(at 68.58 137.16 0)
+			(at 128.27 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6588,7 +6588,7 @@
 			)
 		)
 		(property "Substitution basis" "Decoupling on the switched rail so the flash sees a clean supply when the switch turns on."
-			(at 68.58 137.16 0)
+			(at 128.27 39.37 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6614,8 +6614,8 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 124.46)
-			(xy 68.58 121.92)
+			(xy 128.27 26.67)
+			(xy 128.27 24.13)
 		)
 		(stroke
 			(width 0)
@@ -6625,7 +6625,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 68.58 121.92 0)
+		(at 128.27 24.13 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -6633,7 +6633,7 @@
 		(dnp no)
 		(uuid "58b8e45a-5fd4-5e34-b089-b466995fae42")
 		(property "Reference" "#PWR15"
-			(at 68.58 121.92 0)
+			(at 128.27 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6643,7 +6643,7 @@
 			)
 		)
 		(property "Value" "VFLASH"
-			(at 68.58 118.11 0)
+			(at 128.27 20.32 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6651,7 +6651,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 68.58 121.92 0)
+			(at 128.27 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6661,7 +6661,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 68.58 121.92 0)
+			(at 128.27 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6671,7 +6671,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 68.58 121.92 0)
+			(at 128.27 24.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6694,8 +6694,8 @@
 	)
 	(wire
 		(pts
-			(xy 68.58 132.08)
-			(xy 68.58 134.62)
+			(xy 128.27 34.29)
+			(xy 128.27 36.83)
 		)
 		(stroke
 			(width 0)
@@ -6705,7 +6705,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 68.58 134.62 0)
+		(at 128.27 36.83 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -6713,7 +6713,7 @@
 		(dnp no)
 		(uuid "dbcc2a8d-f73c-5154-9c9c-f9fd7859ee2b")
 		(property "Reference" "#PWR16"
-			(at 68.58 134.62 0)
+			(at 128.27 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6723,7 +6723,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 68.58 138.43 0)
+			(at 128.27 40.64 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6731,7 +6731,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 68.58 134.62 0)
+			(at 128.27 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6741,7 +6741,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 68.58 134.62 0)
+			(at 128.27 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6751,7 +6751,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 68.58 134.62 0)
+			(at 128.27 36.83 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6774,7 +6774,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 132.08 30.48 0)
+		(at 132.08 60.96 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6782,229 +6782,6 @@
 		(dnp no)
 		(uuid "38b72106-c125-57d2-b553-38f1b70e544f")
 		(property "Reference" "R1"
-			(at 135.89 29.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "10M"
-			(at 135.89 31.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 132.08 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 132.08 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 132.08 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 132.08 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "MPN" "RC0402FR-0710ML"
-			(at 132.08 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Stands in for" "R/C/L bulk"
-			(at 132.08 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Substitution basis" "A 20 Mohm divider draws 150 nA from a 3 V cell, the order of magnitude REFERENCE-TEARDOWN reports for Apple's own sense (~50 nA). The exact values are CHOSEN; Apple's are unpublished."
-			(at 132.08 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "0b4ef16c-7ca8-53b9-9c36-28aa290189f1")
-		)
-		(pin "2"
-			(uuid "072c968f-12f5-544d-bc76-9a89c9f2030f")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "R1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 132.08 26.67)
-			(xy 132.08 24.13)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c4d07b66-441f-5e89-b095-de728b184465")
-	)
-	(symbol
-		(lib_id "power:VCC")
-		(at 132.08 24.13 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "cbc3c791-c0e3-52d1-8c52-0ae09281d577")
-		(property "Reference" "#PWR17"
-			(at 132.08 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "VBAT_RAW"
-			(at 132.08 20.32 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 132.08 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 132.08 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol"
-			(at 132.08 24.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ce92b060-5f5a-5020-b382-6870797ffbbe")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR17")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 132.08 34.29)
-			(xy 132.08 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c386b8ec-b368-5833-83f6-d3f508eace9f")
-	)
-	(global_label "VBAT_SENSE"
-		(shape bidirectional)
-		(at 132.08 36.83 270)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "7216f3b7-7993-5188-8546-cc5a97b281a8")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 132.08 36.83 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 132.08 60.96 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d029634a-39c5-50c8-8e90-0b99cd8ea439")
-		(property "Reference" "R2"
 			(at 135.89 59.69 0)
 			(effects
 				(font
@@ -7093,6 +6870,229 @@
 			)
 		)
 		(pin "1"
+			(uuid "0b4ef16c-7ca8-53b9-9c36-28aa290189f1")
+		)
+		(pin "2"
+			(uuid "072c968f-12f5-544d-bc76-9a89c9f2030f")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 132.08 57.15)
+			(xy 132.08 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c4d07b66-441f-5e89-b095-de728b184465")
+	)
+	(symbol
+		(lib_id "power:VCC")
+		(at 132.08 54.61 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "cbc3c791-c0e3-52d1-8c52-0ae09281d577")
+		(property "Reference" "#PWR17"
+			(at 132.08 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "VBAT_RAW"
+			(at 132.08 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 132.08 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 132.08 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 132.08 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ce92b060-5f5a-5020-b382-6870797ffbbe")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "#PWR17")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 132.08 64.77)
+			(xy 132.08 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c386b8ec-b368-5833-83f6-d3f508eace9f")
+	)
+	(global_label "VBAT_SENSE"
+		(shape bidirectional)
+		(at 132.08 67.31 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7216f3b7-7993-5188-8546-cc5a97b281a8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 132.08 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 132.08 92.71 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "d029634a-39c5-50c8-8e90-0b99cd8ea439")
+		(property "Reference" "R2"
+			(at 135.89 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10M"
+			(at 135.89 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
+			(at 132.08 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 132.08 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 132.08 92.71 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
+			(at 132.08 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "MPN" "RC0402FR-0710ML"
+			(at 132.08 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Stands in for" "R/C/L bulk"
+			(at 132.08 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Substitution basis" "A 20 Mohm divider draws 150 nA from a 3 V cell, the order of magnitude REFERENCE-TEARDOWN reports for Apple's own sense (~50 nA). The exact values are CHOSEN; Apple's are unpublished."
+			(at 132.08 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
 			(uuid "bdf5dad1-ef8e-54d8-a1f6-52a6d0bacfec")
 		)
 		(pin "2"
@@ -7109,8 +7109,8 @@
 	)
 	(wire
 		(pts
-			(xy 132.08 57.15)
-			(xy 132.08 54.61)
+			(xy 132.08 88.9)
+			(xy 132.08 86.36)
 		)
 		(stroke
 			(width 0)
@@ -7120,7 +7120,7 @@
 	)
 	(global_label "VBAT_SENSE"
 		(shape bidirectional)
-		(at 132.08 54.61 90)
+		(at 132.08 86.36 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7129,7 +7129,7 @@
 		)
 		(uuid "7f2a5eee-5cd8-5b5f-970d-1f45dcacb3bb")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 132.08 54.61 0)
+			(at 132.08 86.36 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7140,8 +7140,8 @@
 	)
 	(wire
 		(pts
-			(xy 132.08 64.77)
-			(xy 132.08 67.31)
+			(xy 132.08 96.52)
+			(xy 132.08 99.06)
 		)
 		(stroke
 			(width 0)
@@ -7151,7 +7151,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 132.08 67.31 0)
+		(at 132.08 99.06 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -7159,7 +7159,7 @@
 		(dnp no)
 		(uuid "f4c395df-1014-5aec-9a3a-b09773c52a53")
 		(property "Reference" "#PWR18"
-			(at 132.08 67.31 0)
+			(at 132.08 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7169,7 +7169,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 132.08 71.12 0)
+			(at 132.08 102.87 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7177,7 +7177,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 132.08 67.31 0)
+			(at 132.08 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7187,7 +7187,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 132.08 67.31 0)
+			(at 132.08 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7197,7 +7197,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 132.08 67.31 0)
+			(at 132.08 99.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -7295,7 +7295,7 @@
 				(hide yes)
 			)
 		)
-		(property "Package delta" "QFN-48 6x6x0.9 mm vs Apple's WLCSP-50 3.0x3.2x0.5 mm - this board is NOT the size of an AirTag"
+		(property "Package delta" "QFN-48 6x6x0.9 mm vs Apple's WLCSP-50 3.0x3.2x0.5 mm. THIS BOARD IS NOT THE SIZE OF AN AIRTAG, and it is a FORK not a compromise: the WLCSP fits Apple's ~6 mm annular ring and cannot be landed; the QFN can be landed and does not fit. No arrangement is both. Carry this into every downstream artifact."
 			(at 198.12 118.11 0)
 			(effects
 				(font
@@ -11192,7 +11192,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 320.04 149.86 0)
+		(at 351.79 30.48 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -11200,229 +11200,6 @@
 		(dnp no)
 		(uuid "d013d35f-7ed0-51f2-9a81-5c861a82ca9d")
 		(property "Reference" "C17"
-			(at 325.12 148.59 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "22pF 50V C0G"
-			(at 325.12 151.13 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 320.04 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 320.04 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 320.04 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 320.04 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "MPN" "CL05C080CB5NNNC"
-			(at 320.04 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Stands in for" "R/C/L bulk"
-			(at 320.04 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Substitution basis" "LFXO load, for CL=12.5pF. CHOSEN to match the crystal CHOSEN above, using the ordinary 2*(CL - Cstray) rule with Cstray taken as ~4 pF. STRAY CAPACITANCE ON A BOARD NOBODY HAS BUILT IS AN ESTIMATE: if the frequency is off, these are the two parts to trim."
-			(at 320.04 158.75 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "b99089a1-626d-52a1-92d2-9be7443ff17d")
-		)
-		(pin "2"
-			(uuid "5584d843-7701-5d2e-ad36-ec031dc60eea")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "C17")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 320.04 146.05)
-			(xy 320.04 143.51)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3f3f820e-e3e6-5c36-a5c2-a29705e62dd1")
-	)
-	(global_label "XL1"
-		(shape bidirectional)
-		(at 320.04 143.51 90)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "83348788-5a70-57d2-89a2-de7247ddb871")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 320.04 143.51 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-	)
-	(wire
-		(pts
-			(xy 320.04 153.67)
-			(xy 320.04 156.21)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "08d0777e-e73f-5d90-a769-4e0a12f7035f")
-	)
-	(symbol
-		(lib_id "power:GND")
-		(at 320.04 156.21 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom no)
-		(on_board yes)
-		(dnp no)
-		(uuid "92fd68f4-b3c6-5aaa-8dd4-c0436af354d1")
-		(property "Reference" "#PWR31"
-			(at 320.04 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Value" "GND"
-			(at 320.04 160.02 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 320.04 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 320.04 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol"
-			(at 320.04 156.21 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ed02b4fa-822e-5dfd-83e1-f4eff75d10f1")
-		)
-		(instances
-			(project "halo_replica_fab"
-				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "#PWR31")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 351.79 30.48 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "ca81515d-87c1-5ffd-95c0-6506134dd37b")
-		(property "Reference" "C18"
 			(at 356.87 29.21 0)
 			(effects
 				(font
@@ -11511,15 +11288,15 @@
 			)
 		)
 		(pin "1"
-			(uuid "a622df55-4de4-5dfa-b288-db29e093dec1")
+			(uuid "b99089a1-626d-52a1-92d2-9be7443ff17d")
 		)
 		(pin "2"
-			(uuid "a0ac7c90-9ee8-578a-bf1f-c938d143abee")
+			(uuid "5584d843-7701-5d2e-ad36-ec031dc60eea")
 		)
 		(instances
 			(project "halo_replica_fab"
 				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
-					(reference "C18")
+					(reference "C17")
 					(unit 1)
 				)
 			)
@@ -11534,9 +11311,9 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "9d334543-d30e-56bd-8287-b6df7af8a222")
+		(uuid "3f3f820e-e3e6-5c36-a5c2-a29705e62dd1")
 	)
-	(global_label "XL2"
+	(global_label "XL1"
 		(shape bidirectional)
 		(at 351.79 24.13 90)
 		(effects
@@ -11545,7 +11322,7 @@
 			)
 			(justify left)
 		)
-		(uuid "a51eca0f-8049-5aa7-a206-bbe27e6fb523")
+		(uuid "83348788-5a70-57d2-89a2-de7247ddb871")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 351.79 24.13 0)
 			(effects
@@ -11565,7 +11342,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "28f73fc2-ea09-5e73-8cf7-c446032ebed0")
+		(uuid "08d0777e-e73f-5d90-a769-4e0a12f7035f")
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -11575,8 +11352,8 @@
 		(in_bom no)
 		(on_board yes)
 		(dnp no)
-		(uuid "2459df7f-3555-58d2-9cfa-71b85ce572ba")
-		(property "Reference" "#PWR32"
+		(uuid "92fd68f4-b3c6-5aaa-8dd4-c0436af354d1")
+		(property "Reference" "#PWR31"
 			(at 351.79 36.83 0)
 			(effects
 				(font
@@ -11616,6 +11393,229 @@
 		)
 		(property "Description" "Power symbol"
 			(at 351.79 36.83 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "ed02b4fa-822e-5dfd-83e1-f4eff75d10f1")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "#PWR31")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 351.79 60.96 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "ca81515d-87c1-5ffd-95c0-6506134dd37b")
+		(property "Reference" "C18"
+			(at 356.87 59.69 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "22pF 50V C0G"
+			(at 356.87 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
+			(at 351.79 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 351.79 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 351.79 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
+			(at 351.79 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "MPN" "CL05C080CB5NNNC"
+			(at 351.79 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Stands in for" "R/C/L bulk"
+			(at 351.79 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Substitution basis" "LFXO load, for CL=12.5pF. CHOSEN to match the crystal CHOSEN above, using the ordinary 2*(CL - Cstray) rule with Cstray taken as ~4 pF. STRAY CAPACITANCE ON A BOARD NOBODY HAS BUILT IS AN ESTIMATE: if the frequency is off, these are the two parts to trim."
+			(at 351.79 69.85 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a622df55-4de4-5dfa-b288-db29e093dec1")
+		)
+		(pin "2"
+			(uuid "a0ac7c90-9ee8-578a-bf1f-c938d143abee")
+		)
+		(instances
+			(project "halo_replica_fab"
+				(path "/3439c98d-5d44-5093-91e7-27f9aff68279"
+					(reference "C18")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 351.79 57.15)
+			(xy 351.79 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9d334543-d30e-56bd-8287-b6df7af8a222")
+	)
+	(global_label "XL2"
+		(shape bidirectional)
+		(at 351.79 54.61 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a51eca0f-8049-5aa7-a206-bbe27e6fb523")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 351.79 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 351.79 64.77)
+			(xy 351.79 67.31)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "28f73fc2-ea09-5e73-8cf7-c446032ebed0")
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 351.79 67.31 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom no)
+		(on_board yes)
+		(dnp no)
+		(uuid "2459df7f-3555-58d2-9cfa-71b85ce572ba")
+		(property "Reference" "#PWR32"
+			(at 351.79 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 351.79 71.12 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 351.79 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 351.79 67.31 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol"
+			(at 351.79 67.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14434,7 +14434,7 @@
 	)
 	(symbol
 		(lib_id "Device:Antenna_Chip")
-		(at 27.94 194.31 0)
+		(at 27.94 185.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14442,7 +14442,7 @@
 		(dnp no)
 		(uuid "f9e6d1f7-7397-5d19-8e4e-27c97a14d7c4")
 		(property "Reference" "AE1"
-			(at 25.4 182.88 0)
+			(at 25.4 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14451,7 +14451,7 @@
 			)
 		)
 		(property "Value" "2450AT18A100 2.4GHz chip"
-			(at 25.4 185.42 0)
+			(at 25.4 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14460,7 +14460,7 @@
 			)
 		)
 		(property "Footprint" "RF_Antenna:Johanson_2450AT18x100"
-			(at 27.94 194.31 0)
+			(at 27.94 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14470,7 +14470,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 27.94 194.31 0)
+			(at 27.94 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14480,7 +14480,7 @@
 			)
 		)
 		(property "Description" "Ceramic chip antenna with pin for PCB trace"
-			(at 27.94 194.31 0)
+			(at 27.94 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14490,7 +14490,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 27.94 201.93 0)
+			(at 27.94 193.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14500,7 +14500,7 @@
 			)
 		)
 		(property "MPN" "2450AT18A100"
-			(at 27.94 201.93 0)
+			(at 27.94 193.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14510,7 +14510,7 @@
 			)
 		)
 		(property "Stands in for" "ANT1"
-			(at 27.94 201.93 0)
+			(at 27.94 193.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14520,7 +14520,7 @@
 			)
 		)
 		(property "Substitution basis" "Apple's 2.4 GHz antenna is an inverted-F PRINTED ON THE PLASTIC CARRIER, and its geometry is CANNOT DETERMINE. A chip antenna is CHOSEN because it works on a board of any outline and needs no carrier: this board is meant to be switched on, not to be the right shape."
-			(at 27.94 201.93 0)
+			(at 27.94 193.04 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14546,8 +14546,8 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 196.85)
-			(xy 25.4 199.39)
+			(xy 25.4 187.96)
+			(xy 25.4 190.5)
 		)
 		(stroke
 			(width 0)
@@ -14557,7 +14557,7 @@
 	)
 	(global_label "ANT_FEED"
 		(shape bidirectional)
-		(at 25.4 199.39 270)
+		(at 25.4 190.5 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -14566,7 +14566,7 @@
 		)
 		(uuid "87ee39a0-9583-5e7b-9f62-835f3c3a46cd")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 25.4 199.39 0)
+			(at 25.4 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14577,8 +14577,8 @@
 	)
 	(wire
 		(pts
-			(xy 30.48 196.85)
-			(xy 30.48 199.39)
+			(xy 30.48 187.96)
+			(xy 30.48 190.5)
 		)
 		(stroke
 			(width 0)
@@ -14588,7 +14588,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 30.48 199.39 0)
+		(at 30.48 190.5 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -14596,7 +14596,7 @@
 		(dnp no)
 		(uuid "98b26748-abc9-5572-ac1b-8714a88a2488")
 		(property "Reference" "#PWR40"
-			(at 30.48 199.39 0)
+			(at 30.48 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14606,7 +14606,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 30.48 203.2 0)
+			(at 30.48 194.31 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14614,7 +14614,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 30.48 199.39 0)
+			(at 30.48 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14624,7 +14624,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 30.48 199.39 0)
+			(at 30.48 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14634,7 +14634,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 30.48 199.39 0)
+			(at 30.48 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14657,7 +14657,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 26.67 224.79 0)
+		(at 26.67 215.9 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14665,7 +14665,7 @@
 		(dnp no)
 		(uuid "8189067b-ce47-53c6-b219-844eb52e346b")
 		(property "Reference" "C21"
-			(at 31.75 223.52 0)
+			(at 31.75 214.63 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14674,7 +14674,7 @@
 			)
 		)
 		(property "Value" "1.0pF 50V C0G"
-			(at 31.75 226.06 0)
+			(at 31.75 217.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14683,7 +14683,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 26.67 224.79 0)
+			(at 26.67 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14693,7 +14693,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 26.67 224.79 0)
+			(at 26.67 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14703,7 +14703,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 26.67 224.79 0)
+			(at 26.67 215.9 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14713,7 +14713,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 26.67 233.68 0)
+			(at 26.67 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14723,7 +14723,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 26.67 233.68 0)
+			(at 26.67 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14733,7 +14733,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 26.67 233.68 0)
+			(at 26.67 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14743,7 +14743,7 @@
 			)
 		)
 		(property "Substitution basis" "shunt at the SoC side of the pi. PLACEHOLDER VALUES, and they are the likeliest thing on this board to be wrong. A matching network is a MEASUREMENT - it is tuned against a VNA on the real copper. These three pads exist so there is something to tune; fit 0R for L1 and leave the shunts off to start."
-			(at 26.67 233.68 0)
+			(at 26.67 224.79 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14769,8 +14769,8 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 220.98)
-			(xy 26.67 218.44)
+			(xy 26.67 212.09)
+			(xy 26.67 209.55)
 		)
 		(stroke
 			(width 0)
@@ -14780,7 +14780,7 @@
 	)
 	(global_label "ANT_SOC"
 		(shape bidirectional)
-		(at 26.67 218.44 90)
+		(at 26.67 209.55 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -14789,7 +14789,7 @@
 		)
 		(uuid "45d710ed-3207-51a1-b37d-a46f30b38e7a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 26.67 218.44 0)
+			(at 26.67 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14800,8 +14800,8 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 228.6)
-			(xy 26.67 231.14)
+			(xy 26.67 219.71)
+			(xy 26.67 222.25)
 		)
 		(stroke
 			(width 0)
@@ -14811,7 +14811,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 26.67 231.14 0)
+		(at 26.67 222.25 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -14819,7 +14819,7 @@
 		(dnp no)
 		(uuid "55b2d5f9-f03f-5dc2-bbf6-1a63b0c428ef")
 		(property "Reference" "#PWR41"
-			(at 26.67 231.14 0)
+			(at 26.67 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14829,7 +14829,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 26.67 234.95 0)
+			(at 26.67 226.06 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14837,7 +14837,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 26.67 231.14 0)
+			(at 26.67 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14847,7 +14847,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 26.67 231.14 0)
+			(at 26.67 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14857,7 +14857,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 26.67 231.14 0)
+			(at 26.67 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14880,7 +14880,7 @@
 	)
 	(symbol
 		(lib_id "Device:L")
-		(at 25.4 255.27 0)
+		(at 25.4 246.38 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -14888,7 +14888,7 @@
 		(dnp no)
 		(uuid "a17edf16-fd59-59a5-a784-be1b21acc0b3")
 		(property "Reference" "L1"
-			(at 27.94 254 0)
+			(at 27.94 245.11 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14897,7 +14897,7 @@
 			)
 		)
 		(property "Value" "3.9nH"
-			(at 27.94 256.54 0)
+			(at 27.94 247.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14906,7 +14906,7 @@
 			)
 		)
 		(property "Footprint" "Inductor_SMD:L_0402_1005Metric"
-			(at 25.4 255.27 0)
+			(at 25.4 246.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14916,7 +14916,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 25.4 255.27 0)
+			(at 25.4 246.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14926,7 +14926,7 @@
 			)
 		)
 		(property "Description" "Inductor"
-			(at 25.4 255.27 0)
+			(at 25.4 246.38 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14936,7 +14936,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 25.4 264.16 0)
+			(at 25.4 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14946,7 +14946,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 25.4 264.16 0)
+			(at 25.4 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14956,7 +14956,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 25.4 264.16 0)
+			(at 25.4 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14966,7 +14966,7 @@
 			)
 		)
 		(property "Substitution basis" "series element of the pi. PLACEHOLDER VALUES, and they are the likeliest thing on this board to be wrong. A matching network is a MEASUREMENT - it is tuned against a VNA on the real copper. These three pads exist so there is something to tune; fit 0R for L1 and leave the shunts off to start."
-			(at 25.4 264.16 0)
+			(at 25.4 255.27 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -14992,8 +14992,8 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 251.46)
-			(xy 25.4 248.92)
+			(xy 25.4 242.57)
+			(xy 25.4 240.03)
 		)
 		(stroke
 			(width 0)
@@ -15003,7 +15003,7 @@
 	)
 	(global_label "ANT_SOC"
 		(shape bidirectional)
-		(at 25.4 248.92 90)
+		(at 25.4 240.03 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15012,7 +15012,7 @@
 		)
 		(uuid "ee4720d5-e60b-5471-9e0b-2a4a86bd188c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 25.4 248.92 0)
+			(at 25.4 240.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15023,8 +15023,8 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 259.08)
-			(xy 25.4 261.62)
+			(xy 25.4 250.19)
+			(xy 25.4 252.73)
 		)
 		(stroke
 			(width 0)
@@ -15034,7 +15034,7 @@
 	)
 	(global_label "ANT_FEED"
 		(shape bidirectional)
-		(at 25.4 261.62 270)
+		(at 25.4 252.73 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15043,7 +15043,7 @@
 		)
 		(uuid "6515ac5a-6c50-500e-b24c-b05ba527a9ac")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 25.4 261.62 0)
+			(at 25.4 252.73 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15054,7 +15054,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 27.94 287.02 0)
+		(at 27.94 276.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15062,7 +15062,7 @@
 		(dnp no)
 		(uuid "e47a576e-01b3-5dcb-bf69-18b14eff9123")
 		(property "Reference" "C22"
-			(at 33.02 285.75 0)
+			(at 33.02 275.59 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15071,7 +15071,7 @@
 			)
 		)
 		(property "Value" "1.0pF 50V C0G"
-			(at 33.02 288.29 0)
+			(at 33.02 278.13 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15080,7 +15080,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 27.94 287.02 0)
+			(at 27.94 276.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15090,7 +15090,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 27.94 287.02 0)
+			(at 27.94 276.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15100,7 +15100,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 27.94 287.02 0)
+			(at 27.94 276.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15110,7 +15110,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 27.94 295.91 0)
+			(at 27.94 285.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15120,7 +15120,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 27.94 295.91 0)
+			(at 27.94 285.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15130,7 +15130,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 27.94 295.91 0)
+			(at 27.94 285.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15140,7 +15140,7 @@
 			)
 		)
 		(property "Substitution basis" "shunt at the antenna side. PLACEHOLDER VALUES, and they are the likeliest thing on this board to be wrong. A matching network is a MEASUREMENT - it is tuned against a VNA on the real copper. These three pads exist so there is something to tune; fit 0R for L1 and leave the shunts off to start."
-			(at 27.94 295.91 0)
+			(at 27.94 285.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15166,8 +15166,8 @@
 	)
 	(wire
 		(pts
-			(xy 27.94 283.21)
-			(xy 27.94 280.67)
+			(xy 27.94 273.05)
+			(xy 27.94 270.51)
 		)
 		(stroke
 			(width 0)
@@ -15177,7 +15177,7 @@
 	)
 	(global_label "ANT_FEED"
 		(shape bidirectional)
-		(at 27.94 280.67 90)
+		(at 27.94 270.51 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15186,7 +15186,7 @@
 		)
 		(uuid "47ac0762-fd42-51de-b952-5711fb2bba1c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 27.94 280.67 0)
+			(at 27.94 270.51 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15197,8 +15197,8 @@
 	)
 	(wire
 		(pts
-			(xy 27.94 290.83)
-			(xy 27.94 293.37)
+			(xy 27.94 280.67)
+			(xy 27.94 283.21)
 		)
 		(stroke
 			(width 0)
@@ -15208,7 +15208,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 27.94 293.37 0)
+		(at 27.94 283.21 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -15216,7 +15216,7 @@
 		(dnp no)
 		(uuid "972057b1-9559-5238-bab9-03dadc149aae")
 		(property "Reference" "#PWR42"
-			(at 27.94 293.37 0)
+			(at 27.94 283.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15226,7 +15226,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 27.94 297.18 0)
+			(at 27.94 287.02 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15234,7 +15234,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 27.94 293.37 0)
+			(at 27.94 283.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15244,7 +15244,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 27.94 293.37 0)
+			(at 27.94 283.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15254,7 +15254,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 27.94 293.37 0)
+			(at 27.94 283.21 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15277,7 +15277,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x02")
-		(at 74.93 189.23 0)
+		(at 74.93 180.34 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15285,7 +15285,7 @@
 		(dnp no)
 		(uuid "8af1e854-da1a-5be6-acba-12a3afd57002")
 		(property "Reference" "J2"
-			(at 69.85 182.88 0)
+			(at 69.85 173.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15294,7 +15294,7 @@
 			)
 		)
 		(property "Value" "NFC COIL 13.56MHz"
-			(at 69.85 185.42 0)
+			(at 69.85 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15303,7 +15303,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
-			(at 74.93 189.23 0)
+			(at 74.93 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15313,7 +15313,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 74.93 189.23 0)
+			(at 74.93 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15323,7 +15323,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 74.93 189.23 0)
+			(at 74.93 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15333,7 +15333,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 74.93 198.12 0)
+			(at 74.93 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15343,7 +15343,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 74.93 198.12 0)
+			(at 74.93 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15353,7 +15353,7 @@
 			)
 		)
 		(property "Stands in for" "ANT2"
-			(at 74.93 198.12 0)
+			(at 74.93 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15363,7 +15363,7 @@
 			)
 		)
 		(property "Substitution basis" "Apple's NFC antenna is WOUND MAGNET WIRE around the rim - at least 9 turns, measured, and a lower bound. That is not a part anybody sells and it needs the AirTag's geometry. Two pads take a wound coil so the NFC tag can be read with a phone on the bench."
-			(at 74.93 198.12 0)
+			(at 74.93 189.23 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15389,8 +15389,8 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 189.23)
-			(xy 67.31 189.23)
+			(xy 69.85 180.34)
+			(xy 67.31 180.34)
 		)
 		(stroke
 			(width 0)
@@ -15400,7 +15400,7 @@
 	)
 	(global_label "NFC_COIL_A"
 		(shape bidirectional)
-		(at 67.31 189.23 180)
+		(at 67.31 180.34 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15409,7 +15409,7 @@
 		)
 		(uuid "2cfbdfa4-dcaf-5e46-b9e4-cdc72367928a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 67.31 189.23 0)
+			(at 67.31 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15420,8 +15420,8 @@
 	)
 	(wire
 		(pts
-			(xy 69.85 191.77)
-			(xy 67.31 191.77)
+			(xy 69.85 182.88)
+			(xy 67.31 182.88)
 		)
 		(stroke
 			(width 0)
@@ -15431,7 +15431,7 @@
 	)
 	(global_label "NFC_COIL_B"
 		(shape bidirectional)
-		(at 67.31 191.77 180)
+		(at 67.31 182.88 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15440,7 +15440,7 @@
 		)
 		(uuid "2567a8c8-060a-54f2-976e-ae4992e947c7")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 67.31 191.77 0)
+			(at 67.31 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15451,7 +15451,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 72.39 219.71 0)
+		(at 72.39 210.82 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15459,7 +15459,7 @@
 		(dnp no)
 		(uuid "4b997be9-627e-5f96-94c1-b6c838aa5a9a")
 		(property "Reference" "C23"
-			(at 77.47 218.44 0)
+			(at 77.47 209.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15468,7 +15468,7 @@
 			)
 		)
 		(property "Value" "150pF 50V C0G"
-			(at 77.47 220.98 0)
+			(at 77.47 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15477,7 +15477,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 72.39 219.71 0)
+			(at 72.39 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15487,7 +15487,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 72.39 219.71 0)
+			(at 72.39 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15497,7 +15497,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 72.39 219.71 0)
+			(at 72.39 210.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15507,7 +15507,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 72.39 228.6 0)
+			(at 72.39 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15517,7 +15517,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 72.39 228.6 0)
+			(at 72.39 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15527,7 +15527,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 72.39 228.6 0)
+			(at 72.39 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15537,7 +15537,7 @@
 			)
 		)
 		(property "Substitution basis" "NFC series tuning. VALUE DEPENDS ENTIRELY ON THE COIL, which is off-board and not yet wound. 150 pF suits roughly 1 uH at 13.56 MHz and is a starting point, not a design. halo_rev_a's first NFC value was EIGHT TIMES WRONG for exactly this reason."
-			(at 72.39 228.6 0)
+			(at 72.39 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15563,8 +15563,8 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 215.9)
-			(xy 72.39 213.36)
+			(xy 72.39 207.01)
+			(xy 72.39 204.47)
 		)
 		(stroke
 			(width 0)
@@ -15574,7 +15574,7 @@
 	)
 	(global_label "NFC1"
 		(shape bidirectional)
-		(at 72.39 213.36 90)
+		(at 72.39 204.47 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15583,7 +15583,7 @@
 		)
 		(uuid "6d81b830-5658-593a-a6e8-f3770a9e44bc")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.39 213.36 0)
+			(at 72.39 204.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15594,8 +15594,8 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 223.52)
-			(xy 72.39 226.06)
+			(xy 72.39 214.63)
+			(xy 72.39 217.17)
 		)
 		(stroke
 			(width 0)
@@ -15605,7 +15605,7 @@
 	)
 	(global_label "NFC_COIL_A"
 		(shape bidirectional)
-		(at 72.39 226.06 270)
+		(at 72.39 217.17 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15614,7 +15614,7 @@
 		)
 		(uuid "e8ed6fa8-5039-59f7-b0ed-fe431a2192bd")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.39 226.06 0)
+			(at 72.39 217.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15625,7 +15625,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 72.39 251.46 0)
+		(at 72.39 242.57 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15633,7 +15633,7 @@
 		(dnp no)
 		(uuid "03c00ec3-9f37-5e90-a6e6-9dd0eae288a8")
 		(property "Reference" "C24"
-			(at 77.47 250.19 0)
+			(at 77.47 241.3 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15642,7 +15642,7 @@
 			)
 		)
 		(property "Value" "150pF 50V C0G"
-			(at 77.47 252.73 0)
+			(at 77.47 243.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15651,7 +15651,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 72.39 251.46 0)
+			(at 72.39 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15661,7 +15661,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 72.39 251.46 0)
+			(at 72.39 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15671,7 +15671,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 72.39 251.46 0)
+			(at 72.39 242.57 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15681,7 +15681,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 72.39 260.35 0)
+			(at 72.39 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15691,7 +15691,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 72.39 260.35 0)
+			(at 72.39 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15701,7 +15701,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 72.39 260.35 0)
+			(at 72.39 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15711,7 +15711,7 @@
 			)
 		)
 		(property "Substitution basis" "NFC series tuning. VALUE DEPENDS ENTIRELY ON THE COIL, which is off-board and not yet wound. 150 pF suits roughly 1 uH at 13.56 MHz and is a starting point, not a design. halo_rev_a's first NFC value was EIGHT TIMES WRONG for exactly this reason."
-			(at 72.39 260.35 0)
+			(at 72.39 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15737,8 +15737,8 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 247.65)
-			(xy 72.39 245.11)
+			(xy 72.39 238.76)
+			(xy 72.39 236.22)
 		)
 		(stroke
 			(width 0)
@@ -15748,7 +15748,7 @@
 	)
 	(global_label "NFC2"
 		(shape bidirectional)
-		(at 72.39 245.11 90)
+		(at 72.39 236.22 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15757,7 +15757,7 @@
 		)
 		(uuid "76253994-e354-544f-90b6-0e49a87a3a5e")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.39 245.11 0)
+			(at 72.39 236.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15768,8 +15768,8 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 255.27)
-			(xy 72.39 257.81)
+			(xy 72.39 246.38)
+			(xy 72.39 248.92)
 		)
 		(stroke
 			(width 0)
@@ -15779,7 +15779,7 @@
 	)
 	(global_label "NFC_COIL_B"
 		(shape bidirectional)
-		(at 72.39 257.81 270)
+		(at 72.39 248.92 270)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15788,7 +15788,7 @@
 		)
 		(uuid "9764dfe0-1aa1-5f5e-9878-64ac110482a3")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 72.39 257.81 0)
+			(at 72.39 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15799,7 +15799,7 @@
 	)
 	(symbol
 		(lib_id "Connector_Generic:Conn_01x05")
-		(at 116.84 194.31 0)
+		(at 116.84 185.42 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -15807,7 +15807,7 @@
 		(dnp no)
 		(uuid "5a7164d4-7656-53b3-b170-525450004b9b")
 		(property "Reference" "J3"
-			(at 111.76 182.88 0)
+			(at 111.76 173.99 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15816,7 +15816,7 @@
 			)
 		)
 		(property "Value" "SWD (nRST SWDIO SWCLK GND VBAT)"
-			(at 111.76 185.42 0)
+			(at 111.76 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15825,7 +15825,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
-			(at 116.84 194.31 0)
+			(at 116.84 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15835,7 +15835,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 116.84 194.31 0)
+			(at 116.84 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15845,7 +15845,7 @@
 			)
 		)
 		(property "Description" "Generic connector, single row, 01x05, script generated (kicad-library-utils/schlib/autogen/connector/)"
-			(at 116.84 194.31 0)
+			(at 116.84 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15855,7 +15855,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 116.84 205.74 0)
+			(at 116.84 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15865,7 +15865,7 @@
 			)
 		)
 		(property "MPN" "-"
-			(at 116.84 205.74 0)
+			(at 116.84 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15875,7 +15875,7 @@
 			)
 		)
 		(property "Stands in for" "nothing - added by the fab variant"
-			(at 116.84 205.74 0)
+			(at 116.84 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15885,7 +15885,7 @@
 			)
 		)
 		(property "Substitution basis" "THE ONE THING THIS BOARD ADDS THAT APPLE'S DOES NOT HAVE, and without it the board cannot be programmed and 'try it out if it works' is impossible. Apple exposes SWD on bare test pads and locks it with APPROTECT; this is a header, unlocked, because it is ours."
-			(at 116.84 205.74 0)
+			(at 116.84 196.85 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15920,8 +15920,8 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 189.23)
-			(xy 109.22 189.23)
+			(xy 111.76 180.34)
+			(xy 109.22 180.34)
 		)
 		(stroke
 			(width 0)
@@ -15931,7 +15931,7 @@
 	)
 	(global_label "nRESET"
 		(shape bidirectional)
-		(at 109.22 189.23 180)
+		(at 109.22 180.34 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15940,7 +15940,7 @@
 		)
 		(uuid "af9d51ec-54d3-50a5-a663-8f1b0d02ad1f")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 109.22 189.23 0)
+			(at 109.22 180.34 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15951,8 +15951,8 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 191.77)
-			(xy 109.22 191.77)
+			(xy 111.76 182.88)
+			(xy 109.22 182.88)
 		)
 		(stroke
 			(width 0)
@@ -15962,7 +15962,7 @@
 	)
 	(global_label "SWDIO"
 		(shape bidirectional)
-		(at 109.22 191.77 180)
+		(at 109.22 182.88 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -15971,7 +15971,7 @@
 		)
 		(uuid "d4a4e77a-4f9c-55a2-8cd1-3e571f2bc377")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 109.22 191.77 0)
+			(at 109.22 182.88 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -15982,8 +15982,8 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 194.31)
-			(xy 109.22 194.31)
+			(xy 111.76 185.42)
+			(xy 109.22 185.42)
 		)
 		(stroke
 			(width 0)
@@ -15993,7 +15993,7 @@
 	)
 	(global_label "SWDCLK"
 		(shape bidirectional)
-		(at 109.22 194.31 180)
+		(at 109.22 185.42 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16002,7 +16002,7 @@
 		)
 		(uuid "49045ad2-940f-5935-be3f-2b8888705a1b")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 109.22 194.31 0)
+			(at 109.22 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16013,8 +16013,8 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 196.85)
-			(xy 109.22 196.85)
+			(xy 111.76 187.96)
+			(xy 109.22 187.96)
 		)
 		(stroke
 			(width 0)
@@ -16024,7 +16024,7 @@
 	)
 	(global_label "GND"
 		(shape bidirectional)
-		(at 109.22 196.85 180)
+		(at 109.22 187.96 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16033,7 +16033,7 @@
 		)
 		(uuid "07f7272d-0f24-570f-b68b-43d3ef63e98c")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 109.22 196.85 0)
+			(at 109.22 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16044,8 +16044,8 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 199.39)
-			(xy 109.22 199.39)
+			(xy 111.76 190.5)
+			(xy 109.22 190.5)
 		)
 		(stroke
 			(width 0)
@@ -16055,7 +16055,7 @@
 	)
 	(global_label "VBAT"
 		(shape bidirectional)
-		(at 109.22 199.39 180)
+		(at 109.22 190.5 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16064,7 +16064,7 @@
 		)
 		(uuid "faebb0aa-97c2-5b46-9f5a-6145b5489db6")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 109.22 199.39 0)
+			(at 109.22 190.5 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16075,7 +16075,7 @@
 	)
 	(symbol
 		(lib_id "Device:R")
-		(at 113.03 227.33 0)
+		(at 113.03 218.44 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16083,7 +16083,7 @@
 		(dnp no)
 		(uuid "263733bc-4fe2-534c-ad7d-0211e004a3cd")
 		(property "Reference" "R6"
-			(at 116.84 226.06 0)
+			(at 116.84 217.17 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16092,7 +16092,7 @@
 			)
 		)
 		(property "Value" "10k"
-			(at 116.84 228.6 0)
+			(at 116.84 219.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16101,7 +16101,7 @@
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0402_1005Metric"
-			(at 113.03 227.33 0)
+			(at 113.03 218.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16111,7 +16111,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 113.03 227.33 0)
+			(at 113.03 218.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16121,7 +16121,7 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 113.03 227.33 0)
+			(at 113.03 218.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16131,7 +16131,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 113.03 236.22 0)
+			(at 113.03 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16141,7 +16141,7 @@
 			)
 		)
 		(property "MPN" "RC0402FR-0710KL"
-			(at 113.03 236.22 0)
+			(at 113.03 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16151,7 +16151,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 113.03 236.22 0)
+			(at 113.03 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16161,7 +16161,7 @@
 			)
 		)
 		(property "Substitution basis" "Pull-up on nRESET so the pin does not float. The nRF52832 has an internal one, and an external one costs a fraction of a microamp and removes a class of bring-up mystery."
-			(at 113.03 236.22 0)
+			(at 113.03 227.33 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16187,8 +16187,8 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 223.52)
-			(xy 113.03 220.98)
+			(xy 113.03 214.63)
+			(xy 113.03 212.09)
 		)
 		(stroke
 			(width 0)
@@ -16198,7 +16198,7 @@
 	)
 	(global_label "nRESET"
 		(shape bidirectional)
-		(at 113.03 220.98 90)
+		(at 113.03 212.09 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16207,7 +16207,7 @@
 		)
 		(uuid "407cf397-ed2f-5383-8b53-4627acc1b786")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 113.03 220.98 0)
+			(at 113.03 212.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16218,8 +16218,8 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 231.14)
-			(xy 113.03 233.68)
+			(xy 113.03 222.25)
+			(xy 113.03 224.79)
 		)
 		(stroke
 			(width 0)
@@ -16229,8 +16229,8 @@
 	)
 	(wire
 		(pts
-			(xy 113.03 233.68)
-			(xy 113.03 231.14)
+			(xy 113.03 224.79)
+			(xy 113.03 222.25)
 		)
 		(stroke
 			(width 0)
@@ -16240,7 +16240,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 113.03 231.14 0)
+		(at 113.03 222.25 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16248,7 +16248,7 @@
 		(dnp no)
 		(uuid "a8e66e29-dd17-52c3-97db-4b9fe9489842")
 		(property "Reference" "#PWR43"
-			(at 113.03 231.14 0)
+			(at 113.03 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16258,7 +16258,7 @@
 			)
 		)
 		(property "Value" "VBAT"
-			(at 113.03 227.33 0)
+			(at 113.03 218.44 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16266,7 +16266,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 113.03 231.14 0)
+			(at 113.03 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16276,7 +16276,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 113.03 231.14 0)
+			(at 113.03 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16286,7 +16286,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 113.03 231.14 0)
+			(at 113.03 222.25 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16309,7 +16309,7 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 114.3 259.08 0)
+		(at 114.3 250.19 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -16317,7 +16317,7 @@
 		(dnp no)
 		(uuid "656a7fb5-ae4e-5386-b6e5-1435a222f289")
 		(property "Reference" "C25"
-			(at 119.38 257.81 0)
+			(at 119.38 248.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16326,7 +16326,7 @@
 			)
 		)
 		(property "Value" "100nF 16V X7R"
-			(at 119.38 260.35 0)
+			(at 119.38 251.46 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16335,7 +16335,7 @@
 			)
 		)
 		(property "Footprint" "Capacitor_SMD:C_0402_1005Metric"
-			(at 114.3 259.08 0)
+			(at 114.3 250.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16345,7 +16345,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 114.3 259.08 0)
+			(at 114.3 250.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16355,7 +16355,7 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 114.3 259.08 0)
+			(at 114.3 250.19 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16365,7 +16365,7 @@
 			)
 		)
 		(property "LCSC Part #" "CANNOT DETERMINE - no price pull was done by this lane; source against MPN"
-			(at 114.3 267.97 0)
+			(at 114.3 259.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16375,7 +16375,7 @@
 			)
 		)
 		(property "MPN" "CL05B104KO5NNNC"
-			(at 114.3 267.97 0)
+			(at 114.3 259.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16385,7 +16385,7 @@
 			)
 		)
 		(property "Stands in for" "R/C/L bulk"
-			(at 114.3 267.97 0)
+			(at 114.3 259.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16395,7 +16395,7 @@
 			)
 		)
 		(property "Substitution basis" "nRESET debounce, and it makes a scope probe on the pin meaningful."
-			(at 114.3 267.97 0)
+			(at 114.3 259.08 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16421,8 +16421,8 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 255.27)
-			(xy 114.3 252.73)
+			(xy 114.3 246.38)
+			(xy 114.3 243.84)
 		)
 		(stroke
 			(width 0)
@@ -16432,7 +16432,7 @@
 	)
 	(global_label "nRESET"
 		(shape bidirectional)
-		(at 114.3 252.73 90)
+		(at 114.3 243.84 90)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -16441,7 +16441,7 @@
 		)
 		(uuid "6df655d7-6e84-5daf-9b78-993470810b7a")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 114.3 252.73 0)
+			(at 114.3 243.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16452,8 +16452,8 @@
 	)
 	(wire
 		(pts
-			(xy 114.3 262.89)
-			(xy 114.3 265.43)
+			(xy 114.3 254)
+			(xy 114.3 256.54)
 		)
 		(stroke
 			(width 0)
@@ -16463,7 +16463,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 114.3 265.43 0)
+		(at 114.3 256.54 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16471,7 +16471,7 @@
 		(dnp no)
 		(uuid "2219bf22-da6e-5135-ab5a-e75bf7a19aff")
 		(property "Reference" "#PWR44"
-			(at 114.3 265.43 0)
+			(at 114.3 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16481,7 +16481,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 114.3 269.24 0)
+			(at 114.3 260.35 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16489,7 +16489,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 114.3 265.43 0)
+			(at 114.3 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16499,7 +16499,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 114.3 265.43 0)
+			(at 114.3 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16509,7 +16509,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 114.3 265.43 0)
+			(at 114.3 256.54 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16532,7 +16532,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 12.7 308.61 0)
+		(at 12.7 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16540,7 +16540,7 @@
 		(dnp no)
 		(uuid "2d64b3cc-1292-5986-9a3d-dcff3966a2b6")
 		(property "Reference" "#PWR901"
-			(at 12.7 308.61 0)
+			(at 12.7 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16550,7 +16550,7 @@
 			)
 		)
 		(property "Value" "VBAT_RAW"
-			(at 12.7 304.8 0)
+			(at 12.7 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16558,7 +16558,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 12.7 308.61 0)
+			(at 12.7 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16568,7 +16568,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 12.7 308.61 0)
+			(at 12.7 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16578,7 +16578,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 12.7 308.61 0)
+			(at 12.7 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16601,8 +16601,8 @@
 	)
 	(wire
 		(pts
-			(xy 12.7 308.61)
-			(xy 20.32 308.61)
+			(xy 12.7 295.91)
+			(xy 20.32 295.91)
 		)
 		(stroke
 			(width 0)
@@ -16612,7 +16612,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 20.32 308.61 0)
+		(at 20.32 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16620,7 +16620,7 @@
 		(dnp no)
 		(uuid "04c6f0d5-69b0-5f9b-9ef7-9bde25a0760d")
 		(property "Reference" "#PWR902"
-			(at 20.32 308.61 0)
+			(at 20.32 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16630,7 +16630,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 20.32 304.8 0)
+			(at 20.32 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16639,7 +16639,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 20.32 308.61 0)
+			(at 20.32 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16649,7 +16649,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 20.32 308.61 0)
+			(at 20.32 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16659,7 +16659,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 20.32 308.61 0)
+			(at 20.32 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16682,7 +16682,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 43.18 308.61 0)
+		(at 43.18 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16690,7 +16690,7 @@
 		(dnp no)
 		(uuid "4fa66d77-64db-57c3-8b1b-2ddd9e7d9627")
 		(property "Reference" "#PWR903"
-			(at 43.18 308.61 0)
+			(at 43.18 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16700,7 +16700,7 @@
 			)
 		)
 		(property "Value" "VBAT"
-			(at 43.18 304.8 0)
+			(at 43.18 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16708,7 +16708,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 43.18 308.61 0)
+			(at 43.18 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16718,7 +16718,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 43.18 308.61 0)
+			(at 43.18 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16728,7 +16728,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 43.18 308.61 0)
+			(at 43.18 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16751,8 +16751,8 @@
 	)
 	(wire
 		(pts
-			(xy 43.18 308.61)
-			(xy 50.8 308.61)
+			(xy 43.18 295.91)
+			(xy 50.8 295.91)
 		)
 		(stroke
 			(width 0)
@@ -16762,7 +16762,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 50.8 308.61 0)
+		(at 50.8 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16770,7 +16770,7 @@
 		(dnp no)
 		(uuid "9d6dd1e5-26ab-5ff1-a4ee-23fbb2f6815a")
 		(property "Reference" "#PWR904"
-			(at 50.8 308.61 0)
+			(at 50.8 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16780,7 +16780,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 50.8 304.8 0)
+			(at 50.8 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16789,7 +16789,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 50.8 308.61 0)
+			(at 50.8 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16799,7 +16799,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 50.8 308.61 0)
+			(at 50.8 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16809,7 +16809,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 50.8 308.61 0)
+			(at 50.8 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16832,7 +16832,7 @@
 	)
 	(symbol
 		(lib_id "power:VCC")
-		(at 73.66 308.61 0)
+		(at 73.66 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16840,7 +16840,7 @@
 		(dnp no)
 		(uuid "6fc4d35e-500e-5958-acc7-87495ae72bce")
 		(property "Reference" "#PWR905"
-			(at 73.66 308.61 0)
+			(at 73.66 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16850,7 +16850,7 @@
 			)
 		)
 		(property "Value" "VFLASH"
-			(at 73.66 304.8 0)
+			(at 73.66 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16858,7 +16858,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 73.66 308.61 0)
+			(at 73.66 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16868,7 +16868,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 73.66 308.61 0)
+			(at 73.66 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16878,7 +16878,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 73.66 308.61 0)
+			(at 73.66 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16901,8 +16901,8 @@
 	)
 	(wire
 		(pts
-			(xy 73.66 308.61)
-			(xy 81.28 308.61)
+			(xy 73.66 295.91)
+			(xy 81.28 295.91)
 		)
 		(stroke
 			(width 0)
@@ -16912,7 +16912,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 81.28 308.61 0)
+		(at 81.28 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16920,7 +16920,7 @@
 		(dnp no)
 		(uuid "3734d091-5912-5801-b95f-fb2bc4ee3666")
 		(property "Reference" "#PWR906"
-			(at 81.28 308.61 0)
+			(at 81.28 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16930,7 +16930,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 81.28 304.8 0)
+			(at 81.28 292.1 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16939,7 +16939,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 81.28 308.61 0)
+			(at 81.28 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16949,7 +16949,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 81.28 308.61 0)
+			(at 81.28 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16959,7 +16959,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 81.28 308.61 0)
+			(at 81.28 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -16982,7 +16982,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 104.14 308.61 0)
+		(at 104.14 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -16990,7 +16990,7 @@
 		(dnp no)
 		(uuid "6266773e-b494-52e0-a196-7b6ff60ef3b2")
 		(property "Reference" "#PWR907"
-			(at 104.14 308.61 0)
+			(at 104.14 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17000,7 +17000,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 104.14 312.42 0)
+			(at 104.14 299.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17008,7 +17008,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 104.14 308.61 0)
+			(at 104.14 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17018,7 +17018,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 104.14 308.61 0)
+			(at 104.14 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17028,7 +17028,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 104.14 308.61 0)
+			(at 104.14 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17051,8 +17051,8 @@
 	)
 	(wire
 		(pts
-			(xy 104.14 308.61)
-			(xy 111.76 308.61)
+			(xy 104.14 295.91)
+			(xy 111.76 295.91)
 		)
 		(stroke
 			(width 0)
@@ -17062,7 +17062,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 111.76 308.61 0)
+		(at 111.76 295.91 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom no)
@@ -17070,7 +17070,7 @@
 		(dnp no)
 		(uuid "5dea0943-b6ba-58c1-bea1-fbef7682867f")
 		(property "Reference" "#PWR908"
-			(at 111.76 308.61 0)
+			(at 111.76 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17080,7 +17080,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 111.76 312.42 0)
+			(at 111.76 299.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17089,7 +17089,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 111.76 308.61 0)
+			(at 111.76 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17099,7 +17099,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 111.76 308.61 0)
+			(at 111.76 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17109,7 +17109,7 @@
 			)
 		)
 		(property "Description" "Power symbol"
-			(at 111.76 308.61 0)
+			(at 111.76 295.91 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -17204,7 +17204,7 @@
 	)
 	(text "RF"
 		(exclude_from_sim no)
-		(at 12.7 176.53 0)
+		(at 12.7 167.64 0)
 		(effects
 			(font
 				(size 2 2)
@@ -17216,7 +17216,7 @@
 	)
 	(text "TEST"
 		(exclude_from_sim no)
-		(at 101.6 176.53 0)
+		(at 101.6 167.64 0)
 		(effects
 			(font
 				(size 2 2)
@@ -17228,7 +17228,7 @@
 	)
 	(text "PWR_FLAG: this rail has no power_out pin anywhere on it, so ERC\ncannot see what drives it. The flag says a source is off-sheet.\nA rail a regulator drives does NOT get one."
 		(exclude_from_sim no)
-		(at 12.7 323.85 0)
+		(at 12.7 311.15 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -17239,7 +17239,7 @@
 	)
 	(text "halo Replica FAB VARIANT. THIS IS NOT THE REPLICA AND NOTHING ON IT MAY BE CITED AS A FINDING ABOUT THE AIRTAG. The fidelity record is schematic.py\nand NETS.md beside this file, where 13 of 52 nets are MEASURED. HERE EVERY NET AND EVERY VALUE IS CHOSEN. This board exists to be ordered and switched\non."
 		(exclude_from_sim no)
-		(at 12.7 331.47 0)
+		(at 12.7 318.77 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -17250,7 +17250,7 @@
 	)
 	(text "ONE RAIL. The reconstruction has cell -> diode -> buck -> 1.8 V -> load switch -> 1.8 V flash. This board DELETES the buck and the 1.8 V rail and runs\neverything from the cell, because the nRF52832 is 1.7-3.6 V and spans the whole CR2032 curve. It was forced - KiCad has no coin-cell 1.8 V buck\nsymbol, and a real land pattern under an invented pinout is the J1 defect again - and it is also less to go wrong on a first article."
 		(exclude_from_sim no)
-		(at 12.7 339.09 0)
+		(at 12.7 326.39 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -17261,7 +17261,7 @@
 	)
 	(text "THE FLASH CHANGED BECAUSE THE RAIL DID. Apple's GD25LQ32C is a 1.65-2.0 V part and cannot run at 3 V. The MX25R3235F is the same 32 Mbit at 1.65-3.6\nV, so it works at both ends of the cell's life AND behind D1's forward drop. One departure making another necessary, which is why they are listed\ntogether."
 		(exclude_from_sim no)
-		(at 12.7 346.71 0)
+		(at 12.7 334.01 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -17272,7 +17272,7 @@
 	)
 	(text "WHAT IS NOT HERE: U2 Apple's UWB SiP (never sold to anyone, and a DNP part with a land pattern invites somebody to try to buy one), with ANT3 and the\ncoaxial port; the op-amp (its ROLE is this project's reconstruction, not an observation); the part marked 1A8/1950 (unidentified down to its\nfunction). None of them can be bought, placed, or justified on a board."
 		(exclude_from_sim no)
-		(at 12.7 354.33 0)
+		(at 12.7 341.63 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -17280,6 +17280,17 @@
 			(justify left bottom)
 		)
 		(uuid "52b413aa-4a49-521f-93c9-6320318cee43")
+	)
+	(text "THIS BOARD IS NOT THE SIZE OF AN AIRTAG, AND THAT IS A FORK RATHER THAN A COMPROMISE. Dimensional fidelity and buildability are in DIRECT CONFLICT\nhere: Apple's WLCSP-50 fits the ~6 mm annular ring and CANNOT BE LANDED, because no complete ball map for it has ever been published. The QFN-48 is\nthe same die, CAN be landed, and is 6x6 mm - which does not fit that ring. There is no arrangement that is both. THIS IS THE BUILDABLE BRANCH; the\ndimensional branch is the metrology record in pcb/, where the 0.30 mm board and the wafer-scale packages live. A person holding a board that works but\nis the wrong shape should not have to work out why."
+		(exclude_from_sim no)
+		(at 12.7 349.25 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "6523502d-2771-5750-87a7-838ae506241c")
 	)
 	(text "THE FIVE-REMOVALS RESET IS NOT REPRODUCED. Apple has THREE sprung contacts with BOTH positives sensed. A catalogue CR2032 holder has two terminals, so\nthis board senses one positive. A real loss of function, stated rather than quietly dropped."
 		(exclude_from_sim no)
@@ -17290,7 +17301,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "6523502d-2771-5750-87a7-838ae506241c")
+		(uuid "5607f6ab-e8c9-537a-a052-fa51b397fdce")
 	)
 	(text "THE MATCHING NETWORK C21/L1/C22 AND THE NFC CAPS C23/C24 ARE PLACEHOLDERS, and they are the likeliest things here to be wrong. A match is a\nMEASUREMENT taken against a VNA on the real copper. Start with L1 = 0R and the shunts unfitted. The NFC values depend on a coil that is not wound yet\n- halo_rev_a's first NFC value was EIGHT TIMES WRONG for exactly this reason."
 		(exclude_from_sim no)
@@ -17301,7 +17312,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "5607f6ab-e8c9-537a-a052-fa51b397fdce")
+		(uuid "a1a14971-81bc-5923-9fe6-50f3922331b1")
 	)
 	(text "J3 IS SWD AND IT IS THE REASON THIS BOARD CAN BE TRIED AT ALL. Apple's SWD is on bare pads behind APPROTECT. Ours is a header, unlocked. J1 and J2 are\npads for an off-board sounder coil and NFC coil; neither is a part anybody sells."
 		(exclude_from_sim no)
@@ -17312,7 +17323,7 @@
 			)
 			(justify left bottom)
 		)
-		(uuid "a1a14971-81bc-5923-9fe6-50f3922331b1")
+		(uuid "53c4dcd9-1bd1-5098-9c8b-70123bdc1c43")
 	)
 	(sheet_instances
 		(path "/"
