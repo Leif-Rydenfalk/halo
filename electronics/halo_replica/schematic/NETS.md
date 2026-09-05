@@ -18,7 +18,7 @@ epistemic content of this document.
 | `INFERRED` | required by the part's own datasheet family once the part is accepted. Wrong only if the part identification is wrong |
 | `CHOSEN` | this sheet picked it. Apple's assignment is unknown and a different one would be equally consistent with every photograph. **Never cite one of these as a finding about Apple.** |
 
-Counts: **7 MEASURED**, **21 INFERRED**, **23 CHOSEN**.  Five MEASURED nets out of 51, and all five are the SWD pads O'Flynn published.
+Counts: **7 MEASURED**, **21 INFERRED**, **23 CHOSEN**.  **7 of 51 nets are MEASURED**, and they are the only ones: `GND`, `SWDCLK`, `SWDIO`, `SWO`, `VBAT_RAW`, `VBAT_SNS_P2`, `nRESET` — the three battery contacts and the four SWD pads O'Flynn published. Everything else on this board is reconstruction.
 
 ## The nets
 

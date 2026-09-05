@@ -1076,7 +1076,9 @@ def build():
            "reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Not one net "
            "here was read off a board. Every net carries a basis - MEASURED, "
            "INFERRED or CHOSEN - and NETS.md beside this file lists all of "
-           "them. Only five nets are MEASURED, and they are the SWD pads.")
+           "them. ONLY SEVEN OF 51 NETS ARE MEASURED: the three battery "
+           "contacts and the four SWD pads O'Flynn published. The other 44 "
+           "are 21 INFERRED and 23 CHOSEN.")
     s.text("U2 IS APPLE'S 'U1' UWB SiP AND IT IS DNP / UNPOPULATED. Apple "
            "does not sell it to anyone, at any price, with any lead time. "
            "That is not a sourcing problem, it is a does-not-exist-for-us "
@@ -1294,10 +1296,13 @@ def write_nets_md(s, path):
       "different one would be equally consistent with every photograph. "
       "**Never cite one of these as a finding about Apple.** |")
     w("")
+    meas = sorted(n for n in NETS if NETS[n][0] == MEASURED)
     w("Counts: " + ", ".join("**%d %s**" % (counts.get(b, 0), b)
                              for b in (MEASURED, INFERRED, CHOSEN))
-      + ".  Five MEASURED nets out of %d, and all five are the SWD pads "
-        "O'Flynn published." % len(NETS))
+      + ".  **%d of %d nets are MEASURED**, and they are the only ones: "
+        "%s — the three battery contacts and the four SWD pads O'Flynn "
+        "published. Everything else on this board is reconstruction."
+      % (len(meas), len(NETS), ", ".join("`%s`" % m for m in meas)))
     w("")
     w("## The nets")
     w("")

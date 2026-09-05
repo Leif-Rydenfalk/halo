@@ -948,6 +948,16 @@ Five instances from a single day, all found by a deliberate break and none by in
 | a "GND is between the tabs in **x**" rule | position in **one coordinate** | being **with** the tabs |
 | an anti-gaming guard | a path resolved against the **search root** | that rev_a's board had not been copied in |
 
+**Three kinds of adjacent**, and the last is the one people least expect:
+**adjacent STATISTIC** (increment permutation, off-peak noise, area alone) · **adjacent COORDINATE**
+(between-in-x) · **adjacent PATH** (the guard resolving against the search root). The path case is
+not a modelling error at all — it is **a plumbing error wearing a control's clothes**, which is why
+no amount of thinking about the physics would have found it.
+
+*(A sixth, from the same day and the same shape: reading `cmd | tail`'s exit status instead of the
+command's. `${PIPESTATUS[0]}` gives the real one. **The exit code you read was adjacent to the exit
+code you wanted** — and it cost two false readings before it was caught by re-running clean.)*
+
 **Adjacency is what makes these survive review.** A check testing something *unrelated* is obvious.
 A check testing something *next to* the target passes, correlates, and reads as evidence — and the
 tighter the correlation, the longer it lives.

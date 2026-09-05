@@ -21451,7 +21451,7 @@
 		)
 		(uuid "712c6fc3-9a57-569b-a0b1-0fbaa32c626e")
 	)
-	(text "halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Not one net here was read off a board. Every net carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md beside this file lists all of them. Only five nets are MEASURED, and they are the SWD pads."
+	(text "halo REPLICA - Apple AirTag A2187 (FCC ID BCGA2187), reconstructed. NOBODY HAS TRACED APPLE'S COPPER. Not one net here was read off a board. Every net carries a basis - MEASURED, INFERRED or CHOSEN - and NETS.md beside this file lists all of them. ONLY SEVEN OF 51 NETS ARE MEASURED: the three battery contacts and the four SWD pads O'Flynn published. The other 44 are 21 INFERRED and 23 CHOSEN."
 		(exclude_from_sim no)
 		(at 12.7 388.62 0)
 		(effects

@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 44
  },
- "written_utc": "2026-09-05T06:48:42.565141Z",
+ "written_utc": "2026-09-05T06:50:12.694245Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
@@ -59,6 +59,28 @@
   "radial_step_walls_also_on_Dwgs_User": 14
  },
  "netlist": "CANNOT DETERMINE \u2014 no schematic exists yet at /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/schematic/out. This board carries NO NETS and its copper connectivity is therefore UNKNOWN. Nothing was invented to fill the gap.",
+ "orientation": {
+  "source": "components-front.json angle_deg and dark-packages-front.json angle_deg, keyed on the measured position",
+  "applied_to": "CLASS B rows only \u2014 a min-area-rect angle from an untrustworthy rect is untrustworthy too (board.json)",
+  "what_it_is_not": "the long side modulo 180 deg. It does not say which end is pin 1 and on a square body it says nothing.",
+  "duplicate_position_keys": 0
+ },
+ "soc": {
+  "row": "handoff:D000",
+  "footprint": "REPL_WLCSP_8x7_P0.4_GRID56",
+  "placed": [
+   {
+    "ref": "D000",
+    "rot_deg": -68.9
+   }
+  ],
+  "identification": "M08's POSITIVE CONTROL. Blue-epoxy colour (B-R = +43 vs a board median of +1); measured 3.283 x 3.030 mm against the datasheet body 3.226 x 2.956 mm.",
+  "cannot_determine": [
+   "which 6 of the 56 grid positions are depopulated \u2014 the grid is OVER-DRAWN by six lands and the footprint says so",
+   "where ball A1 is \u2014 the angle is a long side modulo 180 deg",
+   "the ~2 % between the colour-segmented body and the datasheet body (M08 raises this itself)"
+  ]
+ },
  "placed": {
   "metal": 31,
   "pos_only": 52,

@@ -89,11 +89,43 @@ LIB = os.path.join(REPLICA, "halo_replica.pretty")
 LIBID = "halo_replica"
 
 HANDOFF = os.path.join(REPLICA, "metrology", "HANDOFF-positions-front.json")
+COMPS = os.path.join(REPLICA, "metrology", "components-front.json")
+BLUE = os.path.join(REPLICA, "metrology", "dark-packages-front.json")
 DARKPKG = os.path.join(REPLICA, "metrology", "darkpkg",
                        "HANDOFF-darkpackages.json")
 BOARDJSON = os.path.join(REPLICA, "board", "board.json")
 STACKUP = os.path.join(REPLICA, "board", "stackup", "stackup.json")
 SCHDIR = os.path.join(REPLICA, "schematic", "out")
+
+# ---------------------------------------------------------------------------
+# THE SoC, AND WHY IT IS THE ONE ROW THAT GETS A NAMED PACKAGE
+# ---------------------------------------------------------------------------
+# handoff row D000 is the nRF52832. That is not this lane guessing: M08 uses
+# it as its POSITIVE CONTROL, found by blue-epoxy colour (B-R = +43 against a
+# board median of +1), and its measured 3.283 x 3.030 mm sits within ~2 % of
+# the datasheet body 3.226 x 2.956 that bom.json calls "MEASURED, and it is
+# the ruler". Position confidence: high, no flags.
+#
+# THREE THINGS ABOUT IT ARE STILL CANNOT DETERMINE and the value field says
+# all three on the board:
+#   * WHICH 6 of the 56 grid positions are depopulated (the part is a
+#     WLCSP-50). The grid is OVER-DRAWN by six lands.
+#   * WHERE BALL A1 IS. A min-area-rect angle is the long side modulo 180
+#     deg, so the die's rotation is known to 180 deg at best and the A1
+#     corner not at all.
+#   * The ~2 % between the colour-segmented body and the datasheet body.
+#     Not reconciled here; M08 raises it as its own honesty note.
+#
+# NOTE ON IDS, because two files use the same ones for different objects:
+# handoff D000 (blue-body colour segmentation, MEASURED) and darkpkg D000
+# (boundary evidence, CANNOT DETERMINE) are the SAME PHYSICAL PART reached by
+# two methods that reached opposite verdicts. handoff D001..D004 and darkpkg
+# D001..D004 are NOT the same parts as each other. Always write the file with
+# the id.
+SOC_ROW = "D000"
+SOC_FP = "REPL_WLCSP_8x7_P0.4_GRID56"
+SOC_VALUE = ("U1 nRF52832-CIAA WLCSP-50 - 56 LANDS DRAWN, 6 UNKNOWN; "
+             "A1 CORNER CANNOT DETERMINE; body measured %sx%s mm here")
 
 # The board's origin sits here in cepcb's +Y-UP frame. Any value larger than
 # the outer radius keeps every coordinate positive; nothing depends on it.
@@ -111,6 +143,50 @@ def to_board(x_mm, y_mm):
 
 
 # ---------------------------------------------------------------------------
+# ORIENTATION. THE HANDOFF DROPS IT; THE PRODUCING FILES KEEP IT.
+# ---------------------------------------------------------------------------
+# board.json's own instruction, verbatim: "Orientation is used ONLY for rows
+# whose SIZE is trustworthy; a min-area-rect angle from an untrustworthy rect
+# is untrustworthy too." So this map is built for CLASS B rows only, and it is
+# keyed on the MEASURED POSITION rather than on row order -- two files agreeing
+# by index is a coincidence waiting to break, and a silent mis-key here rotates
+# a part rather than crashing.
+#
+# WHAT THE ANGLE IS NOT: a min-area-rect angle is the direction of the LONG
+# SIDE, modulo 180 deg. It does not say which END is pin 1, and for a square
+# body it does not say anything at all. Nothing downstream may treat it as an
+# orientation in the sense a pick-and-place file means.
+def _angle_map():
+    m, dupes = {}, 0
+    for src, key in ((COMPS, "components"), (BLUE, "packages")):
+        d = json.load(open(src))
+        for r in d[key]:
+            if r.get("x_mm") is None:
+                continue
+            k = (round(float(r["x_mm"]), 3), round(float(r["y_mm"]), 3))
+            if k in m:
+                dupes += 1
+            m[k] = float(r["angle_deg"])
+    return m, dupes
+
+
+def rot_for(angle_deg):
+    """Measured long-side bearing -> the `rot` cepcb wants.
+
+    A CLASS B land is drawn with its LONG side along the footprint's +Y. In
+    KiCad's frame +Y is DOWN and a positive orientation turns the part
+    anticlockwise on screen, so a footprint at rot=0 has its long side at
+    bearing 90 deg in the measurement frame (+x right, +y down, theta from +x
+    through +y). Hence rot = 90 - angle.
+
+    THIS IS NOT ASSERTED. tools/f_placement_check.py reads the saved board
+    back with pcbnew, measures each CLASS B land's long-side bearing off the
+    pad geometry, and compares it to the handoff. It is broken on purpose
+    with --break-rot before it is believed.
+    """
+    return 90.0 - float(angle_deg)
+
+
 def _register_library():
     """Make halo_replica.pretty resolvable to `place()`.
 
@@ -228,6 +304,7 @@ def main():
     bj = json.load(open(BOARDJSON))
     stack = json.load(open(STACKUP))
     handoff = json.load(open(HANDOFF))
+    angles, angle_dupes = _angle_map()
     dark = json.load(open(DARKPKG))
 
     od = float(bj["parameters"]["outer_diameter_mm"]["value"])
@@ -268,6 +345,7 @@ def main():
     placed = {"metal": 0, "pos_only": 0, "rim_suspect": 0, "not_drawn": 0,
               "eyeballed": 0}
     refused = []
+    soc_placed = []
     for row in handoff["rows"]:
         cls = FP.classify(row)
         rid = row["id"]
@@ -278,10 +356,25 @@ def main():
         if cls == "metal":
             w = round(float(row["short_mm"]), 2)
             L = round(float(row["long_mm"]), 2)
-            fpid = "%s:REPL_METAL_%s" % (LIBID, FP._fmt(w) + "x" + FP._fmt(L))
-            val = "MEASURED METAL %sx%s mm conf=%s" % (
-                FP._fmt(w), FP._fmt(L), row.get("confidence"))
-            rot = 0.0
+            key = (round(float(x), 3), round(float(y), 3))
+            if key not in angles:
+                raise SystemExit(
+                    "no measured angle for %s at %s. The handoff drops the "
+                    "angle and the producing files keep it; if they no longer "
+                    "key on the same position, placing this row at rot=0 "
+                    "would be a silent rotation of a measured part."
+                    % (rid, key))
+            rot = rot_for(angles[key])
+            if rid == SOC_ROW:
+                fpid = "%s:%s" % (LIBID, SOC_FP)
+                val = SOC_VALUE % (FP._fmt(L), FP._fmt(w))
+                soc_placed.append((rid, rot))
+            else:
+                fpid = "%s:REPL_METAL_%s" % (LIBID,
+                                             FP._fmt(w) + "x" + FP._fmt(L))
+                val = "MEASURED METAL %sx%s mm at %s deg conf=%s" % (
+                    FP._fmt(w), FP._fmt(L), FP._fmt(angles[key]),
+                    row.get("confidence"))
         elif cls == "pos_only":
             fpid = "%s:REPL_POS_ONLY" % LIBID
             val = "POSITION ONLY - SIZE NOT MEASURED (conf=%s)" % (
@@ -357,6 +450,35 @@ def main():
                       "pocket_segments": n_pocket,
                       "radial_step_walls_also_on_Dwgs_User": len(walls)},
         "netlist": net_verdict,
+        "orientation": {
+            "source": "components-front.json angle_deg and "
+                      "dark-packages-front.json angle_deg, keyed on the "
+                      "measured position",
+            "applied_to": "CLASS B rows only — a min-area-rect angle from an "
+                          "untrustworthy rect is untrustworthy too "
+                          "(board.json)",
+            "what_it_is_not": "the long side modulo 180 deg. It does not say "
+                              "which end is pin 1 and on a square body it "
+                              "says nothing.",
+            "duplicate_position_keys": angle_dupes,
+        },
+        "soc": {
+            "row": "handoff:%s" % SOC_ROW,
+            "footprint": SOC_FP,
+            "placed": [{"ref": r, "rot_deg": round(a, 3)}
+                       for r, a in soc_placed],
+            "identification": "M08's POSITIVE CONTROL. Blue-epoxy colour "
+                              "(B-R = +43 vs a board median of +1); measured "
+                              "3.283 x 3.030 mm against the datasheet body "
+                              "3.226 x 2.956 mm.",
+            "cannot_determine": [
+                "which 6 of the 56 grid positions are depopulated — the grid "
+                "is OVER-DRAWN by six lands and the footprint says so",
+                "where ball A1 is — the angle is a long side modulo 180 deg",
+                "the ~2 % between the colour-segmented body and the "
+                "datasheet body (M08 raises this itself)",
+            ],
+        },
         "placed": placed,
         "placed_total": sum(placed.values()),
         "handoff_rows": len(handoff["rows"]),
@@ -397,6 +519,12 @@ def main():
           % (layers, thick, stack["apple"]["surface_finish"]["value"]))
     print("       %s" % bj["parameters"]["thickness_mm"]["fabrication_delta"])
     print("NETS   %s" % net_verdict)
+    print("ROT    measured long-side bearings applied to %d CLASS B rows "
+          "(rot = 90 - angle); %d duplicate position keys"
+          % (placed["metal"], angle_dupes))
+    for r, a in soc_placed:
+        print("SoC    handoff:%s -> %s at rot %.2f deg. 56 lands drawn / 50 "
+              "balls; A1 corner CANNOT DETERMINE." % (r, SOC_FP, a))
     print("PLACED %d of %d handoff rows + %d eyeballed absences:"
           % (sum(placed[k] for k in ("metal", "pos_only", "rim_suspect",
                                      "not_drawn")),
