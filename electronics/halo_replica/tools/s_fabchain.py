@@ -179,6 +179,16 @@ def cmd_selftest():
         roll = cmd_check(DEFAULT_CHAIN)
     check("chain roll-up does not lose the failing link", roll, roll == FAIL, f"{FAIL} (FAIL)")
 
+    # 7b. POSITIVE CONTROL ON A REAL CHAIN. A tool that reports FAIL on the one
+    #     chain it was written for proves nothing -- it might report FAIL on
+    #     everything. halo's MECHANICAL chain is genuinely fresh (design.py and
+    #     out/mech/verdicts.json committed together at 6a67aac, design.py
+    #     unchanged since) and must NOT come back FAIL. Measured 2026-09-05:
+    #     the same run gives FAIL on halo_rev_a's chain and PASS on this one.
+    vm, _ = link_verdict("design.py", "out/mech/verdicts.json")
+    check("a genuinely fresh chain does NOT come back FAIL",
+          vm, vm != FAIL, f"anything but {FAIL}")
+
     # 7. POSITIVE CONTROL that can fail: this tool's own file against the
     #    repository's oldest tracked file. A file committed long ago cannot have
     #    changed after this file was written, so this MUST pass -- if it does

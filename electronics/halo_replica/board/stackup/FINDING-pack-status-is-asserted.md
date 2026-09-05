@@ -209,6 +209,61 @@ tool now classifies:
 field is validated, two validation cases fail, and gain and efficiency figures
 are therefore not underwritten.
 
+## 3e. Item 7 is READY on a check whose own verdict is CANNOT DETERMINE
+
+`7 · Firmware` — READY. Its evidence line honestly says *"check-dult 16 PASS
+1 CANNOT DETERMINE"*, so nothing is hidden. But `check-dult`'s **own last line**
+is:
+
+> `verdict: CANNOT DETERMINE — at least one DULT row had nothing to measure, or
+> cannot be satisfied at all (the Network ID)`
+
+The project's own vocabulary, in `CLAUDE.md` and again in the fleet-suite rules,
+is *"Three verdicts, and CANNOT DETERMINE is not a pass"* and *"the runner exits
+non-zero on FAIL **or** on CANNOT DETERMINE."* A check whose verdict is CANNOT
+DETERMINE cannot underwrite a READY.
+
+**The reason for the CD is honest and permanent, not sloppy.** The DULT network
+ID must be *"set based on a registered value for the manufacturer"*, the draft's
+registry section has been **removed** (`TODO: Section Finding Network Registry
+has been removed`), and `research/02` §5.2 found no open path to one.
+UNREGISTERED is the honest value. Nobody can close this row from here.
+
+So this is not a hidden defect — it is **the grade vocabulary not applied**.
+Item 7 → **PARTIAL**, or the pack should state why a permanent CANNOT DETERMINE
+is compatible with READY. The underlying work is strong: 16 rows each citing a
+DULT draft section by number.
+
+**What I looked for and did NOT find.** The same log notes *"No accelerometer,
+so §3.13.2.1's motion-triggered alert ... is NOT implemented"*, which looked
+like an undisclosed compliance gap. It is not: `halo_rev_a` carries a
+**LIS2DW12TR**, and `out/release/INDEX.html` already discusses the accelerometer
+as *"required by the industry standard"*. The log's remark is about the firmware
+simulation, not the board. **Dropped rather than reported.**
+
+## 3f. The whole pack, audited
+
+| # | status | measured verdict | note |
+|---|---|---|---|
+| 1 Gerbers | PARTIAL | `check_fabset` **14 P / 2 F** | consistent. Both fails are freshness — one now from **F16**, the check this lane proposed |
+| 2 Schematic + block | PARTIAL | ERC **0/0**; block has **no `.kicad_pcb`** | **stated blocker is stale** (§3c) |
+| 3 BOM | READY | **138 assertions, 0 fail** | agrees. **V13 is stale** |
+| 4 Pick-and-place | READY | **40/40 agree** | agrees |
+| 5 Panel + stackup | READY | **80.84 × 96.00 mm, 6/6 PASS** | **artifact absent**; numbers were from the shell diameter (§3, §3b) |
+| 6 Simulation | READY | 4 ce-spice **PASS**; **2 of 3 solver validations FAIL** | uncited failing validations (§3d) |
+| 7 Firmware | READY | `check-dult` verdict **CANNOT DETERMINE** | §3e |
+| 8 Mechanical | READY | **12/12 PASS**, chain fresh at `6a67aac` | **clean — nothing to report** |
+| 9 Test plan | PARTIAL | selftest **PASS** | conservative |
+| 10 Compliance | PARTIAL | needs a lab | honest; nothing closeable here |
+| 11 Cost | READY | lane S2, own probe + raw JSON | not re-derived; a dedicated lane owns it |
+
+**Item 8 is the model.** A single verdict file, 12/12, no failing siblings, and
+`s_fabchain` says its chain is fresh — `design.py` and `out/mech/verdicts.json`
+committed together at `6a67aac` with the source unchanged since. **That is also
+the live positive control for `s_fabchain`**: the same tool, in the same run,
+returns FAIL on `halo_rev_a`'s chain and PASS on this one, so its FAIL is not a
+tool that says FAIL to everything. Pinned as a selftest case.
+
 ## 4. What should change
 
 1. `gen_release_pack.py` should **run each item's recorded `command`** and
