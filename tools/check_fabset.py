@@ -38,11 +38,15 @@ The fifteen assertions below, each with the sentence it defeats
   F9  outline_matches_spec   could PASS while the board is 26 mm and the spec says 31.87 mm
   F10 zip_matches_disk       could PASS while the zip a fab downloads differs from what we checked
   F11 export_is_fresh        could PASS while the pack was exported from a board since redrawn
+  F17 board_is_fresh_vs_source  F11 alone goes GREEN EXACTLY WHEN IT STOPS BEING TRUE: it checks
+                             gerbers-vs-board and nothing checks board-vs-board.py, so a
+                             re-export of a stale board passes everything
 """
 import argparse
 import json
 import os
 import pathlib
+import subprocess
 import re
 import sys
 import zipfile
@@ -282,7 +286,11 @@ def board_hole_count(board_path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("fabset")
-    ap.add_argument("--board", help="the source .kicad_pcb the set claims to be")
+    ap.add_argument("--board", help="the .kicad_pcb the set claims to be. NOTE: this is an "
+                    "INTERMEDIATE, not the source — board.py writes it. Pass --source too.")
+    ap.add_argument("--source", help="the generator that WRITES the .kicad_pcb, normally "
+                    "board.py. Without it F17 is CANNOT DETERMINE and a board one revision "
+                    "behind its own generator passes every other row.")
     ap.add_argument("--expect-layers", type=int)
     ap.add_argument("--expect-outline-mm", type=float,
                     help="expected outline extent (diameter for a round board)")
@@ -631,6 +639,84 @@ def main():
                                f"THE PACK IS {-age:.0f} s OLDER THAN THE BOARD — it was exported "
                                f"from a board that has since been redrawn"),
                             PASS if age >= 0 else FAIL, "s"))
+
+    # ---- F17 board_is_fresh_vs_source ---------------------------------------
+    # F11 checks the SECOND link of a three-link chain:
+    #
+    #     board.py  ->  halo_rev_a.kicad_pcb  ->  gerbers + drill
+    #               [F17, this check]          [F11, above]
+    #
+    # MEASURED 2026-09-05: without this, re-exporting the gerbers makes F11 pass
+    # and flips release-pack row 1 to READY while the .kicad_pcb is still one
+    # revision behind board.py. THE CHECK GOES GREEN EXACTLY WHEN IT STOPS BEING
+    # TRUE. Confirmed by git ancestry rather than by timestamps: the board file's
+    # last commit was an ANCESTOR of board.py's last commit, so the generator
+    # moved after its own output was last written.
+    #
+    # Compares CONTENT (git blob hashes and commit ancestry) rather than mtimes,
+    # because `git checkout` rewrites every mtime on disk and a check that cries
+    # wolf on a clean clone is disabled within a week. The mtime delta is carried
+    # as corroboration only.
+    #
+    # A missing --source is CANNOT DETERMINE, never PASS — same shape F11 uses
+    # for a missing --board. An unmeasured link is not a satisfied one.
+    src = getattr(a, "source", None)
+    if not a.board or not pathlib.Path(a.board).is_file():
+        rows.append(row("board_is_fresh_vs_source", None, {"gte": 0},
+                        "no --board given: cannot tell a fresh board from a stale one", CD, "s"))
+    elif not src or not pathlib.Path(src).is_file():
+        rows.append(row("board_is_fresh_vs_source", None, {"gte": 0},
+                        "no --source given: the generator that writes this board was not "
+                        "checked, so a board one revision behind its own source would pass "
+                        "every other row here", CD, "s"))
+    else:
+        try:
+            def _repo_root(path):
+                r = subprocess.run(["git", "rev-parse", "--show-toplevel"],
+                                   capture_output=True, text=True, timeout=20,
+                                   cwd=str(pathlib.Path(path).resolve().parent))
+                return (r.stdout or "").strip() or None
+
+            root = _repo_root(src)
+
+            def _last_commit(path):
+                # git log needs a path git can resolve; run from the repo root and
+                # pass the path relative to it. Running from a subdirectory with an
+                # absolute path returns empty, which read as "no history" and made
+                # this check CANNOT DETERMINE on a repo that has plenty.
+                if not root:
+                    return None
+                rel = os.path.relpath(str(pathlib.Path(path).resolve()), root)
+                r = subprocess.run(["git", "log", "-1", "--format=%H", "--", rel],
+                                   capture_output=True, text=True, timeout=20, cwd=root)
+                return (r.stdout or "").strip() or None
+            cs, cb = _last_commit(src), _last_commit(a.board)
+            if not cs or not cb:
+                rows.append(row("board_is_fresh_vs_source", None, {"gte": 0},
+                                "one of the two files has no git history here, so ancestry "
+                                "cannot be read", CD, "s"))
+            elif cs == cb:
+                rows.append(row("board_is_fresh_vs_source", 0.0, {"gte": 0},
+                                "board and source last changed in the same commit", PASS, "s"))
+            else:
+                anc = subprocess.run(["git", "merge-base", "--is-ancestor", cb, cs],
+                                     capture_output=True, cwd=root).returncode == 0
+                dt = pathlib.Path(a.board).stat().st_mtime - pathlib.Path(src).stat().st_mtime
+                if anc:
+                    rows.append(row("board_is_fresh_vs_source", round(dt, 1), {"gte": 0},
+                                    f"THE BOARD IS BEHIND ITS SOURCE: {pathlib.Path(a.board).name} "
+                                    f"last changed in {cb[:7]}, which is an ANCESTOR of "
+                                    f"{pathlib.Path(src).name}'s {cs[:7]} — the generator moved "
+                                    f"after its own output was written. Rebuild the board before "
+                                    f"exporting, or every downstream check passes on a board one "
+                                    f"revision behind. (mtime delta {dt:.0f} s, corroboration only)",
+                                    FAIL, "s"))
+                else:
+                    rows.append(row("board_is_fresh_vs_source", round(dt, 1), {"gte": 0},
+                                    f"board {cb[:7]} is not behind source {cs[:7]}", PASS, "s"))
+        except Exception as e:
+            rows.append(row("board_is_fresh_vs_source", None, {"gte": 0},
+                            f"ancestry could not be read: {e}", CD, "s"))
 
     worst = max(rows, key=lambda r: RANK[r["verdict"]])["verdict"]
     out = {
