@@ -63,14 +63,61 @@ nothing tells anyone when one drifts.**
 *"panelizes more easily"*, so the conclusion may well survive being redone. That
 is not the point. A READY that would probably still be READY is still asserted.
 
+## 3b. The measurement item 5 was missing — now taken, on the right board
+
+*Added 2026-09-05 after the finding above. `ce-fab/bin/fab panel` was run on
+`halo_rev_a.kicad_pcb` itself, output directed to scratch with `--out` so
+nothing in `out/release/` or `ce-fab/out` was touched.*
+
+| | pack asserts (Ø31.87 mm board) | **measured on THIS board** (25.6138 × 26.0000 mm) |
+|---|---|---|
+| 3×3 panel size | 99.60 × 113.61 mm | **80.8411 × 95.9992 mm** |
+| clears the 70 mm floor | yes | **yes — PASS** |
+| mouse-bite holes | 543 in 63 groups | **543 in 63 groups** |
+| 2×2 negative control | FAILS at 65.73 mm | **FAILS, exit 1** |
+| all verify checks | — | **6/6 PASS** |
+
+**The claim was right and its numbers were from the wrong board.** The panel
+size differs by ~19 mm in each axis, which is the Ø31.87 shell against the
+Ø26 board, exactly as B1 suspected — and B1's prediction that *"a Ø26.00 mm
+board panelizes more easily"* is confirmed: 80.84 × 96.00 mm clears the floor
+with room to spare.
+
+**The 543-holes-in-63-groups match is not a coincidence and not evidence of a
+mix-up.** Hole count follows the tab geometry — 2 tabs per edge, 5 mm fixed
+tab width, 0.75 mm derived pitch — and not the board diameter, so it is
+board-independent. Worth stating, because two identical numbers across two
+boards is the kind of coincidence that gets read as proof of one thing or the
+other, and here it is proof of neither.
+
+### I looked at it, because the tool says to
+
+`fab panel`'s own report says: *"look at it. A tab attached to nothing, a board
+rotated into its neighbour or a frame with no fiducials pass every number
+above."* Render: `E-panel-3x3-halo_rev_a-MEASURED.png`.
+
+What the picture shows that the numbers do not: nine boards correctly gridded,
+rails top and bottom (`railstb`, so the left and right columns are held by tabs
+to their neighbours and the rails — normal), tooling holes and fiducials at
+**three** corners not four, which matches the `3hole`/`3fid` parameters and is
+specification rather than defect. Mouse bites sit in groups around each rim
+rather than perforating it continuously. No tab attached to nothing, no board
+rotated into a neighbour.
+
+**Item 5 still cannot be READY** — the panel drawing is not in `out/release/`,
+and putting it there is a write into another session's directory. What is now
+available is the measurement, on the right board, for whoever does.
+
 ## 4. What should change
 
 1. `gen_release_pack.py` should **run each item's recorded `command`** and
    derive the status, or mark it CANNOT DETERMINE where it cannot. A recorded
    command that is never run is a decoration.
 2. **An item with a missing deliverable cannot be READY**, whatever ran.
-3. Item 5 → **PARTIAL** until `fab panel` runs on *this* outline, with the panel
-   drawing in the pack.
+3. Item 5 → **PARTIAL** until the panel drawing is in the pack. `fab panel` has
+   now been run on this outline (§3b) — the numbers are **80.8411 × 95.9992 mm,
+   6/6 PASS, 2×2 correctly FAILS** — so the `reason` field can be corrected to
+   this board immediately, and only the artifact is still outstanding.
 4. **V13 in `docs/VERIFICATION-DEBT.md` should be marked closed** — measured
    0 failures today against its recorded 40.
 
