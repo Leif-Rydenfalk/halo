@@ -835,3 +835,51 @@ antenna case's empty passive-copper list is missing **at least two** large
 grounded conductors within a millimetre of the radiator — the coil *and* the
 battery contact. Any re-solve must carry both, or it will again describe a board
 we are not building.
+
+## D26b — the tail does not exist, and every antenna solve before 2026-09-05 12:xx is void
+
+Two corrections, both from the antenna lane, and the second one voids results.
+
+**1. "Shorten the tail by N mm" cannot be applied to this board for any N.**
+D26a corrected my 1.5 mm figure as being 103 % of a 1.4539 mm tail. That tail
+belonged to an arc-plus-fold geometry **that no longer exists**. The shipped
+element bisects its tooth depth so the meander's whole path *is* the quarter
+wave: conductor 24.49100 mm against a 24.49100 mm target, error −0.00000,
+**tail 0.00000 mm**. Any future retune is expressed through
+`ce-rf/tools/retune_for_board.py`, which reports the four numbers that can
+actually be acted on — quarter-wave target, tooth depth, arm inner radius, and
+the resulting coil gap — each absolute and as a fraction.
+
+**2. `sim.min_cell_mm` was declared in 13 specifications and read by nothing.**
+The model builder normalises a spec's simulation block into the dictionary the
+runner reads, and that dictionary never carried the key. So the runner's
+fallback default was used on **every run this project has ever made**. Each
+affected run printed `mesh-line merge at 0.0833 mm` one line above its own
+result, under a specification saying `0.15`, and nobody compared the two lines.
+
+Measured on one spec with nothing else changed: cells **1,584,128 → 1,065,792**
+(−33 %), smallest cell **0.08338 → 0.15000 mm**, timestep **1.859e-13 →
+3.061e-13 s**, a 1.65× speed-up.
+
+**Why "let it run longer" was never going to work.** The earlier runs did not
+converge slowly — their residual energy **floored**. One sat at **−34.87 dB from
+timestep 41,745 to 459,690, flat to 0.01 dB across 418,000 timesteps**, against a
+−40 dB criterion. A previous fix raised the timestep cap and bought 418,000
+timesteps of a horizontal line. Cells of 0.083 mm beside cells of 3.70 mm is the
+working hypothesis, and it is exactly what this fix removes.
+
+**Consequence: the numbers 2.3547 / 2.7016 / 2.4871 GHz and −1.513 dBi are
+VOID** — solved on the wrong pours *and* the wrong mesh. Nothing from them
+travels. This is recorded here because a void number that stays in a document
+becomes a fact by repetition, which is how +0.521 dBi survived as long as it did.
+
+**Also fixed while chasing it:** the copper pours sat 0.157 mm inside their own
+keep-out. Re-measured independently from every filled-polygon vertex, the closest
+plane fill to the coil is **+0.2996 mm** — confirming the board lane's figure
+exactly — but the models had been built from 19.80 and 19.74 mm discs, leaving
+the bottom pour **1.15 cells** from the coil. Both discs are now R9.74310.
+
+The lane added a `mesh-plumbing` self-test group of five checks and watched four
+of them go red on a deliberate break, one reading *"0 of 13 antenna specs
+declaring min_cell_mm carry it into the model"* and naming the files. Checks in
+that app go 115 → 120.
