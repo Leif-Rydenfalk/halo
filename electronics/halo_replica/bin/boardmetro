@@ -407,6 +407,40 @@ def v_selftest(a):
     else:
         rec("a CLIPPED circle is still accepted", False, "synthetic clip left no pixels")
 
+    # 10 THE PUBLISHED SHAPE SEPARATION IS AN OUTLINE RESULT AND DOES NOT TRANSFER
+    #    TO FILLED BLOBS.  Case 7 above feeds a square OUTLINE - four thin lines whose
+    #    corners sit far from any circle - and gets inlier fraction 0.055 against a
+    #    ring's 1.000.  A FILLED square of equal area to a disc deviates from its own
+    #    best-fit circle by only +/-17 % of the radius, and the same statistic then
+    #    separates by about 1.2x and never reaches the 0.85 / 0.30 anyone would set
+    #    from the outline numbers.  Found by the L10 rim-count lane, which had
+    #    pre-registered exactly that threshold and had to record it FALSIFIED.
+    #    E07 sec.20: a threshold is a property of a material AND A FIELD OF VIEW.
+    from scipy import ndimage as _ndi
+    _rng = np.random.default_rng(11)
+    _bg = _ndi.gaussian_filter(_rng.normal(0, 35.0, (360, 360)), 1.2)
+    _bg = _bg / _bg.std() * 35.0 + 90.0
+    _yy, _xx = np.mgrid[0:360, 0:360]; _c = 179.5; _r = 24.8
+    _fd = _bg.copy(); _fd[np.hypot(_xx - _c, _yy - _c) <= _r] += 120.0
+    _a = math.sqrt(math.pi) * _r
+    _fs = _bg.copy(); _fs[(np.abs(_xx - _c) <= _a / 2) & (np.abs(_yy - _c) <= _a / 2)] += 120.0
+    def _ifrac(img):
+        _t = 0.5 * (np.percentile(img[int(_c)-6:int(_c)+6, int(_c)-6:int(_c)+6], 90)
+                    + np.median(img[0:40, 0:40]))
+        B = img > _t
+        L2, _ = _ndi.label(B); k = L2[int(_c), int(_c)]
+        blob = L2 == k
+        edge = blob & ~_ndi.binary_erosion(blob)
+        yy2, xx2 = np.nonzero(edge)
+        _cx, _cy, _rr, _keep, _res = fit_circle(xx2.astype(float), yy2.astype(float), band=3.0)
+        return float(_keep.mean())
+    _id, _is = _ifrac(_fd), _ifrac(_fs)
+    rec("filled disc vs filled square: the inlier gate does NOT separate them",
+        (_id / max(_is, 1e-9)) < 2.5,
+        f"filled disc {_id:.3f} vs filled square {_is:.3f} = {_id/max(_is,1e-9):.2f}x, "
+        f"against 1.000 vs 0.055 = 18x on OUTLINES (case 7). The published number is an "
+        f"outline result; for filled features use `circles` / r_circ.radial_profile")
+
     nfail = sum(1 for _, ok, _ in results if not ok)
     print(f"\n{len(results)-nfail}/{len(results)} passed, {nfail} failed")
     print(f"synthetic inputs kept at {tmp}")
@@ -662,6 +696,128 @@ def v_rect(a):
     return EX_PASS if g else EX_CANNOT
 
 
+# ---------------------------------------------------------------- circles (r_circ engine)
+def _rcirc():
+    sys.path.insert(0, os.path.join(HALO, "tools"))
+    import r_circ
+    return r_circ
+
+
+def v_circles_selftest(a):
+    print("boardmetro circles-selftest - the CIRCULAR boundary-evidence engine\n")
+    return EX_PASS if _rcirc().selftest() == 0 else EX_FAIL
+
+
+def v_circles(a):
+    """MANY round features by CIRCULAR boundary evidence - the plural of `circle`.
+
+    `circle` fits ONE circle to dark-on-bright candidate pixels chosen by an
+    intensity threshold. That is the right instrument for a fiducial and the wrong
+    one for counting small round pads, which need no threshold at all: the
+    statistic here is the ring integral of the OUTWARD RADIAL DERIVATIVE, and a
+    STRAIGHT EDGE integrates to IDENTICALLY ZERO around a full circle. It shares
+    `circle`'s shape reasoning and extends it; it does not fork it.
+
+    --bar is not optional and has no default. Run --null on THIS image first, at
+    THIS size, and pass the number back. A bar measured on another object's size
+    or another photograph's field of view is a borrowed constant (E07 sec.20)."""
+    np = _np()
+    R = _rcirc()
+    from scipy import ndimage as ndi
+    path, im = _img(a.image)
+    lum = np.asarray(im.convert("L")).astype(float)
+    ppm = a.px_per_mm
+    d = a.down
+    L = R.ndimage.uniform_filter(lum, d)[::d, ::d] if d > 1 else lum
+    ppmd = ppm / d
+    valid = np.ones(L.shape, bool)
+    if a.region:
+        valid[:] = False
+        x0, y0, x1, y1 = [v // d for v in a.region]
+        valid[y0:y1, x0:x1] = True
+    Gx, Gy = R.grads(L, a.smooth)
+    radii = list(np.arange(a.min_mm, a.max_mm + 1e-9, a.r_step_mm) * ppmd / 2.0)
+    print(f"INPUT  image={os.path.basename(path)}  {lum.shape[1]}x{lum.shape[0]}  "
+          f"{ppm:.3f} px/mm, down {d} -> {ppmd:.3f}")
+    print(f"       diameters {a.min_mm}-{a.max_mm} mm ({len(radii)} radii), "
+          f"{a.nphi} ring samples, smooth {a.smooth}")
+    ys, xs = np.nonzero(ndi.binary_erosion(valid, np.ones((3, 3)),
+                                           iterations=int(max(radii)) + 2))
+    if len(ys) < 200:
+        die_cannot("the validity region is smaller than the search radius",
+                   meaning="an impossible search, which is NOT the same as finding nothing")
+    sds = []
+    rng = np.random.default_rng(20260905)
+    for k in rng.integers(0, len(ys), 400):
+        o = R.ring_at(Gx, Gy, valid, float(xs[k]), float(ys[k]), radii[len(radii)//2], a.nphi)
+        if o:
+            sds.append(o["ring_sd"])
+    if len(sds) < 100:
+        die_cannot(f"only {len(sds)} of 400 null draws were measurable")
+    floor = float(np.percentile(sds, a.sd_floor_pct))
+    print(f"       ring-sd floor {floor:.4f} (p{a.sd_floor_pct} of 400 draws) - the "
+          f"denominator guard, E07 sec.25")
+    if a.null:
+        n3 = R.null_dist(Gx, Gy, valid, ys, xs, radii, n=a.null_n, nphi=a.nphi,
+                         sd_floor=floor)
+        n1 = R.null_dist(*R.grads(R.phase_scramble(L), a.smooth), valid, ys, xs, radii,
+                         n=a.null_n, nphi=a.nphi, sd_floor=floor)
+        print(f"NULL   N3 real field   p50 {n3['p50']:.2f}  p90 {n3['p90']:.2f}  "
+              f"p99 {n3['p99']:.2f}  max {n3['max']:.2f}  (n={n3['n']}, "
+              f"{n3['unmeasured']} unmeasured)")
+        print(f"       N1 scrambled    p50 {n1['p50']:.2f}  p90 {n1['p90']:.2f}  "
+              f"p99 {n1['p99']:.2f}  max {n1['max']:.2f}  (n={n1['n']}, "
+              f"{n1['unmeasured']} unmeasured)")
+        print(f"BAR    {n3['p99']:.2f}  (N3 p99 - the real field, not the scramble)")
+        return EX_PASS
+    if a.bar is None:
+        die_cannot("no bar. Run with --null on this image and pass --bar",
+                   meaning="a detector with an invented threshold is a decoration")
+    best_cl = np.full(L.shape, np.nan)
+    best_r = np.zeros(L.shape)
+    for r in radii:
+        S, S2, C = R.ring_field(Gx, Gy, valid, r, a.nphi)
+        zt, cl, sd, fl = R.score_field(S, S2, C, a.nphi, floor)
+        take = np.isfinite(cl) & (~np.isfinite(best_cl) | (cl > best_cl))
+        best_cl = np.where(take, cl, best_cl)
+        best_r = np.where(take, r, best_r)
+    hits = np.isfinite(best_cl) & (best_cl > a.bar)
+    lab, n = ndi.label(hits)
+    rows = []
+    for i in range(1, n + 1):
+        m = lab == i
+        v = np.where(m, best_cl, -np.inf)
+        iy, ix = np.unravel_index(np.argmax(v), v.shape)
+        rows.append((float(best_cl[iy, ix]), float(ix * d), float(iy * d),
+                     float(best_r[iy, ix] * d)))
+    rows.sort(key=lambda t: -t[0])
+    keep = []
+    for cl, cx, cy, r in rows:
+        if all(math.hypot(cx - k[1], cy - k[2]) > a.nms_frac * (r + k[3]) for k in keep):
+            keep.append((cl, cx, cy, r))
+    print(f"FOUND  {len(keep)} maxima above bar {a.bar}")
+    out = []
+    for cl, cx, cy, r in keep:
+        sg = R.shape_gate(lum, cx, cy, r, sigma=a.shape_sigma)
+        pr = sg.get("profile") if sg else None
+        out.append(dict(closure=round(cl, 2), cx_px=round(cx, 1), cy_px=round(cy, 1),
+                        d_mm=round(2 * r / ppm, 3),
+                        inlier_frac=round(sg["inlier_frac"], 3) if sg else None,
+                        noncirc=round(pr["noncirc"], 4) if pr else None,
+                        a4=round(pr["a4"], 4) if pr else None,
+                        contrast_luma=round(pr["contrast_luma"], 1) if pr else None,
+                        shape="UNMEASURED" if not pr else None))
+        print(f"  closure {cl:7.2f}  ({cx:7.1f},{cy:7.1f})  d {2*r/ppm:.3f} mm  "
+              f"noncirc {('%.4f' % pr['noncirc']) if pr else 'UNMEASURED':>9}  "
+              f"inlier {('%.3f' % sg['inlier_frac']) if sg else '  n/a':>6}  "
+              f"contrast {('%.0f' % pr['contrast_luma']) if pr else 'n/a'}")
+    if a.json_out:
+        json.dump(dict(image=os.path.basename(path), px_per_mm=ppm, down=d,
+                       bar=a.bar, sd_floor=floor, rows=out), open(a.json_out, "w"), indent=2)
+        print(f"WROTE  {a.json_out}")
+    return EX_PASS
+
+
 def main():
     ap = argparse.ArgumentParser(prog="boardmetro", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -716,6 +872,22 @@ def main():
                    help="admission score. NO DEFAULT: get it from --null on this same image")
     q.add_argument("--null", action="store_true", help="measure the bar and print it")
     q.add_argument("--json-out")
+    sub.add_parser("circles-selftest")
+    z = sub.add_parser("circles"); z.add_argument("image")
+    z.add_argument("--px-per-mm", type=float, required=True)
+    z.add_argument("--region", type=int, nargs=4, default=None, metavar=("X0","Y0","X1","Y1"))
+    z.add_argument("--down", type=int, default=3)
+    z.add_argument("--min-mm", type=float, default=1.0); z.add_argument("--max-mm", type=float, default=2.2)
+    z.add_argument("--r-step-mm", type=float, default=0.10)
+    z.add_argument("--nphi", type=int, default=64); z.add_argument("--smooth", type=float, default=1.0)
+    z.add_argument("--shape-sigma", type=float, default=3.0)
+    z.add_argument("--nms-frac", type=float, default=0.7)
+    z.add_argument("--sd-floor-pct", type=float, default=5.0)
+    z.add_argument("--null", action="store_true", help="measure the bar and print it")
+    z.add_argument("--null-n", type=int, default=1200)
+    z.add_argument("--bar", type=float, default=None,
+                   help="admission closure. NO DEFAULT: get it from --null on this same image")
+    z.add_argument("--json-out")
     e = sub.add_parser("perspective"); e.add_argument("json_in")
     e.add_argument("--key", default="outer"); e.add_argument("--field", default="r_theta_deg_px")
     e.add_argument("--px-per-mm", type=float, default=None)
@@ -730,7 +902,8 @@ def main():
     return {"doctor": v_doctor, "selftest": v_selftest, "circle": v_circle,
             "scale-ruler": v_scale_ruler, "radial": v_radial,
             "perspective": v_perspective, "turns": v_turns,
-            "rect": v_rect, "rect-selftest": v_rect_selftest}[a.verb](a)
+            "rect": v_rect, "rect-selftest": v_rect_selftest,
+            "circles": v_circles, "circles-selftest": v_circles_selftest}[a.verb](a)
 
 if __name__ == "__main__":
     sys.exit(main())
