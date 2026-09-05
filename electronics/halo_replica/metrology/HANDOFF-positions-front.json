@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-05T01:02:59Z",
-  "git_rev": "bc84dee",
+  "generated_utc": "2026-09-05T01:05:54Z",
+  "git_rev": "99e1b28",
   "producer": "L1 PHOTOGRAPH METROLOGY lane",
   "side": "FRONT = the COMPONENT side (Apple's FCC caption). O'Flynn's backside-fullres.jpeg IS this side.",
   "source_image": "images/airtag/oflynn-backside-fullres.jpeg",
@@ -48,14 +48,57 @@
       "why": "M03/M05. Do not draw the withdrawn 15 or 13 candidate angles as pads."
     }
   ],
+  "known_gaps": [
+    {
+      "what": "two gold-ringed round parts on the right of the board",
+      "found_how": "BY LOOKING at a native-resolution tile (M09), not by any detector",
+      "why_missed": "their bright ring is annular, so the bright-metal segmentation finds no filled blob of component size, and they are not blue so the colour detector cannot see them either",
+      "position_eyeballed_mm": [
+        [
+          10.33,
+          -2.64
+        ],
+        [
+          10.19,
+          2.2
+        ]
+      ],
+      "measured": false,
+      "do_not_draw_as_measured": true,
+      "note": "EYEBALLED off a tile to about a millimetre. Present so the board is KNOWINGLY incomplete rather than looking complete. A miss written down is a different object from a miss not written down."
+    },
+    {
+      "what": "the large silver clip / contact beside the centre hole",
+      "found_how": "BY LOOKING at a native-resolution tile (M09)",
+      "why_missed": "it abuts the hole's bright region and is absorbed into it by the flood fill, so it is masked out before segmentation runs",
+      "position_eyeballed_mm": [
+        [
+          8.45,
+          -0.15
+        ]
+      ],
+      "measured": false,
+      "do_not_draw_as_measured": true,
+      "note": "EYEBALLED. Same caution as above."
+    },
+    {
+      "what": "dark IC bodies generally",
+      "found_how": "absence confirmed by eye at native resolution (M09)",
+      "why_missed": "see `excluded`: neutral-black packages are CANNOT DETERMINE",
+      "measured": false,
+      "do_not_draw_as_measured": true
+    }
+  ],
   "counts": {
     "total": 100,
     "bright": 95,
     "dark": 5,
-    "do_not_draw": 2,
+    "do_not_draw": 3,
     "located_not_sized": 63,
     "on_rim_material_suspect": 14,
-    "high_confidence": 32
+    "high_confidence": 31,
+    "not_obviously_a_package": 1,
+    "known_gaps_not_in_rows": 3
   },
   "rows": [
     {
@@ -2226,7 +2269,7 @@
     {
       "id": "D001",
       "method": "blue-body colour segmentation (m_dark_packages.py)",
-      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "found": "edge-bright strip, NOT confirmed as a package",
       "x_mm": 1.538,
       "y_mm": -8.594,
       "r_mm": 8.731,
@@ -2241,10 +2284,12 @@
       "body_angle_deg": 99.4,
       "rect_fill": 0.776,
       "radial_fraction_of_edge": 0.6942,
-      "confidence": "high",
-      "flags": [],
-      "do_not_draw_as_component": false,
-      "why": null
+      "confidence": "low",
+      "flags": [
+        "not_obviously_a_package"
+      ],
+      "do_not_draw_as_component": true,
+      "why": "aspect 4.1:1 -- this is a grey speckled STRIP, not an equant IC body. Seen at native resolution (M09). Treat as a FEATURE, not a part."
     },
     {
       "id": "D002",

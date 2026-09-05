@@ -78,15 +78,27 @@ for i, c in enumerate(comps["components"]):
 for i, c in enumerate(darks["packages"]):
     ang = math.degrees(math.atan2(c["cy"] - ocy, c["cx"] - ocx)) % 360
     frac = math.hypot(c["cx"] - ocx, c["cy"] - ocy) / float(np.interp(ang, T, Rs))
+    # DEMOTION, BY GEOMETRY NOT BY INDEX. Looking at the overlay at native
+    # resolution (M09), one of these is a grey speckled STRIP and not obviously a
+    # package. An IC body is roughly equant; an aspect over 3:1 at this size is a
+    # strip. Demoted in the FILE, not only in the report, because L5 reads the file.
+    aspect = c["long_mm"] / c["short_mm"] if c["short_mm"] else 99.0
+    strip = aspect >= 3.0
+    dflags = (["not_obviously_a_package"] if strip else [])
+    dwhy = (f"aspect {aspect:.1f}:1 -- this is a grey speckled STRIP, not an equant IC "
+            f"body. Seen at native resolution (M09). Treat as a FEATURE, not a part."
+            if strip else None)
     rows.append(dict(
         id=f"D{i:03d}", method="blue-body colour segmentation (m_dark_packages.py)",
-        found="IC package body whose epoxy colour differs from the soldermask",
+        found=("edge-bright strip, NOT confirmed as a package" if strip
+               else "IC package body whose epoxy colour differs from the soldermask"),
         x_mm=c["x_mm"], y_mm=c["y_mm"], r_mm=c["r_mm"], theta_deg=c["theta_deg"],
         long_mm=c["long_mm"], short_mm=c["short_mm"],
         short_genuine_px=c["short_genuine_px"], area_mm2=c["area_mm2"],
         body_angle_deg=c["angle_deg"], rect_fill=c["fill"],
         radial_fraction_of_edge=round(frac, 4),
-        confidence="high", flags=[], do_not_draw_as_component=False, why=None))
+        confidence="low" if strip else "high", flags=dflags,
+        do_not_draw_as_component=strip, why=dwhy))
 
 out = dict(
     generated_utc=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), git_rev=rev,
@@ -126,13 +138,38 @@ out = dict(
                        "M07 Sec 5). Publish no hole diameter."),
               dict(what="rim tear-off / edge pads", verdict="CANNOT DETERMINE",
                    why="M03/M05. Do not draw the withdrawn 15 or 13 candidate angles as pads.")],
+    known_gaps=[
+        dict(what="two gold-ringed round parts on the right of the board",
+             found_how="BY LOOKING at a native-resolution tile (M09), not by any detector",
+             why_missed="their bright ring is annular, so the bright-metal segmentation "
+                        "finds no filled blob of component size, and they are not blue so "
+                        "the colour detector cannot see them either",
+             position_eyeballed_mm=[[10.33, -2.64], [10.19, 2.20]],
+             measured=False, do_not_draw_as_measured=True,
+             note="EYEBALLED off a tile to about a millimetre. Present so the board is "
+                  "KNOWINGLY incomplete rather than looking complete. A miss written down "
+                  "is a different object from a miss not written down."),
+        dict(what="the large silver clip / contact beside the centre hole",
+             found_how="BY LOOKING at a native-resolution tile (M09)",
+             why_missed="it abuts the hole's bright region and is absorbed into it by the "
+                        "flood fill, so it is masked out before segmentation runs",
+             position_eyeballed_mm=[[8.45, -0.15]],
+             measured=False, do_not_draw_as_measured=True,
+             note="EYEBALLED. Same caution as above."),
+        dict(what="dark IC bodies generally",
+             found_how="absence confirmed by eye at native resolution (M09)",
+             why_missed="see `excluded`: neutral-black packages are CANNOT DETERMINE",
+             measured=False, do_not_draw_as_measured=True)],
     counts=dict(total=len(rows),
                 bright=len(comps["components"]), dark=len(darks["packages"]),
                 do_not_draw=sum(1 for r in rows if r["do_not_draw_as_component"]),
                 located_not_sized=sum(1 for r in rows if "located_not_sized" in r["flags"]),
                 on_rim_material_suspect=sum(1 for r in rows
                                             if "on_rim_material_suspect" in r["flags"]),
-                high_confidence=sum(1 for r in rows if r["confidence"] == "high")),
+                high_confidence=sum(1 for r in rows if r["confidence"] == "high"),
+                not_obviously_a_package=sum(1 for r in rows
+                                            if "not_obviously_a_package" in r["flags"]),
+                known_gaps_not_in_rows=3),
     rows=rows)
 json.dump(out, open(a.out, "w"), indent=2)
 print("m_handoff.py -- inputs:")

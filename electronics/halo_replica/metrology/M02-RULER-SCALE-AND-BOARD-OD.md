@@ -349,3 +349,22 @@ as the third estimate and as consistent with the low end.
 **Still CANNOT DETERMINE: whether the published edge is substrate or gasket.**
 What would settle it: a cross-section, or a caliper on a real board with and
 without the gasket.
+
+### A SIGNED EXPECTATION, so it can be proved wrong
+
+Two independent arguments now point the same way, and both were in place before
+the third estimate was measured:
+
+1. where the two boundaries are **unresolved** (FCC photo 6, 0.5 genuine px) the
+   steepest-gradient detector settles on a **blended** edge, biasing that
+   photograph **outward** — and FCC photo 6 is where §3's bound came from;
+2. the outline measured on the **sharper** photograph came in at 24.631 mm, below
+   the bound's 24.95 mm floor.
+
+> **IF THE §3 BOUND EVER MOVES, IT MOVES DOWN.** Recorded as a falsifiable claim
+> about future work, not as a hedge. A better datum that lands *above* 26.34 mm
+> would show this reasoning to be wrong, and that is the point of writing it down.
+
+The bound is **not** revised now: the third estimate's scale still comes from FCC
+photo 6 through the registration, so it is not independent and cannot carry a
+revision by itself.
