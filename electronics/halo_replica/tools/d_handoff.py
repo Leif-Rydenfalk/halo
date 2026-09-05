@@ -36,10 +36,8 @@ def main():
                          capture_output=True, text=True).stdout.strip() or "unknown"
 
     lad = limit["ladder"]
-    need3 = next((r["step_luma"] for r in sorted(lad, key=lambda r: r["step_luma"])
-                  if r["sides_clearing"] >= 3), None)
-    need4 = next((r["step_luma"] for r in sorted(lad, key=lambda r: r["step_luma"])
-                  if r["sides_clearing"] >= 4), None)
+    n3 = limit["step_for_3_of_4_luma"]; n4 = limit["step_for_4_of_4_luma"]
+    need3, need4 = n3["min"], n4["min"]
     barz = probe["admission_bar_abs_z"]
 
     rows = []
@@ -124,14 +122,23 @@ def main():
                 "chosen by the code, not by me. A synthetic control cleaner than the "
                 "photograph is not evidence (E07 sec.4), so this one is made OF the "
                 "photograph.",
-            paste_at_stored_px=limit["paste_at_stored_px"],
+            sites_stored_px=[[s[0], s[1]] for s in limit["sites"]],
+            why_several_sites="the FIRST version used the single quietest window and it "
+                              "landed on the metal shield can -- caught by drawing it and "
+                              "looking, not by reasoning. A can is smooth at 4.2 mm so it "
+                              "wins a gradient-energy contest while being nothing like the "
+                              "soldermask a package sits on. The site is a parameter and is "
+                              "swept like every other one.",
+            per_site=limit["per_site"],
             ladder=lad,
-            step_luma_for_3_of_4_sides=need3,
-            step_luma_for_4_of_4_sides=need4,
-            reading=f"this photograph needs a boundary step of about {need3:.0f} luma before "
-                    f"3 of a package's 4 sides become exceptional, and about {need4:.0f} "
-                    f"luma for all 4. Size recovery is good once that is met: at "
-                    f"{need4:.0f} luma the pasted rectangle measures "
+            step_luma_for_3_of_4_sides=n3,
+            step_luma_for_4_of_4_sides=n4,
+            reading=f"across {n3['n_sites']} automatic sites this photograph needs a "
+                    f"boundary step of {n3['min']:.0f}-{n3['max']:.0f} luma before 3 of a "
+                    f"package's 4 sides become exceptional, and {n4['min']:.0f}-"
+                    f"{n4['max']:.0f} luma for all 4; {n3['n_sites_reaching']} of "
+                    f"{n3['n_sites']} sites reach it at all. Size recovery is good once it "
+                    f"is met: at the top of the ladder the pasted rectangle measures "
                     f"{lad[0]['long_mm']} x {lad[0]['short_mm']} mm against a true "
                     f"3.226 x 2.956.",
         ),
@@ -140,7 +147,8 @@ def main():
             verdict="CANNOT DETERMINE",
             why="the packages present 1 to 26 luma of boundary step on most of their sides "
                 "(the nRF reaches 75 on ONE side and 1-10 on the other three), against the "
-                f"{need3:.0f} luma this photograph is measured to need. This is not 'we "
+                f"{need3:.0f}-{n3['max']:.0f} luma this photograph is measured to need "
+                f"across {n3['n_sites']} automatically-chosen sites. This is not 'we "
                 "could not see them'; it is 'at the boundary contrast they actually "
                 "present, they could not have been seen by any boundary method on this "
                 "source'.",

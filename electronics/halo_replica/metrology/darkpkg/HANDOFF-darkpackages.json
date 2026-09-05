@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-05T05:18:23Z",
-  "git_rev": "17ed5c9",
+  "generated_utc": "2026-09-05T05:32:41Z",
+  "git_rev": "379abf5",
   "producer": "L7 DARK-PACKAGE DETECTOR lane",
   "side": "FRONT = the COMPONENT side (Apple's FCC caption). O'Flynn's backside-fullres.jpeg IS this side.",
   "source_image": "images/airtag/oflynn-backside-fullres.jpeg",
@@ -57,11 +57,1004 @@
   },
   "detection_limit": {
     "how": "a 3.226 x 2.956 mm rectangle of KNOWN boundary step pasted into this same photograph, at the quietest 4.2 mm window that lies wholly on the board -- chosen by the code, not by me. A synthetic control cleaner than the photograph is not evidence (E07 sec.4), so this one is made OF the photograph.",
-    "paste_at_stored_px": [
-      1188.0,
-      2697.0
+    "sites_stored_px": [
+      [
+        1188.0,
+        2697.0
+      ],
+      [
+        2565.0,
+        1623.0
+      ],
+      [
+        1896.0,
+        867.0
+      ],
+      [
+        564.0,
+        1263.0
+      ],
+      [
+        1449.0,
+        795.0
+      ]
+    ],
+    "why_several_sites": "the FIRST version used the single quietest window and it landed on the metal shield can -- caught by drawing it and looking, not by reasoning. A can is smooth at 4.2 mm so it wins a gradient-energy contest while being nothing like the soldermask a package sits on. The site is a parameter and is swept like every other one.",
+    "per_site": [
+      {
+        "site": 0,
+        "at_stored_px": [
+          1188.0,
+          2697.0
+        ],
+        "mean_abs_grad": 6.255048889082951,
+        "step_for_3_of_4": 120.0,
+        "step_for_4_of_4": 140.0,
+        "ladder": [
+          {
+            "step_luma": 180.0,
+            "abs_z": {
+              "left": 48.5,
+              "right": 47.4,
+              "top": 58.7,
+              "bottom": 44.8
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 160.0,
+            "abs_z": {
+              "left": 44.4,
+              "right": 43.3,
+              "top": 54.0,
+              "bottom": 39.5
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 140.0,
+            "abs_z": {
+              "left": 40.1,
+              "right": 39.1,
+              "top": 48.7,
+              "bottom": 33.6
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 120.0,
+            "abs_z": {
+              "left": 35.6,
+              "right": 34.5,
+              "top": 42.5,
+              "bottom": 27.6
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.245,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 110.0,
+            "abs_z": {
+              "left": 31.9,
+              "right": 31.1,
+              "top": 39.4,
+              "bottom": 25.9
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.048,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 100.0,
+            "abs_z": {
+              "left": 29.6,
+              "right": 28.8,
+              "top": 36.1,
+              "bottom": 26.2
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.048,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 90.0,
+            "abs_z": {
+              "left": 27.1,
+              "right": 26.3,
+              "top": 32.7,
+              "bottom": 26.4
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.048,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 80.0,
+            "abs_z": {
+              "left": 24.4,
+              "right": 23.6,
+              "top": 29.2,
+              "bottom": 26.5
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.048,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 60.0,
+            "abs_z": {
+              "left": 17.9,
+              "right": 17.3,
+              "top": 26.0,
+              "bottom": 26.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 45.0,
+            "abs_z": {
+              "left": 13.7,
+              "right": 13.2,
+              "top": 26.1,
+              "bottom": 26.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 35.0,
+            "abs_z": {
+              "left": 10.9,
+              "right": 10.4,
+              "top": 26.1,
+              "bottom": 26.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 25.0,
+            "abs_z": {
+              "left": 8.0,
+              "right": 7.6,
+              "top": 26.1,
+              "bottom": 26.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 18.0,
+            "abs_z": {
+              "left": 6.0,
+              "right": 5.6,
+              "top": 26.0,
+              "bottom": 26.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 12.0,
+            "abs_z": {
+              "left": 4.2,
+              "right": 3.8,
+              "top": 26.0,
+              "bottom": 26.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 8.0,
+            "abs_z": {
+              "left": 3.1,
+              "right": 2.7,
+              "top": 25.9,
+              "bottom": 26.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.386,
+            "short_mm": 2.963
+          }
+        ]
+      },
+      {
+        "site": 1,
+        "at_stored_px": [
+          2565.0,
+          1623.0
+        ],
+        "mean_abs_grad": 6.878689022800814,
+        "step_for_3_of_4": 100.0,
+        "step_for_4_of_4": 120.0,
+        "ladder": [
+          {
+            "step_luma": 180.0,
+            "abs_z": {
+              "left": 67.4,
+              "right": 64.5,
+              "top": 49.8,
+              "bottom": 53.3
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 160.0,
+            "abs_z": {
+              "left": 62.1,
+              "right": 59.2,
+              "top": 45.7,
+              "bottom": 49.2
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 140.0,
+            "abs_z": {
+              "left": 55.8,
+              "right": 52.9,
+              "top": 41.0,
+              "bottom": 44.5
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 120.0,
+            "abs_z": {
+              "left": 49.0,
+              "right": 46.1,
+              "top": 35.8,
+              "bottom": 39.3
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 110.0,
+            "abs_z": {
+              "left": 45.3,
+              "right": 42.4,
+              "top": 33.3,
+              "bottom": 36.7
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 100.0,
+            "abs_z": {
+              "left": 41.7,
+              "right": 38.8,
+              "top": 30.5,
+              "bottom": 33.9
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 90.0,
+            "abs_z": {
+              "left": 37.7,
+              "right": 34.9,
+              "top": 27.8,
+              "bottom": 31.2
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 80.0,
+            "abs_z": {
+              "left": 33.9,
+              "right": 31.2,
+              "top": 25.2,
+              "bottom": 28.6
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 60.0,
+            "abs_z": {
+              "left": 25.8,
+              "right": 23.1,
+              "top": 19.8,
+              "bottom": 23.1
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 45.0,
+            "abs_z": {
+              "left": 19.4,
+              "right": 16.8,
+              "top": 15.3,
+              "bottom": 18.6
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 35.0,
+            "abs_z": {
+              "left": 15.2,
+              "right": 12.6,
+              "top": 12.4,
+              "bottom": 15.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 25.0,
+            "abs_z": {
+              "left": 10.9,
+              "right": 8.4,
+              "top": 9.4,
+              "bottom": 12.6
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 18.0,
+            "abs_z": {
+              "left": 8.2,
+              "right": 5.9,
+              "top": 7.3,
+              "bottom": 8.0
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.568
+          },
+          {
+            "step_luma": 12.0,
+            "abs_z": {
+              "left": 5.7,
+              "right": 5.9,
+              "top": 5.9,
+              "bottom": 7.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.894,
+            "short_mm": 2.568
+          },
+          {
+            "step_luma": 8.0,
+            "abs_z": {
+              "left": 5.6,
+              "right": 5.9,
+              "top": 5.6,
+              "bottom": 3.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.668,
+            "short_mm": 2.116
+          }
+        ]
+      },
+      {
+        "site": 2,
+        "at_stored_px": [
+          1896.0,
+          867.0
+        ],
+        "mean_abs_grad": 7.432647978839523,
+        "step_for_3_of_4": 140.0,
+        "step_for_4_of_4": 140.0,
+        "ladder": [
+          {
+            "step_luma": 180.0,
+            "abs_z": {
+              "left": 44.2,
+              "right": 42.9,
+              "top": 58.6,
+              "bottom": 57.4
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 160.0,
+            "abs_z": {
+              "left": 40.3,
+              "right": 39.2,
+              "top": 54.5,
+              "bottom": 53.1
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 140.0,
+            "abs_z": {
+              "left": 36.2,
+              "right": 35.2,
+              "top": 50.1,
+              "bottom": 48.7
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 120.0,
+            "abs_z": {
+              "left": 32.0,
+              "right": 31.2,
+              "top": 45.2,
+              "bottom": 43.6
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 110.0,
+            "abs_z": {
+              "left": 29.8,
+              "right": 29.0,
+              "top": 42.7,
+              "bottom": 41.0
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 100.0,
+            "abs_z": {
+              "left": 27.6,
+              "right": 26.9,
+              "top": 39.9,
+              "bottom": 38.2
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 90.0,
+            "abs_z": {
+              "left": 25.3,
+              "right": 24.7,
+              "top": 37.1,
+              "bottom": 35.3
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 80.0,
+            "abs_z": {
+              "left": 23.0,
+              "right": 22.5,
+              "top": 34.2,
+              "bottom": 32.3
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 60.0,
+            "abs_z": {
+              "left": 18.2,
+              "right": 17.8,
+              "top": 27.9,
+              "bottom": 25.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 45.0,
+            "abs_z": {
+              "left": 14.4,
+              "right": 14.2,
+              "top": 22.9,
+              "bottom": 20.7
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 35.0,
+            "abs_z": {
+              "left": 12.0,
+              "right": 11.8,
+              "top": 19.4,
+              "bottom": 17.2
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.245,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 25.0,
+            "abs_z": {
+              "left": 9.5,
+              "right": 9.4,
+              "top": 16.9,
+              "bottom": 13.3
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.963,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 18.0,
+            "abs_z": {
+              "left": 7.6,
+              "right": 6.1,
+              "top": 16.7,
+              "bottom": 10.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.963,
+            "short_mm": 2.399
+          },
+          {
+            "step_luma": 12.0,
+            "abs_z": {
+              "left": 6.1,
+              "right": 6.1,
+              "top": 16.7,
+              "bottom": 9.5
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.399,
+            "short_mm": 2.229
+          },
+          {
+            "step_luma": 8.0,
+            "abs_z": {
+              "left": 5.9,
+              "right": 6.4,
+              "top": 17.1,
+              "bottom": 11.3
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.878,
+            "short_mm": 1.778
+          }
+        ]
+      },
+      {
+        "site": 3,
+        "at_stored_px": [
+          564.0,
+          1263.0
+        ],
+        "mean_abs_grad": 7.465163881045297,
+        "step_for_3_of_4": 140.0,
+        "step_for_4_of_4": 160.0,
+        "ladder": [
+          {
+            "step_luma": 180.0,
+            "abs_z": {
+              "left": 54.8,
+              "right": 49.9,
+              "top": 39.3,
+              "bottom": 43.1
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 160.0,
+            "abs_z": {
+              "left": 50.6,
+              "right": 45.7,
+              "top": 36.0,
+              "bottom": 39.8
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 140.0,
+            "abs_z": {
+              "left": 46.0,
+              "right": 41.0,
+              "top": 32.3,
+              "bottom": 36.2
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 120.0,
+            "abs_z": {
+              "left": 41.1,
+              "right": 36.1,
+              "top": 28.5,
+              "bottom": 32.4
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 110.0,
+            "abs_z": {
+              "left": 38.7,
+              "right": 33.6,
+              "top": 26.5,
+              "bottom": 30.5
+            },
+            "sides_clearing": 2,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 100.0,
+            "abs_z": {
+              "left": 36.1,
+              "right": 31.0,
+              "top": 24.3,
+              "bottom": 28.2
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 90.0,
+            "abs_z": {
+              "left": 33.4,
+              "right": 28.3,
+              "top": 21.9,
+              "bottom": 25.9
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 80.0,
+            "abs_z": {
+              "left": 30.6,
+              "right": 25.4,
+              "top": 19.7,
+              "bottom": 23.6
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.963
+          },
+          {
+            "step_luma": 60.0,
+            "abs_z": {
+              "left": 24.5,
+              "right": 19.1,
+              "top": 16.5,
+              "bottom": 18.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.935,
+            "short_mm": 2.822
+          },
+          {
+            "step_luma": 45.0,
+            "abs_z": {
+              "left": 20.6,
+              "right": 14.7,
+              "top": 16.6,
+              "bottom": 15.1
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.935,
+            "short_mm": 2.822
+          },
+          {
+            "step_luma": 35.0,
+            "abs_z": {
+              "left": 18.0,
+              "right": 11.8,
+              "top": 16.6,
+              "bottom": 12.5
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.414,
+            "short_mm": 2.822
+          },
+          {
+            "step_luma": 25.0,
+            "abs_z": {
+              "left": 18.1,
+              "right": 12.8,
+              "top": 18.3,
+              "bottom": 12.6
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.471,
+            "short_mm": 2.709
+          },
+          {
+            "step_luma": 18.0,
+            "abs_z": {
+              "left": 18.2,
+              "right": 12.9,
+              "top": 18.0,
+              "bottom": 13.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.527,
+            "short_mm": 2.709
+          },
+          {
+            "step_luma": 12.0,
+            "abs_z": {
+              "left": 18.3,
+              "right": 12.9,
+              "top": 18.0,
+              "bottom": 13.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.527,
+            "short_mm": 2.709
+          },
+          {
+            "step_luma": 8.0,
+            "abs_z": {
+              "left": 18.3,
+              "right": 12.9,
+              "top": 18.0,
+              "bottom": 13.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.527,
+            "short_mm": 2.709
+          }
+        ]
+      },
+      {
+        "site": 4,
+        "at_stored_px": [
+          1449.0,
+          795.0
+        ],
+        "mean_abs_grad": 7.987041662098104,
+        "step_for_3_of_4": 100.0,
+        "step_for_4_of_4": 120.0,
+        "ladder": [
+          {
+            "step_luma": 180.0,
+            "abs_z": {
+              "left": 55.7,
+              "right": 57.4,
+              "top": 60.1,
+              "bottom": 52.4
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.189,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 160.0,
+            "abs_z": {
+              "left": 50.8,
+              "right": 52.7,
+              "top": 55.5,
+              "bottom": 47.9
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.189,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 140.0,
+            "abs_z": {
+              "left": 45.9,
+              "right": 47.9,
+              "top": 50.2,
+              "bottom": 42.7
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.189,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 120.0,
+            "abs_z": {
+              "left": 40.4,
+              "right": 42.7,
+              "top": 39.9,
+              "bottom": 34.9
+            },
+            "sides_clearing": 4,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 110.0,
+            "abs_z": {
+              "left": 37.4,
+              "right": 39.7,
+              "top": 37.4,
+              "bottom": 32.3
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 100.0,
+            "abs_z": {
+              "left": 34.4,
+              "right": 36.9,
+              "top": 34.9,
+              "bottom": 29.6
+            },
+            "sides_clearing": 3,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 90.0,
+            "abs_z": {
+              "left": 31.2,
+              "right": 33.8,
+              "top": 32.1,
+              "bottom": 26.7
+            },
+            "sides_clearing": 1,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 80.0,
+            "abs_z": {
+              "left": 28.1,
+              "right": 30.8,
+              "top": 29.2,
+              "bottom": 23.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 60.0,
+            "abs_z": {
+              "left": 21.5,
+              "right": 24.4,
+              "top": 23.3,
+              "bottom": 17.8
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 45.0,
+            "abs_z": {
+              "left": 16.5,
+              "right": 19.4,
+              "top": 18.7,
+              "bottom": 13.1
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 35.0,
+            "abs_z": {
+              "left": 13.0,
+              "right": 16.1,
+              "top": 15.6,
+              "bottom": 9.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.217,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 25.0,
+            "abs_z": {
+              "left": 8.2,
+              "right": 11.9,
+              "top": 12.5,
+              "bottom": 6.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.189,
+            "short_mm": 2.935
+          },
+          {
+            "step_luma": 18.0,
+            "abs_z": {
+              "left": 6.0,
+              "right": 9.8,
+              "top": 10.3,
+              "bottom": 6.0
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.935,
+            "short_mm": 2.568
+          },
+          {
+            "step_luma": 12.0,
+            "abs_z": {
+              "left": 4.4,
+              "right": 7.9,
+              "top": 9.2,
+              "bottom": 6.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 3.302,
+            "short_mm": 2.568
+          },
+          {
+            "step_luma": 8.0,
+            "abs_z": {
+              "left": 4.4,
+              "right": 7.5,
+              "top": 8.0,
+              "bottom": 6.9
+            },
+            "sides_clearing": 0,
+            "long_mm": 2.709,
+            "short_mm": 2.568
+          }
+        ]
+      }
     ],
     "ladder": [
+      {
+        "step_luma": 180.0,
+        "abs_z": {
+          "left": 48.5,
+          "right": 47.4,
+          "top": 58.7,
+          "bottom": 44.8
+        },
+        "sides_clearing": 4,
+        "long_mm": 3.217,
+        "short_mm": 2.963
+      },
       {
         "step_luma": 160.0,
         "abs_z": {
@@ -69,6 +1062,18 @@
           "right": 43.3,
           "top": 54.0,
           "bottom": 39.5
+        },
+        "sides_clearing": 4,
+        "long_mm": 3.217,
+        "short_mm": 2.963
+      },
+      {
+        "step_luma": 140.0,
+        "abs_z": {
+          "left": 40.1,
+          "right": 39.1,
+          "top": 48.7,
+          "bottom": 33.6
         },
         "sides_clearing": 4,
         "long_mm": 3.217,
@@ -84,6 +1089,42 @@
         },
         "sides_clearing": 3,
         "long_mm": 3.245,
+        "short_mm": 2.963
+      },
+      {
+        "step_luma": 110.0,
+        "abs_z": {
+          "left": 31.9,
+          "right": 31.1,
+          "top": 39.4,
+          "bottom": 25.9
+        },
+        "sides_clearing": 1,
+        "long_mm": 3.048,
+        "short_mm": 2.963
+      },
+      {
+        "step_luma": 100.0,
+        "abs_z": {
+          "left": 29.6,
+          "right": 28.8,
+          "top": 36.1,
+          "bottom": 26.2
+        },
+        "sides_clearing": 1,
+        "long_mm": 3.048,
+        "short_mm": 2.963
+      },
+      {
+        "step_luma": 90.0,
+        "abs_z": {
+          "left": 27.1,
+          "right": 26.3,
+          "top": 32.7,
+          "bottom": 26.4
+        },
+        "sides_clearing": 0,
+        "long_mm": 3.048,
         "short_mm": 2.963
       },
       {
@@ -183,15 +1224,25 @@
         "short_mm": 2.963
       }
     ],
-    "step_luma_for_3_of_4_sides": 120.0,
-    "step_luma_for_4_of_4_sides": 160.0,
-    "reading": "this photograph needs a boundary step of about 120 luma before 3 of a package's 4 sides become exceptional, and about 160 luma for all 4. Size recovery is good once that is met: at 160 luma the pasted rectangle measures 3.217 x 2.963 mm against a true 3.226 x 2.956."
+    "step_luma_for_3_of_4_sides": {
+      "min": 100.0,
+      "max": 140.0,
+      "n_sites_reaching": 5,
+      "n_sites": 5
+    },
+    "step_luma_for_4_of_4_sides": {
+      "min": 120.0,
+      "max": 160.0,
+      "n_sites_reaching": 5,
+      "n_sites": 5
+    },
+    "reading": "across 5 automatic sites this photograph needs a boundary step of 100-140 luma before 3 of a package's 4 sides become exceptional, and 120-160 luma for all 4; 5 of 5 sites reach it at all. Size recovery is good once it is met: at the top of the ladder the pasted rectangle measures 3.217 x 2.963 mm against a true 3.226 x 2.956."
   },
   "excluded": [
     {
       "what": "every neutral-black IC package on this face, and the nRF52832 as well",
       "verdict": "CANNOT DETERMINE",
-      "why": "the packages present 1 to 26 luma of boundary step on most of their sides (the nRF reaches 75 on ONE side and 1-10 on the other three), against the 120 luma this photograph is measured to need. This is not 'we could not see them'; it is 'at the boundary contrast they actually present, they could not have been seen by any boundary method on this source'.",
+      "why": "the packages present 1 to 26 luma of boundary step on most of their sides (the nRF reaches 75 on ONE side and 1-10 on the other three), against the 100-140 luma this photograph is measured to need across 5 automatically-chosen sites. This is not 'we could not see them'; it is 'at the boundary contrast they actually present, they could not have been seen by any boundary method on this source'.",
       "instruction": "DO NOT place any of these by hand from the transferred frame. The seed positions in `rows` are eyeballed and are published so the measurement can be checked, not so it can be drawn."
     },
     {
@@ -274,7 +1325,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "1 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 75 luma, against the 120 luma this photograph needs (see `excluded`)."
+      "why": "1 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 75 luma, against the 100 luma this photograph needs (see `excluded`)."
     },
     {
       "id": "D001",
@@ -327,7 +1378,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 8 luma, against the 120 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 8 luma, against the 100 luma this photograph needs (see `excluded`)."
     },
     {
       "id": "D002",
@@ -380,7 +1431,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 20 luma, against the 120 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 20 luma, against the 100 luma this photograph needs (see `excluded`)."
     },
     {
       "id": "D003",
@@ -433,7 +1484,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 145 luma, against the 120 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 145 luma, against the 100 luma this photograph needs (see `excluded`)."
     },
     {
       "id": "D004",
@@ -486,7 +1537,7 @@
       "verdict": "CANNOT DETERMINE",
       "measured": false,
       "do_not_draw_as_component": true,
-      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 6 luma, against the 120 luma this photograph needs (see `excluded`)."
+      "why": "0 of 4 boundaries clear the bar (|z| > 33.37, the 99th percentile of the same scan at random places and random angles ON THIS BOARD). A dimension needs BOTH sides of its axis, so no dimension exists. The seed position is EYEBALLED off a native tile and is present only so the reader can check the measurement; it is not a position and must not be drawn. Largest boundary step on any side: 6 luma, against the 100 luma this photograph needs (see `excluded`)."
     }
   ]
 }

@@ -12,9 +12,10 @@ The handoff is generated, never typed: `tools/d_handoff.py`.
 
 ## 0. The one-line result
 
-**This photograph needs a boundary step of about 120 luma before 3 of a package's
-4 sides become exceptional among the board's own straight structures. The
-packages present 1–26 luma on most of their sides. So the black packages are
+**This photograph needs a boundary step of 100–140 luma before 3 of a package's
+4 sides become exceptional among the board's own straight structures, and
+120–160 luma for all 4 — measured at five automatically-chosen sites, all five
+of which reach it. The packages present 1–26 luma on most of their sides. So the black packages are
 CANNOT DETERMINE — not "we could not see them", but *at the boundary contrast
 they actually present, they could not have been seen by any boundary method on
 this source.***
@@ -130,27 +131,43 @@ catching.
 `E07 sec.4`: a synthetic control cleaner than the photograph is not evidence —
 L1's synthetic rim came out **19× cleaner** than the image it stood in for. So
 this control is made **of** the photograph: a 3.226 × 2.956 mm rectangle of known
-boundary step, pasted at **the quietest 4.2 mm window that lies wholly on the
-board, chosen by the code and not by me** (1188, 2697 stored px).
+boundary step, pasted at **the quietest 4.2 mm windows that lie wholly on the
+board, chosen by the code and not by me.**
+
+### The site is a parameter, and the first version got it wrong
+
+The first run used the *single* quietest window. **Drawing it onto the photograph
+showed it had landed on the metal shield can** — a can is smooth at 4.2 mm, so it
+wins a gradient-energy contest while being nothing like the soldermask a package
+actually sits on. That was caught by looking, not by reasoning. The site is now
+swept like every other parameter: the **five quietest non-overlapping windows**,
+the whole ladder at each.
+
+| site | stored px | mean \|grad\| | 3 of 4 sides at | 4 of 4 at |
+|---|---|---|---|---|
+| 0 | 1188, 2697 | 6.26 | 140 luma | 160 |
+| 1 | 2565, 1623 | 6.88 | 120 | 120 |
+| 2 | 1896, 867 | 7.43 | 120 | 140 |
+| 3 | 564, 1263 | 7.47 | 140 | 160 |
+| 4 | 1449, 795 | 7.99 | 100 | 120 |
+
+**Across five automatic sites: 100–140 luma for 3 sides, 120–160 for 4, and all
+five reach it.** The ladder at site 4, which is representative:
 
 | pasted step | \|z\| L / R / T / B | sides clearing | recovered size |
 |---|---|---|---|
-| 160 luma | 44.4 / 43.3 / 54.0 / 39.5 | **4 of 4** | **3.217 × 2.963 mm** (−0.3 % / +0.2 %) |
-| 120 | 35.6 / 34.5 / 42.5 / 27.6 | 3 of 4 | 3.245 × 2.963 |
-| 80 | 24.4 / 23.6 / 29.2 / 26.5 | 0 of 4 | 3.048 × 2.963 |
-| 60 | 17.9 / 17.3 / 26.0 / 26.7 | 0 of 4 | 3.386 × 2.963 |
-| 45 | 13.7 / 13.2 / 26.1 / 26.8 | 0 of 4 | 3.386 × 2.963 |
-| 25 | 8.0 / 7.6 / 26.1 / 26.8 | 0 of 4 | 3.386 × 2.935 |
-| 8 | 3.1 / 2.7 / 25.9 / 26.7 | 0 of 4 | 3.386 × 2.963 |
+| 160 luma | 50.8 / 52.7 / 55.5 / 47.9 | 4 of 4 | **3.189 × 2.935 mm** (−1.1 % / −0.7 %) |
+| 120 | 40.4 / 42.7 / 39.9 / 34.9 | 4 of 4 | 3.217 × 2.935 (−0.3 % / −0.7 %) |
+| 80 | 28.1 / 30.8 / 29.2 / 23.8 | 0 of 4 | 3.217 × 2.935 |
+| 60 | 21.5 / 24.4 / 23.3 / 17.8 | 0 of 4 | 3.217 × 2.935 |
+| 45 | 16.5 / 19.4 / 18.7 / 13.1 | 0 of 4 | 3.217 × 2.935 |
+| 25 | 8.2 / 11.9 / 12.5 / 6.9 | 0 of 4 | 3.189 × 2.935 |
+| 8 | 4.4 / 7.5 / 8.0 / 6.9 | 0 of 4 | 2.709 × 2.568 |
 
-**The method works — at 160 luma it recovers the size to 0.3 %.** It is the
-photograph that does not reach: **~120 luma for 3 sides, ~160 for 4**, against
-the **1–26 luma** the real packages present on most of their sides and the 75
-luma the nRF reaches on its best one.
-
-*(The top and bottom |z| plateau at ~26 even at 8 luma: those two scans latch
-onto pre-existing board structure at the paste site, which is exactly the effect
-N3 is measuring and is the reason N3 is the bar.)*
+**The method works — at 120 luma it recovers the size to 0.3 % / 0.7 %.** It is
+the photograph that does not reach: **100–160 luma needed**, against the **1–26
+luma** the real packages present on most of their sides and the 75 luma the nRF
+reaches on its single best one.
 
 ## 6. What was discarded, and why
 
@@ -213,6 +230,6 @@ not a regression test.**
 | 2 | four-side closure on this board | **REFUTED** by per-side luma profiles |
 | 3 | positions of the neutral-black packages | **CANNOT DETERMINE** — 0 of 16 boundaries supported |
 | 4 | nRF52832 position and size by this route | **CANNOT DETERMINE** — 1 of 4 boundaries, and that one clears p99 but not the null maximum |
-| 5 | the boundary step this photograph needs | **MEASURED** — ~120 luma for 3 sides, ~160 for 4 |
+| 5 | the boundary step this photograph needs | **MEASURED** — 100–140 luma for 3 sides, 120–160 for 4, over 5 automatic sites, 5/5 reaching it |
 | 6 | the step the packages present | **MEASURED** — 1–26 luma on most sides; 75 on the nRF's best |
 | 7 | what would close it | **NAMED** — boundary *contrast*, not resolution: raking illumination, or X-ray / die-level imagery. M10 already showed 1.9× more resolution does not do it |

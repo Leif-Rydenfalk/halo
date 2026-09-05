@@ -468,6 +468,12 @@ def v_limit(a, ctx):
     nr = DR.side_bar(L, M, ppmd, 3.2 * ppmd, 3.0 * ppmd, n=a.null_n, scramble=False)
     bar = nr["p99"]
     if a.paste_at == "auto":
+        # THE SITE IS A PARAMETER TOO.  The first version used the single quietest
+        # window and it landed on the metal shield can -- found by DRAWING it and
+        # looking, not by reasoning.  A can is smooth at 4.2 mm and so it wins a
+        # gradient-energy contest while being nothing like the soldermask a package
+        # actually sits on.  So: the N quietest NON-OVERLAPPING windows, the ladder
+        # run at every one, and the spread reported.  One site is an anecdote.
         g = np.hypot(*np.gradient(ndimage.gaussian_filter(L, 1.0)))
         w = int(4.2 * ppmd)
         E = ndimage.uniform_filter(g, w)
@@ -476,38 +482,72 @@ def v_limit(a, ctx):
         if not np.isfinite(E).any():
             print("  CANNOT DETERMINE: no window of that size lies wholly on the board")
             sys.exit(2)
-        iy, ix = np.unravel_index(np.argmin(E), E.shape)
-        cx, cy = float(ix * p["down"]), float(iy * p["down"])
-        print(f"  paste site chosen AUTOMATICALLY as the quietest 4.2 mm window that lies")
-        print(f"  wholly on the board -- mean |grad| {E[iy, ix]:.2f} -- so the site is not")
-        print(f"  mine either.  ({cx:.0f},{cy:.0f}) stored px")
+        sites, Ew = [], E.copy()
+        for _ in range(a.sites):
+            if not np.isfinite(Ew).any():
+                break
+            iy, ix = np.unravel_index(np.argmin(Ew), Ew.shape)
+            sites.append((float(ix * p["down"]), float(iy * p["down"]), float(E[iy, ix])))
+            y0, y1 = max(0, iy - w), iy + w
+            x0, x1 = max(0, ix - w), ix + w
+            Ew[y0:y1, x0:x1] = np.inf
+        print(f"  {len(sites)} paste sites chosen AUTOMATICALLY: the quietest "
+              f"NON-OVERLAPPING 4.2 mm windows lying wholly on the board.")
+        for k, (sx, sy, e) in enumerate(sites):
+            print(f"    site {k}  ({sx:6.0f},{sy:6.0f}) stored px   mean |grad| {e:5.2f}")
     else:
-        cx, cy = [float(v) for v in a.paste_at.split(",")]
+        v = [float(x) for x in a.paste_at.split(",")]
+        sites = [(v[0], v[1], float("nan"))]
     lo, sh, th = 3.226, 2.956, 30.0
-    print(f"  a {lo} x {sh} mm rectangle pasted at ({cx:.0f},{cy:.0f}) stored px, "
-          f"theta {th}, into the photograph itself")
+    print(f"  a {lo} x {sh} mm rectangle at theta {th}, pasted into the photograph itself")
     print(f"  bar = real-board null p99 = {bar:.1f}\n")
     yy, xx = np.mgrid[0:L.shape[0], 0:L.shape[1]]
     t = math.radians(th)
-    u = (xx - cx / p["down"]) * math.cos(t) + (yy - cy / p["down"]) * math.sin(t)
-    v = -(xx - cx / p["down"]) * math.sin(t) + (yy - cy / p["down"]) * math.cos(t)
-    body = (np.abs(u) <= sh * ppmd / 2) & (np.abs(v) <= lo * ppmd / 2)
-    rows = []
-    for step in [float(x) for x in a.steps.split(",")]:
-        Lp = L.copy(); Lp[body] -= step
-        r = DR.fit_sides(Lp, M, ppmd, cx / p["down"], cy / p["down"], th,
-                         sh * ppmd, lo * ppmd, search=int(0.25 * sh * ppmd))
-        z = {k: (round(abs(s["z"]), 1) if s else None) for k, s in r["sides"].items()}
-        n = sum(1 for x in z.values() if x and x > bar)
-        rows.append(dict(step_luma=step, abs_z=z, sides_clearing=n,
-                         long_mm=round(max(r["w_px"], r["h_px"]) / ppmd, 3),
-                         short_mm=round(min(r["w_px"], r["h_px"]) / ppmd, 3)))
-        print(f"    step {step:5.1f} luma   |z| L {z['left']} R {z['right']} "
-              f"T {z['top']} B {z['bottom']}   sides clearing {n}/4   "
-              f"{rows[-1]['long_mm']:.3f} x {rows[-1]['short_mm']:.3f} mm")
+    steps = [float(x) for x in a.steps.split(",")]
+    per_site, need3, need4 = [], [], []
+    for k, (cx, cy, e) in enumerate(sites):
+        u = (xx - cx / p["down"]) * math.cos(t) + (yy - cy / p["down"]) * math.sin(t)
+        v = -(xx - cx / p["down"]) * math.sin(t) + (yy - cy / p["down"]) * math.cos(t)
+        body = (np.abs(u) <= sh * ppmd / 2) & (np.abs(v) <= lo * ppmd / 2)
+        rows = []
+        print(f"\n  SITE {k} ({cx:.0f},{cy:.0f})  mean |grad| {e:.2f}")
+        for step in steps:
+            Lp = L.copy(); Lp[body] -= step
+            r = DR.fit_sides(Lp, M, ppmd, cx / p["down"], cy / p["down"], th,
+                             sh * ppmd, lo * ppmd, search=int(0.25 * sh * ppmd))
+            z = {kk: (round(abs(s["z"]), 1) if s else None) for kk, s in r["sides"].items()}
+            n = sum(1 for x in z.values() if x and x > bar)
+            rows.append(dict(step_luma=step, abs_z=z, sides_clearing=n,
+                             long_mm=round(max(r["w_px"], r["h_px"]) / ppmd, 3),
+                             short_mm=round(min(r["w_px"], r["h_px"]) / ppmd, 3)))
+            print(f"    step {step:6.1f} luma   |z| L {z['left']} R {z['right']} "
+                  f"T {z['top']} B {z['bottom']}   sides clearing {n}/4   "
+                  f"{rows[-1]['long_mm']:.3f} x {rows[-1]['short_mm']:.3f} mm")
+        asc = sorted(rows, key=lambda r: r["step_luma"])
+        n3 = next((r["step_luma"] for r in asc if r["sides_clearing"] >= 3), None)
+        n4 = next((r["step_luma"] for r in asc if r["sides_clearing"] >= 4), None)
+        need3.append(n3); need4.append(n4)
+        per_site.append(dict(site=k, at_stored_px=[cx, cy], mean_abs_grad=e,
+                             step_for_3_of_4=n3, step_for_4_of_4=n4, ladder=rows))
+        print(f"    -> 3 of 4 sides at {n3} luma, 4 of 4 at {n4}")
+    ok3 = [x for x in need3 if x]; ok4 = [x for x in need4 if x]
+    print(f"\n  ACROSS {len(sites)} AUTOMATIC SITES:")
+    print(f"    3 of 4 sides needs {min(ok3) if ok3 else None}-{max(ok3) if ok3 else None} luma"
+          f"   ({len(ok3)}/{len(sites)} sites ever reach it)")
+    print(f"    4 of 4 sides needs {min(ok4) if ok4 else None}-{max(ok4) if ok4 else None} luma"
+          f"   ({len(ok4)}/{len(sites)} sites ever reach it)")
     out = dict(**rid, verb="limit", px_per_mm=ppm, params=p,
-               paste_at_stored_px=[cx, cy], rect_mm=[lo, sh], theta_deg=th,
-               bar_abs_z=round(bar, 2), null=nr, ladder=rows)
+               sites=[[s[0], s[1], s[2]] for s in sites],
+               paste_at_stored_px=[sites[0][0], sites[0][1]],
+               rect_mm=[lo, sh], theta_deg=th,
+               bar_abs_z=round(bar, 2), null=nr, per_site=per_site,
+               step_for_3_of_4_luma=dict(min=min(ok3) if ok3 else None,
+                                         max=max(ok3) if ok3 else None,
+                                         n_sites_reaching=len(ok3), n_sites=len(sites)),
+               step_for_4_of_4_luma=dict(min=min(ok4) if ok4 else None,
+                                         max=max(ok4) if ok4 else None,
+                                         n_sites_reaching=len(ok4), n_sites=len(sites)),
+               ladder=per_site[0]["ladder"])
     if a.json:
         json.dump(out, open(a.json, "w"), indent=2, default=float)
         print(f"\n  wrote {a.json}")
@@ -532,6 +572,7 @@ def main():
     ap.add_argument("--swing-tol", type=float, default=6.0)
     ap.add_argument("--null-n", type=int, default=60)
     ap.add_argument("--paste-at", default="auto")
+    ap.add_argument("--sites", type=int, default=5)
     ap.add_argument("--steps", default="160,120,80,60,45,35,25,18,12,8")
     ap.add_argument("--png", default=None)
     ap.add_argument("--json", default=None)
