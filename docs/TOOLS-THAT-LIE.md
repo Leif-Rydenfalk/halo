@@ -632,6 +632,95 @@ wrote, you have found one of these.
 
 ---
 
+## The eighth direction: a checker looking at a channel the evidence never travels on
+
+*Added 2026-09-05 by lane T3, from `ce-rf`'s `_run_capturing_fd`. The parser was
+right. The self-test group grading the parser was right, and eight of its rows
+were green for the right reason. What was wrong was the **text** the parser was
+handed: it came from a pipe the evidence does not use.*
+
+`ce-rf/out/halo-rev-a-2g4-meander4-bare/solver.log` says this on line 508:
+
+```
+[sim] convergence: OK -- openEMS ran to its energy end-criteria with a complete excitation
+```
+
+and this on line 547, in the same file, thirty-nine lines below it:
+
+```
+RunFDTD: Warning: Max. number of timesteps was reached before the end-criteria of -40dB was reached...
+```
+
+Two lines in one file, one of them the wrapper's summary of the other's author.
+The same pair is in `-meander9-bare` and `-meander9-passive`.
+
+**The cause, measured rather than reasoned about.**
+`ce-rf/tools/prove_fd2_capture.py` runs a 200-timestep openEMS solve with file
+descriptors 1 and 2 `dup2()`'d into two *separate* files and reports which file
+each line landed in:
+
+```
+fd1.txt: 2660 chars, banner=True,  MARK=False
+fd2.txt:  474 chars, banner=False, MARK=True
+    >> openEMS::SetupFDTD: Warning, max. number of timesteps is smaller than three times the excitation.
+    >> RunFDTD: Warning: Max. number of timesteps was reached before the end-criteria of -90dB was reached...
+```
+
+openEMS writes its banner, its mesh summary and its `Energy:` trace to **fd 1**,
+and **every one of its warnings to fd 2**. `_run_capturing_fd` captured fd 1.
+All four strings the convergence parser looks for are warnings. So the text the
+parser received could not contain any of them, on any run, ever — and the
+parser answered the only thing that text supports.
+
+**The record was not a reading. It was the constant `True`.**
+
+### What makes this one hard to see
+
+This is the shape of *"an empty answer is not a measurement"* one level down,
+and it defeats the usual tells:
+
+- **the text was not empty.** 2 660 characters, the real openEMS banner, the
+  real progress lines, the real `Energy:` trace. A `log_chars` field on the
+  record showed a healthy number. The predecessor defect on this same function —
+  `contextlib.redirect_stdout`, which cannot see a C extension at all — returned
+  `""` and was caught by a fail-closed check on the banner. **This one passes
+  that check.** It is a real engine log; it is just not the half with the
+  evidence in it.
+- **the parser was already under test, and its tests were already good.** Eight
+  rows, including one built from the engine's warning verbatim, all green, all
+  correct. They graded `convergence_from_log(text)`. Not one of them asked where
+  `text` comes from.
+- **the verdict was right anyway,** which is the worst part. `cerf.cli.
+  _reconcile_convergence` re-derives the record from `solver.log`, and
+  `solver.log` is stdout+stderr concatenated by the parent, so `solver_converged`
+  graded **0.0 FAIL** on all three runs. Nothing was ever published wrongly.
+  A wrong line under a right verdict has nothing to make it fall over.
+
+### The defence
+
+**Ask what channel the evidence travels on, and prove you are reading it — by
+producing the evidence on purpose.** The new self-test rows do not mock a log
+string; they run a fake engine that writes the banner to fd 1 and the warning to
+fd 2 with `os.write`, and grade the capture:
+
+```
+capture-reads-fd-2              the capture is 181 chars and carries it
+captured-fd-2-warning-goes-red  trustworthy=False
+capture-keeps-fd-1              banner and Energy line still present
+```
+
+Deleting the one added `dup2` turns the first two red — `77 chars and DOES NOT
+CARRY it`, `trustworthy=True` — which is exactly the failing form, and exactly
+what three published runs had been printing. The third row exists because a fix
+that gains fd 2 by losing fd 1 would satisfy the first two.
+
+**The question to ask:** when a check reads *someone else's output*, what
+produced the bytes, and would the thing you are looking for have been able to
+reach you? Write a case that emits it deliberately. A checker that has never
+once seen the string it searches for is not known to be able to find it.
+
+---
+
 ## The inverse: measure the thing the tool cannot lie about
 
 *Added 2026-09-05. Every other section here is about a report that cannot be
