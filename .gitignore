@@ -7,3 +7,10 @@ __pycache__/
 # Leif's verbatim words — personal, project-local record (leifsays convention)
 /trash/
 *.kicad_pro.lck
+
+# Build scratch from the fab pipeline. The ZIP is the deliverable and is
+# tracked; the loose gerber tree and KiCad's per-session files are regenerated
+# by `bin/halo pack` and carry no information the zip does not.
+electronics/halo_replica/fab/out/gerber/
+electronics/halo_replica/fab/out/cpl-kicad.csv
+electronics/halo_replica/fab/out/*.kicad_prl
