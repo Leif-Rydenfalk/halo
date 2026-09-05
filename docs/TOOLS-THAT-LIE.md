@@ -759,3 +759,49 @@ side effect of the work that the tool does not mediate — a file's size, a
 timestamp, a count on the far side. It cannot be wrong about something it does
 not know it is producing.
 
+
+---
+
+## 10 · A prediction that wears the word "measured"
+
+The nine directions above are all about a tool reporting its own state
+inaccurately. This one is different, and it is the most dangerous of them,
+because no tool malfunctioned at all.
+
+The rt2 antenna spec justified its geometry like this:
+
+> *"The law is f ~ 1/L at fixed eps_eff: measured 2.5565 GHz, target
+> 2.4418 GHz, so scale 1.04696."*
+
+Every `verdict.json` in `ce-rf/out/` was searched for a row between 2.55 and
+2.56 GHz. **There is none.** The number is `2.6763 × (24.491 / 25.641)` — the
+scaling law's own prediction, from the previous case's real measurement,
+recorded in the vocabulary of an observation and then used as the input to the
+next scaling.
+
+**Why this survives review when a wrong number would not.** A wrong measurement
+is falsifiable: solve again, get a different figure, and the disagreement is
+visible. A prediction labelled *measured* is not falsifiable, because it was
+computed by the same model that is about to consume it. It will agree with the
+model every time. The loop is closed, and a closed loop can run forever
+producing confident, self-consistent, entirely fictional convergence.
+
+The measured cost here was three solves — roughly forty minutes of FDTD — spent
+scaling a resonator that, as the same three solves proved, does not respond to
+the parameter being scaled.
+
+**The tell, and it is textual.** Provenance and value were stored in the same
+sentence, in prose, where nothing checks them. The word *measured* was doing
+the work of a citation while carrying none of a citation's obligations: no case
+name, no file, no row.
+
+**The rule.** *Every number a design step consumes must name the artifact it
+came from.* Not the tool that produced it, not the law that relates it — the
+file and the row. `2.6763 GHz (halo-rev-a-2g4-meander9-bare, f_series_res_GHz)`
+cannot be a prediction, because a prediction has no row to point at. If a value
+is derived, write it as derived and show the arithmetic; if it is measured, name
+the verdict it is measured in.
+
+**The teeth:** `tools/check_spec_premises.py` reads every `measured <N> GHz`
+claim out of every spec's `why` and requires a verdict row on disk within
+tolerance. rt2 is the case that motivated it and the case it fails on.
