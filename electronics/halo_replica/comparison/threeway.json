@@ -52,7 +52,17 @@
         "why": "Apple's diameter is a bound 1.39 mm wide and BOTH our boards sit inside it — 26.0000 and 25.1593. You cannot rank fidelity against a bound that contains both candidates. The Replica's number is nearer the bound's centre, and that is a fact about arithmetic, not about Apple.",
         "would_settle": "a caliper on a bare MLB, or a scale-referenced edge-on photograph. Optical measurement from the existing frames cannot do it — M02 already established the two axes do not share a scale."
       },
-      "also": []
+      "also": [],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "SAME",
+          "note": "26.0000 inside Apple's 24.95-26.34 bound"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "25.1593 inside the same bound"
+        }
+      }
     },
     {
       "n": 2,
@@ -99,7 +109,17 @@
           "winner": "halo_rev_a",
           "why": "the notches key the board to the carrier so it can only go in one way. The Replica's chords carry no such function and no tolerance — CLOSING.md says plainly the silhouette 'cannot be dimensioned or toleranced'."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "three 26-degree keying notches Apple's board does not have"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "fitted to Apple's own edge, residual sd 0.2771 mm"
+        }
+      }
     },
     {
       "n": 3,
@@ -152,7 +172,17 @@
           "winner": "halo_rev_a",
           "why": "GOAL.md asks for a block 'easy for everyone to integrate into their own pcbs'. A 0.30 mm board whose own reference source broke solder joints lifting it is not that."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "0.60 against 0.30 - twice"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "0.30 as-drawn, matching the reported figure"
+        }
+      }
     },
     {
       "n": 4,
@@ -200,7 +230,17 @@
           "winner": "n/a",
           "why": "THIS ROW DISAGREES WITH THE PRIOR COMPARISON AND THE DISAGREEMENT IS AN UPGRADE. docs/COMPARISON.md pcb row 3 grades this CANNOT DETERMINE — 'halo's 4 is measured; Apple's 4 is a guess nobody has confirmed'. That was correct when written. The delayering evidence arrived afterwards, so the row can now be graded and it grades as a match. One of the three CANNOT DETERMINE rows in the prior PCB comparison is closed by this lane's work."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "SAME",
+          "note": "4 = 4"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "4 = 4"
+        }
+      }
     },
     {
       "n": 5,
@@ -253,7 +293,17 @@
           "winner": "n/a",
           "why": "the Replica's win is bounded: the facet SIDE WALLS are not measured. Each facet ends where the boundary crosses 0.30 mm from the superellipse, which is not where the wall is. A perpendicular-edge detector would close it."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "solid disc against an annular board"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "annular, superellipse + 7 facets"
+        }
+      }
     },
     {
       "n": 6,
@@ -305,8 +355,28 @@
           "on": "G",
           "winner": "halo_rev_a",
           "why": "GOAL.md asks for a block anyone can drop into their own board in any outline. A block whose radio only works with a custom moulded carrier is not distributable. D16 already names the residual limit: the keep-out has to travel as WORDS an integrator reads and applies. THIS IS THE STRONGEST rev_a SURVIVOR IN THE FILE — stronger than the deleted amplifier D23 predicted."
+        },
+        {
+          "on": "RF PERFORMANCE",
+          "winner": "CANNOT DETERMINE FOR BOTH, AND THE PRIOR COMPARISON OVERSTATES rev_a",
+          "why": "spec/comparison.json components row 15 credits AE1 with 'ce-rf models +0.521 dBi, 3.7 dB above Apple's published figure'. rev_a's OWN board.py, under a heading WHAT THIS BOARD DOES NOT CLAIM, says the opposite: the element is 'a PARAMETRIC PLACEHOLDER at a length computed from a quarter wavelength', lane T3's two round-board cases 'resonate at 4.0 and 5.8 GHz instead of 2.44' on a diameter-30 outline that is not this board, and 'Its S11 is CANNOT DETERMINE until ce-rf measures THIS copper. It is not asserted to work.' THE GAIN FIGURE MUST NOT BE QUOTED AS A rev_a ADVANTAGE. Apple's -3.2 dBi is a published measurement of a shipped antenna; rev_a's number is a model of a placeholder. This lane takes rev_a's own file over the generated comparison page, and the Replica has no antenna to compare at all."
+        },
+        {
+          "on": "naming",
+          "winner": "n/a",
+          "why": "rev_a's board.py calls AE1 three things in three places - 'the meandered quarter-wave monopole' (l.820), 'the inverted-F drawn here' (l.86) and 'an inverted-L monopole' (l.324) - and spec/comparison.json calls it 'a rim inverted-F'. The owner's relayed description is a NINE-TOOTH MEANDER spanning R11.192-R12.200 with a 24.49100 mm conductor. A meandered monopole and an inverted-F are different topologies with different counterpoise requirements. NOT CORRECTED HERE - halo_rev_a is another live session's file and this lane only reads it. ROUTED to the orchestrator. What would settle it: the owner naming AE1 once, in one place, and the generated page regenerating from it."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "a nine-tooth meander in board copper Apple has nowhere"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "no antennas in copper, which is what Apple's board has"
+        }
+      }
     },
     {
       "n": 7,
@@ -357,7 +427,17 @@
           "winner": "halo_rev_a",
           "why": "rev_a can be tapped by a phone. The Replica has no NFC antenna and no phone will ever read it."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "etched 2-turn coil at R10.043-10.825 against Apple's wound wire at R4.690-5.417"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "refused to draw wire as copper"
+        }
+      }
     },
     {
       "n": 8,
@@ -404,7 +484,17 @@
           "winner": "halo_rev_a",
           "why": "a footprint you can place a part on beats a rectangle drawn from a photograph, and rev_a's height check FAILS on 4 rows with the rows named — a failure you can read is worth more than a drawing that cannot fail."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "EQUIVALENT",
+          "note": "same package classes for the same stated reason - height, not money"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "the largest body on the board is absent by name; M08 CANNOT DETERMINE"
+        }
+      }
     },
     {
       "n": 9,
@@ -457,7 +547,17 @@
           "winner": "n/a",
           "why": "bom/bom.json states the rule that makes this row readable: 'the four that halo deleted (flash, amplifier, op-amp, load switch) are all CITED, which is not a coincidence and is not evidence.' The four parts halo could most easily delete are the four nobody has photographed well enough to see."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "flash, its LDO and its load switch all deleted (D18)"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "the package was never separated from the soldermask"
+        }
+      }
     },
     {
       "n": 10,
@@ -505,7 +605,17 @@
           "winner": "TIE AT ZERO",
           "why": "neither board carries either part. rev_a deleted them with a numbered decision and an arithmetic argument; the Replica could not see them. Only one of those is a design."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "amplifier and op-amp deleted (D11a)"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "both are neutral-black packages in the CANNOT DETERMINE set"
+        }
+      }
     },
     {
       "n": 11,
@@ -552,7 +662,17 @@
           "winner": "CANNOT DETERMINE",
           "why": "the Replica cannot claim to have replicated Apple's motor while E02 leaves open whether the coil it measured is the motor at all."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "piezo bender for a voice-coil motor nobody sells"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "E02 leaves open whether the measured coil is the motor at all"
+        }
+      }
     },
     {
       "n": 12,
@@ -599,7 +719,17 @@
           "winner": "Apple",
           "why": "Apple senses at ~50 nA; rev_a's 4.7M/4.7M divider draws 319 nA — 6.4x more, continuously, from a cell whose whole budget this project argues about in microamps. Neither of our boards beats Apple on this number and the Replica does not have one."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "SAME",
+          "note": "three contacts, two rails, one sensed - Apple's scheme"
+        },
+        "replica": {
+          "verdict": "UNSTARTED",
+          "note": "the contacts are on Apple's BACK face and that face was never drawn"
+        }
+      }
     },
     {
       "n": 13,
@@ -647,7 +777,17 @@
           "winner": "halo_rev_a",
           "why": "six fewer solder joints, and the six it removed are the ones Catley reports tearing: 'Removing the PCB is likely to cause damage due to the thin PCB and being soldered to the plastic tray.' A divergence from Apple that is straightforwardly better."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "SAME",
+          "note": "no connectors, and six fewer solder joints than Apple"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "rim pad count CANNOT DETERMINE and closed - no joint count to be right about"
+        }
+      }
     },
     {
       "n": 14,
@@ -695,7 +835,17 @@
           "winner": "halo_rev_a",
           "why": "rev_a replaces the function rather than the part: Bluetooth Channel Sounding on the nRF54L10 ranges tag-to-tag, which is the capability Leif actually asked for and which Apple's Precision Finding does not provide at any price. Section 3 of GOAL.md is answered by rev_a and untouched by the Replica."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "MISSING",
+          "note": "no UWB radio; the part is not sold to anyone"
+        },
+        "replica": {
+          "verdict": "MISSING",
+          "note": "U1 unpopulated and its footprint not drawn - size swings 6.735->7.891 mm on padding"
+        }
+      }
     },
     {
       "n": 15,
@@ -742,7 +892,17 @@
           "winner": "halo_rev_a",
           "why": "the divergence is what delivers GOAL.md section 3. Channel Sounding is peer ranging; nRF52832 has none."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "nRF54L10 for nRF52832, on a stated and priced reason (D12)"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "the processor has no footprint on this board"
+        }
+      }
     },
     {
       "n": 16,
@@ -790,7 +950,17 @@
           "winner": "CANNOT DETERMINE",
           "why": "whether 40 uF is enough is not a fidelity question, it is a hold-up question, and nobody has measured it. WOULD SETTLE IT: a brown-out test across battery removal on real hardware, which is a bench measurement neither board has had."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "40 uF against 500 uF - one twelfth"
+        },
+        "replica": {
+          "verdict": "UNSTARTED",
+          "note": "all five are on Apple's BACK face, never drawn"
+        }
+      }
     },
     {
       "n": 17,
@@ -837,7 +1007,17 @@
           "winner": "CANNOT DETERMINE",
           "why": "the Replica has not drawn the face, so it cannot be scored. The pad count is knowable — oflynn-frontside-tpnames.jpg carries all 38 already annotated — which makes this an unstarted job rather than a measurement limit."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "11 named TPs + TC2030 with a published pinout against ~38 undocumented pads"
+        },
+        "replica": {
+          "verdict": "UNSTARTED",
+          "note": "the TP field is on Apple's BACK face, never drawn"
+        }
+      }
     },
     {
       "n": 18,
@@ -885,7 +1065,17 @@
           "winner": "n/a",
           "why": "WHICH gold finish stays CANNOT DETERMINE for Apple. ENIG, ENEPIG, immersion gold and hard gold are indistinguishable by hue in a JPEG. XRF or a cross-section would separate them."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "no finish field in the DFM output this lane read"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "ENIG, a choice inside a measured gold-bearing bound"
+        }
+      }
     },
     {
       "n": 19,
@@ -927,7 +1117,17 @@
         "why": "Apple's mask colour is not known and the Replica's black is explicitly a choice rather than a match. A choice inside a bound cannot be graded against the bound.",
         "would_settle": "the board photographed beside a colour checker, or in hand."
       },
-      "also": []
+      "also": [],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "no colour field in the DFM output this lane read"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "Apple's own mask colour is CANNOT DETERMINE, so nothing can match it"
+        }
+      }
     },
     {
       "n": 20,
@@ -969,7 +1169,17 @@
         "why": "Putting 'U1 IS UNPOPULATED' on the copper rather than only in a file is the one place the Replica applies this project's own standard to a physical artifact: a fact a person can find without reading the repository. rev_a's DataMatrix is the better production mark; the Replica's legend is the better honesty mark, and they are not competing.",
         "would_settle": null
       },
-      "also": []
+      "also": [],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "EQUIVALENT",
+          "note": "DataMatrix against human-readable silkscreen - same purpose"
+        },
+        "replica": {
+          "verdict": "DIVERGED",
+          "note": "prints U1 IS UNPOPULATED; prints neither 820-01736-A nor a data code"
+        }
+      }
     },
     {
       "n": 21,
@@ -1017,7 +1227,17 @@
           "winner": "n/a",
           "why": "Apple's BOM cost is unknowable from here — nine of eighteen lines have no part number — so no fidelity comparison on cost is possible for EITHER board. The $29 is a retail price, not a bill of materials, and must never be differenced against $6.146."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "Apple's BOM cost is unknowable - 9 of 18 lines have no part number"
+        },
+        "replica": {
+          "verdict": "CANNOT DETERMINE",
+          "note": "same wall, and no cost of its own either"
+        }
+      }
     },
     {
       "n": 22,
@@ -1065,7 +1285,17 @@
           "winner": "halo_replica",
           "why": "and this is the row that shows why fidelity and buildability genuinely conflict rather than merely differing: the Replica is unbuildable BECAUSE it is faithful. 0.30 mm is exactly the number that puts it under both floors."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "DIVERGED",
+          "note": "0.60 mm is orderable; Apple's build is out of scope for a capability page"
+        },
+        "replica": {
+          "verdict": "SAME",
+          "note": "0.30 mm as-drawn, and unbuildable BECAUSE it is faithful"
+        }
+      }
     },
     {
       "n": 23,
@@ -1111,7 +1341,17 @@
           "winner": "halo_replica",
           "why": "the Replica's controls are stronger than rev_a's on the axis it does measure. Nine of its own defects were found by controls rather than by inspection, every break flag has been watched going red, and it publishes a per-degree map of where it disagrees with its own reference. rev_a has nothing equivalent for the question 'how close is this to the AirTag'."
         }
-      ]
+      ],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "n/a",
+          "note": "not a fidelity axis - it is about what our artifacts are"
+        },
+        "replica": {
+          "verdict": "n/a",
+          "note": "not a fidelity axis"
+        }
+      }
     },
     {
       "n": 24,
@@ -1152,7 +1392,113 @@
         "why": "COVERAGE IS PART OF FIDELITY AND THE REPLICA HAS HALF A BOARD. rev_a accounts for every function of Apple's board across 34 graded rows with nothing blank; the Replica accounts for one face with its most important parts absent by name. A faithful drawing of half the object is not a more faithful object.",
         "would_settle": "the back face, from oflynn-frontside-fullres.jpeg (2347x2344) which already carries the contacts, the coil, the five bulk capacitors and all 38 annotated test points. THIS IS THE SINGLE HIGHEST-VALUE JOB IN THE REPLICA AND IT IS NOT BLOCKED ON ANYTHING."
       },
-      "also": []
+      "also": [],
+      "fidelity": {
+        "rev_a": {
+          "verdict": "SAME",
+          "note": "two populated faces, 34 graded rows, nothing blank"
+        },
+        "replica": {
+          "verdict": "UNSTARTED",
+          "note": "one face of two"
+        }
+      }
     }
-  ]
+  ],
+  "fidelity_vocabulary": {
+    "SAME": "the same thing, or inside the bound Apple's own value is known to within. No departure.",
+    "EQUIVALENT": "a different realisation doing the same job to the same specification.",
+    "DIVERGED": "a deliberate difference from what Apple built. Includes functions DELETED.",
+    "MISSING": "the function is absent and nothing replaces it.",
+    "CANNOT DETERMINE": "MEASURED AND NOT SETTLED. An attempt was made, it is on record, and what would settle it is named.",
+    "UNSTARTED": "NOT ATTEMPTED. Distinct from CANNOT DETERMINE and the distinction is the point of the count below: an unstarted axis is a job, a CANNOT DETERMINE is a limit."
+  },
+  "the_accumulation": {
+    "_why_this_section_exists": "THE-DRIFT.md's own prescribed fix, verbatim: 'A divergence budget, made visible. That count belongs on the convergence scoreboard as a tracked row with a stated ceiling, so the thirteenth divergence is visibly the thirteenth rather than just the next one. A ratchet with no counter is how you get here.' This is the counter. It is computed from the rows above by tools/k_threeway.py, not typed.",
+    "the_ceiling": "THERE IS NO CEILING, because nobody has set one. THE-DRIFT.md asks for 'a stated ceiling' and no document in this repo states a number. That is an open product decision and it is routed to the orchestrator, not decided here.",
+    "what_the_count_says": [
+      "halo_rev_a departs from Apple on 13 of the 24 axes (12 DIVERGED + 1 MISSING). D23's own sentence says halo 'had diverged from the AirTag in seven places'. The full three-way count is nearly double that. THE RATCHET WAS WORSE THAN THE DOCUMENT THAT NAMED IT — which is exactly what a ratchet with no counter does.",
+      "halo_replica matches Apple on 9 axes and HAS NO ANSWER ON 12 (8 CANNOT DETERMINE + 4 UNSTARTED). Half the table.",
+      "AND THE NINE MATCHES ARE ALL IN ONE REGION. Outline, shape, thickness, layer count, centre hole, finish, and the three refusals where the right answer was to draw nothing. THE REPLICA MATCHES APPLE ON THE BARE BOARD AND HAS NO ANSWER ON ALMOST ANYTHING MOUNTED TO IT. That is a true and useful object; it is not a replica of the AirTag's internals, which is what was asked for.",
+      "The four UNSTARTED axes are one job, not four: Apple's BACK face has never been drawn. Battery contacts, the five bulk capacitors, the ~38 test points and half the coverage all sit on it, and oflynn-frontside-fullres.jpeg (2347x2344) already carries every one of them. It is the highest-value unblocked work in this lane by a wide margin."
+    ],
+    "goal_reread": {
+      "_the_check_THE_DRIFT_asked_for": "'Periodically read GOAL.md and ask one question in writing: does what we are building still answer this? Record the answer even when it is yes, because a check that only produces output when something is wrong is a check nobody trusts.' Run here, 2026-09-05, against the accumulation rather than against any single row.",
+      "GOAL_1_a_perfect_copy_of_the_AirTag_internals": "NEITHER OBJECT ANSWERS THIS, and they fail it in opposite directions. rev_a is a functional equivalent with 13 named departures. The Replica is a faithful substrate with the electronics absent — it matches the board and not the internals, and 'internals' is the word Leif used. ANSWER: NO, for both, for different reasons.",
+      "GOAL_2_an_embeddable_block_not_only_a_puck": "rev_a answers it: a KiCad hierarchical block with the antenna in its own copper, which is exactly why row 6's fidelity loss is a GOAL win. The Replica cannot answer it and cannot be made to — it has no schematic, no netlist and no nets, so there is no block to embed. ANSWER: YES for rev_a, STRUCTURALLY NO for the Replica.",
+      "GOAL_3_local_relative_position_between_Leifs_own_devices": "rev_a answers it with Bluetooth Channel Sounding on the nRF54L10 — the one capability in the whole comparison that Apple does not provide at any price. The Replica does not address it. ANSWER: YES for rev_a, NOT ADDRESSED by the Replica.",
+      "CONSTRAINT_cost_is_a_first_class_spec": "rev_a is priced at 10/100/1000/10000 against a dated catalogue and FAILS honestly at two of them on stock. The Replica has no cost, no sourced part, and a board that is not orderable at either house. ANSWER: YES for rev_a, NO for the Replica.",
+      "the_conclusion_and_it_revises_THE_DRIFT": "THE-DRIFT.md says halo 'built the wrong thing while every step was right'. Measured against GOAL.md rather than against the AirTag, THAT IS TOO HARSH ON rev_a AND TOO KIND TO THE PROCESS. rev_a answers three of GOAL.md's four stated aims and is the only one of the two objects that answers any of them. What actually went wrong is narrower and worse: Leif asked for BOTH — 'so create many different versions including one which is a perfect recreation' — and the project built the equivalent and did not build the recreation until he said so twice. The defect was never that rev_a diverged. It was that the recreation was not also built, and that nothing counted the divergences while it wasn't.",
+      "and_the_risk_in_this_very_document": "The failure THE-DRIFT.md describes is a sequence of locally-correct judgements arriving somewhere nobody chose. THIS FILE COULD REPEAT IT by letting 'closer to Apple' accumulate into 'better'. It does not: on the primary axis of each row halo_rev_a wins 12 and halo_replica wins 7. The Replica's wins are real and they are concentrated in one region of the board, and this document says so in the same breath as it counts them."
+    }
+  },
+  "reconciliation_with_the_prior_comparison": {
+    "_what": "The brief's instruction: read out/comparison/ and docs/COMPARISON.md and say whether these numbers agree, and where they do not. They mostly agree. Three rows do not, and one of the three matters.",
+    "denominators_are_not_the_same_and_must_not_be_differenced": "docs/COMPARISON.md grades 34 rows (22 component + 12 PCB) and counts 18 DIVERGED + 2 MISSING = 20 departures. This file grades 24 axes and counts 12 DIVERGED + 1 MISSING = 13. THESE ARE NOT THE SAME MEASUREMENT AND 20 vs 13 IS NOT A CHANGE. The prior page grades parts; this page grades axes, and one axis can hold several parts (row 9 holds Apple's flash, its LDO and its load switch, which are three rows there and one here).",
+    "agree": [
+      "6 of 18 Apple BOM lines carry a usable manufacturer part number; 9 of 18 carry none at all. Not re-derived here and not disputed - it is a BOM fact, not a board fact, and it remains the real ceiling on 'recreating it exactly', higher than the U1 wall.",
+      "Board thickness DIVERGED for rev_a, with D17's reason. Agreed, and this file adds that the Replica's faithful 0.30 mm is what makes it unorderable.",
+      "Connectors SAME, battery contacts SAME, populated sides SAME. Agreed on all three.",
+      "The U1 wall. Agreed, and unchanged: neither board has a UWB radio and the part is not sold."
+    ],
+    "disagree": [
+      {
+        "row": "PCB row 3, layer count",
+        "prior": "CANNOT DETERMINE - 'halo's 4 is measured; Apple's 4 is a guess nobody has confirmed'",
+        "now": "SAME. Apple's 4 is COUNTED from a published physical delayering, and the superposition reading that would have made those four files carry no count was falsified at a named spot.",
+        "why_it_changed": "the evidence arrived after that page was generated. The prior verdict was correct for its state of knowledge. THIS CLOSES ONE OF THE PRIOR PAGE'S THREE CANNOT DETERMINE PCB ROWS."
+      },
+      {
+        "row": "PCB row 1, outer diameter",
+        "prior": "SAME - '26.0000 mm on the major axis, inside Apple's stated ~26 mm'",
+        "now": "SAME, but on a different basis. Apple's '~26 mm' has since been retracted (E04 -> E05: four methods that could not disagree, because all four applied a scalar px/mm to an anisotropic projection). Apple's OD is now a BOUND 24.95-26.34 mm with a signed downward expectation. rev_a's 26.0000 is still inside it. THE VERDICT SURVIVES; THE REASON UNDER IT DOES NOT."
+      },
+      {
+        "row": "components row 15, the 2.4 GHz antenna",
+        "prior": "'AE1 - a rim inverted-F... ce-rf models +0.521 dBi, 3.7 dB above Apple's published figure'",
+        "now": "CONTRADICTED BY rev_a's OWN FILE on both halves. Topology: board.py builds 'the meandered quarter-wave monopole' and the owner describes a nine-tooth meander. Performance: board.py's WHAT THIS BOARD DOES NOT CLAIM section says the element is a parametric placeholder, that lane T3's round-board cases resonate at 4.0 and 5.8 GHz instead of 2.44 on a different outline, and that 'Its S11 is CANNOT DETERMINE until ce-rf measures THIS copper. It is not asserted to work.'",
+        "why_it_matters": "IT IS THE ONE ROW WHERE THE PRIOR PAGE CLAIMS rev_a BEATS APPLE ON A PHYSICAL NUMBER, and rev_a's own source file withdraws it. Apple's -3.2 dBi is a measurement of a shipped antenna; +0.521 dBi is a model of a placeholder. Comparing them was never valid.",
+        "not_fixed_here": "halo_rev_a and spec/comparison.json belong to other live sessions. Read, not written. Routed to the orchestrator."
+      }
+    ],
+    "what_this_file_adds_that_the_prior_one_could_not": [
+      "A THIRD COLUMN. The prior page is Apple vs halo. Nothing had ever set our two boards against each other, which is the only way to ask whether a divergence was worth making.",
+      "A NAMED JUDGING AXIS PER ROW. The prior page's verdicts (SAME/EQUIVALENT/DIVERGED) describe a relationship; they never say which object is better, so 'DIVERGED' reads as a demerit even on the five rows where the divergence is the right call.",
+      "A DIVERGENCE COUNTER. THE-DRIFT.md asked for one and nothing had built it.",
+      "THE UNSTARTED / CANNOT DETERMINE SPLIT. The prior page has no way to say 'nobody has tried yet', so the Replica's four unstarted axes would have been filed as limits rather than as the one job they actually are."
+    ],
+    "anchors": [
+      {
+        "file": "electronics/halo_rev_a/board.py",
+        "quote": "It is not asserted to work.",
+        "claim": "rev_a's own file withdraws any performance claim for AE1"
+      },
+      {
+        "file": "electronics/halo_rev_a/board.py",
+        "quote": "4.0 and 5.8 GHz instead of 2.44",
+        "claim": "lane T3's round-board cases resonate off band, on a different outline"
+      },
+      {
+        "file": "electronics/halo_rev_a/board.py",
+        "quote": "the meandered quarter-wave monopole",
+        "claim": "board.py builds a meandered monopole"
+      },
+      {
+        "file": "spec/comparison.json",
+        "quote": "3.7 dB above Apple's published figure",
+        "claim": "the prior page does claim rev_a beats Apple's antenna by 3.7 dB"
+      },
+      {
+        "file": "spec/comparison.json",
+        "quote": "a rim inverted-F ETCHED",
+        "claim": "the prior page does call AE1 an inverted-F"
+      },
+      {
+        "file": "spec/comparison.json",
+        "path": "pcb.2.verdict",
+        "expect": "CANNOT DETERMINE",
+        "claim": "the prior page does grade the layer count CANNOT DETERMINE"
+      }
+    ]
+  }
 }

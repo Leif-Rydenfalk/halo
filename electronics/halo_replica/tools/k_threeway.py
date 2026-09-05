@@ -42,6 +42,8 @@ So the breaks below are chosen to attack the COMPARISON's strictness rather than
     N5  a path that does not exist                    Must be CANNOT DETERMINE. Never PASS, never FAIL.
     N6  a file that does not exist                    Must be CANNOT DETERMINE. Never PASS, never FAIL.
     N7  one character removed from a quote anchor     Must FAIL.
+    N9  a fidelity verdict outside the vocabulary. It would be dropped from the divergence
+        count in silence - the ratchet-with-no-counter failure. Must FAIL.
     N8  POSITIVE CONTROL ON RESOLUTION. The one that separates this tool from a broken one:
         a second, independent reader (plain json.load and hand indexing, no shared code with
         resolve()) reads three real anchors and must get the same values resolve() got, AND
@@ -51,7 +53,7 @@ So the breaks below are chosen to attack the COMPARISON's strictness rather than
 VERBS
     check       resolve every anchor. Exit code is the verdict.
     render      write comparison/THREE-WAY.md from the same file.
-    selftest    run the eight breaks above and require each to go the colour it must.
+    selftest    run the nine breaks above and require each to go the colour it must.
 """
 import sys, os, json, re, argparse, copy
 
@@ -166,11 +168,46 @@ def check_cell(row_n, side, cell, root=HALO):
             "why": f"{a['file']}:{a['path']} is {got!r} ({type(got).__name__}), table says {want!r} ({type(want).__name__})",
             "got": got, "anchor": a}
 
+def check_fidelity(doc):
+    """Every row must carry a fidelity verdict per side, drawn from the stated vocabulary.
+
+    This is the divergence counter's own guard. A verdict outside the vocabulary would be
+    silently dropped from the tally, and a tally that quietly loses rows is exactly the
+    ratchet-with-no-counter THE-DRIFT.md describes. Break N9 watches it go red.
+    """
+    ok = set(doc.get("fidelity_vocabulary", {})) | {"n/a"}
+    out = []
+    for row in doc["rows"]:
+        f = row.get("fidelity")
+        if not f:
+            out.append({"row": row["n"], "side": "fidelity", "verdict": "FAIL",
+                        "why": "row carries no fidelity verdict - it would vanish from the count"})
+            continue
+        for side in ("rev_a", "replica"):
+            v = f.get(side, {}).get("verdict")
+            if v not in ok:
+                out.append({"row": row["n"], "side": f"fidelity/{side}", "verdict": "FAIL",
+                            "why": f"verdict {v!r} is not in fidelity_vocabulary {sorted(ok)}"})
+    return out
+
+def tally_fidelity(doc):
+    t = {"rev_a": {}, "replica": {}}
+    for row in doc["rows"]:
+        for side in ("rev_a", "replica"):
+            v = row["fidelity"][side]["verdict"]
+            t[side][v] = t[side].get(v, 0) + 1
+    return t
+
 def check_table(doc, root=HALO):
     results = []
     for row in doc["rows"]:
         for side in SIDES:
             results.append(check_cell(row["n"], side, row[side], root))
+    results += check_fidelity(doc)
+    for i, a in enumerate(doc.get("reconciliation_with_the_prior_comparison", {}).get("anchors", [])):
+        r = check_cell(f"rec{i+1}", "prior-page", {"anchor": a}, root)
+        r["why"] = f"[{a['claim']}] " + r["why"]
+        results.append(r)
     counts = {"PASS": 0, "FAIL": 0, "CANNOT DETERMINE": 0}
     for r in results:
         counts[r["verdict"]] += 1
@@ -191,7 +228,7 @@ def cmd_check(args):
     print(f"ROOT : {HALO}")
     for r in results:
         if r["verdict"] != "PASS" or args.verbose:
-            print(f"  [{r['verdict']:>17}] row {r['row']:>2} {r['side']:<8} {r['why']}")
+            print(f"  [{r['verdict']:>17}] row {str(r['row']):>4} {r['side']:<14} {r['why']}")
     print(f"\n{counts['PASS']} PASS  {counts['FAIL']} FAIL  {counts['CANNOT DETERMINE']} CANNOT DETERMINE")
     print(f"VERDICT: {verdict}")
     return EXIT[verdict]
@@ -233,11 +270,12 @@ def cmd_render(args):
 
     # scoreboard
     W("## The scoreboard\n")
-    W("| # | axis | judged on | better | in one line |")
-    W("|--:|---|:-:|---|---|")
+    W("| # | axis | rev_a vs Apple | replica vs Apple | judged on | better | in one line |")
+    W("|--:|---|---|---|:-:|---|---|")
     for row in doc["rows"]:
-        b = row["better"]
-        W(f"| {row['n']} | {row['axis']} | {b['on']} | **{b['winner']}** | {_one(b['why'])} |")
+        b = row["better"]; f = row["fidelity"]
+        W(f"| {row['n']} | {row['axis']} | {f['rev_a']['verdict']} | {f['replica']['verdict']} | "
+          f"{b['on']} | **{b['winner']}** | {_one(b['why'])} |")
     W("")
     tally = {}
     for row in doc["rows"]:
@@ -246,6 +284,72 @@ def cmd_render(args):
       " · ".join(f"{k} **{v}**" for k, v in sorted(tally.items(), key=lambda kv: -kv[1])) + "\n")
     W("Secondary judgements — the rows where a second axis reverses the first — are in the "
       "row bodies below and are the substance of this document, not a footnote to it.\n")
+    W("---\n")
+
+    # ---- the divergence counter
+    acc = doc["the_accumulation"]
+    t = tally_fidelity(doc)
+    W("## The accumulation — the divergence counter\n")
+    W("*" + acc["_why_this_section_exists"] + "*\n")
+    order = ["SAME", "EQUIVALENT", "DIVERGED", "MISSING", "CANNOT DETERMINE", "UNSTARTED", "n/a"]
+    W("| | " + " | ".join(order) + " | departures | NO ANSWER |")
+    W("|---|" + "--:|" * (len(order) + 2))
+    for side in ("rev_a", "replica"):
+        cells = [str(t[side].get(k, 0)) for k in order]
+        dep = t[side].get("DIVERGED", 0) + t[side].get("MISSING", 0)
+        noans = t[side].get("CANNOT DETERMINE", 0) + t[side].get("UNSTARTED", 0)
+        W(f"| **halo_{side}** | " + " | ".join(cells) + f" | **{dep}** | **{noans}** |")
+    W("")
+    W("**THE TWO RIGHT-HAND COLUMNS MUST BE READ TOGETHER AND NEITHER MAY BE QUOTED ALONE.** "
+      "The Replica's 2 departures against rev_a's 13 looks like a rout and is not one: the "
+      "Replica also has NO ANSWER on 12 of 24 axes against rev_a's 3. An axis you never "
+      "answered cannot be a departure. Quoting the departure count on its own would be this "
+      "project's own headline-from-a-favourable-half failure, in the document written to "
+      "catch it.\n")
+    for k in order:
+        if k in doc["fidelity_vocabulary"]:
+            W(f"- **{k}** — {doc['fidelity_vocabulary'][k]}")
+    W("")
+    W("**The ceiling.** " + acc["the_ceiling"] + "\n")
+    W("### What the count says\n")
+    for line in acc["what_the_count_says"]:
+        W(f"- {line}")
+    W("")
+    W("### The GOAL.md re-read\n")
+    g = acc["goal_reread"]
+    W("*" + g["_the_check_THE_DRIFT_asked_for"] + "*\n")
+    for k, v in g.items():
+        if k.startswith("_"):
+            continue
+        if k.startswith("GOAL_") or k.startswith("CONSTRAINT_"):
+            W(f"**{k.replace('_', ' ')}** — {v}\n")
+    W("### The conclusion\n")
+    W(g["the_conclusion_and_it_revises_THE_DRIFT"] + "\n")
+    W("### And the risk in this very document\n")
+    W(g["and_the_risk_in_this_very_document"] + "\n")
+    W("---\n")
+
+    rec = doc["reconciliation_with_the_prior_comparison"]
+    W("## Reconciliation with the prior comparison\n")
+    W("*" + rec["_what"] + "*\n")
+    W("**Denominators.** " + rec["denominators_are_not_the_same_and_must_not_be_differenced"] + "\n")
+    W("### Where they agree\n")
+    for x in rec["agree"]:
+        W(f"- {x}")
+    W("")
+    W("### Where they do not\n")
+    for x in rec["disagree"]:
+        W(f"**{x['row']}**\n")
+        W(f"- *prior:* {x['prior']}")
+        W(f"- *now:* {x['now']}")
+        for k in ("why_it_changed", "why_it_matters", "not_fixed_here"):
+            if k in x:
+                W(f"- *{k.replace('_',' ')}:* {x[k]}")
+        W("")
+    W("### What this file adds that the prior one could not\n")
+    for x in rec["what_this_file_adds_that_the_prior_one_could_not"]:
+        W(f"- {x}")
+    W("")
     W("---\n")
 
     groups = []
@@ -271,6 +375,9 @@ def cmd_render(args):
                 sr = c["source"].replace("|", "\\|").replace("\n", " ")
                 W(f"| **{SIDE_LABEL[side]}** | {v} | {st} | {sr} |")
             W("")
+            f = row["fidelity"]
+            W(f"*Against Apple:* **halo_rev_a {f['rev_a']['verdict']}** — {f['rev_a']['note']}. "
+              f"**halo_replica {f['replica']['verdict']}** — {f['replica']['note']}.\n")
             b = row["better"]
             W(f"**Better on {b['on']}: {b['winner']}.** {b['why']}")
             if b.get("would_settle"):
@@ -290,7 +397,7 @@ def cmd_render(args):
     W("```bash")
     W("cd ce-designs/halo/electronics/halo_replica")
     W("python3 tools/k_threeway.py check -v      # every anchor, with its file and value")
-    W("python3 tools/k_threeway.py selftest      # 8 deliberate breaks, each watched going red")
+    W("python3 tools/k_threeway.py selftest      # 9 deliberate breaks, each watched going red")
     W("python3 tools/k_threeway.py render        # regenerate this page")
     W("```")
     W("")
@@ -375,6 +482,11 @@ def cmd_selftest(args):
     a["quote"] = a["quote"][:-1] + "Z"
     expect("N7", d, "FAIL", f"(row {row['n']} {side}: last character of the quote changed)")
 
+    # N9 a fidelity verdict outside the vocabulary - it would vanish from the divergence count
+    d = copy.deepcopy(base)
+    d["rows"][0]["fidelity"]["rev_a"]["verdict"] = "SORT OF"
+    expect("N9", d, "FAIL", "(row 1 rev_a: fidelity verdict not in the vocabulary)")
+
     # N8 POSITIVE CONTROL ON RESOLUTION.
     # Everything above would also pass on a resolve() that reads nothing and returns None.
     # This reads three real anchors with a SECOND, INDEPENDENT reader that shares no code
@@ -412,7 +524,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 8 breaks, each went the colour it had to.")
+    print("SELFTEST PASS - 9 breaks, each went the colour it had to.")
     return EX_PASS
 
 def main():
