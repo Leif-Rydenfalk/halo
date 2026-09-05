@@ -292,22 +292,63 @@ def b_no_part(t):
         "a fitted line names no LCSC code at all"
 
 
+# I7 needs a design record to compare against, and it must be a record for THIS
+# board: designators are bare strings, so without a board guard the control BOM's
+# C1 matches halo_rev_a's real 100 nF decoupling line and the check reports a
+# confident FAIL about a board it was never shown. That happened, on this control,
+# within a minute of I7 being written. The record below therefore names its own
+# board and the control BOM is named to match.
+GOOD_RESOLVED = {
+    "board": "provectrl",
+    "lines": [
+        {"refs": ["C1"], "value": "100pF", "verdict": "RESOLVED"},
+        {"refs": ["R1"], "value": "20k",   "verdict": "RESOLVED"},
+        {"refs": ["C2"], "value": "10uF",  "verdict": "RESOLVED"},
+        {"refs": ["R2"], "value": "100R",  "verdict": "RESOLVED"},
+    ],
+}
+
+
+def r_value_drift(d):
+    d = json.loads(json.dumps(d))
+    d["lines"][0]["value"] = "1nF"
+    return d, "the DESIGN record asks 1 nF on C1 and the BOM ships the 100 pF part"
+
+
+def r_unresolved(d):
+    d = json.loads(json.dumps(d))
+    d["lines"][0]["verdict"] = "CANNOT DETERMINE"
+    return d, "C1 is SHIPPING while its own design record grades it CANNOT DETERMINE"
+
+
+def r_other_board(d):
+    d = json.loads(json.dumps(d))
+    d["board"] = "some-other-board"
+    return d, "the design record is for a different board than the BOM"
+
+
+# (assertion, bom mutator or None, resolved mutator or None, expected verdict)
 BOM_CASES = [
-    ("part_resolves",      b_unknown_code,   "CANNOT DETERMINE"),
-    ("class_matches",      b_wrong_class,    "FAIL"),
-    ("value_matches",      b_wrong_value,    "FAIL"),
-    ("package_matches",    b_wrong_package,  "FAIL"),
-    ("one_code_one_value", b_code_two_values, "FAIL"),
-    ("line_has_a_part",    b_no_part,        "CANNOT DETERMINE"),
+    ("part_resolves",        b_unknown_code,    None,          "CANNOT DETERMINE"),
+    ("class_matches",        b_wrong_class,     None,          "FAIL"),
+    ("value_matches",        b_wrong_value,     None,          "FAIL"),
+    ("package_matches",      b_wrong_package,   None,          "FAIL"),
+    ("one_code_one_value",   b_code_two_values, None,          "FAIL"),
+    ("line_has_a_part",      b_no_part,         None,          "CANNOT DETERMINE"),
+    ("design_value_shipped", None,              r_value_drift, "FAIL"),
+    ("design_value_shipped", None,              r_unresolved,  "CANNOT DETERMINE"),
+    ("design_value_shipped", None,              r_other_board, "CANNOT DETERMINE"),
 ]
 
 BOMCHECK = HALO / "tools" / "check_bom_identity.py"
 
 
-def run_bom(path):
+def run_bom(path, resolved=None):
     out = pathlib.Path(tempfile.mkdtemp()) / "b.json"
-    subprocess.run([sys.executable, str(BOMCHECK), str(path), "--json", str(out), "--quiet"],
-                   capture_output=True, text=True)
+    cmd = [sys.executable, str(BOMCHECK), str(path), "--json", str(out), "--quiet"]
+    if resolved:
+        cmd += ["--resolved", str(resolved)]
+    subprocess.run(cmd, capture_output=True, text=True)
     try:
         return json.loads(out.read_text())
     except Exception:
@@ -323,10 +364,13 @@ def bom_verdicts(res, name):
 
 def prove_bom(results):
     d = pathlib.Path(tempfile.mkdtemp(prefix="halo-bom-"))
-    good = d / "good.csv"
+    good = d / "provectrl-BOM.csv"
     good.write_text(GOOD_BOM)
-    ctl = run_bom(good)
-    print("# prove_checks — BOM identity, 6 assertions on a hand-built correct BOM")
+    good_res = d / "resolved.json"
+    good_res.write_text(json.dumps(GOOD_RESOLVED))
+    ctl = run_bom(good, good_res)
+    print(f"# prove_checks — BOM identity, {len(BOM_CASES)} assertions on a "
+          "hand-built correct BOM")
     if ctl is None or ctl["verdict"] != "PASS":
         bad = [(r["designator"], c["name"], c["verdict"], c["why"])
                for r in (ctl or {}).get("rows", []) for c in r["checks"]
@@ -336,11 +380,18 @@ def prove_bom(results):
                         "why": f"control BOM verdict is {(ctl or {}).get('verdict')}, not PASS"})
         return 0, len(BOM_CASES)
     proved = 0
-    for name, mutate, want in BOM_CASES:
-        text, what = mutate(GOOD_BOM)
-        f = d / f"{name}.csv"
+    for i, (name, mutate, rmutate, want) in enumerate(BOM_CASES):
+        text, res = GOOD_BOM, GOOD_RESOLVED
+        what = ""
+        if mutate:
+            text, what = mutate(GOOD_BOM)
+        if rmutate:
+            res, what = rmutate(GOOD_RESOLVED)
+        f = d / f"{i}-provectrl-BOM.csv"
         f.write_text(text)
-        got = bom_verdicts(run_bom(f), name)
+        rf = d / f"{i}-resolved.json"
+        rf.write_text(json.dumps(res))
+        got = bom_verdicts(run_bom(f, rf), name)
         ok = want in got
         proved += ok
         results.append({"suite": "bom", "assertion": name, "mutation": what,

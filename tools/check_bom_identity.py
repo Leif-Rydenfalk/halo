@@ -35,6 +35,15 @@ The six assertions, each with the sentence it defeats:
   I4 package_matches      could PASS while an 0201 footprint orders an 0402 part
   I5 one_code_one_value   could PASS while one LCSC code serves six different values
   I6 line_has_a_part      could PASS while a populated line names no part at all
+  I7 design_value_shipped could PASS while the design asked for 1.1 nF and the
+                          BOM ships 1.0 nF — because I3 compares the BOM's OWN
+                          value column against the catalogue, and those two agree
+                          by construction whenever the BOM is internally
+                          consistent. Nothing here compared the shipped value
+                          against what the DESIGN asked for until 2026-09-05,
+                          which is what this tool's title claims to do. It reads
+                          spec/bom-resolved.json, the record that says what each
+                          line is FOR and whether it was ever resolved.
 """
 import argparse
 import csv
@@ -49,6 +58,7 @@ PASS, FAIL, CD = "PASS", "FAIL", "CANNOT DETERMINE"
 RANK = {PASS: 0, CD: 1, FAIL: 2}
 
 DEFAULT_DB = pathlib.Path.home() / "dev/ce-workshop/ce-fab/data/jlcparts-slim.sqlite3"
+HALO = pathlib.Path(__file__).resolve().parent.parent
 
 # designator prefix -> (what it is, the SI unit its value must carry)
 CLASS = {
@@ -183,6 +193,10 @@ def main():
     ap.add_argument("--quiet", action="store_true")
     ap.add_argument("--value-tol-pct", type=float, default=1.0,
                     help="how far the catalogue value may sit from the schematic value")
+    ap.add_argument("--resolved", default=str(HALO / "spec" / "bom-resolved.json"),
+                    help="the resolution record (what each line is FOR, and whether it "
+                         "was ever resolved). Absent -> I7 is CANNOT DETERMINE, named, "
+                         "for every line; never silently skipped")
     a = ap.parse_args()
 
     if not pathlib.Path(a.db).is_file():
@@ -327,6 +341,87 @@ def main():
         elif c:
             r["checks"].append({"name": "one_code_one_value", "verdict": PASS,
                                 "why": f"{c} serves exactly one value on this BOM"})
+
+    # ---- I7 design_value_shipped -------------------------------------------
+    # I3 asks "is the ordered part the value the BOM's own Value column claims".
+    # Those two agree by construction on any internally consistent BOM, so I3
+    # cannot see a line where the DESIGN asked for one value and the board ships
+    # another. This one can. Measured live on halo_rev_a 2026-09-05: C24/C25 ask
+    # 1.1 nF, the BOM ships 1.0 nF (C161371), and spec/bom-resolved.json grades
+    # that line CANNOT DETERMINE with part:null — because no 1.1 nF exists in
+    # 0201 in any dielectric and the fix is a coil change, not a part change.
+    # Every other assertion in this file passes that line.
+    res_path = pathlib.Path(a.resolved)
+    res_lines, res_err = [], None
+    if not res_path.is_file():
+        res_err = f"no resolution record at {res_path}"
+    else:
+        try:
+            res_doc = json.loads(res_path.read_text())
+            res_lines = res_doc.get("lines", [])
+            # IS THIS RECORD EVEN ABOUT THIS BOARD? Designators are bare strings:
+            # C1 means something on every board ever drawn. Without this guard the
+            # check happily grades one board's BOM against another board's design
+            # record and reports confident FAILs. That is not hypothetical — it
+            # fired on prove_checks' own hand-built control BOM within a minute of
+            # I7 being written, matching its C1/C2 against halo_rev_a's real 100nF
+            # decoupling lines. It is the "correct computation on the wrong board"
+            # failure bin/boardmetro's README was written about. L8 2026-09-05.
+            board = str(res_doc.get("board") or "").strip()
+            stem = pathlib.Path(a.bom).name
+            if not board:
+                res_err = (f"{res_path.name} names no board, so there is no way to "
+                           "tell whether it describes this BOM")
+            elif board not in stem:
+                res_err = (f"{res_path.name} is the design record for board {board!r}, "
+                           f"and this BOM is {stem!r} — refusing to compare designators "
+                           "across two different boards")
+        except (json.JSONDecodeError, OSError) as e:
+            res_err = f"{res_path} could not be read: {e}"
+    by_ref = {}
+    for rl in res_lines:
+        for ref in rl.get("refs", []):
+            by_ref[str(ref).strip()] = rl
+    for r in rows:
+        if any(c["name"] == "line_has_a_part" and c["verdict"] != PASS for c in r["checks"]):
+            pass
+        if res_err:
+            r["checks"].append({"name": "design_value_shipped", "verdict": CD,
+                                "why": res_err + " — so what the DESIGN asked for was "
+                                       "never compared with what is shipped"})
+            continue
+        refs = [x.strip() for x in r["designator"].split(",") if x.strip()]
+        hits = {id(by_ref[x]): by_ref[x] for x in refs if x in by_ref}
+        if not hits:
+            r["checks"].append({"name": "design_value_shipped", "verdict": CD,
+                                "why": f"no line in {res_path.name} covers {r['designator']}"})
+            continue
+        rl = list(hits.values())[0]
+        rv = str(rl.get("verdict", "")).upper()
+        if rv != "RESOLVED":
+            why = str(rl.get("why", ""))
+            r["checks"].append({"name": "design_value_shipped", "verdict": CD,
+                                "why": f"{res_path.name} grades this line {rl.get('verdict')!r} "
+                                       f"and it is SHIPPING anyway"
+                                       + (f" — {why[:220]}" if why else ""),
+                                "resolution_verdict": rl.get("verdict")})
+            continue
+        want, got = parse_value(str(rl.get("value", ""))), parse_value(r.get("value", ""))
+        if want is None or got is None or want[1] != got[1]:
+            r["checks"].append({"name": "design_value_shipped", "verdict": PASS,
+                                "why": f"design value {rl.get('value')!r} is not a "
+                                       "numeric quantity to compare"})
+        elif want[0] == 0 and got[0] == 0:
+            r["checks"].append({"name": "design_value_shipped", "verdict": PASS,
+                                "why": f"design asks {rl.get('value')}, BOM ships {r['value']}"})
+        elif want[0] == 0 or abs(got[0] - want[0]) / want[0] > a.value_tol_pct / 100.0:
+            r["checks"].append({"name": "design_value_shipped", "verdict": FAIL,
+                                "why": f"the DESIGN asks {rl.get('value')} and the BOM "
+                                       f"ships {r['value']} — a different value, not a "
+                                       f"different part number"})
+        else:
+            r["checks"].append({"name": "design_value_shipped", "verdict": PASS,
+                                "why": f"design asks {rl.get('value')}, BOM ships {r['value']}"})
 
     tally = {PASS: 0, FAIL: 0, CD: 0}
     for r in rows:
