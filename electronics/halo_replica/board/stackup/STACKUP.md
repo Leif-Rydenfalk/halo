@@ -296,15 +296,38 @@ optional.
 
 `s_colour.py` on `oflynn-backside-fullres.jpeg`:
 
-| region | n | RGB | **hue** | sat |
-|---|---|---|---|---|
-| **bare copper CONTROL** — wirewound inductor | 3312 | 173,120,90 | **21.8°** | 0.480 |
-| plated hole rim, right | 462 | 114,96,48 | **43.8°** | 0.575 |
-| plated hole rim, left | 948 | 131,107,57 | **40.5°** | 0.567 |
+**Two statistics, in order.** **Warm fraction** says whether the region is bare
+metal at all; **hue** then says which metal. The first version of this
+measurement reported hue only — over a *warm-pixel selection* — so it could
+never say "this region is grey", because the selection had already discarded
+the grey.
 
-**19–22° of hue separation from known bare copper in the same frame.** The rims
-are not copper and not OSP-over-copper. They are not HASL, immersion tin or
-immersion silver either — those are grey, R≈G≈B, with no warm pixels at all.
+| region | **warm %** | **hue** | sat | reading |
+|---|---|---|---|---|
+| **copper CONTROL** — the winding of a wirewound inductor | **64.9 %** | **21.8°** | 0.480 | bare metal, copper |
+| plated hole rim, right | **66.0 %** | **43.8°** | 0.575 | bare metal, gold-bearing |
+| plated hole rim, left | **98.8 %** | **40.5°** | 0.567 | bare metal, gold-bearing |
+| grey solder fillet — **negative control** | **4.6 %** | 35.0° | 0.413 | **not bare metal** |
+| dark soldermask — **negative control** | **8.8 %** | 52.9° | 0.187 | **not bare metal** |
+
+**The negative controls were asserted here for a day before anyone ran them.**
+This page used to say HASL, tin and silver are *"grey, R≈G≈B, with no warm
+pixels at all"*. Measured, both non-metal regions are rejected **by warm
+fraction** — 4.6 % and 8.8 % against a 40 % floor — and **not by hue**. On hue
+alone the dark soldermask sits at **52.9°, inside the gold band**: hue alone
+would have called soldermask a gold finish. The grey solder at 35.0° would have
+landed in the uncalled gap. One false positive and one refusal.
+
+*The control is the winding of a wirewound inductor — magnet wire, whose thin
+enamel reads as copper — not literally bare copper. The conclusion survives the
+enamel: any tint it adds pushes toward red, i.e. **lower** hue, widening the
+separation rather than creating it.*
+
+**19–22° of hue separation from the in-frame copper control, *and* both rims at
+66–99 % warm fraction against 4.6–8.8 % for the two non-metal controls.** The
+rims are bare metal and they are not copper. HASL, immersion tin and immersion
+silver are excluded because they are grey and fail the warm-fraction floor —
+which is now measured rather than asserted.
 
 **Still CANNOT DETERMINE: *which* gold finish.** ENIG, ENEPIG, immersion gold
 and hard gold are indistinguishable by hue in a JPEG. XRF or a cross-section
