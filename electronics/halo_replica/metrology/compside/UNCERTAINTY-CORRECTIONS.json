@@ -1,0 +1,64 @@
+{
+ "WHAT_THIS_IS": "A machine-readable correction to the registration uncertainty quoted in metrology/HANDOFF-positions-front.json and metrology/HANDOFF-positions-back.json. Those files are owned by lanes L1 and L9 and are outside lane L2's write scope, so this lane cannot edit them. It publishes the corrected figures here instead. WHOEVER OWNS THOSE FILES SHOULD CARRY THESE IN.",
+ "produced_by": "lane L2, component-side metrology",
+ "produced_utc": "2026-09-05T11:22:35+00:00",
+ "git_rev": "2cce63241304441478e1bb6804e04195c72b00bb",
+ "side_convention": "FRONT = the COMPONENT side (Apple's FCC caption 'MLB - Front'). O'Flynn's backside-fullres.jpeg IS this project's FRONT.",
+ "read_first": "metrology/compside/README.md, then R11 and R17.",
+ "corrections": {
+  "HANDOFF-positions-front.json": {
+   "field": "uncertainty.registration_holdout_mm",
+   "currently_states_mm": 0.1029,
+   "corrected_rms_mm": 0.1812,
+   "corrected_p95_mm": 0.2877,
+   "understated_by_factor": 1.76,
+   "quote_which": "RMS for the transform as a whole; p95 for any ONE component position.",
+   "source": "metrology/compside/R12-front-step8-off90.json",
+   "why_it_changed": [
+    "The published figure came from a 4-FOLD angular hold-out. With four 90-degree folds three quarters of the board still SURROUND every held-out sector, so the fit interpolates into a hole it is enclosing and never extrapolates. Holding out a HALF is the question a published position actually poses where landmarks are thin.",
+    "The result depends on SPLIT ORIENTATION - 0.1160 mm at offset 0 against 0.1812 at offset 90 - so a single orientation understates. The figure above is the worst over both.",
+    "The scale basis was photo 6's bottom rule measured AT THE RULE (15.887546 px/mm). The board does not sit on that rule; m_scale_at gives 15.6850 px/mm AT THE BOARD. Every front millimetre computed against the old default came out 1.29% SMALL."
+   ],
+   "measured_worst_fold": {
+    "rms_mm": 0.1812091645019392,
+    "p95_mm": 0.28766420565256956,
+    "landmarks_kept": 274,
+    "px_per_mm": 15.685,
+    "scale_basis": "metrology/scale-at-board-photo6.json - m_scale_at AT THE BOARD (952,678), bottom-rule and right-rule routes 0.228% apart, halfrange 0.0179 px/mm (lane L1, M02). THE SCALE IS TAKEN AT THE BOARD, not at either rule."
+   }
+  },
+  "HANDOFF-positions-back.json": {
+   "field": "uncertainty.registration_holdout_mm",
+   "currently_states_mm": 0.1256,
+   "corrected_rms_mm": 1.0258,
+   "corrected_p95_mm": 1.7029,
+   "understated_by_factor": 8.17,
+   "quote_which": "RMS for the transform as a whole; p95 for any ONE position.",
+   "source": "metrology/compside/R11-back-step8-off90.json",
+   "why_it_changed": [
+    "Same 4-fold interpolation problem, and the back face is far more sensitive to it: 0.1256 mm under 4 folds becomes 0.7050 at offset 0 and 1.0258 at offset 90.",
+    "It is NOT landmark coverage: tripling the landmarks from 58 to 192 changed the worst fold by under 10%, in both directions.",
+    "The 0.1256 mm figure remains valid as an INTERPOLATION error - i.e. for a position in a densely landmarked region. The corrected figure is the extrapolation error, which is what applies where coverage is thin. A published position sits between them."
+   ],
+   "measured_worst_fold": {
+    "rms_mm": 1.0258059363809215,
+    "p95_mm": 1.7028992226884694,
+    "landmarks_kept": 192,
+    "px_per_mm": 15.0719,
+    "scale_basis": "metrology/scale-at-board-photo7.json - m_scale_at at the board (932,752), bottom rule and right rule routes 0.45% apart, halfrange 0.0339 px/mm. THE SCALE IS MEASURED AT THE BOARD, not at the rule, so it does not carry the 1.29% rule-to-board error. *** THE ASSUMPTION THIS SHARES WITH ITS OWN HELD-OUT CONTROL: that the 920- sample board and the 820- production board have the same dimensions. A uniform dimensional difference between them is absorbed into the fitted scale and leaves the held-out residual COMPLETELY UNCHANGED, because the check divides both sides by the same number. Registration consistency is not scale accuracy. What would settle it: a caliper on one board of each part number. ***"
+   }
+  }
+ },
+ "what_none_of_these_numbers_say": "SCALE ACCURACY. A wrong px/mm divides both sides of every hold-out equally and cancels. Two things are therefore invisible to every figure in this file: the unresolved 2.07% disagreement between photo 6's bottom rule (15.8875) and its right rule (15.5651), and whether the FCC sample 920-08283-01 (2019 engineering) and the retail 820-01736-A (2020 production) - which ARE different physical boards - share dimensions. Only a caliper on one board of each part number settles the second.",
+ "open_causes_of_the_residual_misfit": {
+  "lens_distortion": "BOUNDED SMALL. The FCC rule edges are straight to 0.194 and 0.123 px over ~1250 px, neither clearing its null (R17). Caveat: measured where the RULE is (y~1131), not where the board is (~952,678).",
+  "board_not_flat": "OPEN and UNTESTED. R18's radial statistic is BLIND about the board centre - the landmarks occupy a narrow annulus (0.42R-0.95R) and give it no lever arm, so a dome injected at the full residual RMS still fails to clear the null.",
+  "two_different_boards": "OPEN. Invisible to every hold-out if the difference is uniform."
+ },
+ "reproduce": [
+  "tools/c_register.py validate --folds 2 --split-offset 90 --step 8 --search 6",
+  "tools/c_register.py validate --source oflynn-back --target fcc7-back --folds 2 --split-offset 90 --step 8 --search 6",
+  "tools/c_register.py selftest",
+  "tools/c_distortion.py selftest"
+ ]
+}
