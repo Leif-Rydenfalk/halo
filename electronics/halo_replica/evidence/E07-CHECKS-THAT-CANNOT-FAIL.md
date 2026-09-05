@@ -163,3 +163,58 @@ Genuine pixels across the board — rolloff × board span — not pixels per fil
    At that scale an 0402 is 20–27 px long and workable; an **0201 is 12–16 px long and 6–8 px
    wide, and a 6-pixel width cannot support package-size discrimination.** The AirTag uses
    0201s. That boundary belongs in the BOM as a number, not discovered per line.
+
+## 9 · A control that can NEVER PASS — the same defect wearing the opposite sign
+
+L1's centre-hole negative control required **zero detected objects inside the hole**. But the
+hole is **bright background seen through the board**, so an unbounded intensity detector must
+always return exactly one object there. It reported **1 at every threshold**. The requirement
+was not a test of anything.
+
+**Fix:** a **physical** upper size bound — 60 mm², against a largest real part (the UWB can) of
+~35 mm². **Not** by lowering the requirement.
+
+A control that can never pass is as useless as one that can never fail, and it is more likely
+to survive review because it looks strict.
+
+## 10 · A validation blind to the very quantity it appears to certify — and the cleanest demo of all
+
+`c_register.validate` reported a worst held-out fold of **0.1029 mm**, which reads like a
+statement of accuracy. Its scale basis was `photo6_bottom = 15.8875 px/mm` — the bottom rule's
+value **at the rule, near the frame edge**. M02 measures **15.6850 px/mm at the board**, by two
+routes agreeing to 0.23 %. **The basis was 1.29 % high**, and every millimetre downstream moved
+with it (transferred source scale 107.686 → **106.313 px/mm**).
+
+**The held-out error cannot see this, and L1 demonstrated it rather than arguing it.** Re-running
+`validate` with the corrected scale gives **0.1029 mm in both runs, identical to four decimals** —
+because validate converts the fitted *and* the held-out landmarks with the same px/mm, so a wrong
+scale divides both sides equally and cancels exactly.
+
+**0.1029 mm is a statement about REGISTRATION CONSISTENCY and carries no information about SCALE
+ACCURACY.** A 1.29 % scale error and a 0.1029 mm held-out error coexist happily, and the second
+never warns you about the first.
+
+This is family 3 (methods that cannot disagree) in its purest form: **two runs differing in
+exactly one number, and the check does not move.** It is the strongest single demonstration this
+project has produced that a passing validation is not automatically evidence about the thing you
+hoped it was evidence about.
+
+**Fixed by extension, not forking:** `--target-px-per-mm` with a named `--target-px-per-mm-basis`,
+and when the default is used the tool now *prints* that it is the rule's value and names the
+board-located alternative. Default behaviour unchanged. That shape — make the assumption visible
+rather than silently changing it — is the one to copy.
+
+---
+
+## Where this leaves the component work
+
+**95 bright features located on the project FRONT; only 32 with a short side over 10 genuine
+pixels.** Median detection area **0.178 mm²** — 0201 nominal (0.6 × 0.3 mm) **to 1 %**. So most
+are **located but not sized**, exactly as the 0402/0201 boundary in §8 predicted. Every row
+prints its short side in genuine pixels so the distinction cannot be lost downstream.
+
+**The known hole, with names in it:** the detector finds *metal* — pads, terminations, cans,
+solder — and is **blind to dark IC bodies**. The nRF52832 is not among the 95. For a footprint
+list that is arguably correct; for a placement list it is a gap, and it is the gap that matters
+most for the deliverable, because the dark packages are what make the photograph read as an
+AirTag at all.
