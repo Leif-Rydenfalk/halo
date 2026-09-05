@@ -135,7 +135,7 @@ def cmd_selftest():
         else:
             n_red += 1
 
-    print("s_fabchain selftest — 7 cases\n")
+    print("s_fabchain selftest — 7 cases (case 4 asserts the REASON, not only the code)\n")
     src, board, gerber = DEFAULT_CHAIN
 
     # 1. THE LIVE FINDING. If this ever goes PASS, either someone rebuilt the
@@ -156,9 +156,17 @@ def cmd_selftest():
     v3, _ = link_verdict(src, src)
     check("a file against itself is not stale", v3, v3 == PASS, f"{PASS} (PASS)")
 
-    # 4. An untracked path must be CANNOT DETERMINE, never PASS.
-    v4, _ = link_verdict(src, "/etc/hosts")
-    check("untracked downstream -> CANNOT DETERMINE, not PASS", v4, v4 == CANNOT, f"{CANNOT}")
+    # 4. An untracked path must be CANNOT DETERMINE, never PASS -- and the
+    #    DETAIL is asserted, not only the code. The first version checked the
+    #    verdict alone and stayed green when the tracked() guard was deleted,
+    #    because last_commit() returns None for the same file and produces the
+    #    same CANNOT by a different route. A test satisfied by a fallback does
+    #    not test the guard it names.
+    v4, d4 = link_verdict(src, "/etc/hosts")
+    check("untracked downstream -> CANNOT DETERMINE *via the tracked() guard*",
+          f"{v4} / {d4[:52]}",
+          v4 == CANNOT and "not tracked by git" in d4,
+          f"{CANNOT} and the reason names tracking")
 
     # 5. A missing path must be CANNOT DETERMINE, never PASS.
     v5, _ = link_verdict(src, "no/such/file.kicad_pcb")
