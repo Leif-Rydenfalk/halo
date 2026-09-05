@@ -1,0 +1,156 @@
+{
+  "tool": "check_release_commands.py",
+  "what_this_is": "does each release row cite a command a reader can actually run? It does NOT execute by default.",
+  "spec": "spec/release-pack.json",
+  "counts": {
+    "PLACEHOLDER": 6,
+    "RUNNABLE-LIGHT": 2,
+    "RUNNABLE-HEAVY": 2,
+    "NONE": 1
+  },
+  "verifiable_light": 2,
+  "not_runnable_as_written": 7,
+  "ready_but_unrunnable": [
+    3,
+    5,
+    6,
+    11
+  ],
+  "ran": [],
+  "rows": [
+    {
+      "n": 1,
+      "name": "Gerbers, drill and netlist",
+      "declared_status": "PARTIAL",
+      "command": "tools/route_board.sh --passes 10 ; then ce-fab/bin/fab jlc <board>.kicad_pcb ; then assert package newer than board",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <board> -- a TEMPLATE, not a reproduction line"
+    },
+    {
+      "n": 2,
+      "name": "Schematic, ERC-clean, plus a reusable design block",
+      "declared_status": "PARTIAL",
+      "command": "ce-pcb/bin/sch erc <name>.kicad_sch ; bin/sch apply-block <block> <host>",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <block>, <host>, <name> -- a TEMPLATE, not a reproduction line"
+    },
+    {
+      "n": 3,
+      "name": "Bill of materials with prices and alternates",
+      "declared_status": "READY",
+      "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <bom.json> -- a TEMPLATE, not a reproduction line",
+      "suggestions": {
+        "<bom.json>": [
+          "ce-assemblies/halo-puck/current/bom.json",
+          "ce-assemblies/halo-puck/iterations/v0.0.1/bom.json",
+          "electronics/halo_replica/bom/bom.json"
+        ]
+      }
+    },
+    {
+      "n": 4,
+      "name": "Pick-and-place file in factory format",
+      "declared_status": "READY",
+      "command": "python3 tools/check_cpl_rotations.py out/release/board --board electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+      "klass": "RUNNABLE-LIGHT",
+      "tools": [
+        "tools/check_cpl_rotations.py"
+      ],
+      "why": "a reader can run this now"
+    },
+    {
+      "n": 5,
+      "name": "Panel drawing, stackup and materials",
+      "declared_status": "READY",
+      "command": "ce-fab/bin/fab panel <board>.kicad_pcb --rows 3 --cols 3 --mousebites",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <board> -- a TEMPLATE, not a reproduction line",
+      "suggestions": {
+        "<board>": [
+          "electronics/halo_replica/fab/out/halo_replica_fab.kicad_pcb",
+          "electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
+          "electronics/halo_rev_a/out/halo_rev_a-routed.kicad_pcb",
+          "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+        ]
+      }
+    },
+    {
+      "n": 6,
+      "name": "Simulation evidence",
+      "declared_status": "READY",
+      "command": "ce-spice/bin/spice run <example> ; ce-rf/bin/rf antenna <spec.json>",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <example>, <spec.json> -- a TEMPLATE, not a reproduction line",
+      "suggestions": {
+        "<example>": [],
+        "<spec.json>": []
+      }
+    },
+    {
+      "n": 7,
+      "name": "Firmware, build instructions and a proven advertisement",
+      "declared_status": "READY",
+      "command": "ce-fwsim/bin/fwsim build --board nrf54l10 ; fwsim check-soc ; check-rollkey ; check-fmdn ; check-dult",
+      "klass": "RUNNABLE-HEAVY",
+      "tools": [
+        "ce-fwsim/bin/fwsim"
+      ],
+      "why": "real, but it runs a solver, router or build"
+    },
+    {
+      "n": 8,
+      "name": "Mechanical files and assembly instructions",
+      "declared_status": "READY",
+      "command": "ce-cad/bin/cad ce-designs/halo/design.py",
+      "klass": "RUNNABLE-HEAVY",
+      "tools": [
+        "ce-cad/bin/cad"
+      ],
+      "why": "real, but it runs a solver, router or build"
+    },
+    {
+      "n": 9,
+      "name": "Production test plan",
+      "declared_status": "PARTIAL",
+      "command": "python3 tools/gen_test_plan.py ; python3 tools/gen_test_plan.py --selftest",
+      "klass": "RUNNABLE-LIGHT",
+      "tools": [
+        "tools/gen_test_plan.py",
+        "tools/gen_test_plan.py"
+      ],
+      "why": "a reader can run this now"
+    },
+    {
+      "n": 10,
+      "name": "Compliance dossier",
+      "declared_status": "PARTIAL",
+      "command": "\u2014",
+      "klass": "NONE",
+      "tools": [],
+      "why": "no command is cited at all"
+    },
+    {
+      "n": 11,
+      "name": "Cost roll-up against Apple's retail price",
+      "declared_status": "READY",
+      "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live",
+      "klass": "PLACEHOLDER",
+      "tools": [],
+      "why": "contains <bom.json> -- a TEMPLATE, not a reproduction line",
+      "suggestions": {
+        "<bom.json>": [
+          "ce-assemblies/halo-puck/current/bom.json",
+          "ce-assemblies/halo-puck/iterations/v0.0.1/bom.json",
+          "electronics/halo_replica/bom/bom.json"
+        ]
+      }
+    }
+  ]
+}
