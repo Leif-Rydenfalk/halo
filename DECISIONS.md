@@ -1111,3 +1111,61 @@ neither the flatness window nor the movement factor was loosened.
 its series resonance, below the 3–30 Ω radiator band the spec states in
 advance. That is a design question about a monopole in a 2.6 mm annulus, not a
 solver one, and it is the next thing this element has to answer.
+
+## D26g — the absorbing boundary WAS the cause. Confirmed, and it makes solves 12× cheaper
+
+The fourth hypothesis is the one that was right. One variable, the air-box
+padding, on the bare four-tooth element:
+
+| padding | timesteps | wall time | converged |
+|---|---|---|---|
+| **0.250 λ** (30.591 mm) — every run this project ever made | **460,000, capped** | 1783.9 s | **NO — floored** |
+| **0.500 λ** (61.182 mm) | **8,415** | **143.8 s** | **YES** |
+| 1.000 λ (122.364 mm) | 8,600 | 336.2 s | YES |
+
+`solver_converged = 1.0` had **never once happened** in this family. And the
+larger box is **12.4× cheaper in wall time at 1.87× the cells**, because a run
+that converges stops.
+
+**Two confounds closed with numbers rather than argument.** The smallest cell is
+0.15000 mm in all three rows, so the timestep never moved and 460,000 timesteps
+is the same physical duration in every case. And the quarter-wave control
+reproduced the published run to **0.00 %** — 2.3600e-18 against 2.3600e-18, with
+identical resonance, match, permittivity and resistance.
+
+**Half a wavelength is enough.** Series resonance moves 2.4873 → 2.4877 →
+2.4896 GHz across the three, a spread of 2.3 MHz or 0.09 %. The core default is
+now a half wavelength, warned below 0.499 λ.
+
+**Consequence: every result in `ce-rf/out/` was solved at a quarter wave.** All
+of them are re-solvable, and faster than before.
+
+**A caution that changes how these are read.** openEMS normalises its decibel
+figures to the largest energy it happened to *sample*, on a wall-clock cadence —
+so two identical runs printed −36.04 and −35.01 dB for residuals 0.4 % apart.
+**How busy the machine was sets what a run has to reach.** The −40 dB criterion
+inherits this. Tools now compare on energy rather than on decibels.
+
+## D26h — the antenna question is now a DESIGN question, not a solver one
+
+With the solver fixed, the remaining failure is ours. `mode_identified` reads
+0.0 in every row because **the element presents 2.72 Ω** against a 3–30 Ω
+radiator band that was stated in advance rather than fitted afterwards.
+
+That is a design problem: a monopole in a **2.6 mm annulus** is too small a
+radiator to present a usable resistance. It is not a meshing artefact, not the
+boundary, not the passive copper and not the meander density — all four of those
+are now closed.
+
+**halo still has no antenna number**, and D26c stands until the three halo cases
+are re-solved at half a wavelength, which is now minutes each rather than half an
+hour. But the question has changed from *why will this not solve* to *is this
+element viable in the space available*, and that is answerable by design work
+rather than by more simulation.
+
+**A bonus finding at zero solver cost.** Splitting all 18 existing runs on one
+column: **6 hit the cap and none has a short to the ground pour; 12 converged and
+10 do.** That looked like the feed. It is the same boundary seen from the other
+side — a quarter-wave boundary sets a reflection floor, a well-radiating shorted
+inverted-F decays below it and converges anyway, and a 2.47 Ω coplanar monopole
+never gets there.
