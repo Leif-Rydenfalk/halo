@@ -16,7 +16,11 @@
    "status": "PARTIAL",
    "reason": "DO NOT FABRICATE, and the package is stale in two directions. Re-measured 2026-09-05 with a fresh check on both board files: the SOURCE board, which board.py regenerates, is UNROUTED at 3 warnings and 83 unconnected. The ROUTED board, a separate derived file, is at 3 warnings and 28 unconnected. The gerbers on disk are 7,742 s older than either and were cut before the coil keep-out and the plane clearing. So there are three artifacts here and no two of them describe the same copper. Worse, the design-rule report in the release pack was 17,616 seconds — 4.9 hours — older than the board, and a stale gerber wastes a fabrication run while a stale rule-check reports PASS on a board that does not exist and everything downstream trusts it. Fresh reports are now in out/verify/drc-current.json and drc-routed-current.json. Three things must happen before this row moves: routing reaches zero unconnected on the routed board, board.py is reconciled so the source and routed files do not diverge, and the package is re-cut and passes a freshness gate against the board it came from.",
    "evidence": "out/verify/drc-current.json (source, 83 unconnected) and drc-routed-current.json (routed, 28); gerbers 7,742 s older than both",
-   "command": "tools/route_board.sh --passes 10 ; then ce-fab/bin/fab jlc <board>.kicad_pcb ; then assert package newer than board"
+   "command": "tools/route_board.sh --passes 10 ; then ce-fab/bin/fab jlc <board>.kicad_pcb ; then assert package newer than board",
+   "deliverables": [
+    "out/release/board/gerber/*.gtl",
+    "out/release/board/gerber/*PTH.drl"
+   ]
   },
   {
    "n": 2,
@@ -25,7 +29,11 @@
    "status": "PARTIAL",
    "reason": "The schematic side is done: halo_core_sketch passes the electrical rule check with 0 errors and 0 warnings, 32 parts and 30 nets, with PDF and SVG exports. The reusable design block is proven to carry a routed layout, not just a schematic — a test block was applied into a host board of a different outline with a worst footprint placement error of 0.000000 mm and the host's own design-rule check clean at 0/0. What remains is applying halo's own block, which needs halo's board to exist.",
    "evidence": "ce-pcb/out — halo_core_sketch ERC 0/0; blocks/applied/aht20 host DRC 0/0; committed 24bdc2fd, 82f5ff0b, c0167d35, 8fccdb3d",
-   "command": "ce-pcb/bin/sch erc <name>.kicad_sch ; bin/sch apply-block <block> <host>"
+   "command": "ce-pcb/bin/sch erc <name>.kicad_sch ; bin/sch apply-block <block> <host>",
+   "deliverables": [
+    "electronics/halo_rev_a/out/*.kicad_sch",
+    "electronics/halo_rev_a/out/*.erc.json"
+   ]
   },
   {
    "n": 3,
@@ -34,7 +42,11 @@
    "status": "READY",
    "reason": "Closed 2026-09-05. The recorded failure was an IDENTITY defect, not an availability one, and it was already fixed: the old bill of materials had an 8-pin screw terminal block sitting on four capacitor pads and a 133 MHz oscillator in an inductor land. Regenerated with correct codes, both lines now pass at every quantity. Re-probed live across all 23 picks at both vendors: ten and a hundred units pass clean. Every line has a documented alternate, and the availability study found NO part needs substituting and NO value needs changing.",
    "evidence": "docs/SOURCING-ALTERNATES.md; out/release/board/halo_rev_a-BOM.csv regenerated 2026-09-05",
-   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live"
+   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live",
+   "deliverables": [
+    "out/release/board/*-BOM.csv",
+    "spec/bom-resolved.json"
+   ]
   },
   {
    "n": 4,
@@ -43,7 +55,10 @@
    "status": "READY",
    "reason": "Run on our own board 2026-09-05: 23 BOM lines, 40 CPL rows, gerber layer check PASS. Rotations verified row by row against kicad-cli's own placement export with the vendored JLC transform including the bottom-side flip (40/40 agree). ce-fab's built-in cross-check reports FAIL on the same file because its expectation omits that flip — a recorded ce-fab defect, not a CPL defect; the disagreement rows are exactly the nine B.Cu parts with a table offset.",
    "evidence": "out/release/board/halo_rev_a-CPL.csv; out/verify/cpl-rotations-check.json; out/release/board/jlc.json (kicad_cross_check block)",
-   "command": "python3 tools/check_cpl_rotations.py out/release/board --board electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+   "command": "python3 tools/check_cpl_rotations.py out/release/board --board electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+   "deliverables": [
+    "out/release/board/*-CPL.csv"
+   ]
   },
   {
    "n": 5,
@@ -52,7 +67,11 @@
    "status": "READY",
    "reason": "Panelization works and is proven on the Ø31.87 mm round board: a 3 by 3 panel measures 99.60 by 113.61 mm and clears the factory's 70 mm minimum, with 543 mouse-bite holes clustering into 63 groups, so they are tabs rather than a perforated rim. A 2 by 2 panel correctly FAILS at 65.73 mm, which is the negative control working.",
    "evidence": "ce-fab/out — panel PASS 3x3, FAIL 2x2; committed eeeca066",
-   "command": "ce-fab/bin/fab panel <board>.kicad_pcb --rows 3 --cols 3 --mousebites"
+   "command": "ce-fab/bin/fab panel <board>.kicad_pcb --rows 3 --cols 3 --mousebites",
+   "deliverables": [
+    "out/release/board/*panel*",
+    "out/release/board/STACKUP.md"
+   ]
   },
   {
    "n": 6,
@@ -61,7 +80,11 @@
    "status": "READY",
    "reason": "Four circuit simulations pass with sourced assertions, and the electromagnetic solver has been validated against a published reference antenna to within 0.66 percent, which is what makes its other answers trustworthy. One honest exception is stated in the risks below: the two round-board antenna geometries pass their own tests while resonating outside the Bluetooth band, and are being retuned.",
    "evidence": "ce-spice/out/{cr2032_pulse_load,speaker_hbridge,decoupling_ldo,nfc_tank}/verdict.json — all PASS; ce-rf/out/validation-patch-openems-tutorial/verdict.json — PASS, 0.66% from upstream",
-   "command": "ce-spice/bin/spice run <example> ; ce-rf/bin/rf antenna <spec.json>"
+   "command": "ce-spice/bin/spice run <example> ; ce-rf/bin/rf antenna <spec.json>",
+   "deliverables": [
+    "../../ce-spice/out/*/verdict.json",
+    "../../ce-rf/out/*/verdict.json"
+   ]
   },
   {
    "n": 7,
@@ -70,7 +93,10 @@
    "status": "READY",
    "reason": "The firmware builds for all five target chips from one source tree and fits with enormous margin: 13,164 bytes of flash out of 1,036,288 on the nRF54L10, which is 1.27 percent, and 704 bytes of RAM out of 196,608. Rolling keys work on the tag with 15-minute rotation, verified against an independent reference that shares no code with the firmware. Both networks advertise concurrently in the same advertising event, and the Google side had to be written from the published specification because no open implementation of the tag side existed anywhere. One honest gap: the emulator models no nRF54L part at all, so the port is verified by ten static checks per board with a negative control rather than by running it.",
    "evidence": "ce-fwsim — nRF54L10 13164 B flash / 704 B RAM; check-rollkey 11 PASS; check-fmdn 7 PASS; check-dult 16 PASS 1 CANNOT DETERMINE; committed eeda515e, 6637b37e, 72851c1c, 1e23cab6, 684e4f98",
-   "command": "ce-fwsim/bin/fwsim build --board nrf54l10 ; fwsim check-soc ; check-rollkey ; check-fmdn ; check-dult"
+   "command": "ce-fwsim/bin/fwsim build --board nrf54l10 ; fwsim check-soc ; check-rollkey ; check-fmdn ; check-dult",
+   "deliverables": [
+    "../../ce-fwsim/out/*.uart.log"
+   ]
   },
   {
    "n": 8,
@@ -79,7 +105,11 @@
    "status": "READY",
    "reason": "The enclosure is modelled and measured, not asserted: assembly 31.874 by 31.874 by 7.980 mm, matching Apple's drawing to a thousandth, with the maximum diameter falling at the height Apple's drawing puts it. Twelve checks pass, ten valid closed solids, 45 interference pairs clear, and every exported model was read back by an independent tool that knows nothing about the modeller. The bayonet door's compliance is measured by kernel probes rather than argued: dropped and twist-only both stay retained, press-and-twist frees it. Mass 7.8 g against the AirTag's 11 g, the difference being Apple's motor.",
    "evidence": "ce-designs/halo/out/mech/verdicts.json — 12 PASS; committed c971ac6, 7a2ff53, 6a67aac",
-   "command": "ce-cad/bin/cad ce-designs/halo/design.py"
+   "command": "ce-cad/bin/cad ce-designs/halo/design.py",
+   "deliverables": [
+    "out/mech/*.step",
+    "docs/MECHANICAL.md"
+   ]
   },
   {
    "n": 9,
@@ -88,7 +118,11 @@
    "status": "PARTIAL",
    "reason": "Written, and generated from data rather than typed: 31 tests across three stations, 99 limits, every one naming the datasheet section, standard, decision or in-repo measurement it came from. The generator refuses to write the plan unless every test carries the sentence 'this could report PASS while ___ is badly wrong' and the assert that closes it. It is PARTIAL and not READY for one honest reason: 15 of the 87 gate limits have no source yet and say so with the measurement that would settle each. The largest is the production acoustic limit, because DULT's 60 Phon is a loudness level under ISO 532-1 and a sound level meter does not measure phon; that number comes from a golden unit measured in qualification, which the factory can do and we cannot.",
    "evidence": "docs/TEST-PLAN.md; out/release/TEST-PLAN.html; spec/test-plan.json - 31 tests, 22 on every unit, 19 PASS / 12 CANNOT DETERMINE, 21/99 limits unsourced and each naming its fix; cycle 4.4 min per unit, takt 2.6 min",
-   "command": "python3 tools/gen_test_plan.py ; python3 tools/gen_test_plan.py --selftest"
+   "command": "python3 tools/gen_test_plan.py ; python3 tools/gen_test_plan.py --selftest",
+   "deliverables": [
+    "docs/TEST-PLAN.md",
+    "spec/test-plan.json"
+   ]
   },
   {
    "n": 10,
@@ -97,7 +131,11 @@
    "status": "PARTIAL",
    "reason": "The legal and certification research is complete: an 867-line dossier with a 30-item constraint checklist covering trademarks, patents, the radio certification route, the anti-stalking standard and coin-cell child-safety law. What is missing is the test campaign itself, which only a lab can do.",
    "evidence": "research/06-legal-ip-certification-safety.md; docs/ANTI-STALKING.md",
-   "command": "—"
+   "command": "—",
+   "deliverables": [
+    "research/06-legal-ip-certification-safety.md",
+    "docs/ANTI-STALKING.md"
+   ]
   },
   {
    "n": 11,
@@ -106,7 +144,11 @@
    "status": "READY",
    "reason": "Closed 2026-09-05. The blocking figure was a snapshot number read as a live one — the chip shows 927 live, not the 212 recorded. The four lines that fail at ten thousand fail in ONE CHANNEL only: at authorized distributors, at the fitted part numbers, the same parts read 472,421 / 314,042 / 51,300 / 14,956 against needs of about 20,000. So the answer is consignment rather than substitution, and priced out it is about $4,400 CHEAPER across a ten-thousand-board build, because the chip's own authorized channel undercuts the assembler by 21 percent. Three costs are explicitly not measured and are named on the page: the assembler's consigned-part handling fee, reel shipping, and the 16-week lead time if the cheapest price is taken.",
    "evidence": "docs/SOURCING-ALTERNATES.md, live reads 2026-09-05T07:41Z, public catalogue pages only",
-   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live"
+   "command": "ce-fab/bin/fab bom cost <bom.json> --qty 10,100,1000,10000 --live",
+   "deliverables": [
+    "research/05-components-and-cost-model.md",
+    "docs/SOURCING.md"
+   ]
   }
  ],
  "parcels": [

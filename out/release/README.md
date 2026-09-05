@@ -8,7 +8,7 @@ Generated 2026-09-05 from `spec/release-pack.json` by `tools/gen_release_pack.py
 | 2 | Schematic, ERC-clean, plus a reusable design block | **PARTIAL** |
 | 3 | Bill of materials with prices and alternates | **READY** |
 | 4 | Pick-and-place file in factory format | **READY** |
-| 5 | Panel drawing, stackup and materials | **READY** |
+| 5 | Panel drawing, stackup and materials | **PARTIAL** |
 | 6 | Simulation evidence | **READY** |
 | 7 | Firmware, build instructions and a proven advertisement | **READY** |
 | 8 | Mechanical files and assembly instructions | **READY** |
