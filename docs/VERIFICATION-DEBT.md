@@ -373,6 +373,18 @@ from the keep-out for that reason and recorded here instead, because it belongs
 to the same question: **`passive_copper: []` is missing at least two large
 grounded conductors within a millimetre of the radiator.**
 
+**Update, lane B2, 2026-09-05: BT1.2 is now also an ELECTRICAL blocker, not
+only an RF one.** Being exempted from the keep-out kept it on the board; it did
+not give it a way to reach ground. Every escape from that pad — inward on
+B.Cu, outward on B.Cu, or a via on any layer — is closed by
+`antenna-arm-shadow` or `antenna-ground-clearance`, and one of BT1's three
+contacts is inside the forbidden sector for every rotation except centres at
+0/120/240 ± 7 degrees, which is where the keying notches are. So the board's
+one remaining unconnected item is the cell's ground return, `fab submit`'s
+G5-routed gate cannot pass, and the four options are costed in **DECISIONS.md
+D28**. This debt entry and that decision are the same piece of copper seen from
+the two ends.
+
 **What would settle it**, in order:
 
 1. Re-solve `halo-rev-a-2g4` with the real coil as `passive_copper`, on the
