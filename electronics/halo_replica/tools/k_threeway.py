@@ -227,6 +227,45 @@ def read_verdict(paths, kind):
                            if str(v.get("severity", "error")).lower() == "error")
     return (err, unc)
 
+def check_gerber_layers(spec, paths, root, n_layers=4):
+    """Are the copper layers actually THERE, and do they contain an image?
+
+    A zip that looks complete and contains no copper is the failure that wastes an
+    order, and this row produced it once: the glob was **/*.gbr, and no KiCad copper
+    layer ends in .gbr. COUNTING FILES IS ADJACENT TO HAVING LAYERS.
+
+    NON-EMPTY is the second half and it is not pedantry: an RS-274X file with a valid
+    header and no aperture flashes is syntactically perfect, contains nothing, and OPENS
+    - so the existence leg passes it without complaint.
+    """
+    req = spec.get("required_layers")
+    if not req:
+        return None
+    want = dict(req["must_be_present_and_non_empty"])
+    if n_layers >= 4:
+        want.update(req.get("layer_extensions_inner", {}))
+    found, empty, missing = {}, [], []
+    for layer, exts in want.items():
+        hit = None
+        for p in paths:
+            b = os.path.basename(p)
+            if any(b.endswith(e) or e in b for e in exts):
+                hit = p; break
+        if hit is None:
+            missing.append(layer); continue
+        try:
+            body = open(hit, "r", errors="replace").read()
+        except Exception:
+            missing.append(layer); continue
+        # an image means at least one D01/D02/D03 operation, not just a header
+        import re as _re
+        if not _re.search(r"D0[123]\*", body):
+            empty.append(f"{layer} ({os.path.basename(hit)})")
+        else:
+            found[layer] = os.path.relpath(hit, root)
+    return dict(required=sorted(want), found=found, missing=missing, empty=empty,
+                ok=(not missing and not empty))
+
 def classify_clearances(doc, drc_paths, roots, root=HALO):
     """Split a DRC's violations into the three classes, REFUSING any excuse whose
     pointer does not resolve or does not support the claim.
@@ -460,6 +499,9 @@ def check_deliverable(root=HALO, tree="replica", roots=None):
     for rec in out:
         spec = specs[rec["id"]]
         pre = spec.get("precondition")
+        if spec.get("required_layers") and rec.get("exists") == "GREEN" and not pre:
+            lay = check_gerber_layers(spec, rec.get("_files", []), root)
+            rec["layers"] = lay
         rec["valid"] = "n/a" if not pre else None
         if not pre or rec.get("exists") != "GREEN":
             continue
@@ -481,6 +523,22 @@ def check_deliverable(root=HALO, tree="replica", roots=None):
             bad.append(f"{err} error(s)")
         if pre["kind"] == "drc" and unc:
             bad.append(f"{unc} unconnected item(s)")
+        lay = check_gerber_layers(spec, rec.get("_files", []), root)
+        if lay is not None:
+            rec["layers"] = lay
+            if not lay["ok"]:
+                bits = []
+                if lay["missing"]:
+                    bits.append("MISSING " + ", ".join(lay["missing"]))
+                if lay["empty"]:
+                    bits.append("PRESENT BUT CONTAINS NO IMAGE: " + ", ".join(lay["empty"]))
+                msg = ("the package is not a complete copper set: " + "; ".join(bits)
+                       + f". Found {len(lay['found'])} of {len(lay['required'])} required layers. "
+                       f"A zip that opens and carries no copper would waste the order.")
+                rec.update(state="RED", valid="INVALID",
+                           why=((rec.get("why", "") + " ALSO: " + msg).strip()
+                                if rec.get("why") else msg))
+                continue
         if bad:
             extra = (f"cut from a source that FAILED its own checks: {vrow} reports "
                      + " and ".join(bad) +
@@ -554,6 +612,14 @@ def print_deliverable(drows, ddoc, tree):
         print(f"  [{mark}] {r['id']} {r['what']:<20} {e:>5} {f:>8} {v:>10} {ov:>16}")
         if r.get("own_verdict_note"):
             print(f"           {r['own_verdict_note']}")
+        ly = r.get("layers")
+        if ly and not ly["ok"]:
+            print(f"           layers: {len(ly['found'])} of {len(ly['required'])} present with "
+                  f"an image" + (f"; MISSING {', '.join(ly['missing'])}" if ly["missing"] else "")
+                  + (f"; EMPTY {', '.join(ly['empty'])}" if ly["empty"] else ""))
+        elif ly:
+            print(f"           layers: all {len(ly['required'])} present and non-empty "
+                  f"({', '.join(sorted(ly['found']))})")
         cs = r.get("clearance_split")
         if cs and cs["errors"]:
             print(f"           clearance split ({cs['errors']} errors, floor {cs['floor_mm']} mm): "
@@ -831,6 +897,14 @@ def cmd_render(args):
       f"*Not one pixel:* {rf['why_not_one_pixel']} *What would sharpen it:* "
       f"{rf['what_would_sharpen_it']}\n")
     for r in drows:
+        ly = r.get("layers")
+        if ly and not ly["ok"]:
+            print(f"           layers: {len(ly['found'])} of {len(ly['required'])} present with "
+                  f"an image" + (f"; MISSING {', '.join(ly['missing'])}" if ly["missing"] else "")
+                  + (f"; EMPTY {', '.join(ly['empty'])}" if ly["empty"] else ""))
+        elif ly:
+            print(f"           layers: all {len(ly['required'])} present and non-empty "
+                  f"({', '.join(sorted(ly['found']))})")
         cs = r.get("clearance_split")
         if cs and cs["errors"]:
             W(f"**Current split of {cs['errors']} clearance errors in `{cs['drc']}`:** "
@@ -1148,8 +1222,20 @@ def cmd_selftest(args):
         # V-1 / V-2  THE THIRD LEG: a gerber cut from a board that failed its own DRC.
         # This is the artifact that passes BOTH other assertions - it exists, it opens,
         # and it is newer than its board - and is still not a fabrication set.
-        gbr = os.path.join(lane, "x.gtl")
-        open(gbr, "w").write("%TF.CreationDate,2026-09-05T12:00:00*%\n%FSLAX45Y45*%\n")
+        # A COMPLETE COPPER SET, because D7 now also asserts the layers. The first
+        # version wrote ONE gerber, and once the layer leg landed the row could never
+        # reach GREEN - so V-1's claim became unreachable. FOURTH TIME TODAY that adding
+        # a leg to this check silently retired a break: D-3/D-4 on existence, F-1/F-2 on
+        # freshness, W-2 on the fourth column, and now V-1. THE PATTERN IS SPECIFIC AND
+        # WORTH NAMING: every time a multi-leg check grows a leg, every fixture that did
+        # not need to satisfy it becomes unable to reach the states the older breaks
+        # assert. The fix is not vigilance - it is that the suite is re-run against the
+        # new leg every time, which is what caught all four.
+        _img = ("%TF.CreationDate,2026-09-05T12:00:00*%\n%FSLAX45Y45*%\n%MOMM*%\n"
+                "G01*\nX1000Y1000D02*\nX2000Y2000D01*\nM02*\n")
+        for _n in ("v-F_Cu.gtl", "v-B_Cu.gbl", "v-Edge_Cuts.gm1", "v-In1_Cu.g1", "v-In2_Cu.g2"):
+            open(os.path.join(lane, _n), "w").write(_img)
+        gbr = os.path.join(lane, "v-F_Cu.gtl")
         open(drc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/drc.v1.json",
                                          "date": "2026-09-05T11:00:00",
                                          "violations": [], "unconnected_items": []}))
@@ -1209,6 +1295,48 @@ def cmd_selftest(args):
         print(f"    [{'ok ' if okv3 else 'RED'}] V-3 the DRC removed entirely -> {rv3['state']} "
               f"(must be CANNOT DETERMINE - an unrun check is not a passed one)")
         if not okv3: dfails.append("V-3")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+    # ---- L-breaks  THE COPPER LAYERS. L-3 is the one that matters: a gerber with a
+    # valid header and no aperture flash is syntactically perfect, contains nothing, and
+    # OPENS - so the existence leg passes it without complaint.
+    print("  L-breaks  gerber copper layers, in a temporary tree:")
+    tmp = tempfile.mkdtemp(prefix="k_threeway-lay-")
+    try:
+        lane = os.path.join(tmp, "lane"); os.makedirs(lane)
+        ddoc = json.load(open(DELIV))
+        d7 = {r["id"]: r for r in ddoc["rows"]}["D7"]
+        HDR = "%TF.CreationDate,2026-09-05T12:00:00*%\n%FSLAX45Y45*%\n%MOMM*%\n"
+        IMG = HDR + "G01*\nX1000Y1000D02*\nX2000Y2000D01*\nM02*\n"
+        names = {"F.Cu": "b-F_Cu.gtl", "B.Cu": "b-B_Cu.gbl", "Edge.Cuts": "b-Edge_Cuts.gm1",
+                 "In1.Cu": "b-In1_Cu.g1", "In2.Cu": "b-In2_Cu.g2"}
+        for n in names.values():
+            open(os.path.join(lane, n), "w").write(IMG)
+        paths = [os.path.join(lane, n) for n in names.values()]
+
+        r = check_gerber_layers(d7, paths, tmp)
+        okl1 = r["ok"] and len(r["found"]) == 5
+        print(f"    [{'ok ' if okl1 else 'RED'}] L-1 all 5 layers with an image -> ok={r['ok']}, "
+              f"found {len(r['found'])} (must be ok, 5)")
+        if not okl1: dfails.append("L-1")
+
+        gone = [p for p in paths if not p.endswith("In2_Cu.g2")]
+        r = check_gerber_layers(d7, gone, tmp)
+        okl2 = (not r["ok"]) and r["missing"] == ["In2.Cu"]
+        print(f"    [{'ok ' if okl2 else 'RED'}] L-2 In2.Cu absent -> missing {r['missing']} "
+              f"(must name it)")
+        if not okl2: dfails.append("L-2")
+
+        open(os.path.join(lane, names["F.Cu"]), "w").write(HDR + "M02*\n")   # header, no image
+        r = check_gerber_layers(d7, paths, tmp)
+        okl3 = (not r["ok"]) and any("F.Cu" in e for e in r["empty"]) and not r["missing"]
+        print(f"    [{'ok ' if okl3 else 'RED'}] L-3 THE ONE THAT MATTERS: F.Cu present, valid "
+              f"header, NO aperture flash -> empty {r['empty']} (must name it, missing must be "
+              f"empty)")
+        print(f"          it exists, it opens, and it contains no copper. The existence leg "
+              f"passes it without complaint.")
+        if not okl3: dfails.append("L-3")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -1328,7 +1456,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 22 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 25 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS

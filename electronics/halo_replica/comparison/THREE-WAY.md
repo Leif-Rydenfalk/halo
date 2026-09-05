@@ -113,7 +113,7 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 
 *The divergence counter in threeway.json counts distance FROM APPLE. It does not count DISTANCE FROM A DELIVERABLE, and that is the gap that let this project run for a day with 130 measurement files, 40 measuring tools and twelve evidence documents, and NOTHING ANYONE CAN OPEN IN KiCAD OR SEND TO A FABRICATOR. We had an instrument for one axis of drift and none for the other, so the Replica could move steadily away from being a buildable thing while every number about fidelity improved. THIS IS THE MISSING AXIS. It is red until KiCad can open something.*
 
-**6 of 8 artifacts exist and open. 0 of those are STALE. 6 rows are green.**
+**8 of 8 artifacts exist and open. 0 of those are STALE. 6 rows are green.**
 
 | | artifact | state | opens | current | source ok | **its own verdict** | evidence |
 |---|---|:-:|:-:|:-:|:-:|:-:|---|
@@ -123,8 +123,8 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 | D4 | Board file | ✅ | yes | yes | yes | — | `electronics/halo_replica/pcb/out/halo_replica.kicad_pcb` |
 | D5 | ERC result | ✅ | yes | yes | — | 0E | `electronics/halo_replica/out/schematic/halo_replica.erc.json` |
 | D6 | DRC result | ✅ | yes | yes | yes | **33E 0U** | `electronics/halo_replica/pcb/out/halo_replica.drc.json` |
-| D7 | Gerbers | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
-| D8 | Drill file | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
+| D7 | Gerbers | 🔴 | yes | yes | **NO** | — | the package is not a complete copper set: PRESENT BUT CONTAINS NO IMAGE: In1.Cu (halo_replica-In1_Cu.g1), In2.Cu (halo_replica-In2_Cu.g2). Found 3 of 5 required layers. A zip that opens and carries no copper would waste the order. |
+| D8 | Drill file | 🔴 | yes | yes | **NO** | — | cut from a source that FAILED its own checks: D6 reports 33 error(s). It exists, it may even be current, and IT IS NOT BUILDABLE. |
 
 **Freshness.** AN ARTIFACT THAT OPENS IS NOT AN ARTIFACT THAT IS CURRENT. halo_rev_a's gerbers open perfectly and describe a board that no longer exists: they carry an embedded KiCad creation date of 2026-09-05T06:06:39 while the board file they came from has an mtime of 07:54:19 - 6,460 seconds later, an hour and three quarters in which the board gained the NFC coil keep-out, lost plane copper under the coil, and was rerouted from 83 unconnected items to 28. A pure existence test reads that GREEN. EXISTENCE IS ADJACENT TO CURRENCY, which is the same failure shape as every other control this lane broke today.
 

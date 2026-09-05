@@ -111,9 +111,9 @@
     {
       "id": "D7",
       "what": "Gerbers",
-      "glob": "**/*.[gG][bBtTmM]*",
+      "glob": "**/*.g*",
       "probe": "%TF",
-      "probe_is": "the RS-274X extended-attribute header every KiCad gerber layer opens with",
+      "probe_is": "the RS-274X extended-attribute header every KiCad gerber opens with. THE GLOB HAS NOW BEEN WRONG TWICE, each time in a way it could not reveal about itself. First **/*.gbr, which matched only the drill MAPS and no copper at all. Then **/*.[gG][bBtTmM]*, which covered .gtl .gbl .gts .gbs .gto .gbo .gm1 and MISSED THE INNER LAYERS - .g1 and .g2 do not match [bBtTmM]. It reported halo_rev_a as missing In1.Cu and In2.Cu when both files were sitting in the directory. Now **/*.g* with the %TF probe doing the filtering: match broadly, reject on CONTENT rather than on a pattern someone has to get exhaustively right.",
       "why_it_is_required": "A board file is what WE can open. Gerbers are what a FABRICATOR can open. Nothing gets made without them.",
       "rev_a_has": null,
       "rev_a_note": "halo_rev_a HAS NOT GOT THESE EITHER. This row is red for both boards, and saying so is the point - a check that only accuses the Replica would be measuring the wrong thing.",
@@ -128,6 +128,43 @@
         "kind": "drc",
         "must": "0 errors AND 0 unconnected items",
         "why": "A fabrication set cut from a board with unrouted nets is FRESH AND UNBUILDABLE. It passes existence and it passes freshness, and it is a WORSE artifact than a stale one precisely because both of the other assertions wave it through. halo-cb is deliberately NOT regenerating rev_a's gerbers for this reason - the board still has 28 unconnected nets - and that refusal is what exposed the third leg."
+      },
+      "required_layers": {
+        "why": "A ZIP THAT LOOKS COMPLETE AND CONTAINS NO COPPER is the failure that wastes an order, and this row has already produced it once: the glob was **/*.gbr, and a real KiCad set is .gtl .gbl .g1 .g2 .gts .gbs .gto .gbo .gm1 - NONE of which end in .gbr. The only files it matched were the two drill MAPS. It reported a complete set while seeing no copper at all. Counting files is adjacent to having layers.",
+        "must_be_present_and_non_empty": {
+          "F.Cu": [
+            ".gtl",
+            ".GTL",
+            "F_Cu.gbr",
+            "F.Cu.gbr"
+          ],
+          "B.Cu": [
+            ".gbl",
+            ".GBL",
+            "B_Cu.gbr",
+            "B.Cu.gbr"
+          ],
+          "Edge.Cuts": [
+            ".gm1",
+            ".GM1",
+            "Edge_Cuts.gbr",
+            "Edge.Cuts.gbr"
+          ]
+        },
+        "inner_layers_conditional": "In1.Cu (.g1/.gbr) and In2.Cu (.g2) are REQUIRED because the board is 4-layer (board.json parameters.layer_count.value = 4). A 4-layer board whose package carries two copper layers is not a 4-layer package.",
+        "non_empty_means": "the file contains at least one aperture flash or draw (D01/D02/D03), not merely a header. An RS-274X file with a valid header and no image is syntactically perfect and contains nothing - and it OPENS, so the existence leg passes it.",
+        "layer_extensions_inner": {
+          "In1.Cu": [
+            ".g1",
+            ".G1",
+            "In1_Cu.gbr"
+          ],
+          "In2.Cu": [
+            ".g2",
+            ".G2",
+            "In2_Cu.gbr"
+          ]
+        }
       }
     },
     {
