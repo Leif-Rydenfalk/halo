@@ -577,9 +577,21 @@ def run_validate(a):
     ppm = tgt.view['px_per_mm']
     folds = []
     K = a.folds
+    split = getattr(a, 'split', 'angular')
+    # RADIAL is the HARSHER split and it exists because the angular one is soft:
+    # with K=4, three quarters of the board still surround every held-out sector,
+    # so the fit interpolates rather than extrapolates.  A radial split holds out
+    # a whole annulus, which the remaining landmarks can only reach by
+    # extrapolating outward or inward.  K=2 angular (halves) is harsher still.
+    rad = np.array([l['r'] for l in lm])
+    edges = np.percentile(rad, np.linspace(0, 100, K+1)) if split == 'radial' else None
     for i in range(K):
-        a0, a1 = 360.0*i/K, 360.0*(i+1)/K
-        held = (th >= a0) & (th < a1)
+        if split == 'radial':
+            a0, a1 = float(edges[i]), float(edges[i+1])
+            held = (rad >= a0) & (rad <= a1) if i == K-1 else (rad >= a0) & (rad < a1)
+        else:
+            a0, a1 = 360.0*i/K, 360.0*(i+1)/K
+            held = (th >= a0) & (th < a1)
         fit = ~held
         if held.sum() < 4 or fit.sum() < 12:
             folds.append(dict(sector=[a0, a1], n_held=int(held.sum()),
@@ -599,23 +611,30 @@ def run_validate(a):
                           p95_target_px=float(np.percentile(err_tgt, 95)),
                           rms_mm=float(np.sqrt((err_tgt**2).mean())/ppm) if ppm else None,
                           p95_mm=float(np.percentile(err_tgt, 95)/ppm) if ppm else None))
-    print("  %-16s %5s %10s %10s %9s" % ('held-out sector', 'n', 'RMS src px', 'RMS tgt px', 'RMS mm'))
+    print("  split=%s  K=%d   (angular = sectors in degrees; radial = annuli in target px)"
+          % (split, K))
+    print("  %-16s %5s %10s %10s %9s %9s"
+          % ('held-out band', 'n', 'RMS src px', 'RMS tgt px', 'RMS mm', 'p95 mm'))
     ok = []
     for f in folds:
         if 'rms_mm' not in f:
             print("  %5.0f-%-9.0f %5d   %s" % (f['sector'][0], f['sector'][1], f['n_held'], f.get('why', '')))
             continue
         ok.append(f)
-        print("  %5.0f-%-9.0f %5d %10.2f %10.3f %9.4f"
+        print("  %5.0f-%-9.0f %5d %10.2f %10.3f %9.4f %9.4f"
               % (f['sector'][0], f['sector'][1], f['n_held'],
-                 f['rms_source_px'], f['rms_target_px'], f['rms_mm']))
+                 f['rms_source_px'], f['rms_target_px'], f['rms_mm'], f['p95_mm']))
     verdict = PASS; why = []
     if not ok:
         verdict = CANNOT; why.append('no fold had enough landmarks')
         worst = None
     else:
         worst = max(f['rms_mm'] for f in ok)
-        print("  WORST held-out fold: %.4f mm  (tolerance %.4f mm)" % (worst, a.tol_mm))
+        worst_p95 = max(f['p95_mm'] for f in ok)
+        print("  WORST held-out fold: RMS %.4f mm, p95 %.4f mm  (tolerance %.4f mm on RMS)"
+              % (worst, worst_p95, a.tol_mm))
+        print("  A SINGLE component inherits the p95, not the RMS. Quote the RMS for the "
+              "transform and the p95 for any one position.")
         if worst > a.tol_mm:
             verdict = FAIL
             why.append("worst held-out RMS %.4f mm exceeds tolerance %.4f mm" % (worst, a.tol_mm))
@@ -623,8 +642,10 @@ def run_validate(a):
                side_convention="FRONT = component side (Apple FCC 'MLB - Front')",
                source=src.view['path'], target=tgt.view['path'],
                scale_basis=tgt.view['px_per_mm_basis'], px_per_mm=ppm,
-               model=a.model, ncc=stages[-1]['ncc'], folds=folds,
-               worst_holdout_rms_mm=worst, tolerance_mm=a.tol_mm,
+               model=a.model, ncc=stages[-1]['ncc'], split=split, folds_k=K, folds=folds,
+               worst_holdout_rms_mm=worst,
+               worst_holdout_p95_mm=(max(f['p95_mm'] for f in ok) if ok else None),
+               tolerance_mm=a.tol_mm,
                landmarks_kept=len(lm), landmarks_discarded=disc,
                verdict=V[verdict], why=why)
     if a.json_out:
@@ -822,6 +843,10 @@ def main():
                    help='fit must beat its worst wrong-rotation null by this factor')
     q = sub.add_parser('validate'); common(q)
     q.add_argument('--folds', type=int, default=4)
+    q.add_argument('--split', default='angular', choices=['angular', 'radial'],
+                   help='angular = hold out a sector; radial = hold out an annulus, '
+                        'which forces EXTRAPOLATION rather than interpolation and is '
+                        'the harsher test')
     q.add_argument('--tol-mm', type=float, default=0.20)
     sub.add_parser('doctor')
     sub.add_parser('selftest')

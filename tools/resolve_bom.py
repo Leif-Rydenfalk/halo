@@ -22,12 +22,30 @@ out as a MISMATCH and the line is CANNOT DETERMINE - it is never quietly kept.
 That check is what caught halo_rev_a's original bill of materials, in which 16
 of 19 order codes named a different part from the one the schematic wanted.
 """
-import json, os, pathlib, re, subprocess, sys, csv, datetime
+import json, os, pathlib, re, subprocess, sys, csv, datetime, time
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "spec" / "bom-resolved.json"
 BOMCSV = ROOT / "out" / "release" / "board" / "halo_rev_a-BOM.csv"
 CACHE = pathlib.Path(os.environ.get("HALO_SRC_CACHE", "/tmp/halo-sourcing"))
+
+# HOW OLD A CACHED PAGE MAY BE BEFORE IT IS REFETCHED, in seconds.
+#
+# This existed as "forever" and that was a defect, found 2026-09-05 by lane S2
+# and written up as the sixth direction in docs/TOOLS-THAT-LIE.md. lcsc() and
+# jlc() re-served any file already on disk regardless of its age, while
+# resolve() stamped every record `"fetched": TODAY` - the date the SCRIPT ran,
+# not the date the PAGE was read. So spec/bom-resolved.json could carry today's
+# date on a stock figure pulled days ago, and nothing in the output said so.
+#
+# STOCK AND PRICE ARE THE MOST PERISHABLE NUMBERS IN THIS PROJECT. Measured the
+# same day: C3911055 fell 18,376 -> 8,441 in 48 hours, C237447 fell 36,092 ->
+# 7,693, and C423341 rose 1,167 -> 29,417. A day-old cache is a wrong answer.
+#
+#   HALO_SRC_MAX_AGE=0    always refetch (what a stock check should use)
+#   HALO_SRC_MAX_AGE=-1   never expire  (the old behaviour, now OPT-IN and named)
+#   unset                 3600 s, so one run reuses its own pages and no more
+CACHE_MAX_AGE_S = int(os.environ.get("HALO_SRC_MAX_AGE", "3600"))
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/126.0 Safari/537.36")
 JLC_URL = ("https://jlcpcb.com/api/overseas-pcb-order/v1/shoppingCart/"
@@ -205,17 +223,52 @@ CHOICES = [
 def sh(args, out):
     subprocess.run(args + ["-o", str(out)], check=True)
 
+def _iso(ts):
+    return datetime.datetime.fromtimestamp(
+        ts, datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+def _cache_age(p, min_bytes):
+    """Age in seconds of a usable cached file, or None if there is not one.
+
+    'Usable' means it exists and is big enough to be a real response. Size is
+    the existing guard against a truncated or error page; age is the new one.
+    """
+    if not p.exists() or p.stat().st_size < min_bytes:
+        return None
+    return max(0.0, time.time() - p.stat().st_mtime)
+
+def _fetch_or_reuse(p, argv, min_bytes):
+    """Fetch unless a cached page is younger than CACHE_MAX_AGE_S.
+
+    Returns (fetched_at_iso, from_cache, stale_fallback). A network failure with
+    an expired cache on disk does NOT silently serve the stale copy: it serves
+    it LABELLED, so the caller can report CANNOT DETERMINE rather than publish an
+    old number as a fresh one.
+    """
+    CACHE.mkdir(parents=True, exist_ok=True)
+    age = _cache_age(p, min_bytes)
+    fresh_enough = age is not None and (CACHE_MAX_AGE_S < 0 or age <= CACHE_MAX_AGE_S)
+    if fresh_enough:
+        return _iso(p.stat().st_mtime), True, False
+    try:
+        sh(argv, p)
+        return _iso(p.stat().st_mtime), False, False
+    except Exception:
+        if age is None:
+            raise
+        return _iso(p.stat().st_mtime), True, True
+
 def lcsc(code):
     """GET the product page and read the __NEXT_DATA__ blob."""
-    CACHE.mkdir(parents=True, exist_ok=True)
     p = CACHE / f"lcsc-{code}.html"
-    if not p.exists() or p.stat().st_size < 50000:
-        sh(["curl", "-sS", "--max-time", "90", "-A", UA,
-            f"https://www.lcsc.com/product-detail/{code}.html"], p)
+    at_, cached, stale = _fetch_or_reuse(
+        p, ["curl", "-sS", "--max-time", "90", "-A", UA,
+            f"https://www.lcsc.com/product-detail/{code}.html"], 50000)
+    _prov = {"fetched_at": at_, "from_cache": cached, "stale_fallback": stale}
     h = p.read_text(encoding="utf-8", errors="replace")
     m = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', h, re.S)
     if not m:
-        return {"error": "no __NEXT_DATA__ blob on the page"}
+        return dict(_prov, error="no __NEXT_DATA__ blob on the page")
     # The blob carries recommended and recently-viewed products beside the one
     # asked for. FOUND BY THE SELF-TEST: a first-match walk happily returned a
     # JST connector for a piezo bender's order code, and for a code that does
@@ -237,38 +290,40 @@ def lcsc(code):
                 if r: return r
     d = grab(json.loads(m.group(1)))
     if not d:
-        return {"error": f"the page carries no product node whose productCode "
-                         f"is {code} - LCSC does not sell this order code"}
-    return {"mpn": d.get("productModel"), "manufacturer": d.get("brandNameEn"),
+        return dict(_prov, error=f"the page carries no product node whose "
+                                 f"productCode is {code} - LCSC does not sell "
+                                 f"this order code")
+    return dict(_prov, **{"mpn": d.get("productModel"), "manufacturer": d.get("brandNameEn"),
             "package": d.get("encapStandard"), "stock": d.get("stockNumber"),
             "min_packet": d.get("minPacketNumber"), "split": d.get("split"),
             "datasheet": d.get("pdfUrl"), "category": d.get("catalogName"),
             "ladder": [[int(r["ladder"]), float(r["productPrice"])]
-                       for r in (d.get("productPriceList") or [])]}
+                       for r in (d.get("productPriceList") or [])]})
 
 def jlc(code):
     """POST the catalogue endpoint; the answer carries the library type."""
-    CACHE.mkdir(parents=True, exist_ok=True)
     p = CACHE / f"jlc-{code}.json"
-    if not p.exists() or p.stat().st_size < 50:
-        sh(["curl", "-sS", "--max-time", "90", "-X", "POST", JLC_URL,
+    at_, cached, stale = _fetch_or_reuse(
+        p, ["curl", "-sS", "--max-time", "90", "-X", "POST", JLC_URL,
             "-H", "Content-Type: application/json", "-A", UA,
-            "-d", json.dumps({"currentPage": 1, "pageSize": 5, "keyword": code})], p)
+            "-d", json.dumps({"currentPage": 1, "pageSize": 5, "keyword": code})], 50)
+    _prov = {"fetched_at": at_, "from_cache": cached, "stale_fallback": stale}
     try:
         d = json.loads(p.read_text())
     except Exception as e:
-        return {"error": f"unreadable response: {e}"}
+        return dict(_prov, error=f"unreadable response: {e}")
     lst = ((d.get("data") or {}).get("componentPageInfo") or {}).get("list") or []
     for it in lst:
         blob = (it.get("lcscGoodsUrl") or "") + (it.get("urlSuffix") or "")
         if code.upper() in blob.upper():
             lt = it.get("componentLibraryType")
-            return {"library_type": {"base": "basic", "expand": "extended"}.get(lt, lt),
+            return dict(_prov, **{
+                    "library_type": {"base": "basic", "expand": "extended"}.get(lt, lt),
                     "stock": it.get("stockCount"), "desc": it.get("erpComponentName"),
                     "ladder": [[r["startNumber"], r["endNumber"], r["productPrice"]]
-                               for r in (it.get("componentPrices") or [])]}
-    return {"error": "not in the JLCPCB assembly catalogue",
-            "meaning": "JLC cannot place this part even though LCSC sells it"}
+                               for r in (it.get("componentPrices") or [])]})
+    return dict(_prov, error="not in the JLCPCB assembly catalogue",
+                meaning="JLC cannot place this part even though LCSC sells it")
 
 def at(ladder, qty):
     """Unit price at qty from an LCSC [break, price] ladder. None if the ladder
@@ -327,7 +382,24 @@ def resolve(code, want_mpn, footprint=None):
     rec = {"lcsc": code, "expected_mpn": want_mpn, "fetched": TODAY,
            "lcsc_source": f"https://www.lcsc.com/product-detail/{code}.html",
            "jlcpcb_source": JLC_URL}
-    rec.update({k: v for k, v in L.items() if k != "ladder"})
+    # WHEN THE PAGES WERE ACTUALLY READ, not when this script ran. `fetched`
+    # above is the run date and is kept only because older files carry it; it
+    # is NOT evidence of freshness and must never be cited as if it were.
+    # See docs/TOOLS-THAT-LIE.md, "the sixth direction".
+    rec["read_at"] = {"lcsc": L.get("fetched_at"), "jlcpcb": J.get("fetched_at")}
+    rec["from_cache"] = {"lcsc": L.get("from_cache"), "jlcpcb": J.get("from_cache")}
+    rec["cache_max_age_s"] = CACHE_MAX_AGE_S
+    if L.get("stale_fallback") or J.get("stale_fallback"):
+        # The network failed and an EXPIRED page was served. Say so loudly: the
+        # numbers below are real, and they are old, and a reader cannot tell
+        # which from the values alone.
+        rec["stale_fallback"] = True
+        rec["stale_fallback_why"] = (
+            "the vendor could not be reached and an EXPIRED cached page was "
+            "used. Stock and price here are as of read_at, NOT as of this run. "
+            "Treat every stock figure in this record as CANNOT DETERMINE.")
+    rec.update({k: v for k, v in L.items()
+                if k not in ("ladder", "fetched_at", "from_cache", "stale_fallback")})
     rec["price_usd"] = {str(q): at(L.get("ladder"), q) for q in LADDER_QTYS}
     rec["price_ladder_lcsc"] = L.get("ladder")
     rec["library_type"] = J.get("library_type")

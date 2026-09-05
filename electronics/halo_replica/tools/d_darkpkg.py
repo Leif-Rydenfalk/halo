@@ -602,8 +602,46 @@ def v_stepaudit(a, ctx):
         print(f"  {name:24s} seed: largest {seed_best:5.0f}  median side {seed_med:5.0f}")
         print(f"  {'':24s} SWEPT: largest {bb:5.0f}  median side {best_med:5.0f}   "
               f"x{bb/seed_best if seed_best else float('nan'):.2f} on the largest")
+    # THE CONTROL THAT DECIDES WHETHER THE RISE MEANS ANYTHING.  Sweeping 4275
+    # outlines and keeping the best takes the MAXIMUM OF A NOISY FIELD, so some of
+    # the rise is selection and not signal.  Run the identical sweep where there is
+    # NO package -- random on-board locations -- and see how high it climbs from
+    # nothing.  Without this the swept number is the same mistake as the rim's
+    # core-minus-ring: a looser upper bound mistaken for a better measurement.
+    rng = np.random.default_rng(20260905)
+    ys, xs = np.nonzero(board)
+    ctrl_med, ctrl_big = [], []
+    for _ in range(a.audit_control_n):
+        k = int(rng.integers(0, len(ys)))
+        cx, cy = float(xs[k]), float(ys[k])
+        th = float(rng.uniform(0, 180))
+        lo = float(rng.uniform(1.0, 3.3)); sh = lo * float(rng.uniform(0.7, 1.0))
+        best = None
+        for dx in range(-24, 25, 8):
+            for dy in range(-24, 25, 8):
+                for dth in (-8, -4, 0, 4, 8):
+                    for fs in (0.85, 0.925, 1.0, 1.075, 1.15):
+                        st = side_steps(lum, cx + dx, cy + dy, th + dth,
+                                        sh * ppm * fs, lo * ppm * fs)
+                        if best is None:
+                            best = {k2: 0.0 for k2 in st}
+                        for k2, v in st.items():
+                            if abs(v) > abs(best[k2]):
+                                best[k2] = v
+        ctrl_med.append(float(np.median([abs(v) for v in best.values()])))
+        ctrl_big.append(max(abs(v) for v in best.values()))
+    cm = np.array(ctrl_med); cb = np.array(ctrl_big)
+    print(f"\n  CONTROL -- the IDENTICAL sweep at {a.audit_control_n} random on-board")
+    print(f"  locations with no package stated, random size and random angle:")
+    print(f"    swept median side  p50 {np.percentile(cm,50):.0f}  p90 {np.percentile(cm,90):.0f}"
+          f"  p99 {np.percentile(cm,99):.0f}  max {cm.max():.0f}")
+    print(f"    swept largest side p50 {np.percentile(cb,50):.0f}  p90 {np.percentile(cb,90):.0f}"
+          f"  p99 {np.percentile(cb,99):.0f}  max {cb.max():.0f}")
     sw_med = [r["swept_median_side"] for r in rows]
     sw_big = [r["swept_largest"] for r in rows]
+    n_over = sum(1 for v in sw_med if v > np.percentile(cm, 99))
+    print(f"\n    packages whose SWEPT MEDIAN SIDE beats the control's p99 "
+          f"({np.percentile(cm,99):.0f}): {n_over} of {len(rows)}")
     print(f"\n  SWEPT median side across the five: {min(sw_med):.0f}-{max(sw_med):.0f} luma")
     print(f"  SWEPT largest side across the five: {min(sw_big):.0f}-{max(sw_big):.0f} luma")
     print(f"\n  A swept maximum is an UPPER BOUND and is itself optimistic: sweeping")
@@ -616,6 +654,21 @@ def v_stepaudit(a, ctx):
                swept_largest_range=[min(sw_big), max(sw_big)],
                caveat="a swept maximum is an upper bound taken over 4275 outlines per "
                       "package; part of the rise is selection over a noisy field",
+               control=dict(n=int(a.audit_control_n),
+                            kind="identical sweep at random on-board locations, random "
+                                 "size and angle, no package stated",
+                            swept_median_side=dict(
+                                p50=round(float(np.percentile(cm, 50)), 1),
+                                p90=round(float(np.percentile(cm, 90)), 1),
+                                p99=round(float(np.percentile(cm, 99)), 1),
+                                max=round(float(cm.max()), 1)),
+                            swept_largest=dict(
+                                p50=round(float(np.percentile(cb, 50)), 1),
+                                p90=round(float(np.percentile(cb, 90)), 1),
+                                p99=round(float(np.percentile(cb, 99)), 1),
+                                max=round(float(cb.max()), 1)),
+                            packages_beating_control_p99=int(n_over),
+                            packages_examined=len(rows)),
                rows=rows)
     if a.json:
         json.dump(out, open(a.json, "w"), indent=2, default=float)
@@ -640,6 +693,7 @@ def main():
     ap.add_argument("--tol", type=float, default=6.0)
     ap.add_argument("--swing-tol", type=float, default=6.0)
     ap.add_argument("--null-n", type=int, default=60)
+    ap.add_argument("--audit-control-n", type=int, default=40)
     ap.add_argument("--paste-at", default="auto")
     ap.add_argument("--sites", type=int, default=5)
     ap.add_argument("--steps", default="160,120,80,60,45,35,25,18,12,8")

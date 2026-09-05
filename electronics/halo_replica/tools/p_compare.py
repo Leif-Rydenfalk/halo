@@ -335,14 +335,28 @@ def main():
         c6 = np.array(c6)
         thr6 = float(np.percentile(c6, 90))
         f6 = float((h6 > thr6).mean())
+        # The p90-count statistic is weak on a low-resolution image: photo 6 gives a
+        # 2.8 px sampling radius, so blur mixes a pad with its neighbourhood. The MEDIAN
+        # is the stronger statistic, so it gets a proper null: draw sets of the same size
+        # from the random pool and ask how often their median reaches ours.
+        boot = np.array([np.median(rng6.choice(c6, size=len(h6), replace=False))
+                         for _ in range(20000)])
+        p_med = float((boot >= np.median(h6)).mean())
+        p_cnt = float((np.array([(rng6.choice(c6, size=len(h6), replace=False) > thr6).mean()
+                                 for _ in range(5000)]) >= f6).mean())
         x5b = dict(n_markers=int(len(h6)), n_random=int(len(c6)),
                    marker_median=float(np.median(h6)), random_median=float(np.median(c6)),
                    frac_above_random_p90=f6, enrichment=f6 / 0.10,
-                   photo=os.path.basename(a.photo6))
+                   p_median=p_med, p_count=p_cnt,
+                   photo=os.path.basename(a.photo6),
+                   pre_average_applied=pre_avg)
         say(f"X5B cross-source (FCC photo 6 - the markers were NEVER extracted from it): "
             f"median luma under {len(h6)} markers {np.median(h6):.1f} vs {len(c6)} random "
             f"{np.median(c6):.1f}; {f6*100:.1f}% above the random 90th percentile vs 10% "
             f"by construction -> enrichment {f6/0.10:.2f}x")
+        say(f"    NULL, {len(h6)}-sized draws from the random pool: median statistic "
+            f"p {'< 1/20000 (zero of 20000 draws reached it)' if p_med == 0 else '= %.5f' % p_med}, "
+            f"count statistic p = {p_cnt:.4f}")
     except Exception as e:
         say(f"X5B CANNOT DETERMINE: {e}")
 
@@ -418,7 +432,7 @@ def main():
             ("OVERLAY  our outline, hole and every marker, on Apple's", ov)]
     cw, ch = ph.size
     head, gap = 66, 22
-    foot = 430
+    foot = 470
     W, H = 3 * cw + 4 * gap, head + ch + foot
     m = Image.new("RGB", (W, H), BG)
     dm = ImageDraw.Draw(m, "RGBA")
@@ -445,9 +459,12 @@ def main():
          f"NOT that the markers are components. It was mislabelled and is corrected here.",
          INK),
         ((f"X5B cross-source  the SAME markers on FCC PHOTO 6, which they were NEVER "
-          f"extracted from: {x5b['frac_above_random_p90']*100:.1f}% above that image's "
-          f"own random 90th percentile vs 10% by construction -> "
-          f"{x5b['enrichment']:.2f}x. THIS one can fail on the substance."
+          f"extracted from: marker median luma {x5b['marker_median']:.0f} vs random "
+          f"{x5b['random_median']:.0f}, p = {x5b['p_median']:.5f} against "
+          f"{x5b['n_markers']}-sized draws from the random pool. "
+          f"{x5b['frac_above_random_p90']*100:.1f}% above that image's random 90th "
+          f"percentile ({x5b['enrichment']:.2f}x, p = {x5b['p_count']:.3f}). "
+          f"THIS one can fail on the substance."
           if x5b else "X5B cross-source: CANNOT DETERMINE"), INK),
         (f"X1 scale match        OURS {od:.3f} mm   APPLE'S {pd:.3f} mm   "
          f"delta {abs(od-pd)/pd*100:.2f}%   (registration is by construction, "

@@ -1,0 +1,140 @@
+{
+  "run_utc": "2026-09-05T09:42:48Z",
+  "git_rev": "8d436d6",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "d_darkpkg.py",
+  "engine": "d_rect.py",
+  "verb": "stepaudit",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "published_claim": "packages present 1-26 luma on most sides, nRF 75 on its best",
+  "swept_median_side_range": [
+    43.5,
+    129.5
+  ],
+  "swept_largest_range": [
+    60.0,
+    171.0
+  ],
+  "caveat": "a swept maximum is an upper bound taken over 4275 outlines per package; part of the rise is selection over a noisy field",
+  "control": {
+    "n": 40,
+    "kind": "identical sweep at random on-board locations, random size and angle, no package stated",
+    "swept_median_side": {
+      "p50": 97.8,
+      "p90": 144.0,
+      "p99": 180.8,
+      "max": 192.5
+    },
+    "swept_largest": {
+      "p50": 146.5,
+      "p90": 179.4,
+      "p99": 200.8,
+      "max": 207.0
+    },
+    "packages_beating_control_p99": 0,
+    "packages_examined": 5
+  },
+  "rows": [
+    {
+      "name": "nRF52832_CIAA_control",
+      "seed_side_step": {
+        "left": -75.0,
+        "right": -10.0,
+        "top": 8.0,
+        "bottom": 1.0
+      },
+      "seed_largest": 75.0,
+      "swept_side_step": {
+        "left": 171.0,
+        "right": -71.0,
+        "top": -50.0,
+        "bottom": 97.0
+      },
+      "swept_largest": 171.0,
+      "seed_median_side": 9.0,
+      "swept_median_side": 84.0,
+      "inflation_largest": 2.28
+    },
+    {
+      "name": "black_9oclock",
+      "seed_side_step": {
+        "left": -3.0,
+        "right": -5.0,
+        "top": 1.0,
+        "bottom": -8.0
+      },
+      "seed_largest": 8.0,
+      "swept_side_step": {
+        "left": -12.0,
+        "right": -8.0,
+        "top": 111.0,
+        "bottom": 130.0
+      },
+      "swept_largest": 130.0,
+      "seed_median_side": 4.0,
+      "swept_median_side": 61.5,
+      "inflation_largest": 16.25
+    },
+    {
+      "name": "plus_AKN_8H7",
+      "seed_side_step": {
+        "left": 5.0,
+        "right": 2.0,
+        "top": 18.0,
+        "bottom": 20.0
+      },
+      "seed_largest": 20.0,
+      "swept_side_step": {
+        "left": 60.0,
+        "right": 33.0,
+        "top": 39.0,
+        "bottom": 48.0
+      },
+      "swept_largest": 60.0,
+      "seed_median_side": 11.5,
+      "swept_median_side": 43.5,
+      "inflation_largest": 3.0
+    },
+    {
+      "name": "black_05I_1A8",
+      "seed_side_step": {
+        "left": 145.0,
+        "right": 0.0,
+        "top": 26.0,
+        "bottom": 5.0
+      },
+      "seed_largest": 145.0,
+      "swept_side_step": {
+        "left": 165.0,
+        "right": 116.0,
+        "top": 107.0,
+        "bottom": 143.0
+      },
+      "swept_largest": 165.0,
+      "seed_median_side": 15.5,
+      "swept_median_side": 129.5,
+      "inflation_largest": 1.14
+    },
+    {
+      "name": "black_diode_lower",
+      "seed_side_step": {
+        "left": 5.0,
+        "right": 1.0,
+        "top": 6.0,
+        "bottom": 2.0
+      },
+      "seed_largest": 6.0,
+      "swept_side_step": {
+        "left": 22.0,
+        "right": 77.0,
+        "top": 29.0,
+        "bottom": 74.0
+      },
+      "swept_largest": 77.0,
+      "seed_median_side": 3.5,
+      "swept_median_side": 51.5,
+      "inflation_largest": 12.83
+    }
+  ]
+}

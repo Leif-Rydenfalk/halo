@@ -57,7 +57,7 @@ facets**. Residual **0.3342 → 0.1987 mm**. **NO hole diameter is published.**
 |---|---|
 | X1 scale match | OURS 24.543 mm vs APPLE'S 24.783 mm, **0.97 %** |
 | X4 outline residual | **RMS 0.413 mm**, p95 0.843 mm, 654 rays |
-| X5 component landing | **4.23× enrichment** over 4000 random annulus positions |
+| X5 registration round-trip | 4.23× — **but see the correction below: this is close to a tautology** |
 | X6 disagreement map | ≤0.15 mm **51 %** of perimeter · 0.15–0.40 mm 26 % · >0.40 mm 12 % · no ray 9 % |
 | X6 worst arcs | 82.8–101.0° peak 0.901 · 114.0–119.5° peak 0.979 · 282.9–286.0° peak 0.878 · 74.9–79.1° peak 0.746 mm |
 
@@ -83,7 +83,8 @@ An assertion never seen to fail is not known to work. **All of these were watche
 | R7 | **independent rim cross-check** | — | **CORROBORATED, see below** |
 | X1 | the two panels are not at the same scale | see the defect log | fired at 3.20 % and was fixed at its cause |
 | X3 | the comparison numbers do not depend on the alignment | `--break-rotation 12` | X4 0.413 → 0.470 mm, **X5 4.23× → 1.44× and X5 FIRES** |
-| X5 | the markers are decoration | the same rotation | fires |
+| X5 | the geometry pipeline, NOT component reality — see the correction below | the same rotation | fires |
+| X5B | **the markers are features of ONE photograph rather than of the board** | — | **p < 1/20000**, see below |
 
 ---
 
@@ -301,3 +302,44 @@ boundary and asked to find nothing. The control was wrong, not the finder.
 0 missed, median error **0.0015 mm** — but p90 0.19 mm and max 3.76 mm, so on roughly one
 ray in ten the finder still prefers something in the annulus to the true edge. That rate is
 published, not hidden, and it is why the whole-circle profile is noisier.
+
+---
+
+## CORRECTION — X5 was mislabelled, and it was this lane's headline number
+
+**`X5 component landing` does not test the components.** The 100 marker positions were
+extracted from `oflynn-backside-fullres.jpeg` (`metrology/components-front.json`
+`source`), and X5 samples **that same image** at those positions. Bright-metal markers
+landing on bright pixels is **close to a tautology**. The 4.23× enrichment was quoted as
+evidence that the positions are real; it is not.
+
+**What X5 does genuinely test**, and it is worth keeping: the geometry pipeline —
+the k-scaling, the crop about the stated origin, the resample to the montage scale, the
+coordinate mapping — and X3 proves it depends on the alignment, since it collapses to
+1.44× under a 12° rotation. It is now labelled **registration round-trip**, on the
+picture and here.
+
+### X5B — the version that can fail on the substance
+
+The same markers are pushed through `c_register`'s homography into **FCC photo 6**, an
+image they were **never extracted from**, taken by different people with a different
+camera.
+
+| | value |
+|---|---|
+| marker median luma | **106** |
+| 4000 random annulus positions, median | **42** |
+| null: 97-sized draws from the random pool reaching our median | **p < 1/20000** |
+| fraction above the random 90th percentile | 15.5 % vs 10 % by construction (1.55×, **p = 0.051**) |
+
+**The markers land on bright things in a photograph that never saw them, at p < 0.00005
+on the median statistic.** The count statistic is only marginal (p = 0.051) and that is
+expected: photo 6 gives a 2.8 px sampling radius, so blur mixes a pad with its
+neighbourhood. Both are reported; the weaker one is not hidden.
+
+**A defect in the first version of X5B, found and fixed:** it returned a flat **0.00×**
+because the homography's source frame is the O'Flynn image divided by its
+`pre_average` of 6.58, not full resolution. Omitting that put every marker on the paper
+background. Verified numerically: `H(fcc6 board centre) × 6.58 = (1522.559, 1738.801)`,
+the stated origin to three decimals. **That null was mine, not the board's** — and it is
+the shape a null has to be checked for before it is believed.
