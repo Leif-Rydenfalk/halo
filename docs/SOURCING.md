@@ -372,3 +372,43 @@ Minimum packet sizes worth knowing before an order is placed — several of thes
 ---
 
 *`spec/bom-resolved.json` is the machine-readable form of this page and carries the full price ladders from both channels, the LCSC retail prices, the min-packet and split quantities, and the MPN check result for every order code. Regenerate both with `python3 tools/resolve_bom.py && python3 tools/gen_sourcing.py`.*
+
+## The `-R` / `-R7` reel suffix — SETTLED 2026-09-05, from the manufacturer
+
+**They are the same die. The suffix is reel diameter and nothing else.**
+
+Read off Nordic's own product specification, document `4503_018 v1.0`, §14.3
+Table 109 "Container codes" and §14.4 Table 111 "nRF54L10 order codes":
+
+| code | meaning |
+|---|---|
+| **R7** | **7-inch reel** |
+| **R** | **13-inch reel** |
+
+and every device appears in both, differing only in minimum order quantity:
+
+| order code | MOQ |
+|---|---|
+| nRF54L10-QFAA-**R7** | **1,000** |
+| nRF54L10-QFAA-**R** | **3,000** |
+
+The same pattern holds across QDAA and QGAA packages and across the L15 and L05
+parts. The letter is a container, not a device.
+
+**Why this needed settling rather than assuming.** The availability study found
+**11,366 of the 14,956 authorised pieces are the `-R` reel** while the board
+specifies `-R7`. Four distributors treat them as interchangeable — but four
+distributors agreeing is four parties reading each other, not the manufacturer
+confirming, and Nordic's own ordering page returned HTTP 403 to every automated
+fetch. Had `-R` been a different device, the available quantity would have
+collapsed from 14,956 to **3,590** and the ten-thousand-unit build would have had
+no chip at all.
+
+**How it was obtained**, since the obvious route was blocked: the specification
+PDF is mirrored on LCSC's datasheet CDN and reachable with an ordinary browser
+user-agent and referer. `datasheet.lcsc.com/datasheet/pdf/11cf20669bff633a577e95a4820b68c9.pdf?productCode=C44800139`,
+13.2 MB, ordering information at pages 927–929.
+
+**Consequence:** both reels are orderable for this design and the `-R` stock
+counts. The MOQ difference is the only thing to carry into a purchase — 3,000 on
+the 13-inch reel against 1,000 on the 7-inch.
