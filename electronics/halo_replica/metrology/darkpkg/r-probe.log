@@ -1,0 +1,23 @@
+d_rim probe -- the rim tear-off joints by boundary evidence
+
+  run_id   2026-09-05T06:01:00Z git 3b2c2d8 image sha 5d5f8475b774
+  SOURCE   oflynn-backside-fullres.jpeg  (the side carrying the SoC and the shield can)
+  scale    106.313 px/mm stored, 35.438 at downsample 3; GENUINE 20.7-27.4 px/mm
+  rim mask 0.86-1.01 of the LOCAL edge radius r(theta); 1440323 stored px, 156768 at d=3
+  PREDICTIONS committed first: metrology/darkpkg/P01-RIM-PADS-PREDICTIONS-BEFORE-MEASURING.md
+
+  WHAT THE DETECTOR ACTUALLY GETS AT EACH SEEDED JOINT, bar 23.67
+
+  Two step estimates disagreed -- a per-side step at a rough seed said
+  64-99 luma, an outline-independent core-minus-ring said 174-191 -- and
+  neither is what the detector uses. This is: per-side |z| at each joint.
+
+  rim_bottom_pad_A     theta  118.3  |z| L    2.8 R    9.1 T   13.1 B    0.0   clearing 0/4
+  rim_bottom_pad_B     theta  105.5  |z| L    2.3 R    6.5 T   19.5 B    0.0   clearing 0/4
+  rim_top_joint_1      theta  260.7  |z| L    0.0 R    0.0 T    0.0 B    4.5   clearing 0/4
+  rim_top_joint_2      theta  268.1  |z| L    0.0 R    0.0 T    0.0 B    0.0   clearing 0/4
+  rim_top_joint_3      theta  279.2  |z| L    0.0 R   11.9 T    0.0 B    0.0   clearing 0/4
+
+  0 of 20 boundaries clear the bar across the five seeded joints
+
+  wrote metrology/darkpkg/r-probe.json

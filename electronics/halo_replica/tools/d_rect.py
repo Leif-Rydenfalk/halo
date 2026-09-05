@@ -624,7 +624,7 @@ def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
 
 
 def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
-             seed=20260905, scramble=True, hp=0):
+             seed=20260905, scramble=True, hp=0, sample_mask=None):
     """The bar a SINGLE side must clear.  Same scan, same span, same search range,
     at n random on-board locations of a phase-scrambled copy -- so it carries the
     same multiple-comparison burden the real scan does.  Returns the whole
@@ -636,7 +636,11 @@ def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
         ph = rng.uniform(-np.pi, np.pi, F.shape); ph[0, 0] = 0.0
         o = np.fft.irfft2(np.abs(F) * np.exp(1j * ph), s=lum.shape)
         src = (o - o.mean()) / (o.std() + 1e-9) * lum.std() + lum.mean()
-    ys, xs = np.nonzero(mask)
+    # WHERE the null is sampled and WHAT it is fitted against are different
+    # questions.  Masking to a narrow annulus makes the fitter fight an artificial
+    # boundary of my own making; sampling centres in the annulus while fitting
+    # against the whole board asks the rim question without inventing an edge.
+    ys, xs = np.nonzero(sample_mask if sample_mask is not None else mask)
     zs = []
     for i in range(n):
         k = rng.integers(0, len(ys))

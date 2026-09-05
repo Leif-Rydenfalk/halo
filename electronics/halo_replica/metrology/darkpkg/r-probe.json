@@ -1,0 +1,94 @@
+{
+  "run_utc": "2026-09-05T06:03:29Z",
+  "git_rev": "3b2c2d8",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "d_darkpkg.py",
+  "engine": "d_rect.py",
+  "verb": "probe",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "downsample": 3,
+  "rim_px": 1440323,
+  "bar": 23.67,
+  "rows": [
+    {
+      "name": "rim_bottom_pad_A",
+      "shape": "rectangular copper pad",
+      "theta_deg": 118.3,
+      "abs_z": {
+        "left": 15.4,
+        "right": 10.9,
+        "top": 13.5,
+        "bottom": 16.2
+      },
+      "sides_clearing": 0,
+      "fit_long_mm": 1.242,
+      "fit_short_mm": 0.959,
+      "sides_not_measured": []
+    },
+    {
+      "name": "rim_bottom_pad_B",
+      "shape": "rectangular copper pad",
+      "theta_deg": 105.5,
+      "abs_z": {
+        "left": 9.9,
+        "right": 12.3,
+        "top": 8.8,
+        "bottom": 11.4
+      },
+      "sides_clearing": 0,
+      "fit_long_mm": 1.016,
+      "fit_short_mm": 0.621,
+      "sides_not_measured": []
+    },
+    {
+      "name": "rim_top_joint_1",
+      "shape": "round solder joint",
+      "theta_deg": 260.7,
+      "abs_z": {
+        "left": 8.0,
+        "right": 23.7,
+        "top": 13.6,
+        "bottom": 17.5
+      },
+      "sides_clearing": 1,
+      "fit_long_mm": 1.298,
+      "fit_short_mm": 1.044,
+      "sides_not_measured": []
+    },
+    {
+      "name": "rim_top_joint_2",
+      "shape": "round solder joint",
+      "theta_deg": 268.1,
+      "abs_z": {
+        "left": 13.4,
+        "right": 8.9,
+        "top": 17.4,
+        "bottom": 20.9
+      },
+      "sides_clearing": 0,
+      "fit_long_mm": 1.834,
+      "fit_short_mm": 1.608,
+      "sides_not_measured": []
+    },
+    {
+      "name": "rim_top_joint_3",
+      "shape": "round solder joint",
+      "theta_deg": 279.2,
+      "abs_z": {
+        "left": 10.2,
+        "right": 14.0,
+        "top": 27.3,
+        "bottom": 19.9
+      },
+      "sides_clearing": 1,
+      "fit_long_mm": 1.891,
+      "fit_short_mm": 1.27,
+      "sides_not_measured": []
+    }
+  ],
+  "sides_supported_total": 2,
+  "sides_examined": 20,
+  "sides_not_measured": 0,
+  "dilate_mm": 1.5
+}

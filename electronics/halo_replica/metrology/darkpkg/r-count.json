@@ -1,0 +1,77 @@
+{
+  "run_utc": "2026-09-05T05:57:41Z",
+  "git_rev": "eeee36d",
+  "image_sha256_12": "5d5f8475b774",
+  "tool": "d_darkpkg.py",
+  "engine": "d_rect.py",
+  "verb": "count",
+  "source": "oflynn-backside-fullres.jpeg",
+  "px_per_mm": 106.31295578013115,
+  "downsample": 3,
+  "rim_px": 1440323,
+  "bar": 23.67,
+  "count": 5,
+  "n_whole_board": 9,
+  "rows": [
+    {
+      "theta_deg": 168.8,
+      "r_mm": 9.87,
+      "long_mm": 1.326,
+      "short_mm": 1.185,
+      "score": 38.51,
+      "polarity": "bright_inside",
+      "stored_px": [
+        493.6,
+        1943.3
+      ]
+    },
+    {
+      "theta_deg": 133.5,
+      "r_mm": 11.18,
+      "long_mm": 1.27,
+      "short_mm": 0.649,
+      "score": 34.07,
+      "polarity": "bright_inside",
+      "stored_px": [
+        704.5,
+        2601.5
+      ]
+    },
+    {
+      "theta_deg": 44.6,
+      "r_mm": 11.04,
+      "long_mm": 1.101,
+      "short_mm": 0.621,
+      "score": 29.69,
+      "polarity": "bright_inside",
+      "stored_px": [
+        2357.4,
+        2563.4
+      ]
+    },
+    {
+      "theta_deg": 52.1,
+      "r_mm": 10.98,
+      "long_mm": 1.072,
+      "short_mm": 0.621,
+      "score": 27.89,
+      "polarity": "bright_inside",
+      "stored_px": [
+        2240.1,
+        2659.5
+      ]
+    },
+    {
+      "theta_deg": 322.5,
+      "r_mm": 10.75,
+      "long_mm": 1.383,
+      "short_mm": 1.129,
+      "score": 24.66,
+      "polarity": "bright_inside",
+      "stored_px": [
+        2429.3,
+        1043.9
+      ]
+    }
+  ]
+}
