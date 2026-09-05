@@ -105,3 +105,41 @@ worth carrying:
 
 > **The lesson is not installed by writing it down. It is installed by having a mechanism that
 > re-runs it against new ground.**
+
+---
+
+## 7 · The cited facts, in the wording the comparison table anchors to
+
+*`comparison/threeway.json` cites this document by quotation. Rewriting §1–§6 broke seven of those
+citations and the anchor checker caught it. The facts were always true; the wording had moved.
+They are restated here verbatim so a citation resolves to the sentence it claims.*
+
+**Side convention.** **The side carrying the SoC and the shield can.** Three sources use "front"
+for two different faces, so faces are named by what is on them and the words front and back are not
+used of this board.
+
+**Outer outline fit.** RMS **0.413 mm** over 654 rays, against the measured profile. Published with
+the fit rather than hidden behind it: a circle alone gives 0.563 mm at 43.6 % of rays inside
+±0.15 mm.
+
+**Placement provenance, front face.** Of 100 handoff rows:
+**34 to measured size, 63 as position only** — a fixed 0.30 mm ring, not a footprint — with 3 not
+drawn at all, and 3 known gaps named in the file but absent from the rows.
+
+**What is absent by name.** **Every neutral-black IC package, including the largest one.** Five
+bodies, each carrying its own CANNOT DETERMINE and its measured contrast limit. Nothing is drawn
+where they are.
+
+**Why they are absent.** A second source with 1.9× more genuine resolution was fetched, measured
+and deleted without a byte entering the repository — and **the packages still do not separate**,
+by luma (61 and 73 against a soldermask range of 52–145) or by texture (9.94 and 4.22 against
+5.17–14.59). It is a method gap, not a source gap.
+
+**The NFC / voice coil question.** The wound coil's leads land on TP1 and TP38, which the reference
+dossier calls the voice coil's joints while Apple's own FCC arrow calls that annulus the NFC
+antenna. Which of the two it is remains **OPEN**, and this lane withdrew its own first
+finding rather than let a weak corroboration settle it.
+
+**Connectivity.** **copper, traces, vias | not measured** — the schematic's nodes are identified
+parts and the board's placements are metrology rows, and no row-to-refdes map exists that was not
+built by eye. The board carries no routed connectivity and says so.

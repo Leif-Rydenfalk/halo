@@ -2,7 +2,8 @@
 %TF.CreationDate,2026-09-05T15:42:25+08:00*%
 %TF.ProjectId,halo_replica,68616c6f-5f72-4657-906c-6963612e6b69,rev?*%
 %TF.SameCoordinates,Original*%
-%TF.FileFunction,Other,ECO1*%
+%TF.FileFunction,Glue,Top*%
+%TF.FilePolarity,Positive*%
 %FSLAX46Y46*%
 G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
 G04 Created by KiCad (PCBNEW 10.0.6) date 2026-09-05 15:42:25*

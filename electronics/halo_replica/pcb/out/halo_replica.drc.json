@@ -1,7 +1,7 @@
 {
     "$schema": "https://schemas.kicad.org/drc.v1.json",
     "coordinate_units": "mm",
-    "date": "2026-09-05T15:21:41",
+    "date": "2026-09-05T15:41:18",
     "ignored_checks": [
         {
             "description": "Footprint has no courtyard defined",
@@ -25,9 +25,7 @@
         }
     ],
     "included_severities": [
-        "error",
-        "warning",
-        "exclusion"
+        "error"
     ],
     "kicad_version": "10.0.6",
     "schematic_parity": [],
@@ -35,759 +33,759 @@
     "unconnected_items": [],
     "violations": [
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
                     "pos": {
                         "x": 23.612,
                         "y": 14.877829
                     },
-                    "uuid": "ddb270d8-ff1e-47c9-88af-0cfe7cfaafde"
+                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B064 on F.Cu",
                     "pos": {
                         "x": 21.479,
                         "y": 16.434829
                     },
-                    "uuid": "f8176be0-93c2-4c55-b423-b44a1233d07d"
+                    "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0119 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B009 på F.Cu",
-                    "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
-                    },
-                    "uuid": "482a332a-8780-459e-8506-61d5e9da501e"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B010 på F.Cu",
-                    "pos": {
-                        "x": 17.687,
-                        "y": 21.307829
-                    },
-                    "uuid": "3ae2396e-5f16-4d46-8e60-346ab01f1b86"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0679 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B026 på F.Cu",
-                    "pos": {
-                        "x": 7.883,
-                        "y": 19.076829
-                    },
-                    "uuid": "8cb8624a-25de-4545-86c7-4ca6fad200de"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B030 på F.Cu",
-                    "pos": {
-                        "x": 6.977,
-                        "y": 20.056829
-                    },
-                    "uuid": "a0f78182-f01c-4841-a5c0-0611f3c98fd4"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B035 på F.Cu",
-                    "pos": {
-                        "x": 18.812,
-                        "y": 1.773829
-                    },
-                    "uuid": "47b90007-5737-4ede-a194-a7402481cc55"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B034 på F.Cu",
-                    "pos": {
-                        "x": 18.062,
-                        "y": 1.608829
-                    },
-                    "uuid": "09a6d50c-3636-4c06-9172-78a58a6db1c5"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
                         "x": 3.804,
                         "y": 7.801829
                     },
-                    "uuid": "2eee672b-1e2f-47ae-9d55-518a07315165"
+                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
-                    "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
-                    },
-                    "uuid": "a9b90b6d-a7bd-4e05-aeb8-1392d59f3d89"
-                }
-            ],
-            "severity": "error",
-            "type": "clearance"
-        },
-        {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0119 mm)",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "2eee672b-1e2f-47ae-9d55-518a07315165"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B007 on F.Cu",
                     "pos": {
                         "x": 7.394,
                         "y": 7.569829
                     },
-                    "uuid": "8ba50592-d3be-4e71-9797-462a0b0d37d2"
+                    "uuid": "ed54e747-3f98-41df-b4f6-47f19614906c"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0000 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 15.823,
+                        "y": 21.539829
                     },
-                    "uuid": "358d66e2-666a-4bac-9fc5-a817639bf2b5"
+                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B046 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B010 on F.Cu",
                     "pos": {
-                        "x": 6.306,
-                        "y": 15.840829
+                        "x": 17.687,
+                        "y": 21.307829
                     },
-                    "uuid": "a1ef35b8-92ff-47f1-96f0-66f572b53558"
+                    "uuid": "71efd287-27e8-42d4-8169-ffb380a999ac"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0571 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
                     "pos": {
-                        "x": 5.921,
-                        "y": 15.118829
+                        "x": 18.062,
+                        "y": 1.608829
                     },
-                    "uuid": "358d66e2-666a-4bac-9fc5-a817639bf2b5"
+                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B019 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
                     "pos": {
-                        "x": 5.699,
-                        "y": 13.913829
+                        "x": 18.812,
+                        "y": 1.773829
                     },
-                    "uuid": "e0c44198-4af3-4621-8f77-8f0fcd0620be"
+                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Överträdelse av isolationsavstånd/frigång ( frigång 0.0750 mm; faktisk 0.0068 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0068 mm)",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
                         "x": 5.921,
                         "y": 15.118829
                     },
-                    "uuid": "358d66e2-666a-4bac-9fc5-a817639bf2b5"
+                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B017 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B017 on F.Cu",
                     "pos": {
                         "x": 4.936,
                         "y": 14.265829
                     },
-                    "uuid": "a8dd2505-c92c-4f78-a94e-86e31ef17631"
+                    "uuid": "83da2f9c-8449-463f-98ba-5a1a5e0bf4c7"
                 }
             ],
             "severity": "error",
             "type": "clearance"
         },
         {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
             "items": [
                 {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 5.122533,
-                        "y": 20.594512
-                    },
-                    "uuid": "4aadb088-3aad-4fdc-b38d-f5308c89127a"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B011 on F.Cu",
                     "pos": {
                         "x": 3.173,
                         "y": 10.362829
                     },
-                    "uuid": "a9b90b6d-a7bd-4e05-aeb8-1392d59f3d89"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4703 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 9.001986,
-                        "y": 14.903282
-                    },
-                    "uuid": "ec738878-f851-4f94-bd18-cbb8e8f7ec59"
+                    "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B004 på F.Cu",
-                    "pos": {
-                        "x": 7.605,
-                        "y": 16.729829
-                    },
-                    "uuid": "6dba1fba-8890-453f-84af-7be04172433a"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4775 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 9.280023,
-                        "y": 9.50256
-                    },
-                    "uuid": "9982bc3b-8e7f-4fe6-874c-af31d36ae3d8"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B007 på F.Cu",
-                    "pos": {
-                        "x": 7.394,
-                        "y": 7.569829
-                    },
-                    "uuid": "8ba50592-d3be-4e71-9797-462a0b0d37d2"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4734 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 15.280524,
-                        "y": 5.744775
-                    },
-                    "uuid": "b3cf0bcb-33e4-4c5e-8b3c-3f67873e7d03"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B006 på F.Cu",
-                    "pos": {
-                        "x": 16.532,
-                        "y": 3.385829
-                    },
-                    "uuid": "ac2763d5-4475-406a-93c5-a760487b7a3d"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4585 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 20.229638,
-                        "y": 18.08086
-                    },
-                    "uuid": "1ca31008-95f3-4171-a7d9-481e761e2bd7"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
-                    "pos": {
-                        "x": 21.479,
-                        "y": 16.434829
-                    },
-                    "uuid": "f8176be0-93c2-4c55-b423-b44a1233d07d"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4468 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 6.592769,
-                        "y": 2.318158
-                    },
-                    "uuid": "8e97b926-05ab-49aa-a522-5e0245d22d07"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av D004 på F.Cu",
-                    "pos": {
-                        "x": 13.999,
-                        "y": -0.385171
-                    },
-                    "uuid": "9214f87d-23c5-4725-94e1-f2cd85126597"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4328 mm)",
-            "items": [
-                {
-                    "description": "Båge på Edge.Cuts",
-                    "pos": {
-                        "x": 14.4439,
-                        "y": 12.14705
-                    },
-                    "uuid": "133b14f0-063d-49d5-8634-c28db6d023ba"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
                     "pos": {
                         "x": 3.804,
                         "y": 7.801829
                     },
-                    "uuid": "2eee672b-1e2f-47ae-9d55-518a07315165"
+                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 }
             ],
             "severity": "error",
-            "type": "copper_edge_clearance"
+            "type": "clearance"
         },
         {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.2429 mm)",
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0571 mm)",
             "items": [
                 {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 22.208524,
-                        "y": 13.767921
-                    },
-                    "uuid": "c8adda81-1a8e-47f4-b9c3-4b5084a80207"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
-                    "pos": {
-                        "x": 23.612,
-                        "y": 14.877829
-                    },
-                    "uuid": "ddb270d8-ff1e-47c9-88af-0cfe7cfaafde"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.1840 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 6.592769,
-                        "y": 2.318158
-                    },
-                    "uuid": "8e97b926-05ab-49aa-a522-5e0245d22d07"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B015 på F.Cu",
-                    "pos": {
-                        "x": 11.258,
-                        "y": 1.576829
-                    },
-                    "uuid": "ccddcdf3-8cbe-47f5-b640-77c270648584"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4393 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 20.35816,
-                        "y": 18.017235
-                    },
-                    "uuid": "06acd82f-ea12-4d6f-99c2-a355390fa321"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP035 på B.Cu",
-                    "pos": {
-                        "x": 20.96,
-                        "y": 17.587829
-                    },
-                    "uuid": "54ab22cc-1da1-47b6-baee-e74125123a37"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Båge på Edge.Cuts",
-                    "pos": {
-                        "x": 14.443909,
-                        "y": 12.147054
-                    },
-                    "uuid": "14aa73de-4064-4c96-ac25-49654172721d"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP001 på B.Cu",
-                    "pos": {
-                        "x": 26.818,
-                        "y": 9.979829
-                    },
-                    "uuid": "8995afb0-8bef-4ba5-afcb-bf67b3fd0685"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 20.958005,
-                        "y": 14.637716
-                    },
-                    "uuid": "d53b12da-4954-4009-8053-7b39ad828517"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP039 på B.Cu",
-                    "pos": {
-                        "x": 22.121,
-                        "y": 15.114829
-                    },
-                    "uuid": "5f32e9b6-b5dd-479c-9000-c1fbb793af13"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4412 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 21.109082,
-                        "y": 16.857493
-                    },
-                    "uuid": "40d786b7-9944-4a62-ae9a-59b97c57c770"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP037 på B.Cu",
-                    "pos": {
-                        "x": 21.774,
-                        "y": 16.518829
-                    },
-                    "uuid": "65c7ef5c-aeda-4ea6-b6e6-d0379f87962e"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 21.052089,
-                        "y": 12.169829
-                    },
-                    "uuid": "b772b28c-94f1-4bc9-87c9-fa6758f35825"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP042 på B.Cu",
-                    "pos": {
-                        "x": 22.618,
-                        "y": 12.363829
-                    },
-                    "uuid": "8182795f-1edc-49c4-a893-500b83932e3b"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4533 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 18.996406,
-                        "y": 18.691371
-                    },
-                    "uuid": "b28e4ce0-5cd6-4ebc-b831-2c33d2538bba"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP032 på B.Cu",
-                    "pos": {
-                        "x": 19.618,
-                        "y": 18.265829
-                    },
-                    "uuid": "b5181966-28c5-42fb-9301-80029b7a44c6"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0000 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 22.208524,
-                        "y": 13.767921
-                    },
-                    "uuid": "c8adda81-1a8e-47f4-b9c3-4b5084a80207"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP041 på B.Cu",
-                    "pos": {
-                        "x": 22.6,
-                        "y": 13.646829
-                    },
-                    "uuid": "e90b8edf-fe71-4cde-af58-dcf57487a36b"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.4062 mm)",
-            "items": [
-                {
-                    "description": "Segment på Edge.Cuts",
-                    "pos": {
-                        "x": 21.42543,
-                        "y": 10.448141
-                    },
-                    "uuid": "734777d2-e2b5-4cd8-a851-6e3aff66e04c"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP000 på B.Cu",
-                    "pos": {
-                        "x": 22.625,
-                        "y": 11.070829
-                    },
-                    "uuid": "f0d4f3ca-1199-4e74-894b-c797afaad4e2"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.3603 mm)",
-            "items": [
-                {
-                    "description": "Båge på Edge.Cuts",
-                    "pos": {
-                        "x": 14.443909,
-                        "y": 12.147054
-                    },
-                    "uuid": "14aa73de-4064-4c96-ac25-49654172721d"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP003 på B.Cu",
-                    "pos": {
-                        "x": 25.425,
-                        "y": 7.498829
-                    },
-                    "uuid": "a19b00e3-a44f-4fab-a784-8c4d4d288bb2"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Regelöverträdelse för mönsterkortets kantmarginal (mönsterkortsinställningarnas begränsningar för kanter frigång 0.5000 mm; faktisk 0.0074 mm)",
-            "items": [
-                {
-                    "description": "Båge på Edge.Cuts",
-                    "pos": {
-                        "x": 14.443909,
-                        "y": 12.147054
-                    },
-                    "uuid": "14aa73de-4064-4c96-ac25-49654172721d"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av KP002 på B.Cu",
-                    "pos": {
-                        "x": 26.21,
-                        "y": 8.257829
-                    },
-                    "uuid": "9a10411a-3773-48ba-af42-c2f0b1634c7f"
-                }
-            ],
-            "severity": "error",
-            "type": "copper_edge_clearance"
-        },
-        {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B010 på F.Cu",
-                    "pos": {
-                        "x": 17.687,
-                        "y": 21.307829
-                    },
-                    "uuid": "3ae2396e-5f16-4d46-8e60-346ab01f1b86"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B009 på F.Cu",
-                    "pos": {
-                        "x": 15.823,
-                        "y": 21.539829
-                    },
-                    "uuid": "482a332a-8780-459e-8506-61d5e9da501e"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B011 på F.Cu",
-                    "pos": {
-                        "x": 3.173,
-                        "y": 10.362829
-                    },
-                    "uuid": "a9b90b6d-a7bd-4e05-aeb8-1392d59f3d89"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B005 på F.Cu",
-                    "pos": {
-                        "x": 3.804,
-                        "y": 7.801829
-                    },
-                    "uuid": "2eee672b-1e2f-47ae-9d55-518a07315165"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B013 på F.Cu",
-                    "pos": {
-                        "x": 23.612,
-                        "y": 14.877829
-                    },
-                    "uuid": "ddb270d8-ff1e-47c9-88af-0cfe7cfaafde"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av B064 på F.Cu",
-                    "pos": {
-                        "x": 21.479,
-                        "y": 16.434829
-                    },
-                    "uuid": "f8176be0-93c2-4c55-b423-b44a1233d07d"
-                }
-            ],
-            "severity": "error",
-            "type": "solder_mask_bridge"
-        },
-        {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
-            "items": [
-                {
-                    "description": "Lödyta 1 [<no net>] av B046 på F.Cu",
-                    "pos": {
-                        "x": 6.306,
-                        "y": 15.840829
-                    },
-                    "uuid": "a1ef35b8-92ff-47f1-96f0-66f572b53558"
-                },
-                {
-                    "description": "Lödyta 1 [<no net>] av D002 på F.Cu",
+                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
                     "pos": {
                         "x": 5.921,
                         "y": 15.118829
                     },
-                    "uuid": "358d66e2-666a-4bac-9fc5-a817639bf2b5"
+                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B019 on F.Cu",
+                    "pos": {
+                        "x": 5.699,
+                        "y": 13.913829
+                    },
+                    "uuid": "bf03c00e-8a15-4c39-afa6-5ee4da1831f0"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0679 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B026 on F.Cu",
+                    "pos": {
+                        "x": 7.883,
+                        "y": 19.076829
+                    },
+                    "uuid": "1adce1d2-0d4f-4cc7-8847-f1936ea5f6bc"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B030 on F.Cu",
+                    "pos": {
+                        "x": 6.977,
+                        "y": 20.056829
+                    },
+                    "uuid": "c409c4dc-2a4b-45ed-a3f4-881d03be6315"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Clearance violation ( clearance 0.0750 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
+                    "pos": {
+                        "x": 5.921,
+                        "y": 15.118829
+                    },
+                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B046 on F.Cu",
+                    "pos": {
+                        "x": 6.306,
+                        "y": 15.840829
+                    },
+                    "uuid": "e5148f42-b89c-4fbc-95f6-29ee7e5f4028"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.2429 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 22.208524,
+                        "y": 13.767921
+                    },
+                    "uuid": "b15d0a4d-b733-4b4a-af37-4bd6c3347635"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
+                    "pos": {
+                        "x": 23.612,
+                        "y": 14.877829
+                    },
+                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 5.122533,
+                        "y": 20.594512
+                    },
+                    "uuid": "32051a39-1d06-43fb-851a-e3966c99f27a"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B011 on F.Cu",
+                    "pos": {
+                        "x": 3.173,
+                        "y": 10.362829
+                    },
+                    "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4703 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 9.001986,
+                        "y": 14.903282
+                    },
+                    "uuid": "e8a7dff3-982b-4d84-8555-ee8871f29423"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B004 on F.Cu",
+                    "pos": {
+                        "x": 7.605,
+                        "y": 16.729829
+                    },
+                    "uuid": "98386467-4a39-4a23-b3c8-85e3bec1058e"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4328 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 14.4439,
+                        "y": 12.14705
+                    },
+                    "uuid": "ff02507f-39ff-4fad-8347-e212bd629282"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
+                    "pos": {
+                        "x": 3.804,
+                        "y": 7.801829
+                    },
+                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4468 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 6.592769,
+                        "y": 2.318158
+                    },
+                    "uuid": "6aed8069-6b5a-4b7d-ad87-fcc16a924c24"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of D004 on F.Cu",
+                    "pos": {
+                        "x": 13.999,
+                        "y": -0.385171
+                    },
+                    "uuid": "252c028f-e448-41ae-8259-ef80bf4d0538"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4775 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 9.280023,
+                        "y": 9.50256
+                    },
+                    "uuid": "fd903680-1aa2-44df-bd5b-56b52b34494e"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B007 on F.Cu",
+                    "pos": {
+                        "x": 7.394,
+                        "y": 7.569829
+                    },
+                    "uuid": "ed54e747-3f98-41df-b4f6-47f19614906c"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4585 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 20.229638,
+                        "y": 18.08086
+                    },
+                    "uuid": "f28d3ad8-843b-44ca-a4fc-0a998f7b6ff8"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B064 on F.Cu",
+                    "pos": {
+                        "x": 21.479,
+                        "y": 16.434829
+                    },
+                    "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4734 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 15.280524,
+                        "y": 5.744775
+                    },
+                    "uuid": "addb1fc6-01ce-4646-a277-fec31c8d177d"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B006 on F.Cu",
+                    "pos": {
+                        "x": 16.532,
+                        "y": 3.385829
+                    },
+                    "uuid": "1f03811d-bc42-40ba-a534-dbb39c1d0183"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.1840 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 6.592769,
+                        "y": 2.318158
+                    },
+                    "uuid": "6aed8069-6b5a-4b7d-ad87-fcc16a924c24"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B015 on F.Cu",
+                    "pos": {
+                        "x": 11.258,
+                        "y": 1.576829
+                    },
+                    "uuid": "312dae02-6b19-4950-9424-44fe982ee92e"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 20.958005,
+                        "y": 14.637716
+                    },
+                    "uuid": "09248041-b96d-477a-b54b-6c6f849cb451"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP039 on B.Cu",
+                    "pos": {
+                        "x": 22.121,
+                        "y": 15.114829
+                    },
+                    "uuid": "8679991b-8105-49db-82a5-c8b3a6e90392"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4062 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 21.42543,
+                        "y": 10.448141
+                    },
+                    "uuid": "8bf20692-55ea-4532-8e30-eab607022168"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP000 on B.Cu",
+                    "pos": {
+                        "x": 22.625,
+                        "y": 11.070829
+                    },
+                    "uuid": "19c6a3a6-1f89-48f3-b7eb-b57755575a07"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0074 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "aa2b4751-258b-4988-b7f1-96440eb5b57b"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP002 on B.Cu",
+                    "pos": {
+                        "x": 26.21,
+                        "y": 8.257829
+                    },
+                    "uuid": "db41f0c5-8b27-40f6-9f5c-76cbe01361e8"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 22.208524,
+                        "y": 13.767921
+                    },
+                    "uuid": "b15d0a4d-b733-4b4a-af37-4bd6c3347635"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP041 on B.Cu",
+                    "pos": {
+                        "x": 22.6,
+                        "y": 13.646829
+                    },
+                    "uuid": "b8011197-5ccc-4ffd-b576-c3d637aa7693"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "aa2b4751-258b-4988-b7f1-96440eb5b57b"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP001 on B.Cu",
+                    "pos": {
+                        "x": 26.818,
+                        "y": 9.979829
+                    },
+                    "uuid": "603c038d-de7a-4851-9874-b3e1f00a82fc"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.0000 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 21.052089,
+                        "y": 12.169829
+                    },
+                    "uuid": "f8b7c198-0af3-4290-933d-7110944b2b69"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP042 on B.Cu",
+                    "pos": {
+                        "x": 22.618,
+                        "y": 12.363829
+                    },
+                    "uuid": "eb1cabec-59c5-44cd-ab71-d4406263eccb"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4412 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 21.109082,
+                        "y": 16.857493
+                    },
+                    "uuid": "a3275ee1-22ad-495d-905f-4464f97f09a8"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP037 on B.Cu",
+                    "pos": {
+                        "x": 21.774,
+                        "y": 16.518829
+                    },
+                    "uuid": "08b48bea-2e9e-41f7-8dcf-3f7d73880d84"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4533 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 18.996406,
+                        "y": 18.691371
+                    },
+                    "uuid": "c270a464-41e7-4274-8d3b-164feecaaf5e"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP032 on B.Cu",
+                    "pos": {
+                        "x": 19.618,
+                        "y": 18.265829
+                    },
+                    "uuid": "30db3323-3c2b-45a7-8b89-d9eab891ea61"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.4393 mm)",
+            "items": [
+                {
+                    "description": "Segment on Edge.Cuts",
+                    "pos": {
+                        "x": 20.35816,
+                        "y": 18.017235
+                    },
+                    "uuid": "2c4fbcb7-4da5-49bf-8ef3-0c873ff483e1"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP035 on B.Cu",
+                    "pos": {
+                        "x": 20.96,
+                        "y": 17.587829
+                    },
+                    "uuid": "e120feba-a9c6-439a-9d5f-16b18f55e7ff"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Board edge clearance violation (board setup constraints edge clearance 0.5000 mm; actual 0.3603 mm)",
+            "items": [
+                {
+                    "description": "Arc on Edge.Cuts",
+                    "pos": {
+                        "x": 14.443909,
+                        "y": 12.147054
+                    },
+                    "uuid": "aa2b4751-258b-4988-b7f1-96440eb5b57b"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of KP003 on B.Cu",
+                    "pos": {
+                        "x": 25.425,
+                        "y": 7.498829
+                    },
+                    "uuid": "4dbebc20-93ee-429c-8afe-7805baf32610"
+                }
+            ],
+            "severity": "error",
+            "type": "copper_edge_clearance"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B011 on F.Cu",
+                    "pos": {
+                        "x": 3.173,
+                        "y": 10.362829
+                    },
+                    "uuid": "2ec22c93-0918-4c82-90e0-0585c8dbf6d6"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B005 on F.Cu",
+                    "pos": {
+                        "x": 3.804,
+                        "y": 7.801829
+                    },
+                    "uuid": "61776f7e-6286-4317-8e3d-ff777137ee0e"
                 }
             ],
             "severity": "error",
             "type": "solder_mask_bridge"
         },
         {
-            "description": "Öppning i framsidans lödmask överbryggar objekt från olika nät",
+            "description": "Front solder mask aperture bridges items with different nets",
             "items": [
                 {
-                    "description": "Lödyta 1 [<no net>] av B035 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B010 on F.Cu",
+                    "pos": {
+                        "x": 17.687,
+                        "y": 21.307829
+                    },
+                    "uuid": "71efd287-27e8-42d4-8169-ffb380a999ac"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B009 on F.Cu",
+                    "pos": {
+                        "x": 15.823,
+                        "y": 21.539829
+                    },
+                    "uuid": "ecb41d36-23e3-4dd9-9c20-f0beeead2ea7"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B046 on F.Cu",
+                    "pos": {
+                        "x": 6.306,
+                        "y": 15.840829
+                    },
+                    "uuid": "e5148f42-b89c-4fbc-95f6-29ee7e5f4028"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of D002 on F.Cu",
+                    "pos": {
+                        "x": 5.921,
+                        "y": 15.118829
+                    },
+                    "uuid": "d6f5c85a-ae09-4ba1-99fb-507fbe75c87a"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B035 on F.Cu",
                     "pos": {
                         "x": 18.812,
                         "y": 1.773829
                     },
-                    "uuid": "47b90007-5737-4ede-a194-a7402481cc55"
+                    "uuid": "0a3f4474-cff0-4346-8edd-6e4a7fad477c"
                 },
                 {
-                    "description": "Lödyta 1 [<no net>] av B034 på F.Cu",
+                    "description": "Pad 1 [<no net>] of B034 on F.Cu",
                     "pos": {
                         "x": 18.062,
                         "y": 1.608829
                     },
-                    "uuid": "09a6d50c-3636-4c06-9172-78a58a6db1c5"
+                    "uuid": "5811dfdf-73c6-4063-bcd7-80294534540b"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "Front solder mask aperture bridges items with different nets",
+            "items": [
+                {
+                    "description": "Pad 1 [<no net>] of B064 on F.Cu",
+                    "pos": {
+                        "x": 21.479,
+                        "y": 16.434829
+                    },
+                    "uuid": "4c112778-1cf9-4beb-a7c5-f8762ec61141"
+                },
+                {
+                    "description": "Pad 1 [<no net>] of B013 on F.Cu",
+                    "pos": {
+                        "x": 23.612,
+                        "y": 14.877829
+                    },
+                    "uuid": "9d2bab90-f265-410f-a1b1-5251620c25ee"
                 }
             ],
             "severity": "error",
