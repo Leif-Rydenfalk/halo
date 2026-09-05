@@ -5,7 +5,7 @@
   (descr "CLASS A/B [DATASHEET + MEASURED] nRF52832-CIAA land grid. Body 3.226 x 2.956 mm MEASURED (bom.json U1, b_pkgsize.py, 10/10 selftest). Pitch 0.4 mm from nRF52832 PS v1.4 Table 132. OVER-DRAWN: the part is WLCSP-50 and 56 grid positions are drawn, so 6 LANDS HERE DO NOT EXIST ON THE PART. Which six are depopulated is CANNOT DETERMINE in this lane -- no ball map is in evidence. NOT FABRICATION-READY as a solder land set. Land diameter 0.25 mm is a CHOICE (0.625 x pitch, the usual NSMD ratio at 0.4 mm), not a measurement.")
   (tags "halo replica wlcsp nrf52832 overdrawn")
   (attr smd)
-  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.SilkS")
+  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.Fab")
     (effects (font (size 0.5 0.5) (thickness 0.075)))
   )
   (property "Value" "REPL_WLCSP_8x7_P0.4_GRID56" (at 0 1.6 0) (layer "F.Fab") hide

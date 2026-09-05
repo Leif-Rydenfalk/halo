@@ -153,21 +153,48 @@ def _sha256(path):
             h.update(b)
     return h.hexdigest()
 
-def check_deliverable(root=HALO, lane_rel="electronics/halo_replica"):
+def _stamp(path, probe):
+    """(iso_string_or_None, kind). EMBEDDED beats mtime; mtime is recorded as weak."""
+    import re as _re, datetime as _dt
+    if probe:
+        try:
+            with open(path, "r", errors="replace") as fh:
+                head = fh.read(8192)
+            m = _re.search(probe, head)
+            if m:
+                return m.group(1), "embedded"
+        except Exception:
+            pass
+    return (_dt.datetime.fromtimestamp(os.path.getmtime(path))
+            .strftime("%Y-%m-%dT%H:%M:%S"), "mtime")
+
+def _iso(t):
+    import datetime as _dt
+    return _dt.datetime.fromisoformat(t.split("+")[0])
+
+def check_deliverable(root=HALO, tree="replica"):
+    """Existence AND currency. A row is green only when a file of the right kind opens
+    AND is newer than every one of its sources.
+
+    Three states, and CANNOT DETERMINE is not a pass: an artifact whose source is absent
+    is UNMEASURED, not stale, and must not be representable in the same field as either.
+    """
     import glob as _glob
     doc = json.load(open(DELIV))
-    lane = os.path.join(root, lane_rel)
-    out = []
+    roots = [os.path.join(root, r) for r in doc["trees"][tree]["roots"]]
+    out, stamps = [], {}
+    specs = {r["id"]: r for r in doc["rows"]}
+
+    # pass 1: existence + opening + this row's own timestamp
     for row in doc["rows"]:
-        hits = _glob.glob(os.path.join(lane, row["glob"]), recursive=True)
-        hits = [h for h in hits if os.path.isfile(h)]
-        rec = dict(id=row["id"], what=row["what"], glob=row["glob"],
-                   probe=row["probe"], candidates=len(hits))
-        if not hits:
-            rec.update(state="RED", why="no file of this kind anywhere in the Replica tree")
-            out.append(rec); continue
+        hits = []
+        for base in roots:
+            hits += [h for h in _glob.glob(os.path.join(base, row["glob"]), recursive=True)
+                     if os.path.isfile(h)]
+        rec = dict(id=row["id"], what=row["what"], glob=row["glob"], probe=row["probe"],
+                   candidates=len(hits), source=row.get("source", []))
         opened, reasons = [], []
-        for h in hits:
+        for h in sorted(set(hits)):
             rel = os.path.relpath(h, root)
             try:
                 if os.path.getsize(h) == 0:
@@ -182,24 +209,59 @@ def check_deliverable(root=HALO, lane_rel="electronics/halo_replica"):
                 continue
             ref = row.get("refuse_if_sha256_matches")
             if ref:
-                # RESOLVED AGAINST THE REAL REPO, NEVER AGAINST `root`. The first version
-                # joined it to `root`, so under any root but the real one the reference
-                # file did not exist and the guard SILENTLY DID NOTHING - a guard that
-                # cannot fire, found by the break written for it (D-4). The thing being
-                # refused is the actual halo_rev_a board, wherever the Replica tree sits.
                 rp = os.path.join(HALO, ref)
                 if os.path.exists(rp) and _sha256(rp) == _sha256(h):
                     reasons.append(f"{rel}: IS halo_rev_a's file, byte for byte. Copying the "
                                    f"board Leif rejected into the Replica's tree is the exact "
                                    f"failure this check exists to catch, dressed as a pass.")
                     continue
-            opened.append(rel)
-        if opened:
-            rec.update(state="GREEN", opened=opened[:5], n_opened=len(opened))
-        else:
-            rec.update(state="RED", why="; ".join(reasons[:3]),
-                       rejected=len(reasons))
+            opened.append(h)
+        if not opened:
+            rec.update(state="RED", exists="RED",
+                       why=("; ".join(reasons[:3]) if reasons
+                            else "no file of this kind anywhere in this tree"))
+            out.append(rec); continue
+        pr = row.get("timestamp_probe")
+        ts = [(_stamp(h, pr), h) for h in opened]
+        # an artifact SET is only as fresh as its OLDEST member
+        oldest = min(ts, key=lambda t: _iso(t[0][0]))
+        # a SOURCE is as new as its NEWEST member
+        newest = max(ts, key=lambda t: _iso(t[0][0]))
+        stamps[row["id"]] = (newest[0][0], newest[0][1])
+        rec.update(exists="GREEN", opened=[os.path.relpath(h, root) for h in opened][:6],
+                   n_opened=len(opened),
+                   own_stamp=oldest[0][0], own_stamp_kind=oldest[0][1],
+                   oldest_member=os.path.relpath(oldest[1], root))
         out.append(rec)
+
+    # pass 2: freshness against the encoded dependency graph
+    for rec in out:
+        if rec.get("exists") != "GREEN":
+            rec["fresh"] = "n/a"; continue
+        srcs = rec["source"]
+        if not srcs:
+            rec["fresh"] = "n/a (root artifact)"; rec["state"] = "GREEN"; continue
+        missing = [sid for sid in srcs if sid not in stamps]
+        if missing:
+            rec.update(state="CANNOT DETERMINE", fresh="CANNOT DETERMINE",
+                       why=(f"opens, but its source {'/'.join(missing)} "
+                            f"({', '.join(specs[m]['what'] for m in missing)}) does not exist "
+                            f"in this tree, so there is nothing to be newer than. UNMEASURED, "
+                            f"not stale."))
+            continue
+        stale = []
+        for sid in srcs:
+            sts, skind = stamps[sid]
+            if _iso(rec["own_stamp"]) < _iso(sts):
+                dt = (_iso(sts) - _iso(rec["own_stamp"])).total_seconds()
+                stale.append(f"{int(dt)} s older than {sid} {specs[sid]['what'].lower()} "
+                             f"({rec['own_stamp']} {rec['own_stamp_kind']} vs {sts} {skind})")
+        if stale:
+            rec.update(state="RED", fresh="STALE",
+                       why="STALE: " + "; ".join(stale) +
+                           f" -- oldest member {rec['oldest_member']}")
+        else:
+            rec.update(state="GREEN", fresh="FRESH")
     return doc, out
 
 # --------------------------------------------------------------------- checking

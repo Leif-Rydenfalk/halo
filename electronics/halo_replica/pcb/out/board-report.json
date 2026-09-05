@@ -5,7 +5,7 @@
   "path": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/halo_replica.pretty",
   "footprints": 44
  },
- "written_utc": "2026-09-05T06:50:12.694245Z",
+ "written_utc": "2026-09-05T06:53:35.849371Z",
  "pcb": "/Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/pcb/out/halo_replica.kicad_pcb",
  "outer_diameter_mm_drawn": 25.1593,
  "outer_diameter_state": "BOUND 24.95-26.34 mm, and if it moves it moves DOWN. The drawn value is NOT a settled diameter and NOT an independent opinion on the OD.",
@@ -14,6 +14,7 @@
  "fabrication_delta": "L4 measured 0.30 mm is below PCBWay's 0.40 mm four-layer floor and JLCPCB's 0.40 mm minimum. The Replica AS DRAWN cannot be ordered at either house. That is a fact about US, not about Apple. The two numbers are never fused.",
  "surface_finish": "gold-bearing \u2014 ENIG or another immersion/electroless-gold finish",
  "outer_edge": {
+  "degenerate_primitives_dropped": 0,
   "drawn_outer_diameter_mm": 25.1593,
   "fitted_circle_diameter_mm": 25.15928642974999,
   "scale_applied": 1.000000539373406,
@@ -43,6 +44,7 @@
   ],
   "facets": 7,
   "radial_step_walls": 14,
+  "ring_points_after_dedupe": 734,
   "walls_are_measured": false,
   "walls_note": "A facet's arc ends where the boundary crosses 0.30 mm from the superellipse, NOT where the wall is. The wall POSITIONS ARE NOT MEASURED (board.json).",
   "tessellation_step_deg": 0.5,
@@ -50,12 +52,12 @@
   "no_diameter_published": "This lane publishes NO centre-hole diameter. Three superellipse fits disagree on the exponent and in different directions (board.json).",
   "min_radius_mm": 6.0698,
   "max_radius_mm": 8.0171,
-  "segments": 748
+  "segments": 734
  },
  "edge_cuts": {
   "arcs": 3,
   "segments": 4,
-  "pocket_segments": 748,
+  "pocket_segments": 734,
   "radial_step_walls_also_on_Dwgs_User": 14
  },
  "netlist": "CANNOT DETERMINE \u2014 no schematic exists yet at /Users/leifrydenfalk/dev/ce-workshop/ce-designs/halo/electronics/halo_replica/schematic/out. This board carries NO NETS and its copper connectivity is therefore UNKNOWN. Nothing was invented to fill the gap.",

@@ -69,6 +69,9 @@ BOMFILE = os.path.join(REPLICA, "bom", "bom.json")
 UWBFILE = os.path.join(REPLICA, "metrology", "uwb-can-remeasure.json")
 
 VERSION = "20240108"
+SILK_MIN_H = 0.80        # KiCad's default silkscreen minimum text height, and
+SILK_MIN_T = 0.15        # thickness. Both are checked by DRC and both were
+                         # violated 116 times by the first draft of this file.
 GEN = "halo_replica/pcb/footprints.py"
 
 # --------------------------------------------------------------------------
@@ -142,10 +145,12 @@ def _text(kind, s, x, y, layer, size=0.5, hide=False):
 
 
 def _fp_text(s, x, y, layer, size=0.4):
+    th = max(size * 0.15, SILK_MIN_T) if layer.endswith("SilkS") \
+        else size * 0.15
     return ('  (fp_text user "%s" (at %s %s 0) (layer "%s")\n'
             '    (effects (font (size %s %s) (thickness %s)))\n  )'
             % (s, _fmt(x), _fmt(y), layer,
-               _fmt(size), _fmt(size), _fmt(size * 0.15)))
+               _fmt(size), _fmt(size), _fmt(th)))
 
 
 def _head(name, descr, tags, attr):
@@ -156,7 +161,15 @@ def _head(name, descr, tags, attr):
             '  (descr "%s")' % descr.replace('"', "'"),
             '  (tags "%s")' % tags,
             '  (attr %s)' % attr,
-            _text("Reference", "REF**", 0, -1.6, "F.SilkS", 0.5),
+            # THE REFERENCE GOES ON F.Fab, NOT ON SILKSCREEN, and that is a
+            # measured decision. With 103 refdes in silk on a 25 mm annulus
+            # KiCad's own DRC returned 116 text_height + 116 text_thickness +
+            # 69 silk_over_copper violations: at a size that fits, the text is
+            # below the minimum any fab will print, and at a size that prints,
+            # it is on top of the copper. Apple's board carries NO refdes silk
+            # either (bom.json conventions). Silkscreen on this board is
+            # reserved for the four legends that MUST be physically printed.
+            _text("Reference", "REF**", 0, -1.6, "F.Fab", 0.5),
             _text("Value", name, 0, 1.6, "F.Fab", 0.4, hide=True)]
 
 
@@ -292,7 +305,11 @@ def _marker(name, descr, glyph, note, size=1.0, tags="halo replica marker"):
         o.append(_line(0, -r * 0.45, 0, r * 0.15, "Cmts.User", 0.10))
         o.append(_line(0, r * 0.40, 0, r * 0.55, "Cmts.User", 0.10))
     o.append(_fp_text(note, 0, r + 0.35, "Cmts.User", 0.25))
-    o += _rect(0, 0, size + 0.2, size + 0.2, "F.CrtYd", 0.05)
+    # NO COURTYARD. A courtyard is the space a PART occupies, and a CLASS C
+    # marker is not a part -- it is a position with a refusal attached. Giving
+    # it one manufactured 144 courtyards_overlap violations that said nothing
+    # about the board and buried the ones that do (clearance, mask bridge,
+    # edge clearance between MEASURED lands, all still reported).
     o.append(")")
     return name, "\n".join(o)
 
@@ -492,18 +509,21 @@ def main():
 
     # The lines that must be PRINTED ON THE BOARD, not merely documented.
     # Sized and split to fit inside a 6.4 mm annulus at 0.26 mm text.
-    pats.append(legend("REPL_SILK_U2_DNP",
-                       ["U2 UWB: DNP", "NEVER SOLD"],
-                       layer="F.SilkS", size=0.26, tag="silk uwb dnp"))
-    pats.append(legend("REPL_SILK_THICKNESS",
-                       ["0.30mm 4L", "NOT ORDERABLE"],
-                       layer="F.SilkS", size=0.26, tag="silk thickness"))
-    pats.append(legend("REPL_SILK_INCOMPLETE",
-                       ["KNOWINGLY", "INCOMPLETE"],
-                       layer="F.SilkS", size=0.26, tag="silk incomplete"))
-    pats.append(legend("REPL_SILK_REPLICA",
-                       ["halo REPLICA", "NOT APPLE ART"],
-                       layer="F.SilkS", size=0.26, tag="silk replica"))
+    # SIZED TO WHAT A FAB WILL ACTUALLY PRINT, WHICH DECIDED THE WORDING.
+    # KiCad's default silkscreen minimum is 0.8 mm high / 0.15 mm thick and
+    # that is close to what board houses quote. At 0.8 mm a character is
+    # about 0.6 mm wide and the annulus is 6.4 mm wide at its narrowest, so a
+    # radial line gets ~10 characters. Everything longer went to Cmts.User in
+    # REPL_LEGEND_BOARD. THE WORDS WERE CUT TO FIT THE PROCESS; the process
+    # was not bent to fit the words, and the earlier 0.26 mm version -- which
+    # said more and would have printed as nothing -- is gone.
+    for nm, lines, tag in (
+            ("REPL_SILK_U2_DNP", ["U2 UWB", "DNP"], "silk uwb dnp"),
+            ("REPL_SILK_THICKNESS", ["0.30mm 4L"], "silk thickness"),
+            ("REPL_SILK_INCOMPLETE", ["PARTIAL"], "silk incomplete"),
+            ("REPL_SILK_REPLICA", ["REPLICA"], "silk replica")):
+        pats.append(legend(nm, lines, layer="F.SilkS", size=SILK_MIN_H,
+                           tag=tag))
 
     keep = {n + ".kicad_mod" for n, _ in pats}
     for f in sorted(os.listdir(OUT)):

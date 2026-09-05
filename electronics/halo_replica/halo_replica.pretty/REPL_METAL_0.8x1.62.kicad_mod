@@ -5,7 +5,7 @@
   (descr "CLASS B [MEASURED] bright-metal region, 0.8 x 1.62 mm, from metrology/HANDOFF-positions-front.json (bright-metal segmentation, m_components.py). The producing lane's own words: the handoff is 'A LIST OF METAL AND BLUE. It is NOT a list of components.' This land is what was MEASURED to be metal at this place and this size -- it is NOT a claim about which component the metal belongs to, nor that it is one pad.")
   (tags "halo replica measured metal land")
   (attr smd)
-  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.SilkS")
+  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.Fab")
     (effects (font (size 0.5 0.5) (thickness 0.075)))
   )
   (property "Value" "REPL_METAL_0.8x1.62" (at 0 1.6 0) (layer "F.Fab") hide

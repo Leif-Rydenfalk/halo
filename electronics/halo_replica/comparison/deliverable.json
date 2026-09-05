@@ -2,73 +2,152 @@
   "schema": "halo/deliverable/1",
   "lane": "L9 THE COMPARISON, halo Replica",
   "written": "2026-09-05",
-
   "why_this_exists": "The divergence counter in threeway.json counts distance FROM APPLE. It does not count DISTANCE FROM A DELIVERABLE, and that is the gap that let this project run for a day with 130 measurement files, 40 measuring tools and twelve evidence documents, and NOTHING ANYONE CAN OPEN IN KiCAD OR SEND TO A FABRICATOR. We had an instrument for one axis of drift and none for the other, so the Replica could move steadily away from being a buildable thing while every number about fidelity improved. THIS IS THE MISSING AXIS. It is red until KiCad can open something.",
-
   "the_rule": "A ROW IS GREEN ONLY WHEN A FILE EXISTS THAT THE RELEVANT TOOL CAN ACTUALLY OPEN. A path that exists is not an artifact. Every row therefore carries a FORMAT PROBE - a string the real format must contain - and an empty file, a stub, or a file of the wrong kind at the right name all stay RED. The selftest watches each of those three cases fail on purpose, because a check that only ever goes red proves nothing about its own ability to go green.",
-
   "anti_gaming": "The board and schematic rows additionally REFUSE a file whose sha256 matches halo_rev_a's equivalent. The cheapest way to turn this check green without doing the work is to copy the board Leif rejected into the Replica's tree, and that would be the exact failure this check exists to catch, dressed as a pass.",
-
   "search": "Each row GLOBS the whole Replica tree for its extension rather than demanding one guessed path. The design lanes choose their own layout; this check asks whether an artifact of the right KIND exists and opens, not whether it sits where L9 imagined it would.",
-
   "rows": [
     {
-      "id": "D1", "what": "Schematic source", "glob": "**/*.kicad_sch",
-      "probe": "(kicad_sch", "probe_is": "the s-expression header KiCad's schematic editor requires",
+      "id": "D1",
+      "what": "Schematic source",
+      "glob": "**/*.kicad_sch",
+      "probe": "(kicad_sch",
+      "probe_is": "the s-expression header KiCad's schematic editor requires",
       "why_it_is_required": "There is no circuit until there is a schematic. Every net, every part and every connection the Replica claims to copy from Apple lives here or lives nowhere.",
       "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.kicad_sch",
-      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_sch"
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_sch",
+      "source": [],
+      "timestamp_probe": null,
+      "timestamp_note": "ROOT ARTIFACT - a schematic has no upstream file in this graph, so freshness is not applicable. Its own mtime is the source for D2, D4 and D5."
     },
     {
-      "id": "D2", "what": "Netlist", "glob": "**/*.net",
-      "probe": "(export", "probe_is": "the KiCad netlist root node",
+      "id": "D2",
+      "what": "Netlist",
+      "glob": "**/*.net",
+      "probe": "(export",
+      "probe_is": "the KiCad netlist root node",
       "why_it_is_required": "The netlist is the schematic in the form the board tool consumes. Without it a board file is a drawing of copper rather than a realisation of a circuit, and nothing can check that the copper matches the schematic.",
       "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.net",
-      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.net"
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.net",
+      "source": [
+        "D1"
+      ],
+      "timestamp_probe": "\\(date\\s+\"([0-9T:\\-]+)\"\\)",
+      "timestamp_note": "KiCad writes (date \"...\") into the netlist. EMBEDDED, strong. Its source D1 has no embedded stamp, so this comparison is EMBEDDED vs MTIME."
     },
     {
-      "id": "D3", "what": "Footprint library", "glob": "**/*.kicad_mod",
-      "probe": "(footprint", "probe_is": "the s-expression header of a KiCad footprint",
+      "id": "D3",
+      "what": "Footprint library",
+      "glob": "**/*.kicad_mod",
+      "probe": "(footprint",
+      "probe_is": "the s-expression header of a KiCad footprint",
       "why_it_is_required": "Apple's parts are WLCSP-50, WLCSP-10, 0201 and a wound coil. None of those has a stock footprint that fits this board, and the Replica's whole claim is that its geometry is measured rather than assumed. The measured geometry has to become land patterns or it is not in the design.",
       "rev_a_has": "electronics/halo_rev_a/halo.pretty/*.kicad_mod",
-      "refuse_if_sha256_matches": null
+      "refuse_if_sha256_matches": null,
+      "source": [],
+      "timestamp_probe": null,
+      "timestamp_note": "ROOT ARTIFACT. Footprints are authored, not derived. Their mtime is a source for D4."
     },
     {
-      "id": "D4", "what": "Board file", "glob": "**/*.kicad_pcb",
-      "probe": "(kicad_pcb", "probe_is": "the s-expression header pcbnew requires",
+      "id": "D4",
+      "what": "Board file",
+      "glob": "**/*.kicad_pcb",
+      "probe": "(kicad_pcb",
+      "probe_is": "the s-expression header pcbnew requires",
       "why_it_is_required": "THIS IS THE ONE LEIF ASKED FOR. His words were 'the exact pcb design and all the components'. Until this row is green there is no PCB design, only an apparatus for measuring one.",
       "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
-      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb"
+      "refuse_if_sha256_matches": "electronics/halo_rev_a/out/halo_rev_a.kicad_pcb",
+      "source": [
+        "D1",
+        "D3"
+      ],
+      "timestamp_probe": null,
+      "timestamp_note": "A .kicad_pcb carries no creation timestamp, so mtime is all there is. WEAK on both sides. The board must postdate BOTH the schematic and the footprint library - a board rebuilt before a footprint was edited is stale even though nothing about it looks wrong."
     },
     {
-      "id": "D5", "what": "ERC result", "glob": "**/*erc*.json",
-      "probe": "erc", "probe_is": "the schema key of a KiCad ERC report",
+      "id": "D5",
+      "what": "ERC result",
+      "glob": "**/*erc*.json",
+      "probe": "erc",
+      "probe_is": "the schema key of a KiCad ERC report",
       "why_it_is_required": "A schematic nobody ran the rule checker over is a claim, not a verified circuit. This project's own standard is that a check which never ran is verification debt.",
       "rev_a_has": "electronics/halo_rev_a/out/halo_rev_a.erc.json",
-      "refuse_if_sha256_matches": null
+      "refuse_if_sha256_matches": null,
+      "source": [
+        "D1"
+      ],
+      "timestamp_probe": "\"date\"\\s*:\\s*\"([0-9T:\\-]+)\"",
+      "timestamp_note": "KiCad's ERC report carries its own run date. EMBEDDED, strong, against D1's mtime."
     },
     {
-      "id": "D6", "what": "DRC result", "glob": "**/*drc*.json",
-      "probe": "drc", "probe_is": "the schema key of a KiCad DRC report",
+      "id": "D6",
+      "what": "DRC result",
+      "glob": "**/*drc*.json",
+      "probe": "drc",
+      "probe_is": "the schema key of a KiCad DRC report",
       "why_it_is_required": "Same argument one level down, and it is the row THREE-WAY.md row 23 turns on: halo_rev_a is a design that CAN be wrong and is measured to be wrong in four height rows. The Replica cannot be wrong in that sense at all, because there is nothing to check.",
       "rev_a_has": "electronics/halo_rev_a/out/drc.json",
-      "refuse_if_sha256_matches": null
+      "refuse_if_sha256_matches": null,
+      "source": [
+        "D4"
+      ],
+      "timestamp_probe": "\"date\"\\s*:\\s*\"([0-9T:\\-]+)\"",
+      "timestamp_note": "KiCad's DRC report carries its own run date. EMBEDDED, strong, against D4's mtime. A DRC older than the board it grades is the most dangerous stale artifact here, because it reports PASS on copper it never saw."
     },
     {
-      "id": "D7", "what": "Gerbers", "glob": "**/*.gbr",
-      "probe": "%FSLAX", "probe_is": "the RS-274X format specification an extended-Gerber file opens with",
+      "id": "D7",
+      "what": "Gerbers",
+      "glob": "**/*.[gG][bBtTmM]*",
+      "probe": "%TF",
+      "probe_is": "the RS-274X extended-attribute header every KiCad gerber layer opens with",
       "why_it_is_required": "A board file is what WE can open. Gerbers are what a FABRICATOR can open. Nothing gets made without them.",
       "rev_a_has": null,
       "rev_a_note": "halo_rev_a HAS NOT GOT THESE EITHER. This row is red for both boards, and saying so is the point - a check that only accuses the Replica would be measuring the wrong thing.",
-      "refuse_if_sha256_matches": null
+      "refuse_if_sha256_matches": null,
+      "source": [
+        "D4"
+      ],
+      "timestamp_probe": "TF\\.CreationDate,([0-9T:\\-]+)",
+      "timestamp_note": "Gerbers carry %TF.CreationDate. EMBEDDED, strong, against D4's mtime. GLOB CORRECTED 2026-09-05: it was **/*.gbr, which catches only the DRILL MAPS - a real KiCad gerber set is .gtl .gbl .g1 .g2 .gts .gbs .gto .gbo .gm1, none of which end in .gbr. The old glob would have called a set complete while seeing none of its copper layers."
     },
     {
-      "id": "D8", "what": "Drill file", "glob": "**/*.drl",
-      "probe": "M48", "probe_is": "the header of an Excellon drill program",
+      "id": "D8",
+      "what": "Drill file",
+      "glob": "**/*.drl",
+      "probe": "M48",
+      "probe_is": "the header of an Excellon drill program",
       "why_it_is_required": "The board is annular with a routed centre pocket and three plated tooling holes. Every one of those is a drill or route operation and none of them exists until this file does.",
       "rev_a_has": null,
       "rev_a_note": "halo_rev_a HAS NOT GOT THIS EITHER. Red for both.",
-      "refuse_if_sha256_matches": null
+      "refuse_if_sha256_matches": null,
+      "source": [
+        "D4"
+      ],
+      "timestamp_probe": "TF\\.CreationDate,([0-9T:\\-]+)",
+      "timestamp_note": "Excellon files carry the same TF.CreationDate comment. EMBEDDED, strong, against D4's mtime."
     }
-  ]
+  ],
+  "freshness": {
+    "why": "AN ARTIFACT THAT OPENS IS NOT AN ARTIFACT THAT IS CURRENT. halo_rev_a's gerbers open perfectly and describe a board that no longer exists: they carry an embedded KiCad creation date of 2026-09-05T06:06:39 while the board file they came from has an mtime of 07:54:19 - 6,460 seconds later, an hour and three quarters in which the board gained the NFC coil keep-out, lost plane copper under the coil, and was rerouted from 83 unconnected items to 28. A pure existence test reads that GREEN. EXISTENCE IS ADJACENT TO CURRENCY, which is the same failure shape as every other control this lane broke today.",
+    "the_rule": "Every non-root artifact must be NEWER THAN EVERY ONE OF ITS SOURCES. A set of files is only as fresh as its OLDEST member; a source is as new as its NEWEST member. Both directions are the conservative one.",
+    "three_states": "FRESH -> the row can be green. STALE -> RED. SOURCE ABSENT -> CANNOT DETERMINE, never green and never red: an artifact with no source to compare against is UNMEASURED, not stale, and this project does not let an unmeasured thing occupy the same field as a measured one.",
+    "timestamp_strength": "An EMBEDDED timestamp - one the generating tool wrote into its own output - is preferred wherever it exists. mtime is the fallback and it is WEAK: a git checkout rewrites every mtime to checkout time, which can make a stale artifact look fresh or a fresh one look stale. Every row records which kind it used, and a comparison that mixes an embedded stamp against an mtime says so."
+  },
+  "trees": {
+    "replica": {
+      "roots": [
+        "electronics/halo_replica"
+      ],
+      "label": "halo_replica"
+    },
+    "rev_a": {
+      "roots": [
+        "electronics/halo_rev_a",
+        "out/release/board",
+        "out/verify"
+      ],
+      "label": "halo_rev_a",
+      "note": "rev_a's artifacts are spread across three roots - the board and schematic under electronics/halo_rev_a, the fabrication set under out/release/board/gerber, the checks under out/verify. Searching only the first is what led this lane to report, wrongly, that rev_a had no gerbers. IT HAS TWELVE. The conclusion survived for a different and worse reason: they are stale."
+    }
+  }
 }

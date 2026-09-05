@@ -5,7 +5,7 @@
   (descr "CLASS C [BOARD LEGEND] Text placed ON THE BOARD, layer Cmts.User. Facts a reader of the board itself must not have to open a document to learn.")
   (tags "halo replica legend legend")
   (attr smd board_only exclude_from_pos_files exclude_from_bom)
-  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.SilkS")
+  (property "Reference" "REF**" (at 0 -1.6 0) (layer "F.Fab")
     (effects (font (size 0.5 0.5) (thickness 0.075)))
   )
   (property "Value" "REPL_LEGEND_BOARD" (at 0 1.6 0) (layer "F.Fab") hide

@@ -215,6 +215,52 @@ def half_max(arr, pick, t_otsu, erode=6):
     return r
 
 
+def local_sd(a, win):
+    a = a.astype(float)
+    m1 = ndimage.uniform_filter(a, win)
+    m2 = ndimage.uniform_filter(a * a, win)
+    return np.sqrt(np.maximum(m2 - m1 * m1, 0.0))
+
+
+def smooth_dark(arr, lum_max, tex_max, win):
+    """A part that is DARK and SMOOTH against a dark but TEXTURED board.
+
+    Otsu on luminance cannot separate a neutral-black package from dark
+    soldermask - M08 measured the package at B-R = +0.5 against the board's +1,
+    so the colour route that found the nRF is blind here, and the luminance
+    route merges them (b_pkgsize returns a blob that fills the box). What DOES
+    separate them on this photograph is texture: UNK-A's core has a local sd of
+    7.1 against 37-59 for the board around it, a 5-8x separation, because the
+    board carries pads, traces and vias and the package top does not.
+
+    Both thresholds are operator-chosen, so nothing here may be quoted without
+    the parameter sweep that --pad-sweep's sibling provides: this criterion is
+    only usable where the answer does not track the parameters.
+    """
+    mask = (arr < lum_max) & (local_sd(arr, win) < tex_max)
+    if mask.sum() < 25:
+        return None
+    lab, n = ndimage.label(mask)
+    if n == 0:
+        return None
+    sizes = ndimage.sum(mask, lab, range(1, n + 1))
+    m = lab == (int(np.argmax(sizes)) + 1)
+    ys, xs = np.nonzero(m)
+    rect = min_area_rect(xs, ys)
+    if rect is None:
+        return None
+    long_px, short_px, ang = rect
+    H, W = arr.shape
+    return {"long_px": long_px, "short_px": short_px,
+            "angle_deg": round(float(ang), 1), "pixels": int(m.sum()),
+            "rectangularity": round(float(m.sum()) / (long_px * short_px), 3),
+            "touches_box_edge": bool(xs.min() == 0 or ys.min() == 0 or
+                                     xs.max() == W - 1 or ys.max() == H - 1),
+            "box_fill_fraction": round(float(m.sum()) / (H * W), 3),
+            "components_found": int(n),
+            "lum_max": lum_max, "tex_max": tex_max, "tex_win": win}
+
+
 def robust_extent(arr, pick, t, min_bin=3):
     """Median cross-section of the kept component, in its own rotated frame.
 
@@ -445,6 +491,109 @@ def overlay(im, box, pick, chan, out_png, scale=2.0):
     return out_png
 
 
+def run_smooth_dark(args, im, arr, x0, y0, x1, y1):
+    """The dark-and-smooth branch, with its parameter sweep and both controls."""
+    lm, tm, tw = args.lum_max, args.tex_max, args.tex_win
+    r = smooth_dark(arr, lm, tm, tw)
+    if r is None:
+        print("  CANNOT DETERMINE — nothing dark and smooth in this box")
+        return 2
+    print(f"  dark<{lm} smooth<{tm} (win {tw}): {r['components_found']} components, "
+          f"largest {r['pixels']} px")
+    print(f"  oriented extent: {r['long_px']:.1f} x {r['short_px']:.1f} px at "
+          f"{r['angle_deg']:.1f} deg, rectangularity {r['rectangularity']}")
+    if r["touches_box_edge"]:
+        print("  FAIL — the component touches the box edge; widen --box.")
+        return 1
+
+    # PARAMETER SWEEP. Three operator-chosen numbers, so all three are swept.
+    print("  --- parameter sweep (three operator numbers, so sweep all three) ---")
+    rows = []
+    for w in (max(5, tw - 10), tw, tw + 10):
+        for t in (round(tm * 0.8, 1), tm, round(tm * 1.2, 1)):
+            for l in (lm - 10, lm, lm + 10):
+                q = smooth_dark(arr, l, t, w)
+                rows.append({"tex_win": w, "tex_max": t, "lum_max": l,
+                             "result": None if q is None else
+                             {k: q[k] for k in ("long_px", "short_px", "pixels",
+                                                "rectangularity",
+                                                "touches_box_edge")}})
+    ok = [q for q in rows if q["result"] and not q["result"]["touches_box_edge"]]
+    print(f"    {len(ok)} of {len(rows)} settings produce an unclipped component")
+    sweep = {"rows": rows, "n_settings": len(rows), "n_usable": len(ok)}
+    if len(ok) < 2:
+        print("    SWEEP CANNOT DETERMINE — fewer than two usable settings, so "
+              "parameter-dependence is UNTESTED")
+        sweep["verdict"] = "CANNOT DETERMINE"
+    else:
+        for axis in ("long_px", "short_px", "pixels", "rectangularity"):
+            v = np.array([q["result"][axis] for q in ok], float)
+            med = float(np.median(v))
+            sp = float(v.max() - v.min()) / med if med else float("inf")
+            sweep[axis] = {"min": float(v.min()), "max": float(v.max()),
+                           "median": med, "spread_frac": round(sp, 4)}
+            print(f"    {axis:14s} {v.min():9.1f} .. {v.max():9.1f}  median "
+                  f"{med:9.1f}  spread {sp*100:6.2f}%")
+        sweep["verdict"] = ("STABLE"
+                            if (sweep["long_px"]["spread_frac"] <= PAD_TOL and
+                                sweep["short_px"]["spread_frac"] <= PAD_TOL)
+                            else "PARAMETER-DEPENDENT")
+        print(f"    SWEEP VERDICT: {sweep['verdict']}")
+    r["param_sweep"] = sweep
+
+    # POSITIVE CONTROL: the same criteria on a part that IS a package must come
+    # back rectangular. NEGATIVE CONTROL: on bare board they must find nothing of
+    # comparable size. Both are named on the command line, both can fail.
+    for name, boxarg in (("positive (a known package)", args.control_pos),
+                         ("negative (bare board)", args.control_neg)):
+        if not boxarg:
+            print(f"  control {name}: NOT RUN — no box given. Without it this "
+                  "number has no control and must not be quoted.")
+            continue
+        cb = [int(v) for v in boxarg.split(",")]
+        ca = channel(np.asarray(im.crop(tuple(cb))), args.channel)
+        cq = smooth_dark(ca, lm, tm, tw)
+        if cq is None:
+            print(f"  control {name} @ {cb}: nothing found")
+            r.setdefault("controls", {})[name] = None
+        else:
+            print(f"  control {name} @ {cb}: {cq['long_px']:.1f} x "
+                  f"{cq['short_px']:.1f} px, {cq['pixels']} px, "
+                  f"rectangularity {cq['rectangularity']}"
+                  + ("  CLIPPED" if cq["touches_box_edge"] else ""))
+            r.setdefault("controls", {})[name] = cq
+
+    if args.px_per_mm:
+        f = args.px_per_mm
+        r["px_per_mm"] = f
+        r["long_mm"] = round(r["long_px"] / f, 3)
+        r["short_mm"] = round(r["short_px"] / f, 3)
+        r["area_mm2"] = round(r["pixels"] / f / f, 4)
+        print(f"  -> bounding {r['long_mm']:.3f} x {r['short_mm']:.3f} mm, "
+              f"filled area {r['area_mm2']:.3f} mm^2 at {f:.4f} px/mm")
+        print(f"  RULER: {args.ruler_note or 'NOT STATED'}")
+        if not args.ruler_note:
+            print("  FAIL — a millimetre with no stated ruler is not a measurement.")
+            return 1
+    r["aspect"] = round(r["long_px"] / r["short_px"], 3)
+    print(f"  aspect (long/short): {r['aspect']}")
+    if args.overlay_png:
+        print("  (overlay for --smooth-dark: use --overlay-png with the Otsu path; "
+              "this branch draws none)")
+    if args.json_out:
+        r["input"] = {"image": args.image, "box": [x0, y0, x1, y1],
+                      "mode": "smooth-dark", "channel": args.channel,
+                      "label": args.label, "ruler_note": args.ruler_note,
+                      "lum_max": lm, "tex_max": tm, "tex_win": tw}
+        json.dump(r, open(args.json_out, "w"), indent=2)
+        print(f"  wrote {args.json_out}")
+    if sweep["verdict"] != "STABLE":
+        print("  CANNOT DETERMINE — the extent tracks the parameters, so it is a "
+              "measurement of the settings and not of the part.")
+        return 2
+    return 0
+
+
 def run(args):
     im = Image.open(args.image).convert("RGB")
     x0, y0, x1, y1 = args.box
@@ -453,6 +602,8 @@ def run(args):
           f"({x1-x0}x{y1-y0} px)  channel={args.channel} pick={args.pick}")
     if args.label:
         print(f"  label: {args.label}")
+    if getattr(args, "smooth_dark", False):
+        return run_smooth_dark(args, im, arr, x0, y0, x1, y1)
     r = measure(arr, args.pick)
     if r is None:
         print("  CANNOT DETERMINE — no component in this box that behaves like a "
@@ -905,6 +1056,20 @@ def main():
                         "costs a FIXED number of px per side - additive, so it is "
                         "worst on small parts. Measured on the nRF52832: Otsu "
                         "reads +12.1/+12.3 px over the published body.")
+    p.add_argument("--smooth-dark", action="store_true",
+                   help="segment a DARK and SMOOTH part instead of thresholding: "
+                        "for a neutral-black package on dark textured board, "
+                        "where neither luminance nor colour separates them. "
+                        "Sweeps all three of its own parameters and refuses if "
+                        "the answer tracks them. Give --control-pos and "
+                        "--control-neg boxes.")
+    p.add_argument("--lum-max", type=float, default=70.0)
+    p.add_argument("--tex-max", type=float, default=10.0)
+    p.add_argument("--tex-win", type=int, default=35)
+    p.add_argument("--control-pos", help="x0,y0,x1,y1 of a box holding a part that "
+                                         "IS a package — must come back rectangular")
+    p.add_argument("--control-neg", help="x0,y0,x1,y1 of bare board — must NOT "
+                                         "yield a comparable component")
     p.add_argument("--robust", action="store_true",
                    help="also report the MEDIAN cross-section in the part's own "
                         "frame. The min-area rectangle is set by extremes, so "

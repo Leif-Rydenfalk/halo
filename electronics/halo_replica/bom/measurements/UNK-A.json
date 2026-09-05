@@ -1,0 +1,405 @@
+{
+  "long_px": 295.3845792879874,
+  "short_px": 227.7104948079312,
+  "angle_deg": 28.5,
+  "pixels": 38620,
+  "rectangularity": 0.574,
+  "touches_box_edge": false,
+  "box_fill_fraction": 0.113,
+  "components_found": 21,
+  "lum_max": 70.0,
+  "tex_max": 10.0,
+  "tex_win": 35,
+  "param_sweep": {
+    "rows": [
+      {
+        "tex_win": 25,
+        "tex_max": 8.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 299.1706730277261,
+          "short_px": 230.7297021297184,
+          "pixels": 35422,
+          "rectangularity": 0.513,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 8.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 299.1706730277261,
+          "short_px": 230.7297021297184,
+          "pixels": 36899,
+          "rectangularity": 0.535,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 8.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 299.1706730277261,
+          "short_px": 230.7297021297184,
+          "pixels": 36974,
+          "rectangularity": 0.536,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 10.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 478.56110177994606,
+          "short_px": 236.19096260874142,
+          "pixels": 46406,
+          "rectangularity": 0.411,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 10.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 574.8312458305552,
+          "short_px": 284.13543435830513,
+          "pixels": 54793,
+          "rectangularity": 0.335,
+          "touches_box_edge": true
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 10.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 574.8312458305552,
+          "short_px": 284.13543435830513,
+          "pixels": 55033,
+          "rectangularity": 0.337,
+          "touches_box_edge": true
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 12.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 580.3777088679392,
+          "short_px": 287.8306084855587,
+          "pixels": 60963,
+          "rectangularity": 0.365,
+          "touches_box_edge": true
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 12.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 580.3777088679392,
+          "short_px": 287.8306084855587,
+          "pixels": 65223,
+          "rectangularity": 0.39,
+          "touches_box_edge": true
+        }
+      },
+      {
+        "tex_win": 25,
+        "tex_max": 12.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 580.3777088679392,
+          "short_px": 287.8306084855587,
+          "pixels": 65581,
+          "rectangularity": 0.393,
+          "touches_box_edge": true
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 8.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 262.95579707775414,
+          "short_px": 219.8307047890916,
+          "pixels": 30391,
+          "rectangularity": 0.526,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 8.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 262.95579707775414,
+          "short_px": 219.8307047890916,
+          "pixels": 31477,
+          "rectangularity": 0.545,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 8.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 262.95579707775414,
+          "short_px": 219.8307047890916,
+          "pixels": 31543,
+          "rectangularity": 0.546,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 10.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 295.3845792879874,
+          "short_px": 227.7104948079312,
+          "pixels": 36882,
+          "rectangularity": 0.548,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 10.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 295.3845792879874,
+          "short_px": 227.7104948079312,
+          "pixels": 38620,
+          "rectangularity": 0.574,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 10.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 295.3845792879874,
+          "short_px": 227.7104948079312,
+          "pixels": 38742,
+          "rectangularity": 0.576,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 12.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 336.12084633960956,
+          "short_px": 235.06985548700294,
+          "pixels": 45616,
+          "rectangularity": 0.577,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 12.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 336.12084633960956,
+          "short_px": 235.06985548700294,
+          "pixels": 48245,
+          "rectangularity": 0.611,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 35,
+        "tex_max": 12.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 336.12084633960956,
+          "short_px": 235.06985548700294,
+          "pixels": 48428,
+          "rectangularity": 0.613,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 8.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 212.55257605095647,
+          "short_px": 210.56887830519676,
+          "pixels": 25328,
+          "rectangularity": 0.566,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 8.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 212.55257605095647,
+          "short_px": 210.56887830519676,
+          "pixels": 26195,
+          "rectangularity": 0.585,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 8.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 212.55257605095647,
+          "short_px": 210.56887830519676,
+          "pixels": 26252,
+          "rectangularity": 0.587,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 10.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 275.64185597810314,
+          "short_px": 218.85034471163192,
+          "pixels": 33149,
+          "rectangularity": 0.55,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 10.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 275.64185597810314,
+          "short_px": 218.85034471163192,
+          "pixels": 34462,
+          "rectangularity": 0.571,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 10.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 275.64185597810314,
+          "short_px": 218.85034471163192,
+          "pixels": 34560,
+          "rectangularity": 0.573,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 12.0,
+        "lum_max": 60.0,
+        "result": {
+          "long_px": 294.1364311279102,
+          "short_px": 227.52419369121685,
+          "pixels": 40348,
+          "rectangularity": 0.603,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 12.0,
+        "lum_max": 70.0,
+        "result": {
+          "long_px": 294.1364311279102,
+          "short_px": 227.52419369121685,
+          "pixels": 42390,
+          "rectangularity": 0.633,
+          "touches_box_edge": false
+        }
+      },
+      {
+        "tex_win": 45,
+        "tex_max": 12.0,
+        "lum_max": 80.0,
+        "result": {
+          "long_px": 294.1364311279102,
+          "short_px": 227.52419369121685,
+          "pixels": 42540,
+          "rectangularity": 0.636,
+          "touches_box_edge": false
+        }
+      }
+    ],
+    "n_settings": 27,
+    "n_usable": 22,
+    "long_px": {
+      "min": 212.55257605095647,
+      "max": 478.56110177994606,
+      "median": 294.1364311279102,
+      "spread_frac": 0.9044
+    },
+    "short_px": {
+      "min": 210.56887830519676,
+      "max": 236.19096260874142,
+      "median": 227.52419369121685,
+      "spread_frac": 0.1126
+    },
+    "pixels": {
+      "min": 25328.0,
+      "max": 48428.0,
+      "median": 36890.5,
+      "spread_frac": 0.6262
+    },
+    "rectangularity": {
+      "min": 0.411,
+      "max": 0.636,
+      "median": 0.572,
+      "spread_frac": 0.3934
+    },
+    "verdict": "PARAMETER-DEPENDENT"
+  },
+  "controls": {
+    "positive (a known package)": {
+      "long_px": 346.50896267900947,
+      "short_px": 183.43526889466102,
+      "angle_deg": -96.8,
+      "pixels": 21706,
+      "rectangularity": 0.341,
+      "touches_box_edge": true,
+      "box_fill_fraction": 0.08,
+      "components_found": 152,
+      "lum_max": 70.0,
+      "tex_max": 10.0,
+      "tex_win": 35
+    },
+    "negative (bare board)": null
+  },
+  "px_per_mm": 106.31295578013115,
+  "long_mm": 2.778,
+  "short_mm": 2.142,
+  "area_mm2": 3.417,
+  "aspect": 1.297,
+  "input": {
+    "image": "../../images/airtag/oflynn-backside-fullres.jpeg",
+    "box": [
+      330,
+      1100,
+      900,
+      1700
+    ],
+    "mode": "smooth-dark",
+    "channel": "lum",
+    "label": "UNK-A",
+    "ruler_note": "106.313 px/mm registration-derived (metrology/c_register-fit-boardscale.json)",
+    "lum_max": 70.0,
+    "tex_max": 10.0,
+    "tex_win": 35
+  }
+}

@@ -197,7 +197,41 @@ def outer(step_deg=0.02):
         else:
             shapes.append(("seg", p0, p1, prim))
 
+    # DEGENERATE PRIMITIVES ARE DROPPED, AND THE CHAIN IS SNAPPED CLOSED.
+    # Two of the four admitted chords meet each other directly, which puts a
+    # zero-length arc between them; KiCad's DRC calls that "malformed board
+    # outline (segment has zero length)" and then FALLS BACK TO THE BOUNDING
+    # BOX, so the board renders as a SQUARE and nothing says why. Measured
+    # here: 46 invalid_outline violations at 24 distinct points, and a 3D
+    # render of a rectangle. A dropped primitive is only safe if the chain
+    # still closes, so the endpoints are snapped and the closure is CHECKED
+    # below rather than assumed.
+    EPS = 1e-4                                   # 0.1 um, 3 orders under the
+                                                 # 0.1029 mm registration floor
+    def _len(sh):
+        a = sh[1]
+        b = sh[3] if sh[0] == "arc" else sh[2]
+        return math.hypot(b[0] - a[0], b[1] - a[1])
+
+    dropped = [i for i, sh in enumerate(shapes) if _len(sh) < EPS]
+    shapes = [sh for sh in shapes if _len(sh) >= EPS]
+    if not shapes:
+        raise ValueError("every outer primitive was degenerate")
+    for i in range(len(shapes)):
+        cur = list(shapes[i])
+        nxt = list(shapes[(i + 1) % len(shapes)])
+        end = cur[3] if cur[0] == "arc" else cur[2]
+        start = nxt[1]
+        gap = math.hypot(end[0] - start[0], end[1] - start[1])
+        if gap > 0.02:
+            raise ValueError("outer edge does not close: %.5f mm gap between "
+                             "primitive %d and %d" % (gap, i, (i + 1) %
+                                                      len(shapes)))
+        nxt[1] = tuple(end)
+        shapes[(i + 1) % len(shapes)] = tuple(nxt)
+
     meta = {
+        "degenerate_primitives_dropped": len(dropped),
         "drawn_outer_diameter_mm": drawn,
         "fitted_circle_diameter_mm": fitted,
         "scale_applied": k,
@@ -308,23 +342,43 @@ def pocket(step_deg=POCKET_STEP_DEG):
         pts.append((r * ux, r * uy))
         owner.append(w)
 
-    segs, walls = [], []
+    # ONE ORDERED RING, THEN DEDUPED, THEN CUT INTO SEGMENTS. Emitting
+    # segments as they are computed produced ZERO-LENGTH ones wherever a
+    # facet's radius already equalled the superellipse's at the handover
+    # bearing; KiCad rejects the whole outline for one of those and silently
+    # falls back to the bounding box, which renders as a SQUARE BOARD.
+    EPS = 1e-4                                   # 0.1 um
+    ring, wall_at = [], set()
     for i in range(steps):
+        ring.append(pts[i])
         j = (i + 1) % steps
-        if owner[i] == owner[j]:
-            segs.append((pts[i], pts[j]))
-        else:
-            # a radial step: close it at the shared bearing, both radii
+        if owner[i] != owner[j]:
             th = j * step_deg
             ux, uy = _u(th)
-            ra = r_at(th, owner[i])
-            rb = r_at(th, owner[j])
-            pa = (ra * ux, ra * uy)
-            pb = (rb * ux, rb * uy)
-            segs.append((pts[i], pa))
-            segs.append((pa, pb))
-            segs.append((pb, pts[j]))
-            walls.append((pa, pb))
+            pa = (r_at(th, owner[i]) * ux, r_at(th, owner[i]) * uy)
+            pb = (r_at(th, owner[j]) * ux, r_at(th, owner[j]) * uy)
+            ring.append(pa)
+            wall_at.add(len(ring) - 1)           # the step runs pa -> pb
+            ring.append(pb)
+
+    clean, keep_wall = [], set()
+    for k, p in enumerate(ring):
+        if clean and math.hypot(p[0] - clean[-1][0],
+                                p[1] - clean[-1][1]) < EPS:
+            continue
+        if k in wall_at:
+            keep_wall.add(len(clean))
+        clean.append(p)
+    while len(clean) > 1 and math.hypot(clean[0][0] - clean[-1][0],
+                                        clean[0][1] - clean[-1][1]) < EPS:
+        clean.pop()
+
+    segs, walls = [], []
+    for i in range(len(clean)):
+        p_a, p_b = clean[i], clean[(i + 1) % len(clean)]
+        segs.append((p_a, p_b))
+        if i in keep_wall:
+            walls.append((p_a, p_b))
 
     # CHORD ERROR OF THE TESSELLATION, computed rather than assumed.
     worst = 0.0
@@ -352,6 +406,7 @@ def pocket(step_deg=POCKET_STEP_DEG):
         "centre_mm": list(c),
         "facets": len(facets),
         "radial_step_walls": len(walls),
+        "ring_points_after_dedupe": len(clean),
         "walls_are_measured": False,
         "walls_note": "A facet's arc ends where the boundary crosses 0.30 mm "
                       "from the superellipse, NOT where the wall is. The "
