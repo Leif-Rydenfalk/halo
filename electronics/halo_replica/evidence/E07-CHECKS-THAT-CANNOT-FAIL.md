@@ -378,9 +378,9 @@ methods fail in different places. Reported, not chased, and not drawn as a confi
 facets admitted; line inlier fraction **0.86–1.00** against the superellipse's **0.00 on the same
 arcs**; residual **0.3342 → 0.1987 mm**.
 
-**If that is right, the three disagreeing superellipse exponents were never noise.** L1 closed
+**CORRECTED 2026-09-05: there are TWO estimates, not three — see below. The argument stands but is weaker than I first wrote it.** L1 closed
 the hole as PARTIALLY DETERMINED because two photographs gave n=2.70 and n pinned at 2.00, and a
-refit gave 2.449 — reasoning that assumes the shape *is* a superellipse and the spread is
+refit gave 2.449 (**but the latter two share a photograph — see the correction below**) — reasoning that assumes the shape *is* a superellipse and the spread is
 measurement error. Under a pocket, **n is not a property of the hole at all**: it is whatever
 exponent best splits the difference across whichever facets each photograph sampled well, so two
 photographs would disagree **by construction**.
@@ -389,3 +389,69 @@ photographs would disagree **by construction**.
 photograph, different scale, different segmentation — and compare **facet angles, not n, and not
 residuals**. Agreement moves the hole from PARTIALLY DETERMINED to MEASURED. Disagreement leaves
 L1's verdict standing for a better reason than it currently has.
+
+## 16 · A statistic that saturates — a test with no power, and the design error was mine
+
+I directed the board lane to test the pocket hypothesis by fitting the pocket model to a second
+photograph and comparing **facet angles, not n and not residuals**. Good instinct, bad statistic,
+**and I specified it.**
+
+The lane measured what chance scores on my statistic: with 7 facets at a 12° tolerance, **36 % of
+the circle counts as a match**, and granting a free rotation on top means **chance already scores
+2.61 of a possible 3**. The pre-registered run returned **3 of 3 at p = 0.61** — a perfect-looking
+agreement that is indistinguishable from noise.
+
+**A test that cannot distinguish agreement from coincidence is not a test.** I never asked what
+the null distribution looked like before naming the statistic. The lane's negative control is the
+only reason "3 of 3 agreement" is not in the file as a result — and I would have accepted it,
+because I asked for facet agreement and would have been handed facet agreement.
+
+**The fix is a shape worth keeping:** a **count** saturates; an **error** does not. Derive the
+tolerance per facet from `atan(1 genuine px / that facet's span)` rather than one number for all,
+restrict the comparison to facets the second photograph can actually resolve, and use the angular
+error as the statistic.
+
+## 17 · A verdict chosen after seeing which analysis wins
+
+The lane wrote a facet-stability filter **after** the first null, and it moved p from **8.64 % to
+2.81 %**. The filter was defensible on its own terms — excluding operator-dependent features is
+this project's standing rule, and only 3 of 7 facet normals survive half the threshold sweep.
+
+**Being defensible was not enough, because the choice was made downstream of the answer.** The
+tool now always runs **both** sets, reports both, and **takes the verdict on the weaker one**.
+
+In the lane's words: *a verdict chosen after seeing which analysis wins is not a verdict.* The
+temptation was real — 2.81 % is publishable-looking and 8.64 % is not.
+
+---
+
+## CORRECTION TO THIS DOCUMENT — the exponents were never three
+
+**My own miscount, repeated and built upon.** `n = 2.00` (pinned) and `n = 2.449` come from the
+**same photograph and the same boundary points**, differing only by optimiser and bounds. There
+are **TWO** estimates — photo 6's 2.70 and O'Flynn's ~2.0–2.45 — not three.
+
+**This partly undercuts the pocket argument I made above.** I said three disagreeing exponents
+were probably explained by fitting the wrong primitive. **Two estimates from two photographs
+disagreeing is far less remarkable and needs much less explaining** — an ordinary measurement
+spread covers it. The pocket may still be the right model on its own evidence (line inlier
+0.86–1.00 against the superellipse's 0.00 on the same arcs), but **the exponent spread is now weak
+support for it, not strong.**
+
+**ROUTED, not edited:** `metrology/M02 §4` should restate PARTIALLY DETERMINED on **two**
+estimates rather than three. The **verdict is unaffected** — only the basis it cites is
+overcounted. That is L1's file; L1 is idle and this is a documentation refinement, not a
+propagating error.
+
+## Instrument facts that outlive the test
+
+- **Photo 6's hole diameter moves 6.60 % across thresholds 150–210**; photo 7's moves 2.97 %.
+  Anyone quoting a hole size off an FCC photograph should see 6.60 % first — **this supports
+  PARTIALLY DETERMINED on its own, with no facet analysis at all.**
+- **Only 3 of 7 facet normals recur across more than half the threshold sweep.** Most of that
+  geometry is the operator's threshold choice, not the board. (Family 11 again.)
+- The same extractor **centred on solid board finds 0 px of hole on both photographs** — the
+  positive-control-in-reverse that says the extractor finds a real thing when it finds one.
+- The faster cross-correlation statistic is applied **identically to the real set and to every
+  random set**. A strict statistic for the real data and a loose one for the null is the rigged
+  comparison caught three times elsewhere in this project.
