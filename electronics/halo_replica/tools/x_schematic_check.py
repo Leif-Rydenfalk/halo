@@ -86,6 +86,7 @@ PRO = os.path.join(OUT, "halo_replica.kicad_pro")
 BOM = os.path.join(REPLICA, "bom", "bom.json")
 
 PASS, FAIL, CANNOT = "PASS", "FAIL", "CANNOT DETERMINE"
+MEASURED = "MEASURED"
 
 #: the one string a part is allowed to carry instead of a bom.json ref, for a
 #: component this sheet ADDED (D3, the D24 diode; the straps; the test points).
@@ -420,6 +421,29 @@ CHECKS = [c1_artifact_matches_source, c2_bom_cited, c3_nets_described,
           c4_erc_fresh_and_clean, c5_dnp_held, c6_nothing_filled_in]
 
 
+def _measured_line():
+    """How many nets were measured — READ OFF THE SHEET, not typed.
+
+    The sentence here used to say "Seven of 51 nets were measured". Both
+    numbers went stale the same afternoon, when opening a cited file turned
+    four CHOSEN nets into MEASURED ones and added nine test points. A count
+    beside a table is a count that will be wrong; this one is a count OF the
+    table.
+    """
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("_replica_sch3", SCH_PY)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        s = mod.build()
+        rep = s.basis_report()
+        return ("%d of %d nets are MEASURED (%d inferred, %d chosen)."
+                % (rep["counts"]["MEASURED"], len(s.nets),
+                   rep["counts"]["INFERRED"], rep["counts"]["CHOSEN"]))
+    except Exception as e:                                   # noqa: BLE001
+        return "CANNOT DETERMINE how many nets are measured (%s)." % e
+
+
 def run(paths):
     return [fn(paths) for fn in CHECKS]
 
@@ -557,6 +581,56 @@ def _drop_first_node(text, opener):
     return None
 
 
+def anchors_can_fail():
+    """C8 — can a MEASURED claim on THIS sheet go red?
+
+    ce-pcb's tests prove the MECHANISM. They do not prove that this design's
+    MEASURED nets are actually wired through it: a design could call basis()
+    and still hold every claim in a way nothing resolves. So build the real
+    sheet, corrupt ONE `contains` claim to a string that is not in the
+    anchored file, and require check() to NAME THAT NET.
+
+    That is the difference between "the feature has tests" and "the feature
+    is load-bearing here", and E07 §14 is about exactly that gap: a break
+    that runs in one place and a check that runs in another are not connected
+    by hope.
+    """
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("_replica_sch2", SCH_PY)
+    mod = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(mod)
+        s = mod.build()
+    except Exception as e:                                   # noqa: BLE001
+        return Result("C8 anchors can fail", CANNOT,
+                      "schematic.py did not build: %s" % e)
+    measured = [n for n, b in s.bases.items() if b["kind"] == MEASURED]
+    if not measured:
+        return Result("C8 anchors can fail", CANNOT,
+                      "this sheet declares no MEASURED net, so there is no "
+                      "anchor to break.")
+    already = [m for _sev, m in s.check() if "does not resolve" in m]
+    if already:
+        return Result("C8 anchors can fail", FAIL,
+                      "%d anchor(s) do not resolve BEFORE any break: %s"
+                      % (len(already), already[0][:160]))
+    victim = sorted(measured)[0]
+    s.bases[victim]["contains"] = "A STRING THAT IS NOT IN THAT FILE 8f3a"
+    named = [m for _sev, m in s.check()
+             if "does not resolve" in m and victim in m]
+    if not named:
+        return Result(
+            "C8 anchors can fail", FAIL,
+            "corrupting %s's claim produced no FAIL row. Then this sheet's "
+            "%d MEASURED nets are labels after all, and every count resting "
+            "on them must be re-read." % (victim, len(measured)))
+    return Result("C8 anchors can fail", PASS,
+                  "%d MEASURED nets, all resolving; corrupting %s's claim "
+                  "made check() name it. The basis counter on this sheet "
+                  "cannot be improved by typing."
+                  % (len(measured), victim))
+
+
 def erc_can_fail():
     """C7 — the one that matters. Take a copy, delete ONE no-connect flag,
     and require kicad-cli to report a real error.
@@ -659,10 +733,11 @@ def self_test():
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
     print("")
-    r7 = erc_can_fail()
-    print("  " + repr(r7))
-    if r7.verdict == FAIL:
-        ok = False
+    for grader in (erc_can_fail, anchors_can_fail):
+        r = grader()
+        print("  " + repr(r))
+        if r.verdict == FAIL:
+            ok = False
     print("\n%s: the checks %s fail." % ("PASS" if ok else "FAIL",
                                          "can" if ok else "CANNOT ALL"))
     return 0 if ok else 1
@@ -683,10 +758,11 @@ def main(argv):
     bad = [r for r in results if r.verdict != PASS]
     print("")
     if not bad:
-        print("PASS — %d/%d checks. Note what this does NOT say: that the "
-              "circuit is Apple's. Seven of 51 nets were measured; the rest "
-              "is reconstruction, and no tool here can grade that."
-              % (len(results), len(results)))
+        print("PASS — %d/%d checks. %s\n     Note what this does NOT say: "
+              "that the circuit is Apple's. The rest is reconstruction, and "
+              "no tool in this repository can grade a reconstruction against "
+              "a board nobody has probed."
+              % (len(results), len(results), _measured_line()))
         return 0
     print("%s — %d of %d checks did not pass."
           % (FAIL if any(r.verdict == FAIL for r in bad) else CANNOT,
