@@ -1,0 +1,26 @@
+{
+  "tool": "m_resolution_probe.py",
+  "image": "images/airtag/oflynn-backside-fullres.jpeg",
+  "box": [
+    900,
+    1100,
+    1700,
+    1900
+  ],
+  "frac": 0.01,
+  "rolloff_as_held": 0.9921875,
+  "control_ladder": {
+    "2": 0.6484375,
+    "3": 0.4296875,
+    "4": 0.3203125,
+    "6": 0.2265625
+  },
+  "first_separating_step": 2,
+  "ladder_constant": 1.29296875,
+  "effective_width_px": 2893,
+  "effective_width_px_bracket": [
+    1458,
+    2916
+  ],
+  "verdict": "SHARP: detail runs to 0.992 of Nyquist, i.e. essentially to the file's own limit. Fine features are really there; a bigger source could still hold more."
+}

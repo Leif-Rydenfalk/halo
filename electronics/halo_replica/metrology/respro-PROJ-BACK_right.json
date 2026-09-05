@@ -1,0 +1,26 @@
+{
+  "tool": "m_resolution_probe.py",
+  "image": "images/airtag/oflynn-frontside-fullres.jpeg",
+  "box": [
+    1400,
+    800,
+    2100,
+    1500
+  ],
+  "frac": 0.01,
+  "rolloff_as_held": 0.5703125,
+  "control_ladder": {
+    "2": 0.4140625,
+    "3": 0.2890625,
+    "4": 0.2421875,
+    "6": 0.1796875
+  },
+  "first_separating_step": 2,
+  "ladder_constant": 0.91796875,
+  "effective_width_px": 1339,
+  "effective_width_px_bracket": [
+    1174,
+    2347
+  ],
+  "verdict": "MODERATELY SOFT: about 1339 px of genuine width in a 2347 px file. Usable for features larger than ~1.8 px as stored."
+}

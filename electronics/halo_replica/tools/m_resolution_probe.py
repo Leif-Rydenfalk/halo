@@ -114,20 +114,38 @@ def main():
     # detail survives 1/k_first-scale destruction but not the next step down
     lo, hi = 1.0 / k_first, 1.0 / (k_first - 1) if k_first > 1 else 1.0
     eff_lo, eff_hi = int(round(lum.shape[1] * lo)), int(round(lum.shape[1] * hi))
-    print(f"\n  READING THE LADDER: throwing away everything above 1/{k_first} of Nyquist is "
+    # Calibration constant of the ladder: for a band-limited image, rolloff_k ~ C/k.
+    C = float(np.median([k * v for k, v in ladder.items()]))
+    eff = int(round(lum.shape[1] * r_as_is))
+    print(f"\n  ladder constant C = median(k x rolloff_k) = {C:.3f}  "
+          f"(the ladder obeys rolloff ~ C/k, which is what shows the probe responds "
+          f"correctly to a KNOWN loss of resolution)")
+    print(f"  READING THE LADDER: throwing away everything above 1/{k_first} of Nyquist is "
           f"the FIRST step that costs measurable detail.")
     print(f"  Every coarser step ({', '.join('/'+str(k) for k in ladder if k < k_first) or 'none'}) "
           f"costs nothing, which means the detail was never there.")
-    print(f"\n  VERDICT: this {lum.shape[1]}x{lum.shape[0]} image carries the real detail of "
-          f"roughly {eff_lo}-{eff_hi} px of width.")
-    if k_first >= 2:
-        msg = (f"ALREADY SOFT / UPSAMPLED: real detail stops between 1/{k_first} and "
-               f"1/{k_first-1} of Nyquist, i.e. about {eff_lo}-{eff_hi} px of genuine width "
-               f"in a {lum.shape[1]} px file. RE-RENDERING THE SOURCE LARGER CANNOT ADD "
-               f"INFORMATION THAT IS NOT THERE.")
+    # THE VERDICT KEYS OFF THE AS-HELD ROLLOFF, NOT OFF k_first.
+    #
+    # An earlier version bucketed on k_first -- "the first ladder step that costs
+    # detail" -- and so labelled ANY image "ALREADY SOFT" whenever the /2 control
+    # cost anything, which is true even of a perfectly sharp one. It called
+    # O'Flynn's back-side photograph, which measures 0.992 of Nyquist and is about
+    # as sharp as a file can be, "ALREADY SOFT / UPSAMPLED". k_first says where
+    # detail STOPS being free to throw away; it does not say how much there is.
+    print(f"\n  VERDICT: real detail reaches {r_as_is:.3f} of Nyquist, so this "
+          f"{lum.shape[1]}x{lum.shape[0]} image carries about {eff} px of GENUINE WIDTH "
+          f"({100*r_as_is:.0f}% of its pixel count).")
+    if r_as_is >= 0.80:
+        msg = (f"SHARP: detail runs to {r_as_is:.3f} of Nyquist, i.e. essentially to the "
+               f"file's own limit. Fine features are really there; a bigger source could "
+               f"still hold more.")
+    elif r_as_is >= 0.45:
+        msg = (f"MODERATELY SOFT: about {eff} px of genuine width in a {lum.shape[1]} px "
+               f"file. Usable for features larger than ~{lum.shape[1]/eff:.1f} px as stored.")
     else:
-        msg = ("carries detail to near its own Nyquist -- a larger render of the SOURCE "
-               "could hold more")
+        msg = (f"SOFT / ALREADY UPSAMPLED: real detail stops at {r_as_is:.3f} of Nyquist, "
+               f"about {eff} px of genuine width in a {lum.shape[1]} px file. RE-RENDERING "
+               f"THE SOURCE LARGER CANNOT ADD INFORMATION THAT IS NOT THERE.")
     print(f"  {msg}")
     est = r_as_is
     if a.json:
@@ -135,8 +153,9 @@ def main():
                        image=os.path.relpath(path, ROOT), box=[x0, y0, x1, y1],
                        frac=a.frac, rolloff_as_held=r_as_is,
                        control_ladder={str(k): v for k, v in ladder.items()},
-                       first_separating_step=k_first,
-                       effective_width_px_range=[eff_lo, eff_hi],
+                       first_separating_step=k_first, ladder_constant=C,
+                       effective_width_px=eff,
+                       effective_width_px_bracket=[eff_lo, eff_hi],
                        verdict=msg), open(a.json, "w"), indent=2)
         print(f"  wrote {a.json}")
     sys.exit(0)

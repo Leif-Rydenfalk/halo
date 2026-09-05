@@ -1,0 +1,26 @@
+{
+  "tool": "m_resolution_probe.py",
+  "image": "images/airtag/oflynn-backside-fullres.jpeg",
+  "box": [
+    1000,
+    1900,
+    1700,
+    2600
+  ],
+  "frac": 0.01,
+  "rolloff_as_held": 0.2578125,
+  "control_ladder": {
+    "2": 0.2734375,
+    "3": 0.2421875,
+    "4": 0.2265625,
+    "6": 0.1640625
+  },
+  "first_separating_step": 4,
+  "ladder_constant": 0.81640625,
+  "effective_width_px": 752,
+  "effective_width_px_bracket": [
+    729,
+    972
+  ],
+  "verdict": "SOFT / ALREADY UPSAMPLED: real detail stops at 0.258 of Nyquist, about 752 px of genuine width in a 2916 px file. RE-RENDERING THE SOURCE LARGER CANNOT ADD INFORMATION THAT IS NOT THERE."
+}
