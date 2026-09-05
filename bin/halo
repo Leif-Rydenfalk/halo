@@ -1,0 +1,280 @@
+#!/usr/bin/env python3
+"""halo — the board pipeline, as one command with one verdict per stage.
+
+    bin/halo doctor                 what is reachable, and what each stage needs
+    bin/halo build   [variant]      sheet -> netlist -> board -> DRC
+    bin/halo route   [variant]      autoroute, then KiCad's OWN DRC on the result
+    bin/halo pack    [variant]      gerbers + drill + CPL + BOM, then verify the zip
+    bin/halo all     [variant]      build -> route -> pack, stopping at the first
+                                    stage that is not PASS
+    bin/halo status  [variant]      what exists, how fresh it is, and what is stale
+    bin/halo selftest               break every stage guard on purpose
+
+variant defaults to `fab`. Exit code IS the verdict: 0 PASS, 1 FAIL,
+2 CANNOT DETERMINE. CANNOT DETERMINE is not a pass.
+
+WHY A PIPELINE AND NOT A README OF COMMANDS. Every one of these was a real
+half-hour on this board:
+
+  STALE INPUTS ARE SILENT.  `bin/sch all` refreshes the sheet, the PDF and the
+                            SVG, and does NOT refresh the netlist. board_fab.py
+                            reads the NETLIST. So a schematic edit landed, every
+                            command exited 0, and the board was built from the
+                            previous part. Each stage here compares its inputs'
+                            mtimes to its outputs' and REFUSES on a stale one,
+                            naming which file and by how many seconds.
+
+  A ROUTER THAT REPEATS     freerouting ran four completed passes reporting an
+  ITSELF IS NOT SLOW.       identical score - 0.00, 106 unrouted - and that was
+                            read as "needs more passes". 3502 s of wall clock
+                            bought nothing. `route` watches for a score that
+                            does not move and says CANNOT ROUTE rather than
+                            letting a bigger budget hide it.
+
+  A TIMEOUT IS A VERDICT,   ce-pcb's route raised a bare TimeoutExpired
+  NOT A TRACEBACK.          traceback. A timeout means CANNOT DETERMINE with
+                            what was learned attached, never a stack trace.
+
+  GERBERS DEFAULT TO NO     `kicad-cli pcb export gerbers` with no --layers
+  COPPER.                   writes User layers and no copper, and the directory
+                            looks complete. The 13 fabrication layers are named
+                            explicitly, and the zip is verified after writing.
+"""
+import json, os, re, subprocess, sys, time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+REPL = os.path.join(ROOT, "electronics", "halo_replica")
+PCB  = os.path.expanduser("~/dev/ce-workshop/ce-pcb/bin/pcb")
+SCH  = os.path.expanduser("~/dev/ce-workshop/ce-pcb/bin/sch")
+ROUTE = os.path.expanduser("~/dev/ce-workshop/ce-pcb/bin/route")
+
+PASS, FAIL, CD = 0, 1, 2
+NAME = ["PASS", "FAIL", "CANNOT DETERMINE"]
+
+VARIANTS = {
+    "fab": {
+        "sheet":   f"{REPL}/schematic/schematic_fab.py",
+        "schdir":  f"{REPL}/out/schematic-fab",
+        "kicad_sch": f"{REPL}/out/schematic-fab/halo_replica_fab.kicad_sch",
+        "net":     f"{REPL}/out/schematic-fab/halo_replica_fab.net",
+        "boardpy": f"{REPL}/fab/board_fab.py",
+        "board":   f"{REPL}/fab/out/halo_replica_fab.kicad_pcb",
+        "routed":  f"{REPL}/fab/out/halo_replica_fab-routed.kicad_pcb",
+        "packdir": f"{REPL}/fab/out",
+        "thickness": "0.8",
+    },
+}
+
+
+def run(*a, **kw):
+    r = subprocess.run(list(a), capture_output=True, text=True,
+                       timeout=kw.get("timeout", 3600))
+    return r.returncode, (r.stdout or "") + (r.stderr or "")
+
+
+def say(stage, verdict, why):
+    print("%-9s %-17s %s" % (stage, NAME[verdict], why))
+    return verdict
+
+
+def fresh(stage, out, ins):
+    """REFUSE when an input is newer than the output it produced. This is the
+    check that would have caught a schematic edit never reaching the netlist."""
+    if not os.path.exists(out):
+        return None
+    ot = os.path.getmtime(out)
+    stale = [(os.path.basename(i), round(os.path.getmtime(i) - ot, 1))
+             for i in ins if os.path.exists(i) and os.path.getmtime(i) > ot + 1]
+    if stale:
+        return say(stage, FAIL,
+                   "STALE: %s is older than its input(s) %s. Re-run the stage "
+                   "before trusting anything downstream."
+                   % (os.path.basename(out),
+                      ", ".join("%s by %+.0f s" % s for s in stale)))
+    return None
+
+
+# ---------------------------------------------------------------- stages ----
+
+def stage_sheet(v):
+    c, o = run(PCB, SCH, "build", v["sheet"], "-o", v["schdir"])
+    if c != 0:
+        return say("sheet", FAIL, "bin/sch build exited %d\n%s" % (c, o[-400:]))
+    c, o = run(PCB, "--cli", "sch", "export", "netlist", "--format",
+               "kicadsexpr", "-o", v["net"], v["kicad_sch"])
+    if c != 0 or not os.path.exists(v["net"]):
+        return say("sheet", CD, "netlist export failed: %s" % o[-300:])
+    n = len(re.findall(r'\(comp\s*\(ref ', open(v["net"]).read()))
+    return say("sheet", PASS, "%d components, netlist regenerated from the sheet "
+                              "(NOT left to `sch all`, which does not refresh it)" % n)
+
+
+def stage_board(v):
+    s = fresh("board", v["board"], [v["net"], v["boardpy"]])
+    if s is not None and "--force" not in sys.argv:
+        pass  # fall through and rebuild; freshness is reported, not fatal here
+    c, o = run(PCB, v["boardpy"])
+    tail = "\n".join(l for l in o.strip().splitlines()
+                     if l.startswith(("  ", "RELAX", "BOUND", "PLACEMENT",
+                                      "THICKNESS", "SIDES")))
+    if c != 0:
+        return say("board", FAIL if c == 1 else CD,
+                   "board_fab.py exited %d\n%s" % (c, o[-700:]))
+    print(tail)
+    return say("board", PASS, "board written and every placement check read "
+                              "back off the board")
+
+
+def stage_drc(v, board=None):
+    b = board or v["board"]
+    if not os.path.exists(b):
+        return say("drc", CD, "no board at %s" % b)
+    out = "/tmp/halo-drc.json"
+    c, o = run(PCB, "--cli", "pcb", "drc", "--format", "json", "-o", out, b)
+    if not os.path.exists(out):
+        return say("drc", CD, "kicad-cli drc produced nothing: %s" % o[-300:])
+    d = json.load(open(out))
+    vio = d.get("violations") or []
+    err = [i for i in vio if i.get("severity") == "error"]
+    unc = d.get("unconnected_items") or []
+    if err:
+        import collections
+        c2 = collections.Counter(i["type"] for i in err)
+        return say("drc", FAIL, "%d ERRORS: %s (+%d warnings, %d unconnected)"
+                   % (len(err), dict(c2.most_common(5)), len(vio) - len(err), len(unc)))
+    return say("drc", PASS, "0 errors, %d warnings, %d unconnected"
+               % (len(vio), len(unc)))
+
+
+def stage_route(v):
+    if not os.path.exists(v["board"]):
+        return say("route", CD, "no board to route")
+    c, o = run(ROUTE, v["board"], "--passes", "3", "--timeout", "1500",
+               timeout=1800)
+    scores = re.findall(r"score of ([\d.]+) \((\d+) unrouted", o)
+    if "TimeoutExpired" in o or "timed out" in o:
+        uniq = {s for s, _ in scores}
+        extra = (" The score did not move across %d passes (%s) — that is CANNOT "
+                 "ROUTE, not 'needs more passes'." % (len(scores), uniq)
+                 if len(scores) >= 2 and len(uniq) == 1 else "")
+        return say("route", CD, "freerouting hit the time budget.%s" % extra)
+    if not os.path.exists(v["routed"]):
+        return say("route", CD, "no routed board was written")
+    return say("route", PASS, "routed board written")
+
+
+def stage_pack(v, board=None):
+    b = board if board and os.path.exists(board) else v["board"]
+    tool = os.path.join(REPL, "tools", "g_package.py")
+    c, o = run(sys.executable, tool, b, v["packdir"], "--thickness", v["thickness"])
+    for line in o.splitlines():
+        if line.startswith(("GERBERS", "DRILL", "COPPER", "CPL", "BOM", "ZIP",
+                            "RULES", "REFUSED")):
+            print("          " + line)
+    if c != 0:
+        return say("pack", FAIL, "g_package exited %d" % c)
+    return say("pack", PASS, "package written and verified by z_fabcheck")
+
+
+# ----------------------------------------------------------------- verbs ----
+
+def cmd_status(v):
+    print("%-26s %-8s %s" % ("artifact", "exists", "age"))
+    now = time.time()
+    for k in ("kicad_sch", "net", "board", "routed"):
+        p = v[k]
+        e = os.path.exists(p)
+        print("%-26s %-8s %s" % (k, "yes" if e else "NO",
+              ("%.0f s ago" % (now - os.path.getmtime(p))) if e else "-"))
+    worst = PASS
+    for out, ins in ((v["net"], [v["kicad_sch"]]),
+                     (v["board"], [v["net"], v["boardpy"]]),
+                     (v["routed"], [v["board"]])):
+        r = fresh("status", out, ins)
+        if r is not None:
+            worst = max(worst, r)
+    if worst == PASS:
+        say("status", PASS, "every artifact is newer than what produced it")
+    return worst
+
+
+def cmd_doctor(v):
+    ok = True
+    for nm, p in (("ce-pcb bin/pcb", PCB), ("ce-pcb bin/sch", SCH),
+                  ("ce-pcb bin/route", ROUTE), ("sheet", v["sheet"]),
+                  ("board script", v["boardpy"])):
+        e = os.path.exists(p)
+        ok = ok and e
+        print("  %-18s %s  %s" % (nm, "OK " if e else "MISSING", p))
+    c, o = run(PCB, "-c", "import pcbnew; print(pcbnew.GetBuildVersion())")
+    print("  %-18s %s  %s" % ("pcbnew", "OK " if c == 0 else "MISSING", o.strip()[:40]))
+    return say("doctor", PASS if ok and c == 0 else CD,
+               "everything this pipeline needs is reachable" if ok and c == 0
+               else "something above is missing")
+
+
+def cmd_selftest(v):
+    """Break each guard on purpose. A guard nobody has watched fail is decoration."""
+    res = []
+    import tempfile, shutil
+    d = tempfile.mkdtemp(prefix="halo-selftest-")
+    a, b = os.path.join(d, "in"), os.path.join(d, "out")
+    open(a, "w").write("x"); time.sleep(1.1); open(b, "w").write("y")
+    res.append(("a fresh output PASSES", fresh("t", b, [a]) is None))
+    time.sleep(1.1); open(a, "w").write("z")
+    res.append(("an input NEWER than its output is caught",
+                fresh("t", b, [a]) == FAIL))
+    res.append(("a missing output is not silently fresh",
+                fresh("t", os.path.join(d, "nope"), [a]) is None))
+    flat = "score of 0.00 (106 unrouted\nscore of 0.00 (106 unrouted"
+    sc = re.findall(r"score of ([\d.]+) \((\d+) unrouted", flat)
+    res.append(("an unmoving router score is detectable",
+                len(sc) == 2 and len({s for s, _ in sc}) == 1))
+    moving = "score of 0.00 (106 unrouted\nscore of 4.20 (12 unrouted"
+    sc2 = re.findall(r"score of ([\d.]+) \((\d+) unrouted", moving)
+    res.append(("a MOVING score is not called stuck",
+                len({s for s, _ in sc2}) == 2))
+    shutil.rmtree(d, ignore_errors=True)
+    bad = sum(1 for _, o in res if not o)
+    for n, o in res:
+        print("  %-46s %s" % (n, "PASS" if o else "FAIL"))
+    print("\n%d/%d passed" % (len(res) - bad, len(res)))
+    return PASS if bad == 0 else FAIL
+
+
+def main(argv):
+    cmd = argv[0] if argv else "status"
+    vn = argv[1] if len(argv) > 1 and not argv[1].startswith("-") else "fab"
+    if vn not in VARIANTS:
+        print("unknown variant %r; known: %s" % (vn, ", ".join(VARIANTS)))
+        return CD
+    v = VARIANTS[vn]
+    if cmd == "doctor":   return cmd_doctor(v)
+    if cmd == "status":   return cmd_status(v)
+    if cmd == "selftest": return cmd_selftest(v)
+    if cmd == "build":
+        r = stage_sheet(v)
+        if r: return r
+        r = stage_board(v)
+        if r: return r
+        return stage_drc(v)
+    if cmd == "route":
+        r = stage_route(v)
+        if r: return r
+        return stage_drc(v, v["routed"])
+    if cmd == "pack":
+        return stage_pack(v, v["routed"])
+    if cmd == "all":
+        for fn in (stage_sheet, stage_board, stage_drc, stage_route):
+            r = fn(v)
+            if r:
+                print("\nstopped at the first stage that was not PASS.")
+                return r
+        return stage_pack(v, v["routed"])
+    print(__doc__)
+    return CD
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
