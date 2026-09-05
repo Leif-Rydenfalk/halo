@@ -1618,3 +1618,65 @@ from its own analysis file while the graded verdicts still said 0.0; the specs
 were correctly fixed and committed, but nothing had re-graded. Running
 `--regrade` and reading the verdicts back is what made it true. **A rule proven
 correct in a scratch file has not been applied.**
+
+## D28 — the cell's negative contact is under the antenna, and one of the three contacts always is (lane B2, 2026-09-05)
+
+**OPEN. This is a decision for lane M and the orchestrator, not a routing
+problem, and it is the last unconnected item on the board.**
+
+`BT1` is three sprung CR2032 fingers at r 11.600, 120 degrees apart, at
+theta 270 / 30 / 150. Pad 1 is P+ current, pad 2 the P- return, pad 3 P+ sense
+(D-5). **Pad 2 sits at theta 30.0 — inside the antenna element's sector.**
+
+Measured on the board, not inferred:
+
+| what | where |
+|---|---|
+| the AE1 element's copper | theta 20..104, r 11.192..12.200, F.Cu only |
+| `antenna-arm-shadow` — no tracks/vias/pours on In1/In2/B.Cu | theta 13..107, r 10.892..12.500 |
+| `antenna-ground-clearance` — no vias or pours on any layer | theta 13..107, r 9.900..12.950 |
+| the NFC winding on B.Cu at that angle | r 10.043..10.825 |
+| BT1 pad 2 | r 11.600, theta 30.0, B.Cu |
+
+**Every escape from that pad is closed by an RF rule.**
+
+- *Inward on B.Cu* — the shadow forbids tracks to r 10.892; below that the coil
+  occupies r 10.043..10.825. The gap between them is **0.067 mm**.
+- *Outward on B.Cu* — the shadow reaches r 12.500 and the ground clearance
+  forbids a via to r 12.950. The pour inset is at 12.650. There is no annulus
+  left to stand in.
+- *A via, anywhere in the sector, on any layer* — forbidden by
+  `antenna-ground-clearance`, and the reason is not bureaucratic: a via to a
+  plane IS the counterpoise that D26/D27 removed to make the element radiate.
+  Putting one back under the arm is the 668 MHz condition by another route.
+
+**And rotating BT1 does not obviously help, until you do the arithmetic.** The
+forbidden sector is 94 degrees wide, the contacts are 120 degrees apart, so one
+contact is always inside it — for every rotation *except one family*. Each pad
+is 2.40 mm long tangentially at r 11.600, so its half-width is 5.93 degrees and
+a centre must sit at or beyond 112.93 or at or below 7.07 to keep the whole pad
+clear. That leaves a 254-degree window for three centres needing 240 degrees:
+**centres at 0 / 120 / 240 degrees, plus or minus 7.** Which is exactly where
+lane M's three keying notches are.
+
+So the three options, and none of them is this lane's to take:
+
+1. **Rotate BT1 by 90 degrees onto 0/120/240.** Electrically it closes; the
+   contact then sits under a keying notch, where the board is cut back to
+   R12.60 and the pad's outer edge is at R12.20 — 0.40 mm of copper-to-edge
+   against a 0.30 mm rule, which passes. Whether a sprung finger can live at
+   the notch, and whether the carrier's key moves with it, is lane M's.
+2. **Accept a contact that carries no net.** Pad 3 (P+ sense) is the least
+   costly to lose, but losing it means VBAT_SNS_HI comes off pad 1 and the
+   Kelvin sense D-5 added is gone.
+3. **Move the antenna's sector.** Cheapest on paper — the element's settled
+   geometry is a radius and a length, not an angle — but the coil is a spiral
+   whose radius falls with angle, so the coil-to-antenna gap that D26 fixed at
+   0.30 mm is a function of where the arm sits. ce-rf owns that and is solving
+   on the present geometry.
+
+Until it is decided the board carries **one** unconnected item and it is the
+battery's ground return, so `fab submit`'s G5-routed gate cannot pass. It is
+recorded in `board.py` as `ROUTER_SKIP_PINS["BT1-2"]` with this reason, which
+keeps the autorouter from spending passes looking for a path that does not
+exist — and changes no verdict: KiCad's DRC still counts it.
