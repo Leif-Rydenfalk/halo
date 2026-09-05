@@ -1065,6 +1065,23 @@ STITCH_REPORT = {}
 #: the circuit. `dsnfix.py` removes exactly these from the Specctra network.
 HAND_ROUTED = {"GND", "VDD", "NFC1", "NFC2"}
 
+#: Pins NO ROUTER CAN REACH ON THIS REVISION, with the reason, so freerouting
+#: is not sent to look for a path that does not exist. This is NOT a way to
+#: make a check green: the pin stays on the net, KiCad's DRC still counts it
+#: unconnected, and the release gate still fails on it. It only stops the
+#: autorouter spending passes on an impossible net and reporting a flat score.
+ROUTER_SKIP_PINS = {
+    "BT1-2": "the cell's negative contact sits at r 11.600 theta 30.0, "
+             "directly under the antenna element (theta 20..104, "
+             "r 11.192..12.200). antenna-arm-shadow forbids B.Cu tracks over "
+             "r 10.892..12.500 there and antenna-ground-clearance forbids a "
+             "via anywhere in the sector on all four layers, so every escape "
+             "from that pad is closed by an RF rule. The fix is mechanical "
+             "(rotate BT1's three contacts onto 0/120/240 +/- 7 deg, the only "
+             "family with no contact in the sector) and belongs to lane M. "
+             "DECISIONS.md D28.",
+}
+
 
 def _obstacles():
     """Everything a via must not land on, EACH ONE CARRYING ITS NET.
@@ -1392,20 +1409,58 @@ POUR_OUTLINE = [at_r(rr - 0.35 if rr > 12.9 else rr - 0.35, dd)
                   math.degrees(math.atan2(y - CY, x - CX)))
                  for x, y in b.outline]]
 
-b.pour("GND", "In1.Cu", outline=POUR_OUTLINE,
+# THE THREE GROUND POURS STOP AT THE COIL'S CLEARANCE BAND, AND THE VDD ONE
+# DOES NOT. MEASURED 2026-09-05 (lane B2), on the board this file had just
+# written, by reading the FILLED polygons back:
+#
+#   GND  F.Cu    2 islands: r 2.795..9.743 (255.270 mm2)  +  r 11.125..12.499
+#                theta 165..195 (4.226 mm2)  <- STRANDED
+#   GND  B.Cu    1 island   r 3.339..9.743
+#   GND  In1.Cu  1 island   r 3.291..9.743
+#   VDD  In2.Cu  2 islands: r 4.771..9.743 (275.232)  +  r 11.125..12.499,
+#                a C spanning 266 deg (68.065 mm2)     <- STRANDED, AND IT
+#                CARRIES THE CELL'S POSITIVE CONTACT
+#
+# `nfc-coil-clearance` is a FULL annulus (r 9.743..11.125 on every layer), so
+# it does not thin the planes, it CUTS THEM IN TWO. Everything outside it is a
+# separate island. On B.Cu and In1.Cu those outer rings touched no pad or via
+# and KiCad's island removal deleted them, which is why nobody saw this. On
+# F.Cu J2 pad 2 (GND) held one wedge alive and on In2.Cu the two annulus vias
+# serving BT1.1 and J2.1 held the whole ring alive — and the ring is where the
+# CR2032's positive terminal lands. The board had no power distribution from
+# its own cell and every check passed.
+#
+# So: say it. The three GND pours are the CORE DISC, which is all the fill
+# ever reached anyway; the outer ring on those layers is now ABSENT BY
+# CONSTRUCTION rather than absent because a filler swept it up. That matters
+# for more than tidiness: an island the filler keeps is an island a later via
+# can resurrect, and a resurrected GND ring in the annulus is 68 mm2 of
+# counterpoise appearing under a 2.4 GHz element that was solved without it.
+#
+# PROVED NOT TO MOVE ANY COPPER: the core radius is NFC_CLEAR_R_IN + 0.2, so
+# the fill is still cut by the keep-out at exactly NFC_CLEAR_R_IN and the three
+# inner islands come out with the same areas to 1e-3 mm2. The VDD pour keeps
+# the full outline because its outer ring is real copper this board needs;
+# it is joined to the core by the spokes below.
+POUR_CORE_OUTLINE = [at_r(NFC_CLEAR_R_IN + 0.2, 360.0 * i / 360)
+                     for i in range(360)]
+
+b.pour("GND", "In1.Cu", outline=POUR_CORE_OUTLINE,
        why="The uninterrupted return path under every signal. On a 26 mm "
            "disc there is no room to run a ground trunk around a QFN-48's "
            "four sides and still escape the signals; the plane is what buys "
-           "the escape. Cleared under the antenna by the rule area above.")
+           "the escape. Cleared under the antenna by the rule area above, "
+           "and stopped at the NFC coil's clearance band because everything "
+           "beyond it is a separate island either way.")
 b.pour("VDD", "In2.Cu", outline=POUR_OUTLINE,
        why="The cell's rail as a plane rather than a trace. A CR2032 at end "
            "of life has ohms of internal resistance and the board must not "
            "add any: a plane is the lowest-impedance path from the contact "
            "lands to five VDD pins and four bulk capacitors.")
-b.pour("GND", "F.Cu", outline=POUR_OUTLINE,
+b.pour("GND", "F.Cu", outline=POUR_CORE_OUTLINE,
        why="Top-side fill, for the RF ground the matching network's shunt "
            "capacitors return into and for the inverted-F's counterpoise.")
-b.pour("GND", "B.Cu", outline=POUR_OUTLINE,
+b.pour("GND", "B.Cu", outline=POUR_CORE_OUTLINE,
        why="Bottom-side fill under the actives, and the shield between the "
            "circuit and the cell can 0.578 mm below it.")
 
@@ -1424,6 +1479,141 @@ VIAS_GND = stitch("GND", ("F.Cu", "B.Cu"), want=40, pads_of_net=True,
 
 # and the VDD pads no via could sit beside
 VDD_LINKED, VDD_ORPHANS = link_orphans("VDD", None)
+
+
+# ==========================================================================
+# 7b. WHAT THE COIL'S CLEARANCE BAND CUT IN TWO, JOINED BACK
+# ==========================================================================
+# THREE UNCONNECTED ITEMS THE DRC HAD BEEN REPORTING AND NOBODY HAD READ AS
+# ONE SENTENCE (measured 2026-09-05 by lane B2, on this file's own output):
+#
+#   Zone [GND] on In1.Cu | Zone [GND] on F.Cu     the stranded F.Cu wedge
+#   Zone [GND] on B.Cu   | Pad 2 [GND] of BT1     the cell's negative return
+#   Pad 49 [GND] of U1   | Pad 44 [GND] of U1     the SoC's exposed pad
+#
+# plus fifteen VDD ratlines. Two of the three are the SAME defect as the VDD
+# ring above: `nfc-coil-clearance` is a full annulus, so it severs every plane
+# into a core disc and an outer ring, and three pads live in the outer ring.
+# The third is separate and worse.
+#
+# THE MEASUREMENT THAT SETTLED EACH ONE. `pcbnew`'s own connectivity, read
+# after the zones are filled, returns the CLUSTER a pad belongs to. It does
+# not agree with itself the way a geometric guess would:
+#
+#   U1.47/U1.48  VDD  cluster of 23, reaches the In2 zone   <- on the plane
+#   BT1.1/J2.1   VDD  cluster of  7, reaches the In2 zone   <- on the RING
+#   C1.1/C4.1    VDD  cluster of  1, reaches no zone        <- on nothing
+#   U1.44/U1.32  GND  cluster of 91, reaches F/In1/B zones  <- on the plane
+#   U1.49        GND  cluster of  1, reaches no zone        <- ON NOTHING
+#   J2.2         GND  cluster of  2, reaches the F.Cu zone  <- on the WEDGE
+#   BT1.2        GND  cluster of  1, reaches no zone        <- on nothing
+#
+# U1.49 is the QFN-48's 4.4 x 4.4 mm exposed pad. It is the SoC's analogue and
+# RF ground and its datasheet requires it soldered to a plane through vias.
+# It had NONE: the B.Cu pour is cleared 3.377 mm away from its centre by the
+# 48 pins around it, so the pad touched no copper of its own net on any layer.
+# That is not a routing gap, it is a missing connection to the part that
+# radiates, and no ratline count made it look different from the other 27.
+
+# -- a) the SoC's exposed pad, stitched to the In1 ground plane ------------
+# 3 x 3 on 1.40 mm, so the outermost via's copper reaches 1.625 mm from the
+# centre against the pad's own 2.20 mm half-width -- 0.575 mm inside its own
+# land on every side, and 1.40 mm apart against a 0.20 mm hole-to-hole rule.
+# In1.Cu is GND under the whole footprint (probed: inside the fill at the
+# centre and at +/-1.2 mm), so each via lands on real plane copper.
+#
+# THIS IS VIA-IN-PAD AND stitch() REFUSES TO DO IT ON PURPOSE (see its own
+# note: "the solder wicks down the barrel and the joint starves"). The
+# exception is deliberate and narrow: that rule protects 0.40 mm signal
+# lands, where one wicked barrel is the whole joint. An exposed pad is
+# 19.36 mm2 with nine 0.049 mm2 barrels in it, the vias are TENTED on F.Cu
+# (KiCad's default: no mask aperture on a via), so the only opening is the
+# B.Cu side the paste is on, and every QFN reference layout in the industry
+# does exactly this. The paste aperture over the pad is the reflow control
+# and belongs to the stencil, not here.
+EP_VIA_PITCH = 1.40
+_ep_x, _ep_y = _pad_xy("U1", 49)
+EP_VIAS = []
+for _dx in (-EP_VIA_PITCH, 0.0, EP_VIA_PITCH):
+    for _dy in (-EP_VIA_PITCH, 0.0, EP_VIA_PITCH):
+        b.via("GND", (_ep_x + _dx, _ep_y + _dy), drill=VIA_DRILL, size=VIA_D,
+              layers=("F.Cu", "B.Cu"))
+        EP_VIAS.append((_ep_x + _dx, _ep_y + _dy))
+
+# -- b) the In2 VDD ring, joined to the In2 VDD core ----------------------
+# RADIAL SPOKES, NOT A SECOND RING AND NOT A VIA PAIR. `nfc-coil-clearance`
+# forbids pours and vias inside the band and ALLOWS TRACKS, in its own words
+# because "the two tie stubs and the coil's own escape have to cross this
+# band". A track on In2.Cu therefore needs no via at either end -- it is the
+# same layer as the copper at both ends -- and it is the cheapest thing that
+# can cross.
+#
+# AND A RADIAL SPOKE IS THE ONE SHAPE THAT DOES NOT LOAD THE COIL. What a
+# 13.56 MHz winding induces in nearby metal is a CIRCULATING current; the
+# 68 mm2 ring above it was severed for exactly that reason. A spoke offers no
+# closed path around the coil's axis, so there is no loop to drive. This is
+# the standard answer for a plane that has to reach past a coil and it is why
+# the spokes run radially rather than taking any convenient diagonal.
+#
+# THE ANGLES ARE CHOSEN AGAINST THE ANTENNA, MEASURED, NOT GUESSED. The
+# element's copper occupies theta 20..104 and `antenna-arm-shadow` forbids
+# In1/In2/B.Cu copper over theta 13..107. 186 and 306 are 79 and 161 degrees
+# clear of it, and they are also clear of both annulus vias (theta 200.2 and
+# 278.3, the nearest 14 degrees = 2.9 mm away at r 11.7).
+#
+# AND 6 DEGREES OFF THE ROUND NUMBER, WHICH IS NOT COSMETIC. At 180.0 and
+# 300.0 the spoke's inner end lands on the same ray as a GND ring via:
+# stitch()'s outermost ring is r 8.8 with n = int(2*pi*8.8/1.8) = 30 vias, so
+# they sit every 12 degrees starting at 0. MEASURED on the first build with
+# these spokes: "Clearance violation (clearance 0.1270 mm; actual 0.0681 mm)"
+# between "Via [GND] on F.Cu - B.Cu r 8.800 th 180.0" and this track. Half a
+# step - 6 degrees, 0.92 mm at that radius - is the offset that clears it, and
+# it is derived from the ring's own spacing rather than nudged until green.
+VDD_SPOKE_DEG = (186.0, 306.0)
+VDD_SPOKE_W = 0.50
+VDD_SPOKES = []
+for _deg in VDD_SPOKE_DEG:
+    _a = (at_r(NFC_CLEAR_R_IN - 0.40, _deg), at_r(NFC_CLEAR_R_OUT + 0.40, _deg))
+    b.track("VDD", list(_a), width=VDD_SPOKE_W, layer="In2.Cu")
+    VDD_SPOKES.append((_deg, _a))
+
+# -- c) J2's ground pin, which was holding a stranded wedge alive ---------
+# With the GND pours cut back to the core disc the wedge is gone, so J2.2 now
+# has to be reached the way any annulus pad is reached: a track on the layer
+# it is already on. F.Cu carries no coil (the winding is B.Cu only), so the
+# crossing is unobstructed. Its neighbours are J2.1 at theta 197.5 and J2.3 at
+# theta 187.7, both 5 degrees away -- 0.96 mm at this radius against a
+# 0.127 mm rule.
+_j2x, _j2y = _pad_xy("J2", 2)
+_j2_deg = math.degrees(math.atan2(_j2y - CY, _j2x - CX)) % 360.0
+GND_SPOKE = [(_j2x, _j2y), at_r(NFC_CLEAR_R_IN - 0.40, _j2_deg)]
+b.track("GND", GND_SPOKE, width=0.30, layer="F.Cu")
+
+# -- d) BT1.2, the cell's negative return: NOT FIXED HERE, and why --------
+# It cannot be. BT1 pad 2 sits at r 11.600, theta 30.0 -- directly under the
+# antenna element, which spans theta 20..104 at r 11.192..12.200. Every layer
+# and every direction out of that pad is closed by a rule this lane must not
+# break:
+#
+#   inward on B.Cu   `antenna-arm-shadow` forbids tracks on B.Cu over
+#                    r 10.892..12.500 in that sector; below 10.892 the coil
+#                    itself occupies r 10.043..10.825, leaving a 0.067 mm slot
+#   outward on B.Cu  the same shadow reaches r 12.500 and
+#                    `antenna-ground-clearance` forbids a via to r 12.950;
+#                    the pour inset is 12.650, so there is no annulus left
+#   a via anywhere   forbidden by `antenna-ground-clearance` across the whole
+#                    sector, on all four layers, because a via to a plane IS
+#                    the counterpoise D26/D27 removed to get the element to
+#                    radiate at all
+#
+# The three sprung contacts are 120 degrees apart at theta 270/30/150 and the
+# forbidden sector is 94 degrees wide, so ONE contact is always inside it. The
+# pad half-width is 5.93 degrees, which leaves exactly one family of rotations
+# with no contact in the sector: centres at 0/120/240 +/- 7 degrees -- which is
+# where lane M's three keying notches are. So this is a mechanical decision
+# (rotate BT1 onto the notches, or accept a contact that carries no net), not
+# a routing one, and it is escalated rather than papered over.
+# See docs/VERIFICATION-DEBT.md and DECISIONS.md D28.
 
 
 # SOLID PAD CONNECTIONS, not thermal spokes. KiCad's default is four spokes
@@ -1732,6 +1922,16 @@ def report():
                 paste += 1
             elif not pad.GetNetname():
                 real.append("%s.%s" % (fp.GetReference(), pad.GetNumber()))
+    print("\n--- what the copper already joins (KiCad connectivity, "
+          "post-fill) ---")
+    for _net, _cl in sorted(PLANE_JOIN.items()):
+        _npads = sum(len(g) for g in _cl)
+        print("  %-4s %d pad(s) in %d cluster(s)%s"
+              % (_net, _npads, len(_cl),
+                 "   <- ONE PIECE" if len(_cl) == 1 else
+                 "   the router is owed %d pin(s)" % len(_cl)))
+        for _g in _cl[1:]:
+            print("      apart: " + ", ".join(_g))
     print("\n--- plane stitching ---")
     print("  VDD vias %d   GND vias %d   (a plane nobody stitched is not a "
           "plane, and the router was being asked to route 63 pins that the "
@@ -1979,6 +2179,82 @@ def impedance_report():
             "worst_mismatch_loss_dB": round(-10 * math.log10(1 - gamma ** 2), 4)}
 
 
+#: Filled by `plane_join_report()`, read by `write_dsn_hints()`.
+PLANE_JOIN = {}
+
+
+def plane_join_report():
+    """WHICH PADS THE COPPER ON THIS BOARD ALREADY JOINS — asked of KiCad.
+
+    THE DEFECT THIS REPLACES. `dsnfix` used to delete GND and VDD from the
+    routing problem outright, on the claim in its own docstring that "the
+    pours join them and board.py's stitch() already put the vias in". That is
+    TRUE FOR GND, whose pours are on both outer layers and touch every GND
+    pad there, and FALSE FOR VDD, whose plane is on In2 and whose pads are on
+    F.Cu and B.Cu: `stitch()` reached 9 of 24 and `link_orphans()` reached 0
+    of the remaining 15, both reporting the miss by name. So fifteen VDD pins
+    were removed from the router's problem on the grounds that they were
+    already connected, while the board's own DRC reported them unconnected.
+    The claim and the measurement had been disagreeing for a day.
+
+    The fix is not a better guess. It is to ASK: `pcbnew`'s connectivity, run
+    after the zones are filled, groups every item into clusters, so the number
+    the router actually needs — how many separate pieces this net is in — is a
+    measurement and not an assertion. One pin per cluster goes to the router;
+    the rest are dropped because joining them is what the copper already does.
+
+    Must be called AFTER `b.fill_zones()`: connectivity through a plane is
+    connectivity through its FILL, and an unfilled zone joins nothing.
+    """
+    b._pcb.BuildConnectivity()
+    conn = b._pcb.GetConnectivity()
+    out = {}
+    # GND and VDD ONLY, deliberately. NFC1/NFC2 are also hand-drawn, but they
+    # are a coil whose two halves KiCad merges through a net tie, and dsnfix
+    # has a separate, tested rule for that (`renet_nfc`). Handing the coil to
+    # this one as well would let a cluster measurement decide which pins the
+    # router may join on a net where the answer is already known.
+    for net in ("GND", "VDD"):
+        pads = []
+        for ref, fp in sorted(b.refs.items()):
+            for pad in fp.Pads():
+                if pad.GetNetname() == net:
+                    pads.append(("%s-%s" % (ref, pad.GetNumber()), pad))
+        # Cluster identity by MEMBERSHIP, not by object identity: SWIG hands
+        # back a fresh proxy each call, so two proxies for the same C++ pad
+        # are not `is` and are not `==`. The set of (x, y) of the PADS in a
+        # cluster is stable, cheap and cannot collide - two pads cannot share
+        # a position.
+        #
+        # `GetConnectedItems(pad)` AND NOT `GetConnectedPads(pad)`. The second
+        # one returns an EMPTY LIST for every pad on this board (measured:
+        # 0 for U1-47, C1-1, BT1-1, BT1-2, U1-49, U1-44), so every key came
+        # out `frozenset()`, every pad landed in one group, and this function
+        # reported GND and VDD each as ONE PIECE while the DRC was reporting
+        # 15 VDD ratlines. A cluster measurement that cannot tell a joined net
+        # from a shattered one is the exact defect it was written to end, so
+        # the empty key is now a REFUSAL rather than an answer.
+        groups = {}
+        for name, pad in pads:
+            key = frozenset(
+                (i.GetPosition().x, i.GetPosition().y)
+                for i in conn.GetConnectedItems(pad)
+                if i.Type() == _pcbnew.PCB_PAD_T)
+            if not key:
+                raise SystemExit(
+                    "plane_join_report: KiCad's connectivity returned no pad "
+                    "for %s on %s - not even itself. That is an API that has "
+                    "changed under this code, not a net with no pads, and a "
+                    "cluster count derived from it would call every net one "
+                    "piece." % (name, net))
+            groups.setdefault(key, []).append(name)
+        clusters = sorted(groups.values(), key=lambda g: (-len(g), g[0]))
+        out[net] = clusters
+    PLANE_JOIN.clear()
+    PLANE_JOIN.update(out)
+    return out
+
+
 def write_dsn_hints(pcb_path):
     """What the Specctra export cannot say, written beside it for `dsnfix`.
 
@@ -1996,6 +2272,15 @@ def write_dsn_hints(pcb_path):
         "dsn_centre_um": [CX * 1000.0, -(26.0 - CY) * 1000.0],
         "plane_layers": {"In1.Cu": "GND", "In2.Cu": "VDD"},
         "hand_routed_nets": sorted(HAND_ROUTED),
+        # ONE PIN PER CLUSTER IS WHAT THE ROUTER IS OWED. See
+        # plane_join_report(): these are the groups of pins this board's own
+        # copper already joins, measured by KiCad's connectivity after the
+        # fill. dsnfix keeps the first pin of each group and drops the rest, so
+        # a net in one piece disappears from the problem and a net in sixteen
+        # pieces arrives as sixteen pins. Empty means the report was never run,
+        # and dsnfix REFUSES rather than falling back to dropping whole nets.
+        "plane_clusters": PLANE_JOIN,
+        "router_skip_pins": ROUTER_SKIP_PINS,
         "nfc": {
             "layer": "B.Cu",
             "width_um": fpg.NFC_W * 1000.0,
@@ -2054,6 +2339,9 @@ def verify_rules(pcb_path):
 
 if __name__ == "__main__":
     b.fill_zones()
+    # AFTER THE FILL, NEVER BEFORE: connectivity through a plane is
+    # connectivity through its fill, and an unfilled zone joins nothing.
+    plane_join_report()
     _snap = track_net_snapshot()
     path = b.save(OUT)
     NET_REPAIR = repair_track_nets(path, _snap)
