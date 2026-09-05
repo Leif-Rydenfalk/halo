@@ -1,162 +1,194 @@
-> **⚠ SCALE CORRECTION (L1/M08, 2026-09-05):** any millimetre in this file derived from
-> **15.8875 px/mm** (FCC photo 6 bottom rule) is **1.29 % small**. That is the rule's value
-> **at the rule**, near the frame edge; **at the board** M02 measures **15.6850 px/mm**, by two
-> routes agreeing to 0.23 %. Transferred source scale **107.686 → 106.313 px/mm**. The 15.8875
-> figure is CORRECT as a measurement *of the rule* — what was wrong was using it *at the board*.
+# L5b BOARD BUILD — handoff, 2026-09-05
 
-# L5 BOARD BUILD — handoff, 2026-09-05 (stood down at fleet quota RED)
+**SIDE NAMING.** Every file in this folder describes **the side carrying the SoC and
+the shield can**. Three sources use "front" for two different faces; the word is not
+used here. Apple's FCC caption "MLB - Front", O'Flynn's `backside-fullres.jpeg` and
+this folder's geometry are all THIS face.
 
-**FRONT = COMPONENT SIDE** (Apple FCC caption "MLB - Front"). O'Flynn's "frontside" is
-this project's BACK. State this at the top of every file you add here.
+**THE FRAME.** Board centre in `images/airtag/oflynn-backside-fullres.jpeg` at
+`origin_px (1522.56, 1738.80)`, `106.313 px/mm`, `+x right, +y DOWN`, theta from +x
+through +y. Every millimetre in this folder is in that frame and inherits its scale.
+The scale basis is M02's `m_scale_at` at the board, transferred by `c_register`.
 
-## What exists and works
+---
+
+## What exists
 
 | file | what it is | verdict |
 |---|---|---|
-| `board/board.json` | the parameterised board. ONE scale parameter; the shape is a normalised profile. No diameter is hard-coded in any tool. | on disk |
-| `board/outline/outline-photo6.json` | RAW measured silhouette off FCC photo 6, outer + centre hole, r(theta) in mm, 1440 rays | evidence — **never merge a fit into this file** |
-| `board/out/board-front.png` | the render | PASS |
-| `board/out/compare-front.png` | **the side-by-side: OURS \| APPLE'S \| OVERLAY** | PASS |
-| `tools/p_outline.py` | photo → silhouette in mm, or refuse | exit 0/1/2 |
-| `tools/p_render.py` | board.json → picture | exit 0/1/2 |
-| `tools/p_compare.py` | the comparison harness | exit 0/1/2 |
+| `board.json` | the parameterised board — ONE scale number drives everything | on disk |
+| `outline/outline-fit-oflynn.json` | **the FIT**: circle + 4 chords, superellipse + 7 facets, with every residual and every control | exit 0 PASS |
+| `outline/outline-photo6.json` | raw silhouette, FCC photo 6 — **evidence, never merged into a fit** | — |
+| `out/board-front.png` | the render: fitted outline + 97 markers + the on-board legend | exit 0 PASS |
+| `out/compare-front.png` | **OURS \| APPLE'S \| OVERLAY** at one shared 48 px/mm | exit 0 PASS |
+| `../tools/p_fit.py` | photo profile → manufacturable primitives, or refuse | 0/1/2 |
+| `../tools/p_render.py` | board.json + fit + handoff → picture | 0/1/2 |
+| `../tools/p_compare.py` | the comparison harness | 0/1/2 |
 
 ```bash
-python3 tools/p_outline.py ../../images/airtag/fcc-BCGA2187-internal-photo-6.jpg \
-  --box 660 400 1250 960 --px-per-mm 15.887545712881764 \
-  --scale-basis "photo6 bottom steel rule (L1 scale-field.json)" \
-  --json-out board/outline/outline-photo6.json
+python3 tools/p_fit.py --px-per-mm 106.31295578013115 \
+  --scale-basis "M02 m_scale_at photo6 at the board, transferred by c_register"
 python3 tools/p_render.py
 python3 tools/p_compare.py && open board/out/compare-front.png
 ```
 
-## Numbers, each with its input
+---
 
-Scale basis for every millimetre below: **photo6 BOTTOM steel rule, 93 mm ticks, linear
-fit resid sd 0.573 px, 15.8875 px/mm** (L1 `metrology/scale-field.json`). Perspective
-error between the rule plane and the board top face is **NOT bounded by that residual**.
+## The numbers, each with its input
 
-- **outer, 2 × mean radius = 24.984 mm — PROVISIONAL AND IN DISPUTE.** O'Flynn's
-  "~26 mm" is his tilde; L1's ruler work suggests ~24.6; this is 24.98. Three numbers,
-  no agreement, not settled.
-- **centre hole roundness r_max/r_min = 1.380** (1.000 = circle, 1.414 = square). It is
-  a rounded square with a notch at top centre. **This lane publishes no hole diameter.**
-- **hole centre offset from board centroid: (+0.173, +0.458) mm** — the hole is not
-  concentric.
-- **inner mean r / outer mean r = 0.5367**, annulus mean width 5.787 mm. Ratios do not
-  inherit the scale; the millimetres do.
-- **overlay residual, ours vs Apple's own silhouette: RMS 0.281 mm, p95 0.417 mm,
-  max 1.594 mm over 720 rays.** Panel-scale agreement 0.66%.
-- **44.2° of outer arc is INTERPOLATED** across rays that crossed Apple's orange leader
-  arrows. Those arcs are drawn in the provisional colour, so the picture says where it
-  is guessing.
+**Outer.** Circle **D = 25.1593 mm** clipped by **4 straight chords**, largest
+`145.25–189.50°` at 11.521 mm offset, 9.461 mm span.
 
-## Item 1 — THE THING TO FIX NEXT, and it is the only one that matters
+| model | resid sd | p95 | inliers ±0.15 mm |
+|---|---|---|---|
+| plain circle | 0.5629 mm | 1.474 mm | **43.6 %** |
+| circle + 4 chords | **0.2771 mm** | 0.713 mm | **55.8 %** |
 
-**The outline is a per-degree silhouette and it carries the edge detector's noise into
-the geometry.** Apple's board is a *manufactured* outline — routed or punched: circular
-arcs, straight segments, corner fillets. It does not have a bumpy edge. Two consequences,
-both fatal:
+That diameter is **DERIVED, NOT INDEPENDENT** — it inherits the same registration
+scale as everything else in this frame and must never be quoted as a fourth opinion
+on the OD. **The OD is a BOUND, 24.95–26.34 mm, and if it moves it moves DOWN.**
 
-1. Beside Apple's crisp machined ring, a noisy blob reads as "not even close" **for
-   reasons unrelated to our dimensions** — and that comparison is the test Leif applies.
-2. A per-degree polygon from noisy data **cannot be dimensioned, toleranced, or made.**
+**Hole.** Superellipse (2a 13.497, 2b 13.283 mm, n 2.449, φ 5.35°) + **7 straight
+facets**. Residual **0.3342 → 0.1987 mm**. **NO hole diameter is published.**
 
-**Fit geometric primitives to the measured profile and draw the fit, not the samples.
-Publish the fit residual — it is worth more than the raw profile, because it says how
-well a manufacturable shape describes what was photographed. Keep the raw profile on
-disk as evidence. Never merge the two files.**
+**Comparison, measured off the montage.**
 
-Groundwork already measured, so you do not repeat it:
+| | value |
+|---|---|
+| X1 scale match | OURS 24.543 mm vs APPLE'S 24.783 mm, **0.97 %** |
+| X4 outline residual | **RMS 0.413 mm**, p95 0.843 mm, 654 rays |
+| X5 component landing | **4.23× enrichment** over 4000 random annulus positions |
+| X6 disagreement map | ≤0.15 mm **51 %** of perimeter · 0.15–0.40 mm 26 % · >0.40 mm 12 % · no ray 9 % |
+| X6 worst arcs | 82.8–101.0° peak 0.901 · 114.0–119.5° peak 0.979 · 282.9–286.0° peak 0.878 · 74.9–79.1° peak 0.746 mm |
 
-- **A plain circle is a poor model of the outer edge and here is the proof:**
-  robust circle fit gives R = 12.5503 mm, centre offset (+0.122, −0.277) mm,
-  **residual sd 0.402 mm, max 1.334 mm, and only 49.0% of rays within ±0.15 mm.**
-  Inlier fraction is the discriminator here, not residual — a fit chooses the inliers
-  that make its own residual small, so residual can agree with what it checks.
-- **The outer edge deviates from that circle over these arcs** (|res| > 0.20 mm), which
-  are the candidate straight segments / notches to model explicitly:
-  `0–22°, 25.8–31°, 85.2–91.2°, 126.8–155.5°, 157.3–201.5°, 261.8–302.5°, 345.5–356.2°`.
-- **Circle fitted to the centre hole — the deliberately WRONG model, kept for contrast:**
-  R = 6.7050 mm, residual sd 0.365 mm, max 1.179 mm. Any rounded-rectangle fit must beat
-  this by a wide margin or it has not earned the extra parameters.
+---
 
-Proposed model, manufacturable and dimensionable: outer = circle + explicit chords/notch
-features on the arcs above; inner = rounded rectangle (w, h, corner radius, rotation)
-plus one explicit notch feature at top centre. **The check that would catch a fit that
-merely improved rather than described: the rounded-rectangle fit must beat the circle
-fit's residual AND its inlier fraction must separate cleanly, the way boardmetro's square
-vs ring test does.** "The residual went down" is not evidence the model is right — extra
-parameters always lower a residual. That is the same trap L4's layer-count check fell
-into when copper grew while the dielectric had stopped.
+## Every control, and what was seen when it fired
 
-## Item 2 — the layer count changed under this lane, mid-session
+An assertion never seen to fail is not known to work. **All of these were watched.**
 
-The brief said 4 layers was a *stated replica choice* against Apple's true count being
-CANNOT DETERMINE in {4, 6}. **Commit `e84ffea` supersedes that: 4 layers, COUNTED,
-confidence HIGH**, from a published delayering. `board.json` is updated.
-**`board/out/board-front.png` still carries the old caption "STATED REPLICA CHOICE, not
-Apple's fact" and is therefore now wrong on that one line — re-run `p_render.py` and
-`p_compare.py` first thing.** Thickness 0.30 mm as-drawn is unchanged, and the fab-floor
-delta (below PCBWay's and JLCPCB's 0.40 mm) stays a separate fact about us.
+| control | what it tests | fired by | seen |
+|---|---|---|---|
+| N1 | the fitter invents a flat where there is none | `--selftest-break N1` (perfect circle + a real 1.4 mm flat) | 1 chord found, exit 1 |
+| N1b | pixel noise promoted to geometry | `--selftest-break N1b` (noisy circle + a real 1.0 mm flat) | 1 chord found, exit 1 |
+| N2 | the fitter cannot recover a flat it was handed | `--selftest-break N2` (plain circle in place of the chord input) | 0 recovered, exit 1 |
+| N3 | **a line must beat the circle on INLIER FRACTION**, not on residual | a 0.5 mm curved Gaussian dent | **REFUSED as not-a-flat** — unplanned, and it is a second demonstration that N3 has teeth |
+| N4 | the residual describes the chords | chords displaced +0.30 mm | sd 0.2771 → 0.3161, inliers 0.558 → 0.482 |
+| H2 | the superellipse earns 2 extra parameters over a circle | fitting both to a synthetic PURE CIRCLE | floor 1.53 % vs real 7.50 % → EARNED |
+| H3 | 7 facets earn 14 extra parameters | the same detector on a synthetic PURE superellipse | floor −0.31 % (1 fabricated facet) vs real 40.53 % → EARNED |
+| R1 | blank render | — | not fired |
+| R2 | a filled disc passing as an annulus | — | not fired |
+| R3 | wrong drawn scale | `--break-scale 1.10` | 8.80 %, exit 1 |
+| R5 | a silently dropped marker | `--break-drop 5` | accounting identity broke, exit 1 |
+| R7 | **independent rim cross-check** | — | **CORROBORATED, see below** |
+| X1 | the two panels are not at the same scale | see the defect log | fired at 3.20 % and was fixed at its cause |
+| X3 | the comparison numbers do not depend on the alignment | `--break-rotation 12` | X4 0.413 → 0.470 mm, **X5 4.23× → 1.44× and X5 FIRES** |
+| X5 | the markers are decoration | the same rotation | fires |
 
-## Not yet drawn at all
+---
 
-Rim pads (the antenna carrier's solder pads — three antennas are **not** on this board,
-`evidence/E01`), component footprints, silkscreen, copper, the U1 footprint that must be
-placed UNPOPULATED **and say so in board legend, not only in a document**. The NFC coil
-is wound magnet wire (ID 9.380 / OD 10.834 mm), not a trace: it is not copper on this
-board.
+## R7 — a corroboration that could have failed and did not
 
-## Controls, and each one was watched to go red on purpose
+L1 flags **14 of 95** bright rows `on_rim_material_suspect` using *r ÷ their RAW
+measured local edge radius*. R7 uses *r ÷ the FITTED outline radius* — a different
+denominator, from a model L1 never saw, and it also covers the blue rows their test
+never ran on.
 
-An assertion never seen to fail is not known to work.
+**16 of 100 rows beyond 0.95. Intersection 14. L1-only 0 — L1's set is CONTAINED in
+mine.** Two methods that could have disagreed did not.
 
-| control | fired by | verdict seen |
-|---|---|---|
-| C1 clip — board touches the crop box | `--box 780 500 1120 840` | exit 1 FAIL |
-| C2 bimodality — histogram not two-humped | bare-background patch | CANNOT DETERMINE |
-| C3 annotation mask | 200/1440 outer rays discarded and named | reported, not averaged in |
-| C4 negative — must find nothing | on bare paper → PASS; **on a ruler patch → exit 1 FAIL** | both seen |
-| C5 hole enclosed | — | not yet fired; a solid disc would fire it |
-| R1 non-blank, read back off disk | — | not yet fired |
-| R2 annulus, not a filled disc | — | not yet fired |
-| R3 scale | `--break-scale 1.10` → 9.80% | exit 1 FAIL |
-| X3 mis-registration | `--break-rotation 12` → RMS 0.281 → 0.492 mm | residual moved, control real |
-| missing `--scale-basis` | — | exit 2 CANNOT DETERMINE |
+My two extras: **B011 at 0.9648** (marginal) and **D004 at 1.0413** — a *blue-body*
+row sitting **outside the fitted outline**, which L1's radial test could never have
+flagged because it ran on the 95 bright rows only. **Candidate 15th rim-suspect,
+reported and not assumed.**
 
-**R3 is the one worth copying.** The picture is drawn at `ppm`, and the control measures
-it at the px/mm *the caller asked for*. Those two deliberately do not share the broken
-number. Feeding the same wrong scale to both sides cancels and passes a broken build —
-which is exactly what happened the first time it was written.
+---
 
-**X3 is now run, not claimed.** `p_compare.py --break-rotation 12` destroys the
-alignment on purpose and the residual moves with it: **RMS 0.281 → 0.492 mm, p95
-0.417 → 1.188 mm.** The comparison number therefore depends on the alignment rather
-than describing it, which is the only thing that makes the 0.281 mm figure mean
-anything. Note X1 (panel scale match) correctly does NOT move under rotation — it is
-measuring a different quantity, and a control that moved under every perturbation
-would be measuring none of them.
+## What is NOT drawn, and each has a different reason
+
+- **3 handoff rows** flagged `do_not_draw_as_component` — 2 merged pad runs (B000
+  7.30 mm, B001 14.48 mm long side) and D001, an edge-bright strip at 4.1:1 that an
+  IC body cannot be. Counted on the picture with their reasons.
+- **Every neutral-black IC package, INCLUDING THE LARGEST ONE** — CANNOT DETERMINE
+  after three detectors, one of which returned an answer that was purely a function
+  of the operator's box (34 % swing on padding alone). **The dark areas of our board
+  SHOULD look sparse. That is the data being honest, not the drawing being broken.**
+- **4 named absences**, drawn as magenta `?` — two gold-ringed round parts, the large
+  silver clip beside the hole. `position_eyeballed_mm`, `measured:false`,
+  `do_not_draw_as_measured:true`, and the render honours all three.
+- **Rim pads** — count CANNOT DETERMINE and CLOSED. The withdrawn 15- and 13-pad
+  candidate angle sets failed a positive control and must never be drawn.
+- **The three antennas** — not on this PCB at all (E01). Never in copper.
+- **The NFC / voice coil** — wound magnet wire, not a trace (E02, and which of the
+  two it is remains OPEN).
+- **The U1 footprint** — size CANNOT DETERMINE: an independent remeasure of the can
+  swings **6.735 → 7.891 mm on the operator's padding alone**, and the only handoff
+  row at that location is flagged `merged_pad_run`. **U1 IS UNPOPULATED and the board
+  legend says so ON THE BOARD**, in the measured quietest arc of the annulus.
+- **Copper, traces, vias, silkscreen beyond that legend** — not measured, not drawn.
+
+---
 
 ## What was discarded, and why
 
-- **No circle is fitted to the centre hole anywhere in this lane.** A circle there
-  returns a small clean residual while being the wrong shape, and a number that looks
-  well-measured is more dangerous than one that is merely imprecise.
-- **L1's `board-outline-photo6.json` inner profile was not used.** It reports
-  r_min 73 px against r_max 172 px — a 2.34× excursion where a rounded square gives at
-  most 1.41× — so it is contaminated. This lane re-extracted the profile rather than
-  inherit it. L1's *scale* (15.8875 px/mm) is used and credited.
-- **Bounding-box extent was discarded as the scale check.** For a non-circular outline
-  that compares a max against a mean. R3 measures 2 × mean radius, the same operator
-  that defines the parameter.
-- **The half-scale whole-frame view was discarded for measurement** and kept only for
-  looking; every number comes from the full-resolution file.
+- **Painting our parts with median RGB sampled from Apple's photograph.** It IS a
+  measurement — that is not the objection. It makes the comparison **CIRCULAR**: the
+  two panels would have to agree on colour because we copied it, and a similarity
+  manufactured by transcription measures nothing. Raised by ce-workshop-9a, accepted.
+  The real reason ours reads as a schematic is that **we do not know what most of
+  these parts are**, and no palette fixes that.
+- **Re-thresholding the crop to get Apple's silhouette.** The dark wooden blocks
+  behind the board merge into the blob and inflated Apple's diameter by 3.20 %.
+  Apple's outline is L1's own measurement of this photograph; 66 of 720 comparison
+  rays fall in a measurement gap and are **dropped, never interpolated**.
+- **Modelling a flat across the 115–118.5° inward excursion** (1.02 mm). It sits on
+  the edge of a **13.75° hole in the ray data**. 63.0° of arc over 14 gaps carries no
+  ray at all; those arcs are listed in the fit file and drawn in the provisional
+  colour.
+- **Extending the hole facets to their natural tangency** (±25°): residual
+  0.3342 → 0.4428 mm, WORSE, H3 turned NOT EARNED.
+- **Inward facets as global half-plane clips**: 0.3342 → 0.4267 mm, also WORSE.
+- **L1's `centre_px` for the hole.** It disagrees with that file's own `boundary`
+  points — stated centre 2.76 mm from the board centre, boundary points imply
+  0.622 mm, which matches FCC photo 6's 0.4625 mm. Looks like an (x,y) vs (row,col)
+  swap **in the reported field only**; the points are fine. The points were used, the
+  stated centre was not, and it is **reported upstream, not edited**.
 
-## The lesson this lane was handed and should keep
+---
 
-From the halo lane, after it withdrew its own coil finding: **when you claim two
-measurements corroborate, name what each would have had to SEE to disagree. If you
-cannot name it, they are one measurement.** Nothing in this handoff is claimed as
-corroborated — the outer diameter has three disagreeing sources and is labelled in
-dispute everywhere it appears, including on the picture.
+## Defects found in my own controls, kept because the fix is the lesson
+
+1. **R3 fired at 1.42 % on a correct render.** It averaged 2 × mean radius over ALL
+   rays including the chorded ones, comparing a chord-shortened mean against a circle
+   diameter. It now measures only the 893/1440 rays no chord cuts — **the same
+   quantity the parameter defines**.
+2. **X3 did not reach X4.** Panel 1 is rendered by a subprocess that knows nothing
+   about `--break-rotation`, so X4 sat at 0.413 mm under a 12° rotation. The control
+   was a decoration on that number until the break was applied to the profile read
+   off the panel.
+3. **R5 could not fire.** `--break-drop` truncated the INPUT rows, so the accounting
+   identity balanced. It now loses markers at DRAW time with the row count whole.
+4. **H3 returned −3836 %, then −221 %.** The first was a broken synthetic generator
+   (wrong frame); it was rebuilt with a zero-noise self-check. The second exposed a
+   **real defect in the detector**: a line fitted to a short noisy arc comes out
+   nearly TANGENTIAL, and `d/cos(θ−n)` diverges at 90°, so applying such a "facet"
+   throws the radius to infinity inside its own arc. Facets more than 60° from their
+   own normal are now refused with that reason.
+5. **The H3 EARNED test was weak.** With a negative floor, "gain > 2 × floor" passed
+   on any positive gain. It now also demands a 5 % absolute improvement.
+
+---
+
+## The next lane's first three jobs
+
+1. **The outer outline's worst arcs are 82.8–101.0° (0.901 mm) and 114.0–119.5°
+   (0.979 mm).** Both sit next to the largest data gaps. Re-extract the profile there
+   on the sharper photograph before adding any more primitives.
+2. **The facet side walls are not measured.** Each hole facet ends in a radial step
+   at the ±0.30 mm crossing, which is not where the wall is. A perpendicular-edge
+   detector would close that.
+3. **D004 is a candidate 15th rim-suspect** and nothing has chased it.
+
+**And the standing one:** the board is knowingly incomplete in the dark regions and
+the picture says so. **Do not fill those gaps by eye.** An eyeballed position among
+measured ones is invisible in a render, which is exactly why it must not happen.

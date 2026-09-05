@@ -35,11 +35,18 @@
       "superseded_decision": "The orchestrator authorised drawing 4 as a STATED REPLICA CHOICE within a {4,6} bound while Apple's count was unknown. The delayering evidence arrived in the same session and made that unnecessary. Recorded because the reasoning was right for the state of knowledge it was made in."
     },
     "centre_hole": {
-      "shape": "superellipse - NOT a circle, and NOT pinned to a rounded square either",
+      "shape": "SUPERELLIPSE + 7 MEASURED STRAIGHT FACETS - a rounded polygon, i.e. a routed pocket, not a smooth curve and not a circle",
       "state": "PARTIALLY DETERMINED",
-      "refusal": "This lane publishes NO centre-hole diameter. Three fits disagree on the exponent and they disagree in DIFFERENT directions: FCC photo 6 gives n=2.70, L1's fit in the O'Flynn frame pinned n at its 2.00 bound, and p_fit.py's refit of L1's OWN boundary points gives n=2.449. n=2 is an ellipse; n=4 is a rounded square.",
+      "refusal": "This lane publishes NO centre-hole diameter. Three superellipse fits disagree on the exponent and they disagree in DIFFERENT directions: FCC photo 6 gives n=2.70, L1's fit in the O'Flynn frame pinned n at its 2.00 bound, and p_fit.py's refit of L1's OWN boundary points gives n=2.449. n=2 is an ellipse; n=4 is a rounded square.",
+      "facets": "7 admitted, 1 refused. Each admitted only on INLIER SEPARATION against the superellipse, never on residual alone. They cut the residual 0.3342 -> 0.1987 mm (40.5%).",
+      "facets_earned": "YES, and measured against a FABRICATION FLOOR: the same detector run on a synthetic PURE superellipse with the same sampling and noise finds 1 facet(s) and they buy -0.31%. 40.53% against that is real. Seven facets are fourteen extra parameters and extra parameters always lower a residual.",
+      "known_unmeasured": "Each facet ends in a RADIAL STEP where its measured arc ends. A routed pocket really does have side walls, so a step is the right kind of geometry - but the arc ends are where the boundary crosses 0.30 mm from the superellipse, NOT where the wall is. The wall positions are NOT MEASURED.",
+      "rejected_alternatives": [
+        "extending each facet to its natural crossing with the superellipse (+-25 deg): residual 0.3342 -> 0.4428 mm, WORSE, H3 turned NOT EARNED",
+        "inward facets as global half-plane clips, the operator the outer chords use: residual 0.3342 -> 0.4267 mm, also WORSE - the 5.746 mm facet spans only 0.96 mm of edge and clipping globally with it cuts 0.6 mm off a 35 deg arc where the measured boundary is farther out"
+      ],
       "drawn_from": "board/outline/outline-fit-oflynn.json inner - refitted from L1's boundary points",
-      "earned_over_a_circle": "YES, but only just and only because the improvement was measured against a floor: the superellipse beats the circle by 7.50% in residual sd, against a 1.53% floor obtained by fitting the same pair of models to a synthetic PURE CIRCLE. Two extra parameters always lower a residual; that floor is what makes the 7.50% mean anything."
+      "earned_over_a_circle": "YES, but only just and only because the improvement was measured against a floor: the superellipse beats a circle by 7.50%% in residual sd against a 1.53%% floor obtained by fitting the same pair of models to a synthetic PURE CIRCLE."
     }
   },
   "outline": {

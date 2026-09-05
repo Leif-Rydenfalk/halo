@@ -315,10 +315,35 @@ def find_facets(P, cx, cy, a, b, n, phi, ppm, depth_mm=0.30):
     return out, refused
 
 
+# no EXTEND: see hole_r's docstring -- extending was tried twice and measured worse
+
+
 def hole_r(theta_deg, a, b, n, phi_deg, facets):
-    """r(theta) of the superellipse, overridden on each admitted facet arc by that
-    facet's straight line.  Arcs and straights: a routed pocket, dimensionable."""
-    t = np.deg2rad(np.asarray(theta_deg, float))
+    """r(theta): the superellipse, cut by each straight FACET.
+
+    EACH FACET IS APPLIED ONLY ON ITS MEASURED ARC, and that is a decision with two
+    rejected alternatives behind it, both MEASURED rather than argued:
+
+      extending each facet to its natural crossing with the superellipse (+-25 deg,
+      min for inward and max for outward) -- residual 0.3342 -> 0.4428 mm, WORSE,
+      and H3 correctly turned NOT EARNED. An outward pocket's d/cos(th-n) grows
+      without bound away from its normal, so max() is not self-limiting and the
+      extension pushes the boundary out across arcs where the real edge is the curve.
+
+      inward facets as GLOBAL half-plane clips (the operator the outer chords use)
+      -- residual 0.3342 -> 0.4267 mm, also WORSE. The 5.746 mm facet spans only
+      0.96 mm of edge; clipping globally with it cuts 0.6 mm off a 35 deg arc where
+      the measured boundary is farther out.
+
+    On-arc only gives 0.1987 mm. CONSEQUENCE, AND IT IS AN HONEST ONE: each facet
+    ends in a radial STEP where its measured arc ends. A routed pocket really does
+    have side walls, so a step is the right KIND of geometry -- but the arc ends are
+    where the boundary crosses 0.30 mm from the superellipse, NOT where the wall is.
+    The wall positions are NOT MEASURED and the step is drawn at the only place the
+    data names.
+    """
+    th = np.asarray(theta_deg, float) % 360.0
+    t = np.deg2rad(th)
     ph = math.radians(phi_deg)
     c, s = math.cos(ph), math.sin(ph)
     ct, st = np.cos(t), np.sin(t)
@@ -329,10 +354,11 @@ def hole_r(theta_deg, a, b, n, phi_deg, facets):
         fn = math.radians(f["normal_deg"])
         den = math.cos(fn) * ct + math.sin(fn) * st
         a0, a1 = f["arc_deg"]
-        m = (((np.asarray(theta_deg) - a0) % 360.0) <= ((a1 - a0) % 360.0))
+        span = (a1 - a0) % 360.0
         with np.errstate(divide="ignore", invalid="ignore"):
             rl = np.where(den > 1e-9, f["offset_mm"] / den, np.nan)
-        r = np.where(m & np.isfinite(rl), rl, r)
+        win = ((th - a0) % 360.0) <= span              # the MEASURED arc, and no more
+        r = np.where(win & np.isfinite(rl), rl, r)
     return r
 
 

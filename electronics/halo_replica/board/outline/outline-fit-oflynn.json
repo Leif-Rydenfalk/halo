@@ -1,6 +1,6 @@
 {
   "tool": "p_fit.py",
-  "run_utc": "2026-09-05T01:33:55Z",
+  "run_utc": "2026-09-05T01:36:42Z",
   "lane": "L5 BOARD BUILD",
   "what_this_is": "FITTED MANUFACTURABLE PRIMITIVES, not samples. The raw per-degree profile lives in metrology/outline-raw-oflynn-front.json and is NEVER merged into this file.",
   "side_convention": "the side carrying the SoC and the shield can",
@@ -14,7 +14,7 @@
   },
   "scale": {
     "px_per_mm": 106.31295578013115,
-    "basis": "M02 at the board, transferred by c_register"
+    "basis": "metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart; transferred to the oflynn frame by c_register"
   },
   "source_raw": "metrology/outline-raw-oflynn-front.json",
   "rays": 1194,

@@ -368,8 +368,14 @@ def build_caption(board, fit, handoff, comps, skipped, gaps, ns, np_, nsus, k, r
                  f"{o['unmeasured_total_deg']:.0f} deg of arc carries NO measured ray - "
                  f"drawn in orange, that is where the outline is a guess"))
     rows.append(("centre hole", p["centre_hole"]["shape"],
-                 f"{p['centre_hole']['state']} - n={inn['n']:.3f} here, 2.70 on FCC 6, "
-                 f"2.00 pinned by L1. NO DIAMETER IS PUBLISHED."))
+                 f"{p['centre_hole']['state']}. NO DIAMETER IS PUBLISHED - three "
+                 f"superellipse fits give n = 2.00 (pinned) / {inn['n']:.3f} / 2.70 and "
+                 f"disagree in different directions. "
+                 f"{len(inn.get('facets', []))} straight facets cut the residual "
+                 f"{inn['superellipse_only_resid_sd_mm']:.4f} -> "
+                 f"{inn['facet_resid_sd_mm']:.4f} mm against a fabrication floor of "
+                 f"{inn['H3_floor_from_fabricated_facets']*100:.2f}%. Each facet ends "
+                 f"in a radial STEP whose true wall position is NOT MEASURED."))
     rows.append(("thickness", f"{p['thickness_mm']['value']:.2f} mm as-drawn",
                  "below both fab floors - a fact about US, not about Apple"))
     rows.append(("layers", f"{p['layer_count']['value']}", p["layer_count"]["state"]))
