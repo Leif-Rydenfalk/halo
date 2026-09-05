@@ -752,7 +752,26 @@ def schematic_audit():
     sch = ROOT / "electronics" / "halo_rev_a" / "schematic.py"
     if not sch.exists():
         return {"verdict": "CANNOT DETERMINE", "why": "schematic.py not found"}
-    sites = re.findall(r'P\("(C\d+)"\s*,\s*"([^"]*)"', sch.read_text())
+    # L8 2026-09-05: this used to match only the `P("Cnnn", "MPN"` form, so the
+    # eight codes declared as bare tuples inside a lookup dict —
+    # `"C6": ("C76941", "GRM033R71A103KA01D")` — were never audited, and the
+    # block still reported `match: 15, wrong_part: 0, verdict PASS`. Fifteen of
+    # the twenty-three shipped codes were checked and nothing said so.
+    #
+    # The bare-tuple form needs a guard the P(...) form did not: a capacitor's
+    # REFERENCE DESIGNATOR is also C-then-digits, so a plain `\("(C\d+)"` match
+    # picks up `("C1", "100nF")` and `("C13", "Device:C")` and grades them WRONG
+    # PART. That was measured, not guessed — it produced 21 false WRONG PARTs and
+    # flipped the verdict to FAIL before it was caught. Bare tuples are therefore
+    # admitted only for five-or-more digits; every LCSC code on this board has at
+    # least five (shortest C15525, C76799, C76922, C76941, C95361) and the
+    # designators run C1..C25. A four-digit LCSC code declared this way would be
+    # MISSED by that guard — which is exactly what the coverage gate below is for:
+    # an unreached shipped line is CANNOT DETERMINE and is named, never a pass.
+    _txt = sch.read_text()
+    sites = (re.findall(r'P\("(C\d+)"\s*,\s*"([^"]*)"', _txt)
+             + re.findall(r'\("(C\d{5,})"\s*,\s*"([^"]*)"', _txt))
+    sites = sorted(set(sites))
     by_code = collections.defaultdict(set)
     for c, m in sites:
         by_code[c].add(m)
@@ -781,11 +800,41 @@ def schematic_audit():
                      "catalogue_package": r[1] if r else None,
                      "catalogue_description": r[2] if r else None,
                      "verdict": verdict})
+    # COVERAGE, stated rather than implied. `match: 15, wrong_part: 0` reads as
+    # "the BOM orders what the schematic asked for" — which is this row's whole
+    # claim — while saying nothing about the shipped lines the scan never
+    # reached. A line that was not audited is CANNOT DETERMINE, never a pass, so
+    # coverage gates the verdict and cannot regress silently again.
+    shipped = set()
+    try:
+        with open(BOMCSV, encoding="utf-8-sig") as fh:
+            for r in csv.DictReader(fh):
+                code = (r.get("LCSC Part #") or "").strip()
+                if code:
+                    shipped.add(code)
+    except OSError:
+        shipped = set()
+    missed = sorted(shipped - set(by_code))
+    if wrong:
+        verdict = "FAIL"
+    elif missed or not shipped:
+        verdict = "CANNOT DETERMINE"
+    else:
+        verdict = "PASS"
     return {"declaration_sites": len(sites), "distinct_order_codes": len(by_code),
             "match": right, "family_name_only": loose, "wrong_part": wrong,
+            "shipped_codes": len(shipped),
+            "shipped_codes_audited": len(shipped & set(by_code)),
+            "shipped_codes_not_audited": missed,
+            "coverage_note": (
+                f"{len(shipped & set(by_code))} of {len(shipped)} codes on "
+                f"{BOMCSV.name} were found in the schematic and audited"
+                + ("" if not missed else
+                   f"; {len(missed)} were NOT reached by the scan and are "
+                   f"CANNOT DETERMINE, not passes: {', '.join(missed)}")),
             "source_file": "electronics/halo_rev_a/schematic.py",
             "catalogue": "ce-fab data/jlcparts-slim.sqlite3",
-            "verdict": "FAIL" if wrong else "PASS",
+            "verdict": verdict,
             "codes": rows}
 
 
