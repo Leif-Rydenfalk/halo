@@ -508,6 +508,10 @@ def _break_erc_stale(p):
     os.utime(p["erc"], (st.st_atime - 60, st.st_mtime - 60))
 
 
+#: breaks that edit the .kicad_sch itself, and therefore MUST also trip C1
+#: (artifact != source) and C4 (the ERC report now predates the file).
+_ARTIFACT_EDITS = set()
+
 BREAKS = [
     ("C1 artifact=source", _break_artifact,
      "edit the committed .kicad_sch by hand (rev R1 -> R2)"),
@@ -531,6 +535,28 @@ BREAKS = [
 ]
 
 
+def _drop_first_node(text, opener):
+    """Delete the first balanced `(name ...)` node, leaving valid s-expr."""
+    i = text.find(opener)
+    if i < 0:
+        return None
+    depth, j = 0, i
+    while j < len(text):
+        c = text[j]
+        if c == '"':                       # skip a quoted string wholesale
+            j += 1
+            while j < len(text) and text[j] != '"':
+                j += 2 if text[j] == "\\" else 1
+        elif c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                return text[:i] + text[j + 1:]
+        j += 1
+    return None
+
+
 def erc_can_fail():
     """C7 — the one that matters. Take a copy, delete ONE no-connect flag,
     and require kicad-cli to report a real error.
@@ -549,11 +575,19 @@ def erc_can_fail():
         sch = os.path.join(dst, "halo_replica.kicad_sch")
         with open(sch, "r", encoding="utf-8") as fh:
             t = fh.read()
-        if "(no_connect" not in t:
+        # THE FIRST VERSION OF THIS BREAK COULD NOT FIRE, and the self-test
+        # said so instead of passing: it renamed "(no_connect" to
+        # "(no_connect_REMOVED_BY_SELFTEST", which leaves an s-expression
+        # KiCad refuses to parse at all - "Failed to load schematic", rc 3.
+        # That tests the PARSER, not the ERC, and E07 sections 12 and 14 are
+        # both about exactly this: a break severed from the thing it was
+        # meant to break. The fix is to delete the whole balanced node, so
+        # the copy is a VALID schematic that is missing one no-connect flag.
+        t2 = _drop_first_node(t, "(no_connect")
+        if t2 is None:
             return Result("C7 ERC can fail", CANNOT,
                           "the sheet carries no no_connect marker to remove, "
                           "so this break has nothing to break.")
-        t2 = t.replace("(no_connect", "(no_connect_REMOVED_BY_SELFTEST", 1)
         with open(sch, "w", encoding="utf-8") as fh:
             fh.write(t2)
         rc, data, out, log = S.erc(sch, out=os.path.join(tmp, "broken.json"))
@@ -582,6 +616,10 @@ def erc_can_fail():
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+_ARTIFACT_EDITS.update({_break_artifact, _break_bom_cite, _break_dnp,
+                        _break_value})
+
+
 def self_test():
     print("--- SELF-TEST: %d deliberate breaks, each must be caught by ONE "
           "named check ---\n" % len(BREAKS))
@@ -597,7 +635,15 @@ def self_test():
             caught = target in names
             # A break that trips EVERY check proves nothing about which check
             # caught it, so the collateral is reported and counts against it.
-            collateral = [n for n in names if n != target]
+            # Editing the .kicad_sch necessarily makes it differ from its
+            # source (C1) and makes the existing ERC report a verdict about
+            # a file that has changed (C4). Those two firing is the checks
+            # being CONSISTENT, not a break that sprays. Only anything else
+            # counts against specificity.
+            consequential = ({"C1 artifact=source", "C4 erc fresh+clean"}
+                             if breaker in _ARTIFACT_EDITS else set())
+            collateral = [n for n in names
+                          if n != target and n not in consequential]
             verdict = "CAUGHT " if caught and not collateral else (
                 "CAUGHT*" if caught else "MISSED ")
             if not caught:
