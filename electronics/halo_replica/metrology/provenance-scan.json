@@ -153,6 +153,7 @@
       ],
       "input_jsons": [
         "HANDOFF-positions-front.json",
+        "WITHDRAWN-CLAIMS.json",
         "board-report.json"
       ],
       "input_provenance": [
@@ -719,6 +720,7 @@
       ],
       "input_jsons": [
         "HANDOFF-positions-front.json",
+        "WITHDRAWN-CLAIMS.json",
         "board-report.json"
       ],
       "input_provenance": [

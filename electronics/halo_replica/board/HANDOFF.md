@@ -268,8 +268,7 @@ gradient is a plateau. The 50 % crossing is unbiased for any symmetric blur: **0
 ### Whole-circle re-extraction: 246 gaps filled, 16 µm median agreement — and the fit got WORSE
 
 One instrument over all 1440 rays: **1428 carry an edge** against L1's 1194, **246 of them
-rays L1 had no value for**. On the 1182 shared rays the two independent extractors agree to
-a **median 0.0158 mm** (p90 0.638, max 1.613). Sixteen microns between two extractors that
+rays L1 had no value for**. On the 1182 shared rays the two extractors agree to a **median 0.0158 mm** (p90 0.638, max 1.613). Sixteen microns between two extractors that
 were never tuned to each other is the cross-check.
 
 **And the refit is worse, so the profile was NOT replaced.** circle+chords on my profile:
@@ -343,3 +342,38 @@ because the homography's source frame is the O'Flynn image divided by its
 background. Verified numerically: `H(fcc6 board centre) × 6.58 = (1522.559, 1738.801)`,
 the stated origin to three decimals. **That null was mine, not the board's** — and it is
 the shape a null has to be checked for before it is believed.
+
+---
+
+## CORRECTION — the 0.0158 mm agreement is ALGORITHM agreement, not cross-source
+
+*Found by `tools/p_provenance.py`, the scanner written after E07 entry 33, which flags
+`p_fit.py` as a candidate: it samples `oflynn-backside-fullres.jpeg` and its input
+provenance is the same image.*
+
+Two extractors agreeing to a median **0.0158 mm** across 1182 shared rays says the edge
+position is **not algorithm-dependent** at that precision. That is worth having and it is
+what the geometry claim needs.
+
+**It says nothing about the photograph.** Both run on the same pixels, so lighting, blur,
+perspective and JPEG artefacts are common to both and **cancel**. I called it "the
+strongest thing that is not scale-dependent" — true as written, but it sat in a section
+about what would make the whole thing wrong, which implies it hedges a risk it does not
+hedge. It is orthogonal to that risk, not a defence against it.
+
+**The genuinely cross-source result in this lane is X5B**: markers pushed into FCC photo 6,
+an image they were never extracted from, at p < 1/20000.
+
+### The other seven p_provenance candidates, adjudicated rather than left listed
+
+| tool | verdict |
+|---|---|
+| `c_register.py` | **legitimate** — a registration tool must sample the images it registers, and it already separates `residual_px_rms_in_sample` from the holdout the handoff quotes |
+| `calib_fit.py` | **legitimate** — a fitter that prints residuals rather than asserting a verdict from them |
+| `k_backface.py` | **legitimate and already named** — it states its two sources are the same photograph at NCC 0.9993 and carries a positive control from the annotated version |
+| `m_handoff.py` | **legitimate** — an assembler, not a check |
+| `p_pocket.py` | **legitimate** — the extraction overlap is inherent; its comparison is cross-source by construction |
+| `p_compare.py` | **was the defect.** Corrected: X5 renamed to registration round-trip, X5B added |
+| `p_compare_real.py` | overlap legitimate, **but reading it found a different defect** — a caption asserting a number withdrawn two hours earlier. Fixed and guarded |
+
+**A candidate list nobody adjudicates is the same failure as a check nobody breaks.**

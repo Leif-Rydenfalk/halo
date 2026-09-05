@@ -758,9 +758,14 @@ def run_edge(a_ns):
     # E3: where L1 has a value, do we agree with it?
     if agree:
         ag = np.array(agree)
-        say(f"E3 agreement with L1 on the {len(ag)} shared rays: median "
+        say(f"E3 ALGORITHM agreement with L1 on the {len(ag)} shared rays: median "
             f"{np.median(ag):.4f} mm, p90 {np.percentile(ag,90):.4f} mm, "
             f"max {ag.max():.4f} mm")
+        say("   E3 IS NOT A CROSS-SOURCE CHECK. Both extractors run on the SAME "
+            "photograph, so this says the edge position is not ALGORITHM-dependent at "
+            "that precision. It says nothing about the photograph -- lighting, blur, "
+            "perspective and JPEG are common to both and cancel. It was described more "
+            "strongly than that and is corrected here.")
     else:
         say("E3 CANNOT DETERMINE: no shared ray to check against.")
     if two:
@@ -787,6 +792,9 @@ def run_edge(a_ns):
                E4_median_err_mm=(float(np.median(e4_err)) if e4_err else None),
                E4_pass=bool(e4_ok),
                E2_synthetic_step_err_px=float(err_s),
+               E3_what_it_is=("ALGORITHM agreement, not cross-source. Both extractors "
+                              "run on the same photograph; every error common to the "
+                              "image cancels."),
                E3_agreement_with_L1_mm=(dict(n=len(agree),
                                              median=float(np.median(agree)),
                                              p90=float(np.percentile(agree, 90)),
