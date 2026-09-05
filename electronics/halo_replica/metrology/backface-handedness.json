@@ -1,0 +1,37 @@
+{
+ "tool": "tools/f_backface_handedness.py",
+ "verdict": "MIRROR",
+ "transform": "board_x = -x_back, board_y = +y_back",
+ "inputs": {
+  "photo6": {
+   "widest": 166.0,
+   "narrowest": 79.0
+  },
+  "photo7": {
+   "widest": 15.0,
+   "narrowest": 102.0
+  },
+  "source6": "metrology/outline-fit-photo6.json",
+  "source7": "metrology/outline-fit-photo7.json"
+ },
+ "mirror_residual_deg": {
+  "widest": 1.0,
+  "narrowest": 1.0
+ },
+ "rotation_k_deg": {
+  "widest": 29.0,
+  "narrowest": 23.0
+ },
+ "rotation_disagreement_deg": 6.0,
+ "tolerance_deg": 3.0,
+ "cross_check": {
+  "what": "largest chord normal in the O'Flynn FRONT frame vs photo 6's widest bearing \u2014 licenses comparing the two FCC frames' angles at all",
+  "chord_normal_deg": 166.98252666084025,
+  "photo6_widest_deg": 166.0,
+  "separation_deg": 0.9825266608402501
+ },
+ "what_this_does_not_settle": [
+  "a residual rotation of a degree or two",
+  "that the two FCC photographs are of the same part number as O'Flynn's board \u2014 920-08283-01 vs 820-01736-A, raised by the back handoff itself and not closed here"
+ ]
+}

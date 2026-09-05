@@ -255,6 +255,16 @@ The nRF52832-CIAA positive control measured **3.218 × 2.940 mm** against a publ
 selected as the **most rectangular** in the search box, *not* the closest to the published size,
 because selecting on the answer would make the control agree with itself.
 
+> **⚠ CORRECTED 2026-09-05 (BOM lane): the 0.23 % below rests on the SMALLEST of THREE
+> segmentations of the same part in the same photograph.** M08's own whole-board run gives
+> **108.2 px/mm by the same route — 1.8 % away, not 0.23 %**, and a third gives 110.1. The
+> agreement is **real but materially weaker than this section reads**, and I amplified it twice —
+> calling it "the strongest cross-validation in the lane" here and reporting it upward. The
+> **verdict of 106.313 px/mm is unaffected**; only the strength of its corroboration was overstated.
+> **A datasheet package cannot pin a scale better than ~2 %**, because the segmentation of the part
+> is itself uncertain at that level. And the honest uncertainty is not the 0.41 % transfer spread —
+> the transfer inherits FCC-6's unresolved **2.07 %** rule-to-rule disagreement, so **106.3 ± ~1 %**.
+
 **And it validates the scale, which nobody designed it to do.** That size is reached with the
 *registration-derived* 106.313 px/mm; making the nRF exactly its published size would need
 106.06 px/mm — **0.23 % away**. **A steel rule in a different photograph carried through a

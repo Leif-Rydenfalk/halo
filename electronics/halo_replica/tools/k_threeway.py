@@ -371,7 +371,34 @@ def check_deliverable(root=HALO, tree="replica", roots=None):
             rec["valid"] = "VALID"
             if rec.get("state") != "RED" and rec.get("state") != "CANNOT DETERMINE":
                 rec["state"] = "GREEN"
+    # pass 4: A REPORT'S OWN VERDICT, which is a DIFFERENT FACT from its row state.
+    # D6 showing "source ok = yes" means its ERC was clean, and reads to anyone scanning
+    # for green as "the DRC passed". It did not. This column removes the misreading
+    # instead of documenting it. A failing report does NOT turn its own row red: the
+    # artifact is not the defect, and conflating "we have no DRC" with "the DRC found
+    # things" is the could-not-build / could-not-verify conflation this project has a
+    # standing rule against. The contents gate the things that DEPEND on them - which is
+    # what the third leg already does for D7 and D8.
     for rec in out:
+        spec = specs[rec["id"]]
+        k = spec.get("self_verdict_kind")
+        rec["own_verdict"] = None
+        if not k or rec["id"] not in files or not files[rec["id"]]:
+            rec.pop("_files", None); continue
+        err, unc = read_verdict(files[rec["id"]], k)
+        if err is None:
+            rec["own_verdict"] = "unreadable"
+        else:
+            bits = [f"{err}E"]
+            if k == "drc":
+                bits.append(f"{unc}U")
+            rec["own_verdict"] = " ".join(bits)
+            rec["own_verdict_clean"] = (err == 0 and (k != "drc" or unc == 0))
+            if not rec["own_verdict_clean"]:
+                rec["own_verdict_note"] = (
+                    f"THIS ROW IS GREEN AS AN ARTIFACT AND THE THING IT GRADES IS NOT: "
+                    f"{err} error(s)" + (f" and {unc} unconnected item(s)" if k == "drc" and unc else "")
+                    + ". Anything cut from that source fails the third leg.")
         rec.pop("_files", None)
     return doc, out
 
@@ -387,14 +414,20 @@ def print_deliverable(drows, ddoc, tree):
     stale = [r for r in drows if r.get("fresh") == "STALE"]
     L = {"GREEN": "yes", "RED": "no", "CANNOT DETERMINE": "?", "FRESH": "yes",
          "STALE": "NO", "INVALID": "NO", "VALID": "yes", None: "-"}
-    print(f"  {'':7} {'':2} {'artifact':<20} {'opens':>5} {'current':>8} {'valid':>6}")
+    print(f"  {'':7} {'':2} {'artifact':<20} {'opens':>5} {'current':>8} {'source ok':>10} "
+          f"{'its own verdict':>16}")
     for r in drows:
         mark = {"GREEN": "GREEN", "RED": "  RED",
                 "CANNOT DETERMINE": " CD  "}[r["state"]]
         e = L.get(r.get("exists"), "-")
         f = L.get(r.get("fresh"), "-") if r.get("fresh") not in (None, "n/a") else "n/a"
         v = L.get(r.get("valid"), "-") if r.get("valid") not in (None, "n/a") else "n/a"
-        print(f"  [{mark}] {r['id']} {r['what']:<20} {e:>5} {f:>8} {v:>6}")
+        ov = r.get("own_verdict") or "n/a"
+        if r.get("own_verdict") and not r.get("own_verdict_clean", True):
+            ov = "** " + ov + " **"
+        print(f"  [{mark}] {r['id']} {r['what']:<20} {e:>5} {f:>8} {v:>10} {ov:>16}")
+        if r.get("own_verdict_note"):
+            print(f"           {r['own_verdict_note']}")
         if r["state"] != "GREEN":
             for chunk in (r["why"] or "").split(" ALSO: "):
                 print(f"           {chunk}")
@@ -616,18 +649,28 @@ def cmd_render(args):
     W("*" + ddoc["why_this_exists"] + "*\n")
     W(f"**{len(dexist)} of {len(drows)} artifacts exist and open. {len(dstale)} of those are "
       f"STALE. {len(dgreen)} rows are green.**\n")
-    W("| | artifact | state | opens | current | evidence |")
-    W("|---|---|:-:|:-:|:-:|---|")
+    W("| | artifact | state | opens | current | source ok | **its own verdict** | evidence |")
+    W("|---|---|:-:|:-:|:-:|:-:|:-:|---|")
     ICON = {"GREEN": "✅", "RED": "🔴", "CANNOT DETERMINE": "⚠️"}
     for r in drows:
         ev = (", ".join(f"`{o}`" for o in r["opened"]) if r["state"] == "GREEN" else r["why"])
         op = "yes" if r.get("exists") == "GREEN" else "no"
         fr = {"FRESH": "yes", "STALE": "**NO**", "CANNOT DETERMINE": "?"}.get(r.get("fresh"), "—")
-        W(f"| {r['id']} | {r['what']} | {ICON[r['state']]} | {op} | {fr} | {ev} |")
+        so = {"VALID": "yes", "INVALID": "**NO**", "CANNOT DETERMINE": "?"}.get(r.get("valid"), "—")
+        ov = r.get("own_verdict") or "—"
+        if r.get("own_verdict") and not r.get("own_verdict_clean", True):
+            ov = f"**{ov}**"
+        W(f"| {r['id']} | {r['what']} | {ICON[r['state']]} | {op} | {fr} | {so} | {ov} | {ev} |")
     W("")
     W("**Freshness.** " + ddoc["freshness"]["why"] + "\n")
     W("**The rule.** " + ddoc["freshness"]["the_rule"] + " " + ddoc["freshness"]["three_states"] + "\n")
     W("**Timestamps.** " + ddoc["freshness"]["timestamp_strength"] + "\n")
+    f4 = ddoc["the_fourth_column"]
+    W("**Its own verdict — the column that removes a trap rather than documenting it.** "
+      + f4["why"] + "\n")
+    W("> **A report row being GREEN means:** " + f4["what_a_report_row_being_GREEN_means"] + "\n")
+    W("> **And a failing report does not turn its own row red**, because " +
+      f4["why_a_failing_report_does_not_turn_its_own_row_red"] + "\n")
     W("**The rule.** " + ddoc["the_rule"] + "\n")
     W("**Anti-gaming.** " + ddoc["anti_gaming"] + "\n")
     W("Why each is required, in the row's own words:\n")

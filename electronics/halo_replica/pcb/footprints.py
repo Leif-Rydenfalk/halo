@@ -65,6 +65,8 @@ OUT = os.path.join(REPLICA, "halo_replica.pretty")
 LIBNAME = "halo_replica"
 
 HANDOFF = os.path.join(REPLICA, "metrology", "HANDOFF-positions-front.json")
+HANDOFF_BACK = os.path.join(REPLICA, "metrology",
+                            "HANDOFF-positions-back.json")
 BOMFILE = os.path.join(REPLICA, "bom", "bom.json")
 UWBFILE = os.path.join(REPLICA, "metrology", "uwb-can-remeasure.json")
 
@@ -317,6 +319,52 @@ def metal_land(w_mm, l_mm):
     return name, "\n".join(o)
 
 
+def back_pad(d_mm):
+    """CLASS B — one MEASURED round gold pad on Apple's BATTERY-CONTACT face.
+
+    NO PASTE. These are test / probe lands (O'Flynn's TP1..TP38 field is the
+    positive control that found them), not solder joints for a part, and a
+    paste aperture on a probe pad is an instruction to print solder where
+    nothing is placed.
+
+    The diameter is an EQUIVALENT CIRCLE from the measured area -- the
+    handoff flags every one of these `diameter_is_equivalent_circle`, and a
+    round pad of that diameter is precisely what that flag licenses. It is
+    not a claim that the land is a perfect circle.
+    """
+    d = round(float(d_mm), 2)
+    name = "REPL_BPAD_D%s" % _fmt(d)
+    descr = ("CLASS B [MEASURED] round gold pad, equivalent-circle diameter "
+             "%s mm, from metrology/HANDOFF-positions-back.json (gold colour "
+             "AND circular shape, k_backface). Population median 0.5985 mm, "
+             "IQR 0.0340. NO PASTE: a probe land is not a solder joint. The "
+             "diameter is an equivalent circle from area, which is what the "
+             "row's `diameter_is_equivalent_circle` flag says it is."
+             % _fmt(d))
+    o = _head(name, descr, "halo replica backface gold pad measured", "smd")
+    o.append('  (pad "1" smd circle (at 0 0) (size %s %s) '
+             '(layers "F.Cu" "F.Mask"))' % (_fmt(d), _fmt(d)))
+    o += _rect(0, 0, d + 0.3, d + 0.3, "F.CrtYd")
+    o.append(")")
+    return name, "\n".join(o)
+
+
+def back_pad_sizes():
+    """Distinct measured pad diameters, and the rows refused, on the back."""
+    h = json.load(open(HANDOFF_BACK))
+    sizes, kept, refused = set(), [], []
+    for r in h["rows"]:
+        if r.get("do_not_draw_as_component"):
+            refused.append((r["id"], "outside_the_board_OD_bound"))
+            continue
+        if "extent_is_pad_OR_spring_not_separable" in (r.get("flags") or []):
+            refused.append((r["id"], "contact_position_only"))
+            continue
+        sizes.add(round(float(r["long_mm"]), 2))
+        kept.append(r["id"])
+    return sorted(sizes), kept, refused
+
+
 def _marker(name, descr, glyph, note, size=1.0, tags="halo replica marker"):
     """CLASS C — a refusal with a position. NO COPPER, EVER.
 
@@ -399,6 +447,23 @@ def eyeballed_marker():
         "miss written down is a different object from a miss not written "
         "down.",
         "query", "EYEBALLED ~1 mm - NOT MEASURED", size=1.4)
+
+
+def back_contact_marker():
+    return _marker(
+        "REPL_BACK_CONTACT_POS",
+        "CLASS C [POSITION ONLY — EXTENT IS NOT A PAD DIMENSION] One of the "
+        "three battery contacts on Apple's BATTERY-CONTACT face. The "
+        "handoff flags it extent_is_pad_OR_spring_not_separable: the only "
+        "photograph showing this face shows the board ASSEMBLED IN THE "
+        "SHELL, so the board pad and the sprung contact sitting on it are "
+        "COINCIDENT IN PLAN VIEW and no measurement here can separate them. "
+        "Its own instruction: 'USE THE CONTACT POSITIONS; do not take their "
+        "extents as pad dimensions.' So the position is drawn and the extent "
+        "is not. NO COPPER. What would settle it: FCC internal photo 4, the "
+        "battery cavity with the contacts and NO BOARD.",
+        "cross", "BATTERY CONTACT - POSITION ONLY, EXTENT NOT A PAD",
+        size=1.6)
 
 
 def uwb_module():
@@ -512,7 +577,8 @@ def classify(row):
 PATTERNS_STATIC = [chip("0201"), chip("0402"), wlcsp_nrf(),
                    wlcsp_nrf_no_lands(), pos_marker(),
                    rim_suspect_marker(), not_drawn_marker(),
-                   eyeballed_marker(), uwb_module()]
+                   eyeballed_marker(), uwb_module(),
+                   back_contact_marker()]
 
 
 def write_fp_lib_table(outdir):
@@ -533,6 +599,10 @@ def main():
     sizes, kept, refused = metal_sizes_from_handoff()
     for w, l in sizes:
         pats.append(metal_land(w, l))
+
+    bsizes, bkept, brefused = back_pad_sizes()
+    for d in bsizes:
+        pats.append(back_pad(d))
 
     pats.append(legend("REPL_LEGEND_BOARD", [
         "halo REPLICA MLB - RECONSTRUCTION FROM PHOTOGRAPHS, NOT APPLE ART",
@@ -585,7 +655,10 @@ def main():
           "the footprint")
     print("  CLASS B [measured metal]  %d distinct sizes for %d rows"
           % (len(sizes), len(kept)))
-    print("  CLASS C [refusals with a position]  %d rows" % len(refused))
+    print("  CLASS B [measured gold pads, BACK face]  %d distinct diameters "
+          "for %d rows" % (len(bsizes), len(bkept)))
+    print("  CLASS C [refusals with a position]  %d front rows, %d back rows"
+          % (len(refused), len(brefused)))
     from collections import Counter
     for k, n in sorted(Counter(w for _, w in refused).items()):
         print("      %-12s %d" % (k, n))
