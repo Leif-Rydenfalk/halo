@@ -864,3 +864,63 @@ whole catalogue keeps arriving at from different directions.
 The first level is where this started. **The lane that wrote the protocol argued its own protocol
 down** — naming the gap rather than defending the work — and proposed the third level itself.
 Taking that suggestion cost one worktree and caught a real leak within minutes.
+
+## 32 · The containment ladder has a ceiling — redaction inside a permitted file is a deny-list again
+
+**My own containment, refined by the lane it was protecting.**
+
+I redacted a synthetic-pad count out of the required file (§31) and believed the blind tree clean.
+The executing lane then reported, unprompted, that the same document still carried **"invented ~22
+peaks"** and **"returned 46.8 against a real 26"** — control figures from a withdrawn rim-pad
+analysis. Numbers, in a rim-counting context, reaching a lane counting rim features.
+
+I had grepped for the figure and for count-like patterns. **I had not grepped for bare numbers in a
+rim-counting context, because that set is not enumerable.**
+
+**The structure of the failure:**
+
+| layer | mechanism | can it be circumvented by an oversight? |
+|---|---|---|
+| files removed from the working tree | **absence** | **no — structural** |
+| redaction *within* a permitted file | **a deny-list over content** | **yes, and it must be complete to work** |
+
+**So the ladder tops out.** L7 chose an allow-list because a deny-list has to be complete; applying
+that allow-list to the filesystem made the file layer structural — and then the *content* layer fell
+straight back to a deny-list, one level down, for exactly the reason the allow-list was chosen. The
+only complete fix was to omit the document entirely, and it was marked *required* for good reason.
+
+**The honest statement of what the blindness is worth: structural at the file level, best-effort
+within the files supplied.** That is weaker than I claimed when I set it up, and saying so is the
+point.
+
+**What made it survivable was not the containment — it was the lane's disclosure.** It recorded the
+numbers in its pre-registration §0 *before measuring*, and pre-committed to say so explicitly if its
+count lands on either. **A contamination that is named and pre-committed is checkable; one that is
+merely absent-in-principle is not.**
+
+**And the correct answer to "is this the number?" from inside a blind test is silence** — a *denial*
+eliminates candidates and is information just as surely as a confirmation. Refused deliberately, and
+said to be deliberate, so it could not read as an oversight.
+
+---
+
+## The instrument that is blind by construction
+
+Worth recording beside all the failures: the blind lane chose a **circular boundary integral** —
+integrating the outward radial derivative around a ring — because **a straight edge gives
+`D = |g|·cos(φ − φ_n)`, which integrates to ZERO around a full circle.**
+
+**That is structural blindness to the exact failure that killed the rectangle attempt** (§30: a
+straight-line integral matches only a short tangent arc of a circle), rather than a threshold tuned
+to avoid it. **An instrument that cannot see the wrong class by construction is worth more than one
+that is told not to.**
+
+With it: three morphology classes never merged, and an **X class** — clears the locator, fails the
+shape gate — **reported as a number rather than silently discarded**, because a detector that
+quietly drops what it cannot classify reports a clean count and hides its own error rate. That is
+exactly where the five SMD capacitor pads went wrong.
+
+And a bias pre-registered **with its direction and mechanism**: optimism, biased to count too high,
+because being told the joints are unmistakable and that the prior failure was instrumental primes a
+lane to believe a matched instrument and admit bright non-joint metal. **That framing came from my
+own brief — the bias was induced, and naming its source is part of controlling for it.**
