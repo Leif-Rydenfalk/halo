@@ -1280,3 +1280,42 @@ on both sides:**
 element to the 10 Ω the specs expect is out of reach of the pour on a 26 mm
 disc, which is the measured form of what Apple did differently — they did not
 etch the antenna in board copper at all.
+
+## D21a — correction: "50 Ω is not manufacturable on this stack" is conditional, and the condition decides it
+
+D21 recorded that 50 Ω is reachable at 0.127 mm and the stackup document
+concluded that a 50 Ω microstrip referenced to the inner ground **"is not
+manufacturable on a 0.60 mm four-layer stack — that is a property of the
+stack"**. That conclusion is computed at an outer dielectric of **0.0685 mm**,
+which §1 of the same document correctly marks **CANNOT DETERMINE** and describes
+as *"arithmetic, not a quote"*. The document was honest about its input and then
+reasoned from it as though it were settled.
+
+**The assumed set sums to 0.60 mm but is not made of stocked materials.**
+Enumerating four-layer stackups from sourced prepregs and cores that reach
+0.600 mm within 30 µm gives **19 combinations**, across which the outer
+dielectric ranges **0.050 to 0.200 mm**. The board thickness does not determine
+it. And the conclusion **reverses** inside that range: at h = 0.100 mm the 50 Ω
+width is 0.1456 mm, comfortably above the 0.127 mm minimum, and one 2116 prepreg
+on a 0.300 mm core lands at 0.6050 mm among the closest fits.
+
+**Revision A's choice stands** — a short run absorbed in the pi network is
+defensible at about 0.1 λ whatever the dielectric turns out to be. What changes
+is the **recorded reason**, which is what a revision B decision would be built
+on. And it sharpens the standing instruction to ask the factory for its stackup:
+that answer does not feed the impedance question, **it decides it.**
+
+**Two things closed alongside it so nobody re-attempts them.** High-density
+interconnect does **not** rescue a six-layer AirTag board: published minimum
+laser-blind core is 0.1 mm and minimum prepreg 0.06 mm — the same core as stocked
+FR-4 and a *thicker* prepreg than the thinnest standard type — so six layers come
+to 0.464 mm against thin FR-4's 0.448 mm, and neither fits 0.30 mm.
+
+And the through-versus-blind via question was **abandoned for the best reason
+recorded today**: the test is a claim about an **absence** — a land with no
+counterpart on the opposite face — and on that layer the copper is sparse, so a
+land the detector *missed* and a land that is genuinely *absent* produce
+identical output. A test whose negative result is indistinguishable from a broken
+instrument is not a test, and this one would have failed toward the more
+interesting answer. It needs a cross-section or a resolving X-ray. The tool is
+committed with its residual check going red rather than deleted.

@@ -67,9 +67,54 @@ Standard microstrip, `Z0 ≈ (87/√(εr+1.41)) · ln(5.98h / (0.8w + t))`, with
 50 Ω  →  w = 0.086 mm
 ```
 
-**0.086 mm is below the 0.127 mm minimum track this board is designed to and
+> ### ⚠ CORRECTED 2026-09-05 — this conclusion is conditional, and the condition
+> ### crosses the decision boundary rather than shifting a margin
+>
+> The paragraph below is computed at **h = 0.0685 mm**, which §1 of this very
+> document correctly marks **CANNOT DETERMINE** and calls *"arithmetic, not a
+> quote"*. That was honest about the input and then reasoned from it as if it
+> were settled.
+>
+> **The assumed set sums to 0.60 mm but is not made of materials anyone stocks.**
+> 0.0685 mm is not a pressed prepreg thickness and 0.360 mm is not a stocked
+> core. Enumerating four-layer stackups from **sourced** materials that reach
+> 0.600 mm within 30 µm gives **19 combinations**, and across them the outer
+> dielectric — the one that sets microstrip impedance — ranges **0.050 to
+> 0.200 mm**. *h is not determined by the board thickness.*
+>
+> **And the conclusion reverses inside that range**, on this document's own
+> formula and constants:
+>
+> | h (mm) | 50 Ω track width | against the 0.127 mm minimum |
+> |---|---|---|
+> | 0.050 | 0.0509 mm | below |
+> | 0.065 | 0.0793 mm | below |
+> | **0.100** | **0.1456 mm** | **ABOVE — manufacturable** |
+> | 0.200 | 0.3349 mm | above, comfortably |
+>
+> One 2116 prepreg on a 0.300 mm core lands at 0.6050 mm and is among the closest
+> fits. **So on roughly half the buildable stackups a 50 Ω microstrip is
+> comfortably manufacturable and no ground-plane relief is needed.**
+>
+> **This does not make revision A's choice wrong.** Keeping the run short and
+> absorbing it in the pi network is defensible at about 0.1 λ whatever h turns
+> out to be. What changes is the **recorded reason** — and the recorded reason is
+> what a revision B decision gets built on.
+>
+> It also sharpens the instruction to ask the factory for its stackup first: that
+> answer does not merely feed this section, **it decides it.**
+>
+> Limits, stated rather than implied: this is a closed-form microstrip
+> approximation and ce-rf owns real impedance, so the table is a sensitivity and
+> not a design value; εr = 4.3 is this document's own assumption and §3 already
+> calls it the largest uncertainty in every RF number in the pack; the core
+> series is one vendor's published stock; and a real press has resin flow and
+> copper-coverage effects that a sum of nominal thicknesses cannot capture.
+
+**Conditional on h = 0.0685 mm: 0.086 mm is below the 0.127 mm minimum track this board is designed to and
 below JLCPCB's own 0.09 mm floor.** A 50 Ω microstrip referenced to L2 is not
-manufacturable on a 0.60 mm four-layer stack. That is a property of the stack,
+manufacturable **at that assumed prepreg**. It is a property of the ASSUMED
+DIELECTRIC, not of the 0.60 mm stack —
 not a mistake in the layout: the thinner the board, the closer the plane, the
 narrower a 50 Ω line has to be.
 
