@@ -690,13 +690,13 @@ def main():
         best = None
         for a in range(0, 360, 2):
             r_in, r_out = GEO.radial_band(a)
-            if not all(abs(((a - b + 180) % 360) - 180) >= 40
+            if not all(abs(((a - b + 180) % 360) - 180) >= 20
                        for _, b, _, _ in silk):
                 continue
             for tang in (True, False):
                 radial_extent = SILK_W if tang else SILK_L
                 hi = r_out - EDGE_KEEP - radial_extent / 2.0
-                lo = r_in + 0.20 + radial_extent / 2.0
+                lo = r_in + EDGE_KEEP + radial_extent / 2.0
                 rr = lo
                 while rr <= hi:
                     g = _silk_clear(a, rr, SILK_L, tang)
