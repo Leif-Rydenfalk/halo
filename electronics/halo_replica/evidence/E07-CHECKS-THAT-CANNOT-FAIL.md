@@ -1,3 +1,9 @@
+> **⚠ REDACTED COPY — blind-lane working tree only.** Two synthetic-pad COUNTS in §4 have been
+> replaced with **N**. They are counts of pads on a synthetic rim, and this lane is counting rim
+> features on a real one — a number in that context is a leak regardless of what it refers to.
+> The unredacted file is on `main`. **This redaction is itself the finding: an allow-list controls
+> WHICH FILES are read, not WHAT IS INSIDE THEM.**
+
 # E07 — the four ways a check passed today without being able to fail
 
 *halo Replica lane, 2026-09-05. A running catalogue, because this lane produced four distinct
@@ -48,14 +54,14 @@ never asked whether the *projection assumption* was shared.
 
 ## 4 · A positive control that is too easy — L1's synthetic rim, and the subtlest of the four
 
-The blob detector **failed** its positive control outright: six synthetic pads at photo 6's
+The blob detector **failed** its positive control outright: **N** synthetic pads at photo 6's
 exact scale, **one found**. That withdrew M03's counts. But the replacement's positive control
 was still not representative — **the synthetic was 19× cleaner than the photograph**
 (differential robust sd 1.8 luma against 34.6 and 37.3). A pad at the synthetic's full 111-luma
 contrast sits at **3.2 σ** in photo 6, under a 4 σ gate, and *no larger than the 4.0 σ the real
 rim already throws from nothing.*
 
-**Fix:** a noise-matched case where the same detector finds **zero** of six pads that are
+**Fix:** a noise-matched case where the same detector finds **zero** of **N** pads that are
 certainly there.
 
 **Why this one is the subtlest, in L1's words: passing feels like evidence.** A negative control
