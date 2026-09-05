@@ -1,9 +1,30 @@
 # E08 — the back face: the scale arrived, the parts did not
 
-*halo Replica lane L9, 2026-09-05. Two results, and they should not be read as one.
+> **THE LESSON IS NOT INSTALLED BY WRITING IT DOWN. IT IS INSTALLED BY HAVING A MECHANISM
+> THAT RE-RUNS IT AGAINST NEW GROUND.**
+>
+> Everything below was found the same way, and none of it by inspection or by memory.
+> Five controls in this lane passed today without being able to fail, and **each one was
+> checking something adjacent to the property it was supposed to test** — an increment
+> permutation that manufactured the property under test, a noise estimator that measured
+> the signal, an area match that two unrelated features can share, a between-in-x rule
+> for a feature 3 mm out of its plane, and an anti-gaming guard resolving against the
+> wrong root so that it silently did nothing.
+>
+> **What caught them was never re-reading the rule.** It was pointing an instrument at
+> ground it was not written for: running the deliverable check against a second board
+> exposed four defects in the check itself, and adding a third leg to it turned three
+> green breaks red. The clearest proof is that this lane made the **same testing
+> mistake twice** — breaks asserting on a tool's combined state rather than each on its
+> own property — *after* writing that exact lesson into a comment following the first
+> occurrence. Writing it down did not install it. Re-running it against new ground did.
+>
+> *(Stated here because `E07` closed at 32 entries. This is a sentence about all of them,
+> not a thirty-third.)*
+
+*Two results, and they should not be read as one.
 **The scale transfer WORKED and is usable now. The capacitor measurement DID NOT, and
 its own controls are what say so.***
-
 ---
 
 ## 1 · What was unblocked, and it is the important half

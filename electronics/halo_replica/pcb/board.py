@@ -93,6 +93,9 @@ COMPS = os.path.join(REPLICA, "metrology", "components-front.json")
 BLUE = os.path.join(REPLICA, "metrology", "dark-packages-front.json")
 DARKPKG = os.path.join(REPLICA, "metrology", "darkpkg",
                        "HANDOFF-darkpackages.json")
+HANDOFF_BACK = os.path.join(REPLICA, "metrology",
+                            "HANDOFF-positions-back.json")
+HANDEDNESS = os.path.join(REPLICA, "metrology", "backface-handedness.json")
 BOARDJSON = os.path.join(REPLICA, "board", "board.json")
 STACKUP = os.path.join(REPLICA, "board", "stackup", "stackup.json")
 SCHDIR = os.path.join(REPLICA, "out", "schematic")   # lane L11
@@ -151,6 +154,38 @@ SOC_VALUE = ("U1 nRF52832-CIAA WLCSP-50 - NO LANDS DRAWN. Ball map CANNOT "
 # The board's origin sits here in cepcb's +Y-UP frame. Any value larger than
 # the outer radius keeps every coordinate positive; nothing depends on it.
 CX = CY = 15.0
+
+
+def to_board_back(x_mm, y_mm):
+    """BACK-face measurement frame -> cepcb, through the MEASURED mirror.
+
+    The two handoffs each say "+x right, +y DOWN" -- IN THEIR OWN
+    PHOTOGRAPH. A board has one global frame, defined looking at the top, so
+    one of them is mirrored relative to it and NEITHER FILE SAYS WHICH.
+    Getting it wrong puts all 43 back pads at (-x, y): the board still
+    builds, the DRC still passes, the render still looks like a board.
+
+    So it is not a convention here. tools/f_backface_handedness.py MEASURES
+    it from the outline angles of the same physical board in FCC photo 6 and
+    photo 7 -- two hypotheses that make opposite predictions, a mirror
+    reproducing BOTH angles to 1.00 deg while a rotation's implied k
+    disagrees between them by 6.00 deg. Its negative control synthesises a
+    rotated back face and the tool refuses MIRROR for it, at 12, 40 and 90
+    deg. This function REFUSES TO RUN if that verdict is not on disk.
+    """
+    if not os.path.exists(HANDEDNESS):
+        raise SystemExit(
+            "no %s. The back-face handedness is MEASURED, not assumed — run "
+            "tools/f_backface_handedness.py first. Placing 43 pads at an "
+            "unverified handedness produces a board that builds, passes DRC "
+            "and is mirrored." % HANDEDNESS)
+    h = json.load(open(HANDEDNESS))
+    if h.get("verdict") != "MIRROR":
+        raise SystemExit(
+            "backface-handedness.json says %r, not MIRROR. This function "
+            "implements the mirror and nothing else; it will not guess."
+            % h.get("verdict"))
+    return to_board(-x_mm, y_mm)
 
 
 def to_board(x_mm, y_mm):
@@ -446,6 +481,47 @@ def main():
                           % (g["what"][:80]))
             placed["eyeballed"] += 1
 
+    # ---- the BACK face: Apple's second populated side --------------------
+    # 43 round gold pads (median 0.5985 mm, IQR 0.0340) and 3 battery
+    # contacts. Every refusal in that file is obeyed:
+    #   * the 5 bulk capacitors are NOT here — their measured size is a
+    #     function of the operator's window (3.192 x 1.581 mm at a 1.6 mm
+    #     span, 4.699 x 4.414 at 2.4 mm) and the file forbids placing them
+    #   * the coil is NOT here — the copper-fraction threshold does not
+    #     transfer out of the crop it was set in, control separation 1.37x
+    #     against a 2.00x floor
+    #   * the 3 contacts are POSITIONS ONLY: the only photograph of this face
+    #     shows the board assembled in the shell, so board pad and sprung
+    #     contact are coincident in plan view
+    #   * KP005 and KP006 are NOT drawn: r 14.55 and 14.57 mm exceed the
+    #     13.17 mm the OD bound allows. Kept in the file, refused on the
+    #     board, counted here.
+    # And what the file itself says is missing stays missing: the two small
+    # ICs, the silkscreen and the DataMatrix are in the photograph and in no
+    # row. This face is KNOWINGLY INCOMPLETE.
+    back = json.load(open(HANDOFF_BACK))
+    placed_back = {"gold_pad": 0, "contact_position": 0}
+    refused_back = []
+    for row in back["rows"]:
+        rid, flags = row["id"], (row.get("flags") or [])
+        if row.get("do_not_draw_as_component"):
+            refused_back.append((rid, row.get("why") or "do_not_draw"))
+            continue
+        bx, by = to_board_back(row["x_mm"], row["y_mm"])
+        if "extent_is_pad_OR_spring_not_separable" in flags:
+            b.place(rid, "%s:REPL_BACK_CONTACT_POS" % LIBID, at=(bx, by),
+                    side="bottom", anchor="origin",
+                    value="BATTERY CONTACT - POSITION ONLY; the %s mm extent "
+                          "is NOT a pad dimension" % FP._fmt(row["long_mm"]))
+            placed_back["contact_position"] += 1
+            continue
+        d = round(float(row["long_mm"]), 2)
+        b.place(rid, "%s:REPL_BPAD_D%s" % (LIBID, FP._fmt(d)), at=(bx, by),
+                side="bottom", anchor="origin",
+                value="MEASURED GOLD PAD d=%s mm (equivalent circle) conf=%s"
+                      % (FP._fmt(d), row.get("confidence")))
+        placed_back["gold_pad"] += 1
+
     # ---- what is ABSENT, named on the board -----------------------------
     absent = [r for r in dark["rows"] if not r.get("measured")]
 
@@ -465,6 +541,18 @@ def main():
                 value="silkscreen legend")
 
     b.rules(clearance=0.075, track=0.075, via=0.25, via_drill=0.15)
+
+    # SOLDERMASK. Not KiCad's default green — a tool default sitting in a
+    # replica is a divergence nobody chose. stackup.json's `replica_as_drawn`
+    # says black, and says exactly what that is: "the nearest orderable
+    # colour to that bound at both houses ... recorded as a CHOICE within the
+    # measured bound, not as Apple's colour." Apple's own mask stays CANNOT
+    # DETERMINE and the reason travels with it: V=65-128 against a white
+    # in-frame control at 224, R/G/B within ~10 counts, and the ~270 deg hue
+    # at 0.14 saturation is inside white-balance error, so calling it purple
+    # would be reading a camera setting as a material property.
+    mask = stack["replica_as_drawn"]["soldermask"]
+    b._rules["soldermask_colour"] = mask
 
     os.makedirs(OUT, exist_ok=True)
     b.save(PCB)
@@ -533,6 +621,28 @@ def main():
             ],
         },
         "placed": placed,
+        "back_face": {
+            "handedness": json.load(open(HANDEDNESS)) if
+                          os.path.exists(HANDEDNESS) else None,
+            "source": "metrology/HANDOFF-positions-back.json (lane L9), "
+                      "46 rows",
+            "placed": placed_back,
+            "refused": refused_back,
+            "not_placed_and_why": {
+                "the 5 bulk capacitors": "size is a function of the "
+                    "operator's window (3.192x1.581 mm at a 1.6 mm span, "
+                    "4.699x4.414 at 2.4 mm). The handoff forbids placing "
+                    "them from its own candidate list.",
+                "the coil": "the copper-fraction threshold does not transfer "
+                    "out of the 26 mm crop it was set in; control separation "
+                    "1.37x against a 2.00x floor",
+                "the centre dome": "excluded by name in the handoff — a "
+                    "saturated neutral-metal blob, not a part",
+                "two small ICs, silkscreen, DataMatrix": "present in the "
+                    "photograph and in NO row. This face is knowingly "
+                    "incomplete and the handoff says so itself.",
+            },
+        },
         "placed_total": sum(placed.values()),
         "handoff_rows": len(handoff["rows"]),
         "refused_rows": refused,
@@ -588,6 +698,13 @@ def main():
              len(handoff["rows"]), placed["eyeballed"]))
     for k in ("metal", "pos_only", "rim_suspect", "not_drawn", "eyeballed"):
         print("         %-12s %3d" % (k, placed[k]))
+    print("BACK   %d measured gold pads + %d contact positions, through the "
+          "MEASURED mirror (board_x = -x_back)"
+          % (placed_back["gold_pad"], placed_back["contact_position"]))
+    for rid, why in refused_back:
+        print("         REFUSED %-6s %s" % (rid, why[:90]))
+    print("MASK   %s — a CHOICE inside the measured bound 'dark and "
+          "neutral'. Apple's colour stays CANNOT DETERMINE." % mask)
     print("ABSENT BY NAME, and nothing is drawn there:")
     for r in absent:
         print("         %-6s %-28s %s" % (r["id"], r.get("name"),

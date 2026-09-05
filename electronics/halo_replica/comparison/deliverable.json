@@ -83,7 +83,8 @@
         "D1"
       ],
       "timestamp_probe": "\"date\"\\s*:\\s*\"([0-9T:\\-]+)\"",
-      "timestamp_note": "KiCad's ERC report carries its own run date. EMBEDDED, strong, against D1's mtime."
+      "timestamp_note": "KiCad's ERC report carries its own run date. EMBEDDED, strong, against D1's mtime.",
+      "self_verdict_kind": "erc"
     },
     {
       "id": "D6",
@@ -104,7 +105,8 @@
         "kind": "erc",
         "must": "0 errors",
         "why": "A DRC on a board whose schematic never passed ERC grades the copper against a netlist that may itself be wrong."
-      }
+      },
+      "self_verdict_kind": "drc"
     },
     {
       "id": "D7",
@@ -188,5 +190,12 @@
     "the_rule": "An artifact's SOURCE must have PASSED ITS OWN CHECKS. A gerber's precondition is the board's DRC verdict; a board's and a DRC's precondition is the schematic's ERC verdict. If that verdict is ABSENT rather than failing, the row is CANNOT DETERMINE and not green - an unrun check is not a passed one.",
     "counted_how": "KiCad reports carry severities. Only severity 'error' counts against the verdict; warnings are reported and do not block. Unconnected items are counted separately and DO block a fabrication set, because an unrouted net is not a warning about a board, it is a board that does not work."
   },
-  "callable_by_other_repos": "halo-cb: 'a check I have to be told about is one I will eventually not be told about.' So this is an instrument, not a section of our report: `k_threeway deliverable --roots <path> [<path> ...]` runs the same three legs against any tree a caller names, exits 0/1/2, and needs nothing from this lane."
+  "callable_by_other_repos": "halo-cb: 'a check I have to be told about is one I will eventually not be told about.' So this is an instrument, not a section of our report: `k_threeway deliverable --roots <path> [<path> ...]` runs the same three legs against any tree a caller names, exits 0/1/2, and needs nothing from this lane.",
+  "the_fourth_column": {
+    "why": "A REPORT'S ROW STATE AND A REPORT'S CONTENTS ARE DIFFERENT FACTS, and with only three columns the first reads as the second. D6 showed valid=yes, which by this file's own rules means ITS SOURCE (the ERC) was clean - and reads to anyone scanning a table for green as 'the DRC passed'. It did not: the Replica's DRC reports 42 errors against 3 warnings, with actual clearances down to 0.0000 mm. The column that says so is now beside it. Documenting the trap was the weaker option; removing it is this one.",
+    "what_a_report_row_being_GREEN_means": "the report EXISTS, OPENS, is NEWER than the thing it grades, and came from a source that had itself passed. It says NOTHING about what the report FOUND. A DRC listing 42 errors is a perfectly good ARTIFACT and a perfectly bad BOARD - different objects, and this table now shows both.",
+    "why_a_failing_report_does_not_turn_its_own_row_red": "the artifact is not the defect. Turning D6 red on its contents would conflate 'we have no DRC' with 'the DRC found things', and this project already has a standing rule against conflating could-not-build with could-not-verify. Contents become a GATE where something DEPENDS on them - which is exactly what the third leg does for D7 and D8.",
+    "columns": "opens | current | source ok | ITS OWN VERDICT. The third column was labelled 'valid', which is the word that invited the misreading; it is now 'source ok'.",
+    "notation": "nE = errors, nU = unconnected items. Warnings are reported in the row detail and do not gate."
+  }
 }

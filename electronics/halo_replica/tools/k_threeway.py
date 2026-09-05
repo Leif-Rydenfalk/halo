@@ -1005,6 +1005,38 @@ def cmd_selftest(args):
               f"still NEWER than its board. Both other legs pass it.")
         if not okv2: dfails.append("V-2")
 
+        # W-1 / W-2  THE FOURTH COLUMN. A report's row state and its contents are
+        # different facts, and with three columns the first read as the second.
+        # THE FIXTURE NEEDS AN ERC. D6's precondition is D5, so without one the row is
+        # CANNOT DETERMINE and the claim W-2 makes - that a failing report does NOT turn
+        # its own row red - cannot be tested at all. A break whose fixture cannot reach
+        # the state under test is not a break.
+        erc = os.path.join(lane, "x.erc.json")
+        open(erc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/erc.v1.json",
+                                         "date": "2026-09-05T09:00:00", "sheets": []}))
+        open(drc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/drc.v1.json",
+                                         "date": "2026-09-05T11:00:00",
+                                         "violations": [], "unconnected_items": []}))
+        rw1 = dstate(tmp, "D6")
+        okw1 = rw1.get("own_verdict") == "0E 0U" and rw1.get("own_verdict_clean") is True
+        print(f"    [{'ok ' if okw1 else 'RED'}] W-1 a CLEAN DRC reports its own verdict -> "
+              f"{rw1.get('own_verdict')} (must be 0E 0U, clean)")
+        if not okw1: dfails.append("W-1")
+
+        open(drc, "w").write(json.dumps({"$schema": "https://schemas.kicad.org/drc.v1.json",
+                                         "date": "2026-09-05T11:00:00",
+                                         "violations": [{"severity": "error"}, {"severity": "error"},
+                                                        {"severity": "warning"}],
+                                         "unconnected_items": []}))
+        rw2 = dstate(tmp, "D6")
+        okw2 = (rw2.get("own_verdict") == "2E 0U" and rw2.get("own_verdict_clean") is False
+                and rw2["state"] == "GREEN" and "own_verdict_note" in rw2)
+        print(f"    [{'ok ' if okw2 else 'RED'}] W-2 a DRC with 2 errors and 1 warning -> "
+              f"{rw2.get('own_verdict')}, row still {rw2['state']} (must be 2E 0U and GREEN)")
+        print(f"          the ARTIFACT is fine and the BOARD is not. Turning the row red here "
+              f"would conflate 'we have no DRC' with 'the DRC found things'.")
+        if not okw2: dfails.append("W-2")
+
         os.remove(drc)
         rv3 = dstate(tmp, "D7")
         okv3 = rv3["state"] == "CANNOT DETERMINE"
@@ -1021,7 +1053,7 @@ def cmd_selftest(args):
         for f in fails:
             print("  " + f)
         return EX_FAIL
-    print("SELFTEST PASS - 9 anchor breaks + 11 deliverable breaks, each went the colour "
+    print("SELFTEST PASS - 9 anchor breaks + 13 deliverable breaks, each went the colour "
           "it had to, including the two DECOYS (an empty file and a wrong-format file at "
           "the right name) and the anti-gaming copy of halo_rev_a's own board.")
     return EX_PASS

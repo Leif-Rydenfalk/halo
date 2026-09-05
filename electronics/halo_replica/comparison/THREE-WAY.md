@@ -114,22 +114,28 @@ The failure THE-DRIFT.md describes is a sequence of locally-correct judgements a
 
 **6 of 8 artifacts exist and open. 1 of those are STALE. 5 rows are green.**
 
-| | artifact | state | opens | current | evidence |
-|---|---|:-:|:-:|:-:|---|
-| D1 | Schematic source | ✅ | yes | — | `electronics/halo_replica/out/schematic/halo_replica.kicad_sch` |
-| D2 | Netlist | ✅ | yes | yes | `electronics/halo_replica/out/schematic/halo_replica.net` |
-| D3 | Footprint library | ✅ | yes | — | `electronics/halo_replica/halo_replica.pretty/REPL_0201_0603Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_0402_1005Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_ABSENCE_EYEBALLED.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_LEGEND_BOARD.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_0.51x0.7.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_METAL_0.51x1.53.kicad_mod` |
-| D4 | Board file | 🔴 | yes | **NO** | STALE: 142 s older than D1 schematic source (2026-09-05T14:57:07 mtime vs 2026-09-05T14:59:29 mtime) -- oldest member electronics/halo_replica/pcb/out/halo_replica.kicad_pcb |
-| D5 | ERC result | ✅ | yes | yes | `electronics/halo_replica/out/schematic/halo_replica.erc.json` |
-| D6 | DRC result | ✅ | yes | yes | `electronics/halo_replica/pcb/out/halo_replica.drc.json` |
-| D7 | Gerbers | 🔴 | no | — | no file of this kind anywhere in this tree |
-| D8 | Drill file | 🔴 | no | — | no file of this kind anywhere in this tree |
+| | artifact | state | opens | current | source ok | **its own verdict** | evidence |
+|---|---|:-:|:-:|:-:|:-:|:-:|---|
+| D1 | Schematic source | ✅ | yes | — | — | — | `electronics/halo_replica/out/schematic/halo_replica.kicad_sch` |
+| D2 | Netlist | ✅ | yes | yes | — | — | `electronics/halo_replica/out/schematic/halo_replica.net` |
+| D3 | Footprint library | ✅ | yes | — | — | — | `electronics/halo_replica/halo_replica.pretty/REPL_0201_0603Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_0402_1005Metric.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_ABSENCE_EYEBALLED.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BACK_CONTACT_POS.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.21.kicad_mod`, `electronics/halo_replica/halo_replica.pretty/REPL_BPAD_D0.34.kicad_mod` |
+| D4 | Board file | ✅ | yes | yes | yes | — | `electronics/halo_replica/pcb/out/halo_replica.kicad_pcb` |
+| D5 | ERC result | ✅ | yes | yes | — | 0E | `electronics/halo_replica/out/schematic/halo_replica.erc.json` |
+| D6 | DRC result | 🔴 | yes | **NO** | yes | **42E 0U** | STALE: 609 s older than D4 board file (2026-09-05T14:57:15 embedded vs 2026-09-05T15:07:24 mtime) -- oldest member electronics/halo_replica/pcb/out/halo_replica.drc.json |
+| D7 | Gerbers | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
+| D8 | Drill file | 🔴 | no | — | — | — | no file of this kind anywhere in this tree |
 
 **Freshness.** AN ARTIFACT THAT OPENS IS NOT AN ARTIFACT THAT IS CURRENT. halo_rev_a's gerbers open perfectly and describe a board that no longer exists: they carry an embedded KiCad creation date of 2026-09-05T06:06:39 while the board file they came from has an mtime of 07:54:19 - 6,460 seconds later, an hour and three quarters in which the board gained the NFC coil keep-out, lost plane copper under the coil, and was rerouted from 83 unconnected items to 28. A pure existence test reads that GREEN. EXISTENCE IS ADJACENT TO CURRENCY, which is the same failure shape as every other control this lane broke today.
 
 **The rule.** Every non-root artifact must be NEWER THAN EVERY ONE OF ITS SOURCES. A set of files is only as fresh as its OLDEST member; a source is as new as its NEWEST member. Both directions are the conservative one. FRESH -> the row can be green. STALE -> RED. SOURCE ABSENT -> CANNOT DETERMINE, never green and never red: an artifact with no source to compare against is UNMEASURED, not stale, and this project does not let an unmeasured thing occupy the same field as a measured one.
 
 **Timestamps.** An EMBEDDED timestamp - one the generating tool wrote into its own output - is preferred wherever it exists. mtime is the fallback and it is WEAK: a git checkout rewrites every mtime to checkout time, which can make a stale artifact look fresh or a fresh one look stale. Every row records which kind it used, and a comparison that mixes an embedded stamp against an mtime says so.
+
+**Its own verdict — the column that removes a trap rather than documenting it.** A REPORT'S ROW STATE AND A REPORT'S CONTENTS ARE DIFFERENT FACTS, and with only three columns the first reads as the second. D6 showed valid=yes, which by this file's own rules means ITS SOURCE (the ERC) was clean - and reads to anyone scanning a table for green as 'the DRC passed'. It did not: the Replica's DRC reports 42 errors against 3 warnings, with actual clearances down to 0.0000 mm. The column that says so is now beside it. Documenting the trap was the weaker option; removing it is this one.
+
+> **A report row being GREEN means:** the report EXISTS, OPENS, is NEWER than the thing it grades, and came from a source that had itself passed. It says NOTHING about what the report FOUND. A DRC listing 42 errors is a perfectly good ARTIFACT and a perfectly bad BOARD - different objects, and this table now shows both.
+
+> **And a failing report does not turn its own row red**, because the artifact is not the defect. Turning D6 red on its contents would conflate 'we have no DRC' with 'the DRC found things', and this project already has a standing rule against conflating could-not-build with could-not-verify. Contents become a GATE where something DEPENDS on them - which is exactly what the third leg does for D7 and D8.
 
 **The rule.** A ROW IS GREEN ONLY WHEN A FILE EXISTS THAT THE RELEVANT TOOL CAN ACTUALLY OPEN. A path that exists is not an artifact. Every row therefore carries a FORMAT PROBE - a string the real format must contain - and an empty file, a stub, or a file of the wrong kind at the right name all stay RED. The selftest watches each of those three cases fail on purpose, because a check that only ever goes red proves nothing about its own ability to go green.
 
