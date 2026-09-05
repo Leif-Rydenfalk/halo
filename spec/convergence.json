@@ -1,309 +1,309 @@
 {
- "$halo": 1,
- "note": "TARGET is the real AirTag, cited to a dossier. CURRENT is read live from a tool's own output by tools/gen_convergence.py. Never loosen a target to make a row pass.",
- "rows": [
-  {
-   "name": "Bluetooth antenna resonant frequency",
-   "unit": "GHz",
-   "target_value": 2.44,
-   "tolerance": 0.0435,
-   "cite": "research/01 §3 ANT1 — Apple FCC BLE report; band 2.400-2.4835 GHz Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 10,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4-meander9-passive",
-    "key": "f_series_res_GHz"
-   },
-   "current_note": "2.0669 GHz — 16% below the band. The bare control sits at 2.6763, 7.8% above; the NFC winding pulls it down 22.8% and neither end lands in band"
-  },
-  {
-   "name": "PCB thickness (deliberate divergence)",
-   "unit": "mm",
-   "cite": "research/01 §2 — Apple's 0.3 mm annular board. DECISIONS.md D17: halo spends recovered stack height on a sturdier 0.60 mm board",
-   "weight": 2,
-   "measure": {
-    "from": "file",
-    "path": "out/verify/dfm-jlc-4layer.json",
-    "pointer": "board_facts.thickness_mm"
-   },
-   "current_note": "read off the board's own (general (thickness)) by `fab dfm`; ce-rf's antenna model still uses 1.0 mm",
-   "target_text": "0.30 mm — Apple's, deliberately NOT matched (DECISIONS.md D17)",
-   "target_value": 0.3,
-   "tolerance": 0.02,
-   "divergence": {
-    "decision": "D17",
-    "value": 0.6,
-    "tolerance": 0.0,
-    "why": "halo spends recovered stack height on a sturdier 0.60 mm board; Apple's 0.30 mm is a flex-thin annular board we are not copying"
-   }
-  },
-  {
-   "name": "PCB outline diameter (bare board)",
-   "unit": "mm",
-   "target_value": 26.0,
-   "tolerance": 0.5,
-   "cite": "research/01 §2 — Apple's bare board ~26 mm (Catley's disassembled envelope; O'Flynn's 26 mm crop). NOT the 31.87 mm shell: a board cannot be as wide as the shell it sits inside",
-   "weight": 8,
-   "measure": {
-    "from": "file",
-    "path": "out/verify/dfm-jlc-4layer.json",
-    "pointer": "board_facts.size_mm",
-    "reduce": "max"
-   },
-   "current_note": "electronics/halo_rev_a — the bounding extent of the Edge_Cuts geometry, max of the two axes; the minor axis is 25.6138 mm because three 26-degree keying notches cut to R12.60. Measured by `fab dfm`, cross-checked by check_fabset on the exported Edge_Cuts Gerber (720 points, 25.6138 x 26.0000 mm)"
-  },
-  {
-   "name": "Antenna realized gain",
-   "unit": "dBi",
-   "target_value": -3.2,
-   "tolerance": 0.5,
-   "cite": "research/01 §3 — Apple's own FCC BLE test report gives the AirTag IFA -3.2 dBi. halo is ABOVE it, which passes Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 7,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4-meander9-passive",
-    "key": "gain_dBi"
-   },
-   "current_note": "-3.391 dBi, 0.19 dB SHORT of Apple. Measured at 2.4418 GHz on the shipping element with the coil and battery contact present, at half-wavelength boundary. But the element RESONATES at 2.0669 GHz, 16% below band, so this is an antenna used off its band and a retune is the difference between this and what it can do"
-  },
-  {
-   "name": "Overall stack height",
-   "unit": "mm",
-   "target_value": 7.98,
-   "tolerance": 0.005,
-   "cite": "SPEC §4 — Apple's dimensioned drawing",
-   "weight": 9,
-   "current_note": "assembly measured 31.874 x 31.874 x 7.980 mm off the solid; 12 checks PASS in out/mech/verdicts.json",
-   "measure": {
-    "from": "literal",
-    "value": 7.98
-   }
-  },
-  {
-   "name": "Sounder output at 25 cm",
-   "unit": "Phon",
-   "target_value": 60.0,
-   "tolerance": 0.0,
-   "cite": "research/06 — DULT accessory protocol floor, ISO 532-1:2017; needs a calibrated meter",
-   "weight": 10,
-   "current_note": "cannot be simulated; factory parcel 1"
-  },
-  {
-   "name": "NFC coil inductance",
-   "unit": "uH",
-   "target_text": "CANNOT DETERMINE — Apple's coil not measured",
-   "cite": "research/07 — one of lane G's six open bench measurements",
-   "weight": 4,
-   "measure": {
-    "from": "ce-rf",
-    "case": "haytag-nfc-coil",
-    "key": "inductance_uH"
-   }
-  },
-  {
-   "name": "NFC coil Q",
-   "unit": "-",
-   "target_text": "CANNOT DETERMINE — Apple's coil not measured",
-   "cite": "research/07 — open bench measurement",
-   "weight": 3,
-   "measure": {
-    "from": "ce-rf",
-    "case": "haytag-nfc-coil",
-    "key": "Q"
-   }
-  },
-  {
-   "name": "Antenna radiation efficiency",
-   "unit": "%",
-   "target_text": "CANNOT DETERMINE — Apple publishes gain, not efficiency",
-   "cite": "research/01 §3 — FCC reports give gain only Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 4,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4-meander9-passive",
-    "key": "radiation_efficiency_pct"
-   }
-  },
-  {
-   "name": "Find My advertisement byte layout",
-   "target_text": "PASS",
-   "cite": "SPEC F1 — PoPETs 2021 Table 2, cross-checked against OpenHaystack source",
-   "weight": 10,
-   "measure": {
-    "from": "literal",
-    "value": "PASS"
-   },
-   "current_note": "verified field by field from the emulated firmware's UART log"
-  },
-  {
-   "name": "Coin cell survives the transmit pulse",
-   "target_text": "PASS",
-   "cite": "SPEC E2 — nRF 1.7 V absolute minimum, Energizer CR2032 datasheet ESR",
-   "weight": 8,
-   "measure": {
-    "from": "ce-spice-verdict",
-    "example": "cr2032_pulse_load"
-   }
-  },
-  {
-   "name": "Sounder drive current model",
-   "target_text": "PASS",
-   "cite": "SPEC E3 — D11a bare piezo bender driven anti-phase",
-   "weight": 6,
-   "measure": {
-    "from": "ce-spice-verdict",
-    "example": "speaker_hbridge"
-   }
-  },
-  {
-   "name": "NFC tank resonance model",
-   "target_text": "PASS",
-   "cite": "SPEC E5 — 13.56 MHz tuning",
-   "weight": 5,
-   "measure": {
-    "from": "ce-spice-verdict",
-    "example": "nfc_tank"
-   }
-  },
-  {
-   "name": "Supply decoupling model",
-   "target_text": "PASS",
-   "cite": "SPEC E1 — rail integrity under a current step",
-   "weight": 5,
-   "measure": {
-    "from": "ce-spice-verdict",
-    "example": "decoupling_ldo"
-   }
-  },
-  {
-   "name": "Unit cost at 1000 units",
-   "unit": "USD",
-   "target_value": 10.0,
-   "tolerance": 10.0,
-   "cite": "research/04 — TechInsights estimate of Apple's ~$10 gen-1 build cost; retail $29. Ours: research/05 §11.6",
-   "weight": 6,
-   "measure": {
-    "from": "literal",
-    "value": 6.09
-   },
-   "current_note": "lane S1, every line re-verified against the catalogue by MPN and package; spec/bom-resolved.json"
-  },
-  {
-   "name": "Layer count",
-   "unit": "layers",
-   "target_value": 4,
-   "tolerance": 0,
-   "cite": "research/01 §2 corrected 2026-09-05 — COUNTED from stacksmashing/airtag-hardware layer1..layer4, no longer inferred",
-   "weight": 3,
-   "measure": {
-    "from": "file",
-    "path": "out/verify/dfm-jlc-4layer.json",
-    "pointer": "board_facts.copper_layers"
-   },
-   "current_note": "halo is 4; Apple is 4, counted rather than assumed",
-   "target_text": null
-  },
-  {
-   "name": "Peer ranging error",
-   "unit": "cm",
-   "target_text": "n/a — AirTag ranges to a phone, not to another tag",
-   "cite": "research/08 — Channel Sounding measured 6-10 cm MAE on nRF54L15 by others, not by us",
-   "weight": 7,
-   "current_note": "needs two real boards; verification debt V8"
-  },
-  {
-   "name": "Sleep current",
-   "unit": "uA",
-   "target_text": "CANNOT DETERMINE — Apple does not publish it",
-   "cite": "research/02 §9 — the widely repeated ~9 uA figure is one unverified 2021 forum calculation",
-   "weight": 6,
-   "current_note": "needs a real board and a power analyser"
-  },
-  {
-   "name": "Battery life",
-   "unit": "months",
-   "target_value": 12.0,
-   "tolerance": 3.0,
-   "cite": "research/07 — Apple claims about a year on a CR2032",
-   "weight": 6,
-   "current_note": "derivable once sleep and TX currents are measured on real silicon"
-  },
-  {
-   "name": "Implied effective permittivity (physics sanity)",
-   "unit": "-",
-   "target_text": "0.64 to 1.56 — the band a correct model can land in for this geometry",
-   "cite": "ce-rf specs: a quarter-wave estimator for an inverted-F ignores the shorting stub and assumes a ground plane a quarter wave across; halo's pour is 20 mm against a 123 mm wavelength, so the estimator carries about +/-25% and permittivity goes as frequency squared Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 8,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4",
-    "key": "eps_eff_implied"
-   }
-  },
-  {
-   "name": "Shell outer diameter",
-   "unit": "mm",
-   "target_value": 31.87,
-   "tolerance": 0.02,
-   "cite": "SPEC §4 — Apple's own dimensioned drawing, maximum outer diameter",
-   "weight": 8,
-   "measure": {
-    "from": "literal",
-    "value": 31.874
-   },
-   "current_note": "enclosure assembly measured off the solid by lane M"
-  },
-  {
-   "name": "Antenna in-band match",
-   "unit": "dB",
-   "target_value": -6.0,
-   "tolerance": 10.0,
-   "cite": "SPEC E4 — a -6 dB worst-case match across the BLE band is the design requirement Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 9,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4-meander9-passive",
-    "key": "s11_worst_in_ble_best_network_dB"
-   },
-   "current_note": "-4.954 dB with the best buildable network against a -6 dB requirement"
-  },
-  {
-   "name": "Solver convergence on the antenna case",
-   "target_text": "1.0",
-   "cite": "added after the convergence check was found unable to go red, which let two results on disk lie Case repointed 2026-09-05 to halo-rev-a-2g4 — the Ø26.00 x 0.60 mm board this pack ships — from halo-round-rim-ifa, a Ø30 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
-   "weight": 10,
-   "measure": {
-    "from": "ce-rf",
-    "case": "halo-rev-a-2g4-meander9-passive",
-    "key": "solver_converged"
-   },
-   "current_note": "1.0 — converged for the first time in this family, at half-wavelength boundary"
-  },
-  {
-   "name": "Board routing completeness",
-   "unit": "unconnected nets",
-   "target_value": 0.0,
-   "tolerance": 0.0,
-   "cite": "a board with unconnected nets cannot be fabricated; 0 is the only acceptable value",
-   "weight": 10,
-   "measure": {
-    "from": "literal",
-    "value": 28
-   },
-   "current_note": "planes-cleared run, 1155 s: 83 -> 28 unconnected, 0 DRC errors, check_routed 9 PASS / 0 FAIL. Better than both earlier geometries (33 and 35) even though clearing the planes RAISED the unrouted count from 81 to 83 — the pour was in the router's way, not carrying those nets usefully"
-  },
-  {
-   "name": "Antenna arm clearance to passive copper",
-   "unit": "mm",
-   "target_value": 0.3,
-   "tolerance": 0.2,
-   "cite": "DECISIONS.md D26/D27 — the coil under the arm costs 668 MHz; 0.30 mm is the working point measured at +51.3 MHz per mm",
-   "weight": 9,
-   "measure": {
-    "from": "literal",
-    "value": 0.3627
-   },
-   "current_note": "was -0.1747 mm (overlapping); identical on the routed board, so the keep-out held"
-  }
- ]
+  "$halo": 1,
+  "note": "TARGET is the real AirTag, cited to a dossier. CURRENT is read live from a tool's own output by tools/gen_convergence.py. Never loosen a target to make a row pass.",
+  "rows": [
+    {
+      "name": "Bluetooth antenna resonant frequency",
+      "unit": "GHz",
+      "target_value": 2.44,
+      "tolerance": 0.0435,
+      "cite": "research/01 \u00a73 ANT1 \u2014 Apple FCC BLE report; band 2.400-2.4835 GHz Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL. KEY REPOINTED 2026-09-05 (D28a): f_series_res_GHz reports the LOWEST series resonance, which on a board carrying the NFC winding is the WINDING'S zero, not the antenna's. This row read 2.0669 GHz and called it '16% below the band'; that number is the coil. The antenna's own mode, selected against the case's bare twin, is f_series_res_near_R_GHz.",
+      "weight": 10,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4-meander9-passive",
+        "key": "f_series_res_near_R_GHz"
+      },
+      "current_note": null
+    },
+    {
+      "name": "PCB thickness (deliberate divergence)",
+      "unit": "mm",
+      "cite": "research/01 \u00a72 \u2014 Apple's 0.3 mm annular board. DECISIONS.md D17: halo spends recovered stack height on a sturdier 0.60 mm board",
+      "weight": 2,
+      "measure": {
+        "from": "file",
+        "path": "out/verify/dfm-jlc-4layer.json",
+        "pointer": "board_facts.thickness_mm"
+      },
+      "current_note": "read off the board's own (general (thickness)) by `fab dfm`; ce-rf's antenna model still uses 1.0 mm",
+      "target_text": "0.30 mm \u2014 Apple's, deliberately NOT matched (DECISIONS.md D17)",
+      "target_value": 0.3,
+      "tolerance": 0.02,
+      "divergence": {
+        "decision": "D17",
+        "value": 0.6,
+        "tolerance": 0.0,
+        "why": "halo spends recovered stack height on a sturdier 0.60 mm board; Apple's 0.30 mm is a flex-thin annular board we are not copying"
+      }
+    },
+    {
+      "name": "PCB outline diameter (bare board)",
+      "unit": "mm",
+      "target_value": 26.0,
+      "tolerance": 0.5,
+      "cite": "research/01 \u00a72 \u2014 Apple's bare board ~26 mm (Catley's disassembled envelope; O'Flynn's 26 mm crop). NOT the 31.87 mm shell: a board cannot be as wide as the shell it sits inside",
+      "weight": 8,
+      "measure": {
+        "from": "file",
+        "path": "out/verify/dfm-jlc-4layer.json",
+        "pointer": "board_facts.size_mm",
+        "reduce": "max"
+      },
+      "current_note": "electronics/halo_rev_a \u2014 the bounding extent of the Edge_Cuts geometry, max of the two axes; the minor axis is 25.6138 mm because three 26-degree keying notches cut to R12.60. Measured by `fab dfm`, cross-checked by check_fabset on the exported Edge_Cuts Gerber (720 points, 25.6138 x 26.0000 mm)"
+    },
+    {
+      "name": "Antenna realized gain",
+      "unit": "dBi",
+      "target_value": -3.2,
+      "tolerance": 0.5,
+      "cite": "research/01 \u00a73 \u2014 Apple's own FCC BLE test report gives the AirTag IFA -3.2 dBi. halo is ABOVE it, which passes Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
+      "weight": 7,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4-meander9-passive",
+        "key": "gain_dBi"
+      },
+      "current_note": "-3.391 dBi, 0.19 dB SHORT of Apple. Measured at 2.4418 GHz on the shipping element with the coil and battery contact present, at half-wavelength boundary. But the element RESONATES at 2.0669 GHz, 16% below band, so this is an antenna used off its band and a retune is the difference between this and what it can do"
+    },
+    {
+      "name": "Overall stack height",
+      "unit": "mm",
+      "target_value": 7.98,
+      "tolerance": 0.005,
+      "cite": "SPEC \u00a74 \u2014 Apple's dimensioned drawing",
+      "weight": 9,
+      "current_note": "assembly measured 31.874 x 31.874 x 7.980 mm off the solid; 12 checks PASS in out/mech/verdicts.json",
+      "measure": {
+        "from": "literal",
+        "value": 7.98
+      }
+    },
+    {
+      "name": "Sounder output at 25 cm",
+      "unit": "Phon",
+      "target_value": 60.0,
+      "tolerance": 0.0,
+      "cite": "research/06 \u2014 DULT accessory protocol floor, ISO 532-1:2017; needs a calibrated meter",
+      "weight": 10,
+      "current_note": "cannot be simulated; factory parcel 1"
+    },
+    {
+      "name": "NFC coil inductance",
+      "unit": "uH",
+      "target_text": "CANNOT DETERMINE \u2014 Apple's coil not measured",
+      "cite": "research/07 \u2014 one of lane G's six open bench measurements",
+      "weight": 4,
+      "measure": {
+        "from": "ce-rf",
+        "case": "haytag-nfc-coil",
+        "key": "inductance_uH"
+      }
+    },
+    {
+      "name": "NFC coil Q",
+      "unit": "-",
+      "target_text": "CANNOT DETERMINE \u2014 Apple's coil not measured",
+      "cite": "research/07 \u2014 open bench measurement",
+      "weight": 3,
+      "measure": {
+        "from": "ce-rf",
+        "case": "haytag-nfc-coil",
+        "key": "Q"
+      }
+    },
+    {
+      "name": "Antenna radiation efficiency",
+      "unit": "%",
+      "target_text": "CANNOT DETERMINE \u2014 Apple publishes gain, not efficiency",
+      "cite": "research/01 \u00a73 \u2014 FCC reports give gain only Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
+      "weight": 4,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4-meander9-passive",
+        "key": "radiation_efficiency_pct"
+      }
+    },
+    {
+      "name": "Find My advertisement byte layout",
+      "target_text": "PASS",
+      "cite": "SPEC F1 \u2014 PoPETs 2021 Table 2, cross-checked against OpenHaystack source",
+      "weight": 10,
+      "measure": {
+        "from": "literal",
+        "value": "PASS"
+      },
+      "current_note": "verified field by field from the emulated firmware's UART log"
+    },
+    {
+      "name": "Coin cell survives the transmit pulse",
+      "target_text": "PASS",
+      "cite": "SPEC E2 \u2014 nRF 1.7 V absolute minimum, Energizer CR2032 datasheet ESR",
+      "weight": 8,
+      "measure": {
+        "from": "ce-spice-verdict",
+        "example": "cr2032_pulse_load"
+      }
+    },
+    {
+      "name": "Sounder drive current model",
+      "target_text": "PASS",
+      "cite": "SPEC E3 \u2014 D11a bare piezo bender driven anti-phase",
+      "weight": 6,
+      "measure": {
+        "from": "ce-spice-verdict",
+        "example": "speaker_hbridge"
+      }
+    },
+    {
+      "name": "NFC tank resonance model",
+      "target_text": "PASS",
+      "cite": "SPEC E5 \u2014 13.56 MHz tuning",
+      "weight": 5,
+      "measure": {
+        "from": "ce-spice-verdict",
+        "example": "nfc_tank"
+      }
+    },
+    {
+      "name": "Supply decoupling model",
+      "target_text": "PASS",
+      "cite": "SPEC E1 \u2014 rail integrity under a current step",
+      "weight": 5,
+      "measure": {
+        "from": "ce-spice-verdict",
+        "example": "decoupling_ldo"
+      }
+    },
+    {
+      "name": "Unit cost at 1000 units",
+      "unit": "USD",
+      "target_value": 10.0,
+      "tolerance": 10.0,
+      "cite": "research/04 \u2014 TechInsights estimate of Apple's ~$10 gen-1 build cost; retail $29. Ours: research/05 \u00a711.6",
+      "weight": 6,
+      "measure": {
+        "from": "literal",
+        "value": 6.09
+      },
+      "current_note": "lane S1, every line re-verified against the catalogue by MPN and package; spec/bom-resolved.json"
+    },
+    {
+      "name": "Layer count",
+      "unit": "layers",
+      "target_value": 4,
+      "tolerance": 0,
+      "cite": "research/01 \u00a72 corrected 2026-09-05 \u2014 COUNTED from stacksmashing/airtag-hardware layer1..layer4, no longer inferred",
+      "weight": 3,
+      "measure": {
+        "from": "file",
+        "path": "out/verify/dfm-jlc-4layer.json",
+        "pointer": "board_facts.copper_layers"
+      },
+      "current_note": "halo is 4; Apple is 4, counted rather than assumed",
+      "target_text": null
+    },
+    {
+      "name": "Peer ranging error",
+      "unit": "cm",
+      "target_text": "n/a \u2014 AirTag ranges to a phone, not to another tag",
+      "cite": "research/08 \u2014 Channel Sounding measured 6-10 cm MAE on nRF54L15 by others, not by us",
+      "weight": 7,
+      "current_note": "needs two real boards; verification debt V8"
+    },
+    {
+      "name": "Sleep current",
+      "unit": "uA",
+      "target_text": "CANNOT DETERMINE \u2014 Apple does not publish it",
+      "cite": "research/02 \u00a79 \u2014 the widely repeated ~9 uA figure is one unverified 2021 forum calculation",
+      "weight": 6,
+      "current_note": "needs a real board and a power analyser"
+    },
+    {
+      "name": "Battery life",
+      "unit": "months",
+      "target_value": 12.0,
+      "tolerance": 3.0,
+      "cite": "research/07 \u2014 Apple claims about a year on a CR2032",
+      "weight": 6,
+      "current_note": "derivable once sleep and TX currents are measured on real silicon"
+    },
+    {
+      "name": "Implied effective permittivity (physics sanity)",
+      "unit": "-",
+      "target_text": "0.64 to 1.56 \u2014 the band a correct model can land in for this geometry",
+      "cite": "ce-rf specs: a quarter-wave estimator for an inverted-F ignores the shorting stub and assumes a ground plane a quarter wave across; halo's pour is 20 mm against a 123 mm wavelength, so the estimator carries about +/-25% and permittivity goes as frequency squared Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
+      "weight": 8,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4",
+        "key": "eps_eff_implied"
+      }
+    },
+    {
+      "name": "Shell outer diameter",
+      "unit": "mm",
+      "target_value": 31.87,
+      "tolerance": 0.02,
+      "cite": "SPEC \u00a74 \u2014 Apple's own dimensioned drawing, maximum outer diameter",
+      "weight": 8,
+      "measure": {
+        "from": "literal",
+        "value": 31.874
+      },
+      "current_note": "enclosure assembly measured off the solid by lane M"
+    },
+    {
+      "name": "Antenna in-band match",
+      "unit": "dB",
+      "target_value": -6.0,
+      "tolerance": 10.0,
+      "cite": "SPEC E4 \u2014 a -6 dB worst-case match across the BLE band is the design requirement Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
+      "weight": 9,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4-meander9-passive",
+        "key": "s11_worst_in_ble_best_network_dB"
+      },
+      "current_note": "-4.954 dB with the best buildable network against a -6 dB requirement"
+    },
+    {
+      "name": "Solver convergence on the antenna case",
+      "target_text": "1.0",
+      "cite": "added after the convergence check was found unable to go red, which let two results on disk lie Case repointed 2026-09-05 to halo-rev-a-2g4 \u2014 the \u00d826.00 x 0.60 mm board this pack ships \u2014 from halo-round-rim-ifa, a \u00d830 x 1.0 mm study geometry that is not the board. The gen refuses any value from a case whose verdict is FAIL.",
+      "weight": 10,
+      "measure": {
+        "from": "ce-rf",
+        "case": "halo-rev-a-2g4-meander9-passive",
+        "key": "solver_converged"
+      },
+      "current_note": "1.0 \u2014 converged for the first time in this family, at half-wavelength boundary"
+    },
+    {
+      "name": "Board routing completeness",
+      "unit": "unconnected nets",
+      "target_value": 0.0,
+      "tolerance": 0.0,
+      "cite": "a board with unconnected nets cannot be fabricated; 0 is the only acceptable value",
+      "weight": 10,
+      "measure": {
+        "from": "literal",
+        "value": 28
+      },
+      "current_note": "planes-cleared run, 1155 s: 83 -> 28 unconnected, 0 DRC errors, check_routed 9 PASS / 0 FAIL. Better than both earlier geometries (33 and 35) even though clearing the planes RAISED the unrouted count from 81 to 83 \u2014 the pour was in the router's way, not carrying those nets usefully"
+    },
+    {
+      "name": "Antenna arm clearance to passive copper",
+      "unit": "mm",
+      "target_value": 0.3,
+      "tolerance": 0.2,
+      "cite": "DECISIONS.md D26/D27 \u2014 the coil under the arm costs 668 MHz; 0.30 mm is the working point measured at +51.3 MHz per mm",
+      "weight": 9,
+      "measure": {
+        "from": "literal",
+        "value": 0.3627
+      },
+      "current_note": "was -0.1747 mm (overlapping); identical on the routed board, so the keep-out held"
+    }
+  ]
 }
