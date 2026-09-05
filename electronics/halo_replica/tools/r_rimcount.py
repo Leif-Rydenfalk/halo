@@ -427,7 +427,14 @@ def v_count(c, a, out):
     frac_un = float(unmeas.sum()) / max(int(c["ANN"].sum()), 1)
     print(f"  UNMEASURED annulus area {100*frac_un:.2f} %  ({int(unmeas.sum())} of "
           f"{int(c['ANN'].sum())} positions) -- named, not scored")
-    hits = c["ANN"] & np.isfinite(best_cl) & (best_cl > a.bar)
+    # DIAGNOSTIC, and it is the check that ties the answer to its SUBJECT (E07 sec.24:
+    # sweep-invariance rules out the operator and establishes nothing else).  If the
+    # strongest round features on the WHOLE BOARD are not in the annulus, then the
+    # annulus is not where the subject is, and a count taken inside it is a correct
+    # computation on the wrong region.
+    SEARCH = (c["ANN"] if not a.anywhere
+              else (DR.downsample(c["board"].astype(float), c["d"]) > 0.999))
+    hits = SEARCH & np.isfinite(best_cl) & (best_cl > a.bar)
     lab, n = ndimage.label(hits)
     cand = []
     for i in range(1, n + 1):
@@ -438,16 +445,22 @@ def v_count(c, a, out):
                      float(best_r[iy, ix] * c["d"])))
     cand.sort(key=lambda t: -t[0])
     keep = []
+    a.top = a.top or 10**6
     for cl, cx, cy, r in cand:
         if all(math.hypot(cx - k[1], cy - k[2]) > a.nms_frac * (r + k[3]) for k in keep):
             keep.append((cl, cx, cy, r))
-    print(f"  {n} above-bar regions -> {len(keep)} maxima after NMS\n")
+        if len(keep) >= a.top:
+            break
+    print(f"  {n} above-bar regions -> {len(keep)} maxima after NMS "
+          f"(search = {'WHOLE BOARD' if a.anywhere else 'rim annulus'})\n")
     rows = []
     for cl, cx, cy, r in keep:
         sg = RC.shape_gate(c["lum"], cx, cy, r, sigma=a.shape_sigma, bg=c["BG"])
         p = sg.get("profile") if sg else None
         th = math.degrees(math.atan2(cy - c["origin"][1], cx - c["origin"][0])) % 360
         rr = math.hypot(cx - c["origin"][0], cy - c["origin"][1]) / c["ppm"]
+        inann = bool(c["ANN"][int(round(cy / c["d"])) % c["ANN"].shape[0],
+                              int(round(cx / c["d"])) % c["ANN"].shape[1]])
         if p is None:
             klass = "UNMEASURED-SHAPE"
         elif a.shape_round_max is None:
@@ -468,10 +481,10 @@ def v_count(c, a, out):
                          contrast_luma=round(p["contrast_luma"], 1) if p else None,
                          core_p90=round(p["core_p90"], 1) if p else None,
                          surround_median=round(p["surround_median"], 1) if p else None,
-                         klass=klass))
+                         in_annulus=inann, klass=klass))
         print(f"  closure {cl:7.2f}  theta {th:6.1f}  r {rr:5.2f} mm  d {2*r/c['ppm']:.3f} mm"
               f"  noncirc {('%.4f' % p['noncirc']) if p else '  UNMEAS'}"
-              f"  contrast {('%5.0f' % p['contrast_luma']) if p else '  n/a'}  {klass}")
+              f"  contrast {('%5.0f' % p['contrast_luma']) if p else '  n/a'}  {'ANN' if inann else '---'} {klass}")
     tally = {}
     for r in rows:
         tally[r["klass"]] = tally.get(r["klass"], 0) + 1
@@ -561,6 +574,8 @@ def main():
     ap.add_argument("--shape-notround-min", type=float, default=None)
     ap.add_argument("--shape-floor-luma", type=float, default=90.0)
     ap.add_argument("--nms-frac", type=float, default=0.7)
+    ap.add_argument("--anywhere", action="store_true")
+    ap.add_argument("--top", type=int, default=None)
     ap.add_argument("--rows-json", default=None)
     ap.add_argument("--out", default="rim-drawn.png")
     ap.add_argument("--json", default=None)

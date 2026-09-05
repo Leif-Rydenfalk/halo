@@ -585,22 +585,32 @@ def selftest(verbose=True):
     #    noncirc of a clean disc goes from ~0.03 to a value a square would give.
     Lg, Mg, tg = synth("disc", ppm=ppm, contrast=120.0)
     n2 = Lg.shape[0]
-    # A MEDIAN SURROUND IS ROBUST UNTIL THE BACKDROP IS THE MAJORITY, and the first
-    # version of this case put the backdrop on ~35 % of the ring, where the median
-    # shrugged it off and the case could not fail.  Watched: 0.0325 -> 0.0325, no
-    # movement at all.  The condition the exclusion exists for is a feature sitting
-    # PROUD of the board edge, where most of its surround IS the table.
+    # THIS CASE TOOK THREE TRIES AND EACH FAILURE WAS INFORMATIVE.
+    #   v1, backdrop on ~35 % of the ring: 0.0325 -> 0.0325, NO MOVEMENT.  A MEDIAN
+    #     surround is robust until the backdrop is the MAJORITY, so the case could
+    #     not fail and was not testing the exclusion.
+    #   v2, a WHITE backdrop on 65 %: BOTH versions refused -- the un-excluded one
+    #     because the surround median then exceeds the core, which is a different
+    #     correct refusal, so still not a test of this guard.
+    #   v3, and it is the worst family in E07: a MID-GREY backdrop (the grey rim
+    #     material) covering the feature AND its surround.  Core and surround are then
+    #     BOTH the backdrop, so the un-excluded profile returns noncirc = 0.0000 --
+    #     A PERFECT ROUNDNESS SCORE FROM A DESTROYED MEASUREMENT.  E07 sec.7: a check
+    #     whose failure mode returns the BEST POSSIBLE SCORE is worse than one that
+    #     cannot fail, because it is indistinguishable from the ideal result.  With
+    #     the exclusion it refuses.
     xb = int(tg["cx"] - 0.30 * radii[6])
-    Lg = Lg.copy(); Lg[:, xb:] = 235.0
+    Lg = Lg.copy(); Lg[:, xb:] = 150.0   # mid-grey, like the grey rim material
     bgm = np.zeros(Lg.shape, bool); bgm[:, xb:] = True
     p_no = radial_profile(Lg, tg["cx"], tg["cy"], radii[6])
     p_yes = radial_profile(Lg, tg["cx"], tg["cy"], radii[6], bg=bgm)
-    check("13 BREAK with the backdrop a MAJORITY of the surround, the profile must "
-          "REFUSE, not return a number",
-          p_no is not None and p_yes is None,
-          f"backdrop included: returns noncirc {p_no['noncirc']:.4f} from a threshold "
-          f"built on the table; excluded: REFUSES (None). An unmeasured thing must not "
-          f"be representable as a measurement -- E07 sec.29")
+    check("13 BREAK a swamped feature returns a PERFECT score unless the backdrop is "
+          "excluded, and then it REFUSES",
+          p_no is not None and p_no["noncirc"] < 0.01 and p_yes is None,
+          (f"backdrop included: noncirc {p_no['noncirc']:.4f} -- the BEST POSSIBLE score, "
+           f"from core {p_no['core_p90']:.0f} against surround {p_no['surround_median']:.0f}, "
+           f"i.e. nothing measured at all; excluded: REFUSES (None)")
+          if p_no else "the un-excluded profile refused, so this case tests nothing")
 
     print(f"\n  {len(P)}/{len(P)+len(F)} passed, {len(F)} failed")
     if F:
