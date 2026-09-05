@@ -1,3 +1,12 @@
+> **⚠ TWO DIFFERENT BOARDS — an unstated systematic under every millimetre here (L9, 2026-09-05).**
+> The FCC photographs show **920-08283-01, data code 3119** — a **2019 engineering build**.
+> O'Flynn's show **820-01736-A, data code 2920 17** — **2020 production**. Every scale in this
+> lane is transferred from one to the other. **A uniform dimensional difference between two
+> different boards is absorbed into the fitted scale and leaves the held-out residual COMPLETELY
+> unchanged**, because the check divides both sides by the same number. This applies to the
+> Replica's 106.313 px/mm and therefore to every absolute millimetre downstream of it.
+> **CANNOT DETERMINE here.** A caliper on one board of each part number settles it.
+
 > **⚠ SCALE CORRECTION (L1/M08, 2026-09-05):** any millimetre in this file derived from
 > **15.8875 px/mm** (FCC photo 6 bottom rule) is **1.29 % small**. That is the rule's value
 > **at the rule**, near the frame edge; **at the board** M02 measures **15.6850 px/mm**, by two

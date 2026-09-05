@@ -528,3 +528,75 @@ told us which.**
 larger than the feature being measured.** A boxcar smoother turns a step into a ramp whose
 gradient is a *plateau*, and the peak lands anywhere in it. Position is the **50 % crossing**
 now: **0.05 px**.
+
+## 20 · A threshold is not a property of a material — it is a property of a material AND A FIELD OF VIEW
+
+The sharpest portability lesson this project has produced.
+
+L1's copper criterion (chroma ratio 0.25) measured the NFC winding at **0.727 mm** in the tight
+26 mm crop, at ~12 genuine px/mm, in a frame that held little but the coil. The **same criterion**
+applied to the full frame returns **2.732 mm — 3.8× too wide** — because it now sees *every gold
+feature on the board*.
+
+**Nothing in its output would have looked wrong.** The threshold did not travel, and a threshold
+carries no record of the frame it was tuned in.
+
+**Consequence, stated so it cannot be misused:** the resulting 18.6 % / 20.9 % difference against
+M01 is **NOT** a scale comparison and must not be quoted as one. The verb was measuring a different
+object. The scale comparison that *is* worth doing — O'Flynn's tilde against the FCC rulers, on
+**one object, in a photograph both share** — is still untested, and is valuable precisely because
+those two measurements share every pixel and **can therefore only disagree about scale**.
+
+## 21 · A control that merely sits under the threshold has separated nothing
+
+The no-coil control annulus scored **0.230** against a **0.25** admission threshold and **PASSED**.
+
+It should not have. **A control passes by being far from the signal, not by squeaking under a
+bar.** Real separation was **1.37×** against a **2.00×** floor — a fail. That near-miss *was* the
+entire signal, and the first version of the check threw it away by asking the wrong question
+("is the control under the threshold?" rather than "how far apart are they?").
+
+**Demand a separation ratio, never a pass.**
+
+## 22 · The null and the statistic must be designed against each other
+
+A row-roll null **cannot fire** against a statistic built on **row means** — rolling a row
+horizontally leaves its mean exactly unchanged. And a **peak-height** statistic survives row
+*permutation* untouched, so the statistic itself had to be rebuilt on **band contiguity** before
+any null could bite.
+
+**Inheriting a good null from a neighbouring tool is not enough.** A null is only a null with
+respect to a particular statistic; the pair has to be designed together, and porting one without
+the other produces a control that runs, reports, and cannot fail.
+
+## 23 · A number that snaps to a known standard is the strongest invitation to stop checking
+
+The back-face lane measured a bulk capacitor at **3.192 × 1.581 mm** — **EIA 3216 / Case A to
+0.25 % and 1.2 %**. It is very likely correct.
+
+**It was refused**, because the same seed returns **4.699 × 4.414 mm** two window sizes later
+(family 11 — the answer is a function of the window). Held in `candidates_not_published` with the
+reason attached, and with the note that the three clustered candidates **share a method, a scale
+and a seed, so they could not have disagreed** about any of those.
+
+**In the lane's own words: landing on a plausible standard case code makes the temptation worse,
+not better.** A value that matches a published standard *feels* like independent confirmation. It
+is not — the standard was never consulted by the measurement, so the match is a coincidence until
+the measurement is shown to be window-invariant.
+
+---
+
+## And the systematic that had gone unstated all day
+
+**The FCC photographs and O'Flynn's are of TWO DIFFERENT BOARDS** — `920-08283-01` data code 3119
+(2019 engineering build) versus `820-01736-A` data code 2920 17 (2020 production). Every scale in
+this lane is transferred from one to the other.
+
+**A uniform dimensional difference between them is absorbed into the fitted scale and leaves the
+held-out residual completely unchanged**, because the check divides both sides by the same number —
+family 10 exactly, arriving from a direction nobody was watching. It applies to the Replica's
+106.313 px/mm and therefore to **every absolute millimetre this lane has published.**
+
+`REFERENCE-TEARDOWN.md` §7 already listed "whether the FCC-sample board differs electrically from
+production" as open. **Nobody had noticed it was also a DIMENSIONAL assumption.** CANNOT DETERMINE
+here; a caliper on one board of each part number settles it.
