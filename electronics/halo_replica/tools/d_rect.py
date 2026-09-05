@@ -475,3 +475,124 @@ def score_grid(lum, mask, ppm, cx0, cy0, *, angles, wmm, hmm, rad_px=34, smooth=
                                 z=[float(zl[i, j]), float(zr[i, j]),
                                    float(zt[i, j]), float(zb[i, j])])
     return best
+
+
+def _local(lum, mask, cx, cy, theta_deg, R, smooth):
+    """Crop a square window around (cx,cy) and rotate it so theta is axis-aligned."""
+    H, W = lum.shape
+    y0, x0 = int(round(cy)) - R, int(round(cx)) - R
+    py = (max(0, -y0), max(0, y0 + 2 * R - H))
+    px = (max(0, -x0), max(0, x0 + 2 * R - W))
+    Lp = np.pad(lum, (py, px), mode="edge")
+    Mp = np.pad(mask.astype(float), (py, px), mode="constant")
+    Lc = Lp[y0 + py[0]:y0 + py[0] + 2 * R, x0 + px[0]:x0 + px[0] + 2 * R]
+    Mc = Mp[y0 + py[0]:y0 + py[0] + 2 * R, x0 + px[0]:x0 + px[0] + 2 * R]
+    if smooth > 0:
+        Lc = ndimage.gaussian_filter(Lc, smooth)
+    R_ = ndimage.rotate(Lc, theta_deg, reshape=False, order=1, mode="nearest")
+    Mr = ndimage.rotate(Mc, theta_deg, reshape=False, order=1, mode="constant") > 0.995
+    Mr = ndimage.binary_erosion(Mr, np.ones((5, 5)))
+    return R_, Mr
+
+
+def fit_sides(lum, mask, ppm, cx, cy, theta_deg, w_px, h_px, *, search=None,
+              band=2, smooth=1.0, seed=20260905, iters=2):
+    """Fit the FOUR SIDES OF A RECTANGLE INDEPENDENTLY and report each side's own
+    evidence.
+
+    Closure -- requiring all four sides at once -- was refuted on this board by
+    measurement: at the nRF52832's outline the four perpendicular luma profiles
+    give a strong step, two weak steps and NO STEP AT ALL, and the interior luma
+    runs 90/41/66/36 around one package because the illumination gradient across
+    it is large.  A detector that demands four alike boundaries cannot recover a
+    part whose fourth boundary is not in the data, and a detector that settles for
+    the best CLOSED rectangle nearby returns a stable wrong answer (-26 % on the
+    nRF, unmoved by every parameter) -- which is worse, because it looks measured.
+
+    So: each side is scanned on its own, each carries its own |z| against the same
+    empirical null, and the caller decides per AXIS whether a dimension exists.
+    A dimension is real only when BOTH of its sides are supported."""
+    rng = np.random.default_rng(seed)
+    if search is None:
+        search = int(round(0.45 * min(w_px, h_px)))
+    R = int(math.ceil((w_px + h_px) / 2 + 2 * search)) + 14
+    Rot, Mr = _local(lum, mask, cx, cy, theta_deg, R, smooth)
+    Dx = np.zeros_like(Rot); Dx[:, 1:-1] = 0.5 * (Rot[:, 2:] - Rot[:, :-2])
+    Dy = np.zeros_like(Rot); Dy[1:-1, :] = 0.5 * (Rot[2:, :] - Rot[:-2, :])
+    Dx = np.where(Mr, Dx, 0.0); Dy = np.where(Mr, Dy, 0.0)
+    MV = _cum0(Mr.astype(float), 0); MH = _cum0(Mr.astype(float), 1).T
+    CV = _cum0(Dx, 0); CH = _cum0(Dy, 1).T
+    c = R
+    a, b = c - w_px / 2.0, c + w_px / 2.0
+    cc, dd = c - h_px / 2.0, c + h_px / 2.0
+    lens = sorted({max(2, int(round(v))) for v in
+                   np.linspace(0.4 * min(w_px, h_px), 1.6 * max(w_px, h_px), 14)})
+    sdV = _null_sd_table(Dx, rng, lens, MV, half=band)
+    sdH = _null_sd_table(Dy.T, rng, lens, MH, half=band)
+
+    def scan(C, Mc, sd, pos, span_lo, span_hi):
+        """|z| of one side as its offset moves, at fixed opposite-axis span."""
+        offs = np.arange(int(round(pos)) - search, int(round(pos)) + search + 1)
+        offs = offs[(offs > band + 1) & (offs < C.shape[1] - band - 2)]
+        if offs.size == 0 or span_hi <= span_lo:
+            return None
+        s0, s1 = int(round(span_lo)), int(round(span_hi))
+        s0 = max(0, s0); s1 = min(C.shape[0] - 1, s1)
+        if s1 - s0 < 2:
+            return None
+        v = _band(C, offs, np.array([s0]), np.array([s1]), band)[:, 0]
+        cov = Mc[s1][offs] - Mc[s0][offs]
+        z = v / _sd_of(sd, lens, s1 - s0)
+        z = np.where(cov >= (s1 - s0) - 1e-6, z, 0.0)
+        k = int(np.argmax(np.abs(z)))
+        return dict(offset=float(offs[k]), z=float(z[k]),
+                    profile=[float(x) for x in z], off0=float(offs[0]),
+                    span=int(s1 - s0))
+
+    out = {}
+    for _ in range(iters):
+        L_ = scan(CV, MV, sdV, a, cc, dd)
+        R_ = scan(CV, MV, sdV, b, cc, dd)
+        T_ = scan(CH, MH, sdH, cc, a, b)
+        B_ = scan(CH, MH, sdH, dd, a, b)
+        if L_: a = L_["offset"]
+        if R_: b = R_["offset"]
+        if T_: cc = T_["offset"]
+        if B_: dd = B_["offset"]
+        out = dict(left=L_, right=R_, top=T_, bottom=B_)
+    t = math.radians(theta_deg)
+    ux, uy = (a + b) / 2.0 - c, (cc + dd) / 2.0 - c
+    return dict(sides=out, theta_deg=theta_deg,
+                w_px=float(b - a), h_px=float(dd - cc),
+                cx=cx + ux * math.cos(t) - uy * math.sin(t),
+                cy=cy + ux * math.sin(t) + uy * math.cos(t),
+                search_px=search)
+
+
+def side_bar(lum, mask, ppm, w_px, h_px, *, n=80, band=2, smooth=1.0,
+             seed=20260905, scramble=True):
+    """The bar a SINGLE side must clear.  Same scan, same span, same search range,
+    at n random on-board locations of a phase-scrambled copy -- so it carries the
+    same multiple-comparison burden the real scan does.  Returns the whole
+    distribution, because the maximum of a null is itself noisy."""
+    rng = np.random.default_rng(seed)
+    src = lum
+    if scramble:
+        F = np.fft.rfft2(lum)
+        ph = rng.uniform(-np.pi, np.pi, F.shape); ph[0, 0] = 0.0
+        o = np.fft.irfft2(np.abs(F) * np.exp(1j * ph), s=lum.shape)
+        src = (o - o.mean()) / (o.std() + 1e-9) * lum.std() + lum.mean()
+    ys, xs = np.nonzero(mask)
+    zs = []
+    for i in range(n):
+        k = rng.integers(0, len(ys))
+        f = fit_sides(src, mask, ppm, float(xs[k]), float(ys[k]),
+                      float(rng.uniform(0, 90)), w_px, h_px,
+                      band=band, smooth=smooth, seed=int(rng.integers(1 << 30)), iters=1)
+        for s in f["sides"].values():
+            if s:
+                zs.append(abs(s["z"]))
+    zs = np.array(zs) if zs else np.zeros(1)
+    return dict(n=len(zs), p50=float(np.percentile(zs, 50)),
+                p90=float(np.percentile(zs, 90)), p99=float(np.percentile(zs, 99)),
+                max=float(zs.max()))

@@ -600,3 +600,65 @@ family 10 exactly, arriving from a direction nobody was watching. It applies to 
 `REFERENCE-TEARDOWN.md` §7 already listed "whether the FCC-sample board differs electrically from
 production" as open. **Nobody had noticed it was also a DIMENSIONAL assumption.** CANNOT DETERMINE
 here; a caliper on one board of each part number settles it.
+
+## 24 · A STABLE WRONG ANSWER — and why parameter-invariance is not sufficient
+
+**This refines a test several lanes here have leaned on as though it settled things.**
+
+Family 11 ("the answer is the box") produced a 34 % swing on ROI padding alone, and the fix
+adopted across this lane was: **sweep every arbitrary parameter and show the answer does not move
+with it.** That is a good test and it is *not* a sufficient one.
+
+The dark-package lane found a rectangle scoring 18.8 at 2.45 × 2.18 mm — an **inner** feature of
+the nRF package, not its outline — **stable to −26 % across downsample 2/3/4, band 1/2/3 and
+npeak 30/40/60. Every parameter swept, and the answer did not move.** It is also wrong.
+
+**A wrong answer that corresponds to a real feature of the image is stable precisely because it is
+genuinely there.** Invariance rules out one failure mode — the operator's arbitrary choice driving
+the result — and establishes nothing else. It does not tell you that the feature you locked onto is
+the feature you were looking for.
+
+**So sweep-stability is necessary, not sufficient.** It must be paired with something that ties the
+answer to the *intended subject*: a published dimension, an independent modality, or a positive
+control whose truth came from outside the measurement.
+
+## 25 · A check that SATURATES rather than fails — the zero-variance null
+
+The rectangle engine's null standard deviation was sampled over spans that lay **off the board**,
+where the directional derivative is **identically zero**. Past 50 % zeros the **MAD is zero**, so
+`z` goes to infinity and **every rectangle scores the same.**
+
+It produced z-scores of **1e11**.
+
+**This is not a check that fails — it is a check that saturates, and a saturated check reports
+maximum confidence in everything.** It would have made every subsequent number meaningless while
+looking overwhelmingly significant. Nothing downstream would have flagged it; a 1e11 z-score looks
+like a triumph.
+
+**Fix:** sample the null only where the mask is fully covered. **Found by pointing a diagnostic at
+a known answer** — not by reading the code.
+
+**Guard the denominator.** Any statistic normalised by a spread must refuse when that spread
+collapses, and say so, rather than dividing by something near zero.
+
+---
+
+## And a premise of mine, refuted by measurement
+
+I briefed the dark-package lane that the packages are "unmistakable to the eye **because of their
+straight boundaries and right-angled corners**", and told it to detect exactly that.
+
+**Measured, that is false on this board.** Perpendicular luma profiles across the nRF's outline,
+61 samples averaged per side: **one strong step, two weak (−15 and −14 luma), and one side with no
+step at all.** Interior luma runs **90 / 41 / 66 / 36** around the same package — a strong
+illumination gradient across it — so a consistent-polarity closure test is refuted by the data. An
+exhaustive search with peak-picking removed confirms **no rectangle at the published
+3.226 × 2.956 mm has four supported sides.**
+
+**What the eye is actually doing is completing a shape from partial evidence plus the laser
+marking. I described the output of that process as if it were the input.**
+
+The correct design follows from the measurement: fit each side **independently**, report **per-side
+support**, and call a dimension MEASURED only when **both sides of that axis** are supported —
+otherwise the row is position-only. That is the same located-not-sized distinction already carried
+by 63 of the 100 rows in the front-face handoff.
