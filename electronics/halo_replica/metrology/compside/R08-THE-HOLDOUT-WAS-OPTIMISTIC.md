@@ -52,6 +52,17 @@ displaced component. The FRONT's residuals are smoothly distributed with no clus
 
 ## What causes the azimuthal structure — CANNOT DETERMINE, and here is why
 
+> **SUPERSEDED THE SAME DAY by [R09](R09-WHAT-THE-BACK-FACE-MISFIT-ACTUALLY-IS.md).**
+> Two of the three candidates below are now RULED OUT for the back face. Its residual field
+> shows no detectable spatial coherence (z = +1.4 against a permutation null, on a statistic
+> that reaches z = +15.8 when a smooth warp is present), and rotating the fold boundary 90°
+> MOVES the failing fold instead of leaving it on a fixed arc. The back's misfit is landmark
+> **coverage** and noise, not a warped board and not a moved component. The one candidate
+> that survives — a **uniform** size difference between the two builds — is invisible to
+> every hold-out here by construction. R09 also revises the front figure UP again, to
+> 0.171 mm RMS / 0.255 mm p95, because the halves result depends on split orientation.
+
+
 Three candidates, and these two photographs cannot separate them:
 
 1. **The board is not flat.** A homography maps plane to plane; any dome or bow deviates
