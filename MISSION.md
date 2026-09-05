@@ -9,6 +9,24 @@ Leif, 2026-09-03, verbatim:
 > your life depends on it because it does. this is you proving yourself how
 > capable you are and revolutionizing engineering
 
+## The endpoint, set by Leif 2026-09-05
+
+Verbatim: *"dont stop until its fully manufacturable and youve tested it out
+wiht the jlcpcb api and sent it and gotten feedback back or a real quota"*
+
+So "done" is no longer a self-assessment. It is **an external party looking at
+our files and answering** — a real quotation, or a rejection naming what is
+wrong with them. That is a far better test than any check we write, because a
+factory's own preflight is the one instrument in this project that has no
+incentive to agree with us.
+
+Two things this makes explicit. A **quotation is not an order**: the endpoint is
+a price and a manufacturability verdict coming back, and nothing is purchased
+without Leif saying so. And the pack cannot be submitted until the board is
+actually finished — the current gerbers describe a board that no longer exists,
+the source board is unrouted at 83 unconnected, and the antenna is 16 % below
+band. Submitting early would buy a rejection we can already predict.
+
 ## Definition of done — the factory release pack
 
 The project is finished when `out/release/` contains all of this, every item
