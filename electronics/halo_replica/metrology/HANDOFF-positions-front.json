@@ -1,0 +1,2319 @@
+{
+  "generated_utc": "2026-09-05T01:02:59Z",
+  "git_rev": "bc84dee",
+  "producer": "L1 PHOTOGRAPH METROLOGY lane",
+  "side": "FRONT = the COMPONENT side (Apple's FCC caption). O'Flynn's backside-fullres.jpeg IS this side.",
+  "source_image": "images/airtag/oflynn-backside-fullres.jpeg",
+  "frame": {
+    "origin": "board centre, transferred from FCC photo 6 through c_register's homography; the transferred OUTER outline lands on this board's edge all the way round (evidence/E-L1-transferred-frame-on-oflynn-front.png) and no outline point was fitted to",
+    "axes": "+x right, +y DOWN (image convention); theta from +x through +y",
+    "origin_px": [
+      1522.55877112391,
+      1738.800754982248
+    ]
+  },
+  "scale": {
+    "stored_px_per_mm": 106.31295578013115,
+    "basis": "metrology/M02 m_scale_at photo6 at the board (952,678), two routes 0.23% apart",
+    "genuine_px_per_mm": [
+      20.7,
+      27.4
+    ],
+    "decoration_factor": "3.9-5.1x more stored pixels than resolved detail (M06)",
+    "independent_check": "the nRF52832 body measures -0.23% / -0.54% against its datasheet at this scale (M08)"
+  },
+  "uncertainty": {
+    "registration_holdout_mm": 0.1029,
+    "registration_holdout_genuine_px": [
+      2.13,
+      2.82
+    ],
+    "note": "DO NOT QUOTE ANY POSITION TO 0.01 mm. The floor is 2-3 genuine px."
+  },
+  "excluded": [
+    {
+      "what": "neutral-black IC packages, including the large one at 9 o'clock",
+      "verdict": "CANNOT DETERMINE",
+      "why": "B-R = +0.5 against a board median of +1, so colour cannot see them; dark+smooth merges with bare soldermask; a black top-hat connects the board into one 1.76 Mpx blob; and a stated ROI with Otsu inside returns the BOX (0/20/40/60 px padding gives 3.35/3.98/4.09/4.50 mm for the same part). See M08 Sec 2.",
+      "instruction": "DO NOT place these by hand from the transferred frame. An eyeballed position in a file of measured ones is the contamination this lane exists to prevent."
+    },
+    {
+      "what": "the centre hole",
+      "verdict": "PARTIALLY DETERMINED",
+      "why": "two photographs fail to pin it in DIFFERENT directions (M02 Sec 4, M07 Sec 5). Publish no hole diameter."
+    },
+    {
+      "what": "rim tear-off / edge pads",
+      "verdict": "CANNOT DETERMINE",
+      "why": "M03/M05. Do not draw the withdrawn 15 or 13 candidate angles as pads."
+    }
+  ],
+  "counts": {
+    "total": 100,
+    "bright": 95,
+    "dark": 5,
+    "do_not_draw": 2,
+    "located_not_sized": 63,
+    "on_rim_material_suspect": 14,
+    "high_confidence": 32
+  },
+  "rows": [
+    {
+      "id": "B000",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -3.421,
+      "y_mm": 8.613,
+      "r_mm": 9.268,
+      "theta_deg": 111.66,
+      "long_mm": null,
+      "short_mm": 3.964,
+      "short_genuine_px": [
+        82.1,
+        108.6
+      ],
+      "area_mm2": 20.9642,
+      "radial_fraction_of_edge": 0.7263,
+      "confidence": "low",
+      "flags": [
+        "merged_pad_run"
+      ],
+      "do_not_draw_as_component": true,
+      "why": "long side 7.30 mm exceeds 7.0 mm; adjacent pads join at this threshold. NOT A SINGLE PART."
+    },
+    {
+      "id": "B001",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.544,
+      "y_mm": -3.469,
+      "r_mm": 7.407,
+      "theta_deg": 332.07,
+      "long_mm": null,
+      "short_mm": 7.548,
+      "short_genuine_px": [
+        156.3,
+        206.8
+      ],
+      "area_mm2": 20.1938,
+      "radial_fraction_of_edge": 0.6119,
+      "confidence": "low",
+      "flags": [
+        "merged_pad_run"
+      ],
+      "do_not_draw_as_component": true,
+      "why": "long side 14.48 mm exceeds 7.0 mm; adjacent pads join at this threshold. NOT A SINGLE PART."
+    },
+    {
+      "id": "B002",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 3.533,
+      "y_mm": -8.391,
+      "r_mm": 9.105,
+      "theta_deg": 292.84,
+      "long_mm": 2.543,
+      "short_mm": 2.052,
+      "short_genuine_px": [
+        42.5,
+        56.2
+      ],
+      "area_mm2": 3.8371,
+      "radial_fraction_of_edge": 0.732,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B003",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -5.455,
+      "y_mm": -6.355,
+      "r_mm": 8.375,
+      "theta_deg": 229.36,
+      "long_mm": 2.695,
+      "short_mm": 2.245,
+      "short_genuine_px": [
+        46.5,
+        61.5
+      ],
+      "area_mm2": 3.55,
+      "radial_fraction_of_edge": 0.6463,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B004",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.395,
+      "y_mm": 4.56,
+      "r_mm": 8.688,
+      "theta_deg": 148.34,
+      "long_mm": 5.4,
+      "short_mm": 0.977,
+      "short_genuine_px": [
+        20.2,
+        26.8
+      ],
+      "area_mm2": 2.9959,
+      "radial_fraction_of_edge": 0.7163,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B005",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -11.196,
+      "y_mm": -4.368,
+      "r_mm": 12.018,
+      "theta_deg": 201.31,
+      "long_mm": 3.88,
+      "short_mm": 1.154,
+      "short_genuine_px": [
+        23.9,
+        31.6
+      ],
+      "area_mm2": 2.3449,
+      "radial_fraction_of_edge": 0.9188,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B006",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 1.532,
+      "y_mm": -8.784,
+      "r_mm": 8.916,
+      "theta_deg": 279.89,
+      "long_mm": 4.491,
+      "short_mm": 0.792,
+      "short_genuine_px": [
+        16.4,
+        21.7
+      ],
+      "area_mm2": 2.2027,
+      "radial_fraction_of_edge": 0.709,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B007",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.606,
+      "y_mm": -4.6,
+      "r_mm": 8.889,
+      "theta_deg": 211.16,
+      "long_mm": 4.475,
+      "short_mm": 0.775,
+      "short_genuine_px": [
+        16.0,
+        21.2
+      ],
+      "area_mm2": 1.8176,
+      "radial_fraction_of_edge": 0.6761,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B008",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -9.456,
+      "y_mm": -0.643,
+      "r_mm": 9.477,
+      "theta_deg": 183.89,
+      "long_mm": 1.712,
+      "short_mm": 1.402,
+      "short_genuine_px": [
+        29.0,
+        38.4
+      ],
+      "area_mm2": 1.682,
+      "radial_fraction_of_edge": 0.7817,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B009",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 0.823,
+      "y_mm": 9.37,
+      "r_mm": 9.406,
+      "theta_deg": 84.98,
+      "long_mm": 1.637,
+      "short_mm": 1.309,
+      "short_genuine_px": [
+        27.1,
+        35.9
+      ],
+      "area_mm2": 1.5378,
+      "radial_fraction_of_edge": 0.7195,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B010",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 2.687,
+      "y_mm": 9.138,
+      "r_mm": 9.525,
+      "theta_deg": 73.61,
+      "long_mm": 2.32,
+      "short_mm": 1.723,
+      "short_genuine_px": [
+        35.7,
+        47.2
+      ],
+      "area_mm2": 1.3098,
+      "radial_fraction_of_edge": 0.738,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B011",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -11.827,
+      "y_mm": -1.807,
+      "r_mm": 11.964,
+      "theta_deg": 188.68,
+      "long_mm": 1.26,
+      "short_mm": 1.255,
+      "short_genuine_px": [
+        26.0,
+        34.4
+      ],
+      "area_mm2": 1.2421,
+      "radial_fraction_of_edge": 0.9541,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B012",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.287,
+      "y_mm": -8.851,
+      "r_mm": 12.125,
+      "theta_deg": 313.11,
+      "long_mm": 5.301,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.9
+      ],
+      "area_mm2": 1.0381,
+      "radial_fraction_of_edge": 1.0174,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.9 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.017 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B013",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.612,
+      "y_mm": 2.708,
+      "r_mm": 9.027,
+      "theta_deg": 17.46,
+      "long_mm": 2.873,
+      "short_mm": 1.206,
+      "short_genuine_px": [
+        25.0,
+        33.0
+      ],
+      "area_mm2": 0.8467,
+      "radial_fraction_of_edge": 0.7427,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B014",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 10.323,
+      "y_mm": -3.992,
+      "r_mm": 11.068,
+      "theta_deg": 338.86,
+      "long_mm": 1.404,
+      "short_mm": 0.692,
+      "short_genuine_px": [
+        14.3,
+        19.0
+      ],
+      "area_mm2": 0.7135,
+      "radial_fraction_of_edge": 0.9136,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B015",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -3.742,
+      "y_mm": -10.593,
+      "r_mm": 11.235,
+      "theta_deg": 250.55,
+      "long_mm": 1.95,
+      "short_mm": 0.812,
+      "short_genuine_px": [
+        16.8,
+        22.3
+      ],
+      "area_mm2": 0.6977,
+      "radial_fraction_of_edge": 0.8977,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B016",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 10.201,
+      "y_mm": 5.665,
+      "r_mm": 11.668,
+      "theta_deg": 29.04,
+      "long_mm": 1.443,
+      "short_mm": 0.885,
+      "short_genuine_px": [
+        18.3,
+        24.2
+      ],
+      "area_mm2": 0.6149,
+      "radial_fraction_of_edge": 0.9716,
+      "confidence": "low",
+      "flags": [
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "sits at 0.972 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B017",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -10.064,
+      "y_mm": 2.096,
+      "r_mm": 10.28,
+      "theta_deg": 168.24,
+      "long_mm": 1.404,
+      "short_mm": 0.624,
+      "short_genuine_px": [
+        12.9,
+        17.1
+      ],
+      "area_mm2": 0.6003,
+      "radial_fraction_of_edge": 0.8843,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B018",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -1.155,
+      "y_mm": -12.785,
+      "r_mm": 12.837,
+      "theta_deg": 264.84,
+      "long_mm": 1.36,
+      "short_mm": 0.633,
+      "short_genuine_px": [
+        13.1,
+        17.3
+      ],
+      "area_mm2": 0.5992,
+      "radial_fraction_of_edge": 1.0442,
+      "confidence": "low",
+      "flags": [
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "sits at 1.044 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B019",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -9.301,
+      "y_mm": 1.744,
+      "r_mm": 9.463,
+      "theta_deg": 169.38,
+      "long_mm": 1.34,
+      "short_mm": 0.547,
+      "short_genuine_px": [
+        11.3,
+        15.0
+      ],
+      "area_mm2": 0.5532,
+      "radial_fraction_of_edge": 0.8143,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B020",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.334,
+      "y_mm": -1.44,
+      "r_mm": 7.474,
+      "theta_deg": 191.11,
+      "long_mm": 1.51,
+      "short_mm": 0.684,
+      "short_genuine_px": [
+        14.2,
+        18.7
+      ],
+      "area_mm2": 0.4572,
+      "radial_fraction_of_edge": 0.5839,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B021",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -11.643,
+      "y_mm": 0.672,
+      "r_mm": 11.663,
+      "theta_deg": 176.7,
+      "long_mm": 2.849,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.2,
+        6.9
+      ],
+      "area_mm2": 0.432,
+      "radial_fraction_of_edge": 1.0069,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.2-6.9 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.007 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B022",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 3.685,
+      "y_mm": -12.341,
+      "r_mm": 12.88,
+      "theta_deg": 286.63,
+      "long_mm": 0.8,
+      "short_mm": 0.636,
+      "short_genuine_px": [
+        13.2,
+        17.4
+      ],
+      "area_mm2": 0.3944,
+      "radial_fraction_of_edge": 1.0253,
+      "confidence": "low",
+      "flags": [
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "sits at 1.025 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B023",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.839,
+      "y_mm": 7.753,
+      "r_mm": 11.026,
+      "theta_deg": 44.68,
+      "long_mm": 1.592,
+      "short_mm": 0.745,
+      "short_genuine_px": [
+        15.4,
+        20.4
+      ],
+      "area_mm2": 0.3728,
+      "radial_fraction_of_edge": 0.9115,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B024",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.49,
+      "y_mm": -6.636,
+      "r_mm": 10.007,
+      "theta_deg": 221.54,
+      "long_mm": 1.516,
+      "short_mm": 0.748,
+      "short_genuine_px": [
+        15.5,
+        20.5
+      ],
+      "area_mm2": 0.3672,
+      "radial_fraction_of_edge": 0.7685,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B025",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -6.444,
+      "y_mm": 5.391,
+      "r_mm": 8.402,
+      "theta_deg": 140.09,
+      "long_mm": 1.57,
+      "short_mm": 0.796,
+      "short_genuine_px": [
+        16.5,
+        21.8
+      ],
+      "area_mm2": 0.3668,
+      "radial_fraction_of_edge": 0.6549,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B026",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.117,
+      "y_mm": 6.907,
+      "r_mm": 9.918,
+      "theta_deg": 135.86,
+      "long_mm": 1.616,
+      "short_mm": 0.799,
+      "short_genuine_px": [
+        16.5,
+        21.9
+      ],
+      "area_mm2": 0.3649,
+      "radial_fraction_of_edge": 0.7714,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B027",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 10.713,
+      "y_mm": 6.101,
+      "r_mm": 12.328,
+      "theta_deg": 29.66,
+      "long_mm": 4.473,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.4,
+        7.2
+      ],
+      "area_mm2": 0.3636,
+      "radial_fraction_of_edge": 1.0259,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.4-7.2 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.026 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B028",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -6.827,
+      "y_mm": -8.654,
+      "r_mm": 11.023,
+      "theta_deg": 231.73,
+      "long_mm": 0.904,
+      "short_mm": 0.596,
+      "short_genuine_px": [
+        12.3,
+        16.3
+      ],
+      "area_mm2": 0.3245,
+      "radial_fraction_of_edge": 0.852,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B029",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.388,
+      "y_mm": 8.385,
+      "r_mm": 11.176,
+      "theta_deg": 131.38,
+      "long_mm": 0.711,
+      "short_mm": 0.562,
+      "short_genuine_px": [
+        11.6,
+        15.4
+      ],
+      "area_mm2": 0.3064,
+      "radial_fraction_of_edge": 0.8668,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B030",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -8.023,
+      "y_mm": 7.887,
+      "r_mm": 11.251,
+      "theta_deg": 135.49,
+      "long_mm": 0.729,
+      "short_mm": 0.547,
+      "short_genuine_px": [
+        11.3,
+        15.0
+      ],
+      "area_mm2": 0.3021,
+      "radial_fraction_of_edge": 0.875,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B031",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 2.384,
+      "y_mm": -12.722,
+      "r_mm": 12.944,
+      "theta_deg": 280.61,
+      "long_mm": 0.94,
+      "short_mm": null,
+      "short_genuine_px": [
+        8.8,
+        11.7
+      ],
+      "area_mm2": 0.2947,
+      "radial_fraction_of_edge": 1.0291,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 8.8-11.7 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.029 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B032",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.478,
+      "y_mm": -10.733,
+      "r_mm": 13.081,
+      "theta_deg": 235.13,
+      "long_mm": 1.556,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.8,
+        7.7
+      ],
+      "area_mm2": 0.2757,
+      "radial_fraction_of_edge": 1.0312,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.8-7.7 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.031 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B033",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 10.354,
+      "y_mm": 3.491,
+      "r_mm": 10.927,
+      "theta_deg": 18.63,
+      "long_mm": 0.927,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.3,
+        9.7
+      ],
+      "area_mm2": 0.2292,
+      "radial_fraction_of_edge": 0.8995,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.3-9.7 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B034",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 3.062,
+      "y_mm": -10.561,
+      "r_mm": 10.996,
+      "theta_deg": 286.17,
+      "long_mm": 0.704,
+      "short_mm": 0.505,
+      "short_genuine_px": [
+        10.5,
+        13.8
+      ],
+      "area_mm2": 0.2284,
+      "radial_fraction_of_edge": 0.8753,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B035",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 3.812,
+      "y_mm": -10.396,
+      "r_mm": 11.073,
+      "theta_deg": 290.13,
+      "long_mm": 0.944,
+      "short_mm": 0.54,
+      "short_genuine_px": [
+        11.2,
+        14.8
+      ],
+      "area_mm2": 0.2192,
+      "radial_fraction_of_edge": 0.884,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B036",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.455,
+      "y_mm": -10.154,
+      "r_mm": 11.088,
+      "theta_deg": 293.69,
+      "long_mm": 0.678,
+      "short_mm": null,
+      "short_genuine_px": [
+        9.1,
+        12.1
+      ],
+      "area_mm2": 0.2054,
+      "radial_fraction_of_edge": 0.8978,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 9.1-12.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B037",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -6.484,
+      "y_mm": -9.782,
+      "r_mm": 11.736,
+      "theta_deg": 236.46,
+      "long_mm": 0.78,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.3,
+        9.6
+      ],
+      "area_mm2": 0.1957,
+      "radial_fraction_of_edge": 0.9341,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.3-9.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B038",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -2.374,
+      "y_mm": -12.405,
+      "r_mm": 12.63,
+      "theta_deg": 259.16,
+      "long_mm": 1.045,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.1
+      ],
+      "area_mm2": 0.1955,
+      "radial_fraction_of_edge": 1.0153,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.1 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.015 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B039",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 1.178,
+      "y_mm": -12.771,
+      "r_mm": 12.826,
+      "theta_deg": 275.27,
+      "long_mm": 0.913,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.5,
+        8.6
+      ],
+      "area_mm2": 0.1895,
+      "radial_fraction_of_edge": 1.0365,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.5-8.6 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.037 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B040",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 9.086,
+      "y_mm": -6.407,
+      "r_mm": 11.118,
+      "theta_deg": 324.81,
+      "long_mm": 0.675,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.4,
+        9.8
+      ],
+      "area_mm2": 0.1847,
+      "radial_fraction_of_edge": 0.9233,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.4-9.8 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B041",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.062,
+      "y_mm": 8.434,
+      "r_mm": 11.0,
+      "theta_deg": 50.06,
+      "long_mm": 0.7,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.3,
+        9.6
+      ],
+      "area_mm2": 0.1839,
+      "radial_fraction_of_edge": 0.9093,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.3-9.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B042",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.425,
+      "y_mm": -7.139,
+      "r_mm": 10.3,
+      "theta_deg": 316.13,
+      "long_mm": 0.723,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.0,
+        9.3
+      ],
+      "area_mm2": 0.1834,
+      "radial_fraction_of_edge": 0.8606,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.0-9.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B043",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -10.113,
+      "y_mm": 3.26,
+      "r_mm": 10.626,
+      "theta_deg": 162.14,
+      "long_mm": 0.692,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.9,
+        10.4
+      ],
+      "area_mm2": 0.1825,
+      "radial_fraction_of_edge": 0.9054,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.9-10.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B044",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.645,
+      "y_mm": -7.084,
+      "r_mm": 11.176,
+      "theta_deg": 320.67,
+      "long_mm": 0.662,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.6,
+        10.0
+      ],
+      "area_mm2": 0.1823,
+      "radial_fraction_of_edge": 0.93,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.6-10.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B045",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.802,
+      "y_mm": -7.707,
+      "r_mm": 10.279,
+      "theta_deg": 311.43,
+      "long_mm": 0.776,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.9
+      ],
+      "area_mm2": 0.1808,
+      "radial_fraction_of_edge": 0.8641,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B046",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -8.694,
+      "y_mm": 3.671,
+      "r_mm": 9.438,
+      "theta_deg": 157.11,
+      "long_mm": 1.488,
+      "short_mm": 0.701,
+      "short_genuine_px": [
+        14.5,
+        19.2
+      ],
+      "area_mm2": 0.1796,
+      "radial_fraction_of_edge": 0.8002,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B047",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 9.18,
+      "y_mm": 3.754,
+      "r_mm": 9.918,
+      "theta_deg": 22.24,
+      "long_mm": 0.689,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.2,
+        9.5
+      ],
+      "area_mm2": 0.1785,
+      "radial_fraction_of_edge": 0.8191,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.2-9.5 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B048",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.435,
+      "y_mm": -5.994,
+      "r_mm": 10.348,
+      "theta_deg": 324.6,
+      "long_mm": 0.669,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.3,
+        9.6
+      ],
+      "area_mm2": 0.1762,
+      "radial_fraction_of_edge": 0.8595,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.3-9.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B049",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.633,
+      "y_mm": 7.074,
+      "r_mm": 11.161,
+      "theta_deg": 39.33,
+      "long_mm": 0.685,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.0,
+        9.3
+      ],
+      "area_mm2": 0.1758,
+      "radial_fraction_of_edge": 0.9265,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.0-9.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B050",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.98,
+      "y_mm": -7.757,
+      "r_mm": 11.129,
+      "theta_deg": 315.81,
+      "long_mm": 0.682,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.0,
+        9.3
+      ],
+      "area_mm2": 0.1746,
+      "radial_fraction_of_edge": 0.9305,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.0-9.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B051",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.437,
+      "y_mm": 8.903,
+      "r_mm": 10.987,
+      "theta_deg": 54.13,
+      "long_mm": 0.702,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.4,
+        9.8
+      ],
+      "area_mm2": 0.1739,
+      "radial_fraction_of_edge": 0.9076,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.4-9.8 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B052",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 10.018,
+      "y_mm": 4.261,
+      "r_mm": 10.887,
+      "theta_deg": 23.04,
+      "long_mm": 0.696,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.1,
+        9.4
+      ],
+      "area_mm2": 0.1732,
+      "radial_fraction_of_edge": 0.8997,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.1-9.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B053",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 3.964,
+      "y_mm": 9.931,
+      "r_mm": 10.693,
+      "theta_deg": 68.24,
+      "long_mm": 0.684,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.8,
+        9.0
+      ],
+      "area_mm2": 0.1722,
+      "radial_fraction_of_edge": 0.8501,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.8-9.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B054",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 5.733,
+      "y_mm": 9.235,
+      "r_mm": 10.869,
+      "theta_deg": 58.17,
+      "long_mm": 0.731,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.8
+      ],
+      "area_mm2": 0.172,
+      "radial_fraction_of_edge": 0.8989,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.8 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B055",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.294,
+      "y_mm": -6.312,
+      "r_mm": 9.646,
+      "theta_deg": 319.13,
+      "long_mm": 0.674,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.1,
+        9.4
+      ],
+      "area_mm2": 0.1714,
+      "radial_fraction_of_edge": 0.8032,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.1-9.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B056",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 5.226,
+      "y_mm": -9.794,
+      "r_mm": 11.101,
+      "theta_deg": 298.09,
+      "long_mm": 0.715,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.5,
+        8.6
+      ],
+      "area_mm2": 0.1713,
+      "radial_fraction_of_edge": 0.9101,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.5-8.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B057",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.24,
+      "y_mm": 8.53,
+      "r_mm": 9.526,
+      "theta_deg": 63.57,
+      "long_mm": 0.682,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.9,
+        9.1
+      ],
+      "area_mm2": 0.1706,
+      "radial_fraction_of_edge": 0.7719,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.9-9.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B058",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.921,
+      "y_mm": -8.736,
+      "r_mm": 11.145,
+      "theta_deg": 308.39,
+      "long_mm": 0.683,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.9
+      ],
+      "area_mm2": 0.1684,
+      "radial_fraction_of_edge": 0.9387,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B059",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 9.124,
+      "y_mm": 6.412,
+      "r_mm": 11.151,
+      "theta_deg": 35.1,
+      "long_mm": 0.697,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.9
+      ],
+      "area_mm2": 0.1683,
+      "radial_fraction_of_edge": 0.9295,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B060",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 0.566,
+      "y_mm": -10.832,
+      "r_mm": 10.847,
+      "theta_deg": 272.99,
+      "long_mm": 0.658,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.8,
+        9.1
+      ],
+      "area_mm2": 0.1637,
+      "radial_fraction_of_edge": 0.8865,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.8-9.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B061",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.359,
+      "y_mm": -8.305,
+      "r_mm": 11.096,
+      "theta_deg": 311.54,
+      "long_mm": 0.661,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.8,
+        9.0
+      ],
+      "area_mm2": 0.1632,
+      "radial_fraction_of_edge": 0.9326,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.8-9.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B062",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -0.888,
+      "y_mm": -10.439,
+      "r_mm": 10.476,
+      "theta_deg": 265.14,
+      "long_mm": 0.645,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.2,
+        9.6
+      ],
+      "area_mm2": 0.1621,
+      "radial_fraction_of_edge": 0.8524,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.2-9.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B063",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.584,
+      "y_mm": -5.92,
+      "r_mm": 8.854,
+      "theta_deg": 318.04,
+      "long_mm": 0.579,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.9,
+        10.4
+      ],
+      "area_mm2": 0.161,
+      "radial_fraction_of_edge": 0.7382,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.9-10.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B064",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.479,
+      "y_mm": 4.265,
+      "r_mm": 7.757,
+      "theta_deg": 33.35,
+      "long_mm": 3.215,
+      "short_mm": 1.024,
+      "short_genuine_px": [
+        21.2,
+        28.1
+      ],
+      "area_mm2": 0.1599,
+      "radial_fraction_of_edge": 0.6459,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "B065",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.75,
+      "y_mm": 9.908,
+      "r_mm": 10.988,
+      "theta_deg": 64.39,
+      "long_mm": 0.668,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.5,
+        8.6
+      ],
+      "area_mm2": 0.1595,
+      "radial_fraction_of_edge": 0.8856,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.5-8.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B066",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 8.48,
+      "y_mm": 3.383,
+      "r_mm": 9.13,
+      "theta_deg": 21.75,
+      "long_mm": 0.683,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.6,
+        8.7
+      ],
+      "area_mm2": 0.1571,
+      "radial_fraction_of_edge": 0.7542,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.6-8.7 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B067",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.771,
+      "y_mm": -5.596,
+      "r_mm": 9.576,
+      "theta_deg": 324.24,
+      "long_mm": 0.665,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.6,
+        8.7
+      ],
+      "area_mm2": 0.1558,
+      "radial_fraction_of_edge": 0.7958,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.6-8.7 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B068",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.908,
+      "y_mm": 8.426,
+      "r_mm": 9.751,
+      "theta_deg": 59.78,
+      "long_mm": 0.721,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.1
+      ],
+      "area_mm2": 0.155,
+      "radial_fraction_of_edge": 0.8054,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B069",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -8.069,
+      "y_mm": 1.985,
+      "r_mm": 8.31,
+      "theta_deg": 166.18,
+      "long_mm": 0.756,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.4,
+        9.9
+      ],
+      "area_mm2": 0.1548,
+      "radial_fraction_of_edge": 0.7128,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.4-9.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B070",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.935,
+      "y_mm": 9.255,
+      "r_mm": 10.489,
+      "theta_deg": 61.94,
+      "long_mm": 0.753,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.0
+      ],
+      "area_mm2": 0.1547,
+      "radial_fraction_of_edge": 0.8598,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B071",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.991,
+      "y_mm": -6.682,
+      "r_mm": 10.417,
+      "theta_deg": 320.09,
+      "long_mm": 0.64,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.8,
+        9.0
+      ],
+      "area_mm2": 0.1538,
+      "radial_fraction_of_edge": 0.8669,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.8-9.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B072",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 6.255,
+      "y_mm": -9.231,
+      "r_mm": 11.15,
+      "theta_deg": 304.12,
+      "long_mm": 0.65,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.7,
+        8.8
+      ],
+      "area_mm2": 0.1536,
+      "radial_fraction_of_edge": 0.9286,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.7-8.8 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B073",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -0.951,
+      "y_mm": -10.886,
+      "r_mm": 10.928,
+      "theta_deg": 265.01,
+      "long_mm": 0.621,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.0,
+        9.3
+      ],
+      "area_mm2": 0.1533,
+      "radial_fraction_of_edge": 0.8891,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.0-9.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B074",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 0.7,
+      "y_mm": -11.286,
+      "r_mm": 11.308,
+      "theta_deg": 273.55,
+      "long_mm": 0.768,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.3,
+        8.3
+      ],
+      "area_mm2": 0.1478,
+      "radial_fraction_of_edge": 0.923,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.3-8.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B075",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 4.251,
+      "y_mm": 9.376,
+      "r_mm": 10.295,
+      "theta_deg": 65.61,
+      "long_mm": 0.69,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.0,
+        8.0
+      ],
+      "area_mm2": 0.1463,
+      "radial_fraction_of_edge": 0.8276,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.0-8.0 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B076",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.564,
+      "y_mm": 9.502,
+      "r_mm": 12.145,
+      "theta_deg": 51.48,
+      "long_mm": 2.132,
+      "short_mm": null,
+      "short_genuine_px": [
+        2.5,
+        3.3
+      ],
+      "area_mm2": 0.1432,
+      "radial_fraction_of_edge": 1.0038,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 2.5-3.3 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.004 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B077",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.179,
+      "y_mm": -0.742,
+      "r_mm": 7.217,
+      "theta_deg": 185.9,
+      "long_mm": 0.648,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.1
+      ],
+      "area_mm2": 0.1431,
+      "radial_fraction_of_edge": 0.5812,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B078",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 5.735,
+      "y_mm": 8.428,
+      "r_mm": 10.194,
+      "theta_deg": 55.77,
+      "long_mm": 0.733,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.0,
+        7.9
+      ],
+      "area_mm2": 0.1417,
+      "radial_fraction_of_edge": 0.8415,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.0-7.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B079",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -2.999,
+      "y_mm": -12.926,
+      "r_mm": 13.27,
+      "theta_deg": 256.94,
+      "long_mm": 1.269,
+      "short_mm": null,
+      "short_genuine_px": [
+        3.6,
+        4.7
+      ],
+      "area_mm2": 0.137,
+      "radial_fraction_of_edge": 1.0628,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 3.6-4.7 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.063 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B080",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -9.786,
+      "y_mm": 4.087,
+      "r_mm": 10.605,
+      "theta_deg": 157.33,
+      "long_mm": 0.707,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.3,
+        8.3
+      ],
+      "area_mm2": 0.1339,
+      "radial_fraction_of_edge": 0.8992,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.3-8.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B081",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 9.476,
+      "y_mm": 5.197,
+      "r_mm": 10.807,
+      "theta_deg": 28.74,
+      "long_mm": 0.854,
+      "short_mm": null,
+      "short_genuine_px": [
+        9.2,
+        12.1
+      ],
+      "area_mm2": 0.1321,
+      "radial_fraction_of_edge": 0.8999,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 9.2-12.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B082",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 7.022,
+      "y_mm": -5.131,
+      "r_mm": 8.697,
+      "theta_deg": 323.85,
+      "long_mm": 0.584,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.3,
+        8.3
+      ],
+      "area_mm2": 0.13,
+      "radial_fraction_of_edge": 0.7229,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.3-8.3 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B083",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.175,
+      "y_mm": 0.132,
+      "r_mm": 7.176,
+      "theta_deg": 178.95,
+      "long_mm": 0.645,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.3,
+        8.4
+      ],
+      "area_mm2": 0.1266,
+      "radial_fraction_of_edge": 0.6169,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.3-8.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B084",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 11.051,
+      "y_mm": 0.89,
+      "r_mm": 11.087,
+      "theta_deg": 4.61,
+      "long_mm": 0.616,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.1
+      ],
+      "area_mm2": 0.1256,
+      "radial_fraction_of_edge": 0.9055,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B085",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 11.071,
+      "y_mm": -1.23,
+      "r_mm": 11.139,
+      "theta_deg": 353.66,
+      "long_mm": 0.606,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.7,
+        7.6
+      ],
+      "area_mm2": 0.114,
+      "radial_fraction_of_edge": 0.9043,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.7-7.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B086",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -0.166,
+      "y_mm": -7.89,
+      "r_mm": 7.891,
+      "theta_deg": 268.8,
+      "long_mm": 0.583,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.2,
+        6.9
+      ],
+      "area_mm2": 0.1064,
+      "radial_fraction_of_edge": 0.6425,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.2-6.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B087",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -8.902,
+      "y_mm": -9.563,
+      "r_mm": 13.065,
+      "theta_deg": 227.05,
+      "long_mm": 1.72,
+      "short_mm": null,
+      "short_genuine_px": [
+        2.1,
+        2.8
+      ],
+      "area_mm2": 0.1054,
+      "radial_fraction_of_edge": 1.0044,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 2.1-2.8 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 1.004 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B088",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -0.969,
+      "y_mm": -11.965,
+      "r_mm": 12.004,
+      "theta_deg": 265.37,
+      "long_mm": 0.625,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.1,
+        8.0
+      ],
+      "area_mm2": 0.1051,
+      "radial_fraction_of_edge": 0.9767,
+      "confidence": "low",
+      "flags": [
+        "located_not_sized",
+        "on_rim_material_suspect"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.1-8.0 genuine px, under 10. Position usable, SIZE IS NOT.; sits at 0.977 of the local edge radius, where a grey fibrous material laps over the rim (M02 Sec 8). May be that material, not a part."
+    },
+    {
+      "id": "B089",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 1.883,
+      "y_mm": 8.443,
+      "r_mm": 8.65,
+      "theta_deg": 77.43,
+      "long_mm": 0.663,
+      "short_mm": null,
+      "short_genuine_px": [
+        8.6,
+        11.4
+      ],
+      "area_mm2": 0.1042,
+      "radial_fraction_of_edge": 0.6684,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 8.6-11.4 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B090",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": 0.767,
+      "y_mm": 10.327,
+      "r_mm": 10.356,
+      "theta_deg": 85.75,
+      "long_mm": 0.561,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.0,
+        6.6
+      ],
+      "area_mm2": 0.104,
+      "radial_fraction_of_edge": 0.7892,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.0-6.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B091",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -9.074,
+      "y_mm": -7.556,
+      "r_mm": 11.808,
+      "theta_deg": 219.78,
+      "long_mm": 0.923,
+      "short_mm": null,
+      "short_genuine_px": [
+        3.1,
+        4.1
+      ],
+      "area_mm2": 0.1025,
+      "radial_fraction_of_edge": 0.9047,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 3.1-4.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B092",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -10.453,
+      "y_mm": 1.208,
+      "r_mm": 10.523,
+      "theta_deg": 173.41,
+      "long_mm": 0.379,
+      "short_mm": null,
+      "short_genuine_px": [
+        7.2,
+        9.6
+      ],
+      "area_mm2": 0.1023,
+      "radial_fraction_of_edge": 0.9073,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 7.2-9.6 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B093",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -1.535,
+      "y_mm": -11.273,
+      "r_mm": 11.377,
+      "theta_deg": 262.25,
+      "long_mm": 0.675,
+      "short_mm": null,
+      "short_genuine_px": [
+        5.9,
+        7.9
+      ],
+      "area_mm2": 0.102,
+      "radial_fraction_of_edge": 0.9158,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 5.9-7.9 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "B094",
+      "method": "bright-metal segmentation (m_components.py)",
+      "found": "metal: pad, termination, can or solder",
+      "x_mm": -7.207,
+      "y_mm": -9.206,
+      "r_mm": 11.691,
+      "theta_deg": 231.94,
+      "long_mm": 0.42,
+      "short_mm": null,
+      "short_genuine_px": [
+        6.9,
+        9.1
+      ],
+      "area_mm2": 0.1017,
+      "radial_fraction_of_edge": 0.9045,
+      "confidence": "medium",
+      "flags": [
+        "located_not_sized"
+      ],
+      "do_not_draw_as_component": false,
+      "why": "short side 6.9-9.1 genuine px, under 10. Position usable, SIZE IS NOT."
+    },
+    {
+      "id": "D000",
+      "method": "blue-body colour segmentation (m_dark_packages.py)",
+      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "x_mm": -3.037,
+      "y_mm": -8.667,
+      "r_mm": 9.184,
+      "theta_deg": 250.69,
+      "long_mm": 3.283,
+      "short_mm": 3.03,
+      "short_genuine_px": [
+        62.7,
+        83.0
+      ],
+      "area_mm2": 9.951,
+      "body_angle_deg": 158.9,
+      "rect_fill": 1.0,
+      "radial_fraction_of_edge": 0.7339,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "D001",
+      "method": "blue-body colour segmentation (m_dark_packages.py)",
+      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "x_mm": 1.538,
+      "y_mm": -8.594,
+      "r_mm": 8.731,
+      "theta_deg": 280.15,
+      "long_mm": 3.449,
+      "short_mm": 0.841,
+      "short_genuine_px": [
+        17.4,
+        23.0
+      ],
+      "area_mm2": 2.2509,
+      "body_angle_deg": 99.4,
+      "rect_fill": 0.776,
+      "radial_fraction_of_edge": 0.6942,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "D002",
+      "method": "blue-body colour segmentation (m_dark_packages.py)",
+      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "x_mm": -9.079,
+      "y_mm": 2.949,
+      "r_mm": 9.546,
+      "theta_deg": 162.01,
+      "long_mm": 1.181,
+      "short_mm": 0.906,
+      "short_genuine_px": [
+        18.7,
+        24.8
+      ],
+      "area_mm2": 1.068,
+      "body_angle_deg": 154.8,
+      "rect_fill": 0.998,
+      "radial_fraction_of_edge": 0.8131,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "D003",
+      "method": "blue-body colour segmentation (m_dark_packages.py)",
+      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "x_mm": -6.869,
+      "y_mm": -2.538,
+      "r_mm": 7.323,
+      "theta_deg": 200.28,
+      "long_mm": 0.952,
+      "short_mm": 0.938,
+      "short_genuine_px": [
+        19.4,
+        25.7
+      ],
+      "area_mm2": 0.7111,
+      "body_angle_deg": 3.7,
+      "rect_fill": 0.797,
+      "radial_fraction_of_edge": 0.5606,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    },
+    {
+      "id": "D004",
+      "method": "blue-body colour segmentation (m_dark_packages.py)",
+      "found": "IC package body whose epoxy colour differs from the soldermask",
+      "x_mm": -1.001,
+      "y_mm": -12.555,
+      "r_mm": 12.595,
+      "theta_deg": 265.44,
+      "long_mm": 1.528,
+      "short_mm": 0.513,
+      "short_genuine_px": [
+        10.6,
+        14.0
+      ],
+      "area_mm2": 0.5947,
+      "body_angle_deg": 85.7,
+      "rect_fill": 0.759,
+      "radial_fraction_of_edge": 1.0248,
+      "confidence": "high",
+      "flags": [],
+      "do_not_draw_as_component": false,
+      "why": null
+    }
+  ]
+}
